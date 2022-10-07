@@ -161,9 +161,11 @@ public:
 
 		CountingAppenderPtr ca1 = CountingAppenderPtr(new CountingAppender());
 		CountingAppenderPtr ca2 = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr xa = CountingAppenderPtr(new CountingAppender());
 
 		a->addAppender(ca1);
 		abc->addAppender(ca2);
+		x->addAppender(xa);
 
 		LOGUNIT_ASSERT_EQUAL(ca1->counter, 0);
 		LOGUNIT_ASSERT_EQUAL(ca2->counter, 0);
@@ -195,6 +197,7 @@ public:
 		CountingAppenderPtr caRoot = CountingAppenderPtr(new CountingAppender());
 		CountingAppenderPtr caA = CountingAppenderPtr(new CountingAppender());
 		CountingAppenderPtr caABC = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr cab = CountingAppenderPtr(new CountingAppender());
 
 		root->addAppender(caRoot);
 		a->addAppender(caA);
@@ -211,7 +214,9 @@ public:
 		LOGUNIT_ASSERT_EQUAL(caA->counter, 1);
 		LOGUNIT_ASSERT_EQUAL(caABC->counter, 0);
 
+		ab->addAppender(cab);
 		ab->debug(MSG);
+		LOGUNIT_ASSERT_EQUAL(cab->counter, 1);
 		LOGUNIT_ASSERT_EQUAL(caRoot->counter, 1);
 		LOGUNIT_ASSERT_EQUAL(caA->counter, 1);
 		LOGUNIT_ASSERT_EQUAL(caABC->counter, 0);
@@ -411,7 +416,9 @@ public:
 		root->setLevel(Level::getTrace());
 		LOGUNIT_ASSERT(Level::getTrace() == abc->getEffectiveLevel());
 		LOGUNIT_ASSERT_EQUAL(true, a0->isTraceEnabled());
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isTraceEnabledFor(a0));
 		LOGUNIT_ASSERT_EQUAL(true, abc->isTraceEnabled());
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isTraceEnabledFor(abc));
 	}
 
 	void compileTestForLOGCXX202() const
@@ -468,7 +475,17 @@ public:
 		tracer->setLevel(Level::getTrace());
 
 		LOGUNIT_ASSERT_EQUAL(true, tracer->isTraceEnabled());
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isTraceEnabledFor(tracer));
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isDebugEnabledFor(tracer));
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isInfoEnabledFor(tracer));
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isWarnEnabledFor(tracer));
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isErrorEnabledFor(tracer));
 		LOGUNIT_ASSERT_EQUAL(false, root->isTraceEnabled());
+		LOGUNIT_ASSERT_EQUAL(false, Logger::isTraceEnabledFor(root));
+		LOGUNIT_ASSERT_EQUAL(false, Logger::isDebugEnabledFor(root));
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isInfoEnabledFor(root));
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isWarnEnabledFor(root));
+		LOGUNIT_ASSERT_EQUAL(true, Logger::isErrorEnabledFor(root));
 	}
 
 protected:
