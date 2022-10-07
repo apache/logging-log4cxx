@@ -70,7 +70,7 @@ LOGUNIT_CLASS(AutoConfigureTestCase)
 #endif
 	helpers::Pool m_pool;
 	char m_buf[2048];
-	LogString m_configFile = LOG4CXX_STR("autoConfigureTest.properties");
+	LogString m_configFile = LOG4CXX_STR("autoconfiguretestcase.properties");
 public:
 
 	void copyPropertyFile()
@@ -78,12 +78,12 @@ public:
 		LOGUNIT_ASSERT(File(LOG4CXX_STR("input/autoConfigureTest.properties")).exists(m_pool));
 		LOGUNIT_ASSERT(apr_file_copy
 			( "input/autoConfigureTest.properties"
-			, "autoConfigureTest.properties"
+			, "autoconfiguretestcase.properties"
 			, APR_FPROT_UREAD | APR_FPROT_UWRITE
 			, m_pool.getAPRPool()
 			) == APR_SUCCESS);
 
-		DefaultConfigurator::setConfigurationFileName(m_configFile);
+		//DefaultConfigurator::setConfigurationFileName(m_configFile);
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
 		LOGUNIT_ASSERT(File(m_configFile).exists(m_pool));
 	}
@@ -91,7 +91,7 @@ public:
 	void shutdown()
 	{
 		LogManager::shutdown();
-		LOGUNIT_ASSERT(apr_file_remove("autoConfigureTest.properties", m_pool.getAPRPool()) == APR_SUCCESS);
+		LOGUNIT_ASSERT(apr_file_remove("autoconfiguretestcase.properties", m_pool.getAPRPool()) == APR_SUCCESS);
 	}
 
 	void test1()	

@@ -22,16 +22,82 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
-
+#include <log4cxx/helpers/transcoder.h>
+#ifdef WIN32
+#include <Windows.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-namespace 
+namespace
 {
 	LogString DefaultConfiguratorPath;
 	int DefaultConfiguratorWatchSeconds = 0;
+
+	// Get a list of file base names that may contain configuration data
+	// and put an alternate path into \c altPrefix
+	std::vector<std::string> DefaultConfigurationFileNames(std::string& altPrefix)
+	{
+		std::vector<std::string> result;
+		static const int bufSize = 2000;
+		char buf[bufSize+1], pathSepar;
+		buf[0] = 0;
+#ifdef WIN32
+		GetModuleFileName(NULL, buf, bufSize);
+		pathSepar = '\\';
+#else
+#if LOG4CXX_HAS_READLINK
+		std::ostringstream exeLink;
+		exeLink << "/proc/" << getpid() << "/exe";
+		size_t bufCount = readlink(exeLink.str().c_str(), buf, bufSize))
+		if (0 < bufCount)
+			buf[bufCount] = 0;
+		pathSepar = '/';
+#elif defined(RTLD_SELF)
+		Link_map *map;
+		if (0 == dlinfo(RTLD_SELF, RTLD_DI_LINKMAP, &map))
+		{
+			for (Link_map *p = map; p = p->l_next)
+			{
+				LogString msg(LOG4CXX_STR("Link_map ["));
+				helpers:Transcoder::decode(p->l_name, msg);
+				msg += LOG4CXX_STR("]");
+				LogLog::debug(msg);
+			}
+		}
+#endif // !HAS_READ_LINK_FUNCTION
+#endif // !WIN32
+		std::string programFileName(buf);
+		// Remove any extension
+		if (!programFileName.empty())
+		{
+			auto dotIndex = programFileName.rfind('.');
+			if (programFileName.npos != dotIndex)
+				programFileName.erase(dotIndex);
+		}
+		if (!programFileName.empty())
+		{
+			auto slashIndex = programFileName.rfind(pathSepar);
+			if (programFileName.npos != slashIndex)
+			{
+				// Add a local directory relative name
+				result.push_back(programFileName.substr(slashIndex + 1));
+				// Extract the path
+				altPrefix = programFileName.substr(0, slashIndex + 1);
+				LogString msg(LOG4CXX_STR("Add base name ["));
+				helpers::Transcoder::decode(result.back(), msg);
+				msg += LOG4CXX_STR("] altPrefix [");
+				helpers::Transcoder::decode(altPrefix, msg);
+				msg += LOG4CXX_STR("]");
+				LogLog::debug(msg);
+				}
+		}
+		result.push_back("log4cxx");
+		result.push_back("log4j");
+		return result;
+	}
 }
 
 void DefaultConfigurator::setConfigurationFileName(const LogString& path)
@@ -60,17 +126,32 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 
 	if (configurationFileName.empty())
 	{
-		const char* names[] = { "log4cxx.xml", "log4cxx.properties", "log4j.xml", "log4j.properties", 0 };
+		const char* extension[] = { ".xml", ".properties", 0 };
+		std::string altPrefix;
 
-		for (int i = 0; names[i] != 0; i++)
+		for (auto baseName : DefaultConfigurationFileNames(altPrefix))
 		{
-			File candidate(names[i]);
-
-			if (candidate.exists(pool))
+			int i = 0;
+			for (; extension[i]; ++i)
 			{
-				configuration = candidate;
-				break;
+				File current_working_dir_candidate(baseName + extension[i]);
+				if (current_working_dir_candidate.exists(pool))
+				{
+					configuration = current_working_dir_candidate;
+					break;
+				}
+				if (!altPrefix.empty())
+				{
+				    File alt_dir_candidate(altPrefix + baseName + extension[i]);
+				    if (alt_dir_candidate.exists(pool))
+				    {
+				        configuration = alt_dir_candidate;
+				        break;
+				    }
+				}
 			}
+			if (extension[i]) // Found a configuration file?
+				break;
 		}
 	}
 	else
@@ -111,7 +192,6 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 	}
 
 }
-
 
 const LogString DefaultConfigurator::getConfiguratorClass()
 {
