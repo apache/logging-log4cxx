@@ -54,7 +54,6 @@ themselves to the previously created provision node.
 */
 class LOG4CXX_EXPORT Hierarchy :
 	public virtual spi::LoggerRepository,
-	public virtual helpers::Object,
 	public std::enable_shared_from_this<Hierarchy>
 {
 	private:
@@ -77,7 +76,12 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		~Hierarchy();
 
-		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
+		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
+
+		/**
+		 * Load the configuration if not yet configured.
+		 */
+		void autoConfigure() override;
 
 		/**
 		This call will clear all logger definitions from the internal
@@ -89,7 +93,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		*/
 		void clear();
 
-		void emitNoAppenderWarning(const Logger* logger);
+		void emitNoAppenderWarning(const Logger* logger) override;
 
 		/**
 		Check if the named logger exists in the hierarchy. If so return
@@ -103,7 +107,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		/**
 		The string form of {@link #setThreshold(const LevelPtr&) setThreshold}.
 		*/
-		void setThreshold(const LogString& levelStr);
+		void setThreshold(const LogString& levelStr) override;
 
 		/**
 		Enable logging for logging requests with level <code>l</code> or
@@ -111,18 +115,17 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		        @param l The minimum level for which logging requests are sent to
 		their appenders.  */
-		void setThreshold(const LevelPtr& l);
+		void setThreshold(const LevelPtr& l) override;
 
-		void fireAddAppenderEvent(const Logger* logger, const Appender* appender);
+		void fireAddAppenderEvent(const Logger* logger, const Appender* appender) override;
 
-		void fireRemoveAppenderEvent(const Logger* logger,
-			const Appender* appender);
+		void fireRemoveAppenderEvent(const Logger* logger, const Appender* appender) override;
 
 		/**
 		Returns a Level representation of the <code>enable</code>
 		state.
 		*/
-		const LevelPtr& getThreshold() const;
+		LevelPtr getThreshold() const override;
 
 		/**
 		Return a new logger instance named as the first parameter using
@@ -135,7 +138,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		@param name The name of the logger to retrieve.
 
 		*/
-		LoggerPtr getLogger(const LogString& name);
+		LoggerPtr getLogger(const LogString& name) override;
 
 		/**
 		Return a new logger instance named as the first parameter using
@@ -151,7 +154,7 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		*/
 		LoggerPtr getLogger(const LogString& name,
-			const spi::LoggerFactoryPtr& factory);
+			const spi::LoggerFactoryPtr& factory) override;
 
 		/**
 		Returns all the currently defined loggers in this hierarchy as
@@ -164,14 +167,14 @@ class LOG4CXX_EXPORT Hierarchy :
 		/**
 		Get the root of this hierarchy.
 		*/
-		LoggerPtr getRootLogger() const;
+		LoggerPtr getRootLogger() const override;
 
 		/**
 		This method will return <code>true</code> if this repository is
 		disabled for <code>level</code> object passed as parameter and
 		<code>false</code> otherwise. See also the
 		{@link #setThreshold(const LevelPtr&) setThreshold} method.  */
-		bool isDisabled(int level) const;
+		bool isDisabled(int level) const override;
 
 		/**
 		Reset all values contained in this hierarchy instance to their
@@ -186,7 +189,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		<p>This method should be used sparingly and with care as it will
 		block all logging until it is completed.</p>
 		*/
-		void resetConfiguration();
+		void resetConfiguration() override;
 
 		/**
 		Used by subclasses to add a renderer to the hierarchy passed as parameter.
@@ -205,12 +208,16 @@ class LOG4CXX_EXPORT Hierarchy :
 		configurations where a regular appender is attached to a logger
 		and again to a nested appender.
 		*/
-		void shutdown();
+		void shutdown() override;
 
 
-		virtual bool isConfigured();
-		virtual void setConfigured(bool configured);
+		virtual bool isConfigured() override;
+		virtual void setConfigured(bool configured) override;
 
+		/**
+		Refresh the threshold in children of parent
+		*/
+		void updateChildren(const Logger* parent);
 
 	private:
 
@@ -226,30 +233,33 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		/**
 		This method loops through all the *potential* parents of
-		'cat'. There 3 possible cases:
+		\c logger using the logger name.
+		For example, for a logger named "w.x.y.z",
+		loop through "w.x.y", "w.x" and "w", but not "w.x.y.z".
+		There 3 possible cases:
 
-		1) No entry for the potential parent of 'cat' exists
+		1) No entry for the potential parent of "w.x.y.z" exists
 
 		We create a ProvisionNode for this potential parent and insert
-		'cat' in that provision node.
+		"w.x.y.z" in that provision node.
 
 		2) There entry is of type Logger for the potential parent.
 
-		The entry is 'cat's nearest existing parent. We update cat's
+		The entry is "w.x.y.z"'s nearest existing parent. We update "w.x.y.z"'s
 		parent field with this entry. We also break from the loop
 		because updating our parent's parent is our parent's
 		responsibility.
 
 		3) There entry is of type ProvisionNode for this potential parent.
 
-		We add 'cat' to the list of children for this potential parent.
+		We add "w.x.y.z" to the list of children for this potential parent.
 		*/
-		void updateParents(LoggerPtr logger);
+		void updateParents(const LoggerPtr& logger, const LoggerPtr& root);
 
 		/**
 		We update the links for all the children that placed themselves
-		in the provision node 'pn'. The second argument 'cat' is a
-		reference for the newly created Logger, parent of all the
+		in the provision node 'pn'. The \c logger argument is a
+		newly created Logger, a potential parent of all the
 		children in 'pn'
 
 		We loop on all the children 'c' in 'pn':
@@ -257,13 +267,14 @@ class LOG4CXX_EXPORT Hierarchy :
 		If the child 'c' has been already linked to a child of
 		'cat' then there is no need to update 'c'.
 
-		Otherwise, we set cat's parent field to c's parent and set
-		c's parent field to cat.
+		Otherwise, we set the \c logger parent to 'c's parent and set
+		'c's parent field to \c logger.
 		*/
+		void updateChildren(ProvisionNode& pn, const LoggerPtr& logger);
+
 		Hierarchy(const Hierarchy&);
 		Hierarchy& operator=(const Hierarchy&);
 
-		void updateChildren(ProvisionNode& pn, LoggerPtr logger);
 };
 
 }  //namespace log4cxx

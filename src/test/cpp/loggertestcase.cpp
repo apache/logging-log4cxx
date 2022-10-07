@@ -401,6 +401,17 @@ public:
 
 		LoggerPtr a11 = h->getLogger(LOG4CXX_STR("a"));
 		LOGUNIT_ASSERT_EQUAL(a0, a11);
+
+		LoggerPtr abc = h->getLogger(LOG4CXX_STR("a.b.c"));
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("a.b.c"), abc->getName());
+		LOGUNIT_ASSERT(abc->getLevel() == 0);
+		LOGUNIT_ASSERT(Level::getError() == abc->getEffectiveLevel());
+
+		// Check the threshold is changed in children of root
+		root->setLevel(Level::getTrace());
+		LOGUNIT_ASSERT(Level::getTrace() == abc->getEffectiveLevel());
+		LOGUNIT_ASSERT_EQUAL(true, a0->isTraceEnabled());
+		LOGUNIT_ASSERT_EQUAL(true, abc->isTraceEnabled());
 	}
 
 	void compileTestForLOGCXX202() const
