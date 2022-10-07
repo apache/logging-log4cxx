@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/private/log4cxx_private.h>
 #ifdef WIN32
 #include <Windows.h>
 #else
