@@ -25,6 +25,8 @@
 #include <log4cxx/helpers/transcoder.h>
 #ifdef WIN32
 #include <Windows.h>
+#else
+#include <unistd.h>     /* getpid */
 #endif
 
 using namespace log4cxx;
@@ -51,7 +53,7 @@ namespace
 #if LOG4CXX_HAS_READLINK
 		std::ostringstream exeLink;
 		exeLink << "/proc/" << getpid() << "/exe";
-		size_t bufCount = readlink(exeLink.str().c_str(), buf, bufSize))
+		size_t bufCount = readlink(exeLink.str().c_str(), buf, bufSize);
 		if (0 < bufCount)
 			buf[bufCount] = 0;
 		pathSepar = '/';
@@ -86,7 +88,7 @@ namespace
 				result.push_back(programFileName.substr(slashIndex + 1));
 				// Extract the path
 				altPrefix = programFileName.substr(0, slashIndex + 1);
-				LogString msg(LOG4CXX_STR("Add base name ["));
+				LogString msg(LOG4CXX_STR("Try base name ["));
 				helpers::Transcoder::decode(result.back(), msg);
 				msg += LOG4CXX_STR("] altPrefix [");
 				helpers::Transcoder::decode(altPrefix, msg);

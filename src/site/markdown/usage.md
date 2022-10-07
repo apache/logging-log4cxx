@@ -595,27 +595,13 @@ event to a second log4cxx server.
 # Default Initialization Procedure {#default-initialization-procedure}
 
 The log4cxx library does not make any assumptions about its environment.
-In particular, there are no default log4cxx appenders. Under certain
-well-defined circumstances however, the static inializer of the *Logger*
-class will attempt to automatically configure log4cxx. 
-
-The exact default initialization algorithm is defined as follows: 
-
-1.  Set the configurationOptionStr string variable to the value of the
-    **LOG4CXX\_CONFIGURATION** environment variable if set, otherwise
-    the value of the **log4j.configuration** environment variable if
-    set, otherwise the first of the following file names which exist in
-    the current working directory, "log4cxx.xml", "log4cxx.properties",
-    "log4j.xml" and "log4j.properties". If configurationOptionStr has
-    not been set, then disable logging. 
-2.  Unless a custom configurator is specified using the
-    **LOG4CXX\_CONFIGURATOR\_CLASS** or **log4j.configuratorClass**
-    environment variable, the PropertyConfigurator will be used to
-    configure log4cxx unless the file name ends with the ".xml"
-    extension, in which case the DOMConfigurator will be used. If a
-    custom configurator is specified, the environment variable should
-    contain a fully qualified class name of a class that implements the
-    Configurator interface. 
+In particular, there are no default log4cxx appenders.
+However the [LoggerRepository::autoconfigure](@ref log4cxx.LoggerRepository.autoconfigure) virtual method
+is called by [LogManager::getLogger](@ref log4cxx.LogManager.getLogger)
+if the repositoy is not yet configured.
+The default [LoggerRepository::autoconfigure](@ref log4cxx.Hierarchy.autoconfigure) implementation
+calls the [configure](@ref log4cxx.DefaultConfigurator.configure) method
+of the [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) class.
 
 # Nested Diagnostic Contexts {#nested-diagnostic-contexts}
 

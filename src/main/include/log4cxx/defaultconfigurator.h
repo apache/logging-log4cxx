@@ -39,6 +39,14 @@ class LOG4CXX_EXPORT DefaultConfigurator
 
 		If the configuration file name has not been provided by a call to setConfigurationFileName(),
 		the environment variables 'LOG4CXX_CONFIGURATION' and 'log4j.configuration' are examined.
+		Unless a custom configurator is specified using the
+		**LOG4CXX\_CONFIGURATOR\_CLASS** or **log4j.configuratorClass**
+		environment variable, the PropertyConfigurator will be used to
+		configure log4cxx unless the file name ends with the ".xml"
+		extension, in which case the DOMConfigurator will be used. If a
+		custom configurator is specified, the environment variable should
+		contain a fully qualified class name of a class that implements the
+		Configurator interface.
 
 		If the configuration file name has not been provided by any of the previous approaches,
 		the current directory and the directory containing the executable
