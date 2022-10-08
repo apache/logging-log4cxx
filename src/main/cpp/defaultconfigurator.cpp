@@ -23,16 +23,17 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <limits.h> // MAX_PATH
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #ifdef WIN32
 #include <Windows.h>
+#elif __APPLE__
+#include <mach-o/dyld.h>
 #else
 #include <unistd.h>     /* getpid */
-#include <link.h>
-#include <dlfcn.h>
 #endif
 
 using namespace log4cxx;
@@ -49,61 +50,70 @@ namespace
 	std::vector<std::string> DefaultConfigurationFileNames(std::string& altPrefix)
 	{
 		std::vector<std::string> result;
-		static const int bufSize = 2000;
-		char buf[bufSize+1], pathSepar;
-		buf[0] = 0;
+		result.push_back("log4cxx");
+		result.push_back("log4j");
+
+        // Add executable base name
+		static const int bufSize = MAX_PATH;
+		char buf[bufSize+1] = {0}, pathSepar = '/';
+        uint32_t bufCount = 0;
 #ifdef WIN32
 		GetModuleFileName(NULL, buf, bufSize);
 		pathSepar = '\\';
-#else
-#if LOG4CXX_HAS_READLINK
+#elif defined(__APPLE__)
+		_NSGetExecutablePath(buf, &bufCount);
+#elif LOG4CXX_HAS_READLINK
 		std::ostringstream exeLink;
 		exeLink << "/proc/" << getpid() << "/exe";
-		size_t bufCount = readlink(exeLink.str().c_str(), buf, bufSize);
+		bufCount = readlink(exeLink.str().c_str(), buf, bufSize);
 		if (0 < bufCount)
 			buf[bufCount] = 0;
-		pathSepar = '/';
-#elif defined(RTLD_SELF)
-		Link_map *map;
-		if (0 == dlinfo(RTLD_SELF, RTLD_DI_LINKMAP, &map))
-		{
-			for (Link_map *p = map; p = p->l_next)
-			{
-				LogString msg(LOG4CXX_STR("Link_map ["));
-				helpers:Transcoder::decode(p->l_name, msg);
-				msg += LOG4CXX_STR("]");
-				LogLog::debug(msg);
-			}
-		}
-#endif // !HAS_READ_LINK_FUNCTION
-#endif // !WIN32
+#endif
 		std::string programFileName(buf);
-		// Remove any extension
-		if (!programFileName.empty())
+        auto slashIndex = programFileName.rfind(pathSepar);
+		if (std::string::npos != slashIndex)
+        {
+            // Extract the path
+            altPrefix = programFileName.substr(0, slashIndex + 1);
+            LogString msg1 = LOG4CXX_STR("Alternate prefix [");
+            helpers::Transcoder::decode(altPrefix, msg1);
+            msg1 += LOG4CXX_STR("]");
+            LogLog::debug(msg1);
+            // Add a local directory relative name
+            result.push_back(programFileName.substr(slashIndex + 1));
+            LogString msg2(LOG4CXX_STR("Alternate configuration file name ["));
+            helpers::Transcoder::decode(result.back(), msg2);
+            msg2 += LOG4CXX_STR("]");
+            LogLog::debug(msg2);
+            // Add a local directory relative name without any extension
+			auto dotIndex = result.back().rfind('.');
+			if (std::string::npos != dotIndex)
+            {
+                auto dotIndex = result.back().rfind('.');
+                if (std::string::npos != dotIndex)
+                {
+                    result.push_back(result.back());
+                    result.back().erase(dotIndex);
+                    LogString msg3(LOG4CXX_STR("Alternate configuration file name ["));
+                    helpers::Transcoder::decode(result.back(), msg3);
+                    msg3 += LOG4CXX_STR("]");
+                    LogLog::debug(msg3);
+                }
+            }
+        }
+		else if (!programFileName.empty())
 		{
-			auto dotIndex = programFileName.rfind('.');
-			if (programFileName.npos != dotIndex)
+			auto dotIndex = result.back().rfind('.');
+			if (std::string::npos != dotIndex)
+            {
 				programFileName.erase(dotIndex);
+                result.push_back(programFileName);
+                LogString msg(LOG4CXX_STR("Alternate configuration file name ["));
+                helpers::Transcoder::decode(result.back(), msg);
+                msg += LOG4CXX_STR("]");
+                LogLog::debug(msg);
+            }
 		}
-		if (!programFileName.empty())
-		{
-			auto slashIndex = programFileName.rfind(pathSepar);
-			if (programFileName.npos != slashIndex)
-			{
-				// Add a local directory relative name
-				result.push_back(programFileName.substr(slashIndex + 1));
-				// Extract the path
-				altPrefix = programFileName.substr(0, slashIndex + 1);
-				LogString msg(LOG4CXX_STR("Try base name ["));
-				helpers::Transcoder::decode(result.back(), msg);
-				msg += LOG4CXX_STR("] altPrefix [");
-				helpers::Transcoder::decode(altPrefix, msg);
-				msg += LOG4CXX_STR("]");
-				LogLog::debug(msg);
-				}
-		}
-		result.push_back("log4cxx");
-		result.push_back("log4j");
 		return result;
 	}
 }
