@@ -301,7 +301,11 @@ additivity flag set to *false*, then *C*'s output will be directed to
 all the appenders in *C* and it's ancestors up to and including *P* but,
 not the appenders in any of the ancestors of *P*.  
   
-Loggers have their additivity flag set to *true* by default. 
+Loggers have their additivity flag set to *true* by default, 
+meaning output goes to the appender attached to a
+parent [Logger](@ref log4cxx.Logger).
+This means it is often sufficient to configure or attach an appender
+only to the root logger in the [Hierarchy](@ref log4cxx.Hierarchy).
 
 The table below shows an
 example:
@@ -595,7 +599,7 @@ event to a second log4cxx server.
 # Default Initialization Procedure {#default-initialization-procedure}
 
 The log4cxx library does not make any assumptions about its environment.
-In particular, when initially created a [Logger](@ref log4cxx.Logger) has no appender.
+In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
 However the library will attempt automatic configuration.
 
 If the LoggerRepositoy is not yet configured on the first call to
