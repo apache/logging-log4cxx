@@ -23,7 +23,6 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <limits.h> // MAX_PATH
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
@@ -53,10 +52,10 @@ namespace
 		result.push_back("log4cxx");
 		result.push_back("log4j");
 
-        // Add executable base name
-		static const int bufSize = MAX_PATH;
+		// Add executable base name
+		static const int bufSize = 4096;
 		char buf[bufSize+1] = {0}, pathSepar = '/';
-        uint32_t bufCount = 0;
+		uint32_t bufCount = 0;
 #ifdef WIN32
 		GetModuleFileName(NULL, buf, bufSize);
 		pathSepar = '\\';
@@ -70,49 +69,49 @@ namespace
 			buf[bufCount] = 0;
 #endif
 		std::string programFileName(buf);
-        auto slashIndex = programFileName.rfind(pathSepar);
+		auto slashIndex = programFileName.rfind(pathSepar);
 		if (std::string::npos != slashIndex)
-        {
-            // Extract the path
-            altPrefix = programFileName.substr(0, slashIndex + 1);
-            LogString msg1 = LOG4CXX_STR("Alternate prefix [");
-            helpers::Transcoder::decode(altPrefix, msg1);
-            msg1 += LOG4CXX_STR("]");
-            LogLog::debug(msg1);
-            // Add a local directory relative name
-            result.push_back(programFileName.substr(slashIndex + 1));
-            LogString msg2(LOG4CXX_STR("Alternate configuration file name ["));
-            helpers::Transcoder::decode(result.back(), msg2);
-            msg2 += LOG4CXX_STR("]");
-            LogLog::debug(msg2);
-            // Add a local directory relative name without any extension
+		{
+			// Extract the path
+			altPrefix = programFileName.substr(0, slashIndex + 1);
+			LogString msg1 = LOG4CXX_STR("Alternate prefix [");
+			helpers::Transcoder::decode(altPrefix, msg1);
+			msg1 += LOG4CXX_STR("]");
+			LogLog::debug(msg1);
+			// Add a local directory relative name
+			result.push_back(programFileName.substr(slashIndex + 1));
+			LogString msg2(LOG4CXX_STR("Alternate configuration file name ["));
+			helpers::Transcoder::decode(result.back(), msg2);
+			msg2 += LOG4CXX_STR("]");
+			LogLog::debug(msg2);
+			// Add a local directory relative name without any extension
 			auto dotIndex = result.back().rfind('.');
 			if (std::string::npos != dotIndex)
-            {
-                auto dotIndex = result.back().rfind('.');
-                if (std::string::npos != dotIndex)
-                {
-                    result.push_back(result.back());
-                    result.back().erase(dotIndex);
-                    LogString msg3(LOG4CXX_STR("Alternate configuration file name ["));
-                    helpers::Transcoder::decode(result.back(), msg3);
-                    msg3 += LOG4CXX_STR("]");
-                    LogLog::debug(msg3);
-                }
-            }
-        }
+			{
+				auto dotIndex = result.back().rfind('.');
+				if (std::string::npos != dotIndex)
+				{
+					result.push_back(result.back());
+					result.back().erase(dotIndex);
+					LogString msg3(LOG4CXX_STR("Alternate configuration file name ["));
+					helpers::Transcoder::decode(result.back(), msg3);
+					msg3 += LOG4CXX_STR("]");
+					LogLog::debug(msg3);
+				}
+			}
+		}
 		else if (!programFileName.empty())
 		{
 			auto dotIndex = result.back().rfind('.');
 			if (std::string::npos != dotIndex)
-            {
+			{
 				programFileName.erase(dotIndex);
-                result.push_back(programFileName);
-                LogString msg(LOG4CXX_STR("Alternate configuration file name ["));
-                helpers::Transcoder::decode(result.back(), msg);
-                msg += LOG4CXX_STR("]");
-                LogLog::debug(msg);
-            }
+				result.push_back(programFileName);
+				LogString msg(LOG4CXX_STR("Alternate configuration file name ["));
+				helpers::Transcoder::decode(result.back(), msg);
+				msg += LOG4CXX_STR("]");
+				LogLog::debug(msg);
+			}
 		}
 		return result;
 	}
