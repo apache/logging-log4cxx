@@ -45,7 +45,7 @@ DefaultConfigurationFileNames(std::string& altPrefix)
 	std::vector<std::string> result;
 
 	// Find the executable file name
-	static const int bufSize = MAX_PATH;
+	static const int bufSize = 4096;
 	char buf[bufSize+1] = {0}, pathSepar = '/';
 	uint32_t bufCount = 0;
 #if defined(WIN32)
