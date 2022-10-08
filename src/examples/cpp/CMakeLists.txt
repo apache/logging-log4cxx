@@ -15,13 +15,26 @@
 # limitations under the License.
 #
 
-set(ALL_LOG4CXX_EXAMPLES console delayedloop stream trivial custom-appender)
+set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream trivial custom-appender)
+if( WIN32 )
+    include(win32_target_environment_path)
+    get_target_environment_path(ESCAPED_PATH)
+endif()
 
 foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
     add_executable(${exampleName} ${exampleName}.cpp)
+    if(${exampleName} STREQUAL auto-configured)
+        target_sources(${exampleName} PRIVATE UserLib/logmanager.cpp)
+    endif()
     target_compile_definitions(${exampleName} PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
     target_include_directories(${exampleName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
     target_link_libraries(${exampleName} PRIVATE log4cxx ${APR_UTIL_LIBRARIES} ${EXPAT_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS})
+    if( WIN32 )
+        set_target_properties(${exampleName} PROPERTIES
+          VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
+          VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        )
+    endif()
 endforeach()
 
 configure_file( custom-appender.xml
@@ -35,4 +48,9 @@ if(${fmt_FOUND})
     target_compile_definitions(format-string PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
     target_include_directories(format-string PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
     target_link_libraries(format-string PRIVATE log4cxx ${APR_UTIL_LIBRARIES} ${EXPAT_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} fmt::fmt)
+    if( WIN32 )
+        set_target_properties( format-string PROPERTIES
+          VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
+        )
+    endif()
 endif(${fmt_FOUND})
