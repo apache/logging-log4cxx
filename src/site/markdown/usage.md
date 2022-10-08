@@ -595,11 +595,15 @@ event to a second log4cxx server.
 # Default Initialization Procedure {#default-initialization-procedure}
 
 The log4cxx library does not make any assumptions about its environment.
-In particular, there are no default log4cxx appenders.
-However the [LoggerRepository::autoconfigure](@ref log4cxx.LoggerRepository.autoconfigure) virtual method
-is called by [LogManager::getLogger](@ref log4cxx.LogManager.getLogger)
-if the repositoy is not yet configured.
-The default [LoggerRepository::autoconfigure](@ref log4cxx.Hierarchy.autoconfigure) implementation
+In particular, when initially created a [Logger](@ref log4cxx.Logger) has no appender.
+However the library will attempt automatic configuration.
+
+If the LoggerRepositoy is not yet configured on the first call to
+[getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
+the [autoConfigure](@ref log4cxx.spi.LoggerRepository.autoConfigure) virtual method
+of [LoggerRepository](@ref log4cxx.spi.LoggerRepository) is called.
+
+The [default autoConfigure](@ref log4cxx.Hierarchy.autoConfigure) implementation
 calls the [configure](@ref log4cxx.DefaultConfigurator.configure) method
 of the [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) class.
 

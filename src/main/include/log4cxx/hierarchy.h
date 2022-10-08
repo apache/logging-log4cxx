@@ -79,7 +79,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
 		/**
-		 * Load the configuration if not yet configured.
+		 * Call DefaultConfigurator::configure if not yet configured.
 		 */
 		void autoConfigure() override;
 

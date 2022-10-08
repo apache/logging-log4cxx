@@ -54,20 +54,20 @@ class LOG4CXX_EXPORT LogManager
 
 	public:
 		/**
-		Sets <code>LoggerFactory</code> but only if the correct
-		<em>guard</em> is passed as parameter.
+		Use \c selector to source the {@link spi::LoggerRepository LoggerRepository}, but only if the correct
+		\c guard is passed as parameter.
 
 		<p>Initally the guard is null.  If the guard is
 		<code>null</code>, then invoking this method sets the logger
 		factory and the guard. Following invocations will throw a {@link
 		helpers::IllegalArgumentException IllegalArgumentException},
-		        unless the previously set <code>guard</code> is passed as the second
-		        parameter.
+		unless the previously set \c guard is passed as the second
+		parameter.
 
 		<p>This allows a high-level component to set the {@link
 		spi::RepositorySelector RepositorySelector} used by the
-		        <code>LogManager</code>.
-		        */
+		LogManager.
+		*/
 
 		static void setRepositorySelector(spi::RepositorySelectorPtr selector,
 			void* guard);
@@ -75,117 +75,136 @@ class LOG4CXX_EXPORT LogManager
 		static spi::LoggerRepositoryPtr getLoggerRepository();
 
 		/**
-		Retrieve the appropriate root logger.
+		Retrieve the root logger from the {@link spi::LoggerRepository LoggerRepository}.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getRootLogger();
 
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name in current encoding.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using DefaultLoggerFactory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLogger(const std::string& name);
+
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name in current encoding.
-		* @param factory logger factory.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using \c factory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLogger(const std::string& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 * Determines if logger name exists in the hierarchy.
-		 * @param name logger name.
-		 * @return true if logger exists.
+		 Does the logger \c name exist in the hierarchy?
 		 */
 		static LoggerPtr exists(const std::string& name);
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using DefaultLoggerFactory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLogger(const std::wstring& name);
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name.
-		* @param factory logger factory.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using \c factory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLogger(const std::wstring& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 * Determines if logger name exists in the hierarchy.
-		 * @param name logger name.
-		 * @return true if logger exists.
+		 Does the logger \c name exist in the hierarchy?
 		 */
 		static LoggerPtr exists(const std::wstring& name);
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using DefaultLoggerFactory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name.
-		* @param factory logger factory.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using \c factory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 * Determines if logger name exists in the hierarchy.
-		 * @param name logger name.
-		 * @return true if logger exists.
+		 Does the logger \c name exist in the hierarchy?
 		 */
 		static LoggerPtr exists(const std::basic_string<UniChar>& name);
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using DefaultLoggerFactory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLogger(const CFStringRef& name);
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name.
-		* @param factory logger factory.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using \c factory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLogger(const CFStringRef& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 * Determines if logger name exists in the hierarchy.
-		 * @param name logger name.
-		 * @return true if logger exists.
+		 Does the logger \c name exist in the hierarchy?
 		 */
 		static LoggerPtr exists(const CFStringRef& name);
 #endif
 
 
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using DefaultLoggerFactory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLoggerLS(const LogString& name);
 		/**
-		Retrieve the appropriate Logger instance.
-		* @param name logger name.
-		* @param factory logger factory.
-		* @return logger.
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using \c factory to create it if required.
+
+		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
+		if the repository is not yet configured.
 		*/
 		static LoggerPtr getLoggerLS(const LogString& name,
 			const spi::LoggerFactoryPtr& factory);
 
 		/**
-		 * Determines if logger name exists in the hierarchy.
-		 * @param name logger name.
-		 * @return true if logger exists.
+		 Does the logger \c name exist in the hierarchy?
 		 */
 		static LoggerPtr existsLS(const LogString& name);
 
