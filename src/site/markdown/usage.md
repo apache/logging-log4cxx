@@ -304,7 +304,7 @@ not the appenders in any of the ancestors of *P*.
 Loggers have their additivity flag set to *true* by default, 
 meaning output goes to the appender attached to a
 parent [Logger](@ref log4cxx.Logger).
-This means it is often sufficient to configure or attach an appender
+It is therefore often sufficient to configure or attach an appender
 only to the root logger in the [Hierarchy](@ref log4cxx.Hierarchy).
 
 The table below shows an
