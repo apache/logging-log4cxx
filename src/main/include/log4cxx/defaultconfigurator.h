@@ -49,14 +49,8 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		Configurator interface.
 
 		If the configuration file name is not found using any of the previous approaches,
-		the current directory and the directory containing the executable
-		is examined for a file with extension ".xml" or ".properties"
+		the current directory is examined for a file with extension ".xml" or ".properties"
 		with a base name "log4cxx" or "log4j".
-
-		If the configuration file name has not been provided by any of the previous approaches,
-		the current directory and the directory containing the executable
-		is examined for a file with extension ".xml" or ".properties"
-		with the same base name as the executable file.
 
 		If a positive number has been provided by a call to setConfigurationWatchSeconds()
 		or the environment variables "LOG4CXX_CONFIGURATION_WATCH_SECONDS" contains a positive number

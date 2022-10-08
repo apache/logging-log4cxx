@@ -83,7 +83,7 @@ public:
 			, m_pool.getAPRPool()
 			) == APR_SUCCESS);
 
-		//DefaultConfigurator::setConfigurationFileName(m_configFile);
+		DefaultConfigurator::setConfigurationFileName(m_configFile);
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
 		LOGUNIT_ASSERT(File(m_configFile).exists(m_pool));
 	}
