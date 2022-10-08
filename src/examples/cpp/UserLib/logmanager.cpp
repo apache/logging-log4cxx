@@ -44,7 +44,7 @@ DefaultConfigurationFileNames(std::string& altPrefix)
 {
 	std::vector<std::string> result;
 
-	// Add executable base name
+	// Find the executable file name
 	static const int bufSize = MAX_PATH;
 	char buf[bufSize+1] = {0}, pathSepar = '/';
 	uint32_t bufCount = 0;
@@ -84,18 +84,14 @@ DefaultConfigurationFileNames(std::string& altPrefix)
 		auto dotIndex = result.back().rfind('.');
 		if (std::string::npos != dotIndex)
 		{
-			auto dotIndex = result.back().rfind('.');
-			if (std::string::npos != dotIndex)
-			{
-				result.push_back(result.back());
-				result.back().erase(dotIndex);
+			result.push_back(result.back());
+			result.back().erase(dotIndex);
 #if defined(_DEBUG)
-				LogString msg3(LOG4CXX_STR("Alternate configuration file name ["));
-				helpers::Transcoder::decode(result.back(), msg3);
-				msg3 += LOG4CXX_STR("]");
-				helpers::LogLog::debug(msg3);
+			LogString msg3(LOG4CXX_STR("Alternate configuration file name ["));
+			helpers::Transcoder::decode(result.back(), msg3);
+			msg3 += LOG4CXX_STR("]");
+			helpers::LogLog::debug(msg3);
 #endif
-			}
 		}
 	}
 	else if (!programFileName.empty())
@@ -113,6 +109,8 @@ DefaultConfigurationFileNames(std::string& altPrefix)
 #endif
 		}
 	}
+	result.push_back("log4cxx");
+	result.push_back("log4j");
 	return result;
 }
 
