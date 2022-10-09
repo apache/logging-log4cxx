@@ -118,6 +118,9 @@ struct log4cxx_initializer
 {
 	log4cxx_initializer()
 	{
+#if defined(_DEBUG)
+		helpers::LogLog::setInternalDebugging(true);
+#endif
 		const char* extension[] = { ".xml", ".properties", 0 };
 		std::string altPrefix;
 		log4cxx::helpers::Pool pool;
