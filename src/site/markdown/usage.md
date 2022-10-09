@@ -301,7 +301,11 @@ additivity flag set to *false*, then *C*'s output will be directed to
 all the appenders in *C* and it's ancestors up to and including *P* but,
 not the appenders in any of the ancestors of *P*.  
   
-Loggers have their additivity flag set to *true* by default. 
+Loggers have their additivity flag set to *true* by default, 
+meaning output goes to the appender attached to a
+parent [Logger](@ref log4cxx.Logger).
+It is therefore often sufficient to configure or attach an appender
+only to the root logger in the [Hierarchy](@ref log4cxx.Hierarchy).
 
 The table below shows an
 example:
@@ -595,27 +599,21 @@ event to a second log4cxx server.
 # Default Initialization Procedure {#default-initialization-procedure}
 
 The log4cxx library does not make any assumptions about its environment.
-In particular, there are no default log4cxx appenders. Under certain
-well-defined circumstances however, the static inializer of the *Logger*
-class will attempt to automatically configure log4cxx. 
+In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
+However the library will attempt automatic configuration.
 
-The exact default initialization algorithm is defined as follows: 
+If the LoggerRepositoy is not yet configured on the first call to
+[getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
+the [autoConfigure](@ref log4cxx.spi.LoggerRepository.autoConfigure) virtual method
+of [LoggerRepository](@ref log4cxx.spi.LoggerRepository) is called.
 
-1.  Set the configurationOptionStr string variable to the value of the
-    **LOG4CXX\_CONFIGURATION** environment variable if set, otherwise
-    the value of the **log4j.configuration** environment variable if
-    set, otherwise the first of the following file names which exist in
-    the current working directory, "log4cxx.xml", "log4cxx.properties",
-    "log4j.xml" and "log4j.properties". If configurationOptionStr has
-    not been set, then disable logging. 
-2.  Unless a custom configurator is specified using the
-    **LOG4CXX\_CONFIGURATOR\_CLASS** or **log4j.configuratorClass**
-    environment variable, the PropertyConfigurator will be used to
-    configure log4cxx unless the file name ends with the ".xml"
-    extension, in which case the DOMConfigurator will be used. If a
-    custom configurator is specified, the environment variable should
-    contain a fully qualified class name of a class that implements the
-    Configurator interface. 
+The [default autoConfigure](@ref log4cxx.Hierarchy.autoConfigure) implementation
+calls the [configure](@ref log4cxx.DefaultConfigurator.configure) method
+of the [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) class.
+
+To use automatic configuration with a non-standard file name
+create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
+A full example can be seen in the src/examples/cpp/UserLib/logmanager.cpp file.
 
 # Nested Diagnostic Contexts {#nested-diagnostic-contexts}
 
@@ -697,20 +695,27 @@ The user should be aware of the following performance issues.
 
 1.  **Logging performance when logging is turned off.** 
     
-    When logging is turned off entirely or just for a set of levels, the
-    cost of a log request consists of a method invocation plus an
-    integer comparison. The LOG4CXX\_DEBUG and similar macros suppress
-    unnecessary expression evaluation if the request is not enabled. 
+    The LOG4CXX\_DEBUG and similar macros have a
+    cost of an in-lined null pointer check plus an integer comparison
+    when the logger not currently enabled for that level.
+    The other terms inside the macro are not evaluated.
 
-2.  **The performance of deciding whether to log or not to log when
-    logging is turned on.** 
+    When the level is enabled for a logger but the logging hierarchy is turned off
+    entirely or just for a set of levels, the cost of a log request consists
+    of a method invocation plus an integer comparison.
+
+2.  **Actually outputting log messages**
+
+    This is the cost of formatting the log output and sending it to its
+    target destination. Here again, a serious effort was made to make
+    layouts (formatters) perform as quickly as possible. The same is
+    true for appenders.
+
+3.  **The cost of changing a logger's level.**
     
-    This is essentially the performance of walking the logger hierarchy.
-    When logging is turned on, log4cxx still needs to compare the level
-    of the log request with the level of the request logger. However,
-    loggers may not have an assigned level; they can inherit them from
-    the logger hierarchy. Thus, before inheriting a level, the logger
-    may need to search its ancestors. 
+    The threshold value stored in any child logger is updated.
+    This is done iterating over the map of all known logger objects
+    and walking the hierarchy of each.
     
     There has been a serious effort to make this hierarchy walk to be as
     fast as possible. For example, child loggers link only to their
@@ -719,16 +724,6 @@ The user should be aware of the following performance issues.
     root logger, thereby circumventing the nonexistent *com* or
     *com.foo* loggers. This significantly improves the speed of the
     walk, especially in "sparse" hierarchies. 
-    
-    The cost of walking the hierarchy is typically 3 times slower than
-    when logging is turned off entirely. 
-
-3.  **Actually outputting log messages** 
-    
-    This is the cost of formatting the log output and sending it to its
-    target destination. Here again, a serious effort was made to make
-    layouts (formatters) perform as quickly as possible. The same is
-    true for appenders. 
 
 # Removing log statements {#removing-log-statements}
 
