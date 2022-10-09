@@ -47,9 +47,9 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: install gcovr 5.0
+      - name: install gcovr 5.2
         run: |
-          pip install gcovr==5.0 # 5.1 is not supported
+          pip install gcovr==5.2 # 5.1 is not supported
 
       - name: 'Configure Dependencies - Ubuntu'
         run: |
@@ -87,8 +87,9 @@ jobs:
 
       - name: Collect coverage into one XML report
         run: |
-          cd main/build
-          gcovr --sonarqube --exclude-directories 'src/test$' > coverage.xml
+          cd main/build/src/main/cpp
+          gcovr --version
+          gcovr --sonarqube -r ../../../../ --verbose --gcov-ignore-parse-errors --exclude '../../../../src/test/' --exclude '../../../../src/examples' -o ../../../coverage.xml
 
       - name: Run sonar-scanner
         env:
