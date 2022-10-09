@@ -611,6 +611,10 @@ The [default autoConfigure](@ref log4cxx.Hierarchy.autoConfigure) implementation
 calls the [configure](@ref log4cxx.DefaultConfigurator.configure) method
 of the [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) class.
 
+To use automatic configuration with a non-standard file name
+create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
+A full example can be seen in the src/examples/cpp/UserLib/logmanager.cpp file.
+
 # Nested Diagnostic Contexts {#nested-diagnostic-contexts}
 
 Most real-world systems have to deal with multiple clients
@@ -691,20 +695,27 @@ The user should be aware of the following performance issues.
 
 1.  **Logging performance when logging is turned off.** 
     
-    When logging is turned off entirely or just for a set of levels, the
-    cost of a log request consists of a method invocation plus an
-    integer comparison. The LOG4CXX\_DEBUG and similar macros suppress
-    unnecessary expression evaluation if the request is not enabled. 
+    The LOG4CXX\_DEBUG and similar macros have a
+    cost of an in-lined null pointer check plus an integer comparison
+    when the logger not currently enabled for that level.
+    The other terms inside the macro are not evaluated.
 
-2.  **The performance of deciding whether to log or not to log when
-    logging is turned on.** 
+    When the level is enabled for a logger but the logging hierarchy is turned off
+    entirely or just for a set of levels, the cost of a log request consists
+    of a method invocation plus an integer comparison.
+
+2.  **Actually outputting log messages**
+
+    This is the cost of formatting the log output and sending it to its
+    target destination. Here again, a serious effort was made to make
+    layouts (formatters) perform as quickly as possible. The same is
+    true for appenders.
+
+3.  **The cost of changing a logger's level.**
     
-    This is essentially the performance of walking the logger hierarchy.
-    When logging is turned on, log4cxx still needs to compare the level
-    of the log request with the level of the request logger. However,
-    loggers may not have an assigned level; they can inherit them from
-    the logger hierarchy. Thus, before inheriting a level, the logger
-    may need to search its ancestors. 
+    The threshold value stored in any child logger is updated.
+    This is done iterating over the map of all known logger objects
+    and walking the hierarchy of each.
     
     There has been a serious effort to make this hierarchy walk to be as
     fast as possible. For example, child loggers link only to their
@@ -713,16 +724,6 @@ The user should be aware of the following performance issues.
     root logger, thereby circumventing the nonexistent *com* or
     *com.foo* loggers. This significantly improves the speed of the
     walk, especially in "sparse" hierarchies. 
-    
-    The cost of walking the hierarchy is typically 3 times slower than
-    when logging is turned off entirely. 
-
-3.  **Actually outputting log messages** 
-    
-    This is the cost of formatting the log output and sending it to its
-    target destination. Here again, a serious effort was made to make
-    layouts (formatters) perform as quickly as possible. The same is
-    true for appenders. 
 
 # Removing log statements {#removing-log-statements}
 
