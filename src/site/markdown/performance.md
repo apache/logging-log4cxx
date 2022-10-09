@@ -63,5 +63,8 @@ values), however the one utilizing fmt is close to 2x as fast.
 ```
 
 If you wish to benchmark Log4cxx on your own system, have a look at the tools
-under the src/test/cpp/throughput directory.  These tests may be built by
+under the src/test/cpp/throughput and src/test/cpp/benchmark directories.
+The throughput tests may be built by
 specifying `BUILD_THROUGHPUT` with CMake when building Log4cxx.
+The benckmark tests require the [{google benchmark}](https://github.com/google/benchmark) library
+and may be built by specifying `BUILD_BENCHMARK_CHECKS` with CMake when building Log4cxx.
