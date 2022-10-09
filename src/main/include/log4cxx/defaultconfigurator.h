@@ -38,14 +38,22 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		Configure \c repository.
 
 		If the configuration file name has not been provided by a call to setConfigurationFileName(),
-		the environment variables 'LOG4CXX_CONFIGURATION' and 'log4j.configuration' are examined.
+		the environment variables "LOG4CXX_CONFIGURATION" and "log4j.configuration" are examined.
+		Unless a custom configurator is specified using the
+		"LOG4CXX_CONFIGURATOR_CLASS" or "log4j.configuratorClass"
+		environment variable, the PropertyConfigurator will be used to
+		configure log4cxx unless the file name ends with the ".xml"
+		extension, in which case the DOMConfigurator will be used. If a
+		custom configurator is specified, the environment variable should
+		contain a fully qualified class name of a class that implements the
+		Configurator interface.
 
-		If the configuration file name has not been provided by any of the previous approaches
-		the current directory is examined for a file named either
-		"log4cxx.xml", "log4cxx.properties", "log4j.xml" or "log4j.properties".
+		If the configuration file name is not found using any of the previous approaches,
+		the current directory is examined for a file with extension ".xml" or ".properties"
+		with a base name "log4cxx" or "log4j".
 
 		If a positive number has been provided by a call to setConfigurationWatchSeconds()
-		or the environment variables 'LOG4CXX_CONFIGURATION_WATCH_SECONDS' contains a positive number
+		or the environment variables "LOG4CXX_CONFIGURATION_WATCH_SECONDS" contains a positive number
 		a background thread is started that will periodically check for a change to the configuration file
 		and apply any configuration changes found.
 		.*/

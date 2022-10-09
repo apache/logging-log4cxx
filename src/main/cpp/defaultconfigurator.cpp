@@ -23,12 +23,11 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 
-
 using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-namespace 
+namespace
 {
 	LogString DefaultConfiguratorPath;
 	int DefaultConfiguratorWatchSeconds = 0;
@@ -111,7 +110,6 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 	}
 
 }
-
 
 const LogString DefaultConfigurator::getConfiguratorClass()
 {

@@ -79,7 +79,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
 		/**
-		 * Load the configuration if not yet configured.
+		 * Call DefaultConfigurator::configure if not yet configured.
 		 */
 		void autoConfigure() override;
 
@@ -128,10 +128,10 @@ class LOG4CXX_EXPORT Hierarchy :
 		LevelPtr getThreshold() const override;
 
 		/**
-		Return a new logger instance named as the first parameter using
-		the default factory.
+		Retrieve the \c name Logger instance using
+		the default factory to create it if required.
 
-		<p>If a logger of that name already exists, then it will be
+		If a logger of that name already exists, then it will be
 		returned.  Otherwise, a new logger will be instantiated and
 		then linked with its existing ancestors as well as children.
 
@@ -141,10 +141,10 @@ class LOG4CXX_EXPORT Hierarchy :
 		LoggerPtr getLogger(const LogString& name) override;
 
 		/**
-		Return a new logger instance named as the first parameter using
-		<code>factory</code>.
+		Retrieve the \c name Logger instance using
+		<code>factory</code> to create it if required.
 
-		<p>If a logger of that name already exists, then it will be
+		If a logger of that name already exists, then it will be
 		returned.  Otherwise, a new logger will be instantiated by the
 		<code>factory</code> parameter and linked with its existing
 		ancestors as well as children.
