@@ -597,8 +597,10 @@ const std::basic_string<log4cxx::UniChar>& MessageBuffer::str(std::basic_ostream
 {
 	return m_priv->ubuf->str(os);
 }
+#endif //LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
 #endif // LOG4CXX_WCHAR_T_API
 
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
 struct UniCharMessageBuffer::UniCharMessageBufferPrivate {
 	UniCharMessageBufferPrivate() :
 		stream(nullptr){}
