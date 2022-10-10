@@ -800,10 +800,10 @@ std::ostream& operator<<(MessageBuffer& os, const V& val)
 	typedef UniCharMessageBuffer LogCharMessageBuffer;
 #endif
 
-#else
+#else // !LOG4CXX_WCHAR_T_API
 typedef CharMessageBuffer MessageBuffer;
 typedef CharMessageBuffer LogCharMessageBuffer;
-#endif
+#endif // !LOG4CXX_WCHAR_T_API
 
 }
 }
