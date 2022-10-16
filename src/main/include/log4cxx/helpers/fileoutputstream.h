@@ -52,12 +52,8 @@ class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 		virtual void flush(Pool& p);
 		virtual void write(ByteBuffer& buf, Pool& p);
 
-#ifdef LOG4CXX_MULTI_PROCESS
-		apr_file_t* getFilePtr()
-		{
-			return fileptr;
-		}
-#endif
+		apr_file_t* getFilePtr() const;
+
 	private:
 		FileOutputStream(const FileOutputStream&);
 		FileOutputStream& operator=(const FileOutputStream&);

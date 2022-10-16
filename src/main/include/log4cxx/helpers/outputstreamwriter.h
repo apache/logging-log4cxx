@@ -52,7 +52,7 @@ class LOG4CXX_EXPORT OutputStreamWriter : public Writer
 		virtual void write(const LogString& str, Pool& p);
 		LogString getEncoding() const;
 
-		OutputStreamPtr getOutPutStreamPtr() const;
+		OutputStreamPtr getOutputStreamPtr() const;
 
 	private:
 		OutputStreamWriter(const OutputStreamWriter&);

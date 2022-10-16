@@ -46,9 +46,6 @@ class LOG4CXX_EXPORT Writer : public Object
 		virtual void close(Pool& p) = 0;
 		virtual void flush(Pool& p) = 0;
 		virtual void write(const LogString& str, Pool& p) = 0;
-#ifdef LOG4CXX_MULTI_PROCESS
-		virtual OutputStreamPtr getOutPutStreamPtr();
-#endif
 
 	private:
 		Writer(const Writer&);

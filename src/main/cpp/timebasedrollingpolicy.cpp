@@ -18,10 +18,6 @@
 	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
-#ifdef LOG4CXX_MULTI_PROCESS
-	#include <libgen.h>
-#endif
-
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <log4cxx/pattern/filedatepatternconverter.h>
@@ -31,7 +27,11 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/rolling/gzcompressaction.h>
 #include <log4cxx/rolling/zipcompressaction.h>
-#include<iostream>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/fileappender.h>
+#include <iostream>
+#include <libgen.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
@@ -41,6 +41,13 @@ using namespace log4cxx::pattern;
 IMPLEMENT_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
 
 struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
+	TimeBasedRollingPolicyPrivate() :
+		_mmap(nullptr),
+		_file_map(nullptr),
+		_lock_file(nullptr),
+		bAlreadyInitialized(false),
+		bRefreshCurFile(false){}
+
 		/**
 		 * Time for next determination if time for rollover.
 		 */
@@ -59,7 +66,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		/*
 		 * pool for mmap handler
 		 * */
-		log4cxx::helpers::Pool* _mmapPool;
+		log4cxx::helpers::Pool _mmapPool;
 
 		/**
 		 * mmap file descriptor
@@ -100,9 +107,11 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		 * Length of any file type suffix (.gz, .zip).
 		 */
 		int suffixLength;
+
+		bool multiprocess = false;
 };
 
-#ifdef LOG4CXX_MULTI_PROCESS
+
 #define MMAP_FILE_SUFFIX ".map"
 #define LOCK_FILE_SUFFIX ".maplck"
 #define MAX_FILE_LEN 2048
@@ -110,7 +119,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 bool TimeBasedRollingPolicy::isMapFileEmpty(log4cxx::helpers::Pool& pool)
 {
 	apr_finfo_t finfo;
-	apr_status_t st = apr_stat(&finfo, _mapFileName.c_str(), APR_FINFO_SIZE, pool.getAPRPool());
+	apr_status_t st = apr_stat(&finfo, m_priv->_mapFileName.c_str(), APR_FINFO_SIZE, pool.getAPRPool());
 
 	if (st != APR_SUCCESS)
 	{
@@ -129,16 +138,16 @@ void TimeBasedRollingPolicy::initMMapFile(const LogString& lastFileName, log4cxx
 {
 	int iRet = 0;
 
-	if (!_mmap)
+	if (!m_priv->_mmap)
 	{
-		iRet = createMMapFile(std::string(_fileNamePattern), pool);
+		iRet = createMMapFile(std::string(m_priv->_fileNamePattern), pool);
 	}
 
 	if (!iRet && isMapFileEmpty(pool))
 	{
 		lockMMapFile(APR_FLOCK_EXCLUSIVE);
-		memset(_mmap->mm, 0, MAX_FILE_LEN);
-		memcpy(_mmap->mm, std::string(lastFileName).c_str(), std::string(lastFileName).size());
+		memset(m_priv->_mmap->mm, 0, MAX_FILE_LEN);
+		memcpy(m_priv->_mmap->mm, std::string(lastFileName).c_str(), std::string(lastFileName).size());
 		unLockMMapFile();
 	}
 }
@@ -160,40 +169,41 @@ const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName
 		snprintf(szUid, MAX_FILE_LEN, "%u", uid);
 	}
 
+	// TODO this should probably be using boost::filesystem or std::filesystem
 	return std::string(::dirname(szDirName)) + "/." + ::basename(szBaseName) + szUid + suffix;
 }
 
 int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, log4cxx::helpers::Pool& pool)
 {
-	_mapFileName = createFile(fileName, MMAP_FILE_SUFFIX, pool);
+	m_priv->_mapFileName = createFile(fileName, MMAP_FILE_SUFFIX, pool);
 
-	apr_status_t stat = apr_file_open(&_file_map, _mapFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, _mmapPool->getAPRPool());
+	apr_status_t stat = apr_file_open(&m_priv->_file_map, m_priv->_mapFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_priv->_mmapPool.getAPRPool());
 
 	if (stat != APR_SUCCESS)
 	{
-		std::string err(std::string("open mmap file failed. ") + std::string(strerror(errno)) + ". Check the privilege or try to remove " + _mapFileName + " if exist.");
+		std::string err(std::string("open mmap file failed. ") + std::string(strerror(errno)) + ". Check the privilege or try to remove " + m_priv->_mapFileName + " if exist.");
 		LogLog::warn(LOG4CXX_STR(err.c_str()));
 		return -1;
 	}
 
 	if (isMapFileEmpty(pool))
 	{
-		stat = apr_file_trunc(_file_map, MAX_FILE_LEN + 1);
+		stat = apr_file_trunc(m_priv->_file_map, MAX_FILE_LEN + 1);
 
 		if (stat != APR_SUCCESS)
 		{
 			LogLog::warn(LOG4CXX_STR("apr_file_trunc failed."));
-			apr_file_close(_file_map);
+			apr_file_close(m_priv->_file_map);
 			return -1;
 		}
 	}
 
-	stat = apr_mmap_create(&_mmap, _file_map, 0, MAX_FILE_LEN, APR_MMAP_WRITE | APR_MMAP_READ, _mmapPool->getAPRPool());
+	stat = apr_mmap_create(&m_priv->_mmap, m_priv->_file_map, 0, MAX_FILE_LEN, APR_MMAP_WRITE | APR_MMAP_READ, m_priv->_mmapPool.getAPRPool());
 
 	if (stat != APR_SUCCESS)
 	{
 		LogLog::warn(LOG4CXX_STR("mmap failed."));
-		apr_file_close(_file_map);
+		apr_file_close(m_priv->_file_map);
 		return -1;
 	}
 
@@ -202,7 +212,7 @@ int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, log4cxx:
 
 int TimeBasedRollingPolicy::lockMMapFile(int type)
 {
-	apr_status_t stat = apr_file_lock(_lock_file, type);
+	apr_status_t stat = apr_file_lock(m_priv->_lock_file, type);
 
 	if (stat != APR_SUCCESS)
 	{
@@ -211,7 +221,7 @@ int TimeBasedRollingPolicy::lockMMapFile(int type)
 }
 int TimeBasedRollingPolicy::unLockMMapFile()
 {
-	apr_status_t stat = apr_file_unlock(_lock_file);
+	apr_status_t stat = apr_file_unlock(m_priv->_lock_file);
 
 	if (stat != APR_SUCCESS)
 	{
@@ -219,25 +229,12 @@ int TimeBasedRollingPolicy::unLockMMapFile()
 	}
 }
 
-#endif
-
 TimeBasedRollingPolicy::TimeBasedRollingPolicy() :
 	m_priv(std::make_unique<TimeBasedRollingPolicyPrivate>())
-#ifdef LOG4CXX_MULTI_PROCESS
-	: _mmap(NULL), _file_map(NULL), bAlreadyInitialized(false), _mmapPool(new Pool()), _lock_file(NULL), bRefreshCurFile(false)
-#endif
 {
 }
 
 TimeBasedRollingPolicy::~TimeBasedRollingPolicy(){}
-
-#ifdef LOG4CXX_MULTI_PROCESS
-TimeBasedRollingPolicy::~TimeBasedRollingPolicy()
-{
-	//no-need to delete mmap
-	delete _mmapPool;
-}
-#endif
 
 void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 {
@@ -265,30 +262,29 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 	formatFileName(obj, buf, pool);
 	m_priv->lastFileName = buf;
 
-#ifdef LOG4CXX_MULTI_PROCESS
-
-	if (getPatternConverterList().size())
-	{
-		(*(getPatternConverterList().begin()))->format(obj, _fileNamePattern, pool);
-	}
-	else
-	{
-		_fileNamePattern = lastFileName;
-	}
-
-	if (!_lock_file)
-	{
-		const std::string lockname = createFile(std::string(_fileNamePattern), LOCK_FILE_SUFFIX, *_mmapPool);
-		apr_status_t stat = apr_file_open(&_lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, (*_mmapPool).getAPRPool());
-
-		if (stat != APR_SUCCESS)
+	if( m_priv->multiprocess ){
+		if (getPatternConverterList().size())
 		{
-			LogLog::warn(LOG4CXX_STR("open lock file failed."));
+			(*(getPatternConverterList().begin()))->format(obj, m_priv->_fileNamePattern, pool);
 		}
-	}
+		else
+		{
+			m_priv->_fileNamePattern = m_priv->lastFileName;
+		}
 
-	initMMapFile(lastFileName, *_mmapPool);
-#endif
+		if (!m_priv->_lock_file)
+		{
+			const std::string lockname = createFile(std::string(m_priv->_fileNamePattern), LOCK_FILE_SUFFIX, m_priv->_mmapPool);
+			apr_status_t stat = apr_file_open(&m_priv->_lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_priv->_mmapPool.getAPRPool());
+
+			if (stat != APR_SUCCESS)
+			{
+				LogLog::warn(LOG4CXX_STR("open lock file failed."));
+			}
+		}
+
+		initMMapFile(m_priv->lastFileName, m_priv->_mmapPool);
+	}
 
 	m_priv->suffixLength = 0;
 
@@ -367,23 +363,22 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 	LogString newFileName(buf);
 
-#ifdef LOG4CXX_MULTI_PROCESS
-	bAlreadyInitialized = true;
+	if( m_priv->multiprocess ){
+		m_priv->bAlreadyInitialized = true;
 
-	if (_mmap && !isMapFileEmpty(*_mmapPool))
-	{
-		lockMMapFile(APR_FLOCK_SHARED);
-		LogString mapLastFile((char*)_mmap->mm);
-		lastFileName = mapLastFile;
-		unLockMMapFile();
+		if (m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
+		{
+			lockMMapFile(APR_FLOCK_SHARED);
+			LogString mapLastFile((char*)m_priv->_mmap->mm);
+			m_priv->lastFileName = mapLastFile;
+			unLockMMapFile();
+		}
+		else
+		{
+			m_priv->_mmap = NULL;
+			initMMapFile(m_priv->lastFileName, m_priv->_mmapPool);
+		}
 	}
-	else
-	{
-		_mmap = NULL;
-		initMMapFile(lastFileName, *_mmapPool);
-	}
-
-#endif
 
 	//
 	//  if file names haven't changed, no rollover
@@ -430,24 +425,22 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 					File().setPath(lastBaseName), File().setPath(m_priv->lastFileName), true);
 	}
 
-#ifdef LOG4CXX_MULTI_PROCESS
-
-	if (_mmap && !isMapFileEmpty(*_mmapPool))
-	{
-		lockMMapFile(APR_FLOCK_EXCLUSIVE);
-		memset(_mmap->mm, 0, MAX_FILE_LEN);
-		memcpy(_mmap->mm, std::string(newFileName).c_str(), std::string(newFileName).size());
-		unLockMMapFile();
+	if( m_priv->multiprocess ){
+		if (m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
+		{
+			lockMMapFile(APR_FLOCK_EXCLUSIVE);
+			memset(m_priv->_mmap->mm, 0, MAX_FILE_LEN);
+			memcpy(m_priv->_mmap->mm, std::string(newFileName).c_str(), std::string(newFileName).size());
+			unLockMMapFile();
+		}
+		else
+		{
+			m_priv->_mmap = NULL;
+			initMMapFile(newFileName, m_priv->_mmapPool);
+		}
+	}else{
+		m_priv->lastFileName = newFileName;
 	}
-	else
-	{
-		_mmap = NULL;
-		initMMapFile(newFileName, *_mmapPool);
-	}
-
-#else
-	m_priv->lastFileName = newFileName;
-#endif
 
 	return std::make_shared<RolloverDescription>(nextActiveFile, append, renameAction, compressAction);
 }
@@ -458,23 +451,38 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 	const LogString&  filename,
 	size_t /* fileLength */)
 {
-#ifdef LOG4CXX_MULTI_PROCESS
+	if( m_priv->multiprocess ){
 
-	if (bRefreshCurFile && _mmap && !isMapFileEmpty(*_mmapPool))
-	{
-		lockMMapFile(APR_FLOCK_SHARED);
-		LogString mapCurrent((char*)_mmap->mm);
-		unLockMMapFile();
-		LogString mapCurrentBase(mapCurrent.substr(0, mapCurrent.length() - suffixLength));
-
-		if (!mapCurrentBase.empty() && mapCurrentBase != filename)
+		if (m_priv->bRefreshCurFile && m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
 		{
-			dynamic_cast<FileAppender*>(appender)->setFile(mapCurrentBase);
+			lockMMapFile(APR_FLOCK_SHARED);
+			LogString mapCurrent((char*)m_priv->_mmap->mm);
+			unLockMMapFile();
+			LogString mapCurrentBase(mapCurrent.substr(0, mapCurrent.length() - m_priv->suffixLength));
+
+			if (!mapCurrentBase.empty() && mapCurrentBase != filename)
+			{
+				const FileAppender* fappend = reinterpret_cast<const FileAppender*>(appender->cast(FileAppender::getStaticClass()));
+				if( fappend ){
+					const_cast<FileAppender*>(fappend)->setFile(mapCurrentBase);
+				}
+			}
 		}
+
+		return ( Date::currentTime() > m_priv->nextCheck) || (!m_priv->bAlreadyInitialized);
 	}
 
-	return ((apr_time_now()) > nextCheck) || (!bAlreadyInitialized);
-#else
 	return Date::currentTime() > m_priv->nextCheck;
-#endif
+}
+
+void TimeBasedRollingPolicy::setOption(const LogString& option,
+									   const LogString& value){
+	if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MULTIPROCESS"),
+			LOG4CXX_STR("multiprocess")))
+	{
+		m_priv->multiprocess = OptionConverter::toBoolean(value, false);
+	}
+
+	RollingPolicyBase::setOption(option, value);
 }

@@ -161,39 +161,8 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		virtual ~TimeBasedRollingPolicy();
 		void activateOptions(log4cxx::helpers::Pool& );
 
-#ifdef LOG4CXX_MULTI_PROCESS
-		virtual ~TimeBasedRollingPolicy();
-
-		/**
-		 * Generate mmap file
-		 */
-		int createMMapFile(const std::string& lastfilename, log4cxx::helpers::Pool& pool);
-
-		/**
-		 *  Detect if the mmap file is empty
-		 */
-		bool isMapFileEmpty(log4cxx::helpers::Pool& pool);
-
-		/**
-		 *   init MMapFile
-		 */
-		void initMMapFile(const LogString& lastFileName, log4cxx::helpers::Pool& pool);
-
-		/**
-		 *   lock MMapFile
-		 */
-		int lockMMapFile(int type);
-
-		/**
-		 *   unlock MMapFile
-		 */
-		int unLockMMapFile();
-
-		/**
-		 *   create MMapFile/lockFile
-		 */
-		const std::string createFile(const std::string& filename, const std::string& suffix, log4cxx::helpers::Pool& pool);
-#endif
+		void setOption(const LogString& option,
+					const LogString& value);
 
 		/**
 		 * {@inheritDoc}
@@ -230,6 +199,38 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 
 	protected:
 		log4cxx::pattern::PatternMap getFormatSpecifiers() const;
+
+	private:
+
+		/**
+		 * Generate mmap file
+		 */
+		int createMMapFile(const std::string& lastfilename, log4cxx::helpers::Pool& pool);
+
+		/**
+		 *  Detect if the mmap file is empty
+		 */
+		bool isMapFileEmpty(log4cxx::helpers::Pool& pool);
+
+		/**
+		 *   init MMapFile
+		 */
+		void initMMapFile(const LogString& lastFileName, log4cxx::helpers::Pool& pool);
+
+		/**
+		 *   lock MMapFile
+		 */
+		int lockMMapFile(int type);
+
+		/**
+		 *   unlock MMapFile
+		 */
+		int unLockMMapFile();
+
+		/**
+		 *   create MMapFile/lockFile
+		 */
+		const std::string createFile(const std::string& filename, const std::string& suffix, log4cxx::helpers::Pool& pool);
 
 };
 

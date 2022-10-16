@@ -128,6 +128,7 @@ target_sources(log4cxx
   messagebuffer.cpp
   messagepatternconverter.cpp
   methodlocationpatternconverter.cpp
+  multiprocessrollingfileappender.cpp
   nameabbreviator.cpp
   namepatternconverter.cpp
   ndc.cpp

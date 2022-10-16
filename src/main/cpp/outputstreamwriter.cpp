@@ -81,6 +81,7 @@ void OutputStreamWriter::write(const LogString& str, Pool& p)
 	if (str.length() > 0)
 	{
 #ifdef LOG4CXX_MULTI_PROCESS
+		// Why does this need to happen for multiproces??  why??
 		size_t bufSize = str.length() * 2;
 		char* rawbuf = new char[bufSize];
 		ByteBuffer buf(rawbuf, (size_t) bufSize);
@@ -110,7 +111,7 @@ void OutputStreamWriter::write(const LogString& str, Pool& p)
 	}
 }
 
-OutputStreamPtr OutputStreamWriter::getOutPutStreamPtr() const
+OutputStreamPtr OutputStreamWriter::getOutputStreamPtr() const
 {
 	return m_priv->out;
 }
