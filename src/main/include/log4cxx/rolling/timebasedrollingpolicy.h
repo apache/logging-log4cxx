@@ -154,68 +154,11 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		END_LOG4CXX_CAST_MAP()
 
 	private:
-		/**
-		 * Time for next determination if time for rollover.
-		 */
-		log4cxx_time_t nextCheck;
-
-		/**
-		 * File name at last rollover.
-		 */
-		LogString lastFileName;
-
-		/**
-		 * mmap pointer
-		 */
-		apr_mmap_t* _mmap;
-
-		/*
-		 * pool for mmap handler
-		 * */
-		log4cxx::helpers::Pool* _mmapPool;
-
-		/**
-		 * mmap file descriptor
-		 */
-		apr_file_t* _file_map;
-
-		/**
-		 * mmap file name
-		 */
-		std::string _mapFileName;
-
-		/*
-		 * lock file handle
-		 * */
-		apr_file_t* _lock_file;
-
-		/**
-		 * Check nextCheck if it has already been set
-		 * Timebased rolling policy has an issue when working at low rps.
-		 * Under low rps, multiple processes will not be scheduled in time for the second chance(do rolling),
-		 * so the rolling mechanism will not be triggered even if the time period is out of date.
-		 * This results in log entries will be accumulated for serveral minutes to be rolling.
-		 * Adding this flag to provide rolling opportunity for a process even if it is writing the first log entry
-		 */
-		bool bAlreadyInitialized;
-
-		/*
-		 * If the current file name contains date information, retrieve the current writting file from mmap
-		 * */
-		bool bRefreshCurFile;
-
-		/*
-		 * mmap file name
-		 * */
-		LogString _fileNamePattern;
-
-		/**
-		 * Length of any file type suffix (.gz, .zip).
-		 */
-		int suffixLength;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(TimeBasedRollingPolicyPrivate, m_priv)
 
 	public:
 		TimeBasedRollingPolicy();
+		virtual ~TimeBasedRollingPolicy();
 		void activateOptions(log4cxx::helpers::Pool& );
 
 #ifdef LOG4CXX_MULTI_PROCESS

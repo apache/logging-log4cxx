@@ -40,6 +40,68 @@ using namespace log4cxx::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
 
+struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
+		/**
+		 * Time for next determination if time for rollover.
+		 */
+		log4cxx_time_t nextCheck;
+
+		/**
+		 * File name at last rollover.
+		 */
+		LogString lastFileName;
+
+		/**
+		 * mmap pointer
+		 */
+		apr_mmap_t* _mmap;
+
+		/*
+		 * pool for mmap handler
+		 * */
+		log4cxx::helpers::Pool* _mmapPool;
+
+		/**
+		 * mmap file descriptor
+		 */
+		apr_file_t* _file_map;
+
+		/**
+		 * mmap file name
+		 */
+		std::string _mapFileName;
+
+		/*
+		 * lock file handle
+		 * */
+		apr_file_t* _lock_file;
+
+		/**
+		 * Check nextCheck if it has already been set
+		 * Timebased rolling policy has an issue when working at low rps.
+		 * Under low rps, multiple processes will not be scheduled in time for the second chance(do rolling),
+		 * so the rolling mechanism will not be triggered even if the time period is out of date.
+		 * This results in log entries will be accumulated for serveral minutes to be rolling.
+		 * Adding this flag to provide rolling opportunity for a process even if it is writing the first log entry
+		 */
+		bool bAlreadyInitialized;
+
+		/*
+		 * If the current file name contains date information, retrieve the current writting file from mmap
+		 * */
+		bool bRefreshCurFile;
+
+		/*
+		 * mmap file name
+		 * */
+		LogString _fileNamePattern;
+
+		/**
+		 * Length of any file type suffix (.gz, .zip).
+		 */
+		int suffixLength;
+};
+
 #ifdef LOG4CXX_MULTI_PROCESS
 #define MMAP_FILE_SUFFIX ".map"
 #define LOCK_FILE_SUFFIX ".maplck"
@@ -159,12 +221,15 @@ int TimeBasedRollingPolicy::unLockMMapFile()
 
 #endif
 
-TimeBasedRollingPolicy::TimeBasedRollingPolicy()
+TimeBasedRollingPolicy::TimeBasedRollingPolicy() :
+	m_priv(std::make_unique<TimeBasedRollingPolicyPrivate>())
 #ifdef LOG4CXX_MULTI_PROCESS
 	: _mmap(NULL), _file_map(NULL), bAlreadyInitialized(false), _mmapPool(new Pool()), _lock_file(NULL), bRefreshCurFile(false)
 #endif
 {
 }
+
+TimeBasedRollingPolicy::~TimeBasedRollingPolicy(){}
 
 #ifdef LOG4CXX_MULTI_PROCESS
 TimeBasedRollingPolicy::~TimeBasedRollingPolicy()
@@ -198,7 +263,7 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Date>();
 	formatFileName(obj, buf, pool);
-	lastFileName = buf;
+	m_priv->lastFileName = buf;
 
 #ifdef LOG4CXX_MULTI_PROCESS
 
@@ -225,17 +290,17 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 	initMMapFile(lastFileName, *_mmapPool);
 #endif
 
-	suffixLength = 0;
+	m_priv->suffixLength = 0;
 
-	if (lastFileName.length() >= 3)
+	if (m_priv->lastFileName.length() >= 3)
 	{
-		if (lastFileName.compare(lastFileName.length() - 3, 3, LOG4CXX_STR(".gz")) == 0)
+		if (m_priv->lastFileName.compare(m_priv->lastFileName.length() - 3, 3, LOG4CXX_STR(".gz")) == 0)
 		{
-			suffixLength = 3;
+			m_priv->suffixLength = 3;
 		}
-		else if (lastFileName.length() >= 4 && lastFileName.compare(lastFileName.length() - 4, 4, LOG4CXX_STR(".zip")) == 0)
+		else if (m_priv->lastFileName.length() >= 4 && m_priv->lastFileName.compare(m_priv->lastFileName.length() - 4, 4, LOG4CXX_STR(".zip")) == 0)
 		{
-			suffixLength = 4;
+			m_priv->suffixLength = 4;
 		}
 	}
 }
@@ -262,14 +327,14 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 {
 	Date now;
 	log4cxx_time_t n = now.getTime();
-	nextCheck = now.getNextSecond();
+	m_priv->nextCheck = now.getNextSecond();
 
 	File currentFile(currentActiveFile);
 
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Date>(currentFile.exists(pool) ? currentFile.lastModified(pool) : n);
 	formatFileName(obj, buf, pool);
-	lastFileName = buf;
+	m_priv->lastFileName = buf;
 
 	ActionPtr noAction;
 
@@ -280,9 +345,9 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 	}
 	else
 	{
-		bRefreshCurFile = true;
+		m_priv->bRefreshCurFile = true;
 		return std::make_shared<RolloverDescription>(
-					lastFileName.substr(0, lastFileName.length() - suffixLength), append,
+					m_priv->lastFileName.substr(0, m_priv->lastFileName.length() - m_priv->suffixLength), append,
 					noAction, noAction);
 	}
 }
@@ -294,7 +359,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 {
 	Date now;
 	log4cxx_time_t n = now.getTime();
-	nextCheck = now.getNextSecond();
+	m_priv->nextCheck = now.getNextSecond();
 
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Date>(n);
@@ -323,7 +388,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	//
 	//  if file names haven't changed, no rollover
 	//
-	if (newFileName == lastFileName)
+	if (newFileName == m_priv->lastFileName)
 	{
 		RolloverDescriptionPtr desc;
 		return desc;
@@ -332,12 +397,12 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	ActionPtr renameAction;
 	ActionPtr compressAction;
 	LogString lastBaseName(
-		lastFileName.substr(0, lastFileName.length() - suffixLength));
+		m_priv->lastFileName.substr(0, m_priv->lastFileName.length() - m_priv->suffixLength));
 	LogString nextActiveFile(
-		newFileName.substr(0, newFileName.length() - suffixLength));
+		newFileName.substr(0, newFileName.length() - m_priv->suffixLength));
 
 	if(getCreateIntermediateDirectories()){
-		File compressedFile(lastFileName);
+		File compressedFile(m_priv->lastFileName);
 		File compressedParent (compressedFile.getParent(pool));
 		compressedParent.mkdirs(pool);
 	}
@@ -353,16 +418,16 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 		nextActiveFile = currentActiveFile;
 	}
 
-	if (suffixLength == 3)
+	if (m_priv->suffixLength == 3)
 	{
 		compressAction = std::make_shared<GZCompressAction>(
-					File().setPath(lastBaseName), File().setPath(lastFileName), true);
+					File().setPath(lastBaseName), File().setPath(m_priv->lastFileName), true);
 	}
 
-	if (suffixLength == 4)
+	if (m_priv->suffixLength == 4)
 	{
 		compressAction = std::make_shared<ZipCompressAction>(
-					File().setPath(lastBaseName), File().setPath(lastFileName), true);
+					File().setPath(lastBaseName), File().setPath(m_priv->lastFileName), true);
 	}
 
 #ifdef LOG4CXX_MULTI_PROCESS
@@ -381,7 +446,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	}
 
 #else
-	lastFileName = newFileName;
+	m_priv->lastFileName = newFileName;
 #endif
 
 	return std::make_shared<RolloverDescription>(nextActiveFile, append, renameAction, compressAction);
@@ -410,6 +475,6 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 
 	return ((apr_time_now()) > nextCheck) || (!bAlreadyInitialized);
 #else
-	return Date::currentTime() > nextCheck;
+	return Date::currentTime() > m_priv->nextCheck;
 #endif
 }
