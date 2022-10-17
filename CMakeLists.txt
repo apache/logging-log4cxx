@@ -46,9 +46,11 @@ if(ENABLE_COVERAGE)
 endif()
 
 # Find Apache Runtime
+option(APR_STATIC "Link to the APR static library" OFF)
 find_package(APR REQUIRED)
 
 # Find Apache Runtime Utilities
+option(APU_STATIC "Link to the APR-Util static library" OFF)
 find_package(APR-Util REQUIRED)
 
 find_package( Threads REQUIRED )
