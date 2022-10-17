@@ -119,7 +119,7 @@ private:
 	template<size_t N>
 	void buildTsFnames(
 				Pool&		pool,
-		const	logchar*	prefix,
+		const	LogString&	prefix,
 				LogString	(&fnames)[N],
 				bool		compressed		= false,
 				bool		startInFuture	= false)
@@ -227,7 +227,7 @@ private:
 	 */
 	void compareWitness(
 				Pool&		pool,
-		const	logchar*	prefix,
+		const	LogString&	prefix,
 		const	LogString&	fname,
 				size_t		witnessIdx,
 				size_t		srcLine)
@@ -255,7 +255,7 @@ private:
 	template<size_t N>
 	void compareWitnesses(
 				Pool&		pool,
-		const	logchar*	prefix,
+		const	LogString&	prefix,
 				LogString	(&fnames)[N],
 				size_t		srcLine)
 	{
@@ -284,7 +284,7 @@ private:
 	template<size_t N>
 	void checkFilesExist(
 				Pool&		pool,
-		const	logchar*	prefix,
+		const	LogString&	prefix,
 				LogString	(&fnames)[N],
 				size_t		witnessIdx,
 				size_t		srcLine)
@@ -406,10 +406,10 @@ public:
 		rfa->activateOptions(pool);
 		logger->addAppender(rfa);
 
-		this->buildTsFnames(pool, LOG4CXX_STR("test1-"), fnames);
+		this->buildTsFnames<4>(pool, LOG4CXX_STR("test1-"), fnames);
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(	pool, nrOfFnames + 1, __LOG4CXX_FUNC__, __LINE__);
-		this->compareWitnesses(	pool, LOG4CXX_STR("test1."), fnames, __LINE__);
+		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test1."), fnames, __LINE__);
 	}
 
 
@@ -434,7 +434,7 @@ public:
 		rfa1->activateOptions(pool);
 		logger->addAppender(rfa1);
 
-		this->buildTsFnames(pool, LOG4CXX_STR("test2-"), fnames);
+		this->buildTsFnames<4>(pool, LOG4CXX_STR("test2-"), fnames);
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(pool, 3, __LOG4CXX_FUNC__, __LINE__);
 
@@ -454,7 +454,7 @@ public:
 		logger->addAppender(rfa2);
 
 		this->logMsgAndSleep(	pool, 2, __LOG4CXX_FUNC__, __LINE__, 3);
-		this->compareWitnesses(	pool, LOG4CXX_STR("test2."), fnames, __LINE__);
+		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test2."), fnames, __LINE__);
 	}
 
 
@@ -479,11 +479,11 @@ public:
 		rfa->activateOptions(pool);
 		logger->addAppender(rfa);
 
-		this->buildTsFnames(pool, LOG4CXX_STR("test3-"), fnames, true);
+		this->buildTsFnames<4>(pool, LOG4CXX_STR("test3-"), fnames, true);
 		fnames[nrOfFnames - 1].resize(fnames[nrOfFnames - 1].size() - 3);
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(	pool, nrOfFnames + 1, __LOG4CXX_FUNC__, __LINE__);
-		this->checkFilesExist(	pool, LOG4CXX_STR("test3."), fnames, nrOfFnames - 1, __LINE__);
+		this->checkFilesExist<4>(	pool, LOG4CXX_STR("test3."), fnames, nrOfFnames - 1, __LINE__);
 	}
 
 	/**
@@ -513,7 +513,7 @@ public:
 		logger->addAppender(rfa1);
 
 		this->delGenericLogFile(pool, rfa1->getFile());
-		this->buildTsFnames(pool, LOG4CXX_STR("test4-"), fnames);
+		this->buildTsFnames<4>(pool, LOG4CXX_STR("test4-"), fnames);
 		fnames[0].assign(rfa1->getFile());
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(pool, nrOfLogMsgs, __LOG4CXX_FUNC__, __LINE__);
@@ -567,12 +567,12 @@ public:
 		logger->addAppender(rfa);
 
 		this->delGenericLogFile(pool, rfa->getFile());
-		this->buildTsFnames(pool, LOG4CXX_STR("test5-"), fnames);
+		this->buildTsFnames<4>(pool, LOG4CXX_STR("test5-"), fnames);
 		fnames[0].assign(rfa->getFile());
 
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(	pool, nrOfLogMsgs, __LOG4CXX_FUNC__, __LINE__);
-		this->compareWitnesses(	pool, LOG4CXX_STR("test5."), fnames, __LINE__);
+		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test5."), fnames, __LINE__);
 	}
 
 	/**
@@ -599,7 +599,7 @@ public:
 		logger->addAppender(rfa);
 
 		this->delGenericLogFile(pool, rfa->getFile());
-		this->buildTsFnames(pool, LOG4CXX_STR("test6-"), fnames, true);
+		this->buildTsFnames<4>(pool, LOG4CXX_STR("test6-"), fnames, true);
 		fnames[0].assign(rfa->getFile());
 
 		this->delayUntilNextSecondWithMsg();
@@ -655,11 +655,8 @@ public:
 		std::mt19937 rng(dev());
 		std::uniform_int_distribution<std::mt19937::result_type> dist(1,100000);
 		LogString filenamePattern = LOG4CXX_STR("" DIR_PRE_OUTPUT);
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-		LogString dirNumber = std::to_wstring(dist(rng));
-#else
-		LogString dirNumber = std::to_string(dist(rng));
-#endif
+		LogString dirNumber;
+		StringHelper::toString(dist(rng), dirNumber);
 		LogString directoryName = LOG4CXX_STR("tbr-rollIntoDir-");
 		directoryName.append( dirNumber );
 		filenamePattern.append( directoryName );
@@ -676,7 +673,7 @@ public:
 		const logchar* prefix = directoryName.append(LOG4CXX_STR("/file-")).data();
 
 		this->delGenericLogFile(pool, rfa->getFile());
-		this->buildTsFnames(pool, prefix, fnames);
+		this->buildTsFnames<4>(pool, prefix, fnames);
 		fnames[0].assign(rfa->getFile());
 
 		this->delayUntilNextSecondWithMsg();

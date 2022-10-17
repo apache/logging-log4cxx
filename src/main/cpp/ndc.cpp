@@ -327,7 +327,7 @@ bool NDC::pop(std::basic_string<UniChar>& dst)
 
 		if (!stack.empty())
 		{
-			Transcoder::encode(stack.top().message, dst);
+			Transcoder::encode(getMessage(stack.top()), dst);
 			stack.pop();
 			data->recycle();
 			return true;
@@ -349,7 +349,7 @@ bool NDC::peek(std::basic_string<UniChar>& dst)
 
 		if (!stack.empty())
 		{
-			Transcoder::encode(stack.top().message, dst);
+			Transcoder::encode(getMessage(stack.top()), dst);
 			return true;
 		}
 
