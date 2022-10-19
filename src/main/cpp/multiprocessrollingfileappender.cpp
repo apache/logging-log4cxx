@@ -40,6 +40,7 @@
 #include <log4cxx/rolling/manualtriggeringpolicy.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/fileappender_priv.h>
+#include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <mutex>
 
 using namespace log4cxx;
@@ -560,6 +561,11 @@ TriggeringPolicyPtr MultiprocessRollingFileAppender::getTriggeringPolicy() const
 void MultiprocessRollingFileAppender::setRollingPolicy(const RollingPolicyPtr& policy)
 {
 	_priv->rollingPolicy = policy;
+
+	TimeBasedRollingPolicyPtr timeBased = log4cxx::cast<TimeBasedRollingPolicy>(policy);
+	if( timeBased ){
+		timeBased->setMultiprocess(true);
+	}
 }
 
 /**

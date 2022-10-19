@@ -161,8 +161,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		virtual ~TimeBasedRollingPolicy();
 		void activateOptions(log4cxx::helpers::Pool& );
 
-		void setOption(const LogString& option,
-					const LogString& value);
+		void setMultiprocess(bool multiprocess);
 
 		/**
 		 * {@inheritDoc}

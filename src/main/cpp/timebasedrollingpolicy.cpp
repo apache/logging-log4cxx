@@ -475,14 +475,6 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 	return Date::currentTime() > m_priv->nextCheck;
 }
 
-void TimeBasedRollingPolicy::setOption(const LogString& option,
-									   const LogString& value){
-	if (StringHelper::equalsIgnoreCase(option,
-			LOG4CXX_STR("MULTIPROCESS"),
-			LOG4CXX_STR("multiprocess")))
-	{
-		m_priv->multiprocess = OptionConverter::toBoolean(value, false);
-	}
-
-	RollingPolicyBase::setOption(option, value);
+void TimeBasedRollingPolicy::setMultiprocess(bool multiprocess){
+	m_priv->multiprocess = multiprocess;
 }
