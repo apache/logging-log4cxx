@@ -194,7 +194,8 @@ set_target_properties(log4cxx PROPERTIES
 )
 boostfallback_link(log4cxx)
 get_directory_property( FILESYSTEM_IMPL DIRECTORY "${CMAKE_SOURCE_DIR}/src/main/include" DEFINITION FILESYSTEM_IMPL )
-if("${FILESYSTEM_IMPL}" STREQUAL "std::filesystem" )
+if("${FILESYSTEM_IMPL}" STREQUAL "std::filesystem" OR
+   "${FILESYSTEM_IMPL}" STREQUAL "std::experimental::filesystem" )
   target_link_libraries(log4cxx PUBLIC $<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:stdc++fs>)
 endif()
 
