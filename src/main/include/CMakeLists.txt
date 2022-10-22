@@ -208,6 +208,8 @@ endif()
 
 if( ${STD_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
 	set( FILESYSTEM_IMPL "std::filesystem" )
+elseif( ${STD_EXPERIMENTAL_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
+	set( FILESYSTEM_IMPL "std::experimental::filesystem" )
 elseif( ${Boost_FILESYSTEM_FOUND} )
 	set( FILESYSTEM_IMPL "boost::filesystem" )
 else()

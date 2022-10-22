@@ -21,7 +21,6 @@
 
 
 #include <apr_portable.h>
-#include <libgen.h>
 #include <apr_file_io.h>
 #include <apr_atomic.h>
 #include <apr_mmap.h>
@@ -41,6 +40,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/fileappender_priv.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
+#include <log4cxx/boost-std-configuration.h>
 #include <mutex>
 
 using namespace log4cxx;
@@ -250,7 +250,8 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 				snprintf(szUid, MAX_FILE_LEN, "%u", uid);
 			}
 
-			const std::string lockname = std::string(::dirname(szDirName)) + "/." + ::basename(szBaseName) + szUid + ".lock";
+			log4cxx::filesystem::path path = szDirName;
+			const std::string lockname = path.parent_path() / (path.filename().string() + szUid + ".lock");
 			apr_file_t* lock_file;
 			stat = apr_file_open(&lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, p.getAPRPool());
 

@@ -45,6 +45,7 @@
 #
 # Filesystem variables set:
 # STD_FILESYSTEM_FOUND - if std::filesystem is found
+# STD_EXPERIMENTAL_FILESYSTEM_FOUND - if std::experimental::filesystem is found
 # Boost_FILESYSTEM_FOUND - if boost::filesystem is found
 
 include(FindThreads)
@@ -61,6 +62,8 @@ try_compile(STD_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-stdatomic.cpp")
 try_compile(STD_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-stdfilesystem.cpp")
+try_compile(STD_EXPERIMENTAL_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
+    "${CMAKE_CURRENT_LIST_DIR}/test-stdexpfilesystem.cpp")
 
 # We need to have all three boost components in order to run our tests
 # Boost thread requires chrono and atomic to work
