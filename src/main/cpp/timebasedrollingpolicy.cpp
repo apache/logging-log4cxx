@@ -30,8 +30,8 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/fileappender.h>
+#include <log4cxx/boost-std-configuration.h>
 #include <iostream>
-#include <libgen.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
@@ -169,8 +169,10 @@ const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName
 		snprintf(szUid, MAX_FILE_LEN, "%u", uid);
 	}
 
-	// TODO this should probably be using boost::filesystem or std::filesystem
-	return std::string(::dirname(szDirName)) + "/." + ::basename(szBaseName) + szUid + suffix;
+	log4cxx::filesystem::path path(fileName);
+	std::string newFilename = path.filename().string() + szUid + suffix;
+	log4cxx::filesystem::path retval = path.parent_path() / newFilename;
+	return retval.string();
 }
 
 int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, log4cxx::helpers::Pool& pool)
@@ -218,7 +220,10 @@ int TimeBasedRollingPolicy::lockMMapFile(int type)
 	{
 		LogLog::warn(LOG4CXX_STR("apr_file_lock for mmap failed."));
 	}
+
+	return stat;
 }
+
 int TimeBasedRollingPolicy::unLockMMapFile()
 {
 	apr_status_t stat = apr_file_unlock(m_priv->_lock_file);
@@ -227,6 +232,8 @@ int TimeBasedRollingPolicy::unLockMMapFile()
 	{
 		LogLog::warn(LOG4CXX_STR("apr_file_unlock for mmap failed."));
 	}
+
+	return stat;
 }
 
 TimeBasedRollingPolicy::TimeBasedRollingPolicy() :

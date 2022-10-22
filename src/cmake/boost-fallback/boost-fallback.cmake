@@ -7,6 +7,7 @@
 # thread
 # mutex
 # shared_mutex
+# filesystem
 #
 # Variables set:
 # ${prefix}_
@@ -41,6 +42,10 @@
 # Smart pointer variables set:
 # STD_SHARED_PTR_FOUND - if std::shared_ptr is found
 # Boost_SHARED_PTR_FOUND - if boost::shared_ptr is found
+#
+# Filesystem variables set:
+# STD_FILESYSTEM_FOUND - if std::filesystem is found
+# Boost_FILESYSTEM_FOUND - if boost::filesystem is found
 
 include(FindThreads)
 
@@ -54,6 +59,8 @@ try_compile(STD_SHARED_PTR_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tes
     "${CMAKE_CURRENT_LIST_DIR}/test-stdsharedptr.cpp")
 try_compile(STD_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-stdatomic.cpp")
+try_compile(STD_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
+    "${CMAKE_CURRENT_LIST_DIR}/test-stdfilesystem.cpp")
 
 # We need to have all three boost components in order to run our tests
 # Boost thread requires chrono and atomic to work
@@ -68,6 +75,12 @@ if( ${Boost_FOUND} )
         LINK_LIBRARIES Threads::Threads Boost::thread)
     try_compile(Boost_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
         "${CMAKE_CURRENT_LIST_DIR}/test-boostatomic.cpp")
+endif( ${Boost_FOUND} )
+
+find_package(Boost COMPONENTS filesystem)
+if( ${Boost_FOUND} )
+    try_compile(Boost_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
+        "${CMAKE_CURRENT_LIST_DIR}/test-boostfilesystem.cpp")
 endif( ${Boost_FOUND} )
 
 # Link the target with the appropriate boost libraries(if required)

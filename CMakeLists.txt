@@ -186,6 +186,7 @@ get_directory_property( SMART_PTR_IMPL DIRECTORY src/main/include DEFINITION SMA
 get_directory_property( MUTEX_IMPL DIRECTORY src/main/include DEFINITION MUTEX_IMPL )
 get_directory_property( SHARED_MUTEX_IMPL DIRECTORY src/main/include DEFINITION SHARED_MUTEX_IMPL )
 get_directory_property( ATOMIC_IMPL DIRECTORY src/main/include DEFINITION ATOMIC_IMPL )
+get_directory_property( FILESYSTEM_IMPL DIRECTORY src/main/include DEFINITION FILESYSTEM_IMPL )
 
 foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG)
   if(${varName} EQUAL 0)
@@ -265,6 +266,7 @@ message(STATUS "  mutex implementation ............ : ${MUTEX_IMPL}")
 message(STATUS "  shared_ptr implementation ....... : ${SMART_PTR_IMPL}")
 message(STATUS "  shared_mutex implementation ..... : ${SHARED_MUTEX_IMPL}")
 message(STATUS "  atomic implementation ........... : ${ATOMIC_IMPL}")
+message(STATUS "  filesystem implementation ....... : ${FILESYSTEM_IMPL}")
 
 if(BUILD_TESTING)
 message(STATUS "Applications required for tests:")

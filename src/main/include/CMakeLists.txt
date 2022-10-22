@@ -206,6 +206,14 @@ else()
     set( ATOMIC_IMPL "NONE" )
 endif()
 
+if( ${STD_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
+	set( FILESYSTEM_IMPL "std::filesystem" )
+elseif( ${Boost_FILESYSTEM_FOUND} )
+	set( FILESYSTEM_IMPL "boost::filesystem" )
+else()
+	set( FILESYSTEM_IMPL "NONE" )
+endif()
+
 # Configure both our private header and our public header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
