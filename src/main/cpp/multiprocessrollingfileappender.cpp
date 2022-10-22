@@ -220,7 +220,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 	{
 
 		{
-			std::string fileName(getFile());
+			LogString fileName(getFile());
 			RollingPolicyBasePtr basePolicy = log4cxx::cast<RollingPolicyBase>(_priv->rollingPolicy);
 			apr_time_t n = apr_time_now();
 			ObjectPtr obj = std::make_shared<Date>(n);
@@ -251,15 +251,15 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 			}
 
 			log4cxx::filesystem::path path = szDirName;
-			const std::string lockname = path.parent_path() / (path.filename().string() + szUid + ".lock");
+			const LogString lockname = path.parent_path() / (path.filename().string() + szUid + ".lock");
 			apr_file_t* lock_file;
 			stat = apr_file_open(&lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, p.getAPRPool());
 
 			if (stat != APR_SUCCESS)
 			{
-				std::string err = "lockfile return error: open lockfile failed. ";
+				LogString err = LOG4CXX_STR("lockfile return error: open lockfile failed. ");
 				err += (strerror(errno));
-				LogLog::warn(LOG4CXX_STR(err.c_str()));
+				LogLog::warn(err);
 				bAlreadyRolled = false;
 				lock_file = NULL;
 			}
@@ -269,9 +269,9 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 				if (stat != APR_SUCCESS)
 				{
-					std::string err = "apr_file_lock: lock failed. ";
+					LogString err = LOG4CXX_STR("apr_file_lock: lock failed. ");
 					err += (strerror(errno));
-					LogLog::warn(LOG4CXX_STR(err.c_str()));
+					LogLog::warn(err);
 					bAlreadyRolled = false;
 				}
 				else
@@ -290,7 +290,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 				const WriterPtr writer = getWriter();
 				const FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>( writer );
 				if( !fos ){
-					LogLog::error( "Can't cast writer to FileOutputStream" );
+					LogLog::error( LOG4CXX_STR("Can't cast writer to FileOutputStream") );
 					return false;
 				}
 				apr_file_t* _fd = fos->getFilePtr();
@@ -301,7 +301,8 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 					LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
 				}
 
-				st2 = apr_stat(&finfo2, std::string(getFile()).c_str(), APR_FINFO_IDENT, p.getAPRPool());
+				LogString fname = getFile();
+				st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, p.getAPRPool());
 
 				if (st2 != APR_SUCCESS)
 				{
@@ -507,7 +508,7 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 	const WriterPtr writer = getWriter();
 	const FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>( writer );
 	if( !fos ){
-		LogLog::error( "Can't cast writer to FileOutputStream" );
+		LogLog::error( LOG4CXX_STR("Can't cast writer to FileOutputStream") );
 		return;
 	}
 	apr_file_t* _fd = fos->getFilePtr();
@@ -522,8 +523,8 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 
 	if (st2 != APR_SUCCESS)
 	{
-		std::string err = "apr_stat failed. file:" + std::string(getFile());
-		LogLog::warn(LOG4CXX_STR(err.c_str()));
+		LogString err = "apr_stat failed. file:" + getFile();
+		LogLog::warn(err);
 	}
 
 	bool bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS)
