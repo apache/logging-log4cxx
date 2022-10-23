@@ -1,4 +1,4 @@
-Usage {#usage-overview}
+Multiprocess Logging {#multiprocess-logging}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,14 +21,16 @@ Usage {#usage-overview}
  limitations under the License.
 -->
 
-See the following pages for usage information:
+# Logging With Multiple Processes
 
-* @subpage usage
-* @subpage threading
-* @subpage extending-log4cxx
-* @subpage faq
-* @subpage configuration-samples
-* @subpage qt-support
-* @subpage performance
-* @subpage map-filter
-* @subpage multiprocess-logging
+If you have multiple applications that all log to the same file, it is often
+desirable that the file that these applications write to will roll over when
+required.  In order for that to happen, Log4cxx supplies a
+`MultiprocessRollingFileAppender` that will check the size of the file when
+writing to the file and roll it over appropriately.
+
+This is an optional feature, and thus must be explicitly enabled when building
+Log4cxx.  This feature is also only supported on Linux at the moment.
+Because this feature is non-standard, it may not work properly in all
+circumstances.
+

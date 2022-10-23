@@ -300,6 +300,7 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 	m_priv->lastFileName = buf;
 
 	if( m_priv->multiprocess ){
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 		if (getPatternConverterList().size())
 		{
 			(*(getPatternConverterList().begin()))->format(obj, m_priv->_fileNamePattern, pool);
@@ -321,6 +322,7 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 		}
 
 		initMMapFile(m_priv->lastFileName, m_priv->_mmapPool);
+#endif
 	}
 
 	m_priv->suffixLength = 0;
@@ -401,6 +403,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	LogString newFileName(buf);
 
 	if( m_priv->multiprocess ){
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 		m_priv->bAlreadyInitialized = true;
 
 		if (m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
@@ -415,6 +418,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 			m_priv->_mmap = NULL;
 			initMMapFile(m_priv->lastFileName, m_priv->_mmapPool);
 		}
+#endif
 	}
 
 	//
@@ -463,6 +467,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	}
 
 	if( m_priv->multiprocess ){
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 		if (m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
 		{
 			lockMMapFile(APR_FLOCK_EXCLUSIVE);
@@ -475,6 +480,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 			m_priv->_mmap = NULL;
 			initMMapFile(newFileName, m_priv->_mmapPool);
 		}
+#endif
 	}else{
 		m_priv->lastFileName = newFileName;
 	}
@@ -489,7 +495,7 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 	size_t /* fileLength */)
 {
 	if( m_priv->multiprocess ){
-
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 		if (m_priv->bRefreshCurFile && m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
 		{
 			lockMMapFile(APR_FLOCK_SHARED);
@@ -507,6 +513,7 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 		}
 
 		return ( Date::currentTime() > m_priv->nextCheck) || (!m_priv->bAlreadyInitialized);
+#endif
 	}
 
 	return Date::currentTime() > m_priv->nextCheck;
