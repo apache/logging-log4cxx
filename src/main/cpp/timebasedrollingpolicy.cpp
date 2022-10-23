@@ -18,6 +18,7 @@
 	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
+#include <log4cxx/log4cxx.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <log4cxx/pattern/filedatepatternconverter.h>
@@ -32,6 +33,7 @@
 #include <log4cxx/fileappender.h>
 #include <log4cxx/boost-std-configuration.h>
 #include <iostream>
+#include <apr_mmap.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
@@ -41,12 +43,16 @@ using namespace log4cxx::pattern;
 IMPLEMENT_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
 
 struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 	TimeBasedRollingPolicyPrivate() :
 		_mmap(nullptr),
 		_file_map(nullptr),
 		_lock_file(nullptr),
 		bAlreadyInitialized(false),
 		bRefreshCurFile(false){}
+#else
+	TimeBasedRollingPolicyPrivate(){}
+#endif
 
 		/**
 		 * Time for next determination if time for rollover.
@@ -57,6 +63,11 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		 * File name at last rollover.
 		 */
 		LogString lastFileName;
+
+		/**
+		 * Length of any file type suffix (.gz, .zip).
+		 */
+		int suffixLength;
 
 		/**
 		 * mmap pointer
@@ -103,11 +114,6 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		 * */
 		LogString _fileNamePattern;
 
-		/**
-		 * Length of any file type suffix (.gz, .zip).
-		 */
-		int suffixLength;
-
 		bool multiprocess = false;
 };
 
@@ -116,6 +122,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 #define LOCK_FILE_SUFFIX ".maplck"
 #define MAX_FILE_LEN 2048
 
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 bool TimeBasedRollingPolicy::isMapFileEmpty(log4cxx::helpers::Pool& pool)
 {
 	apr_finfo_t finfo;
@@ -235,6 +242,29 @@ int TimeBasedRollingPolicy::unLockMMapFile()
 
 	return stat;
 }
+#else
+int TimeBasedRollingPolicy::createMMapFile(const std::string&, log4cxx::helpers::Pool&) {
+	return 0;
+}
+
+bool TimeBasedRollingPolicy::isMapFileEmpty(log4cxx::helpers::Pool&){
+	return true;
+}
+
+void TimeBasedRollingPolicy::initMMapFile(const LogString&, log4cxx::helpers::Pool&){}
+
+int TimeBasedRollingPolicy::lockMMapFile(int){
+	return 0;
+}
+
+int TimeBasedRollingPolicy::unLockMMapFile(){
+	return 0;
+}
+
+const std::string TimeBasedRollingPolicy::createFile(const std::string&, const std::string&, log4cxx::helpers::Pool&){
+	return "";
+}
+#endif
 
 TimeBasedRollingPolicy::TimeBasedRollingPolicy() :
 	m_priv(std::make_unique<TimeBasedRollingPolicyPrivate>())
@@ -483,5 +513,8 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 }
 
 void TimeBasedRollingPolicy::setMultiprocess(bool multiprocess){
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+	// If we don't have the multiprocess stuff, disregard any attempt to set this value
 	m_priv->multiprocess = multiprocess;
+#endif
 }

@@ -23,7 +23,6 @@
 #include <log4cxx/rolling/triggeringpolicy.h>
 #include <log4cxx/writerappender.h>
 #include <log4cxx/helpers/outputstream.h>
-#include <apr_mmap.h>
 #include <functional>
 
 #if defined(_MSC_VER)

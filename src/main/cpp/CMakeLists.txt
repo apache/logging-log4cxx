@@ -27,8 +27,10 @@ else()
 endif()
 add_dependencies(log4cxx configure_log4cxx)
 
+set(extra_classes "")
+
 if(LOG4CXX_NETWORKING_SUPPORT)
-    set(networking_classes
+    set(extra_classes ${extra_classes}
 	datagrampacket.cpp
 	datagramsocket.cpp
 	aprdatagramsocket.cpp
@@ -44,8 +46,12 @@ if(LOG4CXX_NETWORKING_SUPPORT)
 	syslogwriter.cpp
 	syslogappender.cpp
 	)
-else()
-    set(networking_classes "")
+endif()
+
+if()
+    set(extra_classes ${extra_classes}
+	multiprocessrollingfileappender.cpp
+	)
 endif()
 
 target_sources(log4cxx
@@ -128,7 +134,6 @@ target_sources(log4cxx
   messagebuffer.cpp
   messagepatternconverter.cpp
   methodlocationpatternconverter.cpp
-  multiprocessrollingfileappender.cpp
   nameabbreviator.cpp
   namepatternconverter.cpp
   ndc.cpp
@@ -186,7 +191,7 @@ target_sources(log4cxx
   writerappender.cpp
   xmllayout.cpp
   zipcompressaction.cpp
-  ${networking_classes}
+  ${extra_classes}
 )
 set_target_properties(log4cxx PROPERTIES
   VERSION ${LIBLOG4CXX_LIB_VERSION}

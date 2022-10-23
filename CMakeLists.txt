@@ -288,3 +288,4 @@ message(STATUS "  OutputDebugStringAppender ....... : ${LOG4CXX_NETWORKING_SUPPO
 message(STATUS "  ConsoleAppender ................. : ON")
 message(STATUS "  FileAppender .................... : ON")
 message(STATUS "  RollingFileAppender ............. : ON")
+message(STATUS "  MultiprocessRollingFileAppender . : ${LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER}")
