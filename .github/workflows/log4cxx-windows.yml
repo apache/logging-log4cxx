@@ -59,7 +59,6 @@ jobs:
         cd vcpkg
         ./bootstrap-vcpkg.bat
         ./vcpkg install apr apr-util --triplet=x64-windows
-        ./vcpkg install apr apr-util --triplet=x64-windows-static
 
     - name: 'run cmake'
       shell: pwsh
@@ -69,16 +68,6 @@ jobs:
         mkdir build
         cd build
         cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
-        cmake --build .
-
-    - name: 'run cmake - win-static'
-      shell: pwsh
-      run: |
-        $THISDIR=Get-Location
-        cd main
-        mkdir build-static
-        cd build-static
-        cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=off -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
         cmake --build .
 
     - name: run unit tests

@@ -37,7 +37,7 @@ jobs:
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DCMAKE_CXX_STANDARD=11 ..
+        cmake -DCMAKE_CXX_STANDARD=11 ..
         cmake --build .
 
     - name: run unit tests
