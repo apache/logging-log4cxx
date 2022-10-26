@@ -75,6 +75,8 @@ jobs:
         cd main
         mkdir build
         cd build
+	ls /usr/local/include
+	ls /usr/include/fmt
         cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
         cmake --build .
 
