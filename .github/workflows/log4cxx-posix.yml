@@ -1,0 +1,86 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+name: log4cxx-posix
+
+on: [push, pull_request]
+
+jobs:
+  job:
+    name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 38
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [ubuntu18-gcc, ubuntu18-clang, ubuntu20-gcc, ubuntu20-clang, ubuntu22-gcc, ubuntu22-clang, osx-11, osx-12]
+        include:
+          - name: ubuntu18-gcc
+            os: ubuntu-18.04
+            cxx: g++
+            cc: gcc
+          - name: ubuntu18-clang
+            os: ubuntu-18.04
+            cxx: clang++
+            cc: clang
+          - name: ubuntu20-gcc
+            os: ubuntu-20.04
+            cxx: g++
+            cc: gcc
+          - name: ubuntu20-clang
+            os: ubuntu-20.04
+            cxx: clang++
+            cc: clang
+          - name: ubuntu22-gcc
+            os: ubuntu-22.04
+            cxx: g++
+            cc: gcc
+          - name: ubuntu22-clang
+            os: ubuntu-22.04
+            cxx: clang++
+            cc: clang
+          - name: osx-11
+            os: macos-11
+            cxx: clang++
+            cc: clang
+          - name: osx-12
+            os: macos-12
+            cxx: clang++
+            cc: clang
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: main
+
+    - name: 'Configure Dependencies - Ubuntu'
+      if: startsWith( matrix.name,'ubuntu' )
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libapr1-dev libaprutil1-dev libfmt-dev
+
+    - name: 'run cmake - *nix'
+      run: |
+        cd main
+        mkdir build
+        cd build
+        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
+        cmake --build .
+
+    - name: run unit tests
+      shell: pwsh
+      run: |
+        cd main
+        cd build
+        ctest -C Debug --output-on-failure -V

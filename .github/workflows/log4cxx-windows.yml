@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: log4cxx
+name: log4cxx-windows
 
 on: [push, pull_request]
 
@@ -24,54 +24,35 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu18-gcc, ubuntu18-clang, osx, windows-2019]
+        name: [windows-2019, windows-2022]
         include:
           - name: windows-2019
             os: windows-2019
-            cxx: cl.exe
-            cc: cl.exe
-          - name: ubuntu18-gcc
-            os: ubuntu-18.04
-            cxx: g++
-            cc: gcc
-          - name: ubuntu18-clang
-            os: ubuntu-18.04
-            cxx: clang++
-            cc: clang
-          - name: osx
-            os: macos-latest
-            cxx: clang++
-            cc: clang
+          - name: windows-2022
+            os: windows-2022
 
     steps:
     - uses: actions/checkout@v2
       with:
         path: main
 
-    - name: 'Configure Dependencies - Ubuntu'
-      if: matrix.name == 'ubuntu18-gcc' || matrix.name == 'ubuntu18-clang'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libapr1-dev libaprutil1-dev
-
-    - name: 'Restore Prebuilt Dependencies - Windows'
+    - name: 'Restore Prebuilt Dependencies'
       id: restore-vcpkg-cache
-      if: matrix.name == 'windows-2019' || matrix.name == 'windows-2016'
       uses: actions/cache@v2
       with:
         path: vcpkg
         key: ${{ runner.os }}-${{ matrix.name }}-cache-x64
 
-    - name: 'Checkout VCPKG - Windows'
-      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') && steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
+    - name: 'Checkout VCPKG'
+      if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: microsoft/vcpkg
         path: vcpkg
         ref: af2287382b1991dbdcb7e5112d236f3323b9dd7a
 
-    - name: 'Configure Dependencies - Windows'
-      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') && steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
+    - name: 'Configure Dependencies'
+      if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
       id: runvcpkg
       shell: pwsh
       run: |
@@ -80,8 +61,7 @@ jobs:
         ./vcpkg install apr apr-util --triplet=x64-windows
         ./vcpkg install apr apr-util --triplet=x64-windows-static
 
-    - name: 'run cmake - win'
-      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') 
+    - name: 'run cmake'
       shell: pwsh
       run: |
         $THISDIR=Get-Location
@@ -92,7 +72,6 @@ jobs:
         cmake --build .
 
     - name: 'run cmake - win-static'
-      if: matrix.name == 'windows-2019'
       shell: pwsh
       run: |
         $THISDIR=Get-Location
@@ -102,18 +81,10 @@ jobs:
         cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=off -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
         cmake --build .
 
-    - name: 'run cmake - *nix'
-      if: matrix.name != 'windows-2019'
-      run: |
-        cd main
-        mkdir build
-        cd build
-        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
-        cmake --build .
-
     - name: run unit tests
       shell: pwsh
       run: |
         cd main
         cd build
         ctest -C Debug --output-on-failure -V
+
