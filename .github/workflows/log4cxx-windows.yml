@@ -65,7 +65,7 @@ jobs:
       shell: pwsh
       run: |
         $Env:PATH += ";C:\msys64\usr\bin"
-        pacman -S zip
+        pacman --noconfirm -S zip
 
     - name: 'run cmake'
       shell: pwsh
