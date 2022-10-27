@@ -60,6 +60,13 @@ jobs:
         ./bootstrap-vcpkg.bat
         ./vcpkg install apr apr-util --triplet=x64-windows
 
+    - name: 'Install zip'
+      id: install-zip
+      shell: pwsh
+      run: |
+        $Env:PATH += ";C:\msys64\usr\bin"
+        pacman -S zip
+
     - name: 'run cmake'
       shell: pwsh
       run: |
