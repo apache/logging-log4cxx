@@ -70,13 +70,14 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libapr1-dev libaprutil1-dev libfmt-dev
 
-    - name: 'run cmake - *nix'
+    - name: 'run cmake - posix'
+      shell: bash
       run: |
         cd main
         mkdir build
         cd build
-	ls /usr/local/include
-	ls /usr/include/fmt
+        ls /usr/local/include
+        ls /usr/include/fmt
         cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
         cmake --build .
 
