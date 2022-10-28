@@ -41,7 +41,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vcpkg
-        key: ${{ runner.os }}-${{ matrix.name }}-cache-x64
+        key: ${{ runner.os }}-${{ matrix.name }}-cache-x64-static
 
     - name: 'Checkout VCPKG'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
