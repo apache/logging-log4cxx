@@ -29,7 +29,7 @@ configure_file( custom-appender.xml
     COPYONLY )
 
 # Custom handling for format string example, since it utilizes libfmt
-find_package(fmt QUIET)
+find_package(fmt 6.0 QUIET)
 if(${fmt_FOUND})
     add_executable( format-string format-string.cpp )
     target_compile_definitions(format-string PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )

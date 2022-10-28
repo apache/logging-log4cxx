@@ -34,7 +34,9 @@ std::ostream& operator<<( std::ostream& stream, const MyStruct& mystruct ){
 		stream << "[MyStruct x:" << mystruct.x << "]";
 		return stream;
 }
+#if FMT_VERSION >= (9 * 10000)
 template <> struct fmt::formatter<MyStruct> : ostream_formatter {};
+#endif
 
 int main()
 {
