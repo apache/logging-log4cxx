@@ -23,3 +23,5 @@ github:
     - apache
     - logging
     - cpp
+  features:
+    issues: true
