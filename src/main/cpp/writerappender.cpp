@@ -321,3 +321,7 @@ bool WriterAppender::getImmediateFlush() const
 {
 	return _priv->immediateFlush;
 }
+
+const log4cxx::helpers::WriterPtr WriterAppender::getWriter() const{
+	return _priv->writer;
+}

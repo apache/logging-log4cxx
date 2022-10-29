@@ -183,4 +183,7 @@ void RollingPolicyBase::setCreateIntermediateDirectories(bool createIntermediate
 	m_priv->createIntermediateDirectories = createIntermediate;
 }
 
-
+PatternConverterList RollingPolicyBase::getPatternConverterList() const
+{
+	return m_priv->patternConverters;
+}

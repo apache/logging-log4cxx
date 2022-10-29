@@ -156,12 +156,8 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		  <p>
 		  @param writer An already opened Writer.  */
 		void setWriter(const log4cxx::helpers::WriterPtr& writer);
-#ifdef LOG4CXX_MULTI_PROCESS
-		const log4cxx::helpers::WriterPtr getWriter()
-		{
-			return writer;
-		};
-#endif
+
+		const log4cxx::helpers::WriterPtr getWriter() const;
 
 		virtual bool requiresLayout() const;
 
