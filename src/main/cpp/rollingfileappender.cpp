@@ -115,15 +115,14 @@ int RollingFileAppender::getMaxBackupIndex() const
 
 void RollingFileAppender::setMaxBackupIndex(int maxBackups)
 {
-	if (!_priv->rollingPolicy)
+	auto fwrp = log4cxx::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy);
+	if (!fwrp)
 	{
-		auto fwrp = std::make_shared<FixedWindowRollingPolicy>();
+		fwrp = std::make_shared<FixedWindowRollingPolicy>();
 		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
-		fwrp->setMaxIndex(maxBackups);
 		_priv->rollingPolicy = fwrp;
 	}
-	else if (auto fwrp = log4cxx::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy))
-		fwrp->setMaxIndex(maxBackups);
+	fwrp->setMaxIndex(maxBackups);
 }
 
 size_t RollingFileAppender::getMaximumFileSize() const
@@ -136,14 +135,13 @@ size_t RollingFileAppender::getMaximumFileSize() const
 
 void RollingFileAppender::setMaximumFileSize(size_t maxFileSize)
 {
-	if (!_priv->triggeringPolicy)
+	auto sbtp = log4cxx::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy);
+	if (!sbtp)
 	{
-		auto sbtp = std::make_shared<SizeBasedTriggeringPolicy>();
-		sbtp->setMaxFileSize(maxFileSize);
+		sbtp = std::make_shared<SizeBasedTriggeringPolicy>();
 		_priv->triggeringPolicy = sbtp;
 	}
-	else if (auto sbtp = log4cxx::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy))
-		sbtp->setMaxFileSize(maxFileSize);
+	sbtp->setMaxFileSize(maxFileSize);
 }
 
 void RollingFileAppender::setMaxFileSize(const LogString& value)
@@ -191,14 +189,13 @@ LogString RollingFileAppender::makeFileNamePattern(const LogString& datePattern)
 
 void RollingFileAppender::setDatePattern(const LogString& newPattern)
 {
-	if (!_priv->rollingPolicy)
+	auto tbrp = log4cxx::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy);
+	if (!tbrp)
 	{
-		auto tbrp = std::make_shared<TimeBasedRollingPolicy>();
-		tbrp->setFileNamePattern(makeFileNamePattern(newPattern));
+		tbrp = std::make_shared<TimeBasedRollingPolicy>();
 		_priv->rollingPolicy = tbrp;
 	}
-	else if (auto tbrp = log4cxx::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
-		tbrp->setFileNamePattern(makeFileNamePattern(newPattern));
+	tbrp->setFileNamePattern(makeFileNamePattern(newPattern));
 }
 
 /**
