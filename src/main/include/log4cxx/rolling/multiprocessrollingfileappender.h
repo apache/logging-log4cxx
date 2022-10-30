@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-#if !defined(_LOG4CXX_ROLLING_ROLLING_FILE_APPENDER_SKELETON_H)
-#define _LOG4CXX_ROLLING_ROLLING_FILE_APPENDER_SKELETON_H
+#if !defined(LOG4CXX_ROLLING_MULTIPROCESS_ROLLING_FILE_APPENDER_H)
+#define LOG4CXX_ROLLING_MULTIPROCESS_ROLLING_FILE_APPENDER_H
 
+#include <log4cxx/fileappender.h>
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/rolling/triggeringpolicy.h>
@@ -31,44 +32,20 @@ namespace rolling
 
 
 /**
- *  Base class for log4cxx::rolling::RollingFileAppender and log4cxx::RollingFileAppender
- * (analogues of org.apache.log4j.rolling.RFA from extras companion and
- *  org.apache.log4j.RFA from log4j 1.2, respectively).
- *
- * */
-class LOG4CXX_EXPORT RollingFileAppenderSkeleton : public FileAppender
+ * A special version of the RollingFileAppender that acts properly with multiple processes
+ */
+class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public FileAppender
 {
-		DECLARE_LOG4CXX_OBJECT(RollingFileAppenderSkeleton)
+		DECLARE_LOG4CXX_OBJECT(MultiprocessRollingFileAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
-		LOG4CXX_CAST_ENTRY(RollingFileAppenderSkeleton)
+		LOG4CXX_CAST_ENTRY(MultiprocessRollingFileAppender)
 		LOG4CXX_CAST_ENTRY_CHAIN(FileAppender)
 		END_LOG4CXX_CAST_MAP()
+	protected:
+		struct MultiprocessRollingFileAppenderPriv;
 
-		/**
-		 * Triggering policy.
-		 */
-		TriggeringPolicyPtr triggeringPolicy;
-
-		/**
-		 * Rolling policy.
-		 */
-		RollingPolicyPtr rollingPolicy;
-
-		/**
-		 * Length of current active log file.
-		 */
-		size_t fileLength;
-
-		/**
-		 *  save the loggingevent
-		 */
-		spi::LoggingEventPtr* _event;
 	public:
-		/**
-		 * The default constructor simply calls its {@link
-		 * FileAppender#FileAppender parents constructor}.
-		 * */
-		RollingFileAppenderSkeleton();
+		MultiprocessRollingFileAppender();
 
 		void activateOptions(log4cxx::helpers::Pool&);
 
@@ -98,7 +75,7 @@ class LOG4CXX_EXPORT RollingFileAppenderSkeleton : public FileAppender
 
 		bool rolloverInternal(log4cxx::helpers::Pool& p);
 
-	protected:
+	public:
 
 		RollingPolicyPtr getRollingPolicy() const;
 
@@ -133,16 +110,19 @@ class LOG4CXX_EXPORT RollingFileAppenderSkeleton : public FileAppender
 		log4cxx::helpers::WriterPtr createWriter(log4cxx::helpers::OutputStreamPtr& os);
 
 	public:
-
-
-
 		/**
 		 * Get byte length of current active log file.
 		 * @return byte length of current active log file.
 		 */
 		size_t getFileLength() const;
 
-#ifdef LOG4CXX_MULTI_PROCESS
+		/**
+		 * Increments estimated byte length of current active log file.
+		 * @param increment additional bytes written to log file.
+		 */
+		void incrementFileLength(size_t increment);
+
+	private:
 		/**
 		 * Set byte length of current active log file.
 		 * @return void
@@ -159,18 +139,12 @@ class LOG4CXX_EXPORT RollingFileAppenderSkeleton : public FileAppender
 		 * @return void
 		 */
 		void reopenLatestFile(log4cxx::helpers::Pool& p);
-#endif
 
-		/**
-		 * Increments estimated byte length of current active log file.
-		 * @param increment additional bytes written to log file.
-		 */
-		void incrementFileLength(size_t increment);
+		friend class CountingOutputStream;
 
 };
 
-
-LOG4CXX_PTR_DEF(RollingFileAppenderSkeleton);
+LOG4CXX_PTR_DEF(MultiprocessRollingFileAppender);
 
 }
 }

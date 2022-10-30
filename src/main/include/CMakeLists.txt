@@ -65,6 +65,13 @@ else()
     set(NETWORKING_SUPPORT 0)
 endif()
 
+option(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER "Support multiple processes logging to the same file" OFF)
+if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
+    set(MULTIPROCESS_RFA 1)
+else()
+    set(MULTIPROCESS_RFA 0)
+endif()
+
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "locale" CACHE STRING "LogString characters, choice of locale (default), utf-8, ISO-8859-1, US-ASCII, EBCDIC")
 set_property(CACHE LOG4CXX_CHARSET PROPERTY STRINGS "locale" "utf-8" "ISO-8859-1" "US-ASCII" "EBCDIC")
@@ -204,6 +211,16 @@ elseif( ${Boost_ATOMIC_FOUND} )
     set( ATOMIC_IMPL "boost::atomic" )
 else()
     set( ATOMIC_IMPL "NONE" )
+endif()
+
+if( ${STD_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
+	set( FILESYSTEM_IMPL "std::filesystem" )
+elseif( ${STD_EXPERIMENTAL_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
+	set( FILESYSTEM_IMPL "std::experimental::filesystem" )
+elseif( ${Boost_FILESYSTEM_FOUND} )
+	set( FILESYSTEM_IMPL "boost::filesystem" )
+else()
+	set( FILESYSTEM_IMPL "NONE" )
 endif()
 
 # Configure both our private header and our public header

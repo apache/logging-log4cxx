@@ -133,3 +133,7 @@ void FileOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 	}
 }
 
+apr_file_t* FileOutputStream::getFilePtr() const{
+	return m_priv->fileptr;
+}
+

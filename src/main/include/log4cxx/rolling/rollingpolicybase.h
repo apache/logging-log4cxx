@@ -77,13 +77,8 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		bool getCreateIntermediateDirectories() const;
 		void setCreateIntermediateDirectories(bool createIntermediate);
 
+		PatternConverterList getPatternConverterList() const;
 
-#ifdef LOG4CXX_MULTI_PROCESS
-		PatternConverterList getPatternConverterList()
-		{
-			return patternConverters;
-		}
-#endif
 	protected:
 		RollingPolicyBase(LOG4CXX_PRIVATE_PTR(RollingPolicyBasePrivate) priv);
 		/**
@@ -104,6 +99,9 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		log4cxx::pattern::PatternConverterPtr getIntegerPatternConverter() const;
 		log4cxx::pattern::PatternConverterPtr getDatePatternConverter() const;
 };
+
+LOG4CXX_PTR_DEF(RollingPolicyBase);
+
 }
 }
 

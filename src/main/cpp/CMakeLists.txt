@@ -27,8 +27,10 @@ else()
 endif()
 add_dependencies(log4cxx configure_log4cxx)
 
+set(extra_classes "")
+
 if(LOG4CXX_NETWORKING_SUPPORT)
-    set(networking_classes
+    set(extra_classes ${extra_classes}
 	datagrampacket.cpp
 	datagramsocket.cpp
 	aprdatagramsocket.cpp
@@ -44,8 +46,12 @@ if(LOG4CXX_NETWORKING_SUPPORT)
 	syslogwriter.cpp
 	syslogappender.cpp
 	)
-else()
-    set(networking_classes "")
+endif()
+
+if()
+    set(extra_classes ${extra_classes}
+	multiprocessrollingfileappender.cpp
+	)
 endif()
 
 target_sources(log4cxx
@@ -185,13 +191,18 @@ target_sources(log4cxx
   writerappender.cpp
   xmllayout.cpp
   zipcompressaction.cpp
-  ${networking_classes}
+  ${extra_classes}
 )
 set_target_properties(log4cxx PROPERTIES
   VERSION ${LIBLOG4CXX_LIB_VERSION}
   SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
 )
 boostfallback_link(log4cxx)
+get_directory_property( FILESYSTEM_IMPL DIRECTORY "${CMAKE_SOURCE_DIR}/src/main/include" DEFINITION FILESYSTEM_IMPL )
+if("${FILESYSTEM_IMPL}" STREQUAL "std::filesystem" OR
+   "${FILESYSTEM_IMPL}" STREQUAL "std::experimental::filesystem" )
+  target_link_libraries(log4cxx PUBLIC $<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:stdc++fs>)
+endif()
 
 if(LOG4CXX_ABI_CHECK)
     message("Getting dependencies for ABI compatability check...")
