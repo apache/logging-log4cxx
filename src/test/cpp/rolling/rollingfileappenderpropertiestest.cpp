@@ -46,9 +46,11 @@ using namespace log4cxx::rolling;
 LOGUNIT_CLASS(RollingFileAppenderPropertiesTest)
 {
 	LOGUNIT_TEST_SUITE(RollingFileAppenderPropertiesTest);
+	LOGUNIT_TEST(testIsOptionHandler);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
-	LOGUNIT_TEST(testIsOptionHandler);
+	LOGUNIT_TEST(test3);
+	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(testRollingFromProperties);
 	LOGUNIT_TEST_SUITE_END();
 
@@ -148,6 +150,66 @@ public:
 	}
 
 	/**
+	 * Test propertyfile configured time based rolling functionality.
+	 */
+	void test3()
+	{
+		PropertyConfigurator::configure(File("input/rolling/obsoleteDRFA1.properties"));
+
+		int preCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test1.log."));
+		LoggerPtr logger(Logger::getLogger("DailyRollingFileAppenderTest"));
+
+		char msg[11];
+		strncpy(msg, "Hello---??", sizeof(msg));
+
+		for (int i = 0; i < 25; i++)
+		{
+			apr_sleep(100000);
+			msg[8] = (char) ('0' + (i / 10));
+			msg[9] = (char) ('0' + (i % 10));
+			LOG4CXX_DEBUG(logger, msg);
+		}
+
+		int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test1.log."));
+		LOGUNIT_ASSERT_EQUAL(true, postCount > preCount);
+	}
+
+	/**
+	 * Test programatically configured time based rolling functionality.
+	 */
+	void test4()
+	{
+		PatternLayoutPtr layout(new PatternLayout(LOG4CXX_STR("%m%n")));
+		auto rfa = std::make_shared<RollingFileAppender>();
+		rfa->setName(LOG4CXX_STR("ROLLING"));
+		rfa->setLayout(layout);
+		rfa->setAppend(false);
+		rfa->setFile(LOG4CXX_STR("output/obsoleteDRFA-test2.log"));
+		rfa->setDatePattern(LOG4CXX_STR("'.'yyyy-MM-dd-HH_mm_ss"));
+		Pool p;
+		rfa->activateOptions(p);
+		LoggerPtr root(Logger::getRootLogger());
+		root->addAppender(rfa);
+		LoggerPtr logger(Logger::getLogger("ObsoleteDailyRollingAppenderTest"));
+
+		int preCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test2.log."));
+
+		char msg[11];
+		strncpy(msg, "Hello---??", sizeof(msg));
+
+		for (int i = 0; i < 25; i++)
+		{
+			apr_sleep(100000);
+			msg[8] = (char) ('0' + i / 10);
+			msg[9] = (char) ('0' + i % 10);
+			LOG4CXX_DEBUG(logger, msg);
+		}
+
+		int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test2.log."));
+		LOGUNIT_ASSERT_EQUAL(true, postCount > preCount);
+	}
+
+	/**
 	 *  Tests if class is declared to support the OptionHandler interface.
 	 *  See LOGCXX-136.
 	 */
@@ -176,6 +238,24 @@ public:
 
 		LOGUNIT_ASSERT_EQUAL(3, fixedWindowRolling->getMaxIndex());
 		LOGUNIT_ASSERT_EQUAL(100, static_cast<int>(sizeBasedPolicy->getMaxFileSize()));
+	}
+
+private:
+	static int getFileCount(const char* dir, const LogString & initial)
+	{
+		Pool p;
+		std::vector<LogString> files(File(dir).list(p));
+		int count = 0;
+
+		for (size_t i = 0; i < files.size(); i++)
+		{
+			if (StringHelper::startsWith(files[i], initial))
+			{
+				count++;
+			}
+		}
+
+		return count;
 	}
 
 };

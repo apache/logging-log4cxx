@@ -27,6 +27,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
+#include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/fileappender_priv.h>
@@ -93,6 +94,11 @@ void RollingFileAppender::setOption(const LogString& option, const LogString& va
 	{
 		setMaxBackupIndex(StringHelper::toInt(value));
 	}
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("FILEDATEPATTERN"), LOG4CXX_STR("filedatepattern")))
+	{
+		setDatePattern(value);
+	}
 	else
 	{
 		FileAppender::setOption(option, value);
@@ -143,6 +149,56 @@ void RollingFileAppender::setMaximumFileSize(size_t maxFileSize)
 void RollingFileAppender::setMaxFileSize(const LogString& value)
 {
 	setMaximumFileSize(OptionConverter::toFileSize(value, long(getMaximumFileSize() + 1)));
+}
+
+LogString RollingFileAppender::makeFileNamePattern(const LogString& datePattern)
+{
+	LogString result(getFile());
+	bool inLiteral = false;
+	bool inPattern = false;
+
+	for (size_t i = 0; i < datePattern.length(); i++)
+	{
+		if (datePattern[i] == 0x27 /* '\'' */)
+		{
+			inLiteral = !inLiteral;
+
+			if (inLiteral && inPattern)
+			{
+				result.append(1, (logchar) 0x7D /* '}' */);
+				inPattern = false;
+			}
+		}
+		else
+		{
+			if (!inLiteral && !inPattern)
+			{
+				const logchar dbrace[] = { 0x25, 0x64, 0x7B, 0 }; // "%d{"
+				result.append(dbrace);
+				inPattern = true;
+			}
+
+			result.append(1, datePattern[i]);
+		}
+	}
+
+	if (inPattern)
+	{
+		result.append(1, (logchar) 0x7D /* '}' */);
+	}
+	return result;
+}
+
+void RollingFileAppender::setDatePattern(const LogString& newPattern)
+{
+	if (!_priv->rollingPolicy)
+	{
+		auto tbrp = std::make_shared<TimeBasedRollingPolicy>();
+		tbrp->setFileNamePattern(makeFileNamePattern(newPattern));
+		_priv->rollingPolicy = tbrp;
+	}
+	else if (auto tbrp = log4cxx::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
+		tbrp->setFileNamePattern(makeFileNamePattern(newPattern));
 }
 
 /**

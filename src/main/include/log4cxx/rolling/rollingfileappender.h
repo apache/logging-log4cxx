@@ -118,6 +118,14 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 		void setMaximumFileSize( size_t value );
 
+		/**
+		   The <b>DatePattern</b> takes a string in the same format as
+		   expected by {@link log4cxx::helpers::SimpleDateFormat SimpleDateFormat}. This options determines the
+		   rollover schedule.
+		 */
+		void setDatePattern(const LogString& pattern);
+
+		LogString makeFileNamePattern(const LogString& datePattern);
 
 		void setOption( const LogString& option, const LogString& value ) override;
 

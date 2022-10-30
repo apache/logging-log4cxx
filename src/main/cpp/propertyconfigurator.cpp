@@ -446,7 +446,17 @@ AppenderPtr PropertyConfigurator::parseAppender(
 			props, prefix, Appender::getStaticClass(), 0);
 	appender = log4cxx::cast<Appender>( obj );
 
-	if (appender == 0)
+	// Map obsolete DailyRollingFileAppender propertiy configuration
+	if (!appender &&
+		StringHelper::endsWith(OptionConverter::findAndSubst(prefix, props), LOG4CXX_STR("DailyRollingFileAppender")))
+	{
+		appender = std::make_shared<RollingFileAppender>();
+		auto datePattern = OptionConverter::findAndSubst(prefix + LOG4CXX_STR(".datePattern"), props);
+		if (!datePattern.empty())
+			props.put(prefix + LOG4CXX_STR(".fileDatePattern"), datePattern);
+	}
+
+	if (!appender)
 	{
 		LogLog::error((LogString) LOG4CXX_STR("Could not instantiate appender named \"")
 			+ appenderName + LOG4CXX_STR("\"."));
