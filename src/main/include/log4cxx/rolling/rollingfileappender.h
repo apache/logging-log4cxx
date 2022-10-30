@@ -89,8 +89,40 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 	public:
 		RollingFileAppender();
 
-		void activateOptions(log4cxx::helpers::Pool&);
+		/** Returns the value of the <b>MaxBackupIndex</b> option. */
+		int getMaxBackupIndex() const;
 
+		/** Get the maximum size that the output file is allowed to reach before being rolled over to backup files. */
+		size_t getMaximumFileSize() const;
+
+
+		/**
+		Set the maximum number of backup files to keep around.
+
+		<p>The <b>MaxBackupIndex</b> option determines how many backup
+		 files are kept before the oldest is erased. This option takes
+		 a positive integer value. If set to zero, then there will be no
+		 backup files and the log file will be truncated when it reaches <code>MaxFileSize</code>.
+		*/
+		void setMaxBackupIndex( int maxBackupIndex );
+
+		/**
+		Set the maximum size that the output file is allowed to reach before being rolled over to backup files.
+
+		<p>In configuration files, the <b>MaxFileSize</b> option takes an
+		 long integer in the range 0 - 2^63. You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is
+		 interpreted being expressed respectively in kilobytes, megabytes
+		 or gigabytes. For example, the value "10KB" will be interpreted as 10240.
+		*/
+		void setMaxFileSize( const LogString& value );
+
+		void setMaximumFileSize( size_t value );
+
+
+		void setOption( const LogString& option, const LogString& value ) override;
+
+		/** Prepares RollingFileAppender for use. */
+		void activateOptions( log4cxx::helpers::Pool& pool );
 
 		/**
 		   Implements the usual roll over behaviour.

@@ -473,7 +473,6 @@ AppenderPtr PropertyConfigurator::parseAppender(
 				LogLog::debug((LogString) LOG4CXX_STR("Parsing layout options for \"")
 					+ appenderName + LOG4CXX_STR("\"."));
 
-				//configureOptionHandler(layout, layoutPrefix + ".", props);
 				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."), p);
 				LogLog::debug((LogString) LOG4CXX_STR("End of parsing for \"")
 					+ appenderName +  LOG4CXX_STR("\"."));
@@ -512,7 +511,6 @@ AppenderPtr PropertyConfigurator::parseAppender(
 			}
 		}
 
-		//configureOptionHandler((OptionHandler) appender, prefix + _T("."), props);
 		PropertySetter::setProperties(appender, props, prefix + LOG4CXX_STR("."), p);
 		LogLog::debug((LogString) LOG4CXX_STR("Parsed \"")
 			+ appenderName + LOG4CXX_STR("\" options."));

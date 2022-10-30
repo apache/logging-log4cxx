@@ -24,8 +24,10 @@
 #include <log4cxx/rolling/rolloverdescription.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
-#include <log4cxx/rolling/manualtriggeringpolicy.h>
+#include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/fileappender_priv.h>
 #include <mutex>
@@ -75,12 +77,80 @@ RollingFileAppender::RollingFileAppender() :
 {
 }
 
+void RollingFileAppender::setOption(const LogString& option, const LogString& value)
+{
+	if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MAXFILESIZE"), LOG4CXX_STR("maxfilesize"))
+		|| StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MAXIMUMFILESIZE"), LOG4CXX_STR("maximumfilesize")))
+	{
+		setMaxFileSize(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MAXBACKUPINDEX"), LOG4CXX_STR("maxbackupindex"))
+		|| StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MAXIMUMBACKUPINDEX"), LOG4CXX_STR("maximumbackupindex")))
+	{
+		setMaxBackupIndex(StringHelper::toInt(value));
+	}
+	else
+	{
+		FileAppender::setOption(option, value);
+	}
+}
+
+int RollingFileAppender::getMaxBackupIndex() const
+{
+	int result = 1;
+	if (auto fwrp = log4cxx::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy))
+		result = fwrp->getMaxIndex();
+	return result;
+}
+
+void RollingFileAppender::setMaxBackupIndex(int maxBackups)
+{
+	if (!_priv->rollingPolicy)
+	{
+		auto fwrp = std::make_shared<FixedWindowRollingPolicy>();
+		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
+		fwrp->setMaxIndex(maxBackups);
+		_priv->rollingPolicy = fwrp;
+	}
+	else if (auto fwrp = log4cxx::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy))
+		fwrp->setMaxIndex(maxBackups);
+}
+
+size_t RollingFileAppender::getMaximumFileSize() const
+{
+	size_t result = 10 * 1024 * 1024;
+	if (auto sbtp = log4cxx::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy))
+		result = sbtp->getMaxFileSize();
+	return result;
+}
+
+void RollingFileAppender::setMaximumFileSize(size_t maxFileSize)
+{
+	if (!_priv->triggeringPolicy)
+	{
+		auto sbtp = std::make_shared<SizeBasedTriggeringPolicy>();
+		sbtp->setMaxFileSize(maxFileSize);
+		_priv->triggeringPolicy = sbtp;
+	}
+	else if (auto sbtp = log4cxx::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy))
+		sbtp->setMaxFileSize(maxFileSize);
+}
+
+void RollingFileAppender::setMaxFileSize(const LogString& value)
+{
+	setMaximumFileSize(OptionConverter::toFileSize(value, long(getMaximumFileSize() + 1)));
+}
+
 /**
  * Prepare instance of use.
  */
 void RollingFileAppender::activateOptions(Pool& p)
 {
-	if (_priv->rollingPolicy == NULL)
+	if (!_priv->rollingPolicy)
 	{
 		auto fwrp = std::make_shared<FixedWindowRollingPolicy>();
 		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
@@ -90,7 +160,7 @@ void RollingFileAppender::activateOptions(Pool& p)
 	//
 	//  if no explicit triggering policy and rolling policy is both.
 	//
-	if (_priv->triggeringPolicy == NULL)
+	if (!_priv->triggeringPolicy)
 	{
 		TriggeringPolicyPtr trig = log4cxx::cast<TriggeringPolicy>(_priv->rollingPolicy);
 
@@ -100,9 +170,9 @@ void RollingFileAppender::activateOptions(Pool& p)
 		}
 	}
 
-	if (_priv->triggeringPolicy == NULL)
+	if (!_priv->triggeringPolicy)
 	{
-		_priv->triggeringPolicy = std::make_shared<ManualTriggeringPolicy>();
+		_priv->triggeringPolicy = std::make_shared<SizeBasedTriggeringPolicy>();
 	}
 
 	{
