@@ -24,8 +24,11 @@
 #include <log4cxx/rolling/rolloverdescription.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
-#include <log4cxx/rolling/manualtriggeringpolicy.h>
+#include <log4cxx/rolling/timebasedrollingpolicy.h>
+#include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/fileappender_priv.h>
 #include <mutex>
@@ -75,12 +78,132 @@ RollingFileAppender::RollingFileAppender() :
 {
 }
 
+void RollingFileAppender::setOption(const LogString& option, const LogString& value)
+{
+	if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MAXFILESIZE"), LOG4CXX_STR("maxfilesize"))
+		|| StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MAXIMUMFILESIZE"), LOG4CXX_STR("maximumfilesize")))
+	{
+		setMaxFileSize(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MAXBACKUPINDEX"), LOG4CXX_STR("maxbackupindex"))
+		|| StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("MAXIMUMBACKUPINDEX"), LOG4CXX_STR("maximumbackupindex")))
+	{
+		setMaxBackupIndex(StringHelper::toInt(value));
+	}
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("FILEDATEPATTERN"), LOG4CXX_STR("filedatepattern")))
+	{
+		setDatePattern(value);
+	}
+	else
+	{
+		FileAppender::setOption(option, value);
+	}
+}
+
+int RollingFileAppender::getMaxBackupIndex() const
+{
+	int result = 1;
+	if (auto fwrp = log4cxx::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy))
+		result = fwrp->getMaxIndex();
+	return result;
+}
+
+void RollingFileAppender::setMaxBackupIndex(int maxBackups)
+{
+	auto fwrp = log4cxx::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy);
+	if (!fwrp)
+	{
+		fwrp = std::make_shared<FixedWindowRollingPolicy>();
+		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
+		_priv->rollingPolicy = fwrp;
+	}
+	fwrp->setMaxIndex(maxBackups);
+}
+
+size_t RollingFileAppender::getMaximumFileSize() const
+{
+	size_t result = 10 * 1024 * 1024;
+	if (auto sbtp = log4cxx::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy))
+		result = sbtp->getMaxFileSize();
+	return result;
+}
+
+void RollingFileAppender::setMaximumFileSize(size_t maxFileSize)
+{
+	auto sbtp = log4cxx::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy);
+	if (!sbtp)
+	{
+		sbtp = std::make_shared<SizeBasedTriggeringPolicy>();
+		_priv->triggeringPolicy = sbtp;
+	}
+	sbtp->setMaxFileSize(maxFileSize);
+}
+
+void RollingFileAppender::setMaxFileSize(const LogString& value)
+{
+	setMaximumFileSize(OptionConverter::toFileSize(value, long(getMaximumFileSize() + 1)));
+}
+
+LogString RollingFileAppender::makeFileNamePattern(const LogString& datePattern)
+{
+	LogString result(getFile());
+	bool inLiteral = false;
+	bool inPattern = false;
+
+	for (size_t i = 0; i < datePattern.length(); i++)
+	{
+		if (datePattern[i] == 0x27 /* '\'' */)
+		{
+			inLiteral = !inLiteral;
+
+			if (inLiteral && inPattern)
+			{
+				result.append(1, (logchar) 0x7D /* '}' */);
+				inPattern = false;
+			}
+		}
+		else
+		{
+			if (!inLiteral && !inPattern)
+			{
+				const logchar dbrace[] = { 0x25, 0x64, 0x7B, 0 }; // "%d{"
+				result.append(dbrace);
+				inPattern = true;
+			}
+
+			result.append(1, datePattern[i]);
+		}
+	}
+
+	if (inPattern)
+	{
+		result.append(1, (logchar) 0x7D /* '}' */);
+	}
+	return result;
+}
+
+void RollingFileAppender::setDatePattern(const LogString& newPattern)
+{
+	auto tbrp = log4cxx::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy);
+	if (!tbrp)
+	{
+		tbrp = std::make_shared<TimeBasedRollingPolicy>();
+		_priv->rollingPolicy = tbrp;
+	}
+	tbrp->setFileNamePattern(makeFileNamePattern(newPattern));
+}
+
 /**
  * Prepare instance of use.
  */
 void RollingFileAppender::activateOptions(Pool& p)
 {
-	if (_priv->rollingPolicy == NULL)
+	if (!_priv->rollingPolicy)
 	{
 		auto fwrp = std::make_shared<FixedWindowRollingPolicy>();
 		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
@@ -90,7 +213,7 @@ void RollingFileAppender::activateOptions(Pool& p)
 	//
 	//  if no explicit triggering policy and rolling policy is both.
 	//
-	if (_priv->triggeringPolicy == NULL)
+	if (!_priv->triggeringPolicy)
 	{
 		TriggeringPolicyPtr trig = log4cxx::cast<TriggeringPolicy>(_priv->rollingPolicy);
 
@@ -100,9 +223,9 @@ void RollingFileAppender::activateOptions(Pool& p)
 		}
 	}
 
-	if (_priv->triggeringPolicy == NULL)
+	if (!_priv->triggeringPolicy)
 	{
-		_priv->triggeringPolicy = std::make_shared<ManualTriggeringPolicy>();
+		_priv->triggeringPolicy = std::make_shared<SizeBasedTriggeringPolicy>();
 	}
 
 	{
