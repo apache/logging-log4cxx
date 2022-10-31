@@ -14,11 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if defined(_MSC_VER)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
 #include <log4cxx/helpers/pool.h>
@@ -45,7 +40,8 @@ struct FixedWindowRollingPolicy::FixedWindowRollingPolicyPrivate : public Rollin
 	FixedWindowRollingPolicyPrivate() :
 		RollingPolicyBasePrivate(),
 		minIndex(1),
-		maxIndex(7)
+		maxIndex(7),
+		explicitActiveFile(false)
 	{}
 
 	int minIndex;
