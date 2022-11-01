@@ -135,17 +135,14 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 	std::thread::native_handle_type nativeHandle)
 {
 #if LOG4CXX_HAS_PTHREAD_SETNAME
-
-	if ( pthread_setname_np( static_cast<pthread_t>( nativeHandle ), threadName.c_str() ) < 0 )
-	{
-		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
+	LOG4CXX_ENCODE_CHAR(sthreadName, threadName);
+	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
+		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
 	}
 
-#elif LOG4CXX_HAS_SETTHREADDESCRIPTION
-	HRESULT hr = SetThreadDescription(static_cast<HANDLE>(nativeHandle), threadName.c_str());
-
-	if (FAILED(hr))
-	{
+	LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
+	HRESULT hr = SetThreadDescription(static_cast<HANDLE>(nativeHandle), wthreadName.c_str());
+	if(FAILED(hr)){
 		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
 

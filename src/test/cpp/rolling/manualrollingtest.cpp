@@ -328,11 +328,8 @@ public:
 		std::uniform_int_distribution<std::mt19937::result_type> dist(1,100000);
 		LogString filenamePattern = LOG4CXX_STR("output/directory-");
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-		LogString dirNumber = std::to_wstring(dist(rng));
-#else
-		LogString dirNumber = std::to_string(dist(rng));
-#endif
+		LogString dirNumber;
+		StringHelper::toString(dist(rng), dirNumber);
 
 		filenamePattern.append( dirNumber );
 		LogString filenamePatternPrefix = filenamePattern;

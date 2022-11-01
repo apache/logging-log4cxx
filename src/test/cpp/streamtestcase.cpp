@@ -14,6 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <log4cxx/log4cxx.h>
+ /* Prevent error C2491: 'std::numpunct<_Elem>::id': definition of dllimport static data member not allowed */
+#if defined(_MSC_VER) && (LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API)
+#define __FORCE_INSTANCE
+#endif
 #include <ostream>
 #include <iomanip>
 
@@ -475,7 +481,7 @@ public:
 	{
 		LoggerPtr root(Logger::getRootLogger());
 		const log4cxx::UniChar msg[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
-		LOG4CXX_INFO(root, msg)
+		LOG4CXX_INFO(root, msg);
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 
@@ -484,7 +490,7 @@ public:
 		LoggerPtr root(Logger::getRootLogger());
 		const log4cxx::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
 		const log4cxx::UniChar msg2[] = { ':', ' ', 'D', 'e', 't', 'a', 'i', 'l', 's', ' ', 't', 'o', ' ', 'f', 'o', 'l', 'l', 'o', 'w', 0 };
-		LOG4CXX_INFO(root, msg1 << msg2)
+		LOG4CXX_INFO(root, msg1 << msg2);
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 
@@ -493,7 +499,7 @@ public:
 		LoggerPtr root(Logger::getRootLogger());
 		const log4cxx::UniChar openBracket[] = { '[', 0 };
 		const log4cxx::UniChar closeBracket[] = { ']', 0 };
-		LOG4CXX_INFO(root, openBracket << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill((log4cxx::UniChar) '_') << 10.0 << closeBracket)
+		LOG4CXX_INFO(root, openBracket << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill((log4cxx::UniChar)'_') << 10.0 << closeBracket);
 		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
 		LogString msg(event->getMessage());
 		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);

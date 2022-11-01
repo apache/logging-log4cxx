@@ -30,7 +30,7 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 
-#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_CFSTRING_API || LOG4CXX_UNICHAR_API
+#if LOG4CXX_CFSTRING_API
 	#include <CoreFoundation/CFString.h>
 #endif
 
@@ -651,7 +651,7 @@ CFStringRef Transcoder::encode(const LogString& src)
 	LOG4CXX_ENCODE_UNICHAR(tmp, src);
 	return CFStringCreateWithCharacters(kCFAllocatorDefault, tmp.data(), tmp.size());
 }
-#endif
+#endif // #if LOG4CXX_CFSTRING_API
 
 
 logchar Transcoder::decode(char val)

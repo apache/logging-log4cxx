@@ -87,11 +87,13 @@ public:
 		LogString threadName = LOG4CXX_STR("log4cxx-thr");
 
 #if LOG4CXX_HAS_PTHREAD_SETNAME
-	if( pthread_setname_np( pthread_self(), threadName.c_str() ) < 0 ){
+	LOG4CXX_ENCODE_CHAR(sthreadName, threadName);
+	if( pthread_setname_np( pthread_self(), sthreadName.c_str() ) < 0 ){
 		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
 #elif LOG4CXX_HAS_SETTHREADDESCRIPTION
-	HRESULT hr = SetThreadDescription(GetCurrentThread(), threadName.c_str());
+	LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
+	HRESULT hr = SetThreadDescription(GetCurrentThread(), wthreadName.c_str());
 	if(FAILED(hr)){
 		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}

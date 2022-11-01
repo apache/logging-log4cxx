@@ -12,16 +12,37 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+name: log4cxx-cpp11
 
-notifications:
-  jira_options: link label
+on: [push, pull_request]
 
-github:
-  description: "Apache Log4cxx is a C++ port of Apache Log4j"
-  homepage: http://logging.apache.org/log4cxx
-  labels:
-    - apache
-    - logging
-    - cpp
-  features:
-    issues: true
+jobs:
+  job:
+    name: log4cxx-cpp11
+    runs-on: ubuntu-20.04
+    timeout-minutes: 38
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: main
+
+    - name: 'Configure Dependencies - Ubuntu'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libapr1-dev libaprutil1-dev libboost-filesystem-dev libboost-thread-dev
+
+    - name: 'run cmake - *nix'
+      run: |
+        cd main
+        mkdir build
+        cd build
+        cmake -DCMAKE_CXX_STANDARD=11 ..
+        cmake --build .
+
+    - name: run unit tests
+      shell: pwsh
+      run: |
+        cd main
+        cd build
+        ctest -C Debug --output-on-failure -V
+

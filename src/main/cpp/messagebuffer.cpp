@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
+#include <log4cxx/log4cxx.h>
+/* Prevent error C2491: 'std::numpunct<_Elem>::id': definition of dllimport static data member not allowed */
+#if defined(_MSC_VER) && (LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API)
+#define __FORCE_INSTANCE
+#endif
 #include <log4cxx/helpers/messagebuffer.h>
 #include <log4cxx/helpers/transcoder.h>
 
