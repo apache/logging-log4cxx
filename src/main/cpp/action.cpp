@@ -18,6 +18,7 @@
 #include <log4cxx/rolling/action.h>
 #include <log4cxx/private/action_priv.h>
 #include <mutex>
+#include <memory>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;

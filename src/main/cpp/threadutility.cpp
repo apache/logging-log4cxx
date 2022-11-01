@@ -139,7 +139,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
 		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
 	}
-
+#elif LOG4CXX_HAS_SETTHREADDESCRIPTION
 	LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
 	HRESULT hr = SetThreadDescription(static_cast<HANDLE>(nativeHandle), wthreadName.c_str());
 	if(FAILED(hr)){
