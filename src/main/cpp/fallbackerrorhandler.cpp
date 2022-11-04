@@ -22,6 +22,8 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/hierarchy.h>
+#include <log4cxx/logmanager.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -103,6 +105,15 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 	LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting backup appender to ["))
 		+ backup1->getName() + LOG4CXX_STR("]."));
 	m_priv->backup = backup1;
+
+	// Make sure that we keep a reference to the appender around, since otherwise
+	// the appender would be lost if it has no loggers that use it.
+	LoggerRepository* repository = LogManager::getRootLogger()->getLoggerRepository();
+	Hierarchy* hierarchy = dynamic_cast<Hierarchy*>(repository);
+	if(hierarchy){
+		hierarchy->addAppender(backup1);
+	}
+
 }
 
 void FallbackErrorHandler::activateOptions(Pool&)

@@ -70,6 +70,7 @@ struct Hierarchy::HierarchyPrivate
 	LoggerMap loggers;
 	ProvisionNodeMap provisionNodes;
 
+	std::vector<AppenderPtr> allAppenders;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
@@ -468,4 +469,14 @@ HierarchyPtr Hierarchy::create()
 {
 	HierarchyPtr ret(new Hierarchy);
 	return ret;
+}
+
+void Hierarchy::clearAppenders()
+{
+	m_priv->allAppenders.clear();
+}
+
+void Hierarchy::addAppender(AppenderPtr appender)
+{
+	m_priv->allAppenders.push_back(appender);
 }
