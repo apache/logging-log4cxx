@@ -109,7 +109,7 @@ size_t APRSocket::write(ByteBuffer& buf)
 		throw ClosedChannelException();
 	}
 
-	int totalWritten = 0;
+	size_t totalWritten = 0;
 
 	while (buf.remaining() > 0)
 	{
