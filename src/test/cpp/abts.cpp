@@ -148,8 +148,10 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 
 	if (p)
 	{
-		subsuite->name = (const char*) memcpy(calloc(p - suite_name + 1, 1),
-				suite_name, p - suite_name);
+//		subsuite->name = (const char*) memcpy(calloc(p - suite_name + 1, 1),
+//				suite_name, p - suite_name);
+		int length = p - suite_name + 1;
+		subsuite->name = std::string( suite_name, length );
 	}
 	else
 	{
@@ -158,7 +160,7 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 
 	if (list_tests)
 	{
-		fprintf(stdout, "%s\n", subsuite->name);
+		fprintf(stdout, "%s\n", subsuite->name.c_str());
 	}
 
 	subsuite->not_run = 0;
@@ -175,14 +177,14 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 		suite->tail = subsuite;
 	}
 
-	if (!should_test_run(subsuite->name))
+	if (!should_test_run(subsuite->name.c_str()))
 	{
 		subsuite->not_run = 1;
 		return suite;
 	}
 
 	reset_status();
-	fprintf(stdout, "%-20s:  ", subsuite->name);
+	fprintf(stdout, "%-20s:  ", subsuite->name.c_str());
 	update_status();
 	fflush(stdout);
 
@@ -194,7 +196,7 @@ void abts_run_test(abts_suite* ts, const char* name, test_func f, void* value)
 	abts_case tc;
 	sub_suite* ss;
 
-	if (!should_test_run(ts->tail->name))
+	if (!should_test_run(ts->tail->name.c_str()))
 	{
 		return;
 	}
@@ -600,16 +602,15 @@ int main(int argc, const char* const argv[])
 		//    clean up suite
 		//
 		// We're about to exit, who cares about memory leaks?
-//		sub_suite* next;
+		sub_suite* next;
 
-//		for (sub_suite* head = suite->head; head != NULL; head = next)
-//		{
-//			next = head->next;
-//			delete[] head->name;
-//			delete head;
-//		}
+		for (sub_suite* head = suite->head; head != NULL; head = next)
+		{
+			next = head->next;
+			delete head;
+		}
 
-//		delete suite;
+		delete suite;
 	}
 
 	return rv;

@@ -40,7 +40,7 @@
 
 struct sub_suite
 {
-	const char* name;
+	std::string name;
 	int num_test;
 	std::vector<const char*> failed;
 	int not_run;
