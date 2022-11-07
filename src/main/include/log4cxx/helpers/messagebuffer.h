@@ -34,8 +34,6 @@ namespace log4cxx
 namespace helpers
 {
 
-void MessageBufferUseStaticStream();
-
 typedef std::ios_base& (*ios_base_manip)(std::ios_base&);
 
 /**

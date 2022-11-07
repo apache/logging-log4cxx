@@ -178,14 +178,6 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 			+ LOG4CXX_STR("]."));
 	}
 
-	static const LogString STRINGSTREAM_KEY(LOG4CXX_STR("log4j.stringstream"));
-	LogString strstrValue(properties.getProperty(STRINGSTREAM_KEY));
-
-	if (strstrValue == LOG4CXX_STR("static"))
-	{
-		MessageBufferUseStaticStream();
-	}
-
 	LogString threadConfigurationValue(properties.getProperty(LOG4CXX_STR("log4j.threadConfiguration")));
 
 	if ( threadConfigurationValue == LOG4CXX_STR("NoConfiguration") )
