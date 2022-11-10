@@ -22,21 +22,12 @@
 #endif
 #include <log4cxx/helpers/messagebuffer.h>
 #include <log4cxx/helpers/transcoder.h>
+#if !defined(LOG4CXX)
+	#define LOG4CXX 1
+#endif
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx::helpers;
-
-static bool gMessageBufferUseStaticStream = false;
-
-namespace log4cxx
-{
-namespace helpers
-{
-void MessageBufferUseStaticStream()
-{
-	gMessageBufferUseStaticStream = true;
-}
-}
-}
 
 template <typename T>
 void ResetStream(std::basic_ostringstream<T>& stream)
@@ -62,35 +53,13 @@ struct CharMessageBuffer::CharMessageBufferPrivate{
 
 CharMessageBuffer::CharMessageBuffer() : m_priv(std::make_unique<CharMessageBufferPrivate>())
 {
-
-#if defined(STATIC_STRINGSTREAM)
-
-	if (gMessageBufferUseStaticStream)
-	{
-		thread_local static char ossBuf[8192];
-		thread_local static std::basic_ostringstream<char> sStream;
-		thread_local static bool inited = false;
-
-		if (!inited)
-		{
-			inited = true;
-			sStream.rdbuf()->pubsetbuf(ossBuf, 8192);
-
-			ResetStream(sStream);
-		}
-
-		m_priv->stream = &sStream;
-	}
-
-#endif
 }
 
 CharMessageBuffer::~CharMessageBuffer()
 {
-	if (!gMessageBufferUseStaticStream)
-	{
-		delete m_priv->stream;
-	}
+#if !LOG4CXX_HAS_THREAD_LOCAL
+	delete m_priv->stream;
+#endif
 }
 
 CharMessageBuffer& CharMessageBuffer::operator<<(const std::basic_string<char>& msg)
@@ -149,10 +118,14 @@ CharMessageBuffer& CharMessageBuffer::operator<<(const char msg)
 
 CharMessageBuffer::operator std::basic_ostream<char>& ()
 {
-	if (m_priv->stream == 0)
+	if (!m_priv->stream)
 	{
+#if LOG4CXX_HAS_THREAD_LOCAL
+		thread_local static std::basic_ostringstream<char> sStream;
+		m_priv->stream = &sStream;
+#else
 		m_priv->stream = new std::basic_ostringstream<char>();
-
+#endif
 		if (!m_priv->buf.empty())
 		{
 			*m_priv->stream << m_priv->buf;
@@ -248,35 +221,13 @@ struct WideMessageBuffer::WideMessageBufferPrivate{
 WideMessageBuffer::WideMessageBuffer() :
 	m_priv(std::make_unique<WideMessageBufferPrivate>())
 {
-
-#if defined(STATIC_STRINGSTREAM)
-
-	if (gMessageBufferUseStaticStream)
-	{
-		thread_local static wchar_t ossBuf[8192];
-		thread_local static std::basic_ostringstream<wchar_t> sStream;
-		thread_local static bool inited = false;
-
-		if (!inited)
-		{
-			inited = true;
-			sStream.rdbuf()->pubsetbuf(ossBuf, 8192);
-
-			ResetStream(sStream);
-		}
-
-		m_priv->stream = &sStream;
-	}
-
-#endif
 }
 
 WideMessageBuffer::~WideMessageBuffer()
 {
-	if (!gMessageBufferUseStaticStream)
-	{
-		delete m_priv->stream;
-	}
+#if !LOG4CXX_HAS_THREAD_LOCAL
+	delete m_priv->stream;
+#endif
 }
 
 WideMessageBuffer& WideMessageBuffer::operator<<(const std::basic_string<wchar_t>& msg)
@@ -336,10 +287,14 @@ WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t msg)
 
 WideMessageBuffer::operator std::basic_ostream<wchar_t>& ()
 {
-	if (m_priv->stream == 0)
+	if (!m_priv->stream)
 	{
+#if LOG4CXX_HAS_THREAD_LOCAL
+		thread_local static std::basic_ostringstream<wchar_t> sStream;
+		m_priv->stream = &sStream;
+#else
 		m_priv->stream = new std::basic_ostringstream<wchar_t>();
-
+#endif
 		if (!m_priv->buf.empty())
 		{
 			*m_priv->stream << m_priv->buf;
@@ -623,35 +578,13 @@ struct UniCharMessageBuffer::UniCharMessageBufferPrivate {
 UniCharMessageBuffer::UniCharMessageBuffer() :
 	m_priv(std::make_unique<UniCharMessageBufferPrivate>())
 {
-
-#if defined(STATIC_STRINGSTREAM)
-
-	if (gMessageBufferUseStaticStream)
-	{
-		thread_local static log4cxx::UniChar ossBuf[8192];
-		thread_local static std::basic_ostringstream<log4cxx::UniChar> sStream;
-		thread_local static bool inited = false;
-
-		if (!inited)
-		{
-			inited = true;
-			sStream.rdbuf()->pubsetbuf(ossBuf, 8192);
-
-			ResetStream(sStream);
-		}
-
-		m_priv->stream = &sStream;
-	}
-
-#endif
 }
 
 UniCharMessageBuffer::~UniCharMessageBuffer()
 {
-	if (!gMessageBufferUseStaticStream)
-	{
-		delete m_priv->stream;
-	}
+#if !LOG4CXX_HAS_THREAD_LOCAL
+	delete m_priv->stream;
+#endif
 }
 
 
@@ -714,8 +647,12 @@ UniCharMessageBuffer::operator UniCharMessageBuffer::uostream& ()
 {
 	if (!m_priv->stream)
 	{
-		m_priv->stream = new std::basic_ostringstream<UniChar>();
-
+#if LOG4CXX_HAS_THREAD_LOCAL
+		thread_local static std::basic_ostringstream<log4cxx::UniChar> sStream;
+		m_priv->stream = &sStream;
+#else
+		m_priv->stream = new std::basic_ostringstream<log4cxx::UniChar>();
+#endif
 		if (!m_priv->buf.empty())
 		{
 			*m_priv->stream << m_priv->buf;

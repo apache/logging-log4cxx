@@ -1038,14 +1038,6 @@ void DOMConfigurator::parse(
 		m_priv->repository->setThreshold(thresholdStr);
 	}
 
-	LogString strstrValue = subst(getAttribute(utf8Decoder, element, STRINGSTREAM_ATTR));
-	LogLog::debug(LOG4CXX_STR("Stringstream =\"") + strstrValue + LOG4CXX_STR("\"."));
-
-	if (!strstrValue.empty() && strstrValue != NULL_STRING)
-	{
-		MessageBufferUseStaticStream();
-	}
-
 	LogString threadSignalValue = subst(getAttribute(utf8Decoder, element, THREAD_CONFIG_ATTR));
 
 	if ( !threadSignalValue.empty() && threadSignalValue != NULL_STRING )
