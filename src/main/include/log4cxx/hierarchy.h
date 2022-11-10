@@ -219,6 +219,10 @@ class LOG4CXX_EXPORT Hierarchy :
 		*/
 		void updateChildren(const Logger* parent);
 
+		void clearAppenders();
+
+		void addAppender(AppenderPtr appender);
+
 	private:
 
 		/**
