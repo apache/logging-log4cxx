@@ -31,7 +31,6 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
-#include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/spi/rootlogger.h>
 #include <mutex>
 #include <apr.h>
@@ -300,12 +299,12 @@ bool Hierarchy::isDisabled(int level) const
 	return m_priv->thresholdInt > level;
 }
 
-void Hierarchy::autoConfigure()
+void Hierarchy::ensureIsConfigured(std::function<void()> configurator)
 {
 	std::unique_lock<std::mutex> lock(m_priv->configuredMutex);
 	if (!m_priv->configured)
 	{
-		DefaultConfigurator::configure(shared_from_this());
+		configurator();
 		m_priv->configured = true;
 	}
 }

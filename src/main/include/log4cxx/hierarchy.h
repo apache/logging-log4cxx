@@ -52,9 +52,7 @@ then it creates a provision node for the ancestor and adds itself
 to the provision node. Other descendants of the same ancestor add
 themselves to the previously created provision node.
 */
-class LOG4CXX_EXPORT Hierarchy :
-	public virtual spi::LoggerRepository,
-	public std::enable_shared_from_this<Hierarchy>
+class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 {
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(HierarchyPrivate, m_priv)
@@ -79,9 +77,9 @@ class LOG4CXX_EXPORT Hierarchy :
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
 		/**
-		 * Call DefaultConfigurator::configure if not yet configured.
+		 * Call \c configurator if not yet configured.
 		 */
-		void autoConfigure() override;
+		void ensureIsConfigured(std::function<void()> configurator) override;
 
 		/**
 		This call will clear all logger definitions from the internal

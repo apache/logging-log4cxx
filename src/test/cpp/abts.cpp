@@ -527,8 +527,7 @@ void abts_not_impl(abts_case* tc, const char* message, int lineno)
 
 int main(int argc, const char* const argv[])
 {
-	int i;
-	int rv;
+	int rv = 0;
 	int list_provided = 0;
 	abts_suite* suite = NULL;
 
@@ -540,7 +539,7 @@ int main(int argc, const char* const argv[])
 	quiet = !isatty(STDOUT_FILENO);
 #endif
 
-	for (i = 1; i < argc; i++)
+	for (int i = 1; i < argc; i++)
 	{
 		if (!strcmp(argv[i], "-v"))
 		{
@@ -582,7 +581,7 @@ int main(int argc, const char* const argv[])
 		 */
 		testlist = (const char**) calloc(argc + 1, sizeof(char*));
 
-		for (i = 1; i < argc; i++)
+		for (int i = 1; i < argc; i++)
 		{
 			testlist[i - 1] = argv[i];
 		}

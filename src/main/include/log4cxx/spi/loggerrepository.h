@@ -28,6 +28,7 @@
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/level.h>
 #include <log4cxx/spi/hierarchyeventlistener.h>
+#include <functional>
 
 namespace log4cxx
 {
@@ -58,9 +59,9 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 			listener) = 0;
 
 		/**
-		 * Load the configuration if not yet configured.
+		 * Call \c configurator if not yet configured.
 		 */
-		virtual void autoConfigure() {};
+		virtual void ensureIsConfigured(std::function<void()> configurator) = 0;
 
 		/**
 		Is the repository disabled for a given level? The answer depends

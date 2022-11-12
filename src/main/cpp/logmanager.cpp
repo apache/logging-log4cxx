@@ -21,6 +21,7 @@
 #endif
 
 #include <log4cxx/logmanager.h>
+#include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/spi/defaultrepositoryselector.h>
 #include <log4cxx/hierarchy.h>
 #include <log4cxx/spi/rootlogger.h>
@@ -86,8 +87,7 @@ LoggerPtr LogManager::getRootLogger()
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
 	auto r = getLoggerRepository();
-	if (!r->isConfigured())
-		r->autoConfigure();
+	r->ensureIsConfigured(std::bind(DefaultConfigurator::configure, r));
 	return r->getRootLogger();
 }
 
@@ -97,8 +97,7 @@ Retrieve the appropriate Logger instance.
 LoggerPtr LogManager::getLoggerLS(const LogString& name)
 {
 	auto r = getLoggerRepository();
-	if (!r->isConfigured())
-		r->autoConfigure();
+	r->ensureIsConfigured(std::bind(DefaultConfigurator::configure, r));
 	return r->getLogger(name);
 }
 
@@ -110,8 +109,7 @@ LoggerPtr LogManager::getLoggerLS(const LogString& name,
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
 	auto r = getLoggerRepository();
-	if (!r->isConfigured())
-		r->autoConfigure();
+	r->ensureIsConfigured(std::bind(DefaultConfigurator::configure, r));
 	return r->getLogger(name, factory);
 }
 
