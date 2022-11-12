@@ -83,7 +83,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 *
 		 * @param newAppender appender to add, may not be null.
 		*/
-		void addAppender(const AppenderPtr newAppender);
+		void addAppender(const AppenderPtr newAppender) override;
 
 		virtual void doAppend(const spi::LoggingEventPtr& event,
 			log4cxx::helpers::Pool& pool1);
@@ -101,7 +101,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 * Get iterator over attached appenders.
 		 * @return list of all attached appenders.
 		*/
-		AppenderList getAllAppenders() const;
+		AppenderList getAllAppenders() const override;
 
 		/**
 		 * Get appender by name.
@@ -123,25 +123,25 @@ class LOG4CXX_EXPORT AsyncAppender :
 		* @param appender appender.
 		* @return true if attached.
 		*/
-		bool isAttached(const AppenderPtr appender) const;
+		bool isAttached(const AppenderPtr appender) const override;
 
 		virtual bool requiresLayout() const;
 
 		/**
 		 * Removes and closes all attached appenders.
 		*/
-		void removeAllAppenders();
+		void removeAllAppenders() override;
 
 		/**
 		 * Removes an appender.
 		 * @param appender appender to remove.
 		*/
-		void removeAppender(const AppenderPtr appender);
+		void removeAppender(const AppenderPtr appender) override;
 		/**
 		* Remove appender by name.
 		* @param name name.
 		*/
-		void removeAppender(const LogString& name);
+		void removeAppender(const LogString& name) override;
 
 		/**
 		* The <b>LocationInfo</b> attribute is provided for compatibility

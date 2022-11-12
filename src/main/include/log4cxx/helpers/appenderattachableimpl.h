@@ -37,8 +37,7 @@ namespace helpers
 {
 
 class LOG4CXX_EXPORT AppenderAttachableImpl :
-	public virtual spi::AppenderAttachable,
-	public virtual helpers::Object
+	public virtual spi::AppenderAttachable
 {
 	protected:
 		AppenderList& appenderList();
@@ -62,7 +61,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 * Add an appender.
 		 */
-		virtual void addAppender(const AppenderPtr newAppender);
+		void addAppender(const AppenderPtr newAppender) override;
 
 		/**
 		 Call the <code>doAppend</code> method on all attached appenders.
@@ -73,34 +72,34 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 * Get all previously added appenders as an Enumeration.
 		 */
-		virtual AppenderList getAllAppenders() const;
+		AppenderList getAllAppenders() const override;
 
 		/**
 		 * Get an appender by name.
 		 */
-		virtual AppenderPtr getAppender(const LogString& name) const;
+		AppenderPtr getAppender(const LogString& name) const override;
 
 		/**
 		 Returns <code>true</code> if the specified appender is in the
 		 list of attached appenders, <code>false</code> otherwise.
 		*/
-		virtual bool isAttached(const AppenderPtr appender) const;
+		bool isAttached(const AppenderPtr appender) const override;
 
 		/**
 		 * Remove all previously added appenders.
 		 */
-		virtual void removeAllAppenders();
+		void removeAllAppenders() override;
 
 		/**
 		 * Remove the appender passed as parameter from the list of appenders.
 		 */
-		virtual void removeAppender(const AppenderPtr appender);
+		void removeAppender(const AppenderPtr appender) override;
 
 		/**
 		 * Remove the appender with the name passed as parameter from the
 		 * list of appenders.
 		 */
-		virtual void removeAppender(const LogString& name);
+		void removeAppender(const LogString& name) override;
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)
