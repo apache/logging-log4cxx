@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/ndc.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 
 using namespace log4cxx;

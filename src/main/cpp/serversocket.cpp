@@ -18,6 +18,7 @@
 #include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/private/serversocket_priv.h>
 #include <log4cxx/private/aprserversocket.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx::helpers;
 

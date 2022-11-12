@@ -18,6 +18,7 @@
 #include <log4cxx/private/aprdatagramsocket.h>
 #include <log4cxx/private/datagramsocket_priv.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/private/log4cxx_private.h>
 #include <apr_network_io.h>
 
 using log4cxx::helpers::APRDatagramSocket;

@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

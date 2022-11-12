@@ -64,6 +64,8 @@ try_compile(STD_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tes
     "${CMAKE_CURRENT_LIST_DIR}/test-stdfilesystem.cpp")
 try_compile(STD_EXPERIMENTAL_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-stdexpfilesystem.cpp")
+try_compile(STD_MAKE_UNIQUE_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
+    "${CMAKE_CURRENT_LIST_DIR}/test-make-unique.cpp")
 
 # We need to have all three boost components in order to run our tests
 # Boost thread requires chrono and atomic to work
@@ -85,6 +87,7 @@ if( ${Boost_FOUND} )
     try_compile(Boost_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
         "${CMAKE_CURRENT_LIST_DIR}/test-boostfilesystem.cpp")
 endif( ${Boost_FOUND} )
+
 
 # Link the target with the appropriate boost libraries(if required)
 function(boostfallback_link target)

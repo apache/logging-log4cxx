@@ -32,6 +32,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/private/patternconverter_priv.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::pattern;

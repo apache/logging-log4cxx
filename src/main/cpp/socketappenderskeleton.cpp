@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/private/socketappenderskeleton_priv.h>
+#include <log4cxx/private/log4cxx_private.h>
 #include <functional>
 
 using namespace log4cxx;

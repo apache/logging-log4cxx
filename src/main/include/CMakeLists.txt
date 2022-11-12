@@ -232,6 +232,14 @@ else()
 	set( FILESYSTEM_IMPL "NONE" )
 endif()
 
+if( ${STD_MAKE_UNIQUE_FOUND} )
+    set(STD_MAKE_UNIQUE_IMPL "std::make_unique")
+    set(STD_MAKE_UNIQUE_FOUND 1)
+else()
+    set(STD_MAKE_UNIQUE_IMPL "log4cxx std::make_unique")
+    set(STD_MAKE_UNIQUE_FOUND 0)
+endif()
+
 # Configure both our private header and our public header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h

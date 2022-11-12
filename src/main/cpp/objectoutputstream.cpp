@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/outputstream.h>
 #include <log4cxx/helpers/charsetencoder.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
