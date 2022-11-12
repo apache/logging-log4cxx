@@ -126,9 +126,9 @@ void RollingPolicyBase::formatFileName(
 		converterIter != m_priv->patternConverters.end();
 		converterIter++, formatterIter++)
 	{
-		int startField = toAppendTo.length();
+		auto startField = toAppendTo.length();
 		(*converterIter)->format(obj, toAppendTo, pool);
-		(*formatterIter)->format(startField, toAppendTo);
+		(*formatterIter)->format((int)startField, toAppendTo);
 	}
 }
 
