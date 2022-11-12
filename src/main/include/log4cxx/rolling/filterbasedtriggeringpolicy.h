@@ -106,7 +106,7 @@ class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy
 		 * Returns the head Filter.
 		 *
 		 */
-		log4cxx::spi::FilterPtr& getFilter();
+		spi::FilterPtr& getFilter();
 
 		/**
 		 *  Prepares the instance for use.

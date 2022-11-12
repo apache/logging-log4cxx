@@ -85,17 +85,17 @@ class LOG4CXX_EXPORT AsyncAppender :
 		*/
 		void addAppender(const AppenderPtr newAppender) override;
 
-		virtual void doAppend(const spi::LoggingEventPtr& event,
-			log4cxx::helpers::Pool& pool1);
+		void doAppend(const spi::LoggingEventPtr& event,
+			log4cxx::helpers::Pool& pool1) override;
 
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
 
 		/**
 		Close this <code>AsyncAppender</code> by interrupting the
 		dispatcher thread which will process all pending events before
 		exiting.
 		*/
-		void close();
+		void close() override;
 
 		/**
 		 * Get iterator over attached appenders.
@@ -109,7 +109,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 * @param name name, may not be null.
 		 * @return matching appender or null.
 		*/
-		AppenderPtr getAppender(const LogString& name) const;
+		AppenderPtr getAppender(const LogString& name) const override;
 
 		/**
 		 * Gets whether the location of the logging request call
@@ -125,7 +125,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		*/
 		bool isAttached(const AppenderPtr appender) const override;
 
-		virtual bool requiresLayout() const;
+		bool requiresLayout() const override;
 
 		/**
 		 * Removes and closes all attached appenders.

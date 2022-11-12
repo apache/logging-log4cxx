@@ -177,7 +177,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		/**
 		  * Close appender.  Waits for any asynchronous file compression actions to be completed.
 		*/
-		void close();
+		void close() override;
 
 	protected:
 		/**

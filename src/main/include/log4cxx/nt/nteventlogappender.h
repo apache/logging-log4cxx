@@ -49,15 +49,15 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		virtual ~NTEventLogAppender();
 
 		void activateOptions(log4cxx::helpers::Pool& p) override;
-		virtual void close();
-		virtual void setOption(const LogString& option, const LogString& value) override;
+		void close() override;
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		 * The SocketAppender does not use a layout. Hence, this method
 		 * returns <code>false</code>.
 		 *
 		 */
-		bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return true;
 		}

@@ -137,18 +137,18 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value) override;
+		void setOption(const LogString& option, const LogString& value) override;
 
-		virtual void close();
+		void close() override;
 
 		/**
 		Append an event to all of current connections. */
-		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
 
 		/**
 		The SocketHubAppender does not use a layout. Hence, this method returns
 		<code>false</code>. */
-		virtual bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return false;
 		}

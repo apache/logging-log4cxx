@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		layout.
 
 		*/
-		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
 
 
 	protected:
@@ -120,7 +120,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		<p>Closed appenders cannot be reused.
 		*/
-		virtual void close();
+		void close() override;
 
 	protected:
 		/**
@@ -158,7 +158,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		const log4cxx::helpers::WriterPtr getWriter() const;
 
-		virtual bool requiresLayout() const;
+		bool requiresLayout() const override;
 
 	protected:
 		/**

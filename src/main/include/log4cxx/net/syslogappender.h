@@ -60,7 +60,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 			const LogString& syslogHost, int syslogFacility);
 		~SyslogAppender();
 		/** Release any resources held by this SyslogAppender.*/
-		void close();
+		void close() override;
 
 		/**
 		Returns the specified syslog facility as a lower-case String,
@@ -78,7 +78,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		*/
 		static int getFacility(const LogString& facilityName);
 
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
 
 		/**
 		This method returns immediately as options are activated when they
@@ -91,7 +91,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		The SyslogAppender requires a layout. Hence, this method returns
 		<code>true</code>.
 		*/
-		virtual bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return true;
 		}

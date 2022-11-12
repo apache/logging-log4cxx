@@ -173,7 +173,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		* connection if it is open.
 		*/
 	public:
-		virtual void close();
+		void close() override;
 
 		/**
 		* loops through the buffer of LoggingEvents, gets a
@@ -187,7 +187,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		* ODBCAppender requires a layout.
 		* */
-		virtual bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return true;
 		}

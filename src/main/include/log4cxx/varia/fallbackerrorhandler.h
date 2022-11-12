@@ -58,13 +58,13 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		<em>Adds</em> the logger passed as parameter to the list of
 		loggers that we need to search for in case of appender failure.
 		*/
-		void setLogger(const LoggerPtr& logger);
+		void setLogger(const LoggerPtr& logger) override;
 
 
 		/**
 		No options to activate.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
 		void setOption(const LogString& option, const LogString& value) override;
 
 
@@ -73,31 +73,31 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		<code>System.err</code>.
 		*/
 		void error(const LogString& message, const std::exception& e,
-			int errorCode) const;
+			int errorCode) const override;
 
 		/**
 		Prints the message and the stack trace of the exception on
 		<code>System.err</code>.
 		*/
 		void error(const LogString& message, const std::exception& e,
-			int errorCode, const spi::LoggingEventPtr& event) const;
+			int errorCode, const spi::LoggingEventPtr& event) const override;
 
 
 		/**
 		Print a the error message passed as parameter on
 		<code>System.err</code>.
 		*/
-		void error(const LogString& /* message */) const {}
+		void error(const LogString& /* message */) const override {}
 
 		/**
 		The appender to which this error handler is attached.
 		*/
-		void setAppender(const AppenderPtr& primary);
+		void setAppender(const AppenderPtr& primary) override;
 
 		/**
 		Set the backup appender.
 		*/
-		void setBackupAppender(const AppenderPtr& backup);
+		void setBackupAppender(const AppenderPtr& backup) override;
 };
 LOG4CXX_PTR_DEF(FallbackErrorHandler);
 

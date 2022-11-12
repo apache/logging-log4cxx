@@ -94,10 +94,10 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		Perform SMTPAppender specific appending actions, mainly adding
 		the event to a cyclic buffer and checking if the event triggers
 		an e-mail to be sent. */
-		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
 
 
-		virtual void close();
+		void close() override;
 
 		/**
 		Returns value of the <b>To</b> option.
@@ -118,7 +118,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		/**
 		The <code>SMTPAppender</code> requires a {@link
 		Layout layout}.  */
-		virtual bool requiresLayout() const;
+		bool requiresLayout() const override;
 
 		/**
 		Send the contents of the cyclic buffer as an e-mail message.
