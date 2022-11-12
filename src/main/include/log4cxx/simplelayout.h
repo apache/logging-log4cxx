@@ -71,8 +71,8 @@ class LOG4CXX_EXPORT SimpleLayout : public Layout
 			return true;
 		}
 
-		virtual void activateOptions(log4cxx::helpers::Pool& /* p */) {}
-		virtual void setOption(const LogString& /* option */,
+		void activateOptions(log4cxx::helpers::Pool& /* p */) override {}
+		void setOption(const LogString& /* option */,
 			const LogString& /* value */) {}
 };
 LOG4CXX_PTR_DEF(SimpleLayout);

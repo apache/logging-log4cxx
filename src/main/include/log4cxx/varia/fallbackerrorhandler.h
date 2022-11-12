@@ -65,7 +65,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		No options to activate.
 		*/
 		void activateOptions(log4cxx::helpers::Pool& p);
-		void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 
 		/**

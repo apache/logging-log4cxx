@@ -116,12 +116,12 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		virtual void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Activate the specified options.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
 
 		/**
 		* Adds the event to the buffer.  When full the buffer is flushed.

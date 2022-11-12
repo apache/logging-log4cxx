@@ -73,8 +73,7 @@ class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Set the <code>LevelMin</code> option.

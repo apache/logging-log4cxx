@@ -123,8 +123,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
 		void fireConnector();
 
-		void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 	protected:
 		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);

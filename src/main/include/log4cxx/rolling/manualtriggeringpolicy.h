@@ -67,8 +67,8 @@ class LOG4CXX_EXPORT ManualTriggeringPolicy : public TriggeringPolicy
 			const LogString& filename,
 			size_t fileLength);
 
-		void activateOptions(log4cxx::helpers::Pool&);
-		void setOption(const LogString& option, const LogString& value);
+		void activateOptions(log4cxx::helpers::Pool&) override;
+		void setOption(const LogString& option, const LogString& value) override;
 };
 }
 }

@@ -67,8 +67,8 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		/**
 		No options to activate.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p);
-		void setOption(const LogString& option, const LogString& value);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void setOption(const LogString& option, const LogString& value) override;
 
 
 		/**

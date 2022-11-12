@@ -74,8 +74,8 @@ class LOG4CXX_EXPORT SizeBasedTriggeringPolicy : public TriggeringPolicy
 
 		void setMaxFileSize(size_t l);
 
-		void activateOptions(log4cxx::helpers::Pool&);
-		void setOption(const LogString& option, const LogString& value);
+		void activateOptions(log4cxx::helpers::Pool&) override;
+		void setOption(const LogString& option, const LogString& value) override;
 };
 
 LOG4CXX_PTR_DEF(SizeBasedTriggeringPolicy);

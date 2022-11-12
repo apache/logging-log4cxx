@@ -111,9 +111,9 @@ class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy
 		/**
 		 *  Prepares the instance for use.
 		 */
-		void activateOptions(log4cxx::helpers::Pool&);
+		void activateOptions(log4cxx::helpers::Pool&) override;
 
-		void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 };
 
 LOG4CXX_PTR_DEF(FilterBasedTriggeringPolicy);

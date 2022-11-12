@@ -100,12 +100,12 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 		/** all of the options have been set, create the socket handler and
 		wait for connections. */
-		void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
 
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Returns value of the <b>Port</b> option.

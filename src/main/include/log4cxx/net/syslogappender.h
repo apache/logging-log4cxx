@@ -84,8 +84,8 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		This method returns immediately as options are activated when they
 		are set.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p);
-		void setOption(const LogString& option, const LogString& value);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		The SyslogAppender requires a layout. Hence, this method returns

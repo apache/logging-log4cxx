@@ -130,7 +130,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		void setOption( const LogString& option, const LogString& value ) override;
 
 		/** Prepares RollingFileAppender for use. */
-		void activateOptions( log4cxx::helpers::Pool& pool );
+		void activateOptions(log4cxx::helpers::Pool& pool ) override;
 
 		/**
 		   Implements the usual roll over behaviour.

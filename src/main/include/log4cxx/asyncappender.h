@@ -186,7 +186,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 * @param option property name.
 		 * @param value property value.
 		 */
-		void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 
 	private:

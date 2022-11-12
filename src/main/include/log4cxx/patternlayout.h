@@ -393,7 +393,7 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		/**
 		 * Call createPatternParser
 		 */
-		virtual void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
 
 		virtual void setOption(const LogString& option, const LogString& value);
 

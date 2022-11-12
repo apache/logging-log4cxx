@@ -60,8 +60,7 @@ class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		void setKeyValue(const LogString& strKey, const LogString& strValue);
 

@@ -75,7 +75,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		requires it.
 		*/
 		virtual void activateOptions(log4cxx::helpers::Pool& /* pool */) {}
-		virtual void setOption(const LogString& option, const LogString& value);
+		virtual void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Add a filter to end of the filter list.

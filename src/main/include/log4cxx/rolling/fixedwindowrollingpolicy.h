@@ -90,9 +90,8 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		FixedWindowRollingPolicy();
 		~FixedWindowRollingPolicy();
 
-		void activateOptions(log4cxx::helpers::Pool& p);
-		void setOption(const LogString& option,
-			const LogString& value);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void setOption(const LogString& option, const LogString& value) override;
 
 		void rollover();
 

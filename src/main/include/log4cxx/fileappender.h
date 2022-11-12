@@ -117,9 +117,8 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 
 		<p>If there was already an opened file, then the previous file
 		is closed first.*/
-		void activateOptions(log4cxx::helpers::Pool& p);
-		void setOption(const LogString& option,
-			const LogString& value);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Get the value of the <b>BufferedIO</b> option.

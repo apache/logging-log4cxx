@@ -132,12 +132,12 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 		/**
 		Set up the socket server on the specified port.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
 
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		virtual void setOption(const LogString& option, const LogString& value) override;
 
 		virtual void close();
 

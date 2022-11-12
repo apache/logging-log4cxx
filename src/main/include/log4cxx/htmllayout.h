@@ -81,12 +81,12 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		/**
 		No options to activate.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& /* p */) {}
+		void activateOptions(log4cxx::helpers::Pool& /* p */) override {}
 
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		virtual void setOption(const LogString& option, const LogString& value) override;
 
 		virtual void format(LogString& output,
 			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;

@@ -66,7 +66,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& pool);
+		void activateOptions(log4cxx::helpers::Pool& pool) override;
 
 		/**
 		If the <b>ImmediateFlush</b> option is set to
@@ -140,8 +140,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 	public:
 		LogString getEncoding() const;
 		void setEncoding(const LogString& value);
-		void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		  <p>Sets the Writer where the log output will go. The

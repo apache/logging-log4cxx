@@ -47,7 +47,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public FileAppender
 	public:
 		MultiprocessRollingFileAppender();
 
-		void activateOptions(log4cxx::helpers::Pool&);
+		void activateOptions(log4cxx::helpers::Pool&) override;
 
 
 		/**

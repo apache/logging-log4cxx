@@ -65,8 +65,7 @@ Linux ipchains.
 <p>Note that filtering is only supported by the {@link
 xml::DOMConfigurator DOMConfigurator}.
 */
-class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
-	public virtual helpers::Object
+class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 {
 	protected:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilterPrivate, m_priv)
@@ -110,8 +109,8 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
 
 		default do-nothing implementation for convenience.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p);
-		void setOption(const LogString& option, const LogString& value);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void setOption(const LogString& option, const LogString& value) override override;
 
 		/**
 		<p>If the decision is <code>DENY</code>, then the event will be

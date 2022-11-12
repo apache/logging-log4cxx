@@ -66,8 +66,8 @@ class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
 		* */
 		LogString getTarget() const;
 
-		void activateOptions(log4cxx::helpers::Pool& p);
-		void setOption(const LogString& option, const LogString& value);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void setOption(const LogString& option, const LogString& value) override;
 		static const LogString& getSystemOut();
 		static const LogString& getSystemErr();
 

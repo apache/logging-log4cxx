@@ -104,7 +104,7 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option,
+		void setOption(const LogString& option,
 			const LogString& value);
 
 		/**

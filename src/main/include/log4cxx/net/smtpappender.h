@@ -82,13 +82,13 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		/**
 		 Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Activate the specified options, such as the smtp host, the
 		recipient, from, etc.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(log4cxx::helpers::Pool& p) override;
 
 		/**
 		Perform SMTPAppender specific appending actions, mainly adding
