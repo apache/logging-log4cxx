@@ -108,7 +108,7 @@ static void end_suite(abts_suite* suite)
 		}
 		else
 		{
-			fprintf(stdout, "FAILED %d of %d\n", last->failed.size(), last->num_test);
+			fprintf(stdout, "FAILED %d of %d\n", (int)last->failed.size(), last->num_test);
 			fflush(stdout);
 		}
 	}
@@ -217,7 +217,7 @@ void abts_run_test(abts_suite* ts, const char* name, test_func f, void* value)
 
 static int report(abts_suite* suite)
 {
-	int count = 0;
+	size_t count = 0;
 	sub_suite* dptr;
 
 	if (suite && suite->tail && !suite->tail->not_run)
@@ -251,7 +251,7 @@ static int report(abts_suite* suite)
 		{
 			float percent = ((float)dptr->failed.size() / (float)dptr->num_test);
 			fprintf(stdout, "%-15s\t\t%5d\t%4d\t%6.2f%%\n", dptr->name,
-				dptr->num_test, dptr->failed.size(), percent * 100);
+				dptr->num_test, (int)dptr->failed.size(), percent * 100);
 			for( const char* failed_name : dptr->failed ){
 				fprintf(stdout, "  %s\n", failed_name );
 			}
