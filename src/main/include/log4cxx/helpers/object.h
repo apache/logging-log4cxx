@@ -49,13 +49,13 @@
 				return new object();\
 			}\
 	};\
-	virtual const helpers::Class& getClass() const;\
+	const helpers::Class& getClass() const override;\
 	static const helpers::Class& getStaticClass(); \
 	static const log4cxx::helpers::ClassRegistration& registerClass();
 
 #define DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
 	public:\
-	virtual const helpers::Class& getClass() const;\
+	const helpers::Class& getClass() const override;\
 	static const helpers::Class& getStaticClass();\
 	static const log4cxx::helpers::ClassRegistration&  registerClass();
 
@@ -139,7 +139,7 @@ std::shared_ptr<Ret> cast(const std::shared_ptr<Type>& incoming)
 }
 
 #define BEGIN_LOG4CXX_CAST_MAP()\
-	const void * cast(const helpers::Class& clazz) const\
+	const void * cast(const helpers::Class& clazz) const override\
 	{\
 		const void * object = 0;\
 		if (&clazz == &helpers::Object::getStaticClass()) return (const helpers::Object *)this;
@@ -147,7 +147,7 @@ std::shared_ptr<Ret> cast(const std::shared_ptr<Type>& incoming)
 #define END_LOG4CXX_CAST_MAP()\
 	return object;\
 	}\
-	bool instanceof(const helpers::Class& clazz) const\
+	bool instanceof(const helpers::Class& clazz) const override\
 	{ return cast(clazz) != 0; }
 
 #define LOG4CXX_CAST_ENTRY(Interface)\

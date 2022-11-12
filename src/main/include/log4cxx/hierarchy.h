@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		  @param name The name of the logger to search for.
 
 		*/
-		LoggerPtr exists(const LogString& name);
+		LoggerPtr exists(const LogString& name) override;
 
 		/**
 		The string form of {@link #setThreshold(const LevelPtr&) setThreshold}.
@@ -160,7 +160,7 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 
 		<p>The root logger is <em>not</em> included in the returned
 		LoggerList.  */
-		LoggerList getCurrentLoggers() const;
+		LoggerList getCurrentLoggers() const override;
 
 		/**
 		Get the root of this hierarchy.
