@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/classregistration.h>
 
 
-#define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
+#define DECLARE_LOG4CXX_CLAZZ_OBJECT(object)\
 	public:\
 	class Clazz##object : public helpers::Class\
 	{\
@@ -32,9 +32,12 @@
 			virtual ~Clazz##object() {}\
 			virtual log4cxx::LogString getName() const { return LOG4CXX_STR(#object); } \
 	};\
-	virtual const helpers::Class& getClass() const;\
 	static const helpers::Class& getStaticClass(); \
 	static const log4cxx::helpers::ClassRegistration& registerClass();
+
+#define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
+	DECLARE_LOG4CXX_CLAZZ_OBJECT(object)\
+	const helpers::Class& getClass() const override;
 
 #define DECLARE_LOG4CXX_OBJECT(object)\
 	public:\
@@ -101,10 +104,11 @@ class Pool;
 class LOG4CXX_EXPORT Object
 {
 	public:
-		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Object)
 		virtual ~Object() {}
+		virtual const helpers::Class& getClass() const = 0;
 		virtual bool instanceof(const Class& clazz) const = 0;
 		virtual const void* cast(const Class& clazz) const = 0;
+		DECLARE_LOG4CXX_CLAZZ_OBJECT(Object)
 };
 LOG4CXX_PTR_DEF(Object);
 }
