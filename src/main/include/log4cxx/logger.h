@@ -875,7 +875,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Is the appender passed as parameter attached to this logger?
 		*/
-		bool isAttached(const AppenderPtr appender) const;
+		bool isAttached(const AppenderPtr appender) const override;
 
 		/**
 		 *  Check whether this logger is enabled for the <code>DEBUG</code>
@@ -1405,18 +1405,18 @@ class LOG4CXX_EXPORT Logger :
 		instance.
 		<p>This is useful when re-reading configuration information.
 		*/
-		void removeAllAppenders();
+		void removeAllAppenders() override;
 
 		/**
 		Remove the appender passed as parameter form the list of appenders.
 		*/
-		void removeAppender(const AppenderPtr appender);
+		void removeAppender(const AppenderPtr appender) override;
 
 		/**
 		Remove the appender with the name passed as parameter form the
 		list of appenders.
 		 */
-		void removeAppender(const LogString& name);
+		void removeAppender(const LogString& name) override;
 
 		/**
 		 Set the additivity flag for this Logger instance.
