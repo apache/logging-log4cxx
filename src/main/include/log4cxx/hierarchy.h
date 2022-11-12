@@ -77,7 +77,7 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
 		/**
-		 * Call DefaultConfigurator::configure if not yet configured.
+		 * Call \c configurator if not yet configured.
 		 */
 		void ensureIsConfigured(std::function<void()> configurator) override;
 
