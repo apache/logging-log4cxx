@@ -53,11 +53,11 @@ class NullPointerAppender : public AppenderSkeleton
 			throw NullPointerException(LOG4CXX_STR("Intentional NullPointerException"));
 		}
 
-		void close()
+		void close() override
 		{
 		}
 
-		bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return false;
 		}

@@ -34,21 +34,21 @@ public:
 
 	NullWriterAppender(){}
 
-	virtual void close(){}
+	void close() override{}
 
-	virtual bool requiresLayout() const {
+	bool requiresLayout() const override {
 		return false;
 	}
 
-	virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p){
+	void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override {
 		// This gets called whenever there is a valid event for our appender.
 	}
 
-	virtual void activateOptions(log4cxx::helpers::Pool& /* pool */) {
+	void activateOptions(log4cxx::helpers::Pool& /* pool */) override {
 		// Given all of our options, do something useful(e.g. open a file)
 	}
 
-	virtual void setOption(const LogString& option, const LogString& value){
+	void setOption(const LogString& option, const LogString& value) override {
 		if (helpers::StringHelper::equalsIgnoreCase(option,
 										   LOG4CXX_STR("SOMEVALUE"), LOG4CXX_STR("somevalue"))){
 			// Do something with the 'value' here.
