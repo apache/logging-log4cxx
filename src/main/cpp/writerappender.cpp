@@ -21,7 +21,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/private/writerappender_priv.h>
-#include <log4cxx/private/log4cxx_private.h>
 #include <mutex>
 
 using namespace log4cxx;

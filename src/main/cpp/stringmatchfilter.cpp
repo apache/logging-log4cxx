@@ -21,7 +21,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/private/filter_priv.h>
-#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::filter;

@@ -45,7 +45,6 @@
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/helpers/messagebuffer.h>
 #include <log4cxx/helpers/threadutility.h>
-#include <log4cxx/private/log4cxx_private.h>
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>

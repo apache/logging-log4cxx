@@ -34,7 +34,6 @@
 #include <log4cxx/boost-std-configuration.h>
 #include <iostream>
 #include <apr_mmap.h>
-#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;

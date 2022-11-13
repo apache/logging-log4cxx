@@ -17,7 +17,6 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/datagrampacket.h>
-#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx::helpers;
 

@@ -18,7 +18,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/private/filter_priv.h>
-#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;

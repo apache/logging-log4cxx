@@ -19,7 +19,6 @@
 #include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <log4cxx/private/log4cxx_private.h>
 
 #include <cstdio>
 #include <cstring>

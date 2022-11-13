@@ -17,7 +17,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/action.h>
 #include <log4cxx/private/action_priv.h>
-#include <log4cxx/private/log4cxx_private.h>
 #include <mutex>
 #include <memory>
 

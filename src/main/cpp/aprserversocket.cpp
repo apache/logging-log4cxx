@@ -18,7 +18,6 @@
 #include <log4cxx/private/aprserversocket.h>
 #include <log4cxx/private/serversocket_priv.h>
 #include <log4cxx/private/aprsocket.h>
-#include <log4cxx/private/log4cxx_private.h>
 #include "apr_network_io.h"
 #include "apr_pools.h"
 #include "apr_poll.h"
