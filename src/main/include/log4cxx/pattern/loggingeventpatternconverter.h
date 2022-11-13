@@ -67,7 +67,7 @@ class LOG4CXX_EXPORT LoggingEventPatternConverter : public PatternConverter
 
 		void format(const log4cxx::helpers::ObjectPtr& obj,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const;
+			helpers::Pool& p) const override;
 
 		/**
 		 * Normally pattern converters are not meant to handle Exceptions although

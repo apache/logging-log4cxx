@@ -55,7 +55,7 @@ class LOG4CXX_EXPORT NDCPatternConverter : public LoggingEventPatternConverter
 
 		void format(const log4cxx::spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const;
+			helpers::Pool& p) const override;
 };
 }
 }

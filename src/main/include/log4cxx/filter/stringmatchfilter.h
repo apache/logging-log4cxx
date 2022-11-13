@@ -84,7 +84,7 @@ class LOG4CXX_EXPORT StringMatchFilter : public spi::Filter
 		Returns {@link log4cxx::spi::Filter#NEUTRAL NEUTRAL}
 		is there is no string match.
 		*/
-		FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 }; // class StringMatchFilter
 LOG4CXX_PTR_DEF(StringMatchFilter);
 }  // namespace filter

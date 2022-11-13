@@ -65,7 +65,7 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 
 		void format(const log4cxx::spi::LoggingEventPtr& event,
 			LogString& output,
-			log4cxx::helpers::Pool& p) const;
+			helpers::Pool& p) const override;
 		void format(const log4cxx::helpers::ObjectPtr& obj,
 			LogString& output,
 			log4cxx::helpers::Pool& p) const;

@@ -86,7 +86,7 @@ class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
 		{@link spi::Filter#DENY DENY} if the
 		<b>AcceptOnMatch</b> property is set to false.
 		*/
-		FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 }; // class LevelMatchFilter
 LOG4CXX_PTR_DEF(LevelMatchFilter);
 }  // namespace filter

@@ -117,7 +117,7 @@ class LOG4CXX_EXPORT ExpressionFilter: public log4cxx::spi::Filter
 		/**
 		   Returns {@link log4cxx::spi::Filter#NEUTRAL} is there is no string match.
 		 */
-		FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 };
 }
 }

@@ -56,7 +56,7 @@ class LOG4CXX_EXPORT LiteralPatternConverter : public LoggingEventPatternConvert
 
 		void format(const log4cxx::spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const;
+			helpers::Pool& p) const override;
 
 		void format(const log4cxx::helpers::ObjectPtr& obj,
 			LogString& toAppendTo,
