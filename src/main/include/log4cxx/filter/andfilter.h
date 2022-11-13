@@ -93,11 +93,11 @@ class LOG4CXX_EXPORT AndFilter: public log4cxx::spi::Filter
 		AndFilter();
 		~AndFilter();
 
-		void addFilter(const log4cxx::spi::FilterPtr& filter);
+		void addFilter(const spi::FilterPtr& filter);
 
 		void setAcceptOnMatch(bool acceptOnMatch);
 
-		FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 };
 LOG4CXX_PTR_DEF(AndFilter);
 

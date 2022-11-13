@@ -70,7 +70,7 @@ NameAbbreviatorPtr NamePatternConverter::getAbbreviator(
  * @param nameStart starting position of name to abbreviate.
  * @param buf string buffer containing name.
  */
-void NamePatternConverter::abbreviate(int nameStart, LogString& buf) const
+void NamePatternConverter::abbreviate(LogString::size_type nameStart, LogString& buf) const
 {
 	priv->abbreviator->abbreviate(nameStart, buf);
 }

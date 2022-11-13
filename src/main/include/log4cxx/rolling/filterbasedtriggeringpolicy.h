@@ -94,7 +94,7 @@ class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy
 		 * Add a filter to end of the filter list.
 		 * @param newFilter filter to add to end of list.
 		 */
-		void addFilter(const log4cxx::spi::FilterPtr& newFilter);
+		void addFilter(const spi::FilterPtr& newFilter);
 
 		/**
 		 * Clear the filters chain.
