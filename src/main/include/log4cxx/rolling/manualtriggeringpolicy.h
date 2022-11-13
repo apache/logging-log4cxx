@@ -63,7 +63,7 @@ class LOG4CXX_EXPORT ManualTriggeringPolicy : public TriggeringPolicy
 		 */
 		bool isTriggeringEvent(
 			Appender* appender,
-			const log4cxx::spi::LoggingEventPtr& event,
+			const spi::LoggingEventPtr& event,
 			const LogString& filename,
 			size_t fileLength) override;
 
