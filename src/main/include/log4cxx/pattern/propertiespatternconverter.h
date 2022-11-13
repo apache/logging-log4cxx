@@ -66,7 +66,7 @@ class LOG4CXX_EXPORT PropertiesPatternConverter
 
 		void format(const spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const;
+			log4cxx::helpers::Pool& p) const override;
 };
 }
 }

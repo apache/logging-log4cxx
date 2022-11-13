@@ -67,7 +67,7 @@ class LOG4CXX_EXPORT ThrowableInformationPatternConverter
 		 * This converter obviously handles throwables.
 		 * @return true.
 		 */
-		bool handlesThrowable() const;
+		bool handlesThrowable() const override;
 };
 }
 }
