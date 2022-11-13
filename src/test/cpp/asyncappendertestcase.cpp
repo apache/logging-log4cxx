@@ -48,7 +48,7 @@ class NullPointerAppender : public AppenderSkeleton
 		/**
 		 * @{inheritDoc}
 		 */
-		void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&)
+		void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&) override
 		{
 			throw NullPointerException(LOG4CXX_STR("Intentional NullPointerException"));
 		}
@@ -81,7 +81,7 @@ class BlockableVectorAppender : public VectorAppender
 		/**
 		 * {@inheritDoc}
 		 */
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
 		{
 			std::unique_lock<std::mutex> lock( blocker );
 			VectorAppender::append(event, p);
