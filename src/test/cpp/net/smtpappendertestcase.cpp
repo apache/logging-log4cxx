@@ -52,7 +52,7 @@ class MockTriggeringEventEvaluator :
 		{
 		}
 
-		virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event)
+		bool isTriggeringEvent(const spi::LoggingEventPtr& event) override
 		{
 			return true;
 		}

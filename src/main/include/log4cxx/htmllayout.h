@@ -76,35 +76,35 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		/**
 		Returns the content type output by this layout, i.e "text/html".
 		*/
-		virtual LogString getContentType() const;
+		LogString getContentType() const override;
 
 		/**
 		No options to activate.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& /* p */) {}
+		void activateOptions(helpers::Pool& /* p */) override {}
 
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
-		virtual void format(LogString& output,
-			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;
+		void format(LogString& output,
+			const spi::LoggingEventPtr& event, helpers::Pool& pool) const override;
 
 		/**
 		Append appropriate HTML headers.
 		*/
-		virtual void appendHeader(LogString& output, log4cxx::helpers::Pool& pool);
+		void appendHeader(LogString& output, helpers::Pool& pool) override;
 
 		/**
 		Append the appropriate HTML footers.
 		*/
-		virtual void appendFooter(LogString& output, log4cxx::helpers::Pool& pool);
+		void appendFooter(LogString& output, helpers::Pool& pool) override;
 
 		/**
 		The HTML layout handles the throwable contained in logging
 		events. Hence, this method return <code>false</code>.  */
-		bool ignoresThrowable() const;
+		bool ignoresThrowable() const override;
 
 }; // class HtmlLayout
 LOG4CXX_PTR_DEF(HTMLLayout);

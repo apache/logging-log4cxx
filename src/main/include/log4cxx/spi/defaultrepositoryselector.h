@@ -39,7 +39,7 @@ class LOG4CXX_EXPORT DefaultRepositorySelector :
 
 		DefaultRepositorySelector(const LoggerRepositoryPtr repository1);
 		~DefaultRepositorySelector();
-		virtual LoggerRepositoryPtr getLoggerRepository();
+		LoggerRepositoryPtr getLoggerRepository() override;
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(DefaultRepositorySelectorPrivate, m_priv)

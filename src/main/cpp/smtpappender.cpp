@@ -365,7 +365,7 @@ class LOG4CXX_EXPORT DefaultEvaluator :
 		has ERROR level or higher. Otherwise it returns
 		<code>false</code>.
 		*/
-		virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event);
+		bool isTriggeringEvent(const spi::LoggingEventPtr& event) override;
 	private:
 		DefaultEvaluator(const DefaultEvaluator&);
 		DefaultEvaluator& operator=(const DefaultEvaluator&);

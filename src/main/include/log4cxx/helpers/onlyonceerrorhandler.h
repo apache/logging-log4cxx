@@ -61,43 +61,43 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		/**
 		 Does not do anything.
 		 */
-		void setLogger(const LoggerPtr& logger);
+		void setLogger(const LoggerPtr& logger) override;
 
 
 		/**
 		No options to activate.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p);
-		void setOption(const LogString& option, const LogString& value);
+		void activateOptions(helpers::Pool& p) override;
+		void setOption(const LogString& option, const LogString& value) override;
 
 
 		/**
 		Prints the message and the stack trace of the exception on
 		<code>System.err</code>.  */
 		void error(const LogString& message, const std::exception& e,
-			int errorCode) const;
+			int errorCode) const override;
 		/**
 		Prints the message and the stack trace of the exception on
 		<code>System.err</code>.
 		*/
 		void error(const LogString& message, const std::exception& e,
-			int errorCode, const spi::LoggingEventPtr& event) const;
+			int errorCode, const spi::LoggingEventPtr& event) const override;
 
 		/**
 		Print a the error message passed as parameter on
 		<code>System.err</code>.
 		*/
-		void error(const LogString& message) const;
+		void error(const LogString& message) const override;
 
 		/**
 		Does not do anything.
 		*/
-		void setAppender(const AppenderPtr& appender);
+		void setAppender(const AppenderPtr& appender) override;
 
 		/**
 		Does not do anything.
 		*/
-		void setBackupAppender(const AppenderPtr& appender);
+		void setBackupAppender(const AppenderPtr& appender) override;
 };
 }  // namespace helpers
 } // namespace log4cxx

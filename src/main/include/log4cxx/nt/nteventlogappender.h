@@ -48,16 +48,16 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 
 		virtual ~NTEventLogAppender();
 
-		virtual void activateOptions(log4cxx::helpers::Pool& p);
-		virtual void close();
-		virtual void setOption(const LogString& option, const LogString& value);
+		void activateOptions(helpers::Pool& p) override;
+		void close() override;
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		 * The SocketAppender does not use a layout. Hence, this method
 		 * returns <code>false</code>.
 		 *
 		 */
-		bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return true;
 		}
@@ -83,7 +83,7 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		typedef void SID;
 		typedef void* HANDLE;
 
-		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 		static unsigned short getEventType(const spi::LoggingEventPtr& event);
 		static unsigned short getEventCategory(const spi::LoggingEventPtr& event);
 		/*

@@ -68,7 +68,7 @@ class LOG4CXX_EXPORT FileInputStream : public InputStream
 		 * Closes this file input stream and releases any system
 		 * resources associated with the stream.
 		 */
-		virtual void close();
+		void close() override;
 
 		/**
 		 * Reads a sequence of bytes into the given buffer.
@@ -77,7 +77,7 @@ class LOG4CXX_EXPORT FileInputStream : public InputStream
 		 * @return the total number of bytes read into the buffer, or -1 if there
 		 *         is no more data because the end of the stream has been reached.
 		 */
-		virtual int read(ByteBuffer& buf);
+		int read(ByteBuffer& buf) override;
 
 	private:
 

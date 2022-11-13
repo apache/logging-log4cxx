@@ -423,6 +423,7 @@ void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
 	if (syslogHost1 != LOG4CXX_STR("localhost") && syslogHost1 != LOG4CXX_STR("127.0.0.1")
 		&& !syslogHost1.empty())
 #endif
+	{
 		if (slHostPort >= 0)
 		{
 			_priv->sw = std::make_unique<SyslogWriter>(slHost, slHostPort);
@@ -431,6 +432,7 @@ void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
 		{
 			_priv->sw = std::make_unique<SyslogWriter>(slHost);
 		}
+	}
 
 	_priv->syslogHost = slHost;
 	_priv->syslogHostPort = slHostPort;

@@ -49,7 +49,7 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		FileAppender#setFile File} and {@link
 		FileAppender#setAppend Append} options both of
 		which are ambigous until the other is also set.  */
-		virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
+		virtual void activateOptions(helpers::Pool& p) = 0;
 
 
 		/**

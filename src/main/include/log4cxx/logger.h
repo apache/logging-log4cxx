@@ -47,8 +47,7 @@ This is the central class in the log4cxx package. Most logging
 operations, except configuration, are done through this class.
 */
 class LOG4CXX_EXPORT Logger :
-	public virtual log4cxx::spi::AppenderAttachable,
-	public virtual helpers::Object
+	public virtual log4cxx::spi::AppenderAttachable
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
@@ -83,7 +82,7 @@ class LOG4CXX_EXPORT Logger :
 		<p>If <code>newAppender</code> is already in the list of
 		appenders, then it won't be added again.
 		*/
-		virtual void addAppender(const AppenderPtr newAppender);
+		void addAppender(const AppenderPtr newAppender) override;
 
 
 		/**
@@ -542,13 +541,13 @@ class LOG4CXX_EXPORT Logger :
 		If no appenders can be found, then an empty AppenderList
 		is returned.
 		@return AppenderList An collection of the appenders in this logger.*/
-		AppenderList getAllAppenders() const;
+		AppenderList getAllAppenders() const override;
 
 		/**
 		Look for the appender named as <code>name</code>.
 		<p>Return the appender with that name if in the list. Return
 		<code>NULL</code> otherwise.  */
-		AppenderPtr getAppender(const LogString& name) const;
+		AppenderPtr getAppender(const LogString& name) const override;
 
 		/**
 		Starting from this logger, search the logger hierarchy for a
@@ -876,7 +875,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Is the appender passed as parameter attached to this logger?
 		*/
-		bool isAttached(const AppenderPtr appender) const;
+		bool isAttached(const AppenderPtr appender) const override;
 
 		/**
 		 *  Check whether this logger is enabled for the <code>DEBUG</code>
@@ -1406,18 +1405,18 @@ class LOG4CXX_EXPORT Logger :
 		instance.
 		<p>This is useful when re-reading configuration information.
 		*/
-		void removeAllAppenders();
+		void removeAllAppenders() override;
 
 		/**
 		Remove the appender passed as parameter form the list of appenders.
 		*/
-		void removeAppender(const AppenderPtr appender);
+		void removeAppender(const AppenderPtr appender) override;
 
 		/**
 		Remove the appender with the name passed as parameter form the
 		list of appenders.
 		 */
-		void removeAppender(const LogString& name);
+		void removeAppender(const LogString& name) override;
 
 		/**
 		 Set the additivity flag for this Logger instance.

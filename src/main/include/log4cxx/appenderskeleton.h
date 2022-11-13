@@ -74,19 +74,19 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& /* pool */) {}
-		virtual void setOption(const LogString& option, const LogString& value);
+		void activateOptions(helpers::Pool& /* pool */) override {}
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Add a filter to end of the filter list.
 		*/
-		void addFilter(const spi::FilterPtr newFilter) ;
+		void addFilter(const spi::FilterPtr newFilter) override;
 
 	public:
 		/**
 		Clear the filters chain.
 		*/
-		void clearFilters();
+		void clearFilters() override;
 
 		/**
 		Return the currently set spi::ErrorHandler for this
@@ -97,7 +97,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		/**
 		Returns the head Filter.
 		*/
-		spi::FilterPtr getFilter() const;
+		spi::FilterPtr getFilter() const override;
 
 		/**
 		Return the first filter in the filter chain for this
@@ -109,13 +109,13 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		/**
 		Returns the layout of this appender. The value may be nullptr.
 		*/
-		LayoutPtr getLayout() const;
+		LayoutPtr getLayout() const override;
 
 
 		/**
 		Returns the name of this Appender.
 		*/
-		LogString getName() const;
+		LogString getName() const override;
 
 		/**
 		Returns this appenders threshold level. See the #setThreshold
@@ -136,7 +136,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		* delegating actual logging to the subclasses specific
 		* AppenderSkeleton#append method.
 		* */
-		virtual void doAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
+		void doAppend(const spi::LoggingEventPtr& event, helpers::Pool& pool) override;
 
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.
@@ -149,12 +149,12 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		{@link net::SocketAppender SocketAppender} ignores the layout set
 		here.
 		*/
-		void setLayout(const LayoutPtr layout1);
+		void setLayout(const LayoutPtr layout1) override;
 
 		/**
 		Set the name of this Appender.
 		*/
-		void setName(const LogString& name1);
+		void setName(const LogString& name1) override;
 
 
 		/**

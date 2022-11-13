@@ -43,9 +43,9 @@ class XFactory :
 		END_LOG4CXX_CAST_MAP()
 
 		XFactory();
-		virtual LoggerPtr makeNewLoggerInstance(
+		LoggerPtr makeNewLoggerInstance(
 			log4cxx::helpers::Pool& pool,
-			const LogString& name) const;
+			const LogString& name) const override;
 };
 
 typedef std::shared_ptr<XFactory> XFactoryPtr;

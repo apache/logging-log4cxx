@@ -46,15 +46,15 @@ class CountingAppender : public AppenderSkeleton
 		CountingAppender() : counter(0)
 		{}
 
-		void close()
+		void close() override
 		{}
 
-		void append(const spi::LoggingEventPtr& /*event*/, Pool& /*p*/)
+		void append(const spi::LoggingEventPtr& /*event*/, Pool& /*p*/) override
 		{
 			counter++;
 		}
 
-		bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return true;
 		}

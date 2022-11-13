@@ -67,7 +67,7 @@ class LOG4CXX_EXPORT PropertyFilter : public log4cxx::spi::Filter
 		~PropertyFilter();
 		void setProperties(const LogString& props);
 
-		FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 
 };
 

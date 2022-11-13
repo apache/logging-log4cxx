@@ -89,7 +89,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		/**
 		This appender requires a layout to format the text to the
 		attached client(s). */
-		virtual bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return true;
 		}
@@ -100,12 +100,12 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 		/** all of the options have been set, create the socket handler and
 		wait for connections. */
-		void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(helpers::Pool& p) override;
 
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Returns value of the <b>Port</b> option.
@@ -120,12 +120,12 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 
 		/** shuts down the appender. */
-		void close();
+		void close() override;
 
 	protected:
 		/** Handles a log event.  For this appender, that means writing the
 		message to each connected client.  */
-		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) ;
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 		//---------------------------------------------------------- SocketHandler:
 

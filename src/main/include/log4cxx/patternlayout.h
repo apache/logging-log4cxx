@@ -393,16 +393,16 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		/**
 		 * Call createPatternParser
 		 */
-		virtual void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(helpers::Pool& p) override;
 
-		virtual void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		 * The PatternLayout does not handle the throwable contained within
 		 * {@link spi::LoggingEvent LoggingEvents}. Thus, it returns
 		 * <code>true</code>.
 		 */
-		virtual bool ignoresThrowable() const
+		bool ignoresThrowable() const override
 		{
 			return true;
 		}
@@ -410,9 +410,9 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		/**
 		 * Produces a formatted string as specified by the conversion pattern.
 		 */
-		virtual void format(    LogString& output,
+		void format(    LogString& output,
 			const spi::LoggingEventPtr& event,
-			log4cxx::helpers::Pool& pool) const;
+			helpers::Pool& pool) const override;
 
 	protected:
 		virtual log4cxx::pattern::PatternMap getFormatSpecifiers();

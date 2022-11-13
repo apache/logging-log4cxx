@@ -33,9 +33,9 @@ class LOG4CXX_EXPORT APRServerSocket : public helpers::ServerSocket
         public:
             APRServerSocket(int port);
 
-	    void close();
+	    void close() override;
 
-	    SocketPtr accept();
+	    SocketPtr accept() override;
 
 	private:
 		struct APRServerSocketPriv;

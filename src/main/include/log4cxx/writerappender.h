@@ -66,7 +66,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& pool);
+		void activateOptions(helpers::Pool& pool) override;
 
 		/**
 		If the <b>ImmediateFlush</b> option is set to
@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		layout.
 
 		*/
-		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 
 	protected:
@@ -120,7 +120,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		<p>Closed appenders cannot be reused.
 		*/
-		virtual void close();
+		void close() override;
 
 	protected:
 		/**
@@ -134,14 +134,12 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		    <code>encoding</code> property.  If the encoding value is
 		    specified incorrectly the writer will be opened using the default
 		    system encoding (an error message will be printed to the loglog.  */
-		virtual log4cxx::helpers::WriterPtr createWriter(
-			log4cxx::helpers::OutputStreamPtr& os);
+		virtual helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os);
 
 	public:
 		LogString getEncoding() const;
 		void setEncoding(const LogString& value);
-		void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		  <p>Sets the Writer where the log output will go. The
@@ -159,7 +157,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		const log4cxx::helpers::WriterPtr getWriter() const;
 
-		virtual bool requiresLayout() const;
+		bool requiresLayout() const override;
 
 	protected:
 		/**

@@ -40,9 +40,9 @@ class LOG4CXX_EXPORT SystemOutWriter : public Writer
 		SystemOutWriter();
 		~SystemOutWriter();
 
-		virtual void close(Pool& p);
-		virtual void flush(Pool& p);
-		virtual void write(const LogString& str, Pool& p);
+		void close(Pool& p) override;
+		void flush(Pool& p) override;
+		void write(const LogString& str, Pool& p) override;
 
 		static void write(const LogString& str);
 		static void flush();

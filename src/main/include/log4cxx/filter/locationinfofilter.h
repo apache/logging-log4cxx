@@ -60,7 +60,7 @@ class LOG4CXX_EXPORT LocationInfoFilter: public log4cxx::spi::Filter
 
 		LocationInfoFilter();
 
-		void activateOptions(log4cxx::helpers::Pool&);
+		void activateOptions(helpers::Pool&) override;
 
 		void setExpression(const LogString& expression);
 
@@ -79,7 +79,7 @@ class LOG4CXX_EXPORT LocationInfoFilter: public log4cxx::spi::Filter
 		 *
 		 * Returns {@link log4cxx::spi::Filter#NEUTRAL}
 		 */
-		FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 
 };
 }

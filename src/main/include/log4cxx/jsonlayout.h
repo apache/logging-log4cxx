@@ -109,7 +109,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		/**
 		Returns the content type output by this layout, i.e "application/json".
 		*/
-		virtual LogString getContentType() const
+		LogString getContentType() const override
 		{
 			return LOG4CXX_STR("application/json");
 		}
@@ -117,20 +117,20 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		/**
 		No options to activate.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& /* p */) {}
+		void activateOptions(helpers::Pool& /* p */) override {}
 
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
-		virtual void format(LogString& output,
-			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;
+		void format(LogString& output,
+			const spi::LoggingEventPtr& event, helpers::Pool& pool) const override;
 
 		/**
 		The JSON layout handles the throwable contained in logging
 		events. Hence, this method return <code>false</code>.  */
-		virtual bool ignoresThrowable() const
+		bool ignoresThrowable() const override
 		{
 			return false;
 		}

@@ -43,21 +43,21 @@ class VectorAppender : public AppenderSkeleton
 		This method is called by the AppenderSkeleton#doAppend
 		method.
 		*/
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
 
 		const std::vector<spi::LoggingEventPtr>& getVector() const
 		{
 			return vector;
 		}
 
-		void close();
+		void close() override;
 
 		bool isClosed() const
 		{
 			return m_priv->closed;
 		}
 
-		bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return false;
 		}

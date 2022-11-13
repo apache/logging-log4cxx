@@ -40,9 +40,9 @@ class LOG4CXX_EXPORT SocketOutputStream : public OutputStream
 		SocketOutputStream(const SocketPtr& socket);
 		~SocketOutputStream();
 
-		virtual void close(Pool& p);
-		virtual void flush(Pool& p);
-		virtual void write(ByteBuffer& buf, Pool& p);
+		void close(Pool& p) override;
+		void flush(Pool& p) override;
+		void write(ByteBuffer& buf, Pool& p) override;
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(SocketOutputStreamPrivate, m_priv)

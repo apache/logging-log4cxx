@@ -72,13 +72,13 @@ class LOG4CXX_EXPORT InputStreamReader : public Reader
 		 *
 		 * @param p The memory pool associated with the reader.
 		 */
-		virtual void close(Pool& p);
+		void close(Pool& p) override;
 
 		/**
 		 * @return The complete stream contents as a LogString.
 		 * @param p The memory pool associated with the reader.
 		 */
-		virtual LogString read(Pool& p);
+		LogString read(Pool& p) override;
 
 		/**
 		 * @return The name of the character encoding being used by this stream.

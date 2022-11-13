@@ -58,7 +58,7 @@ class LOG4CXX_EXPORT DenyAllFilter : public spi::Filter
 		@param event The LoggingEvent to filter.
 		@return Always returns {@link spi::Filter#DENY DENY}.
 		*/
-		FilterDecision decide(const spi::LoggingEventPtr& event) const
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override
 		{
 			return spi::Filter::DENY;
 		}

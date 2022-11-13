@@ -36,24 +36,24 @@ class NullWriterAppender : public log4cxx::AppenderSkeleton
 
 		NullWriterAppender() {}
 
-		virtual void close() {}
+		void close() override {}
 
-		virtual bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return true;
 		}
 
-		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
 		{
 			// This gets called whenever there is a valid event for our appender.
 		}
 
-		virtual void activateOptions(log4cxx::helpers::Pool& /* pool */)
+		void activateOptions(log4cxx::helpers::Pool& /* pool */) override
 		{
 			// Given all of our options, do something useful(e.g. open a file)
 		}
 
-		virtual void setOption(const LogString& option, const LogString& value)
+		void setOption(const LogString& option, const LogString& value) override
 		{
 		}
 };

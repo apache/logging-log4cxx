@@ -158,7 +158,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 	public:
 		TimeBasedRollingPolicy();
 		virtual ~TimeBasedRollingPolicy();
-		void activateOptions(log4cxx::helpers::Pool& );
+		void activateOptions(helpers::Pool& ) override;
 
 		void setMultiprocess(bool multiprocess);
 
@@ -168,7 +168,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		RolloverDescriptionPtr initialize(
 			const   LogString&              currentActiveFile,
 			const   bool                    append,
-			log4cxx::helpers::Pool& pool);
+			helpers::Pool& pool) override;
 
 		/**
 		 * {@inheritDoc}
@@ -176,7 +176,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		RolloverDescriptionPtr rollover(
 			const   LogString&              currentActiveFile,
 			const   bool                    append,
-			log4cxx::helpers::Pool& pool);
+			helpers::Pool& pool) override;
 
 		/**
 		 * Determines if a rollover may be appropriate at this time.  If
@@ -189,14 +189,14 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		 * @param fileLength Length of the file in bytes.
 		 * @return true if a rollover should occur.
 		 */
-		virtual bool isTriggeringEvent(
+		bool isTriggeringEvent(
 			Appender* appender,
-			const log4cxx::spi::LoggingEventPtr& event,
+			const spi::LoggingEventPtr& event,
 			const LogString& filename,
-			size_t fileLength);
+			size_t fileLength) override;
 
 	protected:
-		log4cxx::pattern::PatternMap getFormatSpecifiers() const;
+		log4cxx::pattern::PatternMap getFormatSpecifiers() const override;
 
 	private:
 

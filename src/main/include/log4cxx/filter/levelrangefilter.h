@@ -73,8 +73,7 @@ class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Set the <code>LevelMin</code> option.
@@ -117,7 +116,7 @@ class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		returned decision is {@link spi::Filter#DENY DENY} if the
 		<b>AcceptOnMatch</b> property is set to false.
 		*/
-		FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 }; // class LevelRangeFilter
 LOG4CXX_PTR_DEF(LevelRangeFilter);
 }  // namespace filter

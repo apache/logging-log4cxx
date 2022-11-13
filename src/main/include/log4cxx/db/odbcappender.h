@@ -116,17 +116,17 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Activate the specified options.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(helpers::Pool& p) override;
 
 		/**
 		* Adds the event to the buffer.  When full the buffer is flushed.
 		*/
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool&);
+		void append(const spi::LoggingEventPtr& event, helpers::Pool&) override;
 
 		/**
 		* By default getLogStatement sends the event to the required Layout object.
@@ -173,7 +173,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		* connection if it is open.
 		*/
 	public:
-		virtual void close();
+		void close() override;
 
 		/**
 		* loops through the buffer of LoggingEvents, gets a
@@ -187,7 +187,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		* ODBCAppender requires a layout.
 		* */
-		virtual bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return true;
 		}

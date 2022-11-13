@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/classregistration.h>
 
 
-#define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
+#define DECLARE_LOG4CXX_CLAZZ_OBJECT(object)\
 	public:\
 	class Clazz##object : public helpers::Class\
 	{\
@@ -32,9 +32,12 @@
 			virtual ~Clazz##object() {}\
 			virtual log4cxx::LogString getName() const { return LOG4CXX_STR(#object); } \
 	};\
-	virtual const helpers::Class& getClass() const;\
 	static const helpers::Class& getStaticClass(); \
 	static const log4cxx::helpers::ClassRegistration& registerClass();
+
+#define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
+	DECLARE_LOG4CXX_CLAZZ_OBJECT(object)\
+	const helpers::Class& getClass() const override;
 
 #define DECLARE_LOG4CXX_OBJECT(object)\
 	public:\
@@ -49,13 +52,13 @@
 				return new object();\
 			}\
 	};\
-	virtual const helpers::Class& getClass() const;\
+	const helpers::Class& getClass() const override;\
 	static const helpers::Class& getStaticClass(); \
 	static const log4cxx::helpers::ClassRegistration& registerClass();
 
 #define DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
 	public:\
-	virtual const helpers::Class& getClass() const;\
+	const helpers::Class& getClass() const override;\
 	static const helpers::Class& getStaticClass();\
 	static const log4cxx::helpers::ClassRegistration&  registerClass();
 
@@ -101,10 +104,11 @@ class Pool;
 class LOG4CXX_EXPORT Object
 {
 	public:
-		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Object)
 		virtual ~Object() {}
+		virtual const helpers::Class& getClass() const = 0;
 		virtual bool instanceof(const Class& clazz) const = 0;
 		virtual const void* cast(const Class& clazz) const = 0;
+		DECLARE_LOG4CXX_CLAZZ_OBJECT(Object)
 };
 LOG4CXX_PTR_DEF(Object);
 }
@@ -139,7 +143,7 @@ std::shared_ptr<Ret> cast(const std::shared_ptr<Type>& incoming)
 }
 
 #define BEGIN_LOG4CXX_CAST_MAP()\
-	const void * cast(const helpers::Class& clazz) const\
+	const void * cast(const helpers::Class& clazz) const override\
 	{\
 		const void * object = 0;\
 		if (&clazz == &helpers::Object::getStaticClass()) return (const helpers::Object *)this;
@@ -147,7 +151,7 @@ std::shared_ptr<Ret> cast(const std::shared_ptr<Type>& incoming)
 #define END_LOG4CXX_CAST_MAP()\
 	return object;\
 	}\
-	bool instanceof(const helpers::Class& clazz) const\
+	bool instanceof(const helpers::Class& clazz) const override\
 	{ return cast(clazz) != 0; }
 
 #define LOG4CXX_CAST_ENTRY(Interface)\

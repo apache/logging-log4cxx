@@ -130,7 +130,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		void setOption( const LogString& option, const LogString& value ) override;
 
 		/** Prepares RollingFileAppender for use. */
-		void activateOptions( log4cxx::helpers::Pool& pool );
+		void activateOptions(helpers::Pool& pool ) override;
 
 		/**
 		   Implements the usual roll over behaviour.
@@ -153,7 +153,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		/**
 		 Actual writing occurs here.
 		*/
-		virtual void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 		bool rolloverInternal(log4cxx::helpers::Pool& p);
 
@@ -177,7 +177,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		/**
 		  * Close appender.  Waits for any asynchronous file compression actions to be completed.
 		*/
-		void close();
+		void close() override;
 
 	protected:
 		/**
@@ -189,7 +189,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		 @param os output stream, may not be null.
 		 @return new writer.
 		 */
-		log4cxx::helpers::WriterPtr createWriter(log4cxx::helpers::OutputStreamPtr& os);
+		helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os) override;
 
 	public:
 		/**

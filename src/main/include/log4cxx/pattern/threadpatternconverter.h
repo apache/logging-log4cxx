@@ -53,9 +53,9 @@ class LOG4CXX_EXPORT ThreadPatternConverter : public LoggingEventPatternConverte
 
 		using LoggingEventPatternConverter::format;
 
-		void format(const log4cxx::spi::LoggingEventPtr& event,
+		void format(const spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const;
+			helpers::Pool& p) const override;
 };
 }
 }

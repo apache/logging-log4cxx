@@ -55,9 +55,9 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		/**
 		Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(helpers::Pool& p) override;
 
-		void close();
+		void close() override;
 
 
 		/**
@@ -65,7 +65,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		* returns <code>false</code>.
 		*
 		     */
-		bool requiresLayout() const
+		bool requiresLayout() const override
 		{
 			return false;
 		}
@@ -123,8 +123,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
 		void fireConnector();
 
-		void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 	protected:
 		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);

@@ -99,27 +99,27 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 
 
 		/** No options to activate. */
-		void activateOptions(log4cxx::helpers::Pool& /* p */) { }
+		void activateOptions(helpers::Pool& /* p */) override { }
 
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option,
+			const LogString& value) override;
 
 		/**
 		* Formats a {@link spi::LoggingEvent LoggingEvent}
 		* in conformance with the log4cxx.dtd.
 		**/
-		virtual void format(LogString& output,
+		void format(LogString& output,
 			const spi::LoggingEventPtr& event,
-			log4cxx::helpers::Pool& p) const;
+			helpers::Pool& p) const override;
 
 		/**
 		The XMLLayout prints and does not ignore exceptions. Hence the
 		return value <code>false</code>.
 		*/
-		virtual bool ignoresThrowable() const
+		bool ignoresThrowable() const override
 		{
 			return false;
 		}

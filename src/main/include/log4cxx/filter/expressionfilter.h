@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT ExpressionFilter: public log4cxx::spi::Filter
 
 		ExpressionFilter();
 
-		void activateOptions(log4cxx::helpers::Pool& p);
+		void activateOptions(helpers::Pool& p) override;
 
 		void setExpression(const LogString& expression);
 
@@ -117,7 +117,7 @@ class LOG4CXX_EXPORT ExpressionFilter: public log4cxx::spi::Filter
 		/**
 		   Returns {@link log4cxx::spi::Filter#NEUTRAL} is there is no string match.
 		 */
-		FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 };
 }
 }
