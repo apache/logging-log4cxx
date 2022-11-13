@@ -55,7 +55,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		/**
 		Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 
 		void close() override;
 

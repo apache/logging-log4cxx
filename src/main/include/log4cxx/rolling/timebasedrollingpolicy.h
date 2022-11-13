@@ -158,7 +158,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 	public:
 		TimeBasedRollingPolicy();
 		virtual ~TimeBasedRollingPolicy();
-		void activateOptions(log4cxx::helpers::Pool& ) override;
+		void activateOptions(helpers::Pool& ) override;
 
 		void setMultiprocess(bool multiprocess);
 
@@ -168,7 +168,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		RolloverDescriptionPtr initialize(
 			const   LogString&              currentActiveFile,
 			const   bool                    append,
-			log4cxx::helpers::Pool& pool) override;
+			helpers::Pool& pool) override;
 
 		/**
 		 * {@inheritDoc}
@@ -176,7 +176,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		RolloverDescriptionPtr rollover(
 			const   LogString&              currentActiveFile,
 			const   bool                    append,
-			log4cxx::helpers::Pool& pool) override;
+			helpers::Pool& pool) override;
 
 		/**
 		 * Determines if a rollover may be appropriate at this time.  If

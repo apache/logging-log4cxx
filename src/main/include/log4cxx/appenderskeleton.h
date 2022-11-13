@@ -74,7 +74,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		virtual void activateOptions(log4cxx::helpers::Pool& /* pool */) override {}
+		virtual void activateOptions(helpers::Pool& /* pool */) override {}
 		virtual void setOption(const LogString& option, const LogString& value) override;
 
 		/**
@@ -136,7 +136,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		* delegating actual logging to the subclasses specific
 		* AppenderSkeleton#append method.
 		* */
-		void doAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) override;
+		void doAppend(const spi::LoggingEventPtr& event, helpers::Pool& pool) override;
 
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.

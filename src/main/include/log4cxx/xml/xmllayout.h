@@ -99,7 +99,7 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 
 
 		/** No options to activate. */
-		void activateOptions(log4cxx::helpers::Pool& /* p */) override { }
+		void activateOptions(helpers::Pool& /* p */) override { }
 
 		/**
 		Set options

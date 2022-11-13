@@ -124,15 +124,15 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 
 
 	protected:
-		void setSocket(log4cxx::helpers::SocketPtr& socket, log4cxx::helpers::Pool& p) override;
+		void setSocket(log4cxx::helpers::SocketPtr& socket, helpers::Pool& p) override;
 
-		void cleanUp(log4cxx::helpers::Pool& p) override;
+		void cleanUp(helpers::Pool& p) override;
 
 		int getDefaultDelay() const override;
 
 		int getDefaultPort() const override;
 
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) override;
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& pool) override;
 
 	private:
 		//  prevent copy and assignment statements

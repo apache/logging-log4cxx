@@ -109,7 +109,7 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 
 		default do-nothing implementation for convenience.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**

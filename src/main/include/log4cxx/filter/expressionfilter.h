@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT ExpressionFilter: public log4cxx::spi::Filter
 
 		ExpressionFilter();
 
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 
 		void setExpression(const LogString& expression);
 

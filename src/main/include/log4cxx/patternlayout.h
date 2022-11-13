@@ -393,7 +393,7 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		/**
 		 * Call createPatternParser
 		 */
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 
 		void setOption(const LogString& option, const LogString& value) override;
 
@@ -412,7 +412,7 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		 */
 		void format(    LogString& output,
 			const spi::LoggingEventPtr& event,
-			log4cxx::helpers::Pool& pool) const override;
+			helpers::Pool& pool) const override;
 
 	protected:
 		virtual log4cxx::pattern::PatternMap getFormatSpecifiers();

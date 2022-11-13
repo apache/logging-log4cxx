@@ -117,7 +117,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		/**
 		No options to activate.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& /* p */) override {}
+		void activateOptions(helpers::Pool& /* p */) override {}
 
 		/**
 		Set options
@@ -125,7 +125,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		void setOption(const LogString& option, const LogString& value) override;
 
 		void format(LogString& output,
-			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const override;
+			const spi::LoggingEventPtr& event, helpers::Pool& pool) const override;
 
 		/**
 		The JSON layout handles the throwable contained in logging

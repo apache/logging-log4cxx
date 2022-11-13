@@ -132,7 +132,7 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 		/**
 		Set up the socket server on the specified port.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 
 		/**
 		Set options
@@ -143,7 +143,7 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 
 		/**
 		Append an event to all of current connections. */
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 		/**
 		The SocketHubAppender does not use a layout. Hence, this method returns

@@ -48,7 +48,7 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 
 		virtual ~NTEventLogAppender();
 
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 		void close() override;
 		void setOption(const LogString& option, const LogString& value) override;
 
@@ -83,7 +83,7 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		typedef void SID;
 		typedef void* HANDLE;
 
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 		static unsigned short getEventType(const spi::LoggingEventPtr& event);
 		static unsigned short getEventCategory(const spi::LoggingEventPtr& event);
 		/*

@@ -90,7 +90,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		FixedWindowRollingPolicy();
 		~FixedWindowRollingPolicy();
 
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 		void setOption(const LogString& option, const LogString& value) override;
 
 		void rollover();
@@ -108,7 +108,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		RolloverDescriptionPtr initialize(
 			const   LogString&              currentActiveFile,
 			const   bool                    append,
-			log4cxx::helpers::Pool& pool) override;
+			helpers::Pool& pool) override;
 
 		/**
 		 * {@inheritDoc}
@@ -116,7 +116,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		RolloverDescriptionPtr rollover(
 			const   LogString&              currentActiveFile,
 			const   bool                    append,
-			log4cxx::helpers::Pool& pool) override;
+			helpers::Pool& pool) override;
 
 	protected:
 		log4cxx::pattern::PatternMap getFormatSpecifiers() const override;

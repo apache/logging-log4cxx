@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 		/** all of the options have been set, create the socket handler and
 		wait for connections. */
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 
 		/**
 		Set options
@@ -125,7 +125,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 	protected:
 		/** Handles a log event.  For this appender, that means writing the
 		message to each connected client.  */
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 		//---------------------------------------------------------- SocketHandler:
 

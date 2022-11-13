@@ -88,13 +88,13 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		Activate the specified options, such as the smtp host, the
 		recipient, from, etc.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& p) override;
+		void activateOptions(helpers::Pool& p) override;
 
 		/**
 		Perform SMTPAppender specific appending actions, mainly adding
 		the event to a cyclic buffer and checking if the event triggers
 		an e-mail to be sent. */
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 
 		void close() override;

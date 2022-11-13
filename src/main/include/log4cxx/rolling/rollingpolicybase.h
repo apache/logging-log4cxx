@@ -56,7 +56,7 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 	public:
 		RollingPolicyBase();
 		virtual ~RollingPolicyBase();
-		virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
+		virtual void activateOptions(helpers::Pool& p) = 0;
 		virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
 
 		virtual void setOption(const LogString& option,

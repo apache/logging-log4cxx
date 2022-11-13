@@ -66,7 +66,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& pool) override;
+		void activateOptions(helpers::Pool& pool) override;
 
 		/**
 		If the <b>ImmediateFlush</b> option is set to
@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		layout.
 
 		*/
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 
 	protected:

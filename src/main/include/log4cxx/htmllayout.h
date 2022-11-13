@@ -81,7 +81,7 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		/**
 		No options to activate.
 		*/
-		void activateOptions(log4cxx::helpers::Pool& /* p */) override {}
+		void activateOptions(helpers::Pool& /* p */) override {}
 
 		/**
 		Set options
@@ -89,17 +89,17 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		void setOption(const LogString& option, const LogString& value) override;
 
 		void format(LogString& output,
-			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const override;
+			const spi::LoggingEventPtr& event, helpers::Pool& pool) const override;
 
 		/**
 		Append appropriate HTML headers.
 		*/
-		void appendHeader(LogString& output, log4cxx::helpers::Pool& pool) override;
+		void appendHeader(LogString& output, helpers::Pool& pool) override;
 
 		/**
 		Append the appropriate HTML footers.
 		*/
-		void appendFooter(LogString& output, log4cxx::helpers::Pool& pool) override;
+		void appendFooter(LogString& output, helpers::Pool& pool) override;
 
 		/**
 		The HTML layout handles the throwable contained in logging

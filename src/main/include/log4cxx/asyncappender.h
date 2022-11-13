@@ -86,9 +86,9 @@ class LOG4CXX_EXPORT AsyncAppender :
 		void addAppender(const AppenderPtr newAppender) override;
 
 		void doAppend(const spi::LoggingEventPtr& event,
-			log4cxx::helpers::Pool& pool1) override;
+			helpers::Pool& pool1) override;
 
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
+		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 		/**
 		Close this <code>AsyncAppender</code> by interrupting the
