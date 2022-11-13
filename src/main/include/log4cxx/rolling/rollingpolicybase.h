@@ -56,11 +56,9 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 	public:
 		RollingPolicyBase();
 		virtual ~RollingPolicyBase();
-		virtual void activateOptions(helpers::Pool& p) = 0;
 		virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
 
-		virtual void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		 * Set file name pattern.

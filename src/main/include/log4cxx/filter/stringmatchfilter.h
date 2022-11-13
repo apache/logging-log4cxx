@@ -69,8 +69,7 @@ class LOG4CXX_EXPORT StringMatchFilter : public spi::Filter
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option,
-			const LogString& value);
+		void setOption(const LogString& option, const LogString& value) override;
 
 		void setStringToMatch(const LogString& stringToMatch1);
 

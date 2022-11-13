@@ -74,8 +74,8 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		virtual void activateOptions(helpers::Pool& /* pool */) override {}
-		virtual void setOption(const LogString& option, const LogString& value) override;
+		void activateOptions(helpers::Pool& /* pool */) override {}
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Add a filter to end of the filter list.

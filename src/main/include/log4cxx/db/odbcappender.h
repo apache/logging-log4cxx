@@ -116,7 +116,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		Set options
 		*/
-		virtual void setOption(const LogString& option, const LogString& value) override;
+		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
 		Activate the specified options.

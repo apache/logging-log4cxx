@@ -37,7 +37,7 @@ class APRDatagramSocket : public DatagramSocket {
 
 	virtual void bind(int lport, InetAddressPtr laddress);
 
-	virtual void close();
+	void close() override;
 
 	virtual bool isClosed() const;
 
