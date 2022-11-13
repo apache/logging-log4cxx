@@ -134,8 +134,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		    <code>encoding</code> property.  If the encoding value is
 		    specified incorrectly the writer will be opened using the default
 		    system encoding (an error message will be printed to the loglog.  */
-		virtual log4cxx::helpers::WriterPtr createWriter(
-			log4cxx::helpers::OutputStreamPtr& os);
+		virtual helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os);
 
 	public:
 		LogString getEncoding() const;

@@ -48,9 +48,9 @@ class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 		FileOutputStream(const logchar* filename, bool append = false);
 		virtual ~FileOutputStream();
 
-		virtual void close(Pool& p);
-		virtual void flush(Pool& p);
-		virtual void write(ByteBuffer& buf, Pool& p);
+		void close(Pool& p) override;
+		void flush(Pool& p) override;
+		void write(ByteBuffer& buf, Pool& p) override;
 
 		apr_file_t* getFilePtr() const;
 

@@ -44,7 +44,7 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 		 * @param options options, may be null.
 		 * @return instance of pattern converter.
 		 */
-		static log4cxx::helpers::DateFormatPtr getDateFormat(const OptionsList& options);
+		static helpers::DateFormatPtr getDateFormat(const OptionsList& options);
 	public:
 		DECLARE_LOG4CXX_PATTERN(DatePatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -63,16 +63,17 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 		using LoggingEventPatternConverter::format;
 
 
-		void format(const log4cxx::spi::LoggingEventPtr& event,
+		void format(const spi::LoggingEventPtr& event,
 			LogString& output,
 			helpers::Pool& p) const override;
-		void format(const log4cxx::helpers::ObjectPtr& obj,
-			LogString& output,
-			log4cxx::helpers::Pool& p) const;
 
-		void format(const log4cxx::helpers::DatePtr& date,
+		void format(const helpers::ObjectPtr& obj,
+			LogString& output,
+			helpers::Pool& p) const override;
+
+		void format(const helpers::DatePtr& date,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const;
+			helpers::Pool& p) const;
 };
 
 LOG4CXX_PTR_DEF(DatePatternConverter);

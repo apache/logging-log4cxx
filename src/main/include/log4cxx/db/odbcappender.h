@@ -126,7 +126,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		* Adds the event to the buffer.  When full the buffer is flushed.
 		*/
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool&);
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool&) override;
 
 		/**
 		* By default getLogStatement sends the event to the required Layout object.

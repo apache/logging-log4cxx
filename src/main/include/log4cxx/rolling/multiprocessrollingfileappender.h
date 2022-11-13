@@ -64,14 +64,14 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public FileAppender
 		   <code>File</code> is truncated with no backup files created.
 
 		 */
-		bool rollover(log4cxx::helpers::Pool& p);
+		bool rollover(log4cxx::helpers::Pool& p) override;
 
 	protected:
 
 		/**
 		 Actual writing occurs here.
 		*/
-		virtual void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
 
 		bool rolloverInternal(log4cxx::helpers::Pool& p);
 
@@ -107,7 +107,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public FileAppender
 		 @param os output stream, may not be null.
 		 @return new writer.
 		 */
-		log4cxx::helpers::WriterPtr createWriter(log4cxx::helpers::OutputStreamPtr& os);
+		helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os) override;
 
 	public:
 		/**

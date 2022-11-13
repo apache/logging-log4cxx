@@ -290,7 +290,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		@param hierarchy The hierarchy to operation upon.
 		*/
 		void doConfigure(const File& configFileName,
-			spi::LoggerRepositoryPtr hierarchy);
+			spi::LoggerRepositoryPtr hierarchy) override;
 
 		/**
 		Read configuration options from file <code>configFilename</code>.

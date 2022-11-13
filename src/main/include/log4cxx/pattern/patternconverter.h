@@ -42,7 +42,7 @@ typedef std::vector<LogString> OptionsList;
    converting an object in a converter specific manner.
 
  */
-class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::Object
+class LOG4CXX_EXPORT PatternConverter : public virtual helpers::Object
 {
 	protected:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(PatternConverterPrivate, m_priv)
@@ -71,9 +71,9 @@ class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::Object
 		 * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
 		 * @param p pool for any allocations necessary during formatting.
 		 */
-		virtual void format(const log4cxx::helpers::ObjectPtr& obj,
+		virtual void format(const helpers::ObjectPtr& obj,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const = 0;
+			helpers::Pool& p) const = 0;
 
 		/**
 		 * This method returns the name of the conversion pattern.
@@ -93,7 +93,7 @@ class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::Object
 		 * @param e null values are accepted
 		 * @return  the name of the conversion pattern
 		 */
-		virtual LogString getStyleClass(const log4cxx::helpers::ObjectPtr& e) const;
+		virtual LogString getStyleClass(const helpers::ObjectPtr& e) const;
 
 	protected:
 		/**

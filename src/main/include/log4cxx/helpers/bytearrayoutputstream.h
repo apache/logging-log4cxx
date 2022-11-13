@@ -48,9 +48,9 @@ class LOG4CXX_EXPORT ByteArrayOutputStream : public OutputStream
 		ByteArrayOutputStream();
 		virtual ~ByteArrayOutputStream();
 
-		virtual void close(Pool& p);
-		virtual void flush(Pool& p);
-		virtual void write(ByteBuffer& buf, Pool& p);
+		void close(Pool& p) override;
+		void flush(Pool& p) override;
+		void write(ByteBuffer& buf, Pool& p) override;
 		ByteList toByteArray() const;
 
 	private:

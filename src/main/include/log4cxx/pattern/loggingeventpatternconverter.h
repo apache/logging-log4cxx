@@ -61,11 +61,11 @@ class LOG4CXX_EXPORT LoggingEventPatternConverter : public PatternConverter
 		 * @param p pool for memory allocations needing during format.
 		 */
 		virtual void format(
-			const log4cxx::spi::LoggingEventPtr& event,
+			const spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const = 0;
+			helpers::Pool& p) const = 0;
 
-		void format(const log4cxx::helpers::ObjectPtr& obj,
+		void format(const helpers::ObjectPtr& obj,
 			LogString& toAppendTo,
 			helpers::Pool& p) const override;
 
