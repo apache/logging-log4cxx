@@ -252,7 +252,7 @@ static int report(abts_suite* suite)
 		if (dptr->failed.size() != 0)
 		{
 			float percent = ((float)dptr->failed.size() / (float)dptr->num_test);
-			fprintf(stdout, "%-15s\t\t%5d\t%4d\t%6.2f%%\n", dptr->name,
+			fprintf(stdout, "%-15s\t\t%5d\t%4d\t%6.2f%%\n", dptr->name.c_str(),
 				dptr->num_test, (int)dptr->failed.size(), percent * 100);
 			for( const char* failed_name : dptr->failed ){
 				fprintf(stdout, "  %s\n", failed_name );
