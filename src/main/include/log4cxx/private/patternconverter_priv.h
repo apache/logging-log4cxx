@@ -34,6 +34,8 @@ struct PatternConverter::PatternConverterPrivate
 		name(_name),
 		style(_style) {}
 
+	virtual ~PatternConverterPrivate(){}
+
 	/**
 	 * Converter name.
 	 */

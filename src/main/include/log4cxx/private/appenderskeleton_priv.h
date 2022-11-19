@@ -38,6 +38,8 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 		errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
 		closed(false) {}
 
+	virtual ~AppenderSkeletonPrivate(){}
+
 	/** The layout variable does not need to be set if the appender
 	implementation has its own layout. */
 	LayoutPtr layout;

@@ -26,6 +26,8 @@ namespace spi
 
 struct Filter::FilterPrivate
 {
+	virtual ~FilterPrivate(){}
+
 	/**
 	Points to the next filter in the filter chain.
 	*/

@@ -31,6 +31,8 @@ struct Action::ActionPrivate
 		interrupted(false),
 		pool() {}
 
+	virtual ~ActionPrivate(){}
+
 	/**
 	 * Is action complete.
 	 */
