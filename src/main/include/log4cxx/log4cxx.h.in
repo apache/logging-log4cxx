@@ -60,6 +60,9 @@ typedef unsigned int log4cxx_uint32_t;
 
 #include "boost-std-configuration.h"
 #include <memory>
+#include <chrono>
+
+typedef std::chrono::time_point<std::chrono::system_clock> log4cxx_timepoint_t;
 
 #define LOG4CXX_PTR_DEF(T) typedef std::shared_ptr<T> T##Ptr;\
 	typedef std::weak_ptr<T> T##WeakPtr

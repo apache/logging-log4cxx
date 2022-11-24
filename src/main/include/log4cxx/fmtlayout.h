@@ -33,14 +33,14 @@ namespace log4cxx
  * Most of the standard PatternLayout arguments are also accepted as arguments, so that you can easily
  * convert a PatternLayout to a FMTLayout.  For example, given the following PatternLayout:
  *
- * %c %-5p - %m%n
+ * <pre>%c %-5p - %m%n</pre>
  * which outputs something like:
- * root INFO  - Hello there!
+ * <pre>root INFO  - Hello there!</pre>
  *
  * The equivalent FMTLayout can be written as:
- * {c} {p:-5} - {m}{n}
+ * <pre>{c} {p:<5} - {m}{n}</pre>
  * Or more verbosely as:
- * {logger} {level:-5} - {message}{newline}
+ * <pre>{logger} {level:<5} - {message}{newline}</pre>
  *
  * All replacements are done using the named arguments feature of {fmt}.
  *
@@ -215,15 +215,15 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
     LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FMTLayoutPrivate, m_priv)
 
 	public:
-                DECLARE_LOG4CXX_OBJECT(FMTLayout)
+		DECLARE_LOG4CXX_OBJECT(FMTLayout)
 		BEGIN_LOG4CXX_CAST_MAP()
-                LOG4CXX_CAST_ENTRY(FMTLayout)
+		LOG4CXX_CAST_ENTRY(FMTLayout)
 		LOG4CXX_CAST_ENTRY_CHAIN(Layout)
 		END_LOG4CXX_CAST_MAP()
 
-                FMTLayout();
+		FMTLayout();
 
-                FMTLayout(const LogString& pattern);
+		FMTLayout(const LogString& pattern);
 
 		~FMTLayout();
 

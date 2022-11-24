@@ -21,8 +21,10 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
+#include <chrono>
 
 #include <fmt/format.h>
+#include <fmt/chrono.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -88,6 +90,7 @@ void FMTLayout::format(LogString& output,
 
 	fmt::format_to(std::back_inserter(output),
 				   m_priv->conversionPattern,
+				   fmt::arg("d", event->getChronoTimeStamp()),
 				   fmt::arg("c", event->getLoggerName()),
 				   fmt::arg("logger", event->getLoggerName()),
 				   fmt::arg("f", event->getLocationInformation().getShortFileName()),
