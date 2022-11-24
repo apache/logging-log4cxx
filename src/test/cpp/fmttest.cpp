@@ -58,7 +58,7 @@ LOGUNIT_CLASS(FMTTestCase)
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test1_expanded);
 	LOGUNIT_TEST(test10);
-	LOGUNIT_TEST(test_date);
+//	LOGUNIT_TEST(test_date);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;

@@ -211,7 +211,7 @@ if("${FILESYSTEM_IMPL}" STREQUAL "std::filesystem" OR
 endif()
 
 if(${ENABLE_FMT_LAYOUT})
-    target_link_libraries(log4cxx INTERFACE fmt::fmt)
+    target_link_libraries(log4cxx PUBLIC fmt::fmt)
 endif()
 
 if(LOG4CXX_ABI_CHECK)
