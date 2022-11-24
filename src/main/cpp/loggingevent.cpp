@@ -73,7 +73,7 @@ struct LoggingEvent::LoggingEventPrivate
 		locationInfo(locationInfo1),
 		threadName(getCurrentThreadName()),
 		threadUserName(getCurrentThreadUserName()),
-		chronoTimeStamp(std::chrono::milliseconds(timeStamp))
+		chronoTimeStamp(std::chrono::microseconds(timeStamp))
 	{
 	}
 

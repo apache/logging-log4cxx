@@ -134,10 +134,10 @@ public:
 		std::stringstream ss("2013-04-11 08:35:34");
 		ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
 		auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-		uint64_t millis = std::chrono::duration_cast<std::chrono::milliseconds>(tp.time_since_epoch()).count();
+		uint64_t micros = std::chrono::duration_cast<std::chrono::microseconds>(tp.time_since_epoch()).count();
 
-		log4cxx::helpers::Date::setGetCurrentTimeFunction([millis](){
-			return millis;
+		log4cxx::helpers::Date::setGetCurrentTimeFunction([micros](){
+			return micros;
 		});
 
 		log4cxx::spi::LoggingEventPtr logEvt = std::make_shared<log4cxx::spi::LoggingEvent>( "foo",
