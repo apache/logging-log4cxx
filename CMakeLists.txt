@@ -63,7 +63,7 @@ elseif(TARGET expat::expat)
   set(EXPAT_LIBRARIES expat::expat)
 endif()
 
-find_package(fmt 6.0 QUIET)
+find_package(fmt 7.1 QUIET)
 if(${fmt_FOUND})
     option(ENABLE_FMT_LAYOUT "Enable the FMT layout(if libfmt found)" ON)
 else()
