@@ -436,7 +436,7 @@ const log4cxx::spi::LocationInfo& LoggingEvent::getLocationInformation() const
 	return m_priv->locationInfo;
 }
 
-log4cxx_timepoint_t LoggingEvent::getChronoTimeStamp() const{
+std::chrono::time_point<std::chrono::high_resolution_clock> LoggingEvent::getChronoTimeStamp() const{
 	return m_priv->chronoTimeStamp;
 }
 
