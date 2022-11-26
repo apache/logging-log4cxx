@@ -140,7 +140,7 @@ class PatternToken
 
 					for (; valueIter != values.end(); valueIter++)
 					{
-						PUT_FACET(facet, os, &time, (wchar_t) wspec);
+						PUT_FACET(facet, os, &time, (char)wspec);
 						Transcoder::decode(os.str().substr(start), *valueIter);
 						start = os.str().length();
 						(*inc)(time, aprtime);
