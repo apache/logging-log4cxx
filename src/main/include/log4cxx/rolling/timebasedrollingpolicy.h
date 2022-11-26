@@ -25,11 +25,6 @@
 #include <log4cxx/helpers/outputstream.h>
 #include <functional>
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4250 )
-#endif
-
 namespace log4cxx
 {
 
@@ -142,8 +137,8 @@ namespace rolling
  * the {@link #activateOptions} method of the owning
  * <code>RollingFileAppender</code>.
  */
-class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
-	public TriggeringPolicy
+class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
+	public virtual TriggeringPolicy
 {
 		DECLARE_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -195,6 +190,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 			const LogString& filename,
 			size_t fileLength) override;
 
+		using RollingPolicyBase::setOption;
 	protected:
 		log4cxx::pattern::PatternMap getFormatSpecifiers() const override;
 
@@ -236,10 +232,6 @@ LOG4CXX_PTR_DEF(TimeBasedRollingPolicy);
 
 }
 }
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif
 

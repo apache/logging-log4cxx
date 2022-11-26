@@ -18,11 +18,6 @@
 #ifndef _LOG4CXX_TESTS_UTIL_FILTER_H
 #define _LOG4CXX_TESTS_UTIL_FILTER_H
 
-#if defined(_MSC_VER)
-	#pragma warning (push)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
 #include <string>
 #include <vector>
 #include <map>
@@ -62,9 +57,5 @@ class Filter
 		PatternList patterns;
 };
 }
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif //_LOG4CXX_TESTS_UTIL_FILTER_H

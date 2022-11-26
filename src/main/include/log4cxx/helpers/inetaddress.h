@@ -18,13 +18,6 @@
 #ifndef _LOG4CXX_HELPER_INETADDRESS_H
 #define _LOG4CXX_HELPER_INETADDRESS_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
-
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/logstring.h>
 #include <vector>
@@ -34,7 +27,7 @@ namespace log4cxx
 {
 namespace helpers
 {
-class LOG4CXX_EXPORT UnknownHostException : public Exception
+class UnknownHostException : public Exception
 {
 	public:
 		UnknownHostException(const LogString& msg);
@@ -88,17 +81,11 @@ class LOG4CXX_EXPORT InetAddress : public Object
 		LogString toString() const;
 
 	private:
-		LogString ipAddrString;
-
-		LogString hostNameString;
-
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, ipAddrString)
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, hostNameString)
 }; // class InetAddress
 }  // namespace helpers
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 
 #endif // _LOG4CXX_HELPER_INETADDRESS_H

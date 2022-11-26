@@ -19,13 +19,6 @@
 #ifndef _LOG4CXX_HELPER_PATTERN_CONVERTER_H
 #define _LOG4CXX_HELPER_PATTERN_CONVERTER_H
 
-#if defined(_MSC_VER)
-	#pragma warning (push)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
-
 #include <map>
 #include <vector>
 #include <log4cxx/helpers/class.h>
@@ -165,11 +158,6 @@ class LOG4CXX_EXPORT PatternParser
 
 }
 }
-
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 
 #endif

@@ -21,11 +21,6 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/syslogwriter.h>
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4251 )
-#endif
-
 namespace log4cxx
 {
 namespace net
@@ -151,10 +146,6 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 LOG4CXX_PTR_DEF(SyslogAppender);
 } // namespace net
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif // _LOG4CXX_NET_SYSLOG_APPENDER_H
 

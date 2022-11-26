@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_SPI_LOG_REPOSITORY_H
 #define _LOG4CXX_SPI_LOG_REPOSITORY_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/appender.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/level.h>
@@ -115,10 +109,5 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 
 }  // namespace spi
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
-
 
 #endif //_LOG4CXX_SPI_LOG_REPOSITORY_H

@@ -18,13 +18,6 @@
 #ifndef _LOG4CXX_HELPERS_SIMPLE_DATE_FORMAT_H
 #define _LOG4CXX_HELPERS_SIMPLE_DATE_FORMAT_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
-
 #include <log4cxx/helpers/dateformat.h>
 #include <vector>
 #include <time.h>
@@ -76,12 +69,12 @@ class LOG4CXX_EXPORT SimpleDateFormat : public DateFormat
 		/**
 		 * Time zone.
 		 */
-		TimeZonePtr timeZone;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(TimeZonePtr, timeZone)
 
 		/**
 		 * List of tokens.
 		 */
-		PatternTokenList pattern;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(PatternTokenList, pattern)
 
 		static void addToken(const logchar spec, const int repeat, const std::locale* locale, PatternTokenList& pattern);
 		static void parsePattern(const LogString& spec, const std::locale* locale, PatternTokenList& pattern);
@@ -90,11 +83,5 @@ class LOG4CXX_EXPORT SimpleDateFormat : public DateFormat
 
 }  // namespace helpers
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
-
-
 
 #endif // _LOG4CXX_HELPERS_SIMPLE_DATE_FORMAT_H

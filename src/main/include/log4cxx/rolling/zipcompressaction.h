@@ -18,12 +18,6 @@
 #if !defined(_LOG4CXX_ROLLING_ZIP_COMPRESS_ACTION_H)
 #define _LOG4CXX_ROLLING_ZIP_COMPRESS_ACTION_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/rolling/action.h>
 #include <log4cxx/file.h>
 
@@ -65,10 +59,6 @@ class ZipCompressAction : public Action
 LOG4CXX_PTR_DEF(ZipCompressAction);
 
 }
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 }
 #endif
