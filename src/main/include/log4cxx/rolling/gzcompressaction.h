@@ -18,11 +18,6 @@
 #if !defined(_LOG4CXX_ROLLING_GZ_COMPRESS_ACTION_H)
 #define _LOG4CXX_ROLLING_GZ_COMPRESS_ACTION_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
 #include <log4cxx/rolling/action.h>
 #include <log4cxx/file.h>
 
@@ -66,10 +61,6 @@ LOG4CXX_PTR_DEF(GZCompressAction);
 
 }
 }
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif
 

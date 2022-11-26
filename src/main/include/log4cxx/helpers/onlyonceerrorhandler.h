@@ -21,11 +21,6 @@
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/helpers/object.h>
 
-#ifdef _MSC_VER
-	#pragma warning ( push )
-	#pragma warning (disable : 4251) // ::std::exception needs to have dll-interface
-#endif
-
 namespace log4cxx
 {
 namespace helpers
@@ -45,8 +40,8 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 	public virtual Object
 {
 	private:
-		LogString WARN_PREFIX;
-		LogString ERROR_PREFIX;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, WARN_PREFIX)
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, ERROR_PREFIX)
 		mutable bool firstTime;
 
 	public:
@@ -101,10 +96,6 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 };
 }  // namespace helpers
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif //_LOG4CXX_HELPERS_ONLY_ONCE_ERROR_HANDLER_H
 

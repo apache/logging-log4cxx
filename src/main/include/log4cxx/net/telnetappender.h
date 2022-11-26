@@ -18,13 +18,6 @@
 #ifndef _LOG4CXX_NET_TELNET_APPENDER_H
 #define _LOG4CXX_NET_TELNET_APPENDER_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
-
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/serversocket.h>
@@ -144,11 +137,6 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 LOG4CXX_PTR_DEF(TelnetAppender);
 } // namespace net
 } // namespace log4cxx
-
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif // _LOG4CXX_NET_TELNET_APPENDER_H
 

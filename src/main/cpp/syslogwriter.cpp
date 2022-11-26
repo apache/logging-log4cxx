@@ -14,9 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#if defined(_MSC_VER)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/syslogwriter.h>
@@ -72,7 +69,7 @@ void SyslogWriter::write(const LogString& source)
 		LOG4CXX_ENCODE_CHAR(data, source);
 
 		auto packet = std::make_shared<DatagramPacket>(
-				(void*) data.data(), data.length(),
+				(void*) data.data(), (int)data.length(),
 				m_priv->address, m_priv->syslogHostPort);
 
 		m_priv->ds->send(packet);

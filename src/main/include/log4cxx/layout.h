@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_LAYOUT_H
 #define _LOG4CXX_LAYOUT_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -85,9 +79,5 @@ class LOG4CXX_EXPORT Layout :
 };
 LOG4CXX_PTR_DEF(Layout);
 }
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif // _LOG4CXX_LAYOUT_H

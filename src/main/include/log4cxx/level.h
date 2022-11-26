@@ -24,11 +24,6 @@
 #include <log4cxx/helpers/object.h>
 #include <mutex>
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4251 )
-#endif
-
 namespace log4cxx
 {
 /**
@@ -278,8 +273,9 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 			return level;
 		}
 
+	private:
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, name)
 		int level;
-		LogString name;
 		int syslogEquivalent;
 		Level(const Level&);
 		Level& operator=(const Level&);
@@ -303,9 +299,5 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 
 #define IMPLEMENT_LOG4CXX_LEVEL(level) \
 	IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif //_LOG4CXX_LEVEL_H

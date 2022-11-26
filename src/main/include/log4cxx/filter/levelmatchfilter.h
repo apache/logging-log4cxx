@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_FILTER_LEVEL_MATCH_FILTER_H
 #define _LOG4CXX_FILTER_LEVEL_MATCH_FILTER_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/level.h>
 
@@ -91,9 +85,5 @@ class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
 LOG4CXX_PTR_DEF(LevelMatchFilter);
 }  // namespace filter
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif // _LOG4CXX_FILTER_LEVEL_MATCH_FILTER_H

@@ -46,8 +46,8 @@ namespace filter
 class LOG4CXX_EXPORT LocationInfoFilter: public log4cxx::spi::Filter
 {
 		bool convertInFixToPostFix;
-		LogString expression;
-		log4cxx::rule::RulePtr expressionRule;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, expression)
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(rule::RulePtr, expressionRule)
 		//HACK: Category is the last of the internal layers - pass this in as the class name
 		//in order for parsing to work correctly
 		LogString className;

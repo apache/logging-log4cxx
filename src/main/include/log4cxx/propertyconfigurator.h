@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_PROPERTY_CONFIGURATOR_H
 #define _LOG4CXX_PROPERTY_CONFIGURATOR_H
 
-#if defined(_MSC_VER)
-	#pragma warning (push)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
@@ -48,6 +42,7 @@ class Properties;
 namespace spi
 {
 class LoggerFactory;
+typedef std::shared_ptr<LoggerFactory> LoggerFactoryPtr;
 }
 
 class PropertyWatchdog;
@@ -103,7 +98,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		/**
 		Used to create new instances of logger
 		*/
-		std::shared_ptr<spi::LoggerFactory> loggerFactory;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(spi::LoggerFactoryPtr, loggerFactory)
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
@@ -385,10 +380,6 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		static PropertyWatchdog* pdog;
 }; // class PropertyConfigurator
 }  // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 
 #endif //_LOG4CXX_PROPERTY_CONFIGURATOR_H

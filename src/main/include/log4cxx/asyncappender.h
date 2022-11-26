@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_ASYNC_APPENDER_H
 #define _LOG4CXX_ASYNC_APPENDER_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <deque>
@@ -201,11 +195,6 @@ class LOG4CXX_EXPORT AsyncAppender :
 }; // class AsyncAppender
 LOG4CXX_PTR_DEF(AsyncAppender);
 }  //  namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
-
 
 #endif//  _LOG4CXX_ASYNC_APPENDER_H
 

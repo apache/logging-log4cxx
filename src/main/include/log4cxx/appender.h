@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_APPENDER_H
 #define _LOG4CXX_APPENDER_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/object.h>
 #include <vector>
@@ -139,9 +133,5 @@ LOG4CXX_PTR_DEF(Appender);
 LOG4CXX_LIST_DEF(AppenderList, AppenderPtr);
 
 }
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif //_LOG4CXX_APPENDER_H

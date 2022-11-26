@@ -24,7 +24,7 @@
 
 #ifdef _MSC_VER
 	#pragma warning ( push )
-	#pragma warning (disable : 4251 4275) // ::std::exception needs to have dll-interface
+	#pragma warning (disable : 4275) // ::std::exception needs to have dll-interface
 #endif
 
 namespace log4cxx

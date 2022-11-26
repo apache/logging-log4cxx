@@ -35,7 +35,7 @@ class RolloverDescription : public log4cxx::helpers::Object
 		/**
 		 * Active log file name after rollover.
 		 */
-		LogString activeFileName;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, activeFileName)
 
 		/**
 		 * Should active file be opened for appending.

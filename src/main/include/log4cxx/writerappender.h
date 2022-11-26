@@ -18,11 +18,6 @@
 #ifndef _LOG4CXX_WRITER_APPENDER_H
 #define _LOG4CXX_WRITER_APPENDER_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <log4cxx/boost-std-configuration.h>
@@ -191,9 +186,5 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 LOG4CXX_PTR_DEF(WriterAppender);
 
 }  //namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif //_LOG4CXX_WRITER_APPENDER_H

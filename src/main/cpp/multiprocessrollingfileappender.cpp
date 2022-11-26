@@ -15,11 +15,6 @@
  * limitations under the License.
  */
 
-#if defined(_MSC_VER)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <apr_portable.h>
 #include <apr_file_io.h>
 #include <apr_atomic.h>

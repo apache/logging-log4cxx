@@ -81,15 +81,8 @@ class LOG4CXX_EXPORT ResourceBundle : public Object
 		The parent bundle is searched by #getString when this bundle does
 		not contain a particular resource.
 		*/
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(ResourceBundlePtr, parent)
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4251 )
-#endif
-		ResourceBundlePtr parent;
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 }; // class ResourceBundle
 }  // namespace helpers
 } // namespace log4cxx
