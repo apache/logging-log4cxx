@@ -108,7 +108,7 @@ class LOG4CXX_EXPORT LoggingEvent :
 		 was created. */
 		log4cxx_time_t getTimeStamp() const;
 
-		std::chrono::time_point<std::chrono::high_resolution_clock> getChronoTimeStamp() const;
+		std::chrono::time_point<std::chrono::system_clock> getChronoTimeStamp() const;
 
 		/* Return the file where this log statement was written. */
 		const log4cxx::spi::LocationInfo& getLocationInformation() const;
