@@ -141,7 +141,7 @@ struct LoggingEvent::LoggingEventPrivate
 	 */
 	const LogString& threadUserName;
 
-	std::chrono::time_point<std::chrono::high_resolution_clock> chronoTimeStamp;
+	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
