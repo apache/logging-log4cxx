@@ -101,15 +101,18 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
 		InputStreamPtr inputStream = InputStreamPtr( new FileInputStream(configFileName) );
 		props.load(inputStream);
 	}
-	catch (const IOException&)
+	catch (const IOException& ex)
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
-			+ configFileName.getPath() + LOG4CXX_STR("]."));
+			+ configFileName.getPath() + LOG4CXX_STR("].") + ": " + ex.what());
 		return;
 	}
 
 	try
 	{
+		LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
+				+ configFileName.getPath() + LOG4CXX_STR("].");
+		LogLog::debug(debugMsg);
 		doConfigure(props, hierarchy);
 	}
 	catch (const std::exception& ex)

@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
+#include <apr_errno.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -170,9 +171,13 @@ IOException& IOException::operator=(const IOException& src)
 
 LogString IOException::formatMessage(log4cxx_status_t stat)
 {
+	char err_buff[32];
 	LogString s(LOG4CXX_STR("IO Exception : status code = "));
 	Pool p;
 	StringHelper::toString(stat, p, s);
+	s.append("(");
+	s.append(apr_strerror(stat, err_buff, sizeof(err_buff)));
+	s.append(")");
 	return s;
 }
 

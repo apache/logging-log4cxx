@@ -65,6 +65,9 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 		{
 			File candidate(names[i]);
 
+			LogString debugMsg = LOG4CXX_STR("Checking file ");
+			debugMsg.append(names[i]);
+			LogLog::debug(debugMsg);
 			if (candidate.exists(pool))
 			{
 				configuration = candidate;
