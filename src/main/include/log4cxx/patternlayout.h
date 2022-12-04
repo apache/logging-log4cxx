@@ -416,6 +416,9 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 
 	protected:
 		virtual log4cxx::pattern::PatternMap getFormatSpecifiers();
+
+	private:
+		pattern::PatternConverterPtr createColorStartPatternConverter(const std::vector<LogString>& options);
 };
 
 LOG4CXX_PTR_DEF(PatternLayout);

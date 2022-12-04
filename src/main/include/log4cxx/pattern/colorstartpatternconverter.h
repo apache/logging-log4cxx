@@ -35,6 +35,8 @@ namespace pattern
 class LOG4CXX_EXPORT ColorStartPatternConverter
 	: public LoggingEventPatternConverter
 {
+	struct ColorPatternConverterPrivate;
+
 	public:
 		DECLARE_LOG4CXX_PATTERN(ColorStartPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -43,7 +45,6 @@ class LOG4CXX_EXPORT ColorStartPatternConverter
 		END_LOG4CXX_CAST_MAP()
 
 		ColorStartPatternConverter();
-
 
 		/**
 		 * Obtains an instance of pattern converter.
@@ -58,6 +59,16 @@ class LOG4CXX_EXPORT ColorStartPatternConverter
 		void format(const spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
 			helpers::Pool& p) const override;
+
+		void setFatalColor(const LogString& color);
+		void setErrorColor(const LogString& color);
+		void setWarnColor(const LogString& color);
+		void setInfoColor(const LogString& color);
+		void setDebugColor(const LogString& color);
+		void setTraceColor(const LogString& color);
+
+	private:
+		void parseColor(const LogString& color, LogString* result);
 };
 
 }
