@@ -93,11 +93,13 @@ static LogString graphicsModeToANSISequence(const LogString& graphicsMode, Pool&
 static LogString convertSingleSequence(const LogString& sequence, Pool& pool){
 	LogString strInParens;
 	bool inParens = false;
+	bool hasParens = false;
 	size_t x = 0;
 
 	for(x = 0; x < sequence.length(); x++){
 		if( sequence[x] == '(' && !inParens ){
 			inParens = true;
+			hasParens = true;
 			continue;
 		}else if( sequence[x] == '(' && inParens ){
 			// Unbalanced parens - parse invalid
@@ -105,6 +107,7 @@ static LogString convertSingleSequence(const LogString& sequence, Pool& pool){
 		}
 
 		if( sequence[x] == ')' && inParens ){
+			hasParens = true;
 			inParens = false;
 			break;
 		}
@@ -114,7 +117,7 @@ static LogString convertSingleSequence(const LogString& sequence, Pool& pool){
 		}
 	}
 
-	if( x != (sequence.length() - 1) || inParens ){
+	if( (x != (sequence.length() - 1) || inParens) && hasParens ){
 		// Unbalanced parens, or more data in the string than we expected - parse invalid
 		return LOG4CXX_STR("");
 	}
@@ -222,7 +225,21 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 	LogString lower = StringHelper::toLowerCase(color);
 	Pool pool;
 
+	// If the color we are trying to parse is blank, clear our result
+	if(StringHelper::trim(color).empty() ||
+			StringHelper::equalsIgnoreCase(color,
+										   LOG4CXX_STR("NONE"),
+										   LOG4CXX_STR("none"))){
+		result->clear();
+		return;
+	}
+
 	if( StringHelper::startsWith(lower, "\\x1b") ){
+		if( color[color.size() - 1] != 'm' ){
+			// In order for this to be a valid ANSI escape sequence,
+			// it must end with an 'm'.  If it does not, reject.
+			return;
+		}
 		// We start with an escape sequence, copy the data over after the escape byte
 		result->clear();
 		result->append("\x1b");
@@ -238,8 +255,7 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 		result->append("\x1b[");
 		LogString tmp;
 		for( size_t x = 0; x < color.size(); x++ ){
-			if(color[x] == '|' ||
-					x == color.size() ){
+			if(color[x] == '|' ){
 				LogString toAppend = convertSingleSequence(tmp, pool);
 				tmp.clear();
 				if(!toAppend.empty()){
@@ -249,6 +265,12 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 			}else{
 				tmp.push_back(color[x]);
 			}
+		}
+		LogString toAppend = convertSingleSequence(tmp, pool);
+		tmp.clear();
+		if(!toAppend.empty()){
+			result->push_back(';');
+			result->append(toAppend);
 		}
 		result->append("m");
 	}

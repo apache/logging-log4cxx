@@ -236,13 +236,15 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *      <td align="center"><strong>Y</strong></td>
  *      <td>
  *          Used to wrap log with color. The <strong>Y</strong> is the start of a color block.
- *          Color will be taken from the log level.
+ *          Color will be taken from the log level.  The default colors are:
  *          - `TRACE` - blue
  *          - `DEBUG` - cyan
  *          - `INFO` - green
  *          - `WARN` - yellow
  *          - `ERROR` - red
  *          - `FATAL` - magenta
+ *
+ *			These colors are all customizable.
  *      </td>
  *  </tr>
  *  <tr>
@@ -354,6 +356,76 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *  The above text is largely inspired from Peter A. Darnell and Philip E. Margolis' highly
  *  recommended book "C -- a Software Engineering Approach", ISBN 0-387-97389-3.
  * </p>
+ *
+ * <h2>Colorizing log output</h2>
+ *
+ * In order to customize the colors for the %Y specifier, options have been added to the
+ * PatternLayout in order to let users define their own colors.  Foreground/background colors
+ * can be set, as well as other text effects.  A user can also set the ANSI escape pattern
+ * directly if they want.
+ *
+ * Each level can be set individually.  The configuration options for the levels are as follows:
+ * <ul>
+ * <li>FatalColor</li>
+ * <li>ErrorColor</li>
+ * <li>WarnColor</li>
+ * <li>InfoColor</li>
+ * <li>DebugColor</li>
+ * <li>ErrorColor</li>
+ * </ul>
+ *
+ * Foreground colors may be set by using fg(), background colors may be set by using bg(), and
+ * other options(such as bold) may be set as well.
+ *
+ * Available colors:
+ * <ul>
+ * <li>Black</li>
+ * <li>Red</li>
+ * <li>Green</li>
+ * <li>Yellow</li>
+ * <li>Blue</li>
+ * <li>Magenta</li>
+ * <li>Cyan</li>
+ * <li>White</li>
+ * </ul>
+ *
+ * Available graphics modes:
+ * <ul>
+ * <li>Bold</li>
+ * <li>Dim</li>
+ * <li>Italic</li>
+ * <li>Underline</li>
+ * <li>Blinking</li>
+ * <li>Inverse</li>
+ * <li>Strikethrough</li>
+ * </ul>
+ *
+ * Combining these together, we can configure our colors as we want, shown here in XML:
+ *
+ * Set the background color to red, make text blinking and bold:
+ * <pre>
+ * &lt;param name="FatalColor" value="bg(red)|blinking|bold"/&gt;
+ * </pre>
+ *
+ * Set the foreground color to blue:
+ * <pre>
+ * &lt;param name="FatalColor" value="fg(blue)"/&gt;
+ * </pre>
+ *
+ * Set the foreground color to white and the background color to black:
+ * <pre>
+ * &lt;param name="FatalColor" value="fg(white)|bg(black)"/&gt;
+ * </pre>
+ *
+ * Clear the formatting for the specified level(no formatting will be applied):
+ * <pre>
+ * &lt;param name="FatalColor" value="none"/&gt;
+ * </pre>
+ *
+ * Set a color based off on an ANSI escape sequence(equivalent to setting fg(red)):
+ * <pre>
+ * &lt;param name="FatalColor" value="\x1b[31m"/&gt;
+ * </pre>
  */
 class LOG4CXX_EXPORT PatternLayout : public Layout
 {

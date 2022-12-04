@@ -75,12 +75,12 @@ struct PatternLayout::PatternLayoutPrivate
 	 */
 	FormattingInfoList patternFields;
 
-	LogString m_fatalColor = LOG4CXX_STR("\x1B[35m"); //magenta
-	LogString m_errorColor = LOG4CXX_STR("\x1B[31m"); //red
-	LogString m_warnColor = LOG4CXX_STR("\x1B[33m"); //yellow
-	LogString m_infoColor = LOG4CXX_STR("\x1B[32m"); //green
-	LogString m_debugColor = LOG4CXX_STR("\x1B[36m"); //cyan;
-	LogString m_traceColor = LOG4CXX_STR("\x1B[34m"); //blue;
+	LogString m_fatalColor = LOG4CXX_STR("\\x1B[35m"); //magenta
+	LogString m_errorColor = LOG4CXX_STR("\\x1B[31m"); //red
+	LogString m_warnColor = LOG4CXX_STR("\\x1B[33m"); //yellow
+	LogString m_infoColor = LOG4CXX_STR("\\x1B[32m"); //green
+	LogString m_debugColor = LOG4CXX_STR("\\x1B[36m"); //cyan;
+	LogString m_traceColor = LOG4CXX_STR("\\x1B[34m"); //blue;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(PatternLayout)
@@ -140,6 +140,8 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
 											LOG4CXX_STR("ERRORCOLOR"),
 											LOG4CXX_STR("errorcolor"))){
 		m_priv->m_errorColor = value;
+		LogLog::debug("Setting error color to ");
+		LogLog::debug(value);
 	}else if(StringHelper::equalsIgnoreCase(option,
 											LOG4CXX_STR("FATALCOLOR"),
 											LOG4CXX_STR("fatalcolor"))){
