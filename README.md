@@ -17,6 +17,7 @@ the fact that you changed something.
 Because new signups are not allowed on JIRA anymore, you may also submit a bug report through the
 GitHub mirror.
 
-If any discussion is needed before actually having any code, simply create a ticket in JIRA or send
-a message to the corresponding [mailing list](https://logging.apache.org/log4cxx/latest_stable/mail-lists.html).
+If any discussion is needed before actually having any code, simply create a issue on GitHub,
+a ticket on JIRA (if you have an old account), or send a message to the corresponding
+[mailing list](https://logging.apache.org/log4cxx/latest_stable/mail-lists.html).
 Thanks!
