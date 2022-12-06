@@ -796,15 +796,24 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 
 	if (rv != APR_SUCCESS)
 	{
-		LogString msg2(LOG4CXX_STR("Could not open file ["));
+		// There is not technically an exception thrown here, but this behavior matches
+		// what the PropertyConfigurator does
+		IOException io(rv);
+		LogString msg2(LOG4CXX_STR("Could not read configuration file ["));
 		msg2.append(filename.getPath());
-		msg2.append(LOG4CXX_STR("]."));
+		msg2.append(LOG4CXX_STR("]. "));
+		msg2.append(io.what());
 		LogLog::error(msg2);
 	}
 	else
 	{
 		apr_xml_parser* parser = NULL;
 		apr_xml_doc* doc = NULL;
+
+		LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
+				+ filename.getPath() + LOG4CXX_STR("].");
+		LogLog::debug(debugMsg);
+
 		rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
 
 		if (rv != APR_SUCCESS)

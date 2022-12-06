@@ -332,7 +332,9 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								}
 								catch (std::exception& ex)
 								{
-									LogLog::warn(LOG4CXX_STR("Exception on rollover"));
+									LogString errorMsg = LOG4CXX_STR("Exception on rollover: ");
+									errorMsg.append(ex.what());
+									LogLog::error(errorMsg);
 									LogString exmsg;
 									log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
 									_priv->errorHandler->error(exmsg, ex, 0);
@@ -393,7 +395,9 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								}
 								catch (std::exception& ex)
 								{
-									LogLog::warn(LOG4CXX_STR("Exception during rollover"));
+									LogString errorMsg = LOG4CXX_STR("Exception during rollover: ");
+									errorMsg.append(ex.what());
+									LogLog::warn(errorMsg);
 									LogString exmsg;
 									log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
 									_priv->errorHandler->error(exmsg, ex, 0);
@@ -429,7 +433,9 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 				}
 				catch (std::exception& ex)
 				{
-					LogLog::warn(LOG4CXX_STR("Exception during rollover"));
+					LogString errorMsg = LOG4CXX_STR("Exception during rollover: ");
+					errorMsg.append(ex.what());
+					LogLog::warn(errorMsg);
 					LogString exmsg;
 					log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
 					_priv->errorHandler->error(exmsg, ex, 0);
@@ -463,7 +469,9 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 		}
 		catch (std::exception& ex)
 		{
-			LogLog::warn(LOG4CXX_STR("Exception during rollover attempt."));
+			LogString errorMsg = LOG4CXX_STR("Exception during rollover attempt: ");
+			errorMsg.append(ex.what());
+			LogLog::warn(errorMsg);
 			LogString exmsg;
 			log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
 			_priv->errorHandler->error(exmsg);

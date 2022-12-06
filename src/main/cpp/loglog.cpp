@@ -25,6 +25,7 @@
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/systemerrwriter.h>
+#include <log4cxx/helpers/optionconverter.h>
 #include <mutex>
 
 using namespace log4cxx;
@@ -47,6 +48,8 @@ struct LogLog::LogLogPrivate {
 LogLog::LogLog() :
 	m_priv(std::make_unique<LogLogPrivate>())
 {
+	LogString log4cxxDebug = OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_DEBUG"), "false");
+	m_priv->debugEnabled = OptionConverter::toBoolean(log4cxxDebug, false);
 }
 
 LogLog::~LogLog(){}

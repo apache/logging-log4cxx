@@ -192,7 +192,7 @@ hierarchy. This rule is summarized below.
 A log request of level *p* in a logger with (either assigned or
 inherited, whichever is appropriate) level *q*, is enabled if *p \>= q*.
 
-This rule is at the heart of log4cxx. It assumes that levels are
+This rule is at the heart of Log4cxx. It assumes that levels are
 ordered. For the standard levels, we have *TRACE \< DEBUG \< INFO \<
 WARN \< ERROR \< FATAL*. 
 
@@ -240,11 +240,11 @@ For example, in
 Thus, it is possible to configure a logger and then to retrieve the same
 instance somewhere else in the code without passing around references.
 In fundamental contradiction to biological parenthood, where parents
-always preceed their children, log4cxx loggers can be created and
+always preceed their children, Log4cxx loggers can be created and
 configured in any order. In particular, a "parent" logger will find and
 link to its descendants even if it is instantiated after them. 
 
-Configuration of the log4cxx environment is typically done at
+Configuration of the Log4cxx environment is typically done at
 application initialization. The preferred way is by reading a
 configuration file. This approach will be discussed shortly. 
 
@@ -265,7 +265,7 @@ seems to be the best strategy known so far.
 
 The ability to selectively enable or disable logging requests based on
 their logger is only part of the picture. Log4cxx allows logging
-requests to print to multiple destinations. In log4cxx speak, an output
+requests to print to multiple destinations. In Log4cxx speak, an output
 destination is called an *appender*. Currently, appenders exist for the
 [console](@ref log4cxx.ConsoleAppender), [files](@ref log4cxx.FileAppender),
 GUI components, [remote socket](@ref log4cxx.net.SocketAppender)
@@ -327,7 +327,7 @@ an appender takes care of sending the formatted output to its
 destination. 
 
 The [PatternLayout](@ref log4cxx.PatternLayout),
-part of the standard log4cxx distribution, lets the user specify the
+part of the standard Log4cxx distribution, lets the user specify the
 output format according to conversion patterns similar to the C language
 *printf* function. 
 
@@ -353,13 +353,13 @@ applications will have thousands of logging statements embedded within
 their code. Given their number, it becomes imperative to manage these
 log statements without the need to modify them manually. 
 
-The log4cxx environment is fully configurable programmatically. However,
-it is far more flexible to configure log4cxx using configuration files.
+The Log4cxx environment is fully configurable programmatically. However,
+it is far more flexible to configure Log4cxx using configuration files.
 Currently, configuration files can be written in XML or in Java
 properties (key=value) format. 
 
 Let us give a taste of how this is done with the help of an imaginary
-application *MyApp* that uses log4cxx. 
+application *MyApp* that uses Log4cxx. 
 
 ~~~{.cpp}
     #include "com/foo/bar.h"
@@ -397,7 +397,7 @@ application *MyApp* that uses log4cxx.
     }
 ~~~
 
-*MyApp* begins by including log4cxx headers. It then defines a static
+*MyApp* begins by including Log4cxx headers. It then defines a static
 logger variable with the name *MyApp* which happens to be the fully
 qualified name of the class. 
 
@@ -435,7 +435,7 @@ qualified name of the class.
 
 The invocation of the
 [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure)
-method creates a rather simple log4cxx setup. This method is hardwired
+method creates a rather simple Log4cxx setup. This method is hardwired
 to add to the root logger a [ConsoleAppender](@ref log4cxx.ConsoleAppender).
 The output will be formatted using a
 [PatternLayout](@ref log4cxx.PatternLayout)
@@ -592,13 +592,13 @@ version of *example.log* is automatically moved to *example.log.1*.
 Note that to obtain these different logging behaviors we did not need to
 recompile code. We could just as easily have logged to a UNIX Syslog
 daemon, redirected all *com.foo* output to an NT Event logger, or
-forwarded logging events to a remote log4cxx server, which would log
+forwarded logging events to a remote Log4cxx server, which would log
 according to local server policy, for example by forwarding the log
-event to a second log4cxx server. 
+event to a second Log4cxx server. 
 
 # Default Initialization Procedure {#default-initialization-procedure}
 
-The log4cxx library does not make any assumptions about its environment.
+The Log4cxx library does not make any assumptions about its environment.
 In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
 However the library will attempt automatic configuration.
 
@@ -614,6 +614,20 @@ of the [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) class.
 To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
 A full example can be seen in the src/examples/cpp/UserLib/logmanager.cpp file.
+
+# Internal Debugging {#internal-debugging}
+
+Because Log4cxx is a logging library, we can't use it to output errors from
+the library itself.  There are several ways to activate internal logging:
+
+1. Configure the library directly by calling the
+[LogLog::setInternalDebugging](@ref log4cxx.helpers.LogLog.setInternalDebugging)
+method
+2. If using a properties file, set the value `log4j.debug=true` in your configuration file
+3. If using an XML file, set the attribute `internalDebug=true` in the root node
+4. From the environment: `LOG4CXX_DEBUG=true`
+
+All error and warning messages are sent to stderr.
 
 # Nested Diagnostic Contexts {#nested-diagnostic-contexts}
 
@@ -657,7 +671,7 @@ class is shown below.
 The NDC is managed per thread as a *stack* of contextual information.
 Note that all methods of the *log4cxx::NDC* class are static. Assuming
 that NDC printing is turned on, every time a log request is made, the
-appropriate log4cxx component will include the *entire* NDC stack for
+appropriate Log4cxx component will include the *entire* NDC stack for
 the current thread in the log output. This is done without the
 intervention of the user, who is responsible only for placing the
 correct information in the NDC by using the *push* and *pop* methods at
@@ -679,7 +693,7 @@ client's request.
 Nevertheless, some sophisticated applications, such as virtual hosting
 web servers, must log differently depending on the virtual host context
 and also depending on the software component issuing the request. Recent
-log4cxx releases support multiple hierarchy trees. This enhancement
+Log4cxx releases support multiple hierarchy trees. This enhancement
 allows each virtual host to possess its own copy of the logger
 hierarchy. 
 
@@ -760,7 +774,7 @@ The levels are set as follows:
 Note that this has no effect on other macros, such as using the
 `LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
 
-# Removing location information {#removing-location information}
+# Removing location information {#removing-location-information}
 
 Whenever you log a message with Log4cxx, metadata about the location of the
 logging statement is captured as well through the preprocessor.  This includes
@@ -804,7 +818,7 @@ This will output data similar to the following:
 
 # Logging with {fmt} {#logging-with-fmt}
 
-One issue with utilizing log4cxx and its ostream style of logging is that log
+One issue with utilizing Log4cxx and its ostream style of logging is that log
 statements can be very awkward if you need to precisely format something:
 
 ~~~{.cpp}
@@ -826,7 +840,7 @@ code like the following:
 LOG4CXX_INFO_FMT( rootLogger, "Numbers can be formatted with a format string {:.1f} and as hex: {:x}", 22.456, 123 );
 ~~~
 
-Note that log4cxx does not include a copy of {fmt}, so you must include the
+Note that Log4cxx does not include a copy of {fmt}, so you must include the
 correct headers and linker flags in order to use the `LOG4CXX_[level]_FMT`
 family of macros.
 
@@ -863,9 +877,9 @@ logger hierarchy it is possible to control which log statements are
 output at arbitrary granularity. This helps reduce the volume of logged
 output and minimize the cost of logging. 
 
-One of the advantages of the log4cxx API is its manageability. Once the
+One of the advantages of the Log4cxx API is its manageability. Once the
 log statements have been inserted into the code, they can be controlled
 with configuration files. They can be selectively enabled or disabled,
 and sent to different and multiple output targets in user-chosen
-formats. The log4cxx package is designed so that log statements can
+formats. The Log4cxx package is designed so that log statements can
 remain in shipped code without incurring a heavy performance cost.
