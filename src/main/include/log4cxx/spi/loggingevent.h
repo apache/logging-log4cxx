@@ -24,6 +24,7 @@
 #include <log4cxx/mdc.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <vector>
+#include <chrono>
 
 
 namespace log4cxx
@@ -106,6 +107,8 @@ class LOG4CXX_EXPORT LoggingEvent :
 		/** The number of microseconds elapsed from 01.01.1970 until logging event
 		 was created. */
 		log4cxx_time_t getTimeStamp() const;
+
+		std::chrono::time_point<std::chrono::system_clock> getChronoTimeStamp() const;
 
 		/* Return the file where this log statement was written. */
 		const log4cxx::spi::LocationInfo& getLocationInformation() const;

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+#include <chrono>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/ndc.h>
 
@@ -68,10 +69,11 @@ struct LoggingEvent::LoggingEventPrivate
 		ndcLookupRequired(true),
 		mdcCopyLookupRequired(true),
 		message(message1),
-		timeStamp(apr_time_now()),
+		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
 		threadName(getCurrentThreadName()),
-		threadUserName(getCurrentThreadUserName())
+		threadUserName(getCurrentThreadUserName()),
+		chronoTimeStamp(std::chrono::microseconds(timeStamp))
 	{
 	}
 
@@ -138,6 +140,8 @@ struct LoggingEvent::LoggingEventPrivate
 	 * systems or SetThreadDescription on Windows.
 	 */
 	const LogString& threadUserName;
+
+	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
@@ -430,5 +434,9 @@ log4cxx_time_t LoggingEvent::getTimeStamp() const
 const log4cxx::spi::LocationInfo& LoggingEvent::getLocationInformation() const
 {
 	return m_priv->locationInfo;
+}
+
+std::chrono::time_point<std::chrono::system_clock> LoggingEvent::getChronoTimeStamp() const{
+	return m_priv->chronoTimeStamp;
 }
 

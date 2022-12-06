@@ -58,6 +58,9 @@ set(ALL_LOG4CXX_TESTS
     locationtest
     locationdisabledtest
 )
+if(${ENABLE_FMT_LAYOUT})
+    set(ALL_LOG4CXX_TESTS ${ALL_LOG4CXX_TESTS} fmttest)
+endif()
 foreach(fileName IN LISTS ALL_LOG4CXX_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
 endforeach()

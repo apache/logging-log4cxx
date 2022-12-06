@@ -54,6 +54,12 @@ if()
 	)
 endif()
 
+if(${ENABLE_FMT_LAYOUT})
+    set(extra_classes ${extra_classes}
+	fmtlayout.cpp
+	)
+endif()
+
 target_sources(log4cxx
   PRIVATE
   action.cpp
@@ -202,6 +208,10 @@ get_directory_property( FILESYSTEM_IMPL DIRECTORY "${CMAKE_SOURCE_DIR}/src/main/
 if("${FILESYSTEM_IMPL}" STREQUAL "std::filesystem" OR
    "${FILESYSTEM_IMPL}" STREQUAL "std::experimental::filesystem" )
   target_link_libraries(log4cxx PUBLIC $<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:stdc++fs>)
+endif()
+
+if(${ENABLE_FMT_LAYOUT})
+    target_link_libraries(log4cxx PUBLIC fmt::fmt)
 endif()
 
 if(LOG4CXX_ABI_CHECK)

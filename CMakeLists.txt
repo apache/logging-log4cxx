@@ -63,6 +63,13 @@ elseif(TARGET expat::expat)
   set(EXPAT_LIBRARIES expat::expat)
 endif()
 
+find_package(fmt 7.1 QUIET)
+if(${fmt_FOUND})
+    option(ENABLE_FMT_LAYOUT "Enable the FMT layout(if libfmt found)" ON)
+else()
+    set(ENABLE_FMT_LAYOUT "OFF")
+endif()
+
 # Request C++17, if available
 # This *should* fallback to an older standard if it is not available
 if( NOT "${CMAKE_CXX_STANDARD}")
@@ -191,7 +198,7 @@ get_directory_property( ATOMIC_IMPL DIRECTORY src/main/include DEFINITION ATOMIC
 get_directory_property( FILESYSTEM_IMPL DIRECTORY src/main/include DEFINITION FILESYSTEM_IMPL )
 get_directory_property( STD_MAKE_UNIQUE_IMPL DIRECTORY src/main/include DEFINITION STD_MAKE_UNIQUE_IMPL )
 
-foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG)
+foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG HAS_FMT)
   if(${varName} EQUAL 0)
     set(${varName} "OFF" )
   elseif(${varName} EQUAL 1)
@@ -293,3 +300,11 @@ message(STATUS "  ConsoleAppender ................. : ON")
 message(STATUS "  FileAppender .................... : ON")
 message(STATUS "  RollingFileAppender ............. : ON")
 message(STATUS "  MultiprocessRollingFileAppender . : ${LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER}")
+
+message(STATUS "Available layouts:")
+message(STATUS "  HTMLLayout ...................... : ON")
+message(STATUS "  JSONLayout ...................... : ON")
+message(STATUS "  PatternLayout ................... : ON")
+message(STATUS "  SimpleLayout .................... : ON")
+message(STATUS "  XMLLayout ....................... : ON")
+message(STATUS "  FMTLayout ....................... : ${ENABLE_FMT_LAYOUT}")
