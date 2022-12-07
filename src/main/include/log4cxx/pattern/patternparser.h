@@ -21,6 +21,7 @@
 
 #include <map>
 #include <vector>
+#include <functional>
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/pattern/patternconverter.h>
 #include <log4cxx/pattern/formattinginfo.h>
@@ -30,7 +31,7 @@ namespace log4cxx
 namespace pattern
 {
 
-typedef PatternConverterPtr (*PatternConstructor)(const std::vector<LogString>& options);
+typedef std::function<PatternConverterPtr(const std::vector<LogString>& options)> PatternConstructor;
 typedef std::map<LogString, PatternConstructor> PatternMap;
 
 

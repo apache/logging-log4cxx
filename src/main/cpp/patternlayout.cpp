@@ -74,6 +74,13 @@ struct PatternLayout::PatternLayoutPrivate
 	 * Field widths and alignment corresponding to pattern converters.
 	 */
 	FormattingInfoList patternFields;
+
+	LogString m_fatalColor = LOG4CXX_STR("\\x1B[35m"); //magenta
+	LogString m_errorColor = LOG4CXX_STR("\\x1B[31m"); //red
+	LogString m_warnColor = LOG4CXX_STR("\\x1B[33m"); //yellow
+	LogString m_infoColor = LOG4CXX_STR("\\x1B[32m"); //green
+	LogString m_debugColor = LOG4CXX_STR("\\x1B[36m"); //cyan;
+	LogString m_traceColor = LOG4CXX_STR("\\x1B[34m"); //blue;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(PatternLayout)
@@ -129,6 +136,32 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
 			LOG4CXX_STR("conversionpattern")))
 	{
 		m_priv->conversionPattern = OptionConverter::convertSpecialChars(value);
+	}else if(StringHelper::equalsIgnoreCase(option,
+											LOG4CXX_STR("ERRORCOLOR"),
+											LOG4CXX_STR("errorcolor"))){
+		m_priv->m_errorColor = value;
+		LogLog::debug("Setting error color to ");
+		LogLog::debug(value);
+	}else if(StringHelper::equalsIgnoreCase(option,
+											LOG4CXX_STR("FATALCOLOR"),
+											LOG4CXX_STR("fatalcolor"))){
+		m_priv->m_fatalColor = value;
+	}else if(StringHelper::equalsIgnoreCase(option,
+											LOG4CXX_STR("WARNCOLOR"),
+											LOG4CXX_STR("warncolor"))){
+		m_priv->m_warnColor = value;
+	}else if(StringHelper::equalsIgnoreCase(option,
+											LOG4CXX_STR("INFOCOLOR"),
+											LOG4CXX_STR("infocolor"))){
+		m_priv->m_infoColor = value;
+	}else if(StringHelper::equalsIgnoreCase(option,
+											LOG4CXX_STR("DEBUGCOLOR"),
+											LOG4CXX_STR("debugcolor"))){
+		m_priv->m_debugColor = value;
+	}else if(StringHelper::equalsIgnoreCase(option,
+											LOG4CXX_STR("TRACECOLOR"),
+											LOG4CXX_STR("tracecolor"))){
+		m_priv->m_traceColor = value;
 	}
 }
 
@@ -168,7 +201,7 @@ void PatternLayout::activateOptions(Pool&)
 }
 
 #define RULES_PUT(spec, cls) \
-	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), (PatternConstructor) cls ::newInstance))
+	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), cls ::newInstance))
 
 
 log4cxx::pattern::PatternMap PatternLayout::getFormatSpecifiers()
@@ -180,7 +213,7 @@ log4cxx::pattern::PatternMap PatternLayout::getFormatSpecifiers()
 	RULES_PUT("C", ClassNamePatternConverter);
 	RULES_PUT("class", ClassNamePatternConverter);
 
-	RULES_PUT("Y", ColorStartPatternConverter);
+	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR("Y")), std::bind(&PatternLayout::createColorStartPatternConverter, this, std::placeholders::_1)));
 	RULES_PUT("y", ColorEndPatternConverter);
 
 	RULES_PUT("d", DatePatternConverter);
@@ -231,7 +264,18 @@ LogString PatternLayout::getConversionPattern() const
 	return m_priv->conversionPattern;
 }
 
+pattern::PatternConverterPtr PatternLayout::createColorStartPatternConverter(const std::vector<LogString>& options){
+	std::shared_ptr<ColorStartPatternConverter> colorPatternConverter = std::make_shared<ColorStartPatternConverter>();
 
+	colorPatternConverter->setErrorColor(m_priv->m_errorColor);
+	colorPatternConverter->setFatalColor(m_priv->m_fatalColor);
+	colorPatternConverter->setWarnColor(m_priv->m_warnColor);
+	colorPatternConverter->setInfoColor(m_priv->m_infoColor);
+	colorPatternConverter->setDebugColor(m_priv->m_debugColor);
+	colorPatternConverter->setTraceColor(m_priv->m_traceColor);
+
+	return colorPatternConverter;
+}
 
 
 

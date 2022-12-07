@@ -47,6 +47,7 @@ void ColorEndPatternConverter::format(
 	Pool& p) const
 {
 
-	toAppendTo.append(LOG4CXX_STR("\x1B[39m"));
-
+	// Reset all colors on the output(code 0)
+	// Code 39 would be to reset colors only
+	toAppendTo.append(LOG4CXX_STR("\x1B[0m"));
 }

@@ -15,5 +15,9 @@
 # limitations under the License.
 #
 
-add_executable(patternparsertestcase patternparsertestcase.cpp num343patternconverter.cpp)
+add_executable(patternparsertestcase
+    patternparsertestcase.cpp
+    num343patternconverter.cpp
+    colorstartpatternconvertertest.cpp
+)
 set(ALL_LOG4CXX_TESTS ${ALL_LOG4CXX_TESTS} patternparsertestcase PARENT_SCOPE)
