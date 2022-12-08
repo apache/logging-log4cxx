@@ -32,6 +32,5 @@
 --pad-comma
 --pad-header
 --pad-oper
---recursive
 --style=break
 --suffix=none

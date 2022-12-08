@@ -56,15 +56,7 @@ class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy
 		LOG4CXX_CAST_ENTRY_CHAIN(TriggeringPolicy)
 		END_LOG4CXX_CAST_MAP()
 
-		/**
-		 * The first filter in the filter chain. Set to <code>null</code> initially.
-		 */
-		log4cxx::spi::FilterPtr headFilter;
-
-		/**
-		 * The last filter in the filter chain.
-		 */
-		log4cxx::spi::FilterPtr tailFilter;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilterBasedTriggeringPolicyPrivate, m_priv)
 
 	public:
 		/**

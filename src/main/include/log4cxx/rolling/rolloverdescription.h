@@ -32,27 +32,8 @@ class RolloverDescription : public log4cxx::helpers::Object
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(RolloverDescription)
 		END_LOG4CXX_CAST_MAP()
-		/**
-		 * Active log file name after rollover.
-		 */
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, activeFileName)
 
-		/**
-		 * Should active file be opened for appending.
-		 */
-		bool append;
-
-		/**
-		 * Action to be completed after close of current active log file
-		 * before returning control to caller.
-		 */
-		ActionPtr synchronous;
-
-		/**
-		 * Action to be completed after close of current active log file
-		 * and before next rollover attempt, may be executed asynchronously.
-		 */
-		ActionPtr asynchronous;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(RolloverDescriptionPrivate, m_priv)
 
 	public:
 		RolloverDescription();
@@ -69,6 +50,8 @@ class RolloverDescription : public log4cxx::helpers::Object
 			const bool append,
 			const ActionPtr& synchronous,
 			const ActionPtr& asynchronous);
+
+		~RolloverDescription();
 
 		/**
 		 * Active log file name after rollover.

@@ -40,9 +40,7 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 	public virtual Object
 {
 	private:
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, WARN_PREFIX)
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, ERROR_PREFIX)
-		mutable bool firstTime;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(OnlyOnceErrorHandlerPrivate, m_priv)
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
@@ -52,6 +50,8 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		END_LOG4CXX_CAST_MAP()
 
 		OnlyOnceErrorHandler();
+
+		~OnlyOnceErrorHandler();
 
 		/**
 		 Does not do anything.

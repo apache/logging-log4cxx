@@ -66,15 +66,7 @@ class LOG4CXX_EXPORT SimpleDateFormat : public DateFormat
 		void setTimeZone(const TimeZonePtr& zone);
 
 	private:
-		/**
-		 * Time zone.
-		 */
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(TimeZonePtr, timeZone)
-
-		/**
-		 * List of tokens.
-		 */
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(PatternTokenList, pattern)
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(SimpleDateFormatPrivate, m_priv)
 
 		static void addToken(const logchar spec, const int repeat, const std::locale* locale, PatternTokenList& pattern);
 		static void parsePattern(const LogString& spec, const std::locale* locale, PatternTokenList& pattern);
