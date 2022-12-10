@@ -969,13 +969,14 @@ class LOG4CXX_EXPORT Logger :
 		bool isInfoEnabled() const;
 
 		/**
-		Is this logger is enabled for <code>INFO</code> level logging events?
+		Is \c logger is enabled for <code>INFO</code> level logging events?
 
 		See #isDebugEnabledFor.
 		See also #LOG4CXX_INFO.
 
-		@return bool - <code>true</code> if this logger is enabled
-		for level info, <code>false</code> otherwise.
+		@return bool - <code>false</code> if \c logger is <code>null</code>
+		or <code>INFO</code> logging events are disabled for \c logger,
+		<code>true</code> otherwise.
 		*/
 		inline static bool isInfoEnabledFor(const LoggerPtr& logger)
 		{
@@ -994,13 +995,14 @@ class LOG4CXX_EXPORT Logger :
 		bool isWarnEnabled() const;
 
 		/**
-		Is this logger is enabled for <code>INFO</code> level logging events?
+		Is \c logger is enabled for <code>INFO</code> level logging events?
 
 		See #isDebugEnabledFor.
 		See also #LOG4CXX_WARN.
 
-		@return bool - <code>true</code> if this logger is enabled
-		for level info, <code>false</code> otherwise.
+		@return bool - <code>false</code> if \c logger is <code>null</code>
+		or <code>WARN</code> logging events are disabled for \c logger,
+		<code>true</code> otherwise.
 		*/
 		inline static bool isWarnEnabledFor(const LoggerPtr& logger)
 		{
@@ -1019,13 +1021,14 @@ class LOG4CXX_EXPORT Logger :
 		bool isErrorEnabled() const;
 
 		/**
-		Is this logger is enabled for <code>INFO</code> level logging events?
+		Is \c logger is enabled for <code>INFO</code> level logging events?
 
 		See #isDebugEnabledFor.
 		See also #LOG4CXX_ERROR.
 
-		@return bool - <code>true</code> if this logger is enabled
-		for level info, <code>false</code> otherwise.
+		@return bool - <code>false</code> if \c logger is <code>null</code>
+		or <code>ERROR</code> logging events are disabled for \c logger,
+		<code>true</code> otherwise.
 		*/
 		inline static bool isErrorEnabledFor(const LoggerPtr& logger)
 		{
@@ -1041,6 +1044,17 @@ class LOG4CXX_EXPORT Logger :
 		for level fatal, <code>false</code> otherwise.
 		*/
 		bool isFatalEnabled() const;
+
+		/**
+		Is \c logger is enabled for <code>FATAL</code> level logging events?
+
+		See #isDebugEnabledFor.
+		See also #LOG4CXX_FATAL.
+
+		@return bool - <code>false</code> if \c logger is <code>null</code>
+		or <code>FATAL</code> logging events are disabled for \c logger,
+		<code>true</code> otherwise.
+		*/
 		inline static bool isFatalEnabledFor(const LoggerPtr& logger)
 		{
 			return logger && logger->m_threshold <= Level::FATAL_INT && logger->isFatalEnabled();
@@ -1055,6 +1069,17 @@ class LOG4CXX_EXPORT Logger :
 		for level trace, <code>false</code> otherwise.
 		*/
 		bool isTraceEnabled() const;
+
+		/**
+		Is \c logger is enabled for <code>TRACE</code> level logging events?
+
+		See #isDebugEnabledFor.
+		See also #LOG4CXX_TRACE.
+
+		@return bool - <code>false</code> if \c logger is <code>null</code>
+		or <code>TRACE</code> logging events are disabled for \c logger,
+		<code>true</code> otherwise.
+		*/
 		inline static bool isTraceEnabledFor(const LoggerPtr& logger)
 		{
 			return logger && logger->m_threshold <= Level::TRACE_INT && logger->isTraceEnabled();
