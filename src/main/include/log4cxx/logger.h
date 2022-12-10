@@ -783,6 +783,18 @@ class LOG4CXX_EXPORT Logger :
 		@param location location of source of logging request.
 		        */
 		void info(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
+		/**
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO events.
+
+		<p>This method first checks if this logger is <code>INFO</code>
+		enabled by comparing the level of this logger with the
+		INFO level. If this logger is
+		<code>INFO</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		*/
 		void info(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
@@ -1049,12 +1061,11 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1068,12 +1079,11 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::vector<LogString>& values) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1084,30 +1094,30 @@ class LOG4CXX_EXPORT Logger :
 		void l7dlog(const LevelPtr& level, const std::string& key,
 			const log4cxx::spi::LocationInfo& locationInfo) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with the \c val parameter.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
 		@param locationInfo The location info of the logging request.
-		@param val1 The first value for the placeholders within the pattern.
+		@param val The first value for the placeholders within the pattern.
 
 		@see #setResourceBundle
 		*/
 		void l7dlog(const LevelPtr& level, const std::string& key,
 			const log4cxx::spi::LocationInfo& locationInfo,
-			const std::string& val1) const;
+			const std::string& val) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1 and \c val2.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1121,12 +1131,12 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::string& val1, const std::string& val2) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1, \c val2 and val3.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1143,12 +1153,11 @@ class LOG4CXX_EXPORT Logger :
 
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method .
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1159,12 +1168,12 @@ class LOG4CXX_EXPORT Logger :
 		void l7dlog(const LevelPtr& level, const std::wstring& key,
 			const log4cxx::spi::LocationInfo& locationInfo) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameter \c val.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameter in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1175,14 +1184,14 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void l7dlog(const LevelPtr& level, const std::wstring& key,
 			const log4cxx::spi::LocationInfo& locationInfo,
-			const std::wstring& val1) const;
+			const std::wstring& val) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1 and \c val2.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1196,12 +1205,12 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::wstring& val1, const std::wstring& val2) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1, \c val2 and val3.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1218,12 +1227,11 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1234,12 +1242,12 @@ class LOG4CXX_EXPORT Logger :
 		void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
 			const log4cxx::spi::LocationInfo& locationInfo) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameter..
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1250,14 +1258,14 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
 			const log4cxx::spi::LocationInfo& locationInfo,
-			const std::basic_string<UniChar>& val1) const;
+			const std::basic_string<UniChar>& val) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1 and \c val2.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1271,12 +1279,12 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1, \c val2 and val3.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1294,12 +1302,11 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1310,12 +1317,12 @@ class LOG4CXX_EXPORT Logger :
 		void l7dlog(const LevelPtr& level, const CFStringRef& key,
 			const log4cxx::spi::LocationInfo& locationInfo) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameter \c val.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameter in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1328,12 +1335,12 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const CFStringRef& val1) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1 and \c val2.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1347,12 +1354,12 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const CFStringRef& val1, const CFStringRef& val2) const;
 		/**
-		Log a localized and parameterized message.
+		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1, \c val2 and val3.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the user
-		supplied string array <code>params</code>.
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1370,6 +1377,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 
 		/**
+		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
@@ -1379,6 +1387,7 @@ class LOG4CXX_EXPORT Logger :
 		void log(const LevelPtr& level, const std::string& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
+		Add a new logging event containing \c message to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
@@ -1388,6 +1397,7 @@ class LOG4CXX_EXPORT Logger :
 		void log(const LevelPtr& level, const std::string& message) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
+		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
@@ -1397,6 +1407,7 @@ class LOG4CXX_EXPORT Logger :
 		void log(const LevelPtr& level, const std::wstring& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
+		Add a new logging event containing \c message to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
@@ -1407,6 +1418,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
+		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
@@ -1416,6 +1428,7 @@ class LOG4CXX_EXPORT Logger :
 		void log(const LevelPtr& level, const std::basic_string<UniChar>& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
+		Add a new logging event containing \c message to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
@@ -1426,6 +1439,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
+		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
@@ -1435,6 +1449,7 @@ class LOG4CXX_EXPORT Logger :
 		void log(const LevelPtr& level, const CFStringRef& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
+		Add a new logging event containing \c message to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
@@ -1444,6 +1459,7 @@ class LOG4CXX_EXPORT Logger :
 		void log(const LevelPtr& level, const CFStringRef& message) const;
 #endif
 		/**
+		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
