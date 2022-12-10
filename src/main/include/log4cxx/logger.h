@@ -532,7 +532,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& location) const;
 
 		/**
-		Get the additivity flag for this Logger instance.
+		Get the additivity flag for this logger.
 		*/
 		bool getAdditivity() const;
 
@@ -610,7 +610,7 @@ class LOG4CXX_EXPORT Logger :
 
 
 		/**
-		Returns the assigned Level, if any, for this Logger.
+		The assigned Level, if any, for this logger.
 
 		@return Level - the assigned Level, can be null.
 		*/
@@ -995,7 +995,7 @@ class LOG4CXX_EXPORT Logger :
 		bool isWarnEnabled() const;
 
 		/**
-		Is \c logger is enabled for <code>INFO</code> level logging events?
+		Is \c logger is enabled for <code>WARN</code> level logging events?
 
 		See #isDebugEnabledFor.
 		See also #LOG4CXX_WARN.
@@ -1010,7 +1010,7 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Is this logger is enabled for error level logging events?
+		Is this logger is enabled for <code>ERROR</code> level logging events?
 
 		See also #isDebugEnabled.
 		See also #LOG4CXX_ERROR.
@@ -1021,7 +1021,7 @@ class LOG4CXX_EXPORT Logger :
 		bool isErrorEnabled() const;
 
 		/**
-		Is \c logger is enabled for <code>INFO</code> level logging events?
+		Is \c logger is enabled for <code>ERROR</code> level logging events?
 
 		See #isDebugEnabledFor.
 		See also #LOG4CXX_ERROR.
@@ -1036,7 +1036,7 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Is this logger is enabled for fatal level logging events?
+		Is this logger is enabled for <code>FATAL</code> level logging events?
 		See also #isDebugEnabled.
 		See also #LOG4CXX_FATAL.
 
@@ -1061,7 +1061,7 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Is this logger is enabled for trace level logging events?
+		Is this logger is enabled for <code>TRACE</code> level logging events?
 		See also #isDebugEnabled.
 		See also #LOG4CXX_FATAL.
 
@@ -1156,7 +1156,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::string& val1, const std::string& val2) const;
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and val3 to the appender(s) attached to \c logger if it is enabled for \c level events
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and \c val3 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1230,7 +1230,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::wstring& val1, const std::wstring& val2) const;
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and val3 to the appender(s) attached to \c logger if it is enabled for \c level events
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and \c val3 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1304,7 +1304,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2) const;
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and val3 to the appender(s) attached to \c logger if it is enabled for \c level events
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and \c val3 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1379,7 +1379,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const CFStringRef& val1, const CFStringRef& val2) const;
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and val3 to the appender(s) attached to \c logger if it is enabled for \c level events
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and \c val3 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1515,7 +1515,7 @@ class LOG4CXX_EXPORT Logger :
 		void removeAppender(const LogString& name) override;
 
 		/**
-		 Set the additivity flag for this Logger instance.
+		 Set the additivity flag for this logger.
 		  */
 		void setAdditivity(bool additive);
 
@@ -1531,7 +1531,7 @@ class LOG4CXX_EXPORT Logger :
 
 	public:
 		/**
-		Set the level of this Logger.
+		Set the level of this logger.
 
 		<p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::getDebug()); </pre>
 
