@@ -1061,7 +1061,7 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
+		Add a new logging event containing \c locationInfo and the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1079,7 +1079,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::vector<LogString>& values) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events.
+		Add a new logging event containing \c locationInfo and the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1094,7 +1094,7 @@ class LOG4CXX_EXPORT Logger :
 		void l7dlog(const LevelPtr& level, const std::string& key,
 			const log4cxx::spi::LocationInfo& locationInfo) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with the \c val parameter.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameter \c val to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1112,7 +1112,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::string& val) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1 and \c val2.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1 and \c val2 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1131,7 +1131,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::string& val1, const std::string& val2) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1, \c val2 and val3.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and val3 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1153,7 +1153,7 @@ class LOG4CXX_EXPORT Logger :
 
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
+		Add a new logging event containing \c locationInfo and the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1168,7 +1168,7 @@ class LOG4CXX_EXPORT Logger :
 		void l7dlog(const LevelPtr& level, const std::wstring& key,
 			const log4cxx::spi::LocationInfo& locationInfo) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameter \c val.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameter \c val to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1186,7 +1186,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::wstring& val) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1 and \c val2.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1 and \c val2 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1205,7 +1205,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::wstring& val1, const std::wstring& val2) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1, \c val2 and val3.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and val3 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1227,7 +1227,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
+		Add a new logging event containing \c locationInfo and the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1242,12 +1242,12 @@ class LOG4CXX_EXPORT Logger :
 		void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
 			const log4cxx::spi::LocationInfo& locationInfo) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameter..
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameter \c val to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
 		pattern is formatted using helpers::StringHelper::format method with the
-		supplied parameters in a string array.
+		supplied parameter in a string array.
 
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
@@ -1260,7 +1260,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::basic_string<UniChar>& val) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1 and \c val2.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1 and \c val2 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1279,7 +1279,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1, \c val2 and val3.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and val3 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1302,7 +1302,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
+		Add a new logging event containing \c locationInfo and the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1317,7 +1317,7 @@ class LOG4CXX_EXPORT Logger :
 		void l7dlog(const LevelPtr& level, const CFStringRef& key,
 			const log4cxx::spi::LocationInfo& locationInfo) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameter \c val.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameter \c val to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1335,7 +1335,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const CFStringRef& val1) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1 and \c val2.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1 and \c val2 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1354,7 +1354,7 @@ class LOG4CXX_EXPORT Logger :
 			const log4cxx::spi::LocationInfo& locationInfo,
 			const CFStringRef& val1, const CFStringRef& val2) const;
 		/**
-		Add a new logging event containing \c locationInfo and the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with parameters \c val1, \c val2 and val3.
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and val3 to the appender(s) attached to \c logger if it is enabled for \c level events
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -2016,7 +2016,7 @@ Add a new logging event containing \c ... to the appender(s) attached to \c logg
 #endif
 
 /**
-Add a new logging event containing the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
+Add a new logging event containing the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events.
 
 @param logger the logger to be used.
 @param level the level to log.
@@ -2027,7 +2027,7 @@ Add a new logging event containing the \c key localized message to the appender(
 			logger->l7dlog(level, key, LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with one parameter.
+Add a new logging event containing the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events with one parameter.
 
 @param logger the logger to be used.
 @param level the level to log.
@@ -2039,7 +2039,7 @@ Add a new logging event containing the \c key localized message to the appender(
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }} while (0)
 
 /**
-Add a new logging event containing the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with two parameters.
+Add a new logging event containing the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events with two parameters.
 
 @param logger the logger to be used.
 @param level the level to log.
@@ -2052,7 +2052,7 @@ Add a new logging event containing the \c key localized message to the appender(
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }} while (0)
 
 /**
-Add a new logging event containing the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with three parameters.
+Add a new logging event containing the localized message \c key to the appender(s) attached to \c logger if it is enabled for \c level events with three parameters.
 
 @param logger the logger to be used.
 @param level the level to log.
