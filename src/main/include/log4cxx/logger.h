@@ -106,7 +106,7 @@ class LOG4CXX_EXPORT Logger :
 		void closeNestedAppenders();
 
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for DEBUG messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for DEBUG events.
 
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
@@ -120,7 +120,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void debug(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for DEBUG messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for DEBUG events.
 
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
@@ -134,7 +134,7 @@ class LOG4CXX_EXPORT Logger :
 		void debug(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for DEBUG messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for DEBUG events.
 
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
@@ -148,7 +148,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for DEBUG messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for DEBUG events.
 
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
@@ -163,7 +163,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for DEBUG messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for DEBUG events.
 
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
@@ -177,7 +177,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void debug(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for DEBUG messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for DEBUG events.
 
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
@@ -192,7 +192,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for DEBUG messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for DEBUG events.
 
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
@@ -206,7 +206,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void debug(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for DEBUG messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for DEBUG events.
 
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
@@ -221,7 +221,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -235,7 +235,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void error(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -249,7 +249,7 @@ class LOG4CXX_EXPORT Logger :
 		void error(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -262,7 +262,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void error(const std::wstring& msg) const;
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -278,7 +278,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -292,7 +292,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void error(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -307,7 +307,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -321,7 +321,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void error(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -336,7 +336,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for FATAL messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for FATAL events.
 
 		<p>This method first checks if this logger is <code>FATAL</code>
 		enabled by comparing the level of this logger with the
@@ -350,7 +350,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -364,7 +364,7 @@ class LOG4CXX_EXPORT Logger :
 		void fatal(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -378,7 +378,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -393,7 +393,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -407,7 +407,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void fatal(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -422,7 +422,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg and \c location to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -436,7 +436,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void fatal(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for ERROR events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -770,7 +770,7 @@ class LOG4CXX_EXPORT Logger :
 
 	public:
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO events.
 
 		<p>This method first checks if this logger is <code>INFO</code>
 		enabled by comparing the level of this logger with the
@@ -786,7 +786,7 @@ class LOG4CXX_EXPORT Logger :
 		void info(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO events.
 
 		<p>This method first checks if this logger is <code>INFO</code>
 		enabled by comparing the level of this logger with the
@@ -800,7 +800,7 @@ class LOG4CXX_EXPORT Logger :
 		        */
 		void info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO events.
 
 		<p>This method first checks if this logger is <code>INFO</code>
 		enabled by comparing the level of this logger with the
@@ -815,7 +815,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO events.
 
 		<p>This method first checks if this logger is <code>INFO</code>
 		enabled by comparing the level of this logger with the
@@ -829,7 +829,7 @@ class LOG4CXX_EXPORT Logger :
 		        */
 		void info(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO events.
 
 		<p>This method first checks if this logger is <code>INFO</code>
 		enabled by comparing the level of this logger with the
@@ -844,7 +844,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO events.
 
 		<p>This method first checks if this logger is <code>INFO</code>
 		enabled by comparing the level of this logger with the
@@ -858,7 +858,7 @@ class LOG4CXX_EXPORT Logger :
 		        */
 		void info(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for INFO events.
 
 		<p>This method first checks if this logger is <code>INFO</code>
 		enabled by comparing the level of this logger with the
@@ -878,7 +878,7 @@ class LOG4CXX_EXPORT Logger :
 		bool isAttached(const AppenderPtr appender) const override;
 
 		/**
-		 *  Is this logger is enabled for <code>DEBUG</code> level messages?
+		 *  Is this logger is enabled for <code>DEBUG</code> level logging events?
 		 *
 		 *  <p>By writing
 		 *  <pre>
@@ -897,11 +897,11 @@ class LOG4CXX_EXPORT Logger :
 		 *      logger->debug("Component: " + std::to_string(componentNumber));
 		 *  </pre>
 		 *
-		 *  <p>On the other hand, if the <code>logger</code> is debug enabled, you
-		 *  will incur the cost of evaluating whether the logger is debug
-		 *  enabled twice. Once in <code>isDebugEnabled</code> and once in
-		 *  the <code>debug</code>.  This is an insignificant overhead
-		 *  since evaluating a logger takes about 1%% of the time it
+		 *  <p>On the other hand, if the <code>logger</code> is enabled for <code>DEBUG</code> logging events,
+		 *  you will incur the cost of evaluating whether the logger is
+		 *  enabled twice, once in <code>isDebugEnabled</code> and once in
+		 *  the <code>DEBUG</code>.  This really is an insignificant overhead
+		 *  since evaluating a the enabled status takes about 1% of the time it
 		 *  takes to send the message to the appender.
 
 		 * See also #isDebugEnabledFor.
@@ -913,25 +913,24 @@ class LOG4CXX_EXPORT Logger :
 		bool isDebugEnabled() const;
 
 		/**
-		 *  Is \c logger is enabled for <code>DEBUG</code> level messages?
+		 *  Is \c logger is enabled for <code>DEBUG</code> level logging events?
 		 *
 		 *  <p>By writing
 		 *  <pre>
 		 *    if(log4cxx::Logger::isDebugEnabledFor(logger)) {
 		 *      logger->forcedLog(log4cxx::Level::getDebug(), "Component: " + std::to_string(componentNumber));
 		 *    }
-		 *  </pre>you will not incur the cost of a function call and parameter construction
-		 *  if debugging is disabled for <code>logger</code>.
-		 *  You avoid the cost constructing the message
-		 *  when the message is not logged.
-		 *
-		 *  <p>This function minimises the computational cost of
-		 *  disabled log debug statements.
+		 *  </pre>you minimise the computational cost
+		 *  when \c logger is not enabled for <code>DEBUG</code> logging events.
+		 *  This function may be inlined thereby avoiding a function call
+		 *  as well as the cost constructing the message
+		 *  when \c logger is not enabled for <code>DEBUG</code> events.
 		 *
 		 * See also #LOG4CXX_DEBUG.
 		 *
-		 *  @return bool - <code>true</code> if this logger is debug
-		 *  enabled, <code>false</code> otherwise.
+		 *  @return bool - <code>false</code> if \c logger is <code>null</code>
+		 *  or <code>DEBUG</code> logging events are disabled for \c logger,
+		 *  <code>true</code> otherwise.
 		 **/
 		inline static bool isDebugEnabledFor(const LoggerPtr& logger)
 		{
@@ -939,15 +938,15 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Is this logger is enabled for messages at \c level?
+		Is this logger is enabled for logging events at \c level?
 
-		@return bool True if this logger is enabled for <code>level</code> messages.
+		@return bool True if this logger is enabled for <code>level</code> logging events.
 		*/
 		bool isEnabledFor(const LevelPtr& level) const;
 
 
 		/**
-		Is this logger is enabled for <code>INFO</code> level messages?
+		Is this logger is enabled for <code>INFO</code> level logging events?
 
 		See #isDebugEnabled.
 		See also #LOG4CXX_INFO.
@@ -958,7 +957,7 @@ class LOG4CXX_EXPORT Logger :
 		bool isInfoEnabled() const;
 
 		/**
-		Is this logger is enabled for <code>INFO</code> level messages?
+		Is this logger is enabled for <code>INFO</code> level logging events?
 
 		See #isDebugEnabledFor.
 		See also #LOG4CXX_INFO.
@@ -972,7 +971,7 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Is this logger is enabled for <code>WARN</code> level messages?
+		Is this logger is enabled for <code>WARN</code> level logging events?
 
 		See also #isDebugEnabled.
 		See also #LOG4CXX_WARN.
@@ -983,7 +982,7 @@ class LOG4CXX_EXPORT Logger :
 		bool isWarnEnabled() const;
 
 		/**
-		Is this logger is enabled for <code>INFO</code> level messages?
+		Is this logger is enabled for <code>INFO</code> level logging events?
 
 		See #isDebugEnabledFor.
 		See also #LOG4CXX_WARN.
@@ -997,7 +996,7 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Is this logger is enabled for error level messages?
+		Is this logger is enabled for error level logging events?
 
 		See also #isDebugEnabled.
 		See also #LOG4CXX_ERROR.
@@ -1008,7 +1007,7 @@ class LOG4CXX_EXPORT Logger :
 		bool isErrorEnabled() const;
 
 		/**
-		Is this logger is enabled for <code>INFO</code> level messages?
+		Is this logger is enabled for <code>INFO</code> level logging events?
 
 		See #isDebugEnabledFor.
 		See also #LOG4CXX_ERROR.
@@ -1022,7 +1021,7 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Is this logger is enabled for fatal level messages?
+		Is this logger is enabled for fatal level logging events?
 		See also #isDebugEnabled.
 		See also #LOG4CXX_FATAL.
 
@@ -1036,7 +1035,7 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Is this logger is enabled for trace level messages?
+		Is this logger is enabled for trace level logging events?
 		See also #isDebugEnabled.
 		See also #LOG4CXX_FATAL.
 
@@ -1505,7 +1504,7 @@ class LOG4CXX_EXPORT Logger :
 
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN events.
 
 		<p>This method first checks if this logger is <code>WARN</code>
 		enabled by comparing the level of this logger with the
@@ -1519,7 +1518,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN events.
 
 		<p>This method first checks if this logger is <code>WARN</code>
 		enabled by comparing the level of this logger with the
@@ -1534,7 +1533,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN events.
 
 		<p>This method first checks if this logger is <code>WARN</code>
 		enabled by comparing the level of this logger with the
@@ -1548,7 +1547,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void warn(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN events.
 
 		<p>This method first checks if this logger is <code>WARN</code>
 		enabled by comparing the level of this logger with the
@@ -1563,7 +1562,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN events.
 
 		<p>This method first checks if this logger is <code>WARN</code>
 		enabled by comparing the level of this logger with the
@@ -1577,7 +1576,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void warn(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN events.
 
 		<p>This method first checks if this logger is <code>WARN</code>
 		enabled by comparing the level of this logger with the
@@ -1591,7 +1590,7 @@ class LOG4CXX_EXPORT Logger :
 		void warn(const CFStringRef& msg) const;
 #endif
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN events.
 
 		<p>This method first checks if this logger is <code>WARN</code>
 		enabled by comparing the level of this logger with the
@@ -1605,7 +1604,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void warn(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for WARN events.
 
 		<p>This method first checks if this logger is <code>WARN</code>
 		enabled by comparing the level of this logger with the
@@ -1620,7 +1619,7 @@ class LOG4CXX_EXPORT Logger :
 
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE events.
 
 		<p>This method first checks if this logger is <code>TRACE</code>
 		enabled by comparing the level of this logger with the
@@ -1634,7 +1633,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void trace(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE events.
 
 		<p>This method first checks if this logger is <code>TRACE</code>
 		enabled by comparing the level of this logger with the
@@ -1649,7 +1648,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE events.
 
 		<p>This method first checks if this logger is <code>TRACE</code>
 		enabled by comparing the level of this logger with the
@@ -1663,7 +1662,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void trace(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE events.
 
 		<p>This method first checks if this logger is <code>TRACE</code>
 		enabled by comparing the level of this logger with the
@@ -1678,7 +1677,7 @@ class LOG4CXX_EXPORT Logger :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE events.
 
 		<p>This method first checks if this logger is <code>TRACE</code>
 		enabled by comparing the level of this logger with the
@@ -1692,7 +1691,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE events.
 
 		<p>This method first checks if this logger is <code>TRACE</code>
 		enabled by comparing the level of this logger with the
@@ -1706,7 +1705,7 @@ class LOG4CXX_EXPORT Logger :
 		void trace(const CFStringRef& msg) const;
 #endif
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE events.
 
 		<p>This method first checks if this logger is <code>TRACE</code>
 		enabled by comparing the level of this logger with the
@@ -1720,7 +1719,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void trace(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE messages.
+		Add a new logging event containing \c msg to the appender(s) attached to this logger if this logger is enabled for TRACE events.
 
 		<p>This method first checks if this logger is <code>TRACE</code>
 		enabled by comparing the level of this logger with the
@@ -1812,7 +1811,7 @@ Conditionally sends \c message to the appender attached to \c logger.
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for DEBUG messages.
+Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for DEBUG events.
 
 <p>Equivalent to writing:
 <pre>
@@ -1830,7 +1829,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 			logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for DEBUG messages, formatting with libfmt
+Add a new logging event containing \c ... to the appender(s) attached to \c logger if it is enabled for DEBUG events, formatting with libfmt
 
 @param logger the logger to be used.
 @param ... The format string and message to log
@@ -1845,7 +1844,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 5000
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for TRACE messages.
+Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for TRACE events.
 
 @param logger the logger to be used.
 @param message the message string to log.
@@ -1856,7 +1855,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 			logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for TRACE messages, formatting with libfmt.
+Add a new logging event containing \c ... to the appender(s) attached to \c logger if it is enabled for TRACE events, formatting with libfmt.
 
 @param logger the logger to be used.
 @param ... The format string and message to log
@@ -1871,7 +1870,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 20000
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for INFO messages.
+Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for INFO events.
 
 @param logger the logger to be used.
 @param message the message string to log.
@@ -1882,7 +1881,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 			logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for INFO messages, formatting with libfmt.
+Add a new logging event containing \c ... to the appender(s) attached to \c logger if it is enabled for INFO events, formatting with libfmt.
 
 @param logger the logger to be used.
 @param message the message string to log.
@@ -1898,7 +1897,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 30000
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for WARN messages.
+Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for WARN events.
 
 @param logger the logger to be used.
 @param message the message string to log.
@@ -1909,7 +1908,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 			logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for WARN messages, formatting with libfmt
+Add a new logging event containing \c ... to the appender(s) attached to \c logger if it is enabled for WARN events, formatting with libfmt
 
 @param logger the logger to be used.
 @param ... The format string and message to log
@@ -1924,7 +1923,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 40000
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for ERROR messages.
+Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for ERROR events.
 
 @param logger the logger to be used.
 @param message the message string to log.
@@ -1935,7 +1934,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for ERROR messages, formatting with libfmt
+Add a new logging event containing \c ... to the appender(s) attached to \c logger if it is enabled for ERROR events, formatting with libfmt
 
 @param logger the logger to be used.
 @param ... The format string and message to log
@@ -1945,7 +1944,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Logs a error if the condition is not true.
+If \c condition is not true, add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for ERROR events.
 
 @param logger the logger to be used.
 @param condition condition
@@ -1957,7 +1956,7 @@ Logs a error if the condition is not true.
 			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Logs a error if the condition is not true, formatting with libfmt
+If \c condition is not true, add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for ERROR events, formatting with libfmt
 
 @param logger the logger to be used.
 @param condition condition
@@ -1976,7 +1975,7 @@ Logs a error if the condition is not true, formatting with libfmt
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 50000
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for FATAL messages.
+Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for FATAL events.
 
 @param logger the logger to be used.
 @param message the message string to log.
@@ -1987,7 +1986,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 			logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing \c message to the appender(s) attached to \c logger if it is enabled for FATAL messages, formatting with libfmt
+Add a new logging event containing \c ... to the appender(s) attached to \c logger if it is enabled for FATAL events, formatting with libfmt
 
 @param logger the logger to be used.
 @param ... The format string and message to log
@@ -2001,7 +2000,7 @@ Add a new logging event containing \c message to the appender(s) attached to \c 
 #endif
 
 /**
-Logs a localized message with no parameter.
+Add a new logging event containing the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with no parameter.
 
 @param logger the logger to be used.
 @param level the level to log.
@@ -2012,7 +2011,7 @@ Logs a localized message with no parameter.
 			logger->l7dlog(level, key, LOG4CXX_LOCATION); }} while (0)
 
 /**
-Logs a localized message with one parameter.
+Add a new logging event containing the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with one parameter.
 
 @param logger the logger to be used.
 @param level the level to log.
@@ -2024,7 +2023,7 @@ Logs a localized message with one parameter.
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }} while (0)
 
 /**
-Logs a localized message with two parameters.
+Add a new logging event containing the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with two parameters.
 
 @param logger the logger to be used.
 @param level the level to log.
@@ -2037,7 +2036,7 @@ Logs a localized message with two parameters.
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }} while (0)
 
 /**
-Logs a localized message with three parameters.
+Add a new logging event containing the \c key localized message to the appender(s) attached to \c logger if it is enabled for \c level events with three parameters.
 
 @param logger the logger to be used.
 @param level the level to log.
