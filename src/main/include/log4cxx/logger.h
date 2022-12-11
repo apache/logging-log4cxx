@@ -804,7 +804,7 @@ class LOG4CXX_EXPORT Logger :
 
 	protected:
 		/**
-		Returns the string resource coresponding to <code>key</code> in this
+		Returns the string resource corresponding to <code>key</code> in this
 		logger's inherited resource bundle.
 
 		If the resource cannot be found, then an {@link #error error} message
@@ -1664,6 +1664,8 @@ class LOG4CXX_EXPORT Logger :
 
 		@param msg the message string to log.
 		@param location location of source of logging request.
+
+		See also #LOG4CXX_WARN.
 		*/
 		void warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -1677,6 +1679,8 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
+
+		See also #LOG4CXX_WARN.
 		*/
 		void warn(const std::wstring& msg) const;
 #endif
@@ -1693,6 +1697,8 @@ class LOG4CXX_EXPORT Logger :
 
 		@param msg the message string to log.
 		@param location location of source of logging request.
+
+		See also #LOG4CXX_WARN.
 		*/
 		void warn(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -1706,6 +1712,8 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
+
+		See also #LOG4CXX_WARN.
 		*/
 		void warn(const std::basic_string<UniChar>& msg) const;
 #endif
@@ -1722,6 +1730,8 @@ class LOG4CXX_EXPORT Logger :
 
 		@param msg the message string to log.
 		@param location location of source of logging request.
+
+		See also #LOG4CXX_WARN.
 		*/
 		void warn(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -1735,6 +1745,8 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
+
+		See also #LOG4CXX_WARN.
 		*/
 		void warn(const CFStringRef& msg) const;
 #endif
@@ -1750,6 +1762,8 @@ class LOG4CXX_EXPORT Logger :
 
 		@param msg the message string to log.
 		@param location location of source of logging request.
+
+		See also #LOG4CXX_WARN.
 		*/
 		void warn(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -1763,6 +1777,8 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
+
+		See also #LOG4CXX_WARN.
 		*/
 		void warn(const std::string& msg) const;
 
@@ -1779,6 +1795,8 @@ class LOG4CXX_EXPORT Logger :
 
 		@param msg the message string to log.
 		@param location location of source of logging request.
+
+		See also #LOG4CXX_TRACE.
 		*/
 		void trace(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -1792,6 +1810,8 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
+
+		See also #LOG4CXX_TRACE.
 		*/
 		void trace(const std::wstring& msg) const;
 #endif
@@ -1808,6 +1828,8 @@ class LOG4CXX_EXPORT Logger :
 
 		@param msg the message string to log.
 		@param location location of source of logging request.
+
+		See also #LOG4CXX_TRACE.
 		*/
 		void trace(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -1821,6 +1843,8 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
+
+		See also #LOG4CXX_TRACE.
 		*/
 		void trace(const std::basic_string<UniChar>& msg) const;
 #endif
@@ -1837,6 +1861,8 @@ class LOG4CXX_EXPORT Logger :
 
 		@param msg the message string to log.
 		@param location location of source of logging request.
+
+		See also #LOG4CXX_TRACE.
 		*/
 		void trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -1850,6 +1876,8 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
+
+		See also #LOG4CXX_TRACE.
 		*/
 		void trace(const CFStringRef& msg) const;
 #endif
@@ -1865,6 +1893,8 @@ class LOG4CXX_EXPORT Logger :
 
 		@param msg the message string to log.
 		@param location location of source of logging request.
+
+		See also #LOG4CXX_TRACE.
 		*/
 		void trace(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -1878,6 +1908,8 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
+
+		See also #LOG4CXX_TRACE.
 		*/
 		void trace(const std::string& msg) const;
 
