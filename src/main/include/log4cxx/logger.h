@@ -1097,6 +1097,7 @@ class LOG4CXX_EXPORT Logger :
 
 		/**
 		Is this logger is enabled for <code>FATAL</code> level logging events?
+
 		See also #isDebugEnabled.
 		See also #LOG4CXX_FATAL.
 
@@ -1122,6 +1123,7 @@ class LOG4CXX_EXPORT Logger :
 
 		/**
 		Is this logger is enabled for <code>TRACE</code> level logging events?
+
 		See also #isDebugEnabled.
 		See also #LOG4CXX_FATAL.
 
@@ -1616,12 +1618,24 @@ class LOG4CXX_EXPORT Logger :
 	protected:
 		friend class Hierarchy;
 		/**
-		Only the Hierarchy class can set the hierarchy of a logger.*/
+		Only the Hierarchy class can remove the hierarchy of a logger.
+		*/
 		void removeHierarchy();
+		/**
+		Only the Hierarchy class can set the hierarchy of a logger.
+		*/
 		void setHierarchy(spi::LoggerRepository* repository);
+		/**
+		Only the Hierarchy class can set the parent of a logger.
+		*/
 		void setParent(LoggerPtr parentLogger);
-		spi::LoggerRepository* getHierarchy() const;
+		/**
+		Only the Hierarchy class can change the threshold of a logger.
+		*/
 		void updateThreshold();
+
+	private:
+		spi::LoggerRepository* getHierarchy() const;
 
 	public:
 		/**
