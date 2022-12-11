@@ -1148,7 +1148,8 @@ class LOG4CXX_EXPORT Logger :
 		}
 
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key to attached appender(s) if this logger is enabled for \c level events.
+		Add a new logging event containing \c locationInfo and the localized message \c key using \c values for parameter substitution
+		to attached appender(s) if this logger is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1162,7 +1163,7 @@ class LOG4CXX_EXPORT Logger :
 
 		@see #setResourceBundle
 
-		See also #LOG4CXX_L7DLOG.
+		See also #LOG4CXX_L7DLOG1.
 		*/
 		void l7dlog(const LevelPtr& level, const LogString& key,
 			const log4cxx::spi::LocationInfo& locationInfo,
