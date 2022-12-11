@@ -35,6 +35,10 @@ using namespace log4cxx::spi;
 #else
 	#error __LOG4CXX_FUNC__ expected to be defined
 #endif
+
+static LogString ppIndentL1(LOG4CXX_STR("  "));
+static LogString ppIndentL2(LOG4CXX_STR("    "));
+
 /**
  * Test for JSONLayout.
  *

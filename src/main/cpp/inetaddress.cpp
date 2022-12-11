@@ -28,6 +28,12 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(InetAddress)
 
+struct InetAddress::InetAddressPrivate{
+
+	LogString ipAddrString;
+	LogString hostNameString;
+};
+
 UnknownHostException::UnknownHostException(const LogString& msg1)
 	: Exception(msg1)
 {
@@ -46,10 +52,13 @@ UnknownHostException& UnknownHostException::operator=(const UnknownHostException
 
 
 InetAddress::InetAddress(const LogString& hostName, const LogString& hostAddr)
-	: ipAddrString(hostAddr), hostNameString(hostName)
+	: m_priv(std::make_unique<InetAddressPrivate>())
 {
+	m_priv->ipAddrString = hostAddr;
+	m_priv->hostNameString = hostName;
 }
 
+InetAddress::~InetAddress(){}
 
 /** Determines all the IP addresses of a host, given the host's name.
 */
@@ -119,14 +128,14 @@ InetAddressPtr InetAddress::getByName(const LogString& host)
 */
 LogString InetAddress::getHostAddress() const
 {
-	return ipAddrString;
+	return m_priv->ipAddrString;
 }
 
 /** Gets the host name for this IP address.
 */
 LogString InetAddress::getHostName() const
 {
-	return hostNameString;
+	return m_priv->hostNameString;
 }
 
 /** Returns the local host.

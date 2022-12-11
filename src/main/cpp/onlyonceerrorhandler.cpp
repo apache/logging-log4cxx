@@ -26,11 +26,23 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
 
+struct OnlyOnceErrorHandler::OnlyOnceErrorHandlerPrivate{
+	OnlyOnceErrorHandlerPrivate() :
+		WARN_PREFIX(LOG4CXX_STR("log4cxx warning: ")),
+		ERROR_PREFIX(LOG4CXX_STR("log4cxx error: ")),
+		firstTime(true){}
+
+	LogString WARN_PREFIX;
+	LogString ERROR_PREFIX;
+	mutable bool firstTime;
+};
+
 OnlyOnceErrorHandler::OnlyOnceErrorHandler() :
-	WARN_PREFIX(LOG4CXX_STR("log4cxx warning: ")),
-	ERROR_PREFIX(LOG4CXX_STR("log4cxx error: ")), firstTime(true)
+	m_priv(std::make_unique<OnlyOnceErrorHandlerPrivate>())
 {
 }
+
+OnlyOnceErrorHandler::~OnlyOnceErrorHandler(){}
 
 void OnlyOnceErrorHandler::setLogger(const LoggerPtr&)
 {
@@ -47,10 +59,10 @@ void OnlyOnceErrorHandler::setOption(const LogString&, const LogString&)
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
 	int) const
 {
-	if (firstTime)
+	if (m_priv->firstTime)
 	{
 		LogLog::error(message, e);
-		firstTime = false;
+		m_priv->firstTime = false;
 	}
 }
 
@@ -63,10 +75,10 @@ void OnlyOnceErrorHandler::error(const LogString& message, const std::exception&
 
 void OnlyOnceErrorHandler::error(const LogString& message) const
 {
-	if (firstTime)
+	if (m_priv->firstTime)
 	{
 		LogLog::error(message);
-		firstTime = false;
+		m_priv->firstTime = false;
 	}
 }
 

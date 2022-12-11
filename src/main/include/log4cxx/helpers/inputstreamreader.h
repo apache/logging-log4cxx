@@ -40,8 +40,7 @@ LOG4CXX_INSTANTIATE_EXPORTED_PTR(CharsetDecoder);
 class LOG4CXX_EXPORT InputStreamReader : public Reader
 {
 	private:
-		InputStreamPtr in;
-		CharsetDecoderPtr dec;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(InputStreamReaderPrivate, m_priv)
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(InputStreamReader)

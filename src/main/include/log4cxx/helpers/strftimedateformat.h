@@ -54,11 +54,7 @@ class LOG4CXX_EXPORT StrftimeDateFormat : public DateFormat
 
 
 	private:
-		/**
-		*    Time zone.
-		*/
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(TimeZonePtr, timeZone)
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(std::string, pattern)
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(StrftimeDateFormatPrivate, m_priv)
 };
 
 

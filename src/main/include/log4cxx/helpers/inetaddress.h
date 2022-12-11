@@ -50,6 +50,8 @@ class LOG4CXX_EXPORT InetAddress : public Object
 
 		InetAddress(const LogString& hostName, const LogString& hostAddr);
 
+		~InetAddress();
+
 		/** Determines all the IP addresses of a host, given the host's name.
 		*/
 		static InetAddressList getAllByName(const LogString& host);
@@ -81,8 +83,7 @@ class LOG4CXX_EXPORT InetAddress : public Object
 		LogString toString() const;
 
 	private:
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, ipAddrString)
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, hostNameString)
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(InetAddressPrivate, m_priv)
 }; // class InetAddress
 }  // namespace helpers
 } // namespace log4cxx

@@ -82,12 +82,7 @@ class APRInitializer
 		const ObjectPtr& findOrAddObject(size_t key, std::function<ObjectPtr()> creator);
 		void stopWatchDogs();
 	private: // Attributes
-		apr_pool_t* p;
-		std::mutex mutex;
-		std::list<FileWatchdog*> watchdogs;
-		log4cxx_time_t startTime;
-		apr_threadkey_t* tlsKey;
-		std::map<size_t, ObjectPtr> objects;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(APRInitializerPrivate, m_priv)
 	private: // Class methods
 		static APRInitializer& getInstance();
 
