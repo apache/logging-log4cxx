@@ -1,7 +1,7 @@
 #include "com/foo/config.h"
-//#include <log4cxx/BasicConfigurator.h>
-#include <log4cxx/PropertyConfigurator.h>
-#include <log4cxx/LogManager.h>
+//#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/logmanager.h>
 
 namespace com { namespace foo {
 
