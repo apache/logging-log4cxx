@@ -476,9 +476,9 @@ Note that by default, the root logger is assigned to
 The output of MyApp is: 
 
 ~~~
-    0    [12345] INFO  MyApp  - Entering application.
-    0    [12345] DEBUG com.foo.Bar  - Did it again!
-    0    [12345] INFO  MyApp  - Exiting application.
+    0 [12345] INFO MyApp null - Entering application.
+    0 [12345] DEBUG com.foo.Bar null - Did it again!
+    0 [12345] INFO MyApp null - Exiting application.
 ~~~
 
 The previous example always outputs the same log information.
