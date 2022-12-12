@@ -408,7 +408,6 @@ from the com::foo::getLogger() function.
     #include "com/foo/bar.h"
      
     using namespace com::foo;
-    using namespace log4cxx;
      
     LoggerPtr Bar::m_logger(Logger::getLogger("com.foo.bar"));
      
