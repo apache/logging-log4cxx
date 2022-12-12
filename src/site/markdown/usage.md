@@ -365,23 +365,20 @@ application *MyApp* that uses Log4cxx.
     #include "com/foo/config.h"
     #include "com/foo/bar.h"
 
-    int main(int argc, char **argv)
-    {
+    int main(int argc, char **argv) {
         int result = EXIT_SUCCESS;
-        try
-        {
+        try {
             auto logger = com::foo::getLogger("MyApp");
             LOG4CXX_INFO(logger, "Entering application.");
             com::foo::Bar bar;
             bar.doIt();
             LOG4CXX_INFO(logger, "Exiting application.");
         }
-        catch(std::exception&)
-        {
+        catch(std::exception&) {
             result = EXIT_FAILURE;
         }
         return result;
-     }
+    }
 ~~~
 
 *MyApp* begins by including the file that defines the com::foo::getLogger() function.
@@ -392,6 +389,8 @@ from the com::foo::getLogger() function.
 *MyApp* uses the *com::foo::Bar* class defined in header file *com/foo/bar.h*.
 
 ~~~{com/foo/bar.h}
+    #ifndef COM_FOO_BAR_H_
+    #define COM_FOO_BAR_H_
     #include "com/foo/config.h"
     namespace com { namespace foo {
 
@@ -402,6 +401,7 @@ from the com::foo::getLogger() function.
     };
 
     } } // namespace com::foo
+    #endif // COM_FOO_BAR_H_
 ~~~
 
 ~~~{com/foo/bar.cpp}
@@ -409,17 +409,18 @@ from the com::foo::getLogger() function.
      
     using namespace com::foo;
      
-    LoggerPtr Bar::m_logger(Logger::getLogger("com.foo.bar"));
+    LoggerPtr Bar::m_logger(getLogger("com.foo.bar"));
      
     void Bar::doIt() {
-    	LOG4CXX_DEBUG(m_logger, "Did it again!");
-    }
+        LOG4CXX_DEBUG(m_logger, "Did it again!");
 ~~~
 
 The header file *com/foo/config.h* defines the com::foo::getLogger() function
 and a *LoggerPtr* type for convenience.
 
 ~~~{com/foo/config.h}
+    #ifndef COM_FOO_CONFIG_H_
+    #define COM_FOO_CONFIG_H_
     #include <log4cxx/logger.h>
     namespace com { namespace foo {
 
@@ -427,6 +428,7 @@ and a *LoggerPtr* type for convenience.
     extern auto getLogger(const std::string& name = std::string()) -> LoggerPtr;
 
     } } // namespace com::foo
+    #endif // COM_FOO_CONFIG_H_
 ~~~
 
 The file *com/foo/config.cpp* which implements the com::foo::getLogger() function
@@ -435,21 +437,19 @@ is invoked on the first call to the com::foo::getLogger() function
 and its destructor is automatically called during application exit.
 
 ~~~{com/foo/config.cpp}
-    #include "com/foo/config.h"
+    #include "config.h"
+    #include <log4cxx/BasicConfigurator.h>
+    #include <log4cxx/LogManager.h>
 
     namespace com { namespace foo {
 
-    auto getLogger(const std::string& name) -> LoggerPtr
-    {
-        static struct log4cxx_initializer
-        {
-            log4cxx_initializer()
-            {
+    auto getLogger(const std::string& name) -> LoggerPtr {
+        static struct log4cxx_initializer {
+            log4cxx_initializer() {
                 // Set up a simple configuration that logs on the console.
                 log4cxx::BasicConfigurator::configure();
             }
-            ~log4cxx_initializer()
-            {
+            ~log4cxx_initializer() {
                 log4cxx::LogManager::shutdown();
             }
         } initAndShutdown;
@@ -486,6 +486,8 @@ controlled at run-time. Here is a slightly modified version.
 
 ~~~{.cpp}
     #include "com/foo/config.h"
+    #include <log4cxx/PropertyConfigurator.h>
+    #include <log4cxx/LogManager.h>
 
     namespace com { namespace foo {
 
@@ -495,7 +497,7 @@ controlled at run-time. Here is a slightly modified version.
         {
             log4cxx_initializer()
             {
-    			PropertyConfigurator::configure("MyApp.properties");
+                log4cxx::PropertyConfigurator::configure("MyApp.properties");
             }
             ~log4cxx_initializer()
             {
@@ -569,7 +571,7 @@ Here is another configuration file that uses multiple appenders.
     log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
      
     # Pattern to output the caller's file name and line number.
-    log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
+    log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%f:%L) - %m%n
      
     log4j.appender.R=org.apache.log4j.RollingFileAppender
     log4j.appender.R.File=example.log
@@ -586,9 +588,9 @@ Calling the enhanced MyApp with the this configuration file will output
 the following on the console. 
 
 ~~~
-    INFO [12345] (MyApp2.cpp:31) - Entering application.
-    DEBUG [12345] (Bar.h:16) - Doing it again!
-    INFO [12345] (MyApp2.cpp:34) - Exiting application.
+     INFO [12345] (MyApp.cpp:8) - Entering application.
+    DEBUG [12345] (bar.cpp:8) - Did it again!
+     INFO [12345] (MyApp.cpp:11) - Exiting application.
 ~~~
 
 In addition, as the root logger has been allocated a second appender,
