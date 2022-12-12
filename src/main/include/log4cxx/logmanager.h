@@ -72,8 +72,8 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the root logger from the {@link spi::LoggerRepository LoggerRepository}.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getRootLogger();
 
@@ -82,8 +82,8 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using DefaultLoggerFactory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const std::string& name);
 
@@ -92,8 +92,8 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using \c factory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const std::string& name,
 			const spi::LoggerFactoryPtr& factory);
@@ -107,8 +107,8 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using DefaultLoggerFactory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const std::wstring& name);
 		/**
@@ -116,8 +116,8 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using \c factory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const std::wstring& name,
 			const spi::LoggerFactoryPtr& factory);
@@ -132,8 +132,9 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using DefaultLoggerFactory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
+		passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
 		/**
@@ -141,8 +142,9 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using \c factory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
+		passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
 			const spi::LoggerFactoryPtr& factory);
@@ -157,8 +159,9 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using DefaultLoggerFactory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
+		passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const CFStringRef& name);
 		/**
@@ -166,8 +169,9 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using \c factory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
+		passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const CFStringRef& name,
 			const spi::LoggerFactoryPtr& factory);
@@ -183,8 +187,9 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using DefaultLoggerFactory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
+		passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLoggerLS(const LogString& name);
 		/**
@@ -192,8 +197,9 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::LoggerRepository LoggerRepository}
 		using \c factory to create it if required.
 
-		Call {@link spi::LoggerRepository::autoConfigure autoConfigure}
-		if the repository is not yet configured.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
+		passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
 		*/
 		static LoggerPtr getLoggerLS(const LogString& name,
 			const spi::LoggerFactoryPtr& factory);

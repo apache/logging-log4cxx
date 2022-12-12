@@ -604,12 +604,10 @@ However the library will attempt automatic configuration.
 
 If the LoggerRepositoy is not yet configured on the first call to
 [getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
-the [autoConfigure](@ref log4cxx.spi.LoggerRepository.autoConfigure) virtual method
-of [LoggerRepository](@ref log4cxx.spi.LoggerRepository) is called.
-
-The [default autoConfigure](@ref log4cxx.Hierarchy.autoConfigure) implementation
-calls the [configure](@ref log4cxx.DefaultConfigurator.configure) method
-of the [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) class.
+the [configure](@ref log4cxx.DefaultConfigurator.configure) method
+of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
+via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
+of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
 
 To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
