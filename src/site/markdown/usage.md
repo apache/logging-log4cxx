@@ -413,6 +413,7 @@ from the com::foo::getLogger() function.
      
     void Bar::doIt() {
         LOG4CXX_DEBUG(m_logger, "Did it again!");
+    }
 ~~~
 
 The header file *com/foo/config.h* defines the com::foo::getLogger() function
@@ -491,16 +492,12 @@ controlled at run-time. Here is a slightly modified version.
 
     namespace com { namespace foo {
 
-    auto getLogger(const std::string& name) -> LoggerPtr
-    {
-        static struct log4cxx_initializer
-        {
-            log4cxx_initializer()
-            {
+    auto getLogger(const std::string& name) -> LoggerPtr {
+        static struct log4cxx_initializer {
+            log4cxx_initializer() {
                 log4cxx::PropertyConfigurator::configure("MyApp.properties");
             }
-            ~log4cxx_initializer()
-            {
+            ~log4cxx_initializer() {
                 log4cxx::LogManager::shutdown();
             }
         } initAndShutdown;
