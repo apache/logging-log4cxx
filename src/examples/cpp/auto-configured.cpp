@@ -16,8 +16,7 @@
  */
 #include <UserLib/logmanager.h>
 
-	log4cxx::LoggerPtr
-rootLogger(UserLib::getLogger());
+extern auto rootLogger = UserLib::getLogger("MyApp");
 
 struct ExampleStaticData
 {

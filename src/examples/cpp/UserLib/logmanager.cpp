@@ -39,8 +39,7 @@ using namespace log4cxx;
 
 // Get a list of file base names that may contain configuration data
 // and put an alternate path into \c altPrefix
-	std::vector<std::string>
-DefaultConfigurationFileNames(std::string& altPrefix)
+auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::string>
 {
 	std::vector<std::string> result;
 
@@ -114,59 +113,61 @@ DefaultConfigurationFileNames(std::string& altPrefix)
 	return result;
 }
 
-struct log4cxx_initializer
+void SelectConfigurationFile()
 {
-	log4cxx_initializer()
-	{
 #if defined(_DEBUG)
-		helpers::LogLog::setInternalDebugging(true);
+	helpers::LogLog::setInternalDebugging(true);
 #endif
-		const char* extension[] = { ".xml", ".properties", 0 };
-		std::string altPrefix;
-		log4cxx::helpers::Pool pool;
+	const char* extension[] = { ".xml", ".properties", 0 };
+	std::string altPrefix;
+	log4cxx::helpers::Pool pool;
 
-		for (auto baseName : DefaultConfigurationFileNames(altPrefix))
+	for (auto baseName : DefaultConfigurationFileNames(altPrefix))
+	{
+		int i = 0;
+		for (; extension[i]; ++i)
 		{
-			int i = 0;
-			for (; extension[i]; ++i)
+			log4cxx::File current_working_dir_candidate(baseName + extension[i]);
+			if (current_working_dir_candidate.exists(pool))
 			{
-				log4cxx::File current_working_dir_candidate(baseName + extension[i]);
-				if (current_working_dir_candidate.exists(pool))
+				log4cxx::DefaultConfigurator::setConfigurationFileName(current_working_dir_candidate.getPath());
+				log4cxx::DefaultConfigurator::setConfigurationWatchSeconds(5);
+				break;
+			}
+			if (!altPrefix.empty())
+			{
+				log4cxx::File alt_dir_candidate(altPrefix + baseName + extension[i]);
+				if (alt_dir_candidate.exists(pool))
 				{
-					log4cxx::DefaultConfigurator::setConfigurationFileName(current_working_dir_candidate.getPath());
+					log4cxx::DefaultConfigurator::setConfigurationFileName(alt_dir_candidate.getPath());
 					log4cxx::DefaultConfigurator::setConfigurationWatchSeconds(5);
 					break;
 				}
-				if (!altPrefix.empty())
-				{
-					log4cxx::File alt_dir_candidate(altPrefix + baseName + extension[i]);
-					if (alt_dir_candidate.exists(pool))
-					{
-						log4cxx::DefaultConfigurator::setConfigurationFileName(alt_dir_candidate.getPath());
-						log4cxx::DefaultConfigurator::setConfigurationWatchSeconds(5);
-						break;
-					}
-				}
 			}
-			if (extension[i]) // Found a configuration file?
-				break;
 		}
+		if (extension[i]) // Found a configuration file?
+			break;
 	}
-	~log4cxx_initializer()
-	{
-		log4cxx::LogManager::shutdown();
-	}
-};
+}
 
 } // namespace
 
 namespace UserLib
 {
 
-	log4cxx::LoggerPtr
-getLogger(const std::string& name)
+auto getLogger(const std::string& name) -> log4cxx::LoggerPtr
 {
-	static log4cxx_initializer initAndShutdown;
+	static struct log4cxx_initializer
+	{
+		log4cxx_initializer()
+		{
+			SelectConfigurationFile();
+		}
+		~log4cxx_initializer()
+		{
+			log4cxx::LogManager::shutdown();
+		}
+	} initialiser;
 	return name.empty()
 		? log4cxx::LogManager::getRootLogger()
 		: log4cxx::LogManager::getLogger(name);

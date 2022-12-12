@@ -361,76 +361,105 @@ properties (key=value) format.
 Let us give a taste of how this is done with the help of an imaginary
 application *MyApp* that uses Log4cxx. 
 
-~~~{.cpp}
+~~~{myapp.cpp}
+    #include "com/foo/config.h"
     #include "com/foo/bar.h"
-    using namespace com::foo;
-     
-    // include log4cxx header files.
-    #include "log4cxx/logger.h"
-    #include "log4cxx/basicconfigurator.h"
-    #include "log4cxx/helpers/exception.h"
-     
-    using namespace log4cxx;
-    using namespace log4cxx::helpers;
-     
-    LoggerPtr logger(Logger::getLogger("MyApp"));
-     
+
     int main(int argc, char **argv)
     {
-    	int result = EXIT_SUCCESS;
-    	try
-    	{
-    		// Set up a simple configuration that logs on the console.
-    		BasicConfigurator::configure();
-     
-    		LOG4CXX_INFO(logger, "Entering application.");
-    		Bar bar;
-    		bar.doIt();
-    		LOG4CXX_INFO(logger, "Exiting application.");
-    	}
-    	catch(Exception&)
-    	{
-    		result = EXIT_FAILURE;
-    	}
-     
-    	return result;
-    }
+        int result = EXIT_SUCCESS;
+        try
+        {
+            auto logger = com::foo::getLogger("MyApp");
+            LOG4CXX_INFO(logger, "Entering application.");
+            com::foo::Bar bar;
+            bar.doIt();
+            LOG4CXX_INFO(logger, "Exiting application.");
+        }
+        catch(std::exception&)
+        {
+            result = EXIT_FAILURE;
+        }
+        return result;
+     }
 ~~~
 
-*MyApp* begins by including Log4cxx headers. It then defines a static
-logger variable with the name *MyApp* which happens to be the fully
-qualified name of the class. 
+*MyApp* begins by including the file that defines the com::foo::getLogger() function.
+It obtains a logger named *MyApp*
+(which in this example is the fully qualified name)
+from the com::foo::getLogger() function.
 
-*MyApp* uses the *Bar* class defined in header file *com/foo/bar.h*. 
+*MyApp* uses the *com::foo::Bar* class defined in header file *com/foo/bar.h*.
 
-~~~{.cpp}
-    // file com/foo/bar.h
-    #include "log4cxx/logger.h"
-     
-    namespace com {
-    	namespace foo {
-    		class Bar {
-    			static log4cxx::LoggerPtr logger;
-     
-    			public:
-    				void doIt();
-    		};
-    	}
-    }
+~~~{com/foo/bar.h}
+    #include "com/foo/config.h"
+    namespace com { namespace foo {
+
+    class Bar {
+        static LoggerPtr m_logger;
+        public:
+            void doIt();
+    };
+
+    } } // namespace com::foo
 ~~~
 
-~~~{.cpp}
-    // file bar.cpp
+~~~{com/foo/bar.cpp}
     #include "com/foo/bar.h"
      
     using namespace com::foo;
     using namespace log4cxx;
      
-    LoggerPtr Bar::logger(Logger::getLogger("com.foo.bar"));
+    LoggerPtr Bar::m_logger(Logger::getLogger("com.foo.bar"));
      
     void Bar::doIt() {
-    	LOG4CXX_DEBUG(logger, "Did it again!");
+    	LOG4CXX_DEBUG(m_logger, "Did it again!");
     }
+~~~
+
+The header file *com/foo/config.h* defines the com::foo::getLogger() function
+and a *LoggerPtr* type for convenience.
+
+~~~{com/foo/config.h}
+    #include <log4cxx/logger.h>
+    namespace com { namespace foo {
+
+    using LoggerPtr = log4cxx::LoggerPtr;
+    extern auto getLogger(const std::string& name = std::string()) -> LoggerPtr;
+
+    } } // namespace com::foo
+~~~
+
+The file *com/foo/config.cpp* which implements the com::foo::getLogger() function
+defines *initAndShutdown* as a *static struct* so its constructor
+is invoked on the first call to the com::foo::getLogger() function
+and its destructor is automatically called during application exit.
+
+~~~{com/foo/config.cpp}
+    #include "com/foo/config.h"
+
+    namespace com { namespace foo {
+
+    auto getLogger(const std::string& name) -> LoggerPtr
+    {
+        static struct log4cxx_initializer
+        {
+            log4cxx_initializer()
+            {
+                // Set up a simple configuration that logs on the console.
+                log4cxx::BasicConfigurator::configure();
+            }
+            ~log4cxx_initializer()
+            {
+                log4cxx::LogManager::shutdown();
+            }
+        } initAndShutdown;
+        return name.empty()
+            ? log4cxx::LogManager::getRootLogger()
+            : log4cxx::LogManager::getLogger(name);
+    }
+
+    } } // namespace com::foo
 ~~~
 
 The invocation of the
@@ -453,60 +482,39 @@ The output of MyApp is:
 ~~~
 
 The previous example always outputs the same log information.
-Fortunately, it is easy to modify *MyApp* so that the log output can be
+Fortunately, it is easy to modify *config.cpp* so that the log output can be
 controlled at run-time. Here is a slightly modified version. 
 
 ~~~{.cpp}
-    // file MyApp2.cpp
-     
-    #include "com/foo/bar.h"
-    using namespace com::foo;
-     
-    // include log4cxx header files.
-    #include "log4cxx/logger.h"
-    #include "log4cxx/basicconfigurator.h"
-    #include "log4cxx/propertyconfigurator.h"
-    #include "log4cxx/helpers/exception.h"
-     
-    using namespace log4cxx;
-    using namespace log4cxx::helpers;
-    // Define a static logger variable so that it references the
-    // Logger instance named "MyApp".
-    LoggerPtr logger(Logger::getLogger("MyApp"));
-     
-    int main(int argc, char **argv)
+    #include "com/foo/config.h"
+
+    namespace com { namespace foo {
+
+    auto getLogger(const std::string& name) -> LoggerPtr
     {
-    	int result = EXIT_SUCCESS;
-    	try
-    	{
-    		if (argc > 1)
-    		{
-    			// BasicConfigurator replaced with PropertyConfigurator.
-    			PropertyConfigurator::configure(argv[1]);
-    		}
-    		else
-    		{
-    			BasicConfigurator::configure();
-    		}
-     
-    		LOG4CXX_INFO(logger, "Entering application.");
-    		Bar bar;
-    		bar.doIt();
-    		LOG4CXX_INFO(logger, "Exiting application.");
-    	}
-    	catch(Exception&)
-    	{
-    		result = EXIT_FAILURE;
-    	}
-     
-    	return result;
+        static struct log4cxx_initializer
+        {
+            log4cxx_initializer()
+            {
+    			PropertyConfigurator::configure("MyApp.properties");
+            }
+            ~log4cxx_initializer()
+            {
+                log4cxx::LogManager::shutdown();
+            }
+        } initAndShutdown;
+        return name.empty()
+            ? log4cxx::LogManager::getRootLogger()
+            : log4cxx::LogManager::getLogger(name);
     }
+
+    } } // namespace com::foo
 ~~~
 
-This version of *MyApp* instructs *PropertyConfigurator* to parse a
-configuration file and set up logging accordingly. 
+This version of *MyApp* instructs [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure) to parse a
+*MyApp.properties* configuration file and set up logging accordingly. 
 
-Here is a sample configuration file that results in exactly same output
+Here is a sample *MyApp.properties* configuration file that results in exactly same output
 as the previous *BasicConfigurator* based example. 
 
 ~~~
