@@ -468,7 +468,7 @@ method creates a rather simple Log4cxx setup. This method is hardwired
 to add to the root logger a [ConsoleAppender](@ref log4cxx.ConsoleAppender).
 The output will be formatted using a
 [PatternLayout](@ref log4cxx.PatternLayout)
-set to the pattern `%%-4r [%%t] %%-5p %%c %%x - %%m%%n`. 
+set to the pattern `%%r [%%t] %%p %%c %%x - %%m%%n`. 
 
 Note that by default, the root logger is assigned to
 *Level::getDebug()*. 
@@ -477,8 +477,8 @@ The output of MyApp is:
 
 ~~~
     0    [12345] INFO  MyApp  - Entering application.
-    36   [12345] DEBUG com.foo.Bar  - Did it again!
-    51   [12345] INFO  MyApp  - Exiting application.
+    0    [12345] DEBUG com.foo.Bar  - Did it again!
+    0    [12345] INFO  MyApp  - Exiting application.
 ~~~
 
 The previous example always outputs the same log information.
