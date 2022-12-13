@@ -549,8 +549,8 @@ configuration file shows one possible way of achieving this.
 The output of *MyApp* configured with this file is shown below. 
 
 ~~~
-    2000-09-07 14:07:41,508 [12345] INFO  MyApp - Entering application.
-    2000-09-07 14:07:41,529 [12345] INFO  MyApp - Exiting application.
+    2022-12-13 11:01:45,091 [12345] INFO  MyApp - Entering application.
+    2022-12-13 11:01:45,091 [12345] INFO  MyApp - Exiting application.
 ~~~
 
 As the logger *com.foo.Bar* does not have an assigned level, it inherits
