@@ -27,7 +27,7 @@ Usage {#usage}
 Log4cxx has three main components: *loggers*, *appenders* and *layouts*.
 These three types of components work together to enable developers to
 log messages according to message type and level, and to control at
-runtime how these messages are formatted and where they are reported. 
+runtime how these messages are formatted and where they are reported.
 
 ## Hierarchy {#hierarchy}
 
@@ -35,34 +35,34 @@ The first and foremost advantage of any logging API over plain
 `std::cout` resides in its ability to disable certain log statements
 while allowing others to print unhindered. This capability assumes that
 the logging space, that is, the space of all possible logging
-statements, is categorized according to some developer-chosen criteria. 
+statements, is categorized according to some developer-chosen criteria.
 
 Loggers are named entities. Logger names are case-sensitive and they
-follow the hierarchical naming rule: 
+follow the hierarchical naming rule:
 
-**Named Hierarchy** 
+**Named Hierarchy**
 
 A logger is said to be an *ancestor* of another logger if its name
 followed by a dot is a prefix of the *descendant* logger name. A logger
 is said to be a *parent* of a *child* logger if there are no ancestors
-between itself and the descendant logger. 
+between itself and the descendant logger.
 
 For example, the logger named `com.foo` is a parent of the logger
 named `com.foo.Bar`. Similarly, `java` is a parent of `java.util`
 and an ancestor of `java.util.Vector`. This naming scheme should be
-familiar to most developers. 
+familiar to most developers.
 
 The root logger resides at the top of the logger hierarchy. It is
-exceptional in two ways: 
+exceptional in two ways:
 
-1.  it always exists, 
-2.  it cannot be retrieved by name. 
+1.  it always exists,
+2.  it cannot be retrieved by name.
 
 Invoking the class static
 log4cxx::Logger::getRootLogger method retrieves it. All other loggers are instantiated and retrieved
 with the class static log4cxx::Logger::getLogger
 method. This method takes the name of the desired logger as a parameter.
-Some of the basic methods in the Logger class are listed below. 
+Some of the basic methods in the Logger class are listed below.
 
 ~~~{.cpp}
     namespace log4cxx {
@@ -74,7 +74,7 @@ Some of the basic methods in the Logger class are listed below.
     			static LoggerPtr getLogger(const std::wstring& name);
     	}
     }
-     
+
     //
     // Use these macros instead of calling Logger methods directly.
     // Macros will handle char or wchar_t pointers or strings
@@ -93,22 +93,22 @@ Some of the basic methods in the Logger class are listed below.
 
 Loggers *may* be assigned levels. The pre-defined levels: TRACE, DEBUG,
 INFO, WARN, ERROR and FATAL are defined in the
-log4cxx::Level class which provides accessor functions. 
+log4cxx::Level class which provides accessor functions.
 
 If a given logger is not assigned a level, then it inherits one from its
-closest ancestor with an assigned level. More formally: 
+closest ancestor with an assigned level. More formally:
 
-**Level Inheritance** 
+**Level Inheritance**
 
 The *inherited level* for a given logger *C*, is equal to the first
 non-null level in the logger hierarchy, starting at *C* and proceeding
-upwards in the hierarchy towards the *root* logger. 
+upwards in the hierarchy towards the *root* logger.
 
 To ensure that all loggers can eventually inherit a level, the root
-logger always has an assigned level. 
+logger always has an assigned level.
 
 Below are four tables with various assigned level values and the
-resulting inherited levels according to the above rule. 
+resulting inherited levels according to the above rule.
 
 | Logger name | Assigned level | Inherited level |
 | ----------- | -------------- | --------------- |
@@ -121,7 +121,7 @@ Example 1
 
 In example 1 above, only the root logger is assigned a level. This level
 value, *Proot*, is inherited by the other loggers *X*, *X.Y* and
-*X.Y.Z*. 
+*X.Y.Z*.
 
 | Logger name | Assigned level | Inherited level |
 | ----------- | -------------- | --------------- |
@@ -133,7 +133,7 @@ value, *Proot*, is inherited by the other loggers *X*, *X.Y* and
 Example 2
 
 In example 2, all loggers have an assigned level value. There is no need
-for level inheritence. 
+for level inheritence.
 
 | Logger name | Assigned level | Inherited level |
 | ----------- | -------------- | --------------- |
@@ -146,7 +146,7 @@ Example 3
 
 In example 3, the loggers *root*, *X* and *X.Y.Z* are assigned the
 levels *Proot*, *Px* and *Pxyz* respectively. The logger *X.Y* inherits
-its level value from its parent *X*. 
+its level value from its parent *X*.
 
 | Logger name | Assigned level | Inherited level |
 | ----------- | -------------- | --------------- |
@@ -160,14 +160,14 @@ Example 4
 In example 4, the loggers *root* and *X* and are assigned the levels
 *Proot* and *Px* respectively. The loggers *X.Y* and *X.Y.Z* inherits
 their level value from their nearest parent *X* having an assigned
-level. 
+level.
 
 ## Requests {#requests}
 
 Logging requests are made by invoking a method of a logger instance,
 preferrably through the use of LOG4CXX\_INFO or similar macros which
 support short-circuiting if the threshold is not satisfied and use of
-the insertion operator (\<\<) in the message parameter. 
+the insertion operator (\<\<) in the message parameter.
 
 ~~~{.cpp}
     log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("com.foo"));
@@ -185,68 +185,68 @@ the insertion operator (\<\<) in the message parameter.
 A logging request is said to be *enabled* if its level is higher than or
 equal to the level of its logger. Otherwise, the request is said to be
 *disabled*. A logger without an assigned level will inherit one from the
-hierarchy. This rule is summarized below. 
+hierarchy. This rule is summarized below.
 
-**Basic Selection Rule** 
+**Basic Selection Rule**
 
 A log request of level *p* in a logger with (either assigned or
 inherited, whichever is appropriate) level *q*, is enabled if *p \>= q*.
 
 This rule is at the heart of Log4cxx. It assumes that levels are
 ordered. For the standard levels, we have *TRACE \< DEBUG \< INFO \<
-WARN \< ERROR \< FATAL*. 
+WARN \< ERROR \< FATAL*.
 
-Here is an example of this rule. 
+Here is an example of this rule.
 
 ~~~{.cpp}
     // get a logger instance named "com.foo"
     log4cxx::LoggerPtr  logger(log4cxx::Logger::getLogger("com.foo"));
-     
+
     // Now set its level. Normally you do not need to set the
     // level of a logger programmatically. This is usually done
     // in configuration files.
     logger->setLevel(log4cxx::Level::getInfo());
-     
+
     log4cxx::LoggerPtr barlogger(log4cxx::Logger::getLogger("com.foo.Bar"));
-     
+
     // This request is enabled, because WARN >= INFO.
     LOG4CXX_WARN(logger, "Low fuel level.");
-     
+
     // This request is disabled, because DEBUG < INFO.
     LOG4CXX_DEBUG(logger, "Starting search for nearest gas station.");
-     
+
     // The logger instance barlogger, named "com.foo.Bar",
     // will inherit its level from the logger named
     // "com.foo" Thus, the following request is enabled
     // because INFO >= INFO.
     LOG4CXX_INFO(barlogger. "Located nearest gas station.");
-     
+
     // This request is disabled, because DEBUG < INFO.
     LOG4CXX_DEBUG(barlogger, "Exiting gas station search");
 ~~~
 
 Calling the *getLogger* method with the same name will always return a
-reference to the exact same logger object. 
+reference to the exact same logger object.
 
-For example, in 
+For example, in
 
 ~~~{.cpp}
     log4cxx::LoggerPtr x = log4cxx::Logger::getLogger("wombat");
     log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");
 ~~~
 
-*x* and *y* refer to *exactly* the same logger object. 
+*x* and *y* refer to *exactly* the same logger object.
 
 Thus, it is possible to configure a logger and then to retrieve the same
 instance somewhere else in the code without passing around references.
 In fundamental contradiction to biological parenthood, where parents
 always preceed their children, Log4cxx loggers can be created and
 configured in any order. In particular, a "parent" logger will find and
-link to its descendants even if it is instantiated after them. 
+link to its descendants even if it is instantiated after them.
 
 Configuration of the Log4cxx environment is typically done at
 application initialization. The preferred way is by reading a
-configuration file. This approach will be discussed shortly. 
+configuration file. This approach will be discussed shortly.
 
 Log4cxx makes it easy to name loggers by *software component*. This can
 be accomplished by statically instantiating a logger in each class, with
@@ -256,10 +256,10 @@ output bears the name of the generating logger, this naming strategy
 makes it easy to identify the origin of a log message. However, this is
 only one possible, albeit common, strategy for naming loggers. Log4cxx
 does not restrict the possible set of loggers. The developer is free to
-name the loggers as desired. 
+name the loggers as desired.
 
 Nevertheless, naming loggers after the class where they are located
-seems to be the best strategy known so far. 
+seems to be the best strategy known so far.
 
 # Appenders and Layouts {#appenders-and-layouts}
 
@@ -292,16 +292,16 @@ appender accumulation is no longer additive by
 
 The rules governing appender additivity are summarized below.
 
-**Appender Additivity** 
+**Appender Additivity**
 
 The output of a log statement of logger *C* will go to all the appenders
 in *C* and its ancestors. This is the meaning of the term "appender
 additivity". However, if an ancestor of logger *C*, say *P*, has the
 additivity flag set to *false*, then *C*'s output will be directed to
 all the appenders in *C* and it's ancestors up to and including *P* but,
-not the appenders in any of the ancestors of *P*.  
-  
-Loggers have their additivity flag set to *true* by default, 
+not the appenders in any of the ancestors of *P*.
+
+Loggers have their additivity flag set to *true* by default,
 meaning output goes to the appender attached to a
 parent [Logger](@ref log4cxx.Logger).
 It is therefore often sufficient to configure or attach an appender
@@ -324,15 +324,15 @@ destination but also the output format. This is accomplished by
 associating a *layout* with an appender. The layout is responsible for
 formatting the logging request according to the user's wishes, whereas
 an appender takes care of sending the formatted output to its
-destination. 
+destination.
 
 The [PatternLayout](@ref log4cxx.PatternLayout),
 part of the standard Log4cxx distribution, lets the user specify the
 output format according to conversion patterns similar to the C language
-*printf* function. 
+*printf* function.
 
 For example, the PatternLayout with the conversion pattern `%%r [%%t]
-%%-5p %%c - %%m%%n` will output something akin to: 
+%%-5p %%c - %%m%%n` will output something akin to:
 
 ~~~
 176 [main] INFO org.foo.Bar - Located nearest gas station.
@@ -342,7 +342,7 @@ The first field is the number of milliseconds elapsed since the start of
 the program. The second field is the thread making the log request. The
 third field is the level of the log statement. The fourth field is the
 name of the logger associated with the log request. The text after the
-'-' is the message of the statement. 
+'-' is the message of the statement.
 
 # Configuration {#configuration}
 
@@ -351,17 +351,80 @@ of planning and effort. Observation shows that approximately 4 percent
 of code is dedicated to logging. Consequently, even moderately sized
 applications will have thousands of logging statements embedded within
 their code. Given their number, it becomes imperative to manage these
-log statements without the need to modify them manually. 
+log statements without the need to modify them manually.
 
 The Log4cxx environment is fully configurable programmatically. However,
 it is far more flexible to configure Log4cxx using configuration files.
 Currently, configuration files can be written in XML or in Java
-properties (key=value) format. 
+properties (key=value) format.
 
 Let us give a taste of how this is done with the help of an imaginary
-application *MyApp* that uses Log4cxx. 
+application *MyApp* that uses Log4cxx.
 
-~~~{myapp.cpp}
+## A Simple Example
+
+In order to start using Log4cxx, a simple example program is shown below.
+This program does nothing useful, but it shows the basics of how to start using Log4cxx.
+Using the [BasicConfigurator](@ref log4cxx.BasicConfigurator) class, we are able to quickly configure the library
+to output DEBUG, INFO, etc level messages to standard output.
+
+~~~{.cpp}
+    #include <log4cxx/logger.h>
+    #include <log4cxx/basicconfigurator.h>
+
+    static auto logger = log4cxx::Logger::getLogger("MyApp");
+
+    void foo() {
+        // Get a logger that is a child of the statically declared logger
+        auto fooLogger = log4cxx::Logger::getLogger("MyApp.foo");
+        LOG4CXX_TRACE(fooLogger, "Doing foo at trace level");
+        LOG4CXX_DEBUG(fooLogger, "Doing foo at debug level");
+        LOG4CXX_INFO(fooLogger, "Doing foo at info level");
+        LOG4CXX_WARN(fooLogger, "Doing foo at warn level");
+        LOG4CXX_ERROR(fooLogger, "Doing foo at error level");
+        LOG4CXX_FATAL(fooLogger, "Doing foo at fatal level");
+    }
+
+    int main(int argc, char **argv) {
+        // Log to standard output.
+        BasicConfigurator::configure();
+        LOG4CXX_INFO(logger, "Entering application.");
+        foo();
+        LOG4CXX_INFO(logger, "Exiting application.");
+        return EXIT_SUCCESS;
+    }
+~~~
+
+The above application does nothing useful except to show how to initialize logging
+with the BasicConfigurator and do logging with different loggers.
+Note that file based configurations are also possible -
+see [DOMConfigurator](@ref log4cxx.xml.DOMConfigurator.configure)
+and [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure).
+
+Configuring Log4cxx in the main function has the limitation that
+any logging statements in static initialization code will not generate output.
+Log4cxx must be configured before it is used and
+in this example Log4cxx is not configured until the main() function starts.
+
+## A Less Simple Example
+
+In this example we use a *getLogger()* wrapper function
+which configures Log4cxx on the first usage.
+The advantages of this approach are:
+
+- Log4cxx configuration can be reused in multiple applications.
+- The structure exhibits better separation of concerns (see https://en.wikipedia.org/wiki/Separation_of_concerns).
+- Log statements in static initialization code will generate output.
+
+This program (*MyApp*) begins by including the file
+that defines the com::foo::getLogger() function.
+It obtains a logger named *MyApp*
+(which in this example is the fully qualified name)
+from the com::foo::getLogger() function.
+
+*MyApp* uses the *com::foo::Bar* class defined in header file *com/foo/bar.h*.
+
+~~~{.cpp}
     #include "com/foo/config.h"
     #include "com/foo/bar.h"
 
@@ -381,14 +444,9 @@ application *MyApp* that uses Log4cxx.
     }
 ~~~
 
-*MyApp* begins by including the file that defines the com::foo::getLogger() function.
-It obtains a logger named *MyApp*
-(which in this example is the fully qualified name)
-from the com::foo::getLogger() function.
+The *com::foo::Bar* class is defined in header file *com/foo/bar.h*.
 
-*MyApp* uses the *com::foo::Bar* class defined in header file *com/foo/bar.h*.
-
-~~~{com/foo/bar.h}
+~~~{.h}
     #ifndef COM_FOO_BAR_H_
     #define COM_FOO_BAR_H_
     #include "com/foo/config.h"
@@ -404,13 +462,15 @@ from the com::foo::getLogger() function.
     #endif // COM_FOO_BAR_H_
 ~~~
 
-~~~{com/foo/bar.cpp}
+The *com::foo::Bar* class is implemented in the file *com/foo/bar.cpp*.
+
+~~~{.cpp}
     #include "com/foo/bar.h"
-     
+
     using namespace com::foo;
-     
+
     LoggerPtr Bar::m_logger(getLogger("com.foo.bar"));
-     
+
     void Bar::doIt() {
         LOG4CXX_DEBUG(m_logger, "Did it again!");
     }
@@ -419,7 +479,7 @@ from the com::foo::getLogger() function.
 The header file *com/foo/config.h* defines the com::foo::getLogger() function
 and a *LoggerPtr* type for convenience.
 
-~~~{com/foo/config.h}
+~~~{.h}
     #ifndef COM_FOO_CONFIG_H_
     #define COM_FOO_CONFIG_H_
     #include <log4cxx/logger.h>
@@ -437,7 +497,7 @@ defines *initAndShutdown* as a *static struct* so its constructor
 is invoked on the first call to the com::foo::getLogger() function
 and its destructor is automatically called during application exit.
 
-~~~{com/foo/config.cpp}
+~~~{.cpp}
     #include "config.h"
     #include <log4cxx/basicconfigurator.h>
     #include <log4cxx/logmanager.h>
@@ -462,18 +522,19 @@ and its destructor is automatically called during application exit.
     } } // namespace com::foo
 ~~~
 
+## Output Formatting
+
 The invocation of the
 [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure)
 method creates a rather simple Log4cxx setup. This method is hardwired
 to add to the root logger a [ConsoleAppender](@ref log4cxx.ConsoleAppender).
 The output will be formatted using a
 [PatternLayout](@ref log4cxx.PatternLayout)
-set to the pattern `%%r [%%t] %%p %%c %%x - %%m%%n`. 
+set to the pattern `%%r [%%t] %%p %%c %%x - %%m%%n`.
 
-Note that by default, the root logger is assigned to
-*Level::getDebug()*. 
+Note that by default, the root logger is assigned a *DEBUG* level.
 
-The output of MyApp is: 
+The output of MyApp is:
 
 ~~~
     0 [12345] INFO MyApp null - Entering application.
@@ -483,7 +544,7 @@ The output of MyApp is:
 
 The previous example always outputs the same log information.
 Fortunately, it is easy to modify *config.cpp* so that the log output can be
-controlled at run-time. Here is a slightly modified version. 
+controlled at run-time. Here is a slightly modified version.
 
 ~~~{.cpp}
     #include "com/foo/config.h"
@@ -509,44 +570,47 @@ controlled at run-time. Here is a slightly modified version.
     } } // namespace com::foo
 ~~~
 
-This version of *MyApp* instructs [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure) to parse a
-*MyApp.properties* configuration file and set up logging accordingly. 
+This version of *config.cpp* instructs [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure)
+to use the *MyApp.properties* file to configure Log4cxx.
+A more realistic approach would (for example)
+use the current module name to select the configuration file
+(see the src/examples/cpp/UserLib/logmanager.cpp file for how to do this).
 
 Here is a sample *MyApp.properties* configuration file that results in exactly same output
-as the previous *BasicConfigurator* based example. 
+as the previous [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure) based example.
 
 ~~~
     # Set root logger level to DEBUG and its only appender to A1.
     log4j.rootLogger=DEBUG, A1
-     
+
     # A1 is set to be a ConsoleAppender.
     log4j.appender.A1=org.apache.log4j.ConsoleAppender
-     
+
     # A1 uses PatternLayout.
     log4j.appender.A1.layout=org.apache.log4j.PatternLayout
     log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
 ~~~
 
 It can be noticed that the PropertyConfigurator file format is the same
-as log4j. 
+as log4j.
 
 Suppose we are no longer interested in seeing the output of any
 component belonging to the *com::foo* package. The following
-configuration file shows one possible way of achieving this. 
+configuration file shows one possible way of achieving this.
 
 ~~~
     log4j.rootLogger=DEBUG, A1
     log4j.appender.A1=org.apache.log4j.ConsoleAppender
     log4j.appender.A1.layout=org.apache.log4j.PatternLayout
-     
+
     # Print the date in ISO 8601 format
     log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
-     
+
     # Print only messages of level WARN or above in the package com.foo.
     log4j.logger.com.foo=WARN
 ~~~
 
-The output of *MyApp* configured with this file is shown below. 
+The output of *MyApp* configured with this file is shown below.
 
 ~~~
     2022-12-13 11:01:45,091 [12345] INFO  MyApp - Entering application.
@@ -555,34 +619,34 @@ The output of *MyApp* configured with this file is shown below.
 
 As the logger *com.foo.Bar* does not have an assigned level, it inherits
 its level from *com.foo*, which was set to WARN in the configuration
-file. The log statement from the *Bar::doIt* method has the level DEBUG,
+file. The log statement from the *Bar::doIt* method has the level *DEBUG*,
 lower than the logger level WARN. Consequently, *doIt()* method's log
-request is suppressed. 
+request is suppressed.
 
-Here is another configuration file that uses multiple appenders. 
+Here is another configuration file that uses multiple appenders.
 
 ~~~
     log4j.rootLogger=debug, stdout, R
-     
+
     log4j.appender.stdout=org.apache.log4j.ConsoleAppender
     log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-     
+
     # Pattern to output the caller's file name and line number.
     log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%f:%L) - %m%n
-     
+
     log4j.appender.R=org.apache.log4j.RollingFileAppender
     log4j.appender.R.File=example.log
-     
+
     log4j.appender.R.MaxFileSize=100KB
     # Keep one backup file
     log4j.appender.R.MaxBackupIndex=1
-     
+
     log4j.appender.R.layout=org.apache.log4j.PatternLayout
     log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
 ~~~
 
 Calling the enhanced MyApp with the this configuration file will output
-the following on the console. 
+the following on the console.
 
 ~~~
      INFO [12345] (MyApp.cpp:8) - Entering application.
@@ -593,14 +657,14 @@ the following on the console.
 In addition, as the root logger has been allocated a second appender,
 output will also be directed to the *example.log* file. This file will
 be rolled over when it reaches 100KB. When roll-over occurs, the old
-version of *example.log* is automatically moved to *example.log.1*. 
+version of *example.log* is automatically moved to *example.log.1*.
 
 Note that to obtain these different logging behaviors we did not need to
 recompile code. We could just as easily have logged to a UNIX Syslog
 daemon, redirected all *com.foo* output to an NT Event logger, or
 forwarded logging events to a remote Log4cxx server, which would log
 according to local server policy, for example by forwarding the log
-event to a second Log4cxx server. 
+event to a second Log4cxx server.
 
 # Default Initialization Procedure {#default-initialization-procedure}
 
@@ -642,17 +706,17 @@ especially well suited to trace and debug complex distributed
 applications. A common approach to differentiate the logging output of
 one client from another is to instantiate a new separate logger for each
 client. This promotes the proliferation of loggers and increases the
-management overhead of logging. 
+management overhead of logging.
 
 A lighter technique is to uniquely stamp each log request initiated from
 the same client interaction. Neil Harrison described this method in the
 book "Patterns for Logging Diagnostic Messages," in *Pattern Languages
 of Program Design 3*, edited by R. Martin, D. Riehle, and F. Buschmann
-(Addison-Wesley, 1997). 
+(Addison-Wesley, 1997).
 
 To uniquely stamp each request, the user pushes contextual information
 into the NDC, the abbreviation of *Nested Diagnostic Context*. The NDC
-class is shown below. 
+class is shown below.
 
 ~~~{.cpp}
     namespace log4cxx {
@@ -661,10 +725,10 @@ class is shown below.
     			// pushes the value on construction and pops on destruction.
     			NDC(const std::string& value);
     			NDC(const std::wstring& value);
-     
+
     			// Remove the top of the context from the NDC.
     			static LogString pop();
-     
+
     			// Add diagnostic context for the current thread.
     			static void push(const std::string& message);
     			static void push(const std::wstring& message);
@@ -680,7 +744,7 @@ the current thread in the log output. This is done without the
 intervention of the user, who is responsible only for placing the
 correct information in the NDC by using the *push* and *pop* methods at
 a few well-defined points in the code. In contrast, the per-client
-logger approach commands extensive changes in the code. 
+logger approach commands extensive changes in the code.
 
 To illustrate this point, let us take the example of a servlet
 delivering content to numerous clients. The servlet can build the NDC at
@@ -692,14 +756,14 @@ simultaneously, the logs initiated by the same code, i.e. belonging to
 the same logger, can still be distinguished because each client request
 will have a different NDC stack. Contrast this with the complexity of
 passing a freshly instantiated logger to all code exercised during the
-client's request. 
+client's request.
 
 Nevertheless, some sophisticated applications, such as virtual hosting
 web servers, must log differently depending on the virtual host context
 and also depending on the software component issuing the request. Recent
 Log4cxx releases support multiple hierarchy trees. This enhancement
 allows each virtual host to possess its own copy of the logger
-hierarchy. 
+hierarchy.
 
 # Performance {#performance}
 
@@ -707,12 +771,12 @@ One of the often-cited arguments against logging is its computational
 cost. This is a legitimate concern as even moderately sized applications
 can generate thousands of log requests. Much effort was spent measuring
 and tweaking logging performance. Log4cxx claims to be fast and
-flexible: speed first, flexibility second. 
+flexible: speed first, flexibility second.
 
-The user should be aware of the following performance issues. 
+The user should be aware of the following performance issues.
 
-1.  **Logging performance when logging is turned off.** 
-    
+1.  **Logging performance when logging is turned off.**
+
     The LOG4CXX\_DEBUG and similar macros have a
     cost of an in-lined null pointer check plus an integer comparison
     when the logger not currently enabled for that level.
@@ -730,18 +794,18 @@ The user should be aware of the following performance issues.
     true for appenders.
 
 3.  **The cost of changing a logger's level.**
-    
+
     The threshold value stored in any child logger is updated.
     This is done iterating over the map of all known logger objects
     and walking the hierarchy of each.
-    
+
     There has been a serious effort to make this hierarchy walk to be as
     fast as possible. For example, child loggers link only to their
     existing ancestors. In the *BasicConfigurator* example shown
     earlier, the logger named *com.foo.Bar* is linked directly to the
     root logger, thereby circumventing the nonexistent *com* or
     *com.foo* loggers. This significantly improves the speed of the
-    walk, especially in "sparse" hierarchies. 
+    walk, especially in "sparse" hierarchies.
 
 # Removing log statements {#removing-log-statements}
 
@@ -879,7 +943,7 @@ Apache Log4cxx is a popular logging package written in C++. One of its
 distinctive features is the notion of inheritance in loggers. Using a
 logger hierarchy it is possible to control which log statements are
 output at arbitrary granularity. This helps reduce the volume of logged
-output and minimize the cost of logging. 
+output and minimize the cost of logging.
 
 One of the advantages of the Log4cxx API is its manageability. Once the
 log statements have been inserted into the code, they can be controlled
