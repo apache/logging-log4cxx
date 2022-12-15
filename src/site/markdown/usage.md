@@ -387,7 +387,7 @@ to output DEBUG, INFO, etc level messages to standard output.
 
     int main(int argc, char **argv) {
         // Log to standard output.
-        BasicConfigurator::configure();
+        log4cxx::BasicConfigurator::configure();
         LOG4CXX_INFO(logger, "Entering application.");
         foo();
         LOG4CXX_INFO(logger, "Exiting application.");
