@@ -32,9 +32,10 @@
 #include <unistd.h>     /* getpid */
 #endif
 
+
+// Local functions
 namespace
 {
-
 using namespace log4cxx;
 
 // Get a list of file base names that may contain configuration data
@@ -113,6 +114,8 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 	return result;
 }
 
+// Provide the name of the configuration file to [DefaultConfigurator](@ref log4cxx.DefaultConfigurator).
+// Set up a background thread that will check for changes every 5 seconds and reload the configuration
 void SelectConfigurationFile()
 {
 #if defined(_DEBUG)
@@ -155,6 +158,8 @@ void SelectConfigurationFile()
 namespace UserLib
 {
 
+// Retrieve the \c name logger.
+// Configure Log4cxx on the first call.
 auto getLogger(const std::string& name) -> log4cxx::LoggerPtr
 {
 	static struct log4cxx_initializer

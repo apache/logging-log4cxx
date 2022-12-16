@@ -268,7 +268,7 @@ their logger is only part of the picture. Log4cxx allows logging
 requests to print to multiple destinations. In Log4cxx speak, an output
 destination is called an *appender*. Currently, appenders exist for the
 [console](@ref log4cxx.ConsoleAppender), [files](@ref log4cxx.FileAppender),
-GUI components, [remote socket](@ref log4cxx.net.SocketAppender)
+GUI components, [remote socket](@ref log4cxx.net.XMLSocketAppender)
 servers, [NT Event Loggers](@ref log4cxx.nt.NTEventLogAppender),
 and remote UNIX [Syslog](@ref log4cxx.net.SyslogAppender)
 daemons. It is also possible to log
@@ -413,7 +413,7 @@ which configures Log4cxx on the first usage.
 The advantages of this approach are:
 
 - Log4cxx configuration can be reused in multiple applications.
-- The structure exhibits better separation of concerns (see https://en.wikipedia.org/wiki/Separation_of_concerns).
+- The structure exhibits better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
 - Log statements in static initialization code will generate output.
 
 This program (*MyApp*) begins by including the file
@@ -544,7 +544,7 @@ The output of MyApp is:
 
 The previous example always outputs the same log information.
 Fortunately, it is easy to modify *config.cpp* so that the log output can be
-controlled at run-time. Here is a slightly modified version.
+controlled at runtime. Here is a slightly modified version.
 
 ~~~{.cpp}
     #include "com/foo/config.h"
@@ -568,13 +568,13 @@ controlled at run-time. Here is a slightly modified version.
     }
 
     } } // namespace com::foo
-~~~
+-~~~
 
 This version of *config.cpp* instructs [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure)
 to use the *MyApp.properties* file to configure Log4cxx.
 A more realistic approach would (for example)
 use the current module name to select the configuration file
-(see the src/examples/cpp/UserLib/logmanager.cpp file for how to do this).
+(see the \ref UserLib/logmanager.cpp file for how to do this).
 
 Here is a sample *MyApp.properties* configuration file that results in exactly same output
 as the previous [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure) based example.
@@ -681,7 +681,7 @@ of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
 
 To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
-A full example can be seen in the src/examples/cpp/UserLib/logmanager.cpp file.
+A full example can be seen in the \ref UserLib/logmanager.cpp file.
 
 # Internal Debugging {#internal-debugging}
 
@@ -934,7 +934,7 @@ message means that the message will be logged immediately without
 consulting other filters.  Denying has the opposite affect, immediately
 dropping the log message and not consulting any other filters.
 
-See the documentation for [Filter](@ref log4cxx.Filter) for some more
+See the documentation for [Filter](@ref log4cxx.spi.Filter) for some more
 information, or view a [configuration sample](@ref configuration-samples).
 
 # Conclusions {#conclusions}
