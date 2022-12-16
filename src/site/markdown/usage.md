@@ -369,30 +369,6 @@ Using the [BasicConfigurator](@ref log4cxx.BasicConfigurator) class, we are able
 to output DEBUG, INFO, etc level messages to standard output.
 
 ~~~{.cpp}
-    #include <log4cxx/logger.h>
-    #include <log4cxx/basicconfigurator.h>
-
-    static auto logger = log4cxx::Logger::getLogger("MyApp");
-
-    void foo() {
-        // Get a logger that is a child of the statically declared logger
-        auto fooLogger = log4cxx::Logger::getLogger("MyApp.foo");
-        LOG4CXX_TRACE(fooLogger, "Doing foo at trace level");
-        LOG4CXX_DEBUG(fooLogger, "Doing foo at debug level");
-        LOG4CXX_INFO(fooLogger, "Doing foo at info level");
-        LOG4CXX_WARN(fooLogger, "Doing foo at warn level");
-        LOG4CXX_ERROR(fooLogger, "Doing foo at error level");
-        LOG4CXX_FATAL(fooLogger, "Doing foo at fatal level");
-    }
-
-    int main(int argc, char **argv) {
-        // Log to standard output.
-        log4cxx::BasicConfigurator::configure();
-        LOG4CXX_INFO(logger, "Entering application.");
-        foo();
-        LOG4CXX_INFO(logger, "Exiting application.");
-        return EXIT_SUCCESS;
-    }
 ~~~
 
 The above application does nothing useful except to show how to initialize logging
@@ -423,104 +399,23 @@ It obtains a logger named *MyApp*
 from the com::foo::getLogger() function.
 
 *MyApp* uses the *com::foo::Bar* class defined in header file *com/foo/bar.h*.
-
-~~~{.cpp}
-    #include "com/foo/config.h"
-    #include "com/foo/bar.h"
-
-    int main(int argc, char **argv) {
-        int result = EXIT_SUCCESS;
-        try {
-            auto logger = com::foo::getLogger("MyApp");
-            LOG4CXX_INFO(logger, "Entering application.");
-            com::foo::Bar bar;
-            bar.doIt();
-            LOG4CXX_INFO(logger, "Exiting application.");
-        }
-        catch(std::exception&) {
-            result = EXIT_FAILURE;
-        }
-        return result;
-    }
-~~~
+\include MyApp.cpp
 
 The *com::foo::Bar* class is defined in header file *com/foo/bar.h*.
-
-~~~{.h}
-    #ifndef COM_FOO_BAR_H_
-    #define COM_FOO_BAR_H_
-    #include "com/foo/config.h"
-    namespace com { namespace foo {
-
-    class Bar {
-        static LoggerPtr m_logger;
-        public:
-            void doIt();
-    };
-
-    } } // namespace com::foo
-    #endif // COM_FOO_BAR_H_
-~~~
+\include com/foo/bar.h
 
 The *com::foo::Bar* class is implemented in the file *com/foo/bar.cpp*.
-
-~~~{.cpp}
-    #include "com/foo/bar.h"
-
-    using namespace com::foo;
-
-    LoggerPtr Bar::m_logger(getLogger("com.foo.bar"));
-
-    void Bar::doIt() {
-        LOG4CXX_DEBUG(m_logger, "Did it again!");
-    }
-~~~
+\include com/foo/bar.cpp
 
 The header file *com/foo/config.h* defines the com::foo::getLogger() function
 and a *LoggerPtr* type for convenience.
-
-~~~{.h}
-    #ifndef COM_FOO_CONFIG_H_
-    #define COM_FOO_CONFIG_H_
-    #include <log4cxx/logger.h>
-    namespace com { namespace foo {
-
-    using LoggerPtr = log4cxx::LoggerPtr;
-    extern auto getLogger(const std::string& name = std::string()) -> LoggerPtr;
-
-    } } // namespace com::foo
-    #endif // COM_FOO_CONFIG_H_
-~~~
+\include com/foo/config.h
 
 The file *com/foo/config.cpp* which implements the com::foo::getLogger() function
 defines *initAndShutdown* as a *static struct* so its constructor
 is invoked on the first call to the com::foo::getLogger() function
 and its destructor is automatically called during application exit.
-
-~~~{.cpp}
-    #include "config.h"
-    #include <log4cxx/basicconfigurator.h>
-    #include <log4cxx/logmanager.h>
-
-    namespace com { namespace foo {
-
-    auto getLogger(const std::string& name) -> LoggerPtr {
-        static struct log4cxx_initializer {
-            log4cxx_initializer() {
-                // Set up a simple configuration that logs on the console.
-                log4cxx::BasicConfigurator::configure();
-            }
-            ~log4cxx_initializer() {
-                log4cxx::LogManager::shutdown();
-            }
-        } initAndShutdown;
-        return name.empty()
-            ? log4cxx::LogManager::getRootLogger()
-            : log4cxx::LogManager::getLogger(name);
-    }
-
-    } } // namespace com::foo
-~~~
+\include com/foo/config1.cpp
 
 ## Output Formatting
 
@@ -545,30 +440,7 @@ The output of MyApp is:
 The previous example always outputs the same log information.
 Fortunately, it is easy to modify *config.cpp* so that the log output can be
 controlled at runtime. Here is a slightly modified version.
-
-~~~{.cpp}
-    #include "com/foo/config.h"
-    #include <log4cxx/propertyconfigurator.h>
-    #include <log4cxx/logmanager.h>
-
-    namespace com { namespace foo {
-
-    auto getLogger(const std::string& name) -> LoggerPtr {
-        static struct log4cxx_initializer {
-            log4cxx_initializer() {
-                log4cxx::PropertyConfigurator::configure("MyApp.properties");
-            }
-            ~log4cxx_initializer() {
-                log4cxx::LogManager::shutdown();
-            }
-        } initAndShutdown;
-        return name.empty()
-            ? log4cxx::LogManager::getRootLogger()
-            : log4cxx::LogManager::getLogger(name);
-    }
-
-    } } // namespace com::foo
--~~~
+\include com/foo/config2.cpp
 
 This version of *config.cpp* instructs [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure)
 to use the *MyApp.properties* file to configure Log4cxx.
@@ -916,7 +788,7 @@ As with the standard logger macros, these macros will also be compiled out
 if the `LOG4CXX_THRESHOLD` macro is set to a level that will compile out
 the non-FMT macros.
 
-A full example can be seen in the src/examples/cpp/format-string.cpp file.
+A full example can be seen in the \ref format-string.cpp file.
 
 # Filtering Messages {#filtering}
 

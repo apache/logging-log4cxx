@@ -34,14 +34,12 @@
 
 
 // Local functions
-namespace
-{
+namespace {
 using namespace log4cxx;
 
 // Get a list of file base names that may contain configuration data
 // and put an alternate path into \c altPrefix
-auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::string>
-{
+auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::string> {
 	std::vector<std::string> result;
 
 	// Find the executable file name
@@ -62,8 +60,7 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 #endif
 	std::string programFileName(buf);
 	auto slashIndex = programFileName.rfind(pathSepar);
-	if (std::string::npos != slashIndex)
-	{
+	if (std::string::npos != slashIndex) {
 		// Extract the path
 		altPrefix = programFileName.substr(0, slashIndex + 1);
 #if defined(_DEBUG)
@@ -82,8 +79,7 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 #endif
 		// Add a local directory relative name without any extension
 		auto dotIndex = result.back().rfind('.');
-		if (std::string::npos != dotIndex)
-		{
+		if (std::string::npos != dotIndex) {
 			result.push_back(result.back());
 			result.back().erase(dotIndex);
 #if defined(_DEBUG)
@@ -94,11 +90,9 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 #endif
 		}
 	}
-	else if (!programFileName.empty())
-	{
+	else if (!programFileName.empty()) {
 		auto dotIndex = result.back().rfind('.');
-		if (std::string::npos != dotIndex)
-		{
+		if (std::string::npos != dotIndex) {
 			programFileName.erase(dotIndex);
 			result.push_back(programFileName);
 #if defined(_DEBUG)
@@ -116,8 +110,7 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 
 // Provide the name of the configuration file to [DefaultConfigurator](@ref log4cxx.DefaultConfigurator).
 // Set up a background thread that will check for changes every 5 seconds and reload the configuration
-void SelectConfigurationFile()
-{
+void SelectConfigurationFile() {
 #if defined(_DEBUG)
 	helpers::LogLog::setInternalDebugging(true);
 #endif
@@ -125,23 +118,18 @@ void SelectConfigurationFile()
 	std::string altPrefix;
 	log4cxx::helpers::Pool pool;
 
-	for (auto baseName : DefaultConfigurationFileNames(altPrefix))
-	{
+	for (auto baseName : DefaultConfigurationFileNames(altPrefix)) {
 		int i = 0;
-		for (; extension[i]; ++i)
-		{
+		for (; extension[i]; ++i) {
 			log4cxx::File current_working_dir_candidate(baseName + extension[i]);
-			if (current_working_dir_candidate.exists(pool))
-			{
+			if (current_working_dir_candidate.exists(pool)) {
 				log4cxx::DefaultConfigurator::setConfigurationFileName(current_working_dir_candidate.getPath());
 				log4cxx::DefaultConfigurator::setConfigurationWatchSeconds(5);
 				break;
 			}
-			if (!altPrefix.empty())
-			{
+			if (!altPrefix.empty()) {
 				log4cxx::File alt_dir_candidate(altPrefix + baseName + extension[i]);
-				if (alt_dir_candidate.exists(pool))
-				{
+				if (alt_dir_candidate.exists(pool)) {
 					log4cxx::DefaultConfigurator::setConfigurationFileName(alt_dir_candidate.getPath());
 					log4cxx::DefaultConfigurator::setConfigurationWatchSeconds(5);
 					break;
@@ -155,21 +143,16 @@ void SelectConfigurationFile()
 
 } // namespace
 
-namespace UserLib
-{
+namespace UserLib {
 
 // Retrieve the \c name logger.
 // Configure Log4cxx on the first call.
-auto getLogger(const std::string& name) -> log4cxx::LoggerPtr
-{
-	static struct log4cxx_initializer
-	{
-		log4cxx_initializer()
-		{
+auto getLogger(const std::string& name) -> log4cxx::LoggerPtr {
+	static struct log4cxx_initializer {
+		log4cxx_initializer() {
 			SelectConfigurationFile();
 		}
-		~log4cxx_initializer()
-		{
+		~log4cxx_initializer() {
 			log4cxx::LogManager::shutdown();
 		}
 	} initialiser;

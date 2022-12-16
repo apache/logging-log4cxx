@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream trivial custom-appender MyApp)
+set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream trivial custom-appender MyApp1 MyApp2)
 if( WIN32 )
     include(win32_target_environment_path)
     get_target_environment_path(ESCAPED_PATH)
@@ -33,8 +33,8 @@ foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
     if(${exampleName} STREQUAL auto-configured)
         target_sources(${exampleName} PRIVATE UserLib/logmanager.cpp)
     endif()
-    if(${exampleName} STREQUAL MyApp)
-        target_sources(${exampleName} PRIVATE com/foo/config.cpp com/foo/bar.cpp)
+    if(${exampleName} STREQUAL MyApp2)
+        target_sources(${exampleName} PRIVATE com/foo/config2.cpp com/foo/bar.cpp)
     endif()
     target_compile_definitions(${exampleName} PRIVATE ${EXAMPLE_COMPILE_DEFINITIONS} ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
     target_include_directories(${exampleName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
