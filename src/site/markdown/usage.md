@@ -367,9 +367,8 @@ In order to start using Log4cxx, a simple example program is shown below.
 This program does nothing useful, but it shows the basics of how to start using Log4cxx.
 Using the [BasicConfigurator](@ref log4cxx.BasicConfigurator) class, we are able to quickly configure the library
 to output DEBUG, INFO, etc level messages to standard output.
+\include MyApp1.cpp
 
-~~~{.cpp}
-~~~
 
 The above application does nothing useful except to show how to initialize logging
 with the BasicConfigurator and do logging with different loggers.
@@ -399,7 +398,7 @@ It obtains a logger named *MyApp*
 from the com::foo::getLogger() function.
 
 *MyApp* uses the *com::foo::Bar* class defined in header file *com/foo/bar.h*.
-\include MyApp.cpp
+\include MyApp2.cpp
 
 The *com::foo::Bar* class is defined in header file *com/foo/bar.h*.
 \include com/foo/bar.h
