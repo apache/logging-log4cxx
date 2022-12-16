@@ -116,22 +116,22 @@ void SelectConfigurationFile() {
 #endif
 	const char* extension[] = { ".xml", ".properties", 0 };
 	std::string altPrefix;
-	log4cxx::helpers::Pool pool;
+	helpers::Pool pool;
 
 	for (auto baseName : DefaultConfigurationFileNames(altPrefix)) {
 		int i = 0;
 		for (; extension[i]; ++i) {
-			log4cxx::File current_working_dir_candidate(baseName + extension[i]);
+			File current_working_dir_candidate(baseName + extension[i]);
 			if (current_working_dir_candidate.exists(pool)) {
-				log4cxx::DefaultConfigurator::setConfigurationFileName(current_working_dir_candidate.getPath());
-				log4cxx::DefaultConfigurator::setConfigurationWatchSeconds(5);
+				DefaultConfigurator::setConfigurationFileName(current_working_dir_candidate.getPath());
+				DefaultConfigurator::setConfigurationWatchSeconds(5);
 				break;
 			}
 			if (!altPrefix.empty()) {
-				log4cxx::File alt_dir_candidate(altPrefix + baseName + extension[i]);
+				File alt_dir_candidate(altPrefix + baseName + extension[i]);
 				if (alt_dir_candidate.exists(pool)) {
-					log4cxx::DefaultConfigurator::setConfigurationFileName(alt_dir_candidate.getPath());
-					log4cxx::DefaultConfigurator::setConfigurationWatchSeconds(5);
+					DefaultConfigurator::setConfigurationFileName(alt_dir_candidate.getPath());
+					DefaultConfigurator::setConfigurationWatchSeconds(5);
 					break;
 				}
 			}
