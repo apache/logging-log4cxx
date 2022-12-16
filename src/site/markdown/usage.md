@@ -951,3 +951,12 @@ with configuration files. They can be selectively enabled or disabled,
 and sent to different and multiple output targets in user-chosen
 formats. The Log4cxx package is designed so that log statements can
 remain in shipped code without incurring a heavy performance cost.
+
+\example auto-configured.cpp
+This is an example of logging in static initialization code.
+
+\example UserLib/logmanager.cpp
+This file is an example of how to use the current module name to select the Log4cxx configuration file.
+
+\example format-string.cpp
+This example shows logging using the [{fmt}](https://fmt.dev/latest/index.html) library.
