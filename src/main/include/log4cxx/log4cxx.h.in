@@ -51,15 +51,12 @@
 #define LOG4CXX_HAS_NETWORKING @NETWORKING_SUPPORT@
 #define LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER @MULTIPROCESS_RFA@
 
-typedef long long log4cxx_int64_t;
 #define LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE 0
 #define LOG4CXX_LOGSTREAM_ADD_NOP 0
-typedef log4cxx_int64_t log4cxx_time_t;
-typedef int log4cxx_status_t;
-typedef unsigned int log4cxx_uint32_t;
 
 #include "boost-std-configuration.h"
 #include <memory>
+#include <cstdint>
 
 #define LOG4CXX_PTR_DEF(T) typedef std::shared_ptr<T> T##Ptr;\
 	typedef std::weak_ptr<T> T##WeakPtr
@@ -101,13 +98,20 @@ __pragma( warning( pop ) )
 namespace log4cxx {
 
 /**
+ * log4cxx_time_t - holds the number of microseconds since 1970-01-01
+ */
+typedef int64_t log4cxx_time_t;
+
+typedef int log4cxx_status_t;
+
+/**
  * Query the compiled version of the library.  Ideally, this should
  * be the same as the LOG4CXX_VERSION macro defined above.
  *
  * The LOG4CXX_VERSION_GET_ series of macros let you extract the
  * specific bytes of the version if required.
  */
-LOG4CXX_EXPORT log4cxx_uint32_t libraryVersion();
+LOG4CXX_EXPORT uint32_t libraryVersion();
 
 }
 
