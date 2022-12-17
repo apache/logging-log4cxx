@@ -187,7 +187,7 @@ equal to the level of its logger. Otherwise, the request is said to be
 *disabled*. A logger without an assigned level will inherit one from the
 hierarchy. This rule is summarized below.
 
-**Basic Selection Rule**
+## Basic Selection Rule {#selection-rule}
 
 A log request of level *p* in a logger with (either assigned or
 inherited, whichever is appropriate) level *q*, is enabled if *p \>= q*.
@@ -200,14 +200,14 @@ Here is an example of this rule.
 
 ~~~{.cpp}
     // get a logger instance named "com.foo"
-    log4cxx::LoggerPtr  logger(log4cxx::Logger::getLogger("com.foo"));
+    auto logger = log4cxx::Logger::getLogger("com.foo");
 
     // Now set its level. Normally you do not need to set the
     // level of a logger programmatically. This is usually done
     // in configuration files.
     logger->setLevel(log4cxx::Level::getInfo());
 
-    log4cxx::LoggerPtr barlogger(log4cxx::Logger::getLogger("com.foo.Bar"));
+    auto barlogger = log4cxx::Logger::getLogger("com.foo.Bar");
 
     // This request is enabled, because WARN >= INFO.
     LOG4CXX_WARN(logger, "Low fuel level.");
@@ -231,8 +231,8 @@ reference to the exact same logger object.
 For example, in
 
 ~~~{.cpp}
-    log4cxx::LoggerPtr x = log4cxx::Logger::getLogger("wombat");
-    log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");
+    auto x = log4cxx::Logger::getLogger("wombat");
+    auto y = log4cxx::Logger::getLogger("wombat");
 ~~~
 
 *x* and *y* refer to *exactly* the same logger object.
@@ -292,7 +292,7 @@ appender accumulation is no longer additive by
 
 The rules governing appender additivity are summarized below.
 
-**Appender Additivity**
+## Appender Additivity {#additivity}
 
 The output of a log statement of logger *C* will go to all the appenders
 in *C* and its ancestors. This is the meaning of the term "appender
@@ -361,7 +361,7 @@ properties (key=value) format.
 Let us give a taste of how this is done with the help of an imaginary
 application *MyApp* that uses Log4cxx.
 
-## A Simple Example
+## A Simple Example {#example1}
 
 In order to start using Log4cxx, a simple example program is shown below.
 This program does nothing useful, but it shows the basics of how to start using Log4cxx.
@@ -381,7 +381,7 @@ any logging statements in static initialization code will not generate output.
 Log4cxx must be configured before it is used and
 in this example Log4cxx is not configured until the main() function starts.
 
-## A Less Simple Example
+## A Less Simple Example {#example2}
 
 In this example we use a *getLogger()* wrapper function
 which configures Log4cxx on the first usage.
@@ -416,7 +416,7 @@ is invoked on the first call to the com::foo::getLogger() function
 and its destructor is automatically called during application exit.
 \include com/foo/config1.cpp
 
-## Output Formatting
+## Request Formatting {#formatting}
 
 The invocation of the
 [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure)
@@ -518,7 +518,7 @@ forwarded logging events to a remote Log4cxx server, which would log
 according to local server policy, for example by forwarding the log
 event to a second Log4cxx server.
 
-# Default Initialization Procedure {#default-initialization-procedure}
+## Default Initialization {#default-initialization}
 
 The Log4cxx library does not make any assumptions about its environment.
 In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
@@ -659,7 +659,7 @@ The user should be aware of the following performance issues.
     *com.foo* loggers. This significantly improves the speed of the
     walk, especially in "sparse" hierarchies.
 
-# Removing log statements {#removing-log-statements}
+## Removing log statements {#removing-log-statements}
 
 Sometimes, you may want to remove all log statements from your program,
 either for speed purposes or to remove sensitive information.  This can easily
@@ -694,7 +694,7 @@ The levels are set as follows:
 Note that this has no effect on other macros, such as using the
 `LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
 
-# Removing location information {#removing-location-information}
+## Removing location information {#removing-location-information}
 
 Whenever you log a message with Log4cxx, metadata about the location of the
 logging statement is captured as well through the preprocessor.  This includes
