@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <UserLib/logmanager.h>
+#include "config.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/defaultconfigurator.h>
@@ -142,9 +142,9 @@ void SelectConfigurationFile() {
 
 } // namespace
 
-namespace UserLib {
+namespace com { namespace foo {
 
-// Retrieve the \c name logger.
+// Retrieve the \c name logger pointer.
 // Configure Log4cxx on the first call.
 auto getLogger(const std::string& name) -> LoggerPtr {
 	static struct log4cxx_initializer {
@@ -160,4 +160,4 @@ auto getLogger(const std::string& name) -> LoggerPtr {
 		: log4cxx::LogManager::getLogger(name);
 }
 
-} // namespace UserLib
+} } // namespace com::foo

@@ -429,7 +429,7 @@ of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
 
 To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
-A full example can be seen in the \ref UserLib/logmanager.cpp file.
+A full example can be seen in the \ref com/foo/config3.cpp file.
 
 # Layouts {#layouts}
 
@@ -460,7 +460,7 @@ This version of *config.cpp* instructs [PropertyConfigurator](@ref log4cxx.Prope
 to use the *MyApp.properties* file to configure Log4cxx.
 A more realistic approach would (for example)
 use the current module name to select the configuration file
-(see the \ref UserLib/logmanager.cpp file for how to do this).
+(see the \ref com/foo/config3.cpp file for how to do this).
 
 Here is a sample *MyApp.properties* configuration file that results in exactly same output
 as the previous [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure) based example.
@@ -803,9 +803,10 @@ formats. The Log4cxx package is designed so that log statements can
 remain in shipped code without incurring a heavy performance cost.
 
 \example auto-configured.cpp
-This is an example of logging in static initialization code.
+This is an example of logging in static initialization code and
+using the current module name to select the Log4cxx configuration file.
 
-\example UserLib/logmanager.cpp
+\example com/foo/config3.cpp
 This file is an example of how to use the current module name to select the Log4cxx configuration file.
 
 \example format-string.cpp
