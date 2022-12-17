@@ -340,10 +340,10 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *
  * <p>Below are some examples of conversion patterns.</p>
  *
- * <p><strong>%r [%t] %-5p %c %x - %m\n</strong></p>
+ * <p><strong>%%r [%%t] %-5p %%c %%x - %%m\n</strong></p>
  * <p>This is essentially the TTCC layout.</p>
  *
- * <p><strong>%-6r [%15.15t] %-5p %30.30c %x - %m\n</strong></p>
+ * <p><strong>%-6r [%15.15t] %-5p %30.30c %%x - %%m\n</strong></p>
  *
  * <p>
  *  Similar to the TTCC layout except that the relative time is right padded if less than 6

@@ -3,6 +3,7 @@
 namespace UserLib
 {
 
-extern log4cxx::LoggerPtr getLogger(const std::string& name = std::string());
+    extern auto
+getLogger(const std::string& name = std::string()) -> log4cxx::LoggerPtr;
 
 } // namespace UserLib

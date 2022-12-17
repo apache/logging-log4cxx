@@ -14,24 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <UserLib/logmanager.h>
+#include "UserLib/logmanager.h"
 
-	log4cxx::LoggerPtr
-rootLogger(UserLib::getLogger());
+extern auto rootLogger = UserLib::getLogger();
 
-struct ExampleStaticData
-{
-	ExampleStaticData()
-	{
-		LOG4CXX_DEBUG(rootLogger, "static initiallizer message");
+static struct ExampleStaticData {
+	ExampleStaticData()	{
+		LOG4CXX_DEBUG(rootLogger, "static initializer message");
 	}
-};
+} static_object;
 
-static ExampleStaticData data;
-
-int main()
-{
-	int result = EXIT_SUCCESS;
+int main() {
 	LOG4CXX_INFO(rootLogger, "main function message");
 	return EXIT_SUCCESS;
 }
