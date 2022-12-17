@@ -47,6 +47,7 @@ struct FixedWindowRollingPolicy::FixedWindowRollingPolicyPrivate : public Rollin
 	int minIndex;
 	int maxIndex;
 	bool explicitActiveFile;
+	bool throwIOExceptionOnForkFailure = true;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FixedWindowRollingPolicy)
@@ -68,8 +69,6 @@ void FixedWindowRollingPolicy::setMinIndex(int minIndex1)
 	priv->minIndex = minIndex1;
 }
 
-
-
 void FixedWindowRollingPolicy::setOption(const LogString& option,
 	const LogString& value)
 {
@@ -84,6 +83,12 @@ void FixedWindowRollingPolicy::setOption(const LogString& option,
 			LOG4CXX_STR("maxindex")))
 	{
 		priv->maxIndex = OptionConverter::toInt(value, 7);
+	}
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("THROWIOEXCEPTIONONFORKFAILURE"),
+			LOG4CXX_STR("throwioexceptiononforkfailure")))
+	{
+		priv->throwIOExceptionOnForkFailure = OptionConverter::toBoolean(value, true);
 	}
 	else
 	{
@@ -193,18 +198,22 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz")))
 	{
 		renameTo.resize(renameTo.size() - 3);
-		compressAction = std::make_shared<GZCompressAction>(
+		GZCompressActionPtr comp = std::make_shared<GZCompressAction>(
 					File().setPath(renameTo),
 					File().setPath(compressedName),
 					true);
+		comp->setThrowIOExceptionOnForkFailure(priv->throwIOExceptionOnForkFailure);
+		compressAction = comp;
 	}
 	else if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".zip")))
 	{
 		renameTo.resize(renameTo.size() - 4);
-		compressAction = std::make_shared<ZipCompressAction>(
+		ZipCompressActionPtr comp = std::make_shared<ZipCompressAction>(
 					File().setPath(renameTo),
 					File().setPath(compressedName),
 					true);
+		comp->setThrowIOExceptionOnForkFailure(priv->throwIOExceptionOnForkFailure);
+		compressAction = comp;
 	}
 
 	auto renameAction = std::make_shared<FileRenameAction>(

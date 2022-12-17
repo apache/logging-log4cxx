@@ -190,7 +190,8 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 			const LogString& filename,
 			size_t fileLength) override;
 
-		using RollingPolicyBase::setOption;
+		void setOption(const LogString& option, const LogString& value) override;
+
 	protected:
 		log4cxx::pattern::PatternMap getFormatSpecifiers() const override;
 

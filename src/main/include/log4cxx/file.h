@@ -176,8 +176,22 @@ class LOG4CXX_EXPORT File
 		 */
 		bool mkdirs(log4cxx::helpers::Pool& p) const;
 
+		/**
+		 * Set the file to be deleted when this object is destroyed.
+		 * @param autoDelete If true, delete file upon destruction.  If true, do not delete file.
+		 */
+		void setAutoDelete(bool autoDelete);
+
+		/**
+		 * Return the value of the autodelete setting.  If true, this file will be deleted when the
+		 * destructor is called.
+		 *
+		 * @return True if the file is deleted upon destruction.
+		 */
+		bool getAutoDelete() const;
+
 	private:
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(LogString, path)
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilePrivate, m_priv)
 		static char* convertBackSlashes(char*);
 		char* getPath(log4cxx::helpers::Pool& p) const;
 };
