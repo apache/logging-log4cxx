@@ -700,7 +700,7 @@ method
 
 All error and warning messages are sent to stderr.
 
-# Performance {#request-cost}
+# Overhead {#request-cost}
 
 One of the often-cited arguments against logging is its computational
 cost. This is a legitimate concern as even moderately sized applications
@@ -708,7 +708,7 @@ can generate thousands of log requests. Much effort was spent measuring
 and tweaking logging performance. Log4cxx claims to be fast and
 flexible: speed first, flexibility second.
 
-The user should be aware of the following performance issues.
+For performance sensitive applications, you should be aware of the following.
 
 1.  **Logging performance when logging is turned off.**
 

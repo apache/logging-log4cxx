@@ -26,7 +26,7 @@ namespace helpers
 {
 
 /**
-*   Abstract class for writing to character streams.
+*   Sends output to <code>stdout</code>.
 */
 class LOG4CXX_EXPORT SystemOutWriter : public Writer
 {

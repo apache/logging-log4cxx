@@ -19,7 +19,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/helpers/pool.h>
-#include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/transcoder.h>
@@ -147,7 +146,7 @@ namespace UserLib {
 
 // Retrieve the \c name logger.
 // Configure Log4cxx on the first call.
-auto getLogger(const std::string& name) -> log4cxx::LoggerPtr {
+auto getLogger(const std::string& name) -> LoggerPtr {
 	static struct log4cxx_initializer {
 		log4cxx_initializer() {
 			SelectConfigurationFile();
