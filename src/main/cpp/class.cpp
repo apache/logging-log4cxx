@@ -39,7 +39,6 @@
 	#include <log4cxx/nt/outputdebugstringappender.h>
 #endif
 #include <log4cxx/net/smtpappender.h>
-#include <log4cxx/net/sockethubappender.h>
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/net/syslogappender.h>
 #include <log4cxx/net/telnetappender.h>
@@ -191,7 +190,6 @@ void Class::registerClasses()
 #if LOG4CXX_HAS_NETWORKING
 	TelnetAppender::registerClass();
 	XMLSocketAppender::registerClass();
-	SocketHubAppender::registerClass();
 	SyslogAppender::registerClass();
 #endif
 }
