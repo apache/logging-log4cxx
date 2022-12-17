@@ -25,25 +25,24 @@ Changelog {#changelog}
 
 | Version                                                                                | Date       | Description          |
 | -------------------------------------------------------------------------------------- | ---------- | -------------------- |
-| [0.13.0](#0.13.0) | 2022-04-15 | Maintenance release  |
-| [0.12.1](#0.12.1) | 2021-09-21 | Bugfix for 0.12.0 |
-| [0.12.0](#0.12.0) | 2021-05-01 | First release to require C++11. Updates for smart pointers.  Standardization on CMake for building. |
-| [0.11.0](#0.11.0) | 2020-08-09 | Maintenance release. |
-| [0.10.0](#0.10.0) | 2008-04-03 | First Apache release |
-| [0.9.7](#0.9.7)   | 2004-05-10 |                      |
-| [0.9.6](#0.9.6)   | 2004-04-11 |                      |
-| [0.9.5](#0.9.5)   | 2004-02-04 |                      |
-| [0.9.4](#0.9.4)   | 2003-10-25 |                      |
-| [0.9.3](#0.9.3)   | 2003-09-19 |                      |
-| [0.9.2](#0.9.2)   | 2003-08-10 |                      |
-| [0.9.1](#0.9.1)   | 2003-08-06 |                      |
-| [0.9.0](#0.9.0)   | 2003-08-06 |                      |
-| [0.1.1](#0.1.1)   | 2003-07-09 |                      |
-| [0.1.0](#0.1.0)   | 2003-07-08 |                      |
-| [0.0.1](#0.0.1)   | 2003-05-31 |                      |
+| [0.13.0](#rel_13_0) | 2022-04-15 | Maintenance release  |
+| [0.12.1](#rel_12_1) | 2021-09-21 | Bugfix for 0.12.0 |
+| [0.12.0](#rel_12_0) | 2021-05-01 | First release to require C++11. Updates for smart pointers.  Standardization on CMake for building. |
+| [0.11.0](#rel_11_0) | 2020-08-09 | Maintenance release. |
+| [0.10.0](#rel_10_0) | 2008-04-03 | First Apache release |
+| [0.9.7](#rel_9_7)   | 2004-05-10 |                      |
+| [0.9.6](#rel_9_6)   | 2004-04-11 |                      |
+| [0.9.5](#rel_9_5)   | 2004-02-04 |                      |
+| [0.9.4](#rel_9_4)   | 2003-10-25 |                      |
+| [0.9.3](#rel_9_3)   | 2003-09-19 |                      |
+| [0.9.2](#rel_9_2)   | 2003-08-10 |                      |
+| [0.9.1](#rel_9_1)   | 2003-08-06 |                      |
+| [0.9.0](#rel_9_0)   | 2003-08-06 |                      |
+| [0.1.1](#rel_1_1)   | 2003-07-09 |                      |
+| [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
+| [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
-<a name="0.13.0"/>
-## Release 0.13.0 - 2022-04-15
+## Release 0.13.0 - 2022-04-15 {#rel_13_0}
 
 This release fixes a number of issues.  Notable new features include the
 ability to block signals from threads that the library creates, automatic
@@ -111,8 +110,7 @@ Wish
     shared\_mutex
 
 
-<a name="0.12.0"/>
-## Release 0.12.1 - 2021-09-21
+## Release 0.12.1 - 2021-09-21 {#rel_12_1}
 
 This is a minor bugfix release to fix issues found with 0.12.0.  Notably, this version fixes a bug
 where a multithreaded application would crash when using a rolling file.
@@ -126,8 +124,7 @@ Bug
     log4cxx fails to build on Centos 7.6 / g++ 4.8.5 / Boost 1.53
 
 
-<a name="0.12.0"/>
-## Release 0.12.0 - 2021-05-01
+## Release 0.12.0 - 2021-05-01 {#rel_12_0}
 
 This is the first release to require a minimum version of C++11.  This means that all objects in log4cxx
 are now created using `std::shared_ptr` as the smart pointer implementation.
@@ -189,8 +186,7 @@ Improvement
 -   \[[LOGCXX-523](https://issues.apache.org/jira/browse/LOGCXX-523)\] -
     Add in error handling for rollover errors
 
-<a name="0.11.0"/>
-### Release 0.11.0 - 2020-08-09
+## Release 0.11.0 - 2020-08-09 {#rel_11_0}
 
 |                                                                     |                                                                                                                                                                                                                                                 |    |
 | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -- |
@@ -250,7 +246,7 @@ Improvement
 | ![](images/fix.gif "fix")    | Please make sure that the LOG4CXX\_\* macro's can be used as ordinary statements. Fixes [LOGCXX-319](https://issues.apache.org/jira/browse/LOGCXX-319).                                                                                         |    |
 | ![](images/fix.gif "fix")    | Log4cxx triggers locking inversion which can result in a deadlock. Fixes [LOGCXX-317](https://issues.apache.org/jira/browse/LOGCXX-317).                                                                                                        |    |
 | ![](images/fix.gif "fix")    | Build process fails in case of absence of iconv support in apr-util Fixes [LOGCXX-313](https://issues.apache.org/jira/browse/LOGCXX-313).                                                                                                       |    |
-| ![](images/fix.gif "fix")    | Property/DOMConfigurator::configureAndWatch can continue to run after APR termination Fixes [LOGCXX-305](https://issues.apache.org/jira/browse/LOGCXX-305).                                                                                     |    |
+| ![](images/fix.gif "fix")    | Property/xml::DOMConfigurator::configureAndWatch can continue to run after APR termination Fixes [LOGCXX-305](https://issues.apache.org/jira/browse/LOGCXX-305).                                                                                     |    |
 | ![](images/fix.gif "fix")    | BasicConfigurator::configure results in writer not set warning. Fixes [LOGCXX-304](https://issues.apache.org/jira/browse/LOGCXX-304).                                                                                                           |    |
 | ![](images/fix.gif "fix")    | DOMConfigurator does not set ErrorHandler. Fixes [LOGCXX-303](https://issues.apache.org/jira/browse/LOGCXX-303).                                                                                                                                |    |
 | ![](images/fix.gif "fix")    | ODBCAppender connection settings broken (or just have changed). Fixes [LOGCXX-300](https://issues.apache.org/jira/browse/LOGCXX-300).                                                                                                           |    |
@@ -290,8 +286,7 @@ Improvement
 | ![](images/update.gif "update") | Documented C (class) and M (method) log format keywords.                                                                                                                                                                                        |    |
 | ![](images/add.gif "add")    | LocationInfo for Borland C++ Builder and successors improved.                                                                                                                                                                                   |    |
 
-<a name="0.10.0"/>
-### Release 0.10.0 - 2008-04-03
+## Release 0.10.0 - 2008-04-03 {#rel_10_0}
 
 |                                                                     |                                                                                                                                                                                                |    |
 | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -- |
@@ -319,8 +314,8 @@ Improvement
 | ![](images/update.gif "update") | Drop src/performance Fixes [LOGCXX-232](https://issues.apache.org/jira/browse/LOGCXX-232).                                                                                                     |    |
 | ![](images/fix.gif "fix")    | Deadlock in AsyncAppender Fixes [LOGCXX-231](https://issues.apache.org/jira/browse/LOGCXX-231).                                                                                                |    |
 | ![](images/update.gif "update") | Align ant build options with automake Fixes [LOGCXX-230](https://issues.apache.org/jira/browse/LOGCXX-230).                                                                                    |    |
-| ![](images/update.gif "update") | Remove @author tags Fixes [LOGCXX-228](https://issues.apache.org/jira/browse/LOGCXX-228).                                                                                                      |    |
-| ![](images/update.gif "update") | Remove @since tags Fixes [LOGCXX-227](https://issues.apache.org/jira/browse/LOGCXX-227).                                                                                                       |    |
+| ![](images/update.gif "update") | Remove \@author tags Fixes [LOGCXX-228](https://issues.apache.org/jira/browse/LOGCXX-228).                                                                                                      |    |
+| ![](images/update.gif "update") | Remove \@since tags Fixes [LOGCXX-227](https://issues.apache.org/jira/browse/LOGCXX-227).                                                                                                       |    |
 | ![](images/update.gif "update") | Default configurator uses \*.properties in preference to \*.xml Fixes [LOGCXX-226](https://issues.apache.org/jira/browse/LOGCXX-226).                                                          |    |
 | ![](images/update.gif "update") | Migrate unit tests from LGPL'd CPPUNIT to an ASL'd testing framework Fixes [LOGCXX-225](https://issues.apache.org/jira/browse/LOGCXX-225).                                                     |    |
 | ![](images/fix.gif "fix")    | trunk compile error. Fixes [LOGCXX-222](https://issues.apache.org/jira/browse/LOGCXX-222).                                                                                                     |    |
@@ -501,8 +496,7 @@ Improvement
 | ![](images/fix.gif "fix")    | Missing \#else Fixes [LOGCXX-3](https://issues.apache.org/jira/browse/LOGCXX-3).                                                                                                               |    |
 | ![](images/fix.gif "fix")    | logger.h includes config.h Fixes [LOGCXX-2](https://issues.apache.org/jira/browse/LOGCXX-2).                                                                                                   |    |
 
-<a name="0.9.7"/>
-### Release 0.9.7 - 2004-05-10
+## Release 0.9.7 - 2004-05-10 {#rel_9_7}
 
 |                                                                  |                                                                                                                                                     |    |
 | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -- |
@@ -517,8 +511,7 @@ Improvement
 | ![](images/fix.gif "fix") | Logging macros can be used without explicity declaring the use of log4cxx namespace.                                                                |    |
 | ![](images/fix.gif "fix") | Fixed static library unresolved externals for msvc 6 and 7.1                                                                                        |    |
 
-<a name="0.9.6"/>
-### Release 0.9.6 - 2004-04-11
+## Release 0.9.6 - 2004-04-11 {#rel_9_6}
 
 |                                                                     |                                                                                                         |    |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | -- |
@@ -532,8 +525,7 @@ Improvement
 | ![](images/add.gif "add")    | Added TimeZone configuration to PatternLayout (bug 912563)                                              |    |
 | ![](images/add.gif "add")    | Support of the DailyRollingFileAppender (feature request 842765)                                        |    |
 
-<a name="0.9.5"/>
-### Release 0.9.5 - 2004-02-04
+## Release 0.9.5 - 2004-02-04 {#rel_9_5}
 
 |                                                                  |                                                                                                                            |    |
 | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -- |
@@ -553,8 +545,7 @@ Improvement
 | ![](images/fix.gif "fix") | Fixed compilations problems with unicode.                                                                                  |    |
 | ![](images/fix.gif "fix") | Fixed SocketAppender bug concerning MDC and NDC.                                                                           |    |
 
-<a name="0.9.4"/>
-### Release 0.9.4 - 2003-10-25
+## Release 0.9.4 - 2003-10-25 {#rel_9_4}
 
 |                                                                     |                                                           |    |
 | ------------------------------------------------------------------- | --------------------------------------------------------- | -- |
@@ -565,8 +556,7 @@ Improvement
 | ![](images/fix.gif "fix")    | Fixed threading configuration problems (bug 809125)       |    |
 | ![](images/fix.gif "fix")    | Fixed miscellaneous MSVC and cygwin compilation problems. |    |
 
-<a name="0.9.3"/>
-### Release 0.9.3 - 2003-09-19
+## Release 0.9.3 - 2003-09-19 {#rel_9_3}
 
 |                                                                     |                                                                                 |    |
 | ------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -- |
@@ -581,8 +571,7 @@ Improvement
 | ![](images/add.gif "add")    | Added new tests                                                                 |    |
 | ![](images/add.gif "add")    | Added benchmarks                                                                |    |
 
-<a name="0.9.2"/>
-### Release 0.9.2 - 2003-08-10
+## Release 0.9.2 - 2003-08-10 {#rel_9_2}
 
 |                                                                     |                                                                               |    |
 | ------------------------------------------------------------------- | ----------------------------------------------------------------------------- | -- |
@@ -592,8 +581,7 @@ Improvement
 | ![](images/add.gif "add")    | Long events (\> 1024 chars) are now supported in the class XMLSocketAppender. |    |
 | ![](images/update.gif "update") | Carriage returns have been normalized in the class XMLLayout.                 |    |
 
-<a name="0.9.1"/>
-### Release 0.9.1 - 2003-08-06
+## Release 0.9.1 - 2003-08-06 {#rel_9_1}
 
 |                                                                     |                                                              |    |
 | ------------------------------------------------------------------- | ------------------------------------------------------------ | -- |
@@ -603,8 +591,7 @@ Improvement
 | ![](images/add.gif "add")    | Added MSVC 6.0 static libraty project.                       |    |
 | ![](images/update.gif "update") | Default configuration for the SMTP options is "no".          |    |
 
-<a name="0.9.0"/>
-### Release 0.9.0 - 2003-08-06
+## Release 0.9.0 - 2003-08-06 {#rel_9_0}
 
 |                                                                  |                                                                        |    |
 | ---------------------------------------------------------------- | ---------------------------------------------------------------------- | -- |
@@ -619,8 +606,7 @@ Improvement
 | ![](images/add.gif "add") | Added MSVC 6.0 'Unicode Debug' and 'Unicode Release' targets           |    |
 | ![](images/add.gif "add") | Added Java like System class.                                          |    |
 
-<a name="0.1.1"/>
-### Release 0.1.1 - 2003-07-09
+## Release 0.1.1 - 2003-07-09 {#rel_1_1}
 
 |                                                                  |                                                                     |    |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------- | -- |
@@ -628,8 +614,7 @@ Improvement
 | ![](images/fix.gif "fix") | Fixed MSVC 6.0 compilation problems concerning the 'Release' target |    |
 | ![](images/add.gif "add") | Added MSVC 6.0 tests projects                                       |    |
 
-<a name="0.1.0"/>
-### Release 0.1.0 - 2003-07-08
+## Release 0.1.0 - 2003-07-08 {#rel_1_0}
 
 |                                                                  |                                                                                                                                                            |    |
 | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -- |
@@ -645,8 +630,7 @@ Improvement
 | ![](images/add.gif "add") | Port of the "Map Diagnostic Context" (MDC) class                                                                                                           |    |
 | ![](images/add.gif "add") | Added 13 tests (try make check)                                                                                                                            |    |
 
-<a name="0.0.1"/>
-### Release 0.0.1 - 2003-05-31
+## Release 0.0.1 - 2003-05-31 {#rel_0_1}
 
 |                                                                  |                                                                                                                                                      |    |
 | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -- |

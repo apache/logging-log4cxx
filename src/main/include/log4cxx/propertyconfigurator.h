@@ -335,9 +335,8 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		// --------------------------------------------------------------------------
 	protected:
 		/**
-		Check the provided <code>Properties</code> object for a
-		#loggerFactory
-		entry specified by LOGGER_FACTORY_KEY.  If such an entry
+		Check the provided <code>Properties</code> object for a #LoggerFactory
+		entry specified by *log4j.loggerFactory*.  If such an entry
 		exists, an attempt is made to create an instance using the default
 		constructor.  This instance is used for subsequent Logger creations
 		within this configurator.

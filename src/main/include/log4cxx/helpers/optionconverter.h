@@ -81,9 +81,9 @@ class LOG4CXX_EXPORT OptionConverter
 
 		<p>For example, if the System properties contains "key=value", then
 		the call
-		<pre>
-		String s = OptionConverter.substituteVars("Value of key is ${key}.");
-		</pre>
+		~~~{.cpp}
+		auto s = OptionConverter.substituteVars("Value of key is ${key}.");
+		~~~
 
 		will set the variable <code>s</code> to "Value of key is value.".
 
@@ -94,9 +94,9 @@ class LOG4CXX_EXPORT OptionConverter
 		<p>For example, if system propeties contains no value for the key
 		"inexistentKey", then the call
 
-		<pre>
-		String s = OptionConverter.subsVars("Value of inexistentKey is [${inexistentKey}]");
-		</pre>
+		~~~{.cpp}
+		auto s = OptionConverter.subsVars("Value of inexistentKey is [${inexistentKey}]");
+		~~~
 		will set <code>s</code> to "Value of inexistentKey is []"
 
 		<p>An IllegalArgumentException is thrown if

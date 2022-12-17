@@ -1,4 +1,4 @@
-Usage {#usage}
+Loggers, Appenders and Layouts {#usage}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -22,14 +22,12 @@ Usage {#usage}
 -->
 [TOC]
 
-# Loggers {#loggers}
-
 Log4cxx has three main components: *loggers*, *appenders* and *layouts*.
 These three types of components work together to enable developers to
 log messages according to message type and level, and to control at
 runtime how these messages are formatted and where they are reported.
 
-## Hierarchy {#hierarchy}
+# Hierarchy {#hierarchy}
 
 The first and foremost advantage of any logging API over plain
 `std::cout` resides in its ability to disable certain log statements
@@ -89,7 +87,7 @@ Some of the basic methods in the Logger class are listed below.
     #define LOG4CXX_FATAL(logger, expression) ...
 ~~~
 
-## Levels {#levels}
+# Levels {#levels}
 
 Loggers *may* be assigned levels. The pre-defined levels: TRACE, DEBUG,
 INFO, WARN, ERROR and FATAL are defined in the
@@ -162,7 +160,7 @@ In example 4, the loggers *root* and *X* and are assigned the levels
 their level value from their nearest parent *X* having an assigned
 level.
 
-## Requests {#requests}
+# Requests {#requests}
 
 Logging requests are made by invoking a method of a logger instance,
 preferrably through the use of LOG4CXX\_INFO or similar macros which
@@ -261,7 +259,7 @@ name the loggers as desired.
 Nevertheless, naming loggers after the class where they are located
 seems to be the best strategy known so far.
 
-# Appenders and Layouts {#appenders-and-layouts}
+# Appenders {#appenders}
 
 The ability to selectively enable or disable logging requests based on
 their logger is only part of the picture. Log4cxx allows logging
@@ -292,7 +290,7 @@ appender accumulation is no longer additive by
 
 The rules governing appender additivity are summarized below.
 
-## Appender Additivity {#additivity}
+## Additivity {#appender-additivity}
 
 The output of a log statement of logger *C* will go to all the appenders
 in *C* and its ancestors. This is the meaning of the term "appender
@@ -416,7 +414,24 @@ is invoked on the first call to the com::foo::getLogger() function
 and its destructor is automatically called during application exit.
 \include com/foo/config1.cpp
 
-## Request Formatting {#formatting}
+## Default Initialization {#default-initialization}
+
+The Log4cxx library does not make any assumptions about its environment.
+In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
+However the library will attempt automatic configuration.
+
+If the LoggerRepositoy is not yet configured on the first call to
+[getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
+the [configure](@ref log4cxx.DefaultConfigurator.configure) method
+of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
+via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
+of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
+
+To use automatic configuration with a non-standard file name
+create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
+A full example can be seen in the \ref UserLib/logmanager.cpp file.
+
+# Layouts {#layouts}
 
 The invocation of the
 [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure)
@@ -518,37 +533,6 @@ forwarded logging events to a remote Log4cxx server, which would log
 according to local server policy, for example by forwarding the log
 event to a second Log4cxx server.
 
-## Default Initialization {#default-initialization}
-
-The Log4cxx library does not make any assumptions about its environment.
-In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
-However the library will attempt automatic configuration.
-
-If the LoggerRepositoy is not yet configured on the first call to
-[getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
-the [configure](@ref log4cxx.DefaultConfigurator.configure) method
-of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
-via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
-of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
-
-To use automatic configuration with a non-standard file name
-create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
-A full example can be seen in the \ref UserLib/logmanager.cpp file.
-
-# Internal Debugging {#internal-debugging}
-
-Because Log4cxx is a logging library, we can't use it to output errors from
-the library itself.  There are several ways to activate internal logging:
-
-1. Configure the library directly by calling the
-[LogLog::setInternalDebugging](@ref log4cxx.helpers.LogLog.setInternalDebugging)
-method
-2. If using a properties file, set the value `log4j.debug=true` in your configuration file
-3. If using an XML file, set the attribute `internalDebug=true` in the root node
-4. From the environment: `LOG4CXX_DEBUG=true`
-
-All error and warning messages are sent to stderr.
-
 # Nested Diagnostic Contexts {#nested-diagnostic-contexts}
 
 Most real-world systems have to deal with multiple clients
@@ -616,93 +600,6 @@ and also depending on the software component issuing the request. Recent
 Log4cxx releases support multiple hierarchy trees. This enhancement
 allows each virtual host to possess its own copy of the logger
 hierarchy.
-
-# Performance {#performance}
-
-One of the often-cited arguments against logging is its computational
-cost. This is a legitimate concern as even moderately sized applications
-can generate thousands of log requests. Much effort was spent measuring
-and tweaking logging performance. Log4cxx claims to be fast and
-flexible: speed first, flexibility second.
-
-The user should be aware of the following performance issues.
-
-1.  **Logging performance when logging is turned off.**
-
-    The LOG4CXX\_DEBUG and similar macros have a
-    cost of an in-lined null pointer check plus an integer comparison
-    when the logger not currently enabled for that level.
-    The other terms inside the macro are not evaluated.
-
-    When the level is enabled for a logger but the logging hierarchy is turned off
-    entirely or just for a set of levels, the cost of a log request consists
-    of a method invocation plus an integer comparison.
-
-2.  **Actually outputting log messages**
-
-    This is the cost of formatting the log output and sending it to its
-    target destination. Here again, a serious effort was made to make
-    layouts (formatters) perform as quickly as possible. The same is
-    true for appenders.
-
-3.  **The cost of changing a logger's level.**
-
-    The threshold value stored in any child logger is updated.
-    This is done iterating over the map of all known logger objects
-    and walking the hierarchy of each.
-
-    There has been a serious effort to make this hierarchy walk to be as
-    fast as possible. For example, child loggers link only to their
-    existing ancestors. In the *BasicConfigurator* example shown
-    earlier, the logger named *com.foo.Bar* is linked directly to the
-    root logger, thereby circumventing the nonexistent *com* or
-    *com.foo* loggers. This significantly improves the speed of the
-    walk, especially in "sparse" hierarchies.
-
-## Removing log statements {#removing-log-statements}
-
-Sometimes, you may want to remove all log statements from your program,
-either for speed purposes or to remove sensitive information.  This can easily
-be accomplished at build-time when using the standard `LOG4CXX_[level]` macros
-(`LOG4CXX_TRACE`, `LOG4CXX_DEBUG`, `LOG4CXX_INFO`, `LOG4CXX_WARN`,
-`LOG4CXX_ERROR`, `LOG4CXX_FATAL`).
-
-Log statements can be removed either above a certain level, or they
-can be disabled entirely.
-
-For example, if we want to remove all log statements within our program
-that use the `LOG4CXX_[level]` family of macros, add a preprocessor
-definition `LOG4CXX_THRESHOLD` set to 50001
-or greater.  This will ensure that any log statement that uses the
-`LOG4CXX_[level]`-macro will be compiled out of the program.  To remove
-all log statements at `DEBUG` or below, set `LOG4CXX_THRESHOLD` to a
-value between 10001-20000.
-
-The levels are set as follows:
-
-|Logger Level|Integer Value|
-|------------|-------------|
-|TRACE       |5000         |
-|DEBUG       |10000        |
-|INFO        |20000        |
-|WARN        |30000        |
-|ERROR(1)    |40000        |
-|FATAL       |50000        |
-
-(1) The `LOG4CXX_ASSERT` macro is the same level as `LOG4CXX_ERROR`
-
-Note that this has no effect on other macros, such as using the
-`LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
-
-## Removing location information {#removing-location-information}
-
-Whenever you log a message with Log4cxx, metadata about the location of the
-logging statement is captured as well through the preprocessor.  This includes
-the file name, the method name, and the line number.  If you would not like to
-include this information in your build but you still wish to keep the log
-statements, define `LOG4CXX_DISABLE_LOCATION_INFO` in your build system.  This
-will allow log messages to still be created, but the location information
-will be invalid.
 
 # Logging Custom Types {#custom-types}
 
@@ -788,6 +685,107 @@ dropping the log message and not consulting any other filters.
 
 See the documentation for [Filter](@ref log4cxx.spi.Filter) for some more
 information, or view a [configuration sample](@ref configuration-samples).
+
+# Internal Debugging {#internal-debugging}
+
+Because Log4cxx is a logging library, we can't use it to output errors from
+the library itself.  There are several ways to activate internal logging:
+
+1. Configure the library directly by calling the
+[LogLog::setInternalDebugging](@ref log4cxx.helpers.LogLog.setInternalDebugging)
+method
+2. If using a properties file, set the value `log4j.debug=true` in your configuration file
+3. If using an XML file, set the attribute `internalDebug=true` in the root node
+4. From the environment: `LOG4CXX_DEBUG=true`
+
+All error and warning messages are sent to stderr.
+
+# Performance {#request-cost}
+
+One of the often-cited arguments against logging is its computational
+cost. This is a legitimate concern as even moderately sized applications
+can generate thousands of log requests. Much effort was spent measuring
+and tweaking logging performance. Log4cxx claims to be fast and
+flexible: speed first, flexibility second.
+
+The user should be aware of the following performance issues.
+
+1.  **Logging performance when logging is turned off.**
+
+    The LOG4CXX\_DEBUG and similar macros have a
+    cost of an in-lined null pointer check plus an integer comparison
+    when the logger not currently enabled for that level.
+    The other terms inside the macro are not evaluated.
+
+    When the level is enabled for a logger but the logging hierarchy is turned off
+    entirely or just for a set of levels, the cost of a log request consists
+    of a method invocation plus an integer comparison.
+
+2.  **Actually outputting log messages**
+
+    This is the cost of formatting the log output and sending it to its
+    target destination. Here again, a serious effort was made to make
+    layouts (formatters) perform as quickly as possible. The same is
+    true for appenders.
+
+3.  **The cost of changing a logger's level.**
+
+    The threshold value stored in any child logger is updated.
+    This is done iterating over the map of all known logger objects
+    and walking the hierarchy of each.
+
+    There has been a serious effort to make this hierarchy walk to be as
+    fast as possible. For example, child loggers link only to their
+    existing ancestors. In the *BasicConfigurator* example shown
+    earlier, the logger named *com.foo.Bar* is linked directly to the
+    root logger, thereby circumventing the nonexistent *com* or
+    *com.foo* loggers. This significantly improves the speed of the
+    walk, especially in "sparse" hierarchies.
+
+## Removing log statements {#removing-log-statements}
+
+Sometimes, you may want to remove all log statements from your program,
+either for speed purposes or to remove sensitive information.  This can easily
+be accomplished at build-time when using the standard `LOG4CXX_[level]` macros
+(`LOG4CXX_TRACE`, `LOG4CXX_DEBUG`, `LOG4CXX_INFO`, `LOG4CXX_WARN`,
+`LOG4CXX_ERROR`, `LOG4CXX_FATAL`).
+
+Log statements can be removed either above a certain level, or they
+can be disabled entirely.
+
+For example, if we want to remove all log statements within our program
+that use the `LOG4CXX_[level]` family of macros, add a preprocessor
+definition `LOG4CXX_THRESHOLD` set to 50001
+or greater.  This will ensure that any log statement that uses the
+`LOG4CXX_[level]`-macro will be compiled out of the program.  To remove
+all log statements at `DEBUG` or below, set `LOG4CXX_THRESHOLD` to a
+value between 10001-20000.
+
+The levels are set as follows:
+
+|Logger Level|Integer Value|
+|------------|-------------|
+|TRACE       |5000         |
+|DEBUG       |10000        |
+|INFO        |20000        |
+|WARN        |30000        |
+|ERROR(1)    |40000        |
+|FATAL       |50000        |
+
+(1) The `LOG4CXX_ASSERT` macro is the same level as `LOG4CXX_ERROR`
+
+Note that this has no effect on other macros, such as using the
+`LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
+
+## Removing location information {#removing-location-information}
+
+Whenever you log a message with Log4cxx, metadata about the location of the
+logging statement is captured as well through the preprocessor.  This includes
+the file name, the method name, and the line number.  If you would not like to
+include this information in your build but you still wish to keep the log
+statements, define `LOG4CXX_DISABLE_LOCATION_INFO` in your build system.  This
+will allow log messages to still be created, but the location information
+will be invalid.
 
 # Conclusions {#conclusions}
 

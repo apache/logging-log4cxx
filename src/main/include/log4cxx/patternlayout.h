@@ -57,10 +57,11 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  * <p>
  *  Let the conversion pattern be <strong>"%-5p [%t]: %m%n"</strong> and assume that the log4cxx
  *  environment was set to use a PatternLayout. Then the statements
- *  <pre>
- *      LoggerPtr root = Logger::getRoot();
+ *  ~~~{.cpp}
+ *      auto root = Logger::getRootLogger();
  *      root->debug("Message 1");
- *      root->warn("Message 2");</pre>
+ *      root->warn("Message 2");
+ * ~~~
  *  would yield the output
  *  <pre>
  *      DEBUG [main]: Message 1

@@ -441,7 +441,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 			props, prefix, Appender::getStaticClass(), 0);
 	appender = log4cxx::cast<Appender>( obj );
 
-	// Map obsolete DailyRollingFileAppender propertiy configuration
+	// Map obsolete DailyRollingFileAppender property configuration
 	if (!appender &&
 		StringHelper::endsWith(OptionConverter::findAndSubst(prefix, props), LOG4CXX_STR("DailyRollingFileAppender")))
 	{
