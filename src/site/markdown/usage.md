@@ -474,7 +474,7 @@ as the previous [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.co
 
     # A1 uses PatternLayout.
     log4j.appender.A1.layout=org.apache.log4j.PatternLayout
-    log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+    log4j.appender.A1.layout.ConversionPattern=%r [%t] %-5p %c %x - %m%n
 ~~~
 
 It can be noticed that the PropertyConfigurator file format is the same
