@@ -27,20 +27,20 @@ namespace net
 {
 
 /**
-Sends {@link log4cxx::spi::LoggingEvent LoggingEvent} objects in XML format
-        to a remote a log server, usually a XMLSocketNode.
+Sends LoggingEvent objects in XML format
+to a remote a log server, usually a XMLSocketNode.
 
 <p>The XMLSocketAppender has the following properties:
 
 - If sent to a XMLSocketNode, remote logging
-        is non-intrusive as far as the log event is concerned. In other
-words, the event will be logged with the same time stamp, {@link
-NDC NDC}, location info as if it were logged locally by
+is non-intrusive as far as the log event is concerned. In other
+words, the event will be logged with the same time stamp,
+NDC, location info as if it were logged locally by
 the client.
 
 - XMLSocketAppenders use exclusively an XMLLayout. They ship an
-XML stream representing a {@link spi::LoggingEvent LoggingEvent} object
-        to the server side.
+XML stream representing a LoggingEvent object
+to the server side.
 
 - Remote logging uses the TCP protocol. Consequently, if
 the server is reachable, then log events will eventually arrive

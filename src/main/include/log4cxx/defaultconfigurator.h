@@ -56,7 +56,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		or the environment variables "LOG4CXX_CONFIGURATION_WATCH_SECONDS" contains a positive number
 		a background thread is started that will periodically check for a change to the configuration file
 		and apply any configuration changes found.
-		.*/
+		*/
 		static void configure(spi::LoggerRepositoryPtr repository);
 
 		/**

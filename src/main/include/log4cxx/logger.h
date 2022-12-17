@@ -1280,7 +1280,7 @@ class LOG4CXX_EXPORT Logger :
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
 		@param locationInfo The location info of the logging request.
-		@param val1 The value for the first placeholder within the pattern.
+		@param val The value for the first placeholder within the pattern.
 
 		@see #setResourceBundle
 
@@ -1362,7 +1362,7 @@ class LOG4CXX_EXPORT Logger :
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
 		@param locationInfo The location info of the logging request.
-		@param val1 The value for the first placeholder within the pattern.
+		@param val The value for the first placeholder within the pattern.
 
 		@see #setResourceBundle
 

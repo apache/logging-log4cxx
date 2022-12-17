@@ -72,8 +72,8 @@ class LOG4CXX_EXPORT Layout :
 		object, then the layout should return <code>true</code>.
 
 		<p>The SimpleLayout, TTCCLayout,
-		PatternLayout all return <code>true</code>. The {@link
-		xml::XMLLayout XMLLayout} returns <code>false</code>.
+		PatternLayout all return <code>true</code>.
+		The {@link xml::XMLLayout XMLLayout} returns <code>false</code>.
 		*/
 		virtual bool ignoresThrowable() const = 0;
 };

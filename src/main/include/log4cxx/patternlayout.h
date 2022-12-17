@@ -32,7 +32,7 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  * A flexible layout configurable with pattern string.
  *
  * <p>
- *  The goal of this class is to #format a {@link spi::LoggingEvent LoggingEvent} and
+ *  The goal of this class is to format a {@link spi::LoggingEvent LoggingEvent} and
  *  return the results as a string. The results depend on the <em>conversion pattern</em>.
  * </p>
  *

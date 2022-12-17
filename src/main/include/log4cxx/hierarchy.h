@@ -196,7 +196,7 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		Shutting down a hierarchy will <em>safely</em> close and remove
 		all appenders in all categories including the root logger.
 
-		<p>Some appenders such as {@link net::SocketAppender SocketAppender}
+		<p>Some appenders such as {@link net::XMLSocketAppender XMLSocketAppender}
 		and AsyncAppender need to be closed before the
 		application exists. Otherwise, pending logging events might be
 		lost.

@@ -49,8 +49,10 @@ class LOG4CXX_EXPORT PropertiesPatternConverter
 		END_LOG4CXX_CAST_MAP()
 
 		/**
-		 * @param options options, may be null.
-		 * @param logger logger for diagnostic messages, may be null.
+		 * A Property bundle converter.
+		 *
+		 * @param name of the converter.
+		 * @param option may be null.
 		 */
 		PropertiesPatternConverter(const LogString& name, const LogString& option);
 

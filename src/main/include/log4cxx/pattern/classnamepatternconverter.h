@@ -38,7 +38,6 @@ class LOG4CXX_EXPORT ClassNamePatternConverter : public NamePatternConverter
 	public:
 		/**
 		 * @param options options, may be null.
-		 * @param logger logger for diagnostic messages, may be null.
 		 */
 		ClassNamePatternConverter(const std::vector<LogString>& options);
 
