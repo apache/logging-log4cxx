@@ -40,7 +40,7 @@ statements, is categorized according to some developer-chosen criteria.
 Loggers are named entities. Logger names are case-sensitive and they
 follow the hierarchical naming rule:
 
-**Named Hierarchy**
+## Named Hierarchy {#named-hierarchy}
 
 A logger is said to be an *ancestor* of another logger if its name
 followed by a dot is a prefix of the *descendant* logger name. A logger
@@ -98,7 +98,7 @@ log4cxx::Level class which provides accessor functions.
 If a given logger is not assigned a level, then it inherits one from its
 closest ancestor with an assigned level. More formally:
 
-**Level Inheritance**
+## Level Inheritance {#level-inheritance}
 
 The *inherited level* for a given logger *C*, is equal to the first
 non-null level in the logger hierarchy, starting at *C* and proceeding
