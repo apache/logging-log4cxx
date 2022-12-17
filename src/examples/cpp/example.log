@@ -1,9 +1,0 @@
-INFO 0x00004780 MyApp - Entering application.
-DEBUG 0x00004780 com.foo.bar - Did it again!
-INFO 0x00004780 MyApp - Exiting application.
-INFO 0x00001d14 MyApp - Entering application.
-DEBUG 0x00001d14 com.foo.bar - Did it again!
-INFO 0x00001d14 MyApp - Exiting application.
-INFO 0x0000077c MyApp - Entering application.
-DEBUG 0x0000077c com.foo.bar - Did it again!
-INFO 0x0000077c MyApp - Exiting application.
