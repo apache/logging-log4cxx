@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "UserLib/logmanager.h"
+#include "com/foo/config.h"
 
-extern auto rootLogger = UserLib::getLogger();
+extern auto rootLogger = com::foo::getLogger();
 
 static struct ExampleStaticData {
 	ExampleStaticData()	{

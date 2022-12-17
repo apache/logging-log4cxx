@@ -953,11 +953,12 @@ class LOG4CXX_EXPORT Logger :
 		 *  Is this logger is enabled for <code>DEBUG</code> level logging events?
 		 *
 		 *  <p>By writing
-		 *  <pre>
-		 *    if(logger->isDebugEnabled()) {
+		 *  ~~~{.cpp}
+		 *  if(logger->isDebugEnabled()) {
 		 *      logger->debug("Component: " + std::to_string(componentNumber));
 		 *    }
-		 *  </pre>you will not incur the cost of parameter construction
+		 *  ~~~
+		 *  you will not incur the cost of parameter construction
 		 *  (integer to string conversion plus string concatonation in this case)
 		 *  if debugging is disabled for <code>logger</code>.
 		 *  You avoid the cost constructing the message
@@ -965,9 +966,9 @@ class LOG4CXX_EXPORT Logger :
 		 *
 		 *  <p>This function allows you to reduce the computational cost of
 		 *  disabled log debug statements compared to writing:
-		 *  <pre>
+		 *  ~~~{.cpp}
 		 *      logger->debug("Component: " + std::to_string(componentNumber));
-		 *  </pre>
+		 *  ~~~
 		 *
 		 *  <p>On the other hand, if the <code>logger</code> is enabled for <code>DEBUG</code> logging events,
 		 *  you will incur the cost of evaluating whether the logger is
@@ -988,11 +989,12 @@ class LOG4CXX_EXPORT Logger :
 		 *  Is \c logger is enabled for <code>DEBUG</code> level logging events?
 		 *
 		 *  <p>By writing
-		 *  <pre>
+		 *  ~~~{.cpp}
 		 *    if(log4cxx::Logger::isDebugEnabledFor(logger)) {
 		 *      logger->forcedLog(log4cxx::Level::getDebug(), "Component: " + std::to_string(componentNumber));
 		 *    }
-		 *  </pre>you minimise the computational cost
+		 *  ~~~
+		 *  you minimise the computational cost
 		 *  when \c logger is not enabled for <code>DEBUG</code> logging events.
 		 *  This function may be inlined thereby avoiding a function call
 		 *  as well as the cost constructing the message
@@ -1278,7 +1280,7 @@ class LOG4CXX_EXPORT Logger :
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
 		@param locationInfo The location info of the logging request.
-		@param val1 The value for the first placeholder within the pattern.
+		@param val The value for the first placeholder within the pattern.
 
 		@see #setResourceBundle
 
@@ -1360,7 +1362,7 @@ class LOG4CXX_EXPORT Logger :
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
 		@param locationInfo The location info of the logging request.
-		@param val1 The value for the first placeholder within the pattern.
+		@param val The value for the first placeholder within the pattern.
 
 		@see #setResourceBundle
 
@@ -1642,7 +1644,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Set the level of this logger.
 
-		<p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::getDebug()); </pre>
+		<p>As in <code>logger->setLevel(Level::getDebug());</code>
 
 		<p>Null values are admitted.  */
 		virtual void setLevel(const LevelPtr level);
@@ -1957,7 +1959,7 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 
 
 /**
-Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events..
+Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
 
 @param logger the logger to be used.
 @param level the level to log.
@@ -1980,7 +1982,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 			logger->forcedLog(level, fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events..
+Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
 
 @param logger the logger to be used.
 @param level the level to log.
@@ -1999,7 +2001,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param message a valid r-value expression of an <code>operator<<(std::basic::ostream&. ...)</code> overload.
 
 <p>Example:
-<pre>
+~~~{.cpp}
 LOG4CXX_DEBUG(m_log, "AddMesh:"
 	<< " name " << meshName
 	<< " type 0x" << std:: hex << traits.Type
@@ -2008,7 +2010,7 @@ LOG4CXX_DEBUG(m_log, "AddMesh:"
 	<< " at " << obj->getBoundingBox().getCenter()
 	<< " +/- " << obj->getBoundingBox().getHalfSize()
 	);
-</pre>
+~~~
 */
 #define LOG4CXX_DEBUG(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isDebugEnabledFor(logger))) {\
@@ -2037,9 +2039,9 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param message a valid r-value expression of an <code>operator<<(std::basic::ostream&. ...)</code> overload.
 
 <p>Example:
-<pre>
+~~~{.cpp}
     LOG4CXX_TRACE(m_log, "AddVertex:" << " p " << p[j] << " n " << n << ' ' << color);
-</pre>
+~~~
 
 */
 #define LOG4CXX_TRACE(logger, message) do { \
@@ -2069,14 +2071,14 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param message a valid r-value expression of an <code>operator<<(std::basic::ostream&. ...)</code> overload.
 
 <p>Example:
-<pre>
+~~~{.cpp}
 LOG4CXX_INFO(m_log, surface->GetName()
 	<< " successfully planned " << std::fixed << std::setprecision(1) << ((plannedArea  / (plannedArea + unplannedArea)) * 100.0) << "%"
 	<< " planned area " << std::fixed << std::setprecision(4) << plannedArea << "m^2"
 	<< " unplanned area " << unplannedArea << "m^2"
 	<< " planned segments " << surface->GetSegmentPlanCount() << " of " << surface->GetSegmentCount()
 	);
-</pre>
+~~~
 */
 #define LOG4CXX_INFO(logger, message) do { \
 		if (::log4cxx::Logger::isInfoEnabledFor(logger)) {\
@@ -2105,12 +2107,12 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param message the message string to log.
 
 <p>Example:
-<pre>
+~~~{.cpp}
 catch (const std::exception& ex)
 {
     LOG4CXX_WARN(m_log, ex.what() << ": in " << m_task->GetParamFilePath());
 }
-</pre>
+~~~
 */
 #define LOG4CXX_WARN(logger, message) do { \
 		if (::log4cxx::Logger::isWarnEnabledFor(logger)) {\
@@ -2139,12 +2141,12 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param message the message string to log.
 
 <p>Example:
-<pre>
+~~~{.cpp}
 catch (std::exception& ex)
 {
 	LOG4CXX_ERROR(m_log, ex.what() << " in AddScanData");
 }
-</pre>
+~~~
 */
 #define LOG4CXX_ERROR(logger, message) do { \
 		if (::log4cxx::Logger::isErrorEnabledFor(logger)) {\
@@ -2199,9 +2201,9 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param message the message string to log.
 
 <p>Example:
-<pre>
+~~~{.cpp}
 LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
-</pre>
+~~~
 */
 #define LOG4CXX_FATAL(logger, message) do { \
 		if (::log4cxx::Logger::isFatalEnabledFor(logger)) {\

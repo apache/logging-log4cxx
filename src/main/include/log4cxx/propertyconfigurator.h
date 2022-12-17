@@ -47,9 +47,8 @@ typedef std::shared_ptr<LoggerFactory> LoggerFactoryPtr;
 
 class PropertyWatchdog;
 /**
-Allows the configuration of log4cxx from an external file.  See
-<b>{@link #doConfigure(const File&, log4cxx::spi::LoggerRepositoryPtr&)}</b>
-for the expected format.
+Allows the configuration of log4cxx from an external file.
+See {@link PropertyConfigurator#doConfigure doConfigure} for the expected format.
 
 <p>It is sometimes useful to see how log4cxx is reading configuration
 files. You can enable log4cxx internal logging by defining the
@@ -59,16 +58,15 @@ files. You can enable log4cxx internal logging by defining the
 the file <b>log4j.properties</b> will be searched in the current directory.
 If the file can be found, then it will
 be fed to the
-{@link PropertyConfigurator#configure(const File& configFilename)}
+{@link PropertyConfigurator#configure(const File& configFilename) configure}
 method.
 
 <p>The <code>PropertyConfigurator</code> does not handle the
-advanced configuration features supported by the {@link
-xml::DOMConfigurator DOMConfigurator} such as
+advanced configuration features supported by the
+{@link xml::DOMConfigurator DOMConfigurator} such as
 support for {@link spi::Filter Filters}, custom
 {@link spi::ErrorHandler ErrorHandlers}, nested
-appenders such as the {@link AsyncAppender
-AsyncAppender}, etc.
+appenders such as the {@link AsyncAppender AsyncAppender}, etc.
 
 <p>All option <em>values</em> admit variable substitution. The
 syntax of variable substitution is similar to that of Unix
@@ -317,14 +315,14 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 
 		/**
 		Read configuration options from <code>properties</code>.
-		See #doConfigure(const File&, log4cxx::spi::LoggerRepositoryPtr&)
+		See {@link PropertyConfigurator#doConfigure doConfigure}
 		for the expected format.
 		*/
 		static void configure(helpers::Properties& properties);
 
 		/**
 		Read configuration options from <code>properties</code>.
-		See #doConfigure(const File&, log4cxx::spi::LoggerRepositoryPtr&)
+		See {@link PropertyConfigurator#doConfigure doConfigure}
 		for the expected format.
 		*/
 		void doConfigure(helpers::Properties& properties,
@@ -335,9 +333,8 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		// --------------------------------------------------------------------------
 	protected:
 		/**
-		Check the provided <code>Properties</code> object for a
-		#loggerFactory
-		entry specified by LOGGER_FACTORY_KEY.  If such an entry
+		Check the provided <code>Properties</code> object for a LoggerFactory
+		entry specified by *log4j.loggerFactory*.  If such an entry
 		exists, an attempt is made to create an instance using the default
 		constructor.  This instance is used for subsequent Logger creations
 		within this configurator.

@@ -30,15 +30,15 @@ namespace filter
 /**
    This is a very simple filter based on logger name matching.
 
-   <p>The filter admits two options <b>LoggerToMatch</b> and
-   <b>AcceptOnMatch</b>. If there is an exact match between the value
-   of the <b>LoggerToMatch</b> option and the logger of the {@link
-                spi::LoggingEvent LoggingEvent}, then the #decide method returns  {@link
-                spi::Filter#ACCEPT ACCEPT} in case the <b>AcceptOnMatch</b> option value is set
-   to <code>true</code>, if it is <code>false</code> then {@link
-   spi::Filter#DENY} is returned. If there is no match, {@link
-   spi::Filter#NEUTRAL} is returned.  A loggerToMatch of "root"
-   matches both the root logger and a logger named "root".
+   <p>The filter admits two options <code>loggerToMatch</code> and
+   <code>acceptOnMatch</code>. If there is an exact match between the value
+   of the <code>loggerToMatch</code> option and the logger of the
+   {@link spi::LoggingEvent LoggingEvent}, then the #decide method returns
+   {@link spi::Filter#ACCEPT ACCEPT} in case the <code>acceptOnMatch</code> option value is set
+   to <code>true</code>, if it is <code>false</code> then
+   {@link spi::Filter#DENY} is returned. If there is no match,
+   {@link spi::Filter#NEUTRAL} is returned.
+   A loggerToMatch of "root" matches both the root logger and a logger named "root".
 
    */
 
@@ -75,12 +75,12 @@ class LOG4CXX_EXPORT LoggerMatchFilter : public spi::Filter
 		Return the decision of this filter.
 
 		Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
-		<b>LoggerToMatch</b> option is not set or if there is not match.
+		<code>loggerToMatch</code> option is not set or if there is not match.
 		Otherwise, if there is a match, then the returned decision is
-		{@link spi::Filter#ACCEPT ACCEPT} if the <b>AcceptOnMatch</b>
+		{@link spi::Filter#ACCEPT ACCEPT} if the <code>acceptOnMatch</code>
 		property is set to <code>true</code>. The returned decision is
 		{@link spi::Filter#DENY DENY} if the
-		<b>AcceptOnMatch</b> property is set to false.
+		<code>acceptOnMatch</code> property is set to false.
 		*/
 		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 }; // class LoggerMatchFilter

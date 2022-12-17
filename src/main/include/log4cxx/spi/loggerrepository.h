@@ -78,9 +78,10 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		virtual void emitNoAppenderWarning(const Logger* logger) = 0;
 
 		/**
-		Get the repository-wide threshold. See {@link
-		#setThreshold(const LevelPtr&) setThreshold}
-		            for an explanation. */
+		Get the repository-wide threshold.
+
+		See setThreshold for an explanation.
+		*/
 		virtual LevelPtr getThreshold() const = 0;
 
 		virtual LoggerPtr getLogger(const LogString& name) = 0;

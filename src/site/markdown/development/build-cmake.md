@@ -43,19 +43,19 @@ $ sudo make install
 
 Windows Example:
 Building and testing Log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
-extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%\Libraries.
+extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%/Libraries.
 
 ~~~
-$ cd %HOMEPATH%\Libraries
-$ cmake -S libexpat\expat -B buildtrees\expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
-$ cmake --build buildtrees\expat --target install --config Release
-$ cmake -S apr-1.7.0 -B buildtrees\apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
-$ cmake --build buildtrees\apr --target install --config Release
-$ set CMAKE_PREFIX_PATH=%HOMEPATH%\Libraries\installed
-$ cmake -S apr-util-1.6.1 -B buildtrees\apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
-$ cmake --build buildtrees\apr-util --target install --config Release
-$ cmake -S apache-Log4cxx-x.x.x -B buildtrees\Log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
-$ cmake --build buildtrees\Log4cxx --target install --config Release
+$ cd %HOMEPATH%/Libraries
+$ cmake -S libexpat/expat -B buildtrees/expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+$ cmake --build buildtrees/expat --target install --config Release
+$ cmake -S apr-1.7.0 -B buildtrees/apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+$ cmake --build buildtrees/apr --target install --config Release
+$ set CMAKE_PREFIX_PATH=%HOMEPATH%/Libraries/installed
+$ cmake -S apr-util-1.6.1 -B buildtrees/apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+$ cmake --build buildtrees/apr-util --target install --config Release
+$ cmake -S apache-Log4cxx-x.x.x -B buildtrees/Log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+$ cmake --build buildtrees/Log4cxx --target install --config Release
 ~~~
 
 ## ccmake options
@@ -136,7 +136,7 @@ The easiest way to get dependencies installed is to use vcpkg(for APR/expat), an
 utilities(zip, grep, sed).
 
 Msys2 can be downloaded from: https://www.msys2.org/
-By default, this will be installed under C:\msys2, so you can add that to the build PATH by setting
+By default, this will be installed under C:\\msys2, so you can add that to the build PATH by setting
 LOG4CXX_TEST_PROGRAM_PATH=C:/msys64/usr/bin in your build settings.
 
 For vcpkg, follow the directions at https://github.com/microsoft/vcpkg#quick-start-windows and then install

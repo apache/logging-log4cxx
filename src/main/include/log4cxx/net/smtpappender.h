@@ -111,8 +111,8 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 
 
 		/**
-		The <code>SMTPAppender</code> requires a {@link
-		Layout layout}.  */
+		The <code>SMTPAppender</code> requires a <code>Layout</code>.
+		*/
 		bool requiresLayout() const override;
 
 		/**

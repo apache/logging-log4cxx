@@ -62,8 +62,7 @@ event is logged without consulting the remaining filters.
 <p>The philosophy of log4cxx filters is largely inspired from the
 Linux ipchains.
 
-<p>Note that filtering is only supported by the {@link
-xml::DOMConfigurator DOMConfigurator}.
+<p>Note that filtering is only supported by the DOMConfigurator.
 */
 class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 {

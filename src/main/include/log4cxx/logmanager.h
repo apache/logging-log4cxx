@@ -54,14 +54,14 @@ class LOG4CXX_EXPORT LogManager
 
 		<p>Initally the guard is null.  If the guard is
 		<code>null</code>, then invoking this method sets the logger
-		factory and the guard. Following invocations will throw a {@link
-		helpers::IllegalArgumentException IllegalArgumentException},
+		factory and the guard. Following invocations will throw a
+		{@link helpers::IllegalArgumentException IllegalArgumentException},
 		unless the previously set \c guard is passed as the second
 		parameter.
 
-		<p>This allows a high-level component to set the {@link
-		spi::RepositorySelector RepositorySelector} used by the
-		LogManager.
+		<p>This allows a high-level component to set the
+		{@link spi::RepositorySelector RepositorySelector}
+		used by the LogManager.
 		*/
 
 		static void setRepositorySelector(spi::RepositorySelectorPtr selector,
@@ -218,8 +218,9 @@ class LOG4CXX_EXPORT LogManager
 		static void shutdown();
 
 		/**
-		Reset all values contained in this current {@link
-		spi::LoggerRepository LoggerRepository}  to their default.
+		Reset all values contained in this current
+		{@link spi::LoggerRepository LoggerRepository}61
+		to their default.
 		*/
 		static void resetConfiguration();
 }; // class LogManager

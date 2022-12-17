@@ -29,26 +29,25 @@ namespace filter
 This is a very simple filter based on level matching, which can be
 used to reject messages with priorities outside a certain range.
 
-<p>The filter admits three options <b>LevelMin</b>, <b>LevelMax</b>
-and <b>AcceptOnMatch</b>.
+<p>The filter admits three options <code>levelMin</code>, <code>levelMax</code>
+and <code>acceptOnMatch</code>.
 
 <p>If the level of the {@link spi::LoggingEvent LoggingEvent} is not
 between Min and Max (inclusive), then {@link spi::Filter#DENY DENY}
 is returned.
 
 <p> If the Logging event level is within the specified range, then if
-<b>AcceptOnMatch</b> is true, {@link spi::Filter#ACCEPT ACCEPT} is
-returned, and if <b>AcceptOnMatch</b> is false,
+<code>acceptOnMatch</code> is true, {@link spi::Filter#ACCEPT ACCEPT} is
+returned, and if <code>acceptOnMatch</code> is false,
 {@link spi::Filter#NEUTRAL NEUTRAL} is returned.
 
-<p>If <code>LevelMin</code>w is not defined, then there is no
+<p>If <code>levelMin</code>w is not defined, then there is no
 minimum acceptable level (ie a level is never rejected for
-being too "low"/unimportant).  If <code>LevelMax</code> is not
+being too "low"/unimportant).  If <code>levelMax</code> is not
 defined, then there is no maximum acceptable level (ie a
 level is never rejected for beeing too "high"/important).
 
-<p>Refer to the {@link
-AppenderSkeleton#setThreshold setThreshold} method
+<p>Refer to the {@link AppenderSkeleton#setThreshold setThreshold} method
 available to <code>all</code> appenders extending
 AppenderSkeleton for a more convenient way to
 filter out events by level.
@@ -76,32 +75,32 @@ class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
-		Set the <code>LevelMin</code> option.
+		Set the <code>levelMin</code> option.
 		*/
 		void setLevelMin(const LevelPtr& levelMin1);
 
 		/**
-		Get the value of the <code>LevelMin</code> option.
+		Get the value of the <code>levelMin</code> option.
 		*/
 		const LevelPtr& getLevelMin() const;
 
 		/**
-		Set the <code>LevelMax</code> option.
+		Set the <code>levelMax</code> option.
 		*/
 		void setLevelMax(const LevelPtr& levelMax1);
 
 		/**
-		Get the value of the <code>LevelMax</code> option.
+		Get the value of the <code>levelMax</code> option.
 		*/
 		const LevelPtr& getLevelMax() const;
 
 		/**
-		Set the <code>AcceptOnMatch</code> option.
+		Set the <code>acceptOnMatch</code> option.
 		*/
 		void setAcceptOnMatch(bool acceptOnMatch1);
 
 		/**
-		Get the value of the <code>AcceptOnMatch</code> option.
+		Get the value of the <code>acceptOnMatch</code> option.
 		*/
 		bool getAcceptOnMatch() const;
 
@@ -109,12 +108,12 @@ class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		Return the decision of this filter.
 
 		Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
-		<b>LevelToMatch</b> option is not set or if there is not match.
+		<code>levelToMatch</code> option is not set or if there is not match.
 		Otherwise, if there is a match, then the returned decision is
 		{@link spi::Filter#ACCEPT ACCEPT} if the
-		<b>AcceptOnMatch</b> property is set to <code>true</code>. The
+		<code>acceptOnMatch</code> property is set to <code>true</code>. The
 		returned decision is {@link spi::Filter#DENY DENY} if the
-		<b>AcceptOnMatch</b> property is set to false.
+		<code>acceptOnMatch</code> property is set to false.
 		*/
 		FilterDecision decide(const spi::LoggingEventPtr& event) const override;
 }; // class LevelRangeFilter
