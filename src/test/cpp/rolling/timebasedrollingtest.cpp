@@ -18,6 +18,7 @@
 #include <vector>
 
 #include <log4cxx/rolling/rollingfileappender.h>
+#include <log4cxx/basicconfigurator.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/logmanager.h>
@@ -85,8 +86,8 @@ LOGUNIT_CLASS(TimeBasedRollingTest)
 	LOGUNIT_TEST_SUITE_END();
 
 private:
-	static	LoggerPtr		logger;
-			log4cxx_time_t	current_time;
+			LoggerPtr      logger;
+			log4cxx_time_t current_time;
 
 	/**
 	 * Build file names with timestamps.
@@ -370,14 +371,12 @@ public:
 
 	void setUp()
 	{
-		LoggerPtr root(Logger::getRootLogger());
-		root->addAppender(
-			ConsoleAppenderPtr(new ConsoleAppender(
-					PatternLayoutPtr(new PatternLayout(
-							LOG4CXX_STR("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n"))))));
-
+		BasicConfigurator::configure(std::make_shared<PatternLayout> (
+			LOG4CXX_STR("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n")
+		));
+		this->logger = LogManager::getLogger("org.apache.log4j.TimeBasedRollingTest");
 		this->setUpCurrTime();
-		log4cxx::helpers::Date::setGetCurrentTimeFunction( std::bind( &TimeBasedRollingTest::currentTime, this ) );
+		helpers::Date::setGetCurrentTimeFunction( std::bind( &TimeBasedRollingTest::currentTime, this ) );
 	}
 
 	void tearDown()
@@ -682,7 +681,5 @@ public:
 	}
 
 };
-
-LoggerPtr TimeBasedRollingTest::logger(Logger::getLogger("org.apache.log4j.TimeBasedRollingTest"));
 
 LOGUNIT_TEST_SUITE_REGISTRATION(TimeBasedRollingTest);
