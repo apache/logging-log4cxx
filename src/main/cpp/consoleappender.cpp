@@ -45,19 +45,20 @@ ConsoleAppender::ConsoleAppender()
 {
 }
 
-ConsoleAppender::ConsoleAppender(const LayoutPtr& layout1)
+ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
 	: WriterAppender (std::make_unique<ConsoleAppenderPriv>(getSystemOut()))
 {
-	setLayout(layout1);
+	setLayout(layout);
 	Pool p;
 	setWriter(std::make_shared<SystemOutWriter>());
 	WriterAppender::activateOptions(p);
 }
 
-ConsoleAppender::ConsoleAppender(const LayoutPtr& layout1, const LogString& target1)
-	: WriterAppender (std::make_unique<ConsoleAppenderPriv>(getSystemOut()))
+ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& target)
+	: WriterAppender (std::make_unique<ConsoleAppenderPriv>(target))
 {
-	setLayout(layout1);
+	setLayout(layout);
+	setTarget(target);
 	Pool p;
 	ConsoleAppender::activateOptions(p);
 }
