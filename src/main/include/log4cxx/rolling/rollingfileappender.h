@@ -158,19 +158,38 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		bool rolloverInternal(log4cxx::helpers::Pool& p);
 
 	public:
+		/**
+		 Does this have a scheme for rolling over log files?
+		*/
+		bool hasRollingPolicy() const;
 
+		/**
+		 Does this have a basis for triggering log file rollover?
+		*/
+		bool hasTriggeringPolicy() const;
+
+		/**
+		 * The policy that implements the scheme for rolling over a log file.
+		 */
 		RollingPolicyPtr getRollingPolicy() const;
 
+		/**
+		 * The policy that determine when to trigger a log file rollover.
+		 */
 		TriggeringPolicyPtr getTriggeringPolicy() const;
 
 		/**
-		 * Sets the rolling policy. In case the 'policy' argument also implements
-		 * {@link TriggeringPolicy}, then the triggering policy for this appender
-		 * is automatically set to be the policy argument.
-		 * @param policy
+		 * Use \c policy as the scheme for rolling over log files.
+		 *
+		 * Where the \c policy also implements
+		 * {@link TriggeringPolicy}, then \c policy
+		 * will be used to determine when to trigger a log file rollover.
 		 */
 		void setRollingPolicy(const RollingPolicyPtr& policy);
 
+		/**
+		 * Use \c policy to determine when to trigger a log file rollover.
+		 */
 		void setTriggeringPolicy(const TriggeringPolicyPtr& policy);
 
 	public:

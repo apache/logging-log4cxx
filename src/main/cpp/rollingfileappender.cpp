@@ -482,8 +482,15 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 }
 
 /**
- * Get rolling policy.
- * @return rolling policy.
+ Does this have a scheme for rolling over log files?
+*/
+bool RollingFileAppender::hasRollingPolicy() const
+{
+	return !!_priv->rollingPolicy;
+}
+
+/**
+ * TThe policy that implements the scheme for rolling over a log file.
  */
 RollingPolicyPtr RollingFileAppender::getRollingPolicy() const
 {
@@ -491,8 +498,15 @@ RollingPolicyPtr RollingFileAppender::getRollingPolicy() const
 }
 
 /**
- * Get triggering policy.
- * @return triggering policy.
+ Does this have a basis for triggering log file rollover?
+*/
+bool RollingFileAppender::hasTriggeringPolicy() const
+{
+	return !!_priv->triggeringPolicy;
+}
+
+/**
+ * The policy that determine when to trigger a log file rollover.
  */
 TriggeringPolicyPtr RollingFileAppender::getTriggeringPolicy() const
 {
@@ -500,8 +514,7 @@ TriggeringPolicyPtr RollingFileAppender::getTriggeringPolicy() const
 }
 
 /**
- * Sets the rolling policy.
- * @param policy rolling policy.
+ * Set the scheme for rolling over log files.
  */
 void RollingFileAppender::setRollingPolicy(const RollingPolicyPtr& policy)
 {
@@ -509,8 +522,7 @@ void RollingFileAppender::setRollingPolicy(const RollingPolicyPtr& policy)
 }
 
 /**
- * Set triggering policy.
- * @param policy triggering policy.
+ * Set policy that determine when to trigger a log file rollover.
  */
 void RollingFileAppender::setTriggeringPolicy(const TriggeringPolicyPtr& policy)
 {
