@@ -1,4 +1,4 @@
-Usage {#usage-overview}
+Macros Influencing Log4cxx {#macros-influencing-log4cxx}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,16 +21,15 @@ Usage {#usage-overview}
  limitations under the License.
 -->
 
-See the following pages for usage information:
+# Macros that influence Log4cxx
 
-* @subpage usage
-* @subpage threading
-* @subpage extending-log4cxx
-* @subpage faq
-* @subpage configuration-samples
-* @subpage qt-support
-* @subpage performance
-* @subpage map-filter
-* @subpage multiprocess-logging
-* @subpage environment-variables
-* @subpage macros-influencing-log4cxx
+The following macros can be defined in client code to influence how log messages
+are set or not.
+
+These macros may be set on a per-file basis(in which case they must be before any
+Log4cxx includes), or they may be set globally via your build system.
+
+| Macro | Usage |
+| ----- | ----- |
+| LOG4CXX\_THRESHOLD | Used to determine if log messages are compiled in or not.  A higher value causes more messages to be compiled out.  See [removing log statements](usage.html#removing-log-statements) for more information. |
+| LOG4CXX\_DISABLE\_LOCATION\_INFO | Define this macro to disable location information on log statements.  Location information includes the filename, class name, method name, and line number |
