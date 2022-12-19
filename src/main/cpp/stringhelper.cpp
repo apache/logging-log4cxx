@@ -124,7 +124,7 @@ int StringHelper::toInt(const LogString& s)
 	return atoi(as.c_str());
 }
 
-log4cxx_int64_t StringHelper::toInt64(const LogString& s)
+int64_t StringHelper::toInt64(const LogString& s)
 {
 	std::string as;
 	Transcoder::encode(s, as);
@@ -150,7 +150,7 @@ void StringHelper::toString(bool val, LogString& dst)
 }
 
 
-void StringHelper::toString(log4cxx_int64_t n, Pool& pool, LogString& dst)
+void StringHelper::toString(int64_t n, Pool& pool, LogString& dst)
 {
 	if (n >= INT_MIN && n <= INT_MAX)
 	{
@@ -158,7 +158,7 @@ void StringHelper::toString(log4cxx_int64_t n, Pool& pool, LogString& dst)
 	}
 	else
 	{
-		const log4cxx_int64_t BILLION = APR_INT64_C(1000000000);
+		const int64_t BILLION = APR_INT64_C(1000000000);
 		int billions = (int) (n / BILLION);
 		char* upper = pool.itoa(billions);
 		int remain = (int) (n - billions * BILLION);
@@ -178,7 +178,7 @@ void StringHelper::toString(log4cxx_int64_t n, Pool& pool, LogString& dst)
 
 void StringHelper::toString(size_t n, Pool& pool, LogString& s)
 {
-	toString((log4cxx_int64_t) n, pool, s);
+	toString((int64_t) n, pool, s);
 }
 
 LogString StringHelper::format(const LogString& pattern, const std::vector<LogString>& params)
