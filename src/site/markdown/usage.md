@@ -27,7 +27,7 @@ These three types of components work together to enable developers to
 log messages according to message type and level, and to control at
 runtime how these messages are formatted and where they are reported.
 
-# Hierarchy {#hierarchy}
+# Loggers {#loggers}
 
 The first and foremost advantage of any logging API over plain
 `std::cout` resides in its ability to disable certain log statements
@@ -38,7 +38,7 @@ statements, is categorized according to some developer-chosen criteria.
 Loggers are named entities. Logger names are case-sensitive and they
 follow the hierarchical naming rule:
 
-## Named Hierarchy {#named-hierarchy}
+## Hierarchy {#hierarchy}
 
 A logger is said to be an *ancestor* of another logger if its name
 followed by a dot is a prefix of the *descendant* logger name. A logger
@@ -87,7 +87,7 @@ Some of the basic methods in the Logger class are listed below.
     #define LOG4CXX_FATAL(logger, expression) ...
 ~~~
 
-# Levels {#levels}
+## Levels {#levels}
 
 Loggers *may* be assigned levels. The pre-defined levels: TRACE, DEBUG,
 INFO, WARN, ERROR and FATAL are defined in the
@@ -96,7 +96,7 @@ log4cxx::Level class which provides accessor functions.
 If a given logger is not assigned a level, then it inherits one from its
 closest ancestor with an assigned level. More formally:
 
-## Level Inheritance {#level-inheritance}
+### Level Inheritance {#level-inheritance}
 
 The *inherited level* for a given logger *C*, is equal to the first
 non-null level in the logger hierarchy, starting at *C* and proceeding
@@ -160,7 +160,7 @@ In example 4, the loggers *root* and *X* and are assigned the levels
 their level value from their nearest parent *X* having an assigned
 level.
 
-# Requests {#requests}
+## Requests {#requests}
 
 Logging requests are made by invoking a method of a logger instance,
 preferrably through the use of LOG4CXX\_INFO or similar macros which
@@ -262,25 +262,34 @@ seems to be the best strategy known so far.
 # Appenders {#appenders}
 
 The ability to selectively enable or disable logging requests based on
-their logger is only part of the picture. Log4cxx allows logging
-requests to print to multiple destinations. In Log4cxx speak, an output
-destination is called an *appender*. Currently, appenders exist for the
-[console](@ref log4cxx.ConsoleAppender), [files](@ref log4cxx.FileAppender),
-GUI components, [remote socket](@ref log4cxx.net.XMLSocketAppender)
-servers, [NT Event Loggers](@ref log4cxx.nt.NTEventLogAppender),
-and remote UNIX [Syslog](@ref log4cxx.net.SyslogAppender)
-daemons. It is also possible to log
-[asynchronously](@ref log4cxx.AsyncAppender).
+their logger is only part of the picture.
 
+Log4cxx allows logging requests to print to multiple destinations.
+In Log4cxx speak, an output destination is called an *appender*.
+Log4cxx provides appenders to write to:
+- [stdout or stderr](@ref log4cxx.ConsoleAppender)
+- [files](@ref log4cxx.rolling.RollingFileAppender)
+- [the NT Event log](@ref log4cxx.nt.NTEventLogAppender)
+- [the UNIX Syslog](@ref log4cxx.net.SyslogAppender)
+- [a socket server](@ref log4cxx.net.XMLSocketAppender)
+- [a SMTP server](@ref log4cxx.net.SMTPAppender)
+- [a database](@ref log4cxx.db.ODBCAppender)
+
+If the same file receives log requests concurrently from multiple process,
+use [this appender](@ref log4cxx.rolling.MultiprocessRollingFileAppender).
+It is also possible to log [asynchronously](@ref log4cxx.AsyncAppender)
+to another appender.
+
+The [addAppender](@ref log4cxx.Logger.addAppender)
+method adds an appender to a given logger.
 More than one appender can be attached to a logger.
 
-The
-[addAppender](@ref log4cxx.Logger.addAppender)
-method adds an appender to a given logger. *Each enabled logging
-request for a given logger will be forwarded to all the appenders in
-that logger as well as the appenders higher in the hierarchy.* In other
-words, appenders are inherited additively from the logger hierarchy. For
-example, if a console appender is added to the root logger, then all
+## Additivity {#appender-additivity}
+
+Each enabled logging request for a given logger will be forwarded to all the appenders in
+that logger as well as the appenders higher in the hierarchy.
+In other words, appenders are inherited additively from the logger hierarchy.
+For example, if a console appender is added to the root logger, then all
 enabled logging requests will at least print on the console. If in
 addition a file appender is added to a logger, say *C*, then enabled
 logging requests for *C* and *C*'s children will print on a file *and*
@@ -289,8 +298,6 @@ appender accumulation is no longer additive by
 [setting the additivity flag](@ref log4cxx.Logger.setAdditivity) to `false`.
 
 The rules governing appender additivity are summarized below.
-
-## Additivity {#appender-additivity}
 
 The output of a log statement of logger *C* will go to all the appenders
 in *C* and its ancestors. This is the meaning of the term "appender
@@ -317,6 +324,8 @@ example:
 | security        | A-sec           | false           | A-sec                  | No appender accumulation since the additivity flag is set to *false*.                                                                             |
 | security.access | none            | true            | A-sec                  | Only appenders of "security" because the additivity flag in "security" is set to *false*.                                                         |
 
+# Layouts {#layouts}
+
 More often than not, users wish to customize not only the output
 destination but also the output format. This is accomplished by
 associating a *layout* with an appender. The layout is responsible for
@@ -332,6 +341,14 @@ output format according to conversion patterns similar to the C language
 For example, the PatternLayout with the conversion pattern `%%r [%%t]
 %%-5p %%c - %%m%%n` will output something akin to:
 
+The other layouts provided in Log4cxx are:
+
+- [libfmt patterns](@ref log4cxx.FMTLayout)
+- [a HTML table](@ref log4cxx.HTMLLayout)
+- [a JSON dictionary](@ref log4cxx.JSONLayout)
+- [level - message](@ref log4cxx.SimpleLayout)
+- [log4j event elements](@ref log4cxx.xml.XMLLayout)
+
 ~~~
 176 [main] INFO org.foo.Bar - Located nearest gas station.
 ~~~
@@ -342,19 +359,19 @@ third field is the level of the log statement. The fourth field is the
 name of the logger associated with the log request. The text after the
 '-' is the message of the statement.
 
-# Configuration {#configuration}
+The Log4cxx environment is fully configurable programmatically. However,
+it is far more flexible to configure Log4cxx using configuration files.
+Currently, configuration files can be written in XML or in Java
+properties (key=value) format.
 
-Inserting log requests into the application code requires a fair amount
+# Example Programs {#coding}
+
+Creating useful log information requires a fair amount
 of planning and effort. Observation shows that approximately 4 percent
 of code is dedicated to logging. Consequently, even moderately sized
 applications will have thousands of logging statements embedded within
 their code. Given their number, it becomes imperative to manage these
 log statements without the need to modify them manually.
-
-The Log4cxx environment is fully configurable programmatically. However,
-it is far more flexible to configure Log4cxx using configuration files.
-Currently, configuration files can be written in XML or in Java
-properties (key=value) format.
 
 Let us give a taste of how this is done with the help of an imaginary
 application *MyApp* that uses Log4cxx.
@@ -366,7 +383,6 @@ This program does nothing useful, but it shows the basics of how to start using 
 Using the [BasicConfigurator](@ref log4cxx.BasicConfigurator) class, we are able to quickly configure the library
 to output DEBUG, INFO, etc level messages to standard output.
 \include MyApp1.cpp
-
 
 The above application does nothing useful except to show how to initialize logging
 with the BasicConfigurator and do logging with different loggers.
@@ -414,25 +430,6 @@ is invoked on the first call to the com::foo::getLogger() function
 and its destructor is automatically called during application exit.
 \include com/foo/config1.cpp
 
-## Default Initialization {#default-initialization}
-
-The Log4cxx library does not make any assumptions about its environment.
-In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
-However the library will attempt automatic configuration.
-
-If the LoggerRepositoy is not yet configured on the first call to
-[getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
-the [configure](@ref log4cxx.DefaultConfigurator.configure) method
-of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
-via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
-of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
-
-To use automatic configuration with a non-standard file name
-create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
-A full example can be seen in the \ref com/foo/config3.cpp file.
-
-# Layouts {#layouts}
-
 The invocation of the
 [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure)
 method creates a rather simple Log4cxx setup. This method is hardwired
@@ -450,6 +447,8 @@ The output of MyApp is:
     0 [12345] DEBUG com.foo.Bar null - Did it again!
     0 [12345] INFO MyApp null - Exiting application.
 ~~~
+
+## Runtime Configuration {#configuration}
 
 The previous example always outputs the same log information.
 Fortunately, it is easy to modify *config.cpp* so that the log output can be
@@ -532,6 +531,23 @@ daemon, redirected all *com.foo* output to an NT Event logger, or
 forwarded logging events to a remote Log4cxx server, which would log
 according to local server policy, for example by forwarding the log
 event to a second Log4cxx server.
+
+# Default Initialization {#default-initialization}
+
+The Log4cxx library does not make any assumptions about its environment.
+In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
+However the library will attempt automatic configuration.
+
+If the LoggerRepositoy is not yet configured on the first call to
+[getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
+the [configure](@ref log4cxx.DefaultConfigurator.configure) method
+of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
+via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
+of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
+
+To use automatic configuration with a non-standard file name
+create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
+A full example can be seen in the \ref com/foo/config3.cpp file.
 
 # Nested Diagnostic Contexts {#nested-diagnostic-contexts}
 
