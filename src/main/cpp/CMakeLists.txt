@@ -40,7 +40,6 @@ if(LOG4CXX_NETWORKING_SUPPORT)
 	aprsocket.cpp
 	telnetappender.cpp
 	socketappenderskeleton.cpp
-	sockethubappender.cpp
 	socketoutputstream.cpp
 	xmlsocketappender.cpp
 	syslogwriter.cpp
@@ -145,7 +144,6 @@ target_sources(log4cxx
   ndc.cpp
   ndcpatternconverter.cpp
   nteventlogappender.cpp
-  objectoutputstream.cpp
   odbcappender.cpp
   onlyonceerrorhandler.cpp
   optionconverter.cpp

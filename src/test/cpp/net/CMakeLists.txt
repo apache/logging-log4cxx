@@ -18,7 +18,6 @@
 # Tests defined in this directory
 if(LOG4CXX_NETWORKING_SUPPORT)
     set(NET_TESTS
-	sockethubappendertestcase
 	syslogappendertestcase
 	telnetappendertestcase
 	xmlsocketappendertestcase

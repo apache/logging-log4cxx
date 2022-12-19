@@ -20,7 +20,6 @@
 
 #include <log4cxx/log4cxx.h>
 #include <string>
-#include <log4cxx/helpers/objectoutputstream.h>
 
 #if __cpp_lib_string_view || (_MSVC_LANG >= 201703L)
 #include <string_view>
@@ -129,8 +128,6 @@ class LOG4CXX_EXPORT LocationInfo
 
 		/** Returns the method name of the caller. */
 		const std::string getMethodName() const;
-
-		void write(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p) const;
 
 
 	private:

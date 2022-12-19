@@ -20,7 +20,6 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
-#include <log4cxx/helpers/objectoutputstream.h>
 #include <thread>
 #include <condition_variable>
 

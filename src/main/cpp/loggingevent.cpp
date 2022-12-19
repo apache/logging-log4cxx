@@ -33,7 +33,6 @@
 #include <apr_portable.h>
 #include <apr_strings.h>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/private/log4cxx_private.h>
