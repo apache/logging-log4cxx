@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/action_priv.h>
+#include <log4cxx/helpers/loglog.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
@@ -38,6 +39,7 @@ struct ZipCompressAction::ZipCompressActionPrivate : public ActionPrivate
 	const File source;
 	const File destination;
 	bool deleteSource;
+	bool throwIOExceptionOnForkFailure = true;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(ZipCompressAction)
@@ -114,9 +116,21 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const
 	apr_proc_t pid;
 	stat = apr_proc_create(&pid, "zip", args, NULL, attr, aprpool);
 
-	if (stat != APR_SUCCESS)
+	if (stat != APR_SUCCESS && priv->throwIOExceptionOnForkFailure)
 	{
 		throw IOException(stat);
+	}else if(stat != APR_SUCCESS && !priv->throwIOExceptionOnForkFailure)
+	{
+		/* If we fail here (to create the zip child process),
+		 * skip the compression and consider the rotation to be
+		 * otherwise successful. The caller has already rotated
+		 * the log file (`source` here refers to the
+		 * uncompressed, rotated path, and `destination` the
+		 * same path with `.zip` appended). Remove the empty
+		 * destination file and leave source as-is.
+		 */
+		LogLog::warn(LOG4CXX_STR("Failed to fork zip during log rotation; leaving log file uncompressed"));
+		return true;
 	}
 
 	int exitCode;
@@ -133,4 +147,8 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const
 	}
 
 	return true;
+}
+
+void ZipCompressAction::setThrowIOExceptionOnForkFailure(bool throwIO){
+	priv->throwIOExceptionOnForkFailure = throwIO;
 }

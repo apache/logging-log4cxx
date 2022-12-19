@@ -112,6 +112,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		LogString _fileNamePattern;
 
 		bool multiprocess = false;
+		bool throwIOExceptionOnForkFailure = true;
 };
 
 
@@ -453,14 +454,18 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 	if (m_priv->suffixLength == 3)
 	{
-		compressAction = std::make_shared<GZCompressAction>(
+		GZCompressActionPtr comp = std::make_shared<GZCompressAction>(
 					File().setPath(lastBaseName), File().setPath(m_priv->lastFileName), true);
+		comp->setThrowIOExceptionOnForkFailure(m_priv->throwIOExceptionOnForkFailure);
+		compressAction = comp;
 	}
 
 	if (m_priv->suffixLength == 4)
 	{
-		compressAction = std::make_shared<ZipCompressAction>(
+		ZipCompressActionPtr comp = std::make_shared<ZipCompressAction>(
 					File().setPath(lastBaseName), File().setPath(m_priv->lastFileName), true);
+		comp->setThrowIOExceptionOnForkFailure(m_priv->throwIOExceptionOnForkFailure);
+		compressAction = comp;
 	}
 
 	if( m_priv->multiprocess ){
@@ -521,4 +526,19 @@ void TimeBasedRollingPolicy::setMultiprocess(bool multiprocess){
 	// If we don't have the multiprocess stuff, disregard any attempt to set this value
 	m_priv->multiprocess = multiprocess;
 #endif
+}
+
+void TimeBasedRollingPolicy::setOption(const LogString& option,
+	const LogString& value)
+{
+	if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("THROWIOEXCEPTIONONFORKFAILURE"),
+			LOG4CXX_STR("throwioexceptiononforkfailure")))
+	{
+		m_priv->throwIOExceptionOnForkFailure = OptionConverter::toBoolean(value, true);
+	}
+	else
+	{
+		RollingPolicyBase::setOption(option, value);
+	}
 }

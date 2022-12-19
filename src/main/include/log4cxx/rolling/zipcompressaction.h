@@ -51,6 +51,17 @@ class ZipCompressAction : public Action
 		 */
 		bool execute(log4cxx::helpers::Pool& pool) const override;
 
+		/**
+		 * Set to true to throw an IOException on a fork failure.  By default, this
+		 * is true.  When an IOException is thrown, this will automatically cause the
+		 * error handler to be called(which is the recommended way of handling this
+		 * problem).  By setting this to true, the ZipCompressAction effectively
+		 * turns into a FileRenameAction if any errors are encountered.
+		 *
+		 * @param throwIO
+		 */
+		void setThrowIOExceptionOnForkFailure(bool throwIO);
+
 	private:
 		ZipCompressAction(const ZipCompressAction&);
 		ZipCompressAction& operator=(const ZipCompressAction&);
