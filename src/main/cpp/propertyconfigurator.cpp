@@ -433,8 +433,6 @@ AppenderPtr PropertyConfigurator::parseAppender(
 	// Appender was not previously initialized.
 	LogString prefix = APPENDER_PREFIX + appenderName;
 	LogString layoutPrefix = prefix + LOG4CXX_STR(".layout");
-	LogString rollingPolicyKey = prefix + LOG4CXX_STR(".rollingPolicy");
-	LogString triggeringPolicyKey = prefix + LOG4CXX_STR(".triggeringPolicy");
 
 	std::shared_ptr<Object> obj =
 		OptionConverter::instantiateByKey(
@@ -485,34 +483,42 @@ AppenderPtr PropertyConfigurator::parseAppender(
 		}
 
 		RollingFileAppenderPtr rolling = log4cxx::cast<rolling::RollingFileAppender>(appender);
-		if(rolling)
+		if (rolling)
 		{
-			RollingPolicyPtr rollingPolicy;
-			std::shared_ptr<Object> rolling_obj =
-				OptionConverter::instantiateByKey(
-					props, rollingPolicyKey, RollingPolicy::getStaticClass(), 0);
-			rollingPolicy = log4cxx::cast<RollingPolicy>( rolling_obj );
-			if(rollingPolicy)
+			LogString rollingPolicyKey = prefix + LOG4CXX_STR(".rollingPolicy");
+			if (!OptionConverter::findAndSubst(rollingPolicyKey, props).empty())
 			{
-				rolling->setRollingPolicy(rollingPolicy);
+				RollingPolicyPtr rollingPolicy;
+				std::shared_ptr<Object> rolling_obj =
+					OptionConverter::instantiateByKey(
+						props, rollingPolicyKey, RollingPolicy::getStaticClass(), 0);
+				rollingPolicy = log4cxx::cast<RollingPolicy>( rolling_obj );
+				if(rollingPolicy)
+				{
+					rolling->setRollingPolicy(rollingPolicy);
 
-				LogLog::debug((LogString) LOG4CXX_STR("Parsing rolling policy options for \"")
-					+ appenderName + LOG4CXX_STR("\"."));
-				PropertySetter::setProperties(rollingPolicy, props, rollingPolicyKey + LOG4CXX_STR("."), p);
+					LogLog::debug((LogString) LOG4CXX_STR("Parsing rolling policy options for \"")
+						+ appenderName + LOG4CXX_STR("\"."));
+					PropertySetter::setProperties(rollingPolicy, props, rollingPolicyKey + LOG4CXX_STR("."), p);
+				}
 			}
 
-			TriggeringPolicyPtr triggeringPolicy;
-			std::shared_ptr<Object> triggering_obj =
-				OptionConverter::instantiateByKey(
-					props, triggeringPolicyKey, TriggeringPolicy::getStaticClass(), 0);
-			triggeringPolicy = log4cxx::cast<TriggeringPolicy>( triggering_obj );
-			if(triggeringPolicy)
+			LogString triggeringPolicyKey = prefix + LOG4CXX_STR(".triggeringPolicy");
+			if (!OptionConverter::findAndSubst(triggeringPolicyKey, props).empty())
 			{
-				rolling->setTriggeringPolicy(triggeringPolicy);
+				TriggeringPolicyPtr triggeringPolicy;
+				std::shared_ptr<Object> triggering_obj =
+					OptionConverter::instantiateByKey(
+						props, triggeringPolicyKey, TriggeringPolicy::getStaticClass(), 0);
+				triggeringPolicy = log4cxx::cast<TriggeringPolicy>( triggering_obj );
+				if(triggeringPolicy)
+				{
+					rolling->setTriggeringPolicy(triggeringPolicy);
 
-				LogLog::debug((LogString) LOG4CXX_STR("Parsing triggering policy options for \"")
-					+ appenderName + LOG4CXX_STR("\"."));
-				PropertySetter::setProperties(triggeringPolicy, props, triggeringPolicyKey + LOG4CXX_STR("."), p);
+					LogLog::debug((LogString) LOG4CXX_STR("Parsing triggering policy options for \"")
+						+ appenderName + LOG4CXX_STR("\"."));
+					PropertySetter::setProperties(triggeringPolicy, props, triggeringPolicyKey + LOG4CXX_STR("."), p);
+				}
 			}
 		}
 
