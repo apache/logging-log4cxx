@@ -44,7 +44,7 @@ class LOG4CXX_EXPORT BasicConfigurator
 		Add a ConsoleAppender to the root logger that formats output using \c layout.
 
 		If \c layout is not provided,
-		use a PatternLayout with <code>%r [%t] %p %c %x - %m%n<code>
+		use a PatternLayout with <code>%%r [%%t] %%p %%c %%x - %%m%%n</code>
 		as the conversion pattern.
 		*/
 		static void configure(const LayoutPtr& layout = LayoutPtr());
