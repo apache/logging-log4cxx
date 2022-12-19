@@ -18,6 +18,7 @@
 #include "../insertwide.h"
 #include "../logunit.h"
 #include <apr_time.h>
+#include <log4cxx/basicconfigurator.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/patternlayout.h>
@@ -64,11 +65,10 @@ LOGUNIT_CLASS(SizeBasedRollingTest)
 public:
 	void setUp()
 	{
-		PatternLayoutPtr layout(new PatternLayout(LOG4CXX_STR("%d %level %c -%m%n")));
-		AppenderPtr ca(new ConsoleAppender(layout));
-		ca->setName(LOG4CXX_STR("CONSOLE"));
+		BasicConfigurator::configure(std::make_shared<PatternLayout> (
+			LOG4CXX_STR("%d %level %c -%m%n")
+		));
 		root = Logger::getRootLogger();
-		root->addAppender(ca);
 		logger = Logger::getLogger("org.apache.log4j.rolling.SizeBasedRollingTest");
 	}
 
