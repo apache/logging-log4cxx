@@ -336,7 +336,13 @@ destination.
 The [PatternLayout](@ref log4cxx.PatternLayout),
 part of the standard Log4cxx distribution, lets the user specify the
 output format according to conversion patterns similar to the C language
-*printf* function.
+*printf* function. The other layouts provided in Log4cxx are:
+
+- [libfmt patterns](@ref log4cxx.FMTLayout)
+- [a HTML table](@ref log4cxx.HTMLLayout)
+- [a JSON dictionary](@ref log4cxx.JSONLayout)
+- [level - message](@ref log4cxx.SimpleLayout)
+- [log4j event elements](@ref log4cxx.xml.XMLLayout)
 
 For example, the PatternLayout with the conversion pattern `%%r [%%t]
 %%-5p %%c - %%m%%n` will output something akin to:
