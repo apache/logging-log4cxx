@@ -341,14 +341,6 @@ output format according to conversion patterns similar to the C language
 For example, the PatternLayout with the conversion pattern `%%r [%%t]
 %%-5p %%c - %%m%%n` will output something akin to:
 
-The other layouts provided in Log4cxx are:
-
-- [libfmt patterns](@ref log4cxx.FMTLayout)
-- [a HTML table](@ref log4cxx.HTMLLayout)
-- [a JSON dictionary](@ref log4cxx.JSONLayout)
-- [level - message](@ref log4cxx.SimpleLayout)
-- [log4j event elements](@ref log4cxx.xml.XMLLayout)
-
 ~~~
 176 [main] INFO org.foo.Bar - Located nearest gas station.
 ~~~
@@ -359,10 +351,13 @@ third field is the level of the log statement. The fourth field is the
 name of the logger associated with the log request. The text after the
 '-' is the message of the statement.
 
-The Log4cxx environment is fully configurable programmatically. However,
-it is far more flexible to configure Log4cxx using configuration files.
-Currently, configuration files can be written in XML or in Java
-properties (key=value) format.
+The other layouts provided in Log4cxx are:
+
+- [libfmt patterns](@ref log4cxx.FMTLayout)
+- [a HTML table](@ref log4cxx.HTMLLayout)
+- [a JSON dictionary](@ref log4cxx.JSONLayout)
+- [level - message](@ref log4cxx.SimpleLayout)
+- [log4j event elements](@ref log4cxx.xml.XMLLayout)
 
 # Example Programs {#coding}
 
@@ -449,6 +444,11 @@ The output of MyApp is:
 ~~~
 
 ## Runtime Configuration {#configuration}
+
+The Log4cxx environment is fully configurable programmatically. However,
+it is far more flexible to configure Log4cxx using configuration files.
+Currently, configuration files can be written in XML or in Java
+properties (key=value) format.
 
 The previous example always outputs the same log information.
 Fortunately, it is easy to modify *config.cpp* so that the log output can be
