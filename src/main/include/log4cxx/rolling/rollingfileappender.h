@@ -159,16 +159,6 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 	public:
 		/**
-		 Does this have a scheme for rolling over log files?
-		*/
-		bool hasRollingPolicy() const;
-
-		/**
-		 Does this have a basis for triggering log file rollover?
-		*/
-		bool hasTriggeringPolicy() const;
-
-		/**
 		 * The policy that implements the scheme for rolling over a log file.
 		 */
 		RollingPolicyPtr getRollingPolicy() const;

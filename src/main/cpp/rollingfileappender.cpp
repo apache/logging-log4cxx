@@ -201,6 +201,8 @@ void RollingFileAppender::activateOptions(Pool& p)
 {
 	if (!_priv->rollingPolicy)
 	{
+		LogLog::warn(LOG4CXX_STR("No rolling policy configured for the appender named [")
+			+ _priv->name + LOG4CXX_STR("]."));
 		auto fwrp = std::make_shared<FixedWindowRollingPolicy>();
 		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
 		_priv->rollingPolicy = fwrp;
@@ -221,6 +223,8 @@ void RollingFileAppender::activateOptions(Pool& p)
 
 	if (!_priv->triggeringPolicy)
 	{
+		LogLog::warn(LOG4CXX_STR("No triggering policy configured for the appender named [")
+			+ _priv->name + LOG4CXX_STR("]."));
 		_priv->triggeringPolicy = std::make_shared<SizeBasedTriggeringPolicy>();
 	}
 
@@ -482,27 +486,11 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 }
 
 /**
- Does this have a scheme for rolling over log files?
-*/
-bool RollingFileAppender::hasRollingPolicy() const
-{
-	return !!_priv->rollingPolicy;
-}
-
-/**
  * TThe policy that implements the scheme for rolling over a log file.
  */
 RollingPolicyPtr RollingFileAppender::getRollingPolicy() const
 {
 	return _priv->rollingPolicy;
-}
-
-/**
- Does this have a basis for triggering log file rollover?
-*/
-bool RollingFileAppender::hasTriggeringPolicy() const
-{
-	return !!_priv->triggeringPolicy;
 }
 
 /**

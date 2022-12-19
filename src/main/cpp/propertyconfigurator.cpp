@@ -523,15 +523,6 @@ AppenderPtr PropertyConfigurator::parseAppender(
 		}
 
 		PropertySetter::setProperties(appender, props, prefix + LOG4CXX_STR("."), p);
-		if (!rolling)
-			;
-		else if (!rolling->hasRollingPolicy())
-			LogLog::warn((LogString) LOG4CXX_STR("Missing rolling policy for \"")
-				+ appenderName + LOG4CXX_STR("\"."));
-		else if (!rolling->hasTriggeringPolicy())
-			LogLog::warn((LogString) LOG4CXX_STR("Missing triggering policy for \"")
-				+ appenderName + LOG4CXX_STR("\"."));
-
 		LogLog::debug((LogString) LOG4CXX_STR("Parsed \"")
 			+ appenderName + LOG4CXX_STR("\" options."));
 	}
