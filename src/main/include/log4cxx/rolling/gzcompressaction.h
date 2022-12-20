@@ -56,7 +56,7 @@ class GZCompressAction : public Action
 		 * Set to true to throw an IOException on a fork failure.  By default, this
 		 * is true.  When an IOException is thrown, this will automatically cause the
 		 * error handler to be called(which is the recommended way of handling this
-		 * problem).  By setting this to true, the GZCompressAction effectively
+		 * problem).  By setting this to false, the GZCompressAction effectively
 		 * turns into a FileRenameAction if any errors are encountered.
 		 *
 		 * @param throwIO
