@@ -243,7 +243,7 @@ if(LOG4CXX_ABI_CHECK)
 	COMMENT "Dumping ABI symbols")
 
     add_custom_target(compare-abi ALL
-	COMMAND perl ${abi-compliance-script} -l log4cxx -old ${LOG4CXX_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump
+	COMMAND perl ${abi-compliance-script} -skip-internal-symbols "\\d\\(fmt\\)" -skip-internal-types "\\(fmt\\)::" -l log4cxx -old ${LOG4CXX_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump
 	DEPENDS dump-abi
 	COMMENT "Comparing ABI symbols")
 endif(LOG4CXX_ABI_CHECK)
