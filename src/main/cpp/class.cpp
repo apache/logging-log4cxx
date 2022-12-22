@@ -53,6 +53,7 @@
 #include <log4cxx/filter/levelmatchfilter.h>
 #include <log4cxx/filter/levelrangefilter.h>
 #include <log4cxx/filter/stringmatchfilter.h>
+#include <log4cxx/filter/locationinfofilter.h>
 #include <log4cxx/rolling/filterbasedtriggeringpolicy.h>
 #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
 #include <log4cxx/rolling/manualtriggeringpolicy.h>
@@ -178,6 +179,7 @@ void Class::registerClasses()
 	LevelMatchFilter::registerClass();
 	LevelRangeFilter::registerClass();
 	StringMatchFilter::registerClass();
+	LocationInfoFilter::registerClass();
 	log4cxx::rolling::RollingFileAppender::registerClass();
 	log4cxx::rolling::SizeBasedTriggeringPolicy::registerClass();
 	log4cxx::rolling::TimeBasedRollingPolicy::registerClass();

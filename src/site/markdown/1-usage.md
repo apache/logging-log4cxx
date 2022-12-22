@@ -24,13 +24,13 @@ Usage {#usage-overview}
 See the following pages for usage information:
 
 * @subpage usage
+* @subpage filters
 * @subpage threading
 * @subpage extending-log4cxx
 * @subpage faq
 * @subpage configuration-samples
 * @subpage qt-support
 * @subpage performance
-* @subpage map-filter
 * @subpage multiprocess-logging
 * @subpage environment-variables
 * @subpage macros-influencing-log4cxx
