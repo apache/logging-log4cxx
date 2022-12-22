@@ -25,6 +25,10 @@
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/messagebuffer.h>
 
+#if defined(LOG4CXX_ENABLE_STACKTRACE)
+#include <boost/stacktrace.hpp>
+#endif
+
 namespace log4cxx
 {
 
@@ -1957,6 +1961,12 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 	#endif
 #endif
 
+#if defined(LOG4CXX_ENABLE_STACKTRACE)
+#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
+#else
+#define LOG4CXX_STACKTRACE
+#endif
+
 
 /**
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
@@ -1968,6 +1978,7 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 #define LOG4CXX_LOG(logger, level, message) do { \
 		if (logger->isEnabledFor(level)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -1979,6 +1990,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_LOG_FMT(logger, level, ...) do { \
 		if (logger->isEnabledFor(level)) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(level, fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -1991,6 +2003,7 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 #define LOG4CXX_LOGLS(logger, level, message) do { \
 		if (logger->isEnabledFor(level)) {\
 			::log4cxx::helpers::LogCharMessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000
@@ -2015,6 +2028,7 @@ LOG4CXX_DEBUG(m_log, "AddMesh:"
 #define LOG4CXX_DEBUG(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isDebugEnabledFor(logger))) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2025,6 +2039,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_DEBUG_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isDebugEnabledFor(logger))) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getDebug(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
@@ -2047,6 +2062,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 #define LOG4CXX_TRACE(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isTraceEnabledFor(logger))) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2057,6 +2073,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_TRACE_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isTraceEnabledFor(logger))) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getTrace(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
@@ -2083,6 +2100,7 @@ LOG4CXX_INFO(m_log, surface->GetName()
 #define LOG4CXX_INFO(logger, message) do { \
 		if (::log4cxx::Logger::isInfoEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2093,6 +2111,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_INFO_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isInfoEnabledFor(logger)) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getInfo(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
@@ -2117,6 +2136,7 @@ catch (const std::exception& ex)
 #define LOG4CXX_WARN(logger, message) do { \
 		if (::log4cxx::Logger::isWarnEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2127,6 +2147,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_WARN_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isWarnEnabledFor(logger)) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getWarn(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
@@ -2151,6 +2172,7 @@ catch (std::exception& ex)
 #define LOG4CXX_ERROR(logger, message) do { \
 		if (::log4cxx::Logger::isErrorEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2161,6 +2183,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_ERROR_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isErrorEnabledFor(logger)) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2173,6 +2196,7 @@ If \c condition is not true, add a new logging event containing \c message to at
 #define LOG4CXX_ASSERT(logger, condition, message) do { \
 		if (!(condition) && ::log4cxx::Logger::isErrorEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2184,6 +2208,7 @@ If \c condition is not true, add a new logging event containing libfmt formatted
 */
 #define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
 		if (!(condition) && ::log4cxx::Logger::isErrorEnabledFor(logger)) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 #else
@@ -2208,6 +2233,7 @@ LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
 #define LOG4CXX_FATAL(logger, message) do { \
 		if (::log4cxx::Logger::isFatalEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2218,6 +2244,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_FATAL_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isFatalEnabledFor(logger)) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getFatal(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
@@ -2233,6 +2260,7 @@ Add a new logging event containing the localized message \c key to attached appe
 */
 #define LOG4CXX_L7DLOG(logger, level, key) do { \
 		if (logger->isEnabledFor(level)) {\
+			LOG4CXX_STACKTRACE \
 			logger->l7dlog(level, key, LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2245,6 +2273,7 @@ Add a new logging event containing the localized message \c key to attached appe
 */
 #define LOG4CXX_L7DLOG1(logger, level, key, p1) do { \
 		if (logger->isEnabledFor(level)) {\
+			LOG4CXX_STACKTRACE \
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }} while (0)
 
 /**
@@ -2258,6 +2287,7 @@ Add a new logging event containing the localized message \c key to attached appe
 */
 #define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) do { \
 		if (logger->isEnabledFor(level)) {\
+			LOG4CXX_STACKTRACE \
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }} while (0)
 
 /**
@@ -2272,6 +2302,7 @@ Add a new logging event containing the localized message \c key to attached appe
 */
 #define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) do { \
 		if (logger->isEnabledFor(level)) {\
+			LOG4CXX_STACKTRACE \
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }} while (0)
 
 /**@}*/
