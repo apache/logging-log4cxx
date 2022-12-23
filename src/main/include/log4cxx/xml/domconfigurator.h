@@ -218,15 +218,15 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		/**
 		A static version of #doConfigure.
 		*/
-		static void configure(const std::string& filename);
+		static spi::ConfigurationStatus configure(const std::string& filename);
 #if LOG4CXX_WCHAR_T_API
-		static void configure(const std::wstring& filename);
+		static spi::ConfigurationStatus configure(const std::wstring& filename);
 #endif
 #if LOG4CXX_UNICHAR_API
-		static void configure(const std::basic_string<UniChar>& filename);
+		static spi::ConfigurationStatus configure(const std::basic_string<UniChar>& filename);
 #endif
 #if LOG4CXX_CFSTRING_API
-		static void configure(const CFStringRef& filename);
+		static spi::ConfigurationStatus configure(const CFStringRef& filename);
 #endif
 		/**
 		Like #configureAndWatch(const std::string& configFilename, long delay)
@@ -234,15 +234,15 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
 		@param configFilename A log4j configuration file in XML format.
 		*/
-		static void configureAndWatch(const std::string& configFilename);
+		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename);
 #if LOG4CXX_WCHAR_T_API
-		static void configureAndWatch(const std::wstring& configFilename);
+		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename);
 #endif
 #if LOG4CXX_UNICHAR_API
-		static void configureAndWatch(const std::basic_string<UniChar>& configFilename);
+		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename);
 #endif
 #if LOG4CXX_CFSTRING_API
-		static void configureAndWatch(const CFStringRef& configFilename);
+		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename);
 #endif
 		/**
 		Read the configuration file <code>configFilename</code> if it
@@ -255,18 +255,18 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		@param configFilename A log4j configuration file in XML format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
-		static void configureAndWatch(const std::string& configFilename,
+		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename,
 			long delay);
 #if LOG4CXX_WCHAR_T_API
-		static void configureAndWatch(const std::wstring& configFilename,
+		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename,
 			long delay);
 #endif
 #if LOG4CXX_UNICHAR_API
-		static void configureAndWatch(const std::basic_string<UniChar>& configFilename,
+		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename,
 			long delay);
 #endif
 #if LOG4CXX_CFSTRING_API
-		static void configureAndWatch(const CFStringRef& configFilename,
+		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename,
 			long delay);
 #endif
 
@@ -277,7 +277,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		@param filename The file to parse.
 		@param repository The hierarchy to operation upon.
 		*/
-		void doConfigure(const File& filename,
+		spi::ConfigurationStatus doConfigure(const File& filename,
 			spi::LoggerRepositoryPtr repository) override;
 
 	protected:

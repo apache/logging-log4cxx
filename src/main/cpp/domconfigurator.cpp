@@ -778,7 +778,7 @@ void DOMConfigurator::setParameter(log4cxx::helpers::Pool& p,
 	propSetter.setProperty(name, value, p);
 }
 
-void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr repository1)
+spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr repository1)
 {
 	repository1->setConfigured(true);
 	m_priv->repository = repository1;
@@ -804,6 +804,7 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 		msg2.append(LOG4CXX_STR("]. "));
 		msg2.append(io.what());
 		LogLog::error(msg2);
+		return spi::ConfigurationStatus::NotConfigured;
 	}
 	else
 	{
@@ -835,6 +836,7 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 			}
 
 			LogLog::error(msg2);
+			return spi::ConfigurationStatus::NotConfigured;
 		}
 		else
 		{
@@ -843,66 +845,68 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 			parse(p, utf8Decoder, doc->root, doc, appenders);
 		}
 	}
+
+	return spi::ConfigurationStatus::Configured;
 }
 
-void DOMConfigurator::configure(const std::string& filename)
+spi::ConfigurationStatus DOMConfigurator::configure(const std::string& filename)
 {
 	File file(filename);
-	DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 }
 
 #if LOG4CXX_WCHAR_T_API
-void DOMConfigurator::configure(const std::wstring& filename)
+spi::ConfigurationStatus DOMConfigurator::configure(const std::wstring& filename)
 {
 	File file(filename);
-	DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API
-void DOMConfigurator::configure(const std::basic_string<UniChar>& filename)
+spi::ConfigurationStatus DOMConfigurator::configure(const std::basic_string<UniChar>& filename)
 {
 	File file(filename);
-	DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 }
 #endif
 
 #if LOG4CXX_CFSTRING_API
-void DOMConfigurator::configure(const CFStringRef& filename)
+spi::ConfigurationStatus DOMConfigurator::configure(const CFStringRef& filename)
 {
 	File file(filename);
-	DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 }
 #endif
 
 
-void DOMConfigurator::configureAndWatch(const std::string& filename)
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename)
 {
-	configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
 }
 
 #if LOG4CXX_WCHAR_T_API
-void DOMConfigurator::configureAndWatch(const std::wstring& filename)
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename)
 {
-	configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API
-void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename)
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename)
 {
-	configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
 }
 #endif
 
 #if LOG4CXX_CFSTRING_API
-void DOMConfigurator::configureAndWatch(const CFStringRef& filename)
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& filename)
 {
-	configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
 }
 #endif
 
-void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 {
 	File file(filename);
 #if APR_HAS_THREADS
@@ -913,17 +917,21 @@ void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 		delete xdog;
 	}
 
+	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+
 	xdog = new XMLWatchdog(file);
 	APRInitializer::registerCleanup(xdog);
 	xdog->setDelay(delay);
 	xdog->start();
+
+	return status;
 #else
-	DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif
 }
 
 #if LOG4CXX_WCHAR_T_API
-void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
 {
 	File file(filename);
 #if APR_HAS_THREADS
@@ -934,18 +942,22 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
 		delete xdog;
 	}
 
+	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+
 	xdog = new XMLWatchdog(file);
 	APRInitializer::registerCleanup(xdog);
 	xdog->setDelay(delay);
 	xdog->start();
+
+	return status;
 #else
-	DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API
-void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename, long delay)
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename, long delay)
 {
 	File file(filename);
 #if APR_HAS_THREADS
@@ -956,18 +968,22 @@ void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filena
 		delete xdog;
 	}
 
+	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+
 	xdog = new XMLWatchdog(file);
 	APRInitializer::registerCleanup(xdog);
 	xdog->setDelay(delay);
 	xdog->start();
+
+	return status;
 #else
-	DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif
 }
 #endif
 
 #if LOG4CXX_CFSTRING_API
-void DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
 {
 	File file(filename);
 #if APR_HAS_THREADS
@@ -978,12 +994,16 @@ void DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
 		delete xdog;
 	}
 
+	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+
 	xdog = new XMLWatchdog(file);
 	APRInitializer::registerCleanup(xdog);
 	xdog->setDelay(delay);
 	xdog->start();
+
+	return status;
 #else
-	DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif
 }
 #endif
