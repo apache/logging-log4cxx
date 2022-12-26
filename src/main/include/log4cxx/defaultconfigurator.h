@@ -20,6 +20,7 @@
 
 #include <log4cxx/spi/configurator.h>
 #include <log4cxx/spi/loggerrepository.h>
+#include <tuple>
 
 namespace log4cxx
 {
@@ -70,10 +71,39 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		*/
 		static void setConfigurationWatchSeconds(int seconds);
 
+		/**
+		 * Configure Log4cxx from a file.  This method will attempt to load the configuration files in the
+		 * directories given.
+		 *
+		 * For example, if we want a configuration file named 'myapp-logging.xml' with the default location
+		 * for this file in /etc/myapp, but to have this overriden by a file in /usr/local/etc/myapp, we would
+		 * call this function as follows:
+		 *
+		 * configureFromFile( { "/usr/local/etc/myapp", "/etc/myapp" }, { "myapp-logging.xml" );
+		 *
+		 * This will then search for files in the following order:
+		 *
+		 * <pre>
+		 * /usr/local/etc/myapp/myapp-logging.xml
+		 * /etc/myapp/myapp-logging.xml
+		 * </pre>
+		 *
+		 * The status of configuring Log4cxx as well as the eventual filename used is returned.  If a file exists
+		 * but it is not able to be used to configure Log4cxx, the next file in the list will be tried until
+		 * a valid configuration file is found or the end of the list is reached.
+		 *
+		 * @param directories The directories to look in.
+		 * @param filenamse The names of the files to look for
+		 * @return The status of the configuration, and the filename loaded(if a file was found).
+		 */
+		static std::tuple<log4cxx::spi::ConfigurationStatus,LogString> configureFromFile(const std::vector<LogString>& directories,
+																						 const std::vector<LogString>& filenames);
+
 	private:
 		static const LogString getConfigurationFileName();
 		static const LogString getConfiguratorClass();
 		static int getConfigurationWatchDelay();
+		static log4cxx::spi::ConfigurationStatus tryLoadFile(const LogString& filename);
 
 };	 // class DefaultConfigurator
 }  // namespace log4cxx
