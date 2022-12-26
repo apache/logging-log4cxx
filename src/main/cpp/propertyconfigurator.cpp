@@ -89,7 +89,7 @@ PropertyConfigurator::~PropertyConfigurator()
 	delete registry;
 }
 
-void PropertyConfigurator::doConfigure(const File& configFileName,
+spi::ConfigurationStatus PropertyConfigurator::doConfigure(const File& configFileName,
 	spi::LoggerRepositoryPtr hierarchy)
 {
 	hierarchy->setConfigured(true);
@@ -105,7 +105,7 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
 			+ configFileName.getPath() + LOG4CXX_STR("].") + ": " + ex.what());
-		return;
+		return spi::ConfigurationStatus::NotConfigured;
 	}
 
 	try
@@ -113,34 +113,36 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
 		LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
 				+ configFileName.getPath() + LOG4CXX_STR("].");
 		LogLog::debug(debugMsg);
-		doConfigure(props, hierarchy);
+		return doConfigure(props, hierarchy);
 	}
 	catch (const std::exception& ex)
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Could not parse configuration file ["))
 			+ configFileName.getPath() + LOG4CXX_STR("]."), ex);
 	}
+
+	return spi::ConfigurationStatus::NotConfigured;
 }
 
-void PropertyConfigurator::configure(const File& configFilename)
+spi::ConfigurationStatus PropertyConfigurator::configure(const File& configFilename)
 {
-	PropertyConfigurator().doConfigure(configFilename, LogManager::getLoggerRepository());
+	return PropertyConfigurator().doConfigure(configFilename, LogManager::getLoggerRepository());
 }
 
-void PropertyConfigurator::configure(helpers::Properties& properties)
+spi::ConfigurationStatus PropertyConfigurator::configure(helpers::Properties& properties)
 {
-	PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
+	return PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
 }
 
 #if APR_HAS_THREADS
-void PropertyConfigurator::configureAndWatch(const File& configFilename)
+spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(const File& configFilename)
 {
-	configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
+	return configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
 }
 
 
 
-void PropertyConfigurator::configureAndWatch(
+spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 	const File& configFilename, long delay)
 {
 	if (pdog)
@@ -149,14 +151,18 @@ void PropertyConfigurator::configureAndWatch(
 		delete pdog;
 	}
 
+	spi::ConfigurationStatus stat = PropertyConfigurator().doConfigure(configFilename, LogManager::getLoggerRepository());
+
 	pdog = new PropertyWatchdog(configFilename);
 	APRInitializer::registerCleanup(pdog);
 	pdog->setDelay(delay);
 	pdog->start();
+
+	return stat;
 }
 #endif
 
-void PropertyConfigurator::doConfigure(helpers::Properties& properties,
+spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	spi::LoggerRepositoryPtr hierarchy)
 {
 	hierarchy->setConfigured(true);
@@ -209,6 +215,8 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	// We don't want to hold references to appenders preventing their
 	// destruction.
 	registry->clear();
+
+	return spi::ConfigurationStatus::Configured;
 }
 
 void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)

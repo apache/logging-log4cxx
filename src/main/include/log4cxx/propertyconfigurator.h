@@ -282,13 +282,13 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		configuration information is stored.
 		@param hierarchy The hierarchy to operation upon.
 		*/
-		void doConfigure(const File& configFileName,
+		spi::ConfigurationStatus doConfigure(const File& configFileName,
 			spi::LoggerRepositoryPtr hierarchy) override;
 
 		/**
 		Read configuration options from file <code>configFilename</code>.
 		*/
-		static void configure(const File& configFilename);
+		static spi::ConfigurationStatus configure(const File& configFilename);
 
 		/**
 		Like {@link #configureAndWatch(const File& configFilename, long delay)}
@@ -297,7 +297,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		is used.
 		@param configFilename A file in key=value format.
 		*/
-		static void configureAndWatch(const File& configFilename);
+		static spi::ConfigurationStatus configureAndWatch(const File& configFilename);
 
 		/**
 		Read the configuration file <code>configFilename</code> if it
@@ -310,7 +310,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		@param configFilename A file in key=value format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
-		static void configureAndWatch(const File& configFilename,
+		static spi::ConfigurationStatus configureAndWatch(const File& configFilename,
 			long delay);
 
 		/**
@@ -318,14 +318,14 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		See {@link PropertyConfigurator#doConfigure doConfigure}
 		for the expected format.
 		*/
-		static void configure(helpers::Properties& properties);
+		static spi::ConfigurationStatus configure(helpers::Properties& properties);
 
 		/**
 		Read configuration options from <code>properties</code>.
 		See {@link PropertyConfigurator#doConfigure doConfigure}
 		for the expected format.
 		*/
-		void doConfigure(helpers::Properties& properties,
+		spi::ConfigurationStatus doConfigure(helpers::Properties& properties,
 			spi::LoggerRepositoryPtr hierarchy);
 
 		// --------------------------------------------------------------------------
