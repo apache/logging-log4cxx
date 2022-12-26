@@ -26,6 +26,7 @@ See the following pages for usage information:
 * @subpage usage
 * @subpage threading
 * @subpage extending-log4cxx
+* @subpage stacktrace-support
 * @subpage faq
 * @subpage configuration-samples
 * @subpage qt-support
