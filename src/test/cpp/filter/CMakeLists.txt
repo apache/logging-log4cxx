@@ -23,5 +23,6 @@ add_executable(filtertests
     loggermatchfiltertest.cpp
     mapfiltertest.cpp
     stringmatchfiltertest.cpp
+    locationinfofiltertest.cpp
 )
 set(ALL_LOG4CXX_TESTS ${ALL_LOG4CXX_TESTS} filtertests PARENT_SCOPE)

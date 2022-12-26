@@ -683,25 +683,6 @@ the non-FMT macros.
 
 A full example can be seen in the \ref format-string.cpp file.
 
-# Filtering Messages {#filtering}
-
-When dealing with large amounts of logging information, it can be useful
-to filter on messages that we are interested in.  This filtering only
-takes places after determining that the level of the current logger would
-log the message in the first place.  When defining filters, note that
-they can only be defined on a per-appender basis, they do not globally
-affect anything.
-
-The filtering system is similar in concept to Linux iptables rules, in
-that there is a chain of filters that can accept a log message, deny the
-log message, or pass the message on to the next filter. Accepting a log
-message means that the message will be logged immediately without
-consulting other filters.  Denying has the opposite affect, immediately
-dropping the log message and not consulting any other filters.
-
-See the documentation for [Filter](@ref log4cxx.spi.Filter) for some more
-information, or view a [configuration sample](@ref configuration-samples).
-
 # Internal Debugging {#internal-debugging}
 
 Because Log4cxx is a logging library, we can't use it to output errors from

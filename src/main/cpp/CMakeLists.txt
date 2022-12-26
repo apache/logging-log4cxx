@@ -125,6 +125,7 @@ target_sources(log4cxx
   loader.cpp
   locale.cpp
   locationinfo.cpp
+  locationinfofilter.cpp
   logger.cpp
   loggermatchfilter.cpp
   loggerpatternconverter.cpp
