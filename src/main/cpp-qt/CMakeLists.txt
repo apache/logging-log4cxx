@@ -33,6 +33,7 @@ if(LOG4CXX_QT_SUPPORT)
     target_sources(log4cxx-qt
       PRIVATE
       messagehandler.cpp
+	  configuration.cpp
     )
     set_target_properties(log4cxx-qt PROPERTIES
       VERSION ${LIBLOG4CXX_LIB_VERSION}
