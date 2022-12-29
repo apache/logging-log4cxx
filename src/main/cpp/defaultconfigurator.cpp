@@ -22,6 +22,8 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -150,6 +152,41 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 	return milliseconds;
 }
 
+log4cxx::spi::ConfigurationStatus DefaultConfigurator::tryLoadFile(const LogString& filename){
+	if(helpers::StringHelper::endsWith(filename, ".xml")){
+		return log4cxx::xml::DOMConfigurator::configure(filename);
+	}else if(helpers::StringHelper::endsWith(filename, ".properties")){
+		return log4cxx::PropertyConfigurator::configure(filename);
+	}
+
+	return log4cxx::spi::ConfigurationStatus::NotConfigured;
+}
+
+std::tuple<log4cxx::spi::ConfigurationStatus,LogString>
+DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories, const std::vector<LogString>& filenames){
+	log4cxx::helpers::Pool pool;
+
+	for( LogString dir : directories ){
+		for( LogString fname : filenames ){
+			LogString canidate_str = dir + "/" + fname;
+			File candidate(canidate_str);
+
+			LogString debugMsg = LOG4CXX_STR("Checking file ");
+			debugMsg.append(canidate_str);
+			LogLog::debug(debugMsg);
+			if (candidate.exists(pool))
+			{
+				log4cxx::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
+				if( configStatus == log4cxx::spi::ConfigurationStatus::Configured ){
+					return {configStatus, canidate_str};
+				}
+				LogLog::debug("Unable to load file: trying next");
+			}
+		}
+	}
+
+	return {log4cxx::spi::ConfigurationStatus::NotConfigured, LogString()};
+}
 
 
 
