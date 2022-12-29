@@ -1957,18 +1957,20 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 	#endif
 #endif
 
-#ifndef __has_include
-#if defined(LOG4CXX_ENABLE_STACKTRACE)
-#include <boost/stacktrace.hpp>
-#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
-#endif
-#elif __has_include(<stacktrace>)
-#include <stacktrace>
-#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + std::stacktrace::to_string(std::stacktrace::stacktrace()));
-#elif __has_include(<boost/stacktrace.hpp>)
-#include <boost/stacktrace.hpp>
-#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
-#endif
+#if defined(LOG4CXX_ENABLE_STACKTRACE) && !defined(LOG4CXX_STACKTRACE)
+	#ifndef __has_include
+		#include <boost/stacktrace.hpp>
+		#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
+	#elif __has_include(<stacktrace>)
+		#include <stacktrace>
+		#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + std::stacktrace::to_string(std::stacktrace::stacktrace()));
+	#elif __has_include(<boost/stacktrace.hpp>)
+		#include <boost/stacktrace.hpp>
+		#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
+	#else
+		#warning "Stacktrace requested but no implementation found"
+	#endif
+#endif /* LOG4CXX_ENABLE_STACKTRACE */
 
 #if !defined(LOG4CXX_STACKTRACE)
 #define LOG4CXX_STACKTRACE

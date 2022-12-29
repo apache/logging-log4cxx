@@ -24,11 +24,15 @@ Stacktrace Support {#stacktrace-support}
 When debugging a code base and an assertion is hit, it is often useful to
 have a stacktrace as part of an assertion in order for you to tell where
 you are in the code to know why it is buggy.  Generating a stacktrace can
-be done with [Boost Stacktrace](https://www.boost.org/doc/libs/1_81_0/doc/html/stacktrace.html).
+be done with [Boost Stacktrace](https://www.boost.org/doc/libs/1_81_0/doc/html/stacktrace.html),
+or using the [stacktrace](https://en.cppreference.com/w/cpp/header/stacktrace) header if you are using a C++23 compatible compiler.
 
 In order to enable stacktraces when using the `LOG4CXX_ASSERT` family of macros,
-simply define `LOG4CXX_ENABLE_STACKTRACE` in your buildsystem and make sure that
-Boost Stacktrace is installed on your system.  This will automatically insert an
+simply define `LOG4CXX_ENABLE_STACKTRACE` in your buildsystem.  If you are using a
+compiler that does not support C++17 and the `__has_include` macro, Boost Stacktrace
+must be installed and available on your system.  If your compiler supports the
+`__has_include` macro, then it will search for Boost Stacktrace, followed by searching
+for `<stacktrace>`.  Both implementations will insert an
 entry into the MDC named `stacktrace` that may then be inserted into log
 statements.  When using the [PatternLayout](@ref log4cxx.PatternLayout), this
 may be accomplished by using the `%%X{stacktrace}` conversion pattern.
