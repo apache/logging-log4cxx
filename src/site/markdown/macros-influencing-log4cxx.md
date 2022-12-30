@@ -33,3 +33,4 @@ Log4cxx includes), or they may be set globally via your build system.
 | ----- | ----- |
 | LOG4CXX\_THRESHOLD | Used to determine if log messages are compiled in or not.  A higher value causes more messages to be compiled out.  See [removing log statements](usage.html#removing-log-statements) for more information. |
 | LOG4CXX\_DISABLE\_LOCATION\_INFO | Define this macro to disable location information on log statements.  Location information includes the filename, class name, method name, and line number |
+| LOG4CXX\_ENABLE\_STACKTRACE | Define this macro to cause a stacktrace string to be inserted into the MDC with a key of 'stacktrace'.  This requires Boost Stacktrace or C++23 stacktrace to be available when compiling your application.  When using the PatternLayout, print out the stacktrace using the `%%X{stacktrace}` specifier.  See [stacktrace support](stacktrace-support.html) for more information. |

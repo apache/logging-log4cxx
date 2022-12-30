@@ -1957,6 +1957,25 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 	#endif
 #endif
 
+#if defined(LOG4CXX_ENABLE_STACKTRACE) && !defined(LOG4CXX_STACKTRACE)
+	#ifndef __has_include
+		#include <boost/stacktrace.hpp>
+		#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
+	#elif __has_include(<stacktrace>)
+		#include <stacktrace>
+		#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + std::stacktrace::to_string(std::stacktrace::stacktrace()));
+	#elif __has_include(<boost/stacktrace.hpp>)
+		#include <boost/stacktrace.hpp>
+		#define LOG4CXX_STACKTRACE ::log4cxx::MDC mdc_("stacktrace", LOG4CXX_EOL + boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
+	#else
+		#warning "Stacktrace requested but no implementation found"
+	#endif
+#endif /* LOG4CXX_ENABLE_STACKTRACE */
+
+#if !defined(LOG4CXX_STACKTRACE)
+#define LOG4CXX_STACKTRACE
+#endif
+
 
 /**
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
@@ -2173,6 +2192,7 @@ If \c condition is not true, add a new logging event containing \c message to at
 #define LOG4CXX_ASSERT(logger, condition, message) do { \
 		if (!(condition) && ::log4cxx::Logger::isErrorEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
@@ -2184,6 +2204,7 @@ If \c condition is not true, add a new logging event containing libfmt formatted
 */
 #define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
 		if (!(condition) && ::log4cxx::Logger::isErrorEnabledFor(logger)) {\
+			LOG4CXX_STACKTRACE \
 			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 #else
