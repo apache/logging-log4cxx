@@ -35,7 +35,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/fileappender_priv.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
-#include <log4cxx/boost-std-configuration.h>
+#include <log4cxx/private/boost-std-configuration.h>
 #include <mutex>
 
 using namespace log4cxx;

@@ -54,6 +54,7 @@
 #define LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE 0
 #define LOG4CXX_LOGSTREAM_ADD_NOP 0
 
+#include <log4cxx/helpers/makeunique.h>
 #include <memory>
 #include <cstdint>
 
