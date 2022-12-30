@@ -26,8 +26,12 @@ set(LOG4CXX_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # define the SO Version of the library. Version of the log4cxx project is subtly different than the version of the library
 # (at least in the past it was project vesion: 0.a.b.c and the library so vesion a.b.c.0
-set(LIBLOG4CXX_LIB_VERSION ${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}.${log4cxx_VERSION_TWEAK})
-set(LIBLOG4CXX_LIB_SOVERSION ${log4cxx_VERSION_MINOR})
+# See also: https://mail.kde.org/pipermail/kde-buildsystem/2008-April/004543.html
+# Note that the lib version is different from the SOVERSION
+# The lib version is the version of log4cxx, the SOVERSION is the ABI version
+# See also: https://cmake.org/pipermail/cmake/2012-September/051904.html
+set(LIBLOG4CXX_LIB_VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}.${log4cxx_VERSION_TWEAK})
+set(LIBLOG4CXX_LIB_SOVERSION 15.0.0)
 # Set the 'release' version.  This is the human-readable version
 set(LOG4CXX_RELEASE_VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
 
