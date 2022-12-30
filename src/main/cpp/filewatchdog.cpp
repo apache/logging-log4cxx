@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <functional>
+#include <chrono>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

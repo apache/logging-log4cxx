@@ -16,6 +16,7 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/date.h>
+#include <chrono>
 
 #define LOG4CXX_USEC_PER_SEC 1000000LL
 #ifndef INT64_C

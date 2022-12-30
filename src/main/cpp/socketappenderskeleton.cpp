@@ -27,6 +27,7 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/private/socketappenderskeleton_priv.h>
 #include <functional>
+#include <chrono>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
