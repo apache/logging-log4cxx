@@ -20,7 +20,6 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/outputstreamwriter.h>
-#include <log4cxx/boost-std-configuration.h>
 #include <atomic>
 
 namespace log4cxx
