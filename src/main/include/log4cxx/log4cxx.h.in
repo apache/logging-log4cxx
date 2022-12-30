@@ -54,7 +54,6 @@
 #define LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE 0
 #define LOG4CXX_LOGSTREAM_ADD_NOP 0
 
-#include "boost-std-configuration.h"
 #include <memory>
 #include <cstdint>
 
