@@ -6,7 +6,6 @@
 #cmakedefine01 STD_FILESYSTEM_FOUND
 #cmakedefine01 Boost_FILESYSTEM_FOUND
 #cmakedefine01 STD_EXPERIMENTAL_FILESYSTEM_FOUND
-#cmakedefine01 STD_MAKE_UNIQUE_FOUND
 
 #if STD_SHARED_MUTEX_FOUND
 #include <shared_mutex>
