@@ -1,4 +1,4 @@
-# Library Design Notes
+# Library Design Notes {#library-design}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,7 +21,7 @@
  limitations under the License.
 -->
 
-With version x.y of Log4cxx, the library is designed to be ABI stable, such
+With version 1.0.0 of Log4cxx, the library is designed to be ABI stable, such
 that any internal changes to classes will not cause client code to break.
 In order to do this, there are a few patterns that are used in order to make
 sure that it stays stable.

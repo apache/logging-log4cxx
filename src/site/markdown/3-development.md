@@ -28,3 +28,4 @@ See the following pages for development information:
 * @subpage building
 * @subpage build-cmake
 * @subpage build-vcpkg
+* @subpage library-design

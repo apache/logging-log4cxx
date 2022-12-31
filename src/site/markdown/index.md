@@ -35,7 +35,7 @@ and the corresponding logged result values.
 These debugging log statements can be removed from the shipped application
 using a compiler build directive.
 Logging statements do increase the (code) size of the application,
-but with log4cxx the speed of the application is not generally affected (see [Performance]).
+but with Log4cxx the speed of the application is not generally affected (see [Performance]).
 
 Logging is useful where debuggers are not, for example:
 - distributed applications
@@ -50,8 +50,15 @@ The configuration also allows you to control the destination of log messages.
 They can be sent to a file, a remote socket server, event loggers as well as the console,
 with support for directing particular messages to one or more destinations.
 
+More information on how to use Log4cxx can be found on the [usage] page.  For
+a more general overview of what logging is, the logging services committee
+has a [logging overview] page that explains more of what logging is and
+when to use it.
+
 [Apache log4j]:https://logging.apache.org/log4j/2.x/
 [Apache Portable Runtime]:https://apr.apache.org/
 [Apache License]:https://www.apache.org/licenses/
+[usage]:usage.html
 [Open Source Initiative]:https://opensource.org/
 [Performance]:usage.html#performance
+[logging overview]:https://logging.apache.org/what-is-logging.html

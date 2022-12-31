@@ -23,7 +23,7 @@ Issue Tracking {#issue-tracking}
 # Overview
 
 This project uses [JIRA](https://www.atlassian.com/software/jira), a J2EE-based issue tracking
-and project management application.
+and project management application. Issues may also be filed through GitHub.
 
 # Issue Tracking
 
@@ -31,6 +31,13 @@ and project management application.
 for this project.
 
 https://issues.apache.org/jira/browse/LOGCXX
+
+If you do not have a JIRA account, you may email private@logging.apache.org due to the
+Apache Software Foundation restricting signups([more information](https://infra.apache.org/jira-guidelines.html#who)).
+
+Issues may also be filed via the github mirror:
+
+https://github.com/apache/logging-log4cxx/issues
 
 *Please don't just open bugs only because things don't work for you*, some issues simply
 aren't bugs in the code base of the project or it's build tools, but may have a lot of
