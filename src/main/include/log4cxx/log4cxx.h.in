@@ -55,7 +55,6 @@
 #define LOG4CXX_LOGSTREAM_ADD_NOP 0
 
 #include <log4cxx/helpers/makeunique.h>
-#include <memory>
 #include <cstdint>
 
 #define LOG4CXX_PTR_DEF(T) typedef std::shared_ptr<T> T##Ptr;\
