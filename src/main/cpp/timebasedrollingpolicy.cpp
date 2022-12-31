@@ -28,7 +28,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/fileappender.h>
-#include <log4cxx/boost-std-configuration.h>
+#include <log4cxx/private/boost-std-configuration.h>
 #include <iostream>
 #include <apr_mmap.h>
 

@@ -239,6 +239,9 @@ else()
     set(STD_MAKE_UNIQUE_IMPL "log4cxx std::make_unique")
     set(STD_MAKE_UNIQUE_FOUND 0)
 endif()
+configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/makeunique.h.cmake
+                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/helpers/makeunique.h
+)
 
 # Configure both our private header and our public header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
@@ -250,7 +253,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
 	       @ONLY
 )
 configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
-                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/boost-std-configuration.h
+                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
 )
 
 # Provide the dependencies
