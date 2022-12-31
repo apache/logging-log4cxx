@@ -30,8 +30,8 @@ set(LOG4CXX_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 # Note that the lib version is different from the SOVERSION
 # The lib version is the version of log4cxx, the SOVERSION is the ABI version
 # See also: https://cmake.org/pipermail/cmake/2012-September/051904.html
-set(LIBLOG4CXX_LIB_VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}.${log4cxx_VERSION_TWEAK})
-set(LIBLOG4CXX_LIB_SOVERSION 15.0.0)
+set(LIBLOG4CXX_LIB_VERSION 15.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
+set(LIBLOG4CXX_LIB_SOVERSION 15)
 # Set the 'release' version.  This is the human-readable version
 set(LOG4CXX_RELEASE_VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
 
