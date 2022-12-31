@@ -252,7 +252,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
 	       @ONLY
 )
-configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/private/boost-std-configuration.h.cmake
+configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
                 ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
 )
 
