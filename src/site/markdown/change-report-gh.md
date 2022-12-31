@@ -25,6 +25,7 @@ Changelog {#changelog}
 
 | Version                                                                                | Date       | Description          |
 | -------------------------------------------------------------------------------------- | ---------- | -------------------- |
+| [1.0.0](#rel_1_0_0) | 2023-01-01 | Major release to standardize the library and make it ABI stable  |
 | [0.13.0](#rel_13_0) | 2022-04-15 | Maintenance release  |
 | [0.12.1](#rel_12_1) | 2021-09-21 | Bugfix for 0.12.0 |
 | [0.12.0](#rel_12_0) | 2021-05-01 | First release to require C++11. Updates for smart pointers.  Standardization on CMake for building. |
@@ -41,6 +42,85 @@ Changelog {#changelog}
 | [0.1.1](#rel_1_1)   | 2003-07-09 |                      |
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
+
+## Release 1.0.0 - 2023-01-01 {#rel_1_0_0}
+
+This is a major release that fixes a number of long-standing issues and is desinged
+to make Log4cxx ABI stable moving forward.  A few notes on this version:
+
+* Removed log4j style Java serialization.  Due to Java's inherent problems
+with serialization, and the fact that Chainsaw no longer supports it, it has
+been completely removed.
+* A number of obsolete classes have been removed
+	* Removal of TTCCLayout.  If you still want this layout, use a PatternLayout
+with a format similar to the following:
+`%%r [%%t] %-5p - %%m%%n`
+	* Removal of DateLayout.  Use PatternLayout instead.
+* Classes now use an internal private class to store member variables in order to
+make them ABI stable
+* Multiprocess support is available, but Log4cxx must be explicitly compiled with this option
+
+Full release notes are below:
+Bug
+---
+
+-   \[[LOGCXX-432](https://issues.apache.org/jira/browse/LOGCXX-432)\] -
+    AsyncAppender automatically switches to sync mode when e.g. there is
+    no disk space available
+-   \[[LOGCXX-451](https://issues.apache.org/jira/browse/LOGCXX-451)\] -
+    Application hang up during exit on Windows
+-   \[[LOGCXX-491](https://issues.apache.org/jira/browse/LOGCXX-491)\] -
+    SizeBasedRollingTest cases fail when defining
+    LOG4CXX\_MULTI\_PROCESS
+-   \[[LOGCXX-563](https://issues.apache.org/jira/browse/LOGCXX-563)\] -
+    Fix memory leaks
+
+New Feature
+-----------
+
+-   \[[LOGCXX-514](https://issues.apache.org/jira/browse/LOGCXX-514)\] -
+    Create a libfmt layout
+-   \[[LOGCXX-518](https://issues.apache.org/jira/browse/LOGCXX-518)\] -
+    Refactor the multi process code of RollingFileAppender
+-   \[[LOGCXX-559](https://issues.apache.org/jira/browse/LOGCXX-559)\] -
+    Implement LocationInfoFilter
+
+Improvement
+-----------
+
+-   \[[LOGCXX-516](https://issues.apache.org/jira/browse/LOGCXX-516)\] -
+    Make classes ABI-stable
+-   \[[LOGCXX-524](https://issues.apache.org/jira/browse/LOGCXX-524)\] -
+    Remove silent exceptions
+-   \[[LOGCXX-527](https://issues.apache.org/jira/browse/LOGCXX-527)\] -
+    Mock the clock for tests
+-   \[[LOGCXX-542](https://issues.apache.org/jira/browse/LOGCXX-542)\] -
+    Remove log4j serialization
+-   \[[LOGCXX-549](https://issues.apache.org/jira/browse/LOGCXX-549)\] -
+    Make networking classes independent of implementation
+-   \[[LOGCXX-557](https://issues.apache.org/jira/browse/LOGCXX-557)\] -
+    Keep track of all appenders even if unused
+-   \[[LOGCXX-558](https://issues.apache.org/jira/browse/LOGCXX-558)\] -
+    Prevent MSVC compilation warnings \"needs to have dll-interface\"
+-   \[[LOGCXX-564](https://issues.apache.org/jira/browse/LOGCXX-564)\] -
+    Put typedefs into log4cxx namespace
+-   \[[LOGCXX-566](https://issues.apache.org/jira/browse/LOGCXX-566)\] -
+    Configurable output colors for log messages
+-   \[[LOGCXX-567](https://issues.apache.org/jira/browse/LOGCXX-567)\] -
+    Investigate backtrace support
+-   \[[LOGCXX-568](https://issues.apache.org/jira/browse/LOGCXX-568)\] -
+    Cleaunup files if rollover fails
+-   \[[LOGCXX-570](https://issues.apache.org/jira/browse/LOGCXX-570)\] -
+    Remove ObjectOutputStream
+-   \[[LOGCXX-571](https://issues.apache.org/jira/browse/LOGCXX-571)\] -
+    Better document \'runtime\' env vars and macros
+-   \[[LOGCXX-572](https://issues.apache.org/jira/browse/LOGCXX-572)\] -
+    Add support to re-read configuration files to Qt support
+-   \[[LOGCXX-573](https://issues.apache.org/jira/browse/LOGCXX-573)\] -
+    Provide feedback when configuring log4cxx
+-   \[[LOGCXX-574](https://issues.apache.org/jira/browse/LOGCXX-574)\] -
+    Provide a list of directories/filenames to try to configure
+
 
 ## Release 0.13.0 - 2022-04-15 {#rel_13_0}
 
