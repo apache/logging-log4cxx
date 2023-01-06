@@ -60,5 +60,5 @@ when to use it.
 [Apache License]:https://www.apache.org/licenses/
 [usage]:usage.html
 [Open Source Initiative]:https://opensource.org/
-[Performance]:usage.html#performance
+[Performance]:performance.html
 [logging overview]:https://logging.apache.org/what-is-logging.html
