@@ -89,7 +89,7 @@ __pragma( warning( pop ) )
 #elif defined(LOG4CXX)          // Building a DLL?
 #define LOG4CXX_EXPORT __declspec(dllexport)
 #else                          // Linking against a DLL?
-define LOG4CXX_EXPORT __declspec(dllimport)
+#define LOG4CXX_EXPORT __declspec(dllimport)
 #endif // !LOG4CXX_STATIC
 #else // !defined(_WIN32) || !defined(_MSC_VER)
 #define LOG4CXX_EXPORT
