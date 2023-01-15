@@ -63,7 +63,7 @@
 #define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N
 #define LOG4CXX_PRIVATE_PTR(T) std::unique_ptr<T>
 
-#if _WIN32
+#if defined(_MSC_VER)
 #define LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(T, V) \
 __pragma( warning( push ) ) \
 __pragma( warning( disable : 4251 ) ) \
@@ -76,23 +76,24 @@ __pragma( warning( disable : 4251 ) ) \
     T V; \
 __pragma( warning( pop ) )
 
-//  definitions used when using static library
-#if defined(LOG4CXX_STATIC)
-#define LOG4CXX_EXPORT
-//   definitions used when building DLL
-#elif defined(LOG4CXX)
-#define LOG4CXX_EXPORT __declspec(dllexport)
-#else
-//    definitions used when using DLL
-#define LOG4CXX_EXPORT __declspec(dllimport)
-#endif
 #define LOG4CXX_INSTANTIATE_EXPORTED_PTR(T) template class LOG4CXX_EXPORT std::shared_ptr<T>
-#else
-#define LOG4CXX_EXPORT
+#else // !defined(_MSC_VER)
 #define LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(T, V) struct T; LOG4CXX_PRIVATE_PTR(T) V;
 #define LOG4CXX_DECLARE_PRIVATE_MEMBER(T, V) T V;
 #define LOG4CXX_INSTANTIATE_EXPORTED_PTR(T)
-#endif /* WIN32 */
+#endif // defined(_MSC_VER)
+
+#if defined(_WIN32) && defined(_MSC_VER)
+#if defined(LOG4CXX_STATIC)     // Linking a static library?
+#define LOG4CXX_EXPORT
+#elif defined(LOG4CXX)          // Building a DLL?
+#define LOG4CXX_EXPORT __declspec(dllexport)
+#else                          // Linking against a DLL?
+define LOG4CXX_EXPORT __declspec(dllimport)
+#endif // !LOG4CXX_STATIC
+#else // !defined(_WIN32) || !defined(_MSC_VER)
+#define LOG4CXX_EXPORT
+#endif // !defined(_WIN32) || !defined(_MSC_VER)
 
 namespace log4cxx {
 
