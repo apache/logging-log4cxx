@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 #include "logunit.h"
+#include "util/compare.h"
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/defaultconfigurator.h>
+#include <log4cxx/fileappender.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/fileoutputstream.h>
@@ -145,6 +147,11 @@ public:
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 		LOG4CXX_DEBUG(debugLogger, "Test message");
+#if STD_MAKE_UNIQUE_FOUND || defined(WIN32)
+		FileAppenderPtr fileAppender = cast<FileAppender>(debugLogger->getRootLogger()->getAppender(LOG4CXX_STR("A1")));
+		LOGUNIT_ASSERT(fileAppender);
+		LOGUNIT_ASSERT(Compare::compare(fileAppender->getFile(), LOG4CXX_FILE("witness/autoConfigureTest.2")));
+#endif
 	}
 
 	void test3()
