@@ -105,6 +105,16 @@ public:
 		LOGUNIT_ASSERT(rep->isConfigured());
 	}
 
+#if !STD_MAKE_UNIQUE_FOUND
+	void setThreadName(const std::thread::id& n, const LogString& name)
+	{
+#ifdef WIN32
+		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, ::GetCurrentThread());
+#else
+		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, n.native_handle());
+#endif
+	}
+#else
 	// Base for a template that identifies whather std::thread::id has a native_handle member
 	template< class, class = void >
 	struct has_native_handle_member : std::false_type { };
@@ -128,6 +138,7 @@ public:
 	{
 		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, n.native_handle());
 	}
+#endif
 
 	void test2()
 	{
