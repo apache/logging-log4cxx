@@ -110,8 +110,6 @@ public:
 	{
 #ifdef WIN32
 		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, ::GetCurrentThread());
-#else
-		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, n.native_handle());
 #endif
 	}
 #else
