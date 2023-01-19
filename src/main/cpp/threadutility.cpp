@@ -139,13 +139,26 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
 		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
 	}
-#elif LOG4CXX_HAS_SETTHREADDESCRIPTION
-	LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
-	HRESULT hr = SetThreadDescription(static_cast<HANDLE>(nativeHandle), wthreadName.c_str());
-	if(FAILED(hr)){
-		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
+#elif WIN32
+	typedef HRESULT (WINAPI *TSetThreadDescription)(HANDLE, PCWSTR);
+	static struct initialiser
+	{
+		HMODULE hKernelBase;
+		TSetThreadDescription SetThreadDescription;
+		initialiser()
+			: hKernelBase(GetModuleHandleA("KernelBase.dll"))
+			, SetThreadDescription(nullptr)
+		{
+			if (hKernelBase)
+				SetThreadDescription = reinterpret_cast<TSetThreadDescription>(GetProcAddress(hKernelBase, "SetThreadDescription"));
+		}
+	} win32Func;
+	if (win32Func.SetThreadDescription)
+	{
+		LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
+		if(FAILED(win32Func.SetThreadDescription(static_cast<HANDLE>(nativeHandle), wthreadName.c_str())))
+			LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
-
 #endif
 }
 

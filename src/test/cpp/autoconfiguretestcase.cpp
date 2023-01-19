@@ -24,6 +24,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/threadutility.h>
 #include <thread>
 #include <apr_file_io.h>
 #include <apr_file_info.h>
@@ -104,11 +105,37 @@ public:
 		LOGUNIT_ASSERT(rep->isConfigured());
 	}
 
+	// Base for a template that identifies whather std::thread::id has a native_handle member
+	template< class, class = void >
+	struct has_native_handle_member : std::false_type { };
+
+	template< class T >
+	struct has_native_handle_member<T,
+		std::void_t<decltype(std::declval<T&>().native_handle)>
+	> : std::true_type { };
+
+	template <typename V>
+	void setThreadName(const V& n, const LogString& name,
+		typename std::enable_if<!has_native_handle_member<V>::value, bool>::type* tag = 0)
+	{
+#ifdef WIN32
+		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, ::GetCurrentThread());
+#endif
+	}
+	template <typename V>
+	void setThreadName(const V& n, const LogString& name,
+		typename std::enable_if<has_native_handle_member<V>::value, bool>::type* tag = 0)
+	{
+		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, n.native_handle())
+	}
+
 	void test2()
 	{
+		setThreadName(std::this_thread::get_id(), LOG4CXX_STR("main"));
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test2"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
+		LOG4CXX_DEBUG(debugLogger, "Test message");
 	}
 
 	void test3()

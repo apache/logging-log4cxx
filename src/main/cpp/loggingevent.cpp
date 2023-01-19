@@ -374,13 +374,31 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 	}
 
 	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
-#elif LOG4CXX_HAS_GETTHREADDESCRIPTION
-	PWSTR result;
-	HANDLE threadId = GetCurrentThread();
-	if( GetThreadDescription( threadId, &result ) == 0 ){
-		// Success
-		log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
-		LocalFree(result);
+#elif WIN32
+	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
+	static struct initialiser
+	{
+		HMODULE hKernelBase;
+		TGetThreadDescription GetThreadDescription;
+		initialiser()
+			: hKernelBase(GetModuleHandleA("KernelBase.dll"))
+			, GetThreadDescription(nullptr)
+		{
+			if (hKernelBase)
+				GetThreadDescription = reinterpret_cast<TGetThreadDescription>(GetProcAddress(hKernelBase, "GetThreadDescription"));
+		}
+	} win32func;
+	if (win32func.GetThreadDescription)
+	{
+		PWSTR result = 0;
+		HRESULT hr = win32func.GetThreadDescription(GetCurrentThread(), &result);
+		if (SUCCEEDED(hr))
+		{
+			std::wstring wresult = result;
+			LOG4CXX_DECODE_UNICHAR(decoded, wresult);
+			LocalFree(result);
+			thread_name = decoded;
+		}
 	}else{
 		thread_name = LOG4CXX_STR("(noname)");
 	}
