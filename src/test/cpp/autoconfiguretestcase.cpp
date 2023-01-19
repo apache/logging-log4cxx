@@ -126,7 +126,7 @@ public:
 	void setThreadName(const V& n, const LogString& name,
 		typename std::enable_if<has_native_handle_member<V>::value, bool>::type* tag = 0)
 	{
-		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, n.native_handle())
+		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, n.native_handle());
 	}
 
 	void test2()
