@@ -25,7 +25,7 @@
 #include <signal.h>
 #include <mutex>
 
-#if LOG4CXX_HAS_SETTHREADDESCRIPTION
+#if WIN32
 	#include <windows.h>
 	#include <processthreadsapi.h>
 #endif

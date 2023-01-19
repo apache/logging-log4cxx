@@ -91,7 +91,7 @@ public:
 	if( pthread_setname_np( pthread_self(), sthreadName.c_str() ) < 0 ){
 		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
-#elif LOG4CXX_HAS_SETTHREADDESCRIPTION
+#elif WIN32
 	LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
 	HRESULT hr = SetThreadDescription(GetCurrentThread(), wthreadName.c_str());
 	if(FAILED(hr)){
