@@ -16,7 +16,12 @@
  */
 
 #include "../logunit.h"
+#include "util/compare.h"
 #include <log4cxx/helpers/threadutility.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/fileappender.h>
+#include <log4cxx/logmanager.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -28,7 +33,16 @@ LOGUNIT_CLASS(ThreadUtilityTest)
 	LOGUNIT_TEST(testNullFunctions);
 	LOGUNIT_TEST(testCustomFunctions);
 	LOGUNIT_TEST(testDefaultFunctions);
+	LOGUNIT_TEST(testThreadNameLogging);
 	LOGUNIT_TEST_SUITE_END();
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 public:
 	void testNullFunctions()
@@ -86,6 +100,19 @@ public:
 		t.join();
 	}
 
+	void testThreadNameLogging()
+	{
+		auto layout = std::make_shared<PatternLayout>(LOG4CXX_STR("%T %m%n"));
+		LogString logFileName(LOG4CXX_STR("output/threadnametestcase.log"));
+		AppenderPtr appender(new FileAppender(layout, logFileName, false));
+		auto logger = LogManager::getRootLogger();
+		logger->addAppender(appender);
+		std::thread t = ThreadUtility::instance()->createThread( LOG4CXX_STR("FooName"), [logger]() {
+			LOG4CXX_DEBUG(logger, "Test message");
+		});
+		t.join();
+		LOGUNIT_ASSERT(Compare::compare(logFileName, LOG4CXX_FILE("witness/threadnametestcase.1")));
+	}
 };
 
 

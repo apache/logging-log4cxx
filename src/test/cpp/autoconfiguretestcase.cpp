@@ -15,18 +15,15 @@
  * limitations under the License.
  */
 #include "logunit.h"
-#include "util/compare.h"
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/defaultconfigurator.h>
-#include <log4cxx/fileappender.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/threadutility.h>
 #include <thread>
 #include <apr_file_io.h>
 #include <apr_file_info.h>
@@ -107,51 +104,11 @@ public:
 		LOGUNIT_ASSERT(rep->isConfigured());
 	}
 
-#if !STD_MAKE_UNIQUE_FOUND
-	void setThreadName(const std::thread::id& n, const LogString& name)
-	{
-#ifdef WIN32
-		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, ::GetCurrentThread());
-#endif
-	}
-#else
-	// Base for a template that identifies whather std::thread::id has a native_handle member
-	template< class, class = void >
-	struct has_native_handle_member : std::false_type { };
-
-	template< class T >
-	struct has_native_handle_member<T,
-		std::void_t<decltype(std::declval<T&>().native_handle)>
-	> : std::true_type { };
-
-	template <typename V>
-	void setThreadName(const V& n, const LogString& name,
-		typename std::enable_if<!has_native_handle_member<V>::value, bool>::type* tag = 0)
-	{
-#ifdef WIN32
-		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, ::GetCurrentThread());
-#endif
-	}
-	template <typename V>
-	void setThreadName(const V& n, const LogString& name,
-		typename std::enable_if<has_native_handle_member<V>::value, bool>::type* tag = 0)
-	{
-		log4cxx::helpers::ThreadUtility::instance()->threadStartedNameThread(name, n, n.native_handle());
-	}
-#endif
-
 	void test2()
 	{
-		setThreadName(std::this_thread::get_id(), LOG4CXX_STR("main"));
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test2"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
-		LOG4CXX_DEBUG(debugLogger, "Test message");
-#if STD_MAKE_UNIQUE_FOUND || defined(WIN32)
-		FileAppenderPtr fileAppender = cast<FileAppender>(debugLogger->getRootLogger()->getAppender(LOG4CXX_STR("A1")));
-		LOGUNIT_ASSERT(fileAppender);
-		LOGUNIT_ASSERT(Compare::compare(fileAppender->getFile(), LOG4CXX_FILE("witness/autoConfigureTest.2")));
-#endif
 	}
 
 	void test3()
