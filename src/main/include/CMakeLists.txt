@@ -146,11 +146,6 @@ if(UNIX)
     endif()
 endif(UNIX)
 
-if(WIN32)
-    CHECK_SYMBOL_EXISTS(SetThreadDescription "windows.h;processthreadsapi.h" HAS_SETTHREADDESCRIPTION)
-    CHECK_SYMBOL_EXISTS(GetThreadDescription "windows.h;processthreadsapi.h" HAS_GETTHREADDESCRIPTION)
-endif(WIN32)
-
 foreach(varName
   HAS_THREAD_LOCAL
   HAS_STD_LOCALE
@@ -163,8 +158,6 @@ foreach(varName
   HAS_PTHREAD_SIGMASK
   HAS_PTHREAD_SETNAME
   HAS_PTHREAD_GETNAME
-  HAS_SETTHREADDESCRIPTION
-  HAS_GETTHREADDESCRIPTION
   )
   if(${varName} EQUAL 0)
     continue()
