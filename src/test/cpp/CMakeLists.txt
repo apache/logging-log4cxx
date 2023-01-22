@@ -15,6 +15,9 @@
 # limitations under the License.
 #
 
+option(ENABLE_MULTITHREAD_TEST "Enable multithread test.  Note that this test is very unstable,
+    it is mostly designed to ensure that we don't crash immediately if exit is called in a thread"  OFF)
+
 # Components required by all tests
 add_library(testingFramework STATIC abts.cpp appenderskeletontestcase.cpp logunit.cpp vectorappender.cpp writerappendertestcase.cpp )
 target_compile_definitions(testingFramework PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
@@ -54,12 +57,14 @@ set(ALL_LOG4CXX_TESTS
     propertyconfiguratortest
     rollingfileappendertestcase
     streamtestcase
-    multithreadtest
     locationtest
     locationdisabledtest
 )
 if(${ENABLE_FMT_LAYOUT})
     set(ALL_LOG4CXX_TESTS ${ALL_LOG4CXX_TESTS} fmttest)
+endif()
+if(${ENABLE_MULTITHREAD_TEST})
+    set(ALL_LOG4CXX_TESTS ${ALL_LOG4CXX_TESTS} multithreadtest)
 endif()
 foreach(fileName IN LISTS ALL_LOG4CXX_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
