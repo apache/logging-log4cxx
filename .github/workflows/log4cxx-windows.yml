@@ -74,7 +74,7 @@ jobs:
         cd main
         mkdir build
         cd build
-        cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DLOG4CXX_CHAR=unichar -DLOG4CXX_UNICHAR=on "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
+        cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DLOG4CXX_CHAR=wchar_t  "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
         cmake --build .
 
     - name: run unit tests
