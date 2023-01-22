@@ -140,18 +140,18 @@ public:
 			return micros;
 		});
 
-		log4cxx::spi::LoggingEventPtr logEvt = std::make_shared<log4cxx::spi::LoggingEvent>( "foo",
+		log4cxx::spi::LoggingEventPtr logEvt = std::make_shared<log4cxx::spi::LoggingEvent>(LOG4CXX_STR("foo"),
 																							 Level::getInfo(),
-																							 "A Message",
+																							 LOG4CXX_STR("A Message"),
 																							 log4cxx::spi::LocationInfo::getLocationUnavailable());
-		FMTLayout layout("{d:%Y-%m-%d %H:%M:%S} {message}" );
+		FMTLayout layout(LOG4CXX_STR("{d:%Y-%m-%d %H:%M:%S} {message}"));
 		LogString output;
 		log4cxx::helpers::Pool pool;
 		layout.format( output, logEvt, pool);
 
 		log4cxx::helpers::Date::setGetCurrentTimeFunction(nullptr);
 
-		LOGUNIT_ASSERT_EQUAL("2013-04-11 09:35:34 A Message", output);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("2013-04-11 09:35:34 A Message"), output);
 	}
 
 	std::string createMessage(Pool & pool, int i)
