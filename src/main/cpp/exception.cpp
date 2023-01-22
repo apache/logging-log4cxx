@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
 #include <string.h>
@@ -175,9 +174,12 @@ LogString IOException::formatMessage(log4cxx_status_t stat)
 	LogString s(LOG4CXX_STR("IO Exception : status code = "));
 	Pool p;
 	StringHelper::toString(stat, p, s);
-	s.append("(");
-	s.append(apr_strerror(stat, err_buff, sizeof(err_buff)));
-	s.append(")");
+	s.append(LOG4CXX_STR("("));
+	apr_strerror(stat, err_buff, sizeof(err_buff));
+	std::string sMsg = err_buff;
+	LOG4CXX_DECODE_CHAR(lsMsg, sMsg);
+	s.append(lsMsg);
+	s.append(LOG4CXX_STR(")"));
 	return s;
 }
 

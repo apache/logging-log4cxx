@@ -48,7 +48,7 @@ struct LogLog::LogLogPrivate {
 LogLog::LogLog() :
 	m_priv(std::make_unique<LogLogPrivate>())
 {
-	LogString log4cxxDebug = OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_DEBUG"), "false");
+	LogString log4cxxDebug = OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_DEBUG"), LOG4CXX_STR("false"));
 	m_priv->debugEnabled = OptionConverter::toBoolean(log4cxxDebug, false);
 }
 

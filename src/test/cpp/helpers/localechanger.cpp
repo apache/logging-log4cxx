@@ -16,6 +16,8 @@
  */
 #define LOG4CXX_TEST
 #include <log4cxx/private/log4cxx_private.h>
+#include "log4cxx/helpers/loglog.h"
+#include "log4cxx/helpers/transcoder.h"
 #if LOG4CXX_HAS_STD_LOCALE
 
 #include "localechanger.h"
@@ -37,11 +39,13 @@ LocaleChanger::LocaleChanger(const char* locale)
 		initial = std::locale::global(newLocale);
 		effective = true;
 	}
-	catch (std::runtime_error&)
+	catch (std::exception& ex)
 	{
-	}
-	catch (std::exception&)
-	{
+		LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
+		LogString errorMsg;
+		errorMsg.append(lsMsg);
+		errorMsg.append(LOG4CXX_STR(" - in LocaleChanger"));
+		LogLog::error(errorMsg);
 	}
 }
 

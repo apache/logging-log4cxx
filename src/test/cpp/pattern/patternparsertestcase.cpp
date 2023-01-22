@@ -29,6 +29,7 @@
 #include <log4cxx/pattern/patternconverter.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/helpers/simpledateformat.h>
+#include <log4cxx/helpers/transcoder.h>
 
 
 #include <log4cxx/pattern/loggerpatternconverter.h>

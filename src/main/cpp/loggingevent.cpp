@@ -395,7 +395,7 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 		if (SUCCEEDED(hr))
 		{
 			std::wstring wresult = result;
-			LOG4CXX_DECODE_UNICHAR(decoded, wresult);
+			LOG4CXX_DECODE_WCHAR(decoded, wresult);
 			LocalFree(result);
 			thread_name = decoded;
 		}

@@ -21,6 +21,7 @@
 #endif
 #include "log4cxx/private/log4cxx_private.h"
 #include "log4cxx/helpers/loglog.h"
+#include "log4cxx/helpers/transcoder.h"
 
 #include <signal.h>
 #include <mutex>
