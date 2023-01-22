@@ -122,10 +122,10 @@ static LogString convertSingleSequence(const LogString& sequence, Pool& pool){
 		return LOG4CXX_STR("");
 	}
 
-	if(StringHelper::startsWith(sequence, "fg(")){
+	if(StringHelper::startsWith(sequence, LOG4CXX_STR("fg("))){
 		// Parse foreground
 		return colorToANSISequence(strInParens, true, pool);
-	}else if(StringHelper::startsWith(sequence, "bg(")){
+	}else if(StringHelper::startsWith(sequence, LOG4CXX_STR("bg("))){
 		return colorToANSISequence(strInParens, false, pool);
 	}else{
 		return graphicsModeToANSISequence(sequence, pool);
@@ -234,7 +234,7 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 		return;
 	}
 
-	if( StringHelper::startsWith(lower, "\\x1b") ){
+	if( StringHelper::startsWith(lower, LOG4CXX_STR("\\x1b")) ){
 		if( color[color.size() - 1] != 'm' ){
 			// In order for this to be a valid ANSI escape sequence,
 			// it must end with an 'm'.  If it does not, reject.
@@ -242,7 +242,7 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 		}
 		// We start with an escape sequence, copy the data over after the escape byte
 		result->clear();
-		result->append("\x1b");
+		result->append(LOG4CXX_STR("\x1b"));
 		for( size_t x = 4; x < color.size(); x++ ){
 			result->push_back(color[x]);
 		}
@@ -252,7 +252,7 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 		// https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
 		// https://en.wikipedia.org/wiki/ANSI_escape_code
 		result->clear();
-		result->append("\x1b[");
+		result->append(LOG4CXX_STR("\x1b["));
 		LogString tmp;
 		for( size_t x = 0; x < color.size(); x++ ){
 			if(color[x] == '|' ){
@@ -272,6 +272,6 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 			result->push_back(';');
 			result->append(toAppend);
 		}
-		result->append("m");
+		result->append(LOG4CXX_STR("m"));
 	}
 }

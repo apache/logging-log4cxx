@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/private/filter_priv.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::filter;
@@ -40,8 +41,8 @@ struct LocationInfoFilter::LocationInfoFilterPrivate : public FilterPrivate
 
 	bool    acceptOnMatch;
 	bool    mustMatchAll; // true = AND; false = OR
-	int lineNumber;
-	LogString methodName;
+	int     lineNumber;
+	std::string methodName;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(LocationInfoFilter)
@@ -56,7 +57,7 @@ LocationInfoFilter::~LocationInfoFilter() {}
 void LocationInfoFilter::setOption(  const LogString& option,
 	const LogString& value)
 {
-	LogLog::warn(option + ":" + value);
+	LogLog::warn(option + LOG4CXX_STR(":") + value);
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
 	{
 		priv->acceptOnMatch = OptionConverter::toBoolean(value, priv->acceptOnMatch);
@@ -71,7 +72,8 @@ void LocationInfoFilter::setOption(  const LogString& option,
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("METHOD"), LOG4CXX_STR("method")))
 	{
-		priv->methodName = value;
+		LOG4CXX_ENCODE_CHAR(sName, value);
+		priv->methodName = sName;
 	}
 }
 
@@ -134,5 +136,6 @@ void LocationInfoFilter::setLineNumber(int lineNum){
 }
 
 void LocationInfoFilter::setMethodName(const LogString& methodName){
-	priv->methodName = methodName;
+	LOG4CXX_ENCODE_CHAR(sName, methodName);
+	priv->methodName = sName;
 }

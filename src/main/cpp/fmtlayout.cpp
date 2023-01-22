@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/level.h>
 #include <chrono>
 
@@ -82,17 +83,33 @@ void FMTLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	log4cxx::helpers::Pool&) const
 {
-	LogString locationFull = fmt::format("{}({})",
+	auto locationFull = fmt::format("{}({})",
 										 event->getLocationInformation().getFileName(),
 										 event->getLocationInformation().getLineNumber());
 	LogString ndc;
 	event->getNDC(ndc);
-
+#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+	LOG4CXX_ENCODE_CHAR(sNDC, ndc);
+	LOG4CXX_ENCODE_CHAR(sPattern, m_priv->conversionPattern);
+	LOG4CXX_ENCODE_CHAR(sLogger, event->getLoggerName());
+	LOG4CXX_ENCODE_CHAR(sLevel, event->getLevel()->toString());
+	LOG4CXX_ENCODE_CHAR(sMsg, event->getMessage());
+	LOG4CXX_ENCODE_CHAR(sThread, event->getThreadName());
+	LOG4CXX_ENCODE_CHAR(endOfLine, LOG4CXX_EOL);
+#else
+	auto& sNDC = ndc;
+	auto& sPattern = m_priv->conversionPattern;
+	auto& sLogger = event->getLoggerName();
+	auto sLevel = event->getLevel()->toString();
+	auto& sMsg = event->getMessage();
+	auto& sThread = event->getThreadName();
+	auto endOfLine = LOG4CXX_EOL;
+#endif
 	fmt::format_to(std::back_inserter(output),
-				   m_priv->conversionPattern,
+				   sPattern,
 				   fmt::arg("d", event->getChronoTimeStamp()),
-				   fmt::arg("c", event->getLoggerName()),
-				   fmt::arg("logger", event->getLoggerName()),
+				   fmt::arg("c", sLogger),
+				   fmt::arg("logger", sLogger),
 				   fmt::arg("f", event->getLocationInformation().getShortFileName()),
 				   fmt::arg("shortfilename", event->getLocationInformation().getShortFileName()),
 				   fmt::arg("F", event->getLocationInformation().getFileName()),
@@ -101,20 +118,20 @@ void FMTLayout::format(LogString& output,
 				   fmt::arg("location", locationFull),
 				   fmt::arg("L", event->getLocationInformation().getLineNumber()),
 				   fmt::arg("line", event->getLocationInformation().getLineNumber()),
-				   fmt::arg("m", event->getMessage()),
-				   fmt::arg("message", event->getMessage()),
+				   fmt::arg("m", sMsg),
+				   fmt::arg("message", sMsg),
 				   fmt::arg("M", event->getLocationInformation().getMethodName()),
 				   fmt::arg("method", event->getLocationInformation().getMethodName()),
-				   fmt::arg("n", LOG4CXX_EOL),
-				   fmt::arg("newline", LOG4CXX_EOL),
-				   fmt::arg("p", event->getLevel()->toString()),
-				   fmt::arg("level", event->getLevel()->toString()),
+				   fmt::arg("n", endOfLine),
+				   fmt::arg("newline", endOfLine),
+				   fmt::arg("p", sLevel),
+				   fmt::arg("level", sLevel),
 				   fmt::arg("r", event->getTimeStamp()),
-				   fmt::arg("t", event->getThreadName()),
-				   fmt::arg("thread", event->getThreadName()),
-				   fmt::arg("T", event->getThreadUserName()),
-				   fmt::arg("threadname", event->getThreadUserName()),
-				   fmt::arg("x", ndc),
-				   fmt::arg("ndc", ndc)
+				   fmt::arg("t", sThread),
+				   fmt::arg("thread", sThread),
+				   fmt::arg("T", sThread),
+				   fmt::arg("threadname", sThread),
+				   fmt::arg("x", sNDC),
+				   fmt::arg("ndc", sNDC)
 				   );
 }
