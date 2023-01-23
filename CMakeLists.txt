@@ -175,7 +175,7 @@ install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
 if(LOG4CXX_QT_SUPPORT)
     install(EXPORT log4cxx-qtTargets
       FILE        log4cxx-qtConfig.cmake
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx-qt
     )
     # Support for find_package(log4cxx 0.11) in consuming CMake projects
     include(CMakePackageConfigHelpers)
@@ -184,7 +184,7 @@ if(LOG4CXX_QT_SUPPORT)
       COMPATIBILITY SameMinorVersion
     )
     install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
-      DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
+      DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx-qt
     )
 endif(LOG4CXX_QT_SUPPORT)
 
