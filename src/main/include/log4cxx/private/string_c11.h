@@ -30,10 +30,10 @@
 
 static size_t strnlen_s( const char *str, size_t strsz )
 {
-    size_t result = 0;
-    if (!str)
-        ;
-    else while (*str++ != 0 && result < strsz)
+	size_t result = 0;
+	if (!str)
+		;
+	else while (*str++ != 0 && result < strsz)
 		++result;
 	return result;
 }
