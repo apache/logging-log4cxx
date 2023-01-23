@@ -16,7 +16,6 @@
 #
 
 # Configure
-
 if(WIN32)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
 	           ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
@@ -124,10 +123,6 @@ CHECK_FUNCTION_EXISTS(wcstombs HAS_WCSTOMBS)
 CHECK_FUNCTION_EXISTS(fwide HAS_FWIDE)
 CHECK_LIBRARY_EXISTS(esmtp smtp_create_session "" HAS_LIBESMTP)
 CHECK_FUNCTION_EXISTS(syslog HAS_SYSLOG)
-try_compile(HAS_THREAD_LOCAL "${CMAKE_BINARY_DIR}/thread-local-test"
-    "${LOG4CXX_SOURCE_DIR}/src/cmake/test-thread-local.cpp"
-    CXX_STANDARD 11
-    )
 if(UNIX)
     set(CMAKE_REQUIRED_LIBRARIES "pthread")
     CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
@@ -170,73 +165,10 @@ foreach(varName
   endif()
 endforeach()
 
-# Check for standard headers that we need, fall back to boost if they're not found
-include(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-fallback.cmake)
-set(NAMESPACE_ALIAS log4cxx)
-option(PREFER_BOOST "Prefer Boost over std:: equivalents" OFF)
-
-if( ${STD_THREAD_FOUND} AND NOT ${PREFER_BOOST} )
-    set( THREAD_IMPL "std::thread" )
-elseif( ${Boost_THREAD_FOUND} )
-    set( THREAD_IMPL "boost::thread" )
-else()
-    set( THREAD_IMPL "NONE" )
-endif()
-
-if( ${STD_MUTEX_FOUND} AND NOT ${PREFER_BOOST} )
-    set( MUTEX_IMPL "std::mutex" )
-elseif( ${Boost_MUTEX_FOUND} )
-    set( MUTEX_IMPL "boost::mutex" )
-else()
-    set( MUTEX_IMPL "NONE" )
-endif()
-
-if( ${STD_SHARED_PTR_FOUND} AND NOT ${PREFER_BOOST} )
-    set( SMART_PTR_IMPL "std::shared_ptr" )
-elseif( ${Boost_SHARED_PTR_FOUND} )
-    set( SMART_PTR_IMPL "boost::shared_ptr" )
-else()
-    set( SMART_PTR_IMPL "NONE" )
-endif()
-
-if( ${STD_SHARED_MUTEX_FOUND} AND NOT ${PREFER_BOOST} )
-    set( SHARED_MUTEX_IMPL "std::shared_mutex" )
-elseif( ${Boost_SHARED_MUTEX_FOUND} )
-    set( SHARED_MUTEX_IMPL "boost::shared_mutex" )
-else()
-    set( SHARED_MUTEX_IMPL "NONE" )
-endif()
-
-if( ${STD_ATOMIC_FOUND} AND NOT ${PREFER_BOOST} )
-    set( ATOMIC_IMPL "std::atomic" )
-elseif( ${Boost_ATOMIC_FOUND} )
-    set( ATOMIC_IMPL "boost::atomic" )
-else()
-    set( ATOMIC_IMPL "NONE" )
-endif()
-
-if( ${STD_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
-	set( FILESYSTEM_IMPL "std::filesystem" )
-elseif( ${STD_EXPERIMENTAL_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
-	set( FILESYSTEM_IMPL "std::experimental::filesystem" )
-elseif( ${Boost_FILESYSTEM_FOUND} )
-	set( FILESYSTEM_IMPL "boost::filesystem" )
-else()
-	set( FILESYSTEM_IMPL "NONE" )
-endif()
-
-if( ${STD_MAKE_UNIQUE_FOUND} )
-    set(STD_MAKE_UNIQUE_IMPL "std::make_unique")
-    set(STD_MAKE_UNIQUE_FOUND 1)
-else()
-    set(STD_MAKE_UNIQUE_IMPL "log4cxx std::make_unique")
-    set(STD_MAKE_UNIQUE_FOUND 0)
-endif()
-configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/makeunique.h.cmake
+# Configure both our private header and our public header
+configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/compiler-features/makeunique.h.cmake
                 ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/helpers/makeunique.h
 )
-
-# Configure both our private header and our public header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
                @ONLY
@@ -248,7 +180,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
 configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
                 ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
 )
-
 # Provide the dependencies
 add_custom_target(configure_log4cxx
   COMMAND "${CMAKE_COMMAND}" -E echo "Checking configuration"
