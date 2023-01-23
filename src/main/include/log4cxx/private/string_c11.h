@@ -41,6 +41,9 @@ static int strcat_s(char* destArg, size_t destsz, const char* src)
 {
 	if (!src || !destArg || RSIZE_MAX < destsz)
 		return -1;
+	if (0 == destsz)
+		return -2;
+	--destsz;
 	char* dest = destArg;
 	size_t index = 0;
 	while (*dest && index < destsz)
@@ -50,10 +53,11 @@ static int strcat_s(char* destArg, size_t destsz, const char* src)
 		*dest++ = *src++;
 		++index;
 	}
-	if (*src)
+	*dest = 0;
+	if (*src) // longer than destsz?
 	{
-		*destArg = 0;
-		return -2;
+		*destArg = 0; // Do not return a partial result
+		return -3;
 	}
 	return 0;
 }
