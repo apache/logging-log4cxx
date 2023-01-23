@@ -64,8 +64,6 @@ try_compile(STD_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tes
     "${CMAKE_CURRENT_LIST_DIR}/test-stdfilesystem.cpp")
 try_compile(STD_EXPERIMENTAL_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-stdexpfilesystem.cpp")
-try_compile(STD_MAKE_UNIQUE_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
-    "${CMAKE_CURRENT_LIST_DIR}/test-make-unique.cpp")
 
 # We need to have all three boost components in order to run our tests
 # Boost thread requires chrono and atomic to work
@@ -104,5 +102,59 @@ function(boostfallback_link target)
         endif()
     endif()
 endfunction()
+
+# Check for standard headers that we need, fall back to boost if they're not found
+set(NAMESPACE_ALIAS log4cxx)
+option(PREFER_BOOST "Prefer Boost over std:: equivalents" OFF)
+
+if( ${STD_THREAD_FOUND} AND NOT ${PREFER_BOOST} )
+    set( THREAD_IMPL "std::thread" )
+elseif( ${Boost_THREAD_FOUND} )
+    set( THREAD_IMPL "boost::thread" )
+else()
+    set( THREAD_IMPL "NONE" )
+endif()
+
+if( ${STD_MUTEX_FOUND} AND NOT ${PREFER_BOOST} )
+    set( MUTEX_IMPL "std::mutex" )
+elseif( ${Boost_MUTEX_FOUND} )
+    set( MUTEX_IMPL "boost::mutex" )
+else()
+    set( MUTEX_IMPL "NONE" )
+endif()
+
+if( ${STD_SHARED_PTR_FOUND} AND NOT ${PREFER_BOOST} )
+    set( SMART_PTR_IMPL "std::shared_ptr" )
+elseif( ${Boost_SHARED_PTR_FOUND} )
+    set( SMART_PTR_IMPL "boost::shared_ptr" )
+else()
+    set( SMART_PTR_IMPL "NONE" )
+endif()
+
+if( ${STD_SHARED_MUTEX_FOUND} AND NOT ${PREFER_BOOST} )
+    set( SHARED_MUTEX_IMPL "std::shared_mutex" )
+elseif( ${Boost_SHARED_MUTEX_FOUND} )
+    set( SHARED_MUTEX_IMPL "boost::shared_mutex" )
+else()
+    set( SHARED_MUTEX_IMPL "NONE" )
+endif()
+
+if( ${STD_ATOMIC_FOUND} AND NOT ${PREFER_BOOST} )
+    set( ATOMIC_IMPL "std::atomic" )
+elseif( ${Boost_ATOMIC_FOUND} )
+    set( ATOMIC_IMPL "boost::atomic" )
+else()
+    set( ATOMIC_IMPL "NONE" )
+endif()
+
+if( ${STD_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
+	set( FILESYSTEM_IMPL "std::filesystem" )
+elseif( ${STD_EXPERIMENTAL_FILESYSTEM_FOUND} AND NOT ${PREFER_BOOST} )
+	set( FILESYSTEM_IMPL "std::experimental::filesystem" )
+elseif( ${Boost_FILESYSTEM_FOUND} )
+	set( FILESYSTEM_IMPL "boost::filesystem" )
+else()
+	set( FILESYSTEM_IMPL "NONE" )
+endif()
 
 
