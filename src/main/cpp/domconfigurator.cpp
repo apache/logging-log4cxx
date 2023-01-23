@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <log4cxx/private/string_c11.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/appender.h>
@@ -56,13 +56,14 @@ using namespace log4cxx::spi;
 using namespace log4cxx::config;
 using namespace log4cxx::rolling;
 
+#define MAX_ATTRIBUTE_NAME_LEN 200
+
 struct DOMConfigurator::DOMConfiguratorPrivate
 {
 	helpers::Properties props;
 	spi::LoggerRepositoryPtr repository;
 	spi::LoggerFactoryPtr loggerFactory;
 };
-
 
 #if APR_HAS_THREADS
 namespace log4cxx
@@ -1147,7 +1148,7 @@ LogString DOMConfigurator::getAttribute(
 	{
 		if (attrName == attr->name)
 		{
-			ByteBuffer buf((char*) attr->value, strlen(attr->value));
+			ByteBuffer buf((char*) attr->value, strnlen_s(attr->value, MAX_ATTRIBUTE_NAME_LEN));
 			utf8Decoder->decode(buf, attrValue);
 		}
 	}

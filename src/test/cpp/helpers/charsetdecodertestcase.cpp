@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/private/string_c11.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include "../logunit.h"
 #include "../insertwide.h"
@@ -63,11 +64,7 @@ public:
 		char buf[BUFSIZE + 6];
 		memset(buf, 'A', BUFSIZE);
 		buf[BUFSIZE - 3] = 0;
-#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
 		strcat_s(buf, sizeof buf, "Hello");
-#else
-		strcat(buf, "Hello");
-#endif
 		ByteBuffer src(buf, strlen(buf));
 
 		CharsetDecoderPtr dec(CharsetDecoder::getDefaultDecoder());

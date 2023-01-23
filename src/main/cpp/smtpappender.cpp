@@ -192,6 +192,7 @@ class SMTPMessage
 			const LogString msg, Pool& p)
 		{
 			message = smtp_add_message(session);
+			current_len = str.length();
 			body = current = toMessage(msg, p);
 			messagecbState = 0;
 			smtp_set_reverse_path(message, toAscii(from, p));
@@ -216,6 +217,7 @@ class SMTPMessage
 		smtp_message_t message;
 		const char* body;
 		const char* current;
+		size_t current_len;
 		int messagecbState;
 		void addRecipients(const LogString& addresses, const char* field, Pool& p)
 		{
@@ -333,7 +335,7 @@ class SMTPMessage
 
 				if (pThis->current)
 				{
-					*len = strlen(pThis->current);
+					*len = strnlen_s(pThis->current, pThis->current_len);
 				}
 
 				retval = pThis->current;

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#define __STDC_WANT_LIB_EXT1__ 1
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
 #include <string.h>
@@ -62,7 +62,8 @@ Exception::Exception(const Exception& src) : std::exception()
 #if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
 	strcpy_s(msg, sizeof msg, src.msg);
 #else
-	strcpy(msg, src.msg);
+	strncpy(msg, src.msg, MSG_SIZE);
+	msg[MSG_SIZE] = 0;
 #endif
 }
 
@@ -71,7 +72,8 @@ Exception& Exception::operator=(const Exception& src)
 #if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
 	strcpy_s(msg, sizeof msg, src.msg);
 #else
-	strcpy(msg, src.msg);
+	strncpy(msg, src.msg, MSG_SIZE);
+	msg[MSG_SIZE] = 0;
 #endif
 	return *this;
 }
