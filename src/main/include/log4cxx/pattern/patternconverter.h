@@ -60,10 +60,10 @@ class LOG4CXX_EXPORT PatternConverter : public virtual helpers::Object
 		virtual ~PatternConverter();
 
 	public:
-		DECLARE_LOG4CXX_PATTERN(PatternConverter);
-		BEGIN_LOG4CXX_CAST_MAP();
-		LOG4CXX_CAST_ENTRY(PatternConverter);
-		END_LOG4CXX_CAST_MAP();
+        DECLARE_LOG4CXX_PATTERN(PatternConverter)
+        BEGIN_LOG4CXX_CAST_MAP()
+        LOG4CXX_CAST_ENTRY(PatternConverter)
+        END_LOG4CXX_CAST_MAP()
 
 		/**
 		 * Formats an object into a string buffer.
