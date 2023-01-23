@@ -19,9 +19,10 @@
 #define LOG4CXX_STRING_C11_H
 #define __STDC_WANT_LIB_EXT1__ 1
 #include <string.h>
-#include <stdlib.h> // RSIZE_MAX
+#include <stdlib.h>
 
 #if !defined(__STDC_LIB_EXT1__) && !defined(__STDC_SECURE_LIB__)
+#define RSIZE_MAX (SSIZE_MAX >> 4)
 static size_t strnlen_s( const char *str, size_t strsz )
 {
     size_t result = 0;
