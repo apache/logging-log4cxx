@@ -103,8 +103,9 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(const File& configFil
 	}
 	catch (const IOException& ex)
 	{
+		LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 		LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
-			+ configFileName.getPath() + LOG4CXX_STR("].") + ": " + ex.what());
+			+ configFileName.getPath() + LOG4CXX_STR("]: ") + lsMsg);
 		return spi::ConfigurationStatus::NotConfigured;
 	}
 
@@ -118,7 +119,7 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(const File& configFil
 	catch (const std::exception& ex)
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Could not parse configuration file ["))
-			+ configFileName.getPath() + LOG4CXX_STR("]."), ex);
+			+ configFileName.getPath() + LOG4CXX_STR("]: "), ex);
 	}
 
 	return spi::ConfigurationStatus::NotConfigured;

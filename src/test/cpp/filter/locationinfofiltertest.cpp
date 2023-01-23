@@ -122,7 +122,7 @@ public:
 				li));
 		LocationInfoFilterPtr filter(new LocationInfoFilter());
 		filter->setLineNumber(50);
-		filter->setMethodName("exampleFun");
+		filter->setMethodName(LOG4CXX_STR("exampleFun"));
 		filter->setAcceptOnMatch(true);
 		filter->setMustMatchAll(true);
 		Pool p;

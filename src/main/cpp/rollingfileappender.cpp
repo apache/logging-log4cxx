@@ -336,12 +336,11 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								}
 								catch (std::exception& ex)
 								{
+									LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 									LogString errorMsg = LOG4CXX_STR("Exception on rollover: ");
-									errorMsg.append(ex.what());
+									errorMsg.append(lsMsg);
 									LogLog::error(errorMsg);
-									LogString exmsg;
-									log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
-									_priv->errorHandler->error(exmsg, ex, 0);
+									_priv->errorHandler->error(lsMsg, ex, 0);
 								}
 							}
 
@@ -399,12 +398,11 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								}
 								catch (std::exception& ex)
 								{
+									LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 									LogString errorMsg = LOG4CXX_STR("Exception during rollover: ");
-									errorMsg.append(ex.what());
+									errorMsg.append(lsMsg);
 									LogLog::warn(errorMsg);
-									LogString exmsg;
-									log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
-									_priv->errorHandler->error(exmsg, ex, 0);
+									_priv->errorHandler->error(lsMsg, ex, 0);
 								}
 							}
 
@@ -437,12 +435,11 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 				}
 				catch (std::exception& ex)
 				{
+					LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 					LogString errorMsg = LOG4CXX_STR("Exception during rollover: ");
-					errorMsg.append(ex.what());
+					errorMsg.append(lsMsg);
 					LogLog::warn(errorMsg);
-					LogString exmsg;
-					log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
-					_priv->errorHandler->error(exmsg, ex, 0);
+					_priv->errorHandler->error(lsMsg, ex, 0);
 				}
 		}
 	}
@@ -473,12 +470,11 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 		}
 		catch (std::exception& ex)
 		{
+			LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 			LogString errorMsg = LOG4CXX_STR("Exception during rollover attempt: ");
-			errorMsg.append(ex.what());
+			errorMsg.append(lsMsg);
 			LogLog::warn(errorMsg);
-			LogString exmsg;
-			log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
-			_priv->errorHandler->error(exmsg);
+			_priv->errorHandler->error(lsMsg);
 		}
 	}
 

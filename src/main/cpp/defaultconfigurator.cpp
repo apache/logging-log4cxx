@@ -61,9 +61,14 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 
 	if (configurationFileName.empty())
 	{
-		const char* names[] = { "log4cxx.xml", "log4cxx.properties", "log4j.xml", "log4j.properties", 0 };
+		LogString names[4] =
+			{ LOG4CXX_STR("log4cxx.xml")
+			, LOG4CXX_STR("log4cxx.properties")
+			, LOG4CXX_STR("log4j.xml")
+			, LOG4CXX_STR("log4j.properties")
+			};
 
-		for (int i = 0; names[i] != 0; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			File candidate(names[i]);
 
@@ -153,9 +158,9 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 }
 
 log4cxx::spi::ConfigurationStatus DefaultConfigurator::tryLoadFile(const LogString& filename){
-	if(helpers::StringHelper::endsWith(filename, ".xml")){
+	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".xml"))){
 		return log4cxx::xml::DOMConfigurator::configure(filename);
-	}else if(helpers::StringHelper::endsWith(filename, ".properties")){
+	}else if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".properties"))){
 		return log4cxx::PropertyConfigurator::configure(filename);
 	}
 
@@ -168,7 +173,7 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 
 	for( LogString dir : directories ){
 		for( LogString fname : filenames ){
-			LogString canidate_str = dir + "/" + fname;
+			LogString canidate_str = dir + LOG4CXX_STR("/") + fname;
 			File candidate(canidate_str);
 
 			LogString debugMsg = LOG4CXX_STR("Checking file ");
@@ -180,7 +185,7 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 				if( configStatus == log4cxx::spi::ConfigurationStatus::Configured ){
 					return {configStatus, canidate_str};
 				}
-				LogLog::debug("Unable to load file: trying next");
+				LogLog::debug(LOG4CXX_STR("Unable to load file: trying next"));
 			}
 		}
 	}

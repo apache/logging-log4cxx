@@ -803,7 +803,8 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 		LogString msg2(LOG4CXX_STR("Could not read configuration file ["));
 		msg2.append(filename.getPath());
 		msg2.append(LOG4CXX_STR("]. "));
-		msg2.append(io.what());
+		LOG4CXX_DECODE_CHAR(msg, io.what());
+		msg2.append(msg);
 		LogLog::error(msg2);
 		return spi::ConfigurationStatus::NotConfigured;
 	}

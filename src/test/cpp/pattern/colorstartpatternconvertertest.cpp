@@ -77,10 +77,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("fg(red)");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(red)"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("\x1b[;31m", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;31m"), outputString);
 	}
 
 	void testParseBackground()
@@ -95,10 +95,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("bg(red)");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("bg(red)"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("\x1b[;41m", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;41m"), outputString);
 	}
 
 	void testParseForegroundAndBackground()
@@ -113,10 +113,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("fg(green)|bg(red)");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(green)|bg(red)"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("\x1b[;32;41m", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;32;41m"), outputString);
 	}
 
 	void testParseUnbalancedParens1(){
@@ -130,10 +130,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("fg(green))");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(green))"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("\x1b[m", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[m"), outputString);
 	}
 
 	void testParseUnbalancedParens2(){
@@ -147,10 +147,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("fg(green");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(green"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("\x1b[m", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[m"), outputString);
 	}
 
 	void testParseUnbalancedParens3(){
@@ -164,12 +164,12 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("fg(green|bg(red)");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(green|bg(red)"));
 		colorPatternConverter.format(event, outputString, p);
 
 		// The background should be parsed correctly, but since the foreground
 		// is bad it will not work
-		LOGUNIT_ASSERT_EQUAL("\x1b[;41m", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;41m"), outputString);
 	}
 
 	void testANSICode(){
@@ -183,10 +183,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("\\x1b[34;40m");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("\\x1b[34;40m"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("\x1b[34;40m", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[34;40m"), outputString);
 	}
 
 	void testInvalidANSICode(){
@@ -200,10 +200,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("\\x1b");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("\\x1b"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR(""), outputString);
 	}
 
 	void testUnterminatedANSICode(){
@@ -217,10 +217,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("\\x1b[31");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("\\x1b[31"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR(""), outputString);
 	}
 
 	void testForegroundBackgroundBlink(){
@@ -234,10 +234,10 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("fg(white)|bg(black)|blinking");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(white)|bg(black)|blinking"));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("\x1b[;37;40;5m", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;37;40;5m"), outputString);
 	}
 
 	void testClearColor(){
@@ -251,11 +251,11 @@ public:
 												   LOG4CXX_STR("msg 1"),
 												   LOG4CXX_LOCATION));
 
-		colorPatternConverter.setInfoColor("fg(white)|bg(black)|blinking");
-		colorPatternConverter.setInfoColor("");
+		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(white)|bg(black)|blinking"));
+		colorPatternConverter.setInfoColor(LOG4CXX_STR(""));
 		colorPatternConverter.format(event, outputString, p);
 
-		LOGUNIT_ASSERT_EQUAL("", outputString);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR(""), outputString);
 	}
 
 };
