@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 cmake_policy(SET CMP0079 NEW)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/boost-fallback/boost-fallback.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler-features/check-compiler-support.cmake)
 
 add_subdirectory(main)
 target_compile_definitions(log4cxx PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
