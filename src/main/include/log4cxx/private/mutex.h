@@ -42,25 +42,25 @@ EnablePriorityInheritance(M& m, helpers::Pool& p)
 	if (pthread_mutexattr_init(&rrAttr) != 0)
 	{
 		LogString msg = LOG4CXX_STR("pthread_mutexattr_init error ");
-		helpers::toString(errno, p, msg)
+		helpers::StringHelper::toString(errno, p, msg)
 		helpers::LogLog::warn(msg);
 	}
 	else if (pthread_mutexattr_setprotocol(&rrAttr, PTHREAD_PRIO_INHERIT) != 0)
 	{
 		LogString msg = LOG4CXX_STR("pthread_mutexattr_setprotocol error ");
-		helpers::toString(errno, p, msg)
+		helpers::StringHelper::toString(errno, p, msg)
 		helpers::LogLog::warn(msg);
 	}
 	else if (pthread_mutex_destroy(m.native_handle()) != 0)
 	{
 		LogString msg = LOG4CXX_STR("pthread_mutex_destroy error ");
-		helpers::toString(errno, p, msg)
+		helpers::StringHelper::toString(errno, p, msg)
 		helpers::LogLog::warn(msg);
 	}
 	else if (pthread_mutex_init(m.native_handle(), &rrAttr) != 0)
 	{
 		LogString msg = LOG4CXX_STR("pthread_mutex_init error ");
-		helpers::toString(errno, p, msg)
+		helpers::StringHelper::toString(errno, p, msg)
 		helpers::LogLog::warn(msg);
 	}
 	pthread_mutexattr_destroy(&rrAttr);
