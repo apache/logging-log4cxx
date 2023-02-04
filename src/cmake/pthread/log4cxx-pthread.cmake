@@ -1,7 +1,8 @@
 include(FindThreads)
+include(CheckSymbolExists)
 
 set(CMAKE_REQUIRED_LIBRARIES "pthread")
-CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
+check_symbol_exists(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
 
 # Check for the (linux) pthread_setname_np.
 # OSX and BSD are special apparently.  OSX only lets you name

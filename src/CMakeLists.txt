@@ -19,6 +19,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/boost-fallback/boost-fallback.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler-features/check-compiler-support.cmake)
 if(UNIX)
   include(${CMAKE_CURRENT_LIST_DIR}/cmake/pthread/log4cxx-pthread.cmake)
+else()
+  set(HAS_PTHREAD_SETPROTOCOL FALSE)
 endif(UNIX)
 
 add_subdirectory(main)
