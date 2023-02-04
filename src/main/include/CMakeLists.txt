@@ -123,24 +123,8 @@ CHECK_FUNCTION_EXISTS(wcstombs HAS_WCSTOMBS)
 CHECK_FUNCTION_EXISTS(fwide HAS_FWIDE)
 CHECK_LIBRARY_EXISTS(esmtp smtp_create_session "" HAS_LIBESMTP)
 CHECK_FUNCTION_EXISTS(syslog HAS_SYSLOG)
-if(UNIX)
-    set(CMAKE_REQUIRED_LIBRARIES "pthread")
-    CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
 
-    # Check for the (linux) pthread_setname_np.
-    # OSX and BSD are special apparently.  OSX only lets you name
-    # the current thread, while BSD calls it pthread_set_name_np.
-    # Since this is really not a core feature and the end-user can configure
-    # it anyway, we're only going to worry about linux.
-    include(${LOG4CXX_SOURCE_DIR}/src/cmake/pthread/log4cxx-pthread.cmake)
-    if(${PTHREAD_SETNAME_NP_FOUND})
-	set(HAS_PTHREAD_SETNAME 1)
-    endif()
-    if(${PTHREAD_GETNAME_NP_FOUND})
-	set(HAS_PTHREAD_GETNAME 1)
-    endif()
-endif(UNIX)
-
+# Ensure log4cxx_private.h.in configurable variables are either 0 or 1
 foreach(varName
   HAS_THREAD_LOCAL
   HAS_STD_LOCALE
@@ -153,6 +137,7 @@ foreach(varName
   HAS_PTHREAD_SIGMASK
   HAS_PTHREAD_SETNAME
   HAS_PTHREAD_GETNAME
+  HAS_PTHREAD_SETPROTOCOL
   )
   if(${varName} EQUAL 0)
     continue()

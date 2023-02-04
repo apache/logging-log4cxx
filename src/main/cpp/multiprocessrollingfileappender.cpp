@@ -114,7 +114,7 @@ void MultiprocessRollingFileAppender::activateOptions(Pool& p)
 	}
 
 	{
-		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+		AppenderScopeGuard lock(_priv->mutex);
 		_priv->triggeringPolicy->activateOptions(p);
 		_priv->rollingPolicy->activateOptions(p);
 
@@ -202,7 +202,7 @@ void MultiprocessRollingFileAppender::releaseFileLock(apr_file_t* lock_file)
  */
 bool MultiprocessRollingFileAppender::rollover(Pool& p)
 {
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+	AppenderScopeGuard lock(_priv->mutex);
 	return rolloverInternal(p);
 }
 

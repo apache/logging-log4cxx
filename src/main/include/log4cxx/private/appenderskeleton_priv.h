@@ -20,6 +20,7 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
+#include <log4cxx/private/mutex.h>
 #include <memory>
 
 namespace log4cxx
@@ -27,16 +28,12 @@ namespace log4cxx
 
 struct AppenderSkeleton::AppenderSkeletonPrivate
 {
-	AppenderSkeletonPrivate() :
-		threshold(Level::getAll()),
-		errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
-		closed(false) {}
-
-	AppenderSkeletonPrivate( LayoutPtr lay ) :
+	AppenderSkeletonPrivate( LayoutPtr lay = LayoutPtr() ) :
 		layout( lay ),
 		threshold(Level::getAll()),
-		errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
-		closed(false) {}
+		errorHandler(std::make_shared<helpers::OnlyOnceErrorHandler>()),
+		closed(false)
+		{ EnablePriorityInheritance(mutex, pool); }
 
 	virtual ~AppenderSkeletonPrivate(){}
 
@@ -68,8 +65,9 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	*/
 	bool closed;
 
-	log4cxx::helpers::Pool pool;
-	mutable std::recursive_mutex mutex;
+	helpers::Pool pool;
+
+	mutable AppenderMutexType mutex;
 };
 
 }

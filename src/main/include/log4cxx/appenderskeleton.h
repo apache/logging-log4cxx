@@ -50,6 +50,11 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		*/
 		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) = 0;
 
+		/**
+		* Allow one thread at a time to check filters before passing \c event to AppenderSkeleton#append.
+		*
+		* The sub-class AppenderSkeleton#append method is responsible for the actual output.
+		*/
 		void doAppendImpl(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
 
 	public:
@@ -130,12 +135,11 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		*/
 		bool isAsSevereAsThreshold(const LevelPtr& level) const;
 
-
 		/**
-		* This method performs threshold checks and invokes filters before
-		* delegating actual logging to the subclasses specific
-		* AppenderSkeleton#append method.
-		* */
+		* Allow one thread at a time to check filters before passing \c event to AppenderSkeleton#append.
+		*
+		* The sub-class AppenderSkeleton#append method is responsible for the actual output.
+		*/
 		void doAppend(const spi::LoggingEventPtr& event, helpers::Pool& pool) override;
 
 		/**

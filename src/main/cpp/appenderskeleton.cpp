@@ -64,7 +64,7 @@ void AppenderSkeleton::finalize()
 
 void AppenderSkeleton::addFilter(const spi::FilterPtr newFilter)
 {
-	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+	AppenderScopeGuard lock(m_priv->mutex);
 
 	if (m_priv->headFilter == nullptr)
 	{
@@ -79,19 +79,17 @@ void AppenderSkeleton::addFilter(const spi::FilterPtr newFilter)
 
 void AppenderSkeleton::clearFilters()
 {
-	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+	AppenderScopeGuard lock(m_priv->mutex);
 	m_priv->headFilter = m_priv->tailFilter = nullptr;
 }
 
 bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 {
-	return ((level == 0) || level->isGreaterOrEqual(m_priv->threshold));
+	return !level || level->isGreaterOrEqual(m_priv->threshold);
 }
 
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
-
 	doAppendImpl(event, pool1);
 }
 
@@ -99,7 +97,7 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 {
 	if (m_priv->closed)
 	{
-		LogLog::error(((LogString) LOG4CXX_STR("Attempted to append to closed appender named ["))
+		LogLog::error(LOG4CXX_STR("Attempted to append to closed appender named [")
 			+ m_priv->name + LOG4CXX_STR("]."));
 		return;
 	}
@@ -109,9 +107,8 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 		return;
 	}
 
+	AppenderScopeGuard lock(m_priv->mutex);
 	FilterPtr f = m_priv->headFilter;
-
-
 	while (f != 0)
 	{
 		switch (f->decide(event))
@@ -127,13 +124,12 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 				f = f->getNext();
 		}
 	}
-
 	append(event, pool1);
 }
 
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 {
-	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+	AppenderScopeGuard lock(m_priv->mutex);
 
 	if (errorHandler1 == nullptr)
 	{
@@ -149,7 +145,7 @@ void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 
 void AppenderSkeleton::setThreshold(const LevelPtr& threshold1)
 {
-	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+	AppenderScopeGuard lock(m_priv->mutex);
 	m_priv->threshold = threshold1;
 }
 

@@ -102,7 +102,7 @@ void XMLSocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 {
 	OutputStreamPtr os = std::make_shared<SocketOutputStream>(socket);
 	CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+	AppenderScopeGuard lock(_priv->mutex);
 	_priv->writer = std::make_shared<OutputStreamWriter>(os, charset);
 }
 

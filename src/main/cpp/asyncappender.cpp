@@ -94,30 +94,22 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		appenders(std::make_shared<AppenderAttachableImpl>(pool)),
 		dispatcher(),
 		locationInfo(false),
-		blocking(true) {}
+		blocking(true)
+		{ EnablePriorityInheritance(bufferMutex, pool); }
 
 	/**
 	 * Event buffer.
 	*/
-#if defined(NON_BLOCKING)
-	boost::lockfree::queue<log4cxx::spi::LoggingEvent* > buffer;
-	std::atomic<size_t> discardedCount;
-#else
 	LoggingEventList buffer;
-#endif
 
 	/**
 	 *  Mutex used to guard access to buffer and discardMap.
 	 */
-	std::mutex bufferMutex;
+	AppenderMutexType bufferMutex;
 
-#if defined(NON_BLOCKING)
-	::log4cxx::helpers::Semaphore bufferNotFull;
-	::log4cxx::helpers::Semaphore bufferNotEmpty;
-#else
+
 	std::condition_variable bufferNotFull;
 	std::condition_variable bufferNotEmpty;
-#endif
 
 	/**
 	  * Map of DiscardSummary objects keyed by logger name.
@@ -197,8 +189,6 @@ void AsyncAppender::setOption(const LogString& option,
 
 void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	std::lock_guard<std::recursive_mutex> lock(priv->mutex);
-
 	doAppendImpl(event, pool1);
 }
 
@@ -222,7 +212,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 
 	{
-		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		AppenderScopedLock lock(priv->bufferMutex);
 
 		while (true)
 		{
@@ -286,7 +276,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 void AsyncAppender::close()
 {
 	{
-		std::lock_guard<std::mutex> lock(priv->bufferMutex);
+		AppenderScopeGuard lock(priv->bufferMutex);
 		priv->closed = true;
 		priv->bufferNotEmpty.notify_all();
 		priv->bufferNotFull.notify_all();
@@ -298,13 +288,9 @@ void AsyncAppender::close()
 	}
 
 	{
-		AppenderList appenderList = priv->appenders->getAllAppenders();
-
-		for (AppenderList::iterator iter = appenderList.begin();
-			iter != appenderList.end();
-			iter++)
+		for (auto item : priv->appenders->getAllAppenders())
 		{
-			(*iter)->close();
+			item->close();
 		}
 	}
 }
@@ -362,7 +348,7 @@ void AsyncAppender::setBufferSize(int size)
 		throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
 	}
 
-	std::lock_guard<std::mutex> lock(priv->bufferMutex);
+	AppenderScopeGuard lock(priv->bufferMutex);
 	priv->bufferSize = (size < 1) ? 1 : size;
 	priv->bufferNotFull.notify_all();
 }
@@ -374,7 +360,7 @@ int AsyncAppender::getBufferSize() const
 
 void AsyncAppender::setBlocking(bool value)
 {
-	std::lock_guard<std::mutex> lock(priv->bufferMutex);
+	AppenderScopeGuard lock(priv->bufferMutex);
 	priv->blocking = value;
 	priv->bufferNotFull.notify_all();
 }
@@ -451,7 +437,7 @@ void AsyncAppender::dispatch()
 		Pool p;
 		LoggingEventList events;
 		{
-			std::unique_lock<std::mutex> lock(priv->bufferMutex);
+			AppenderScopedLock lock(priv->bufferMutex);
 			priv->bufferNotEmpty.wait(lock, [this]() -> bool
 				{ return 0 < priv->buffer.size() || priv->closed; }
 			);

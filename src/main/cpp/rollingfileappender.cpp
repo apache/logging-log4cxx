@@ -229,7 +229,7 @@ void RollingFileAppender::activateOptions(Pool& p)
 	}
 
 	{
-		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+		AppenderScopeGuard lock(_priv->mutex);
 		_priv->triggeringPolicy->activateOptions(p);
 		_priv->rollingPolicy->activateOptions(p);
 
@@ -301,7 +301,7 @@ void RollingFileAppender::activateOptions(Pool& p)
  */
 bool RollingFileAppender::rollover(Pool& p)
 {
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+	AppenderScopeGuard lock(_priv->mutex);
 	return rolloverInternal(p);
 }
 
