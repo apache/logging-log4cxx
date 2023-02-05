@@ -20,7 +20,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/compiler-features/check-compiler-support
 if(UNIX)
   include(${CMAKE_CURRENT_LIST_DIR}/cmake/pthread/log4cxx-pthread.cmake)
 else()
-  set(HAS_PTHREAD_SETPROTOCOL FALSE)
+  set(MUTEX_SUPPORTS_PRIORITY_INHERITANCE FALSE)
 endif(UNIX)
 
 add_subdirectory(main)
