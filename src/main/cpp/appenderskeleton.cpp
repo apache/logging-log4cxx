@@ -48,7 +48,10 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
 
 }
 
-AppenderSkeleton::~AppenderSkeleton() {}
+AppenderSkeleton::~AppenderSkeleton()
+{
+	clearFilters(); // Ensure doAppend() is not active
+}
 
 void AppenderSkeleton::finalize()
 {
