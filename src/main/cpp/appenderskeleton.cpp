@@ -105,12 +105,12 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 		return;
 	}
 
+	AppenderScopeGuard lock(m_priv->mutex);
 	if (!isAsSevereAsThreshold(event->getLevel()))
 	{
 		return;
 	}
 
-	AppenderScopeGuard lock(m_priv->mutex);
 	FilterPtr f = m_priv->headFilter;
 	while (f != 0)
 	{
