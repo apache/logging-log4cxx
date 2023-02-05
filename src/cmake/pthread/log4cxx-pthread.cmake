@@ -17,7 +17,11 @@ try_compile(HAS_PTHREAD_GETNAME "${CMAKE_BINARY_DIR}/pthread-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-pthread-getname.cpp"
     LINK_LIBRARIES Threads::Threads )
 
-try_compile(HAS_PTHREAD_SETPROTOCOL "${CMAKE_BINARY_DIR}/pthread-compile-tests"
-    "${CMAKE_CURRENT_LIST_DIR}/test-pthread-setprotocol.cpp"
+try_run(PTHREAD_RUN_RESULT HAS_PTHREAD_SETPROTOCOL "${CMAKE_BINARY_DIR}/pthread-compile-tests"
+    SOURCES "${CMAKE_CURRENT_LIST_DIR}/test-pthread-setprotocol.cpp"
     LINK_LIBRARIES Threads::Threads )
-
+if(${PTHREAD_RUN_RESULT} EQUAL 0)
+  set(MUTEX_SUPPORTS_PRIORITY_INHERITANCE TRUE)
+else()
+  set(MUTEX_SUPPORTS_PRIORITY_INHERITANCE FALSE)
+endif()

@@ -37,7 +37,7 @@ template <class M>
 	void
 EnablePriorityInheritance(M& m, helpers::Pool& p)
 {
-#if LOG4CXX_HAS_PTHREAD_SETPROTOCOL
+#if LOG4CXX_MUTEX_PRIORITY_INHERITANCE
 	pthread_mutexattr_t rrAttr;
 	if (pthread_mutexattr_init(&rrAttr) != 0)
 	{
@@ -64,7 +64,7 @@ EnablePriorityInheritance(M& m, helpers::Pool& p)
 		helpers::LogLog::warn(msg);
 	}
 	pthread_mutexattr_destroy(&rrAttr);
-#endif // LOG4CXX_HAS_PTHREAD_SETPROTOCOL
+#endif // LOG4CXX_MUTEX_PRIORITY_INHERITANCE
 }
 
 } // namespace log4cxx
