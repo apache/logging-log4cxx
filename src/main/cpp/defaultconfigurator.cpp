@@ -169,6 +169,7 @@ log4cxx::spi::ConfigurationStatus DefaultConfigurator::tryLoadFile(const LogStri
 
 std::tuple<log4cxx::spi::ConfigurationStatus,LogString>
 DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories, const std::vector<LogString>& filenames){
+	using ResultType = std::tuple<log4cxx::spi::ConfigurationStatus, LogString>;
 	log4cxx::helpers::Pool pool;
 
 	for( LogString dir : directories ){
@@ -183,14 +184,14 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 			{
 				log4cxx::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
 				if( configStatus == log4cxx::spi::ConfigurationStatus::Configured ){
-					return {configStatus, canidate_str};
+					return ResultType{configStatus, canidate_str};
 				}
 				LogLog::debug(LOG4CXX_STR("Unable to load file: trying next"));
 			}
 		}
 	}
 
-	return {log4cxx::spi::ConfigurationStatus::NotConfigured, LogString()};
+	return ResultType{log4cxx::spi::ConfigurationStatus::NotConfigured, LogString()};
 }
 
 
