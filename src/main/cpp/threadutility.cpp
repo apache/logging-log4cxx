@@ -32,6 +32,7 @@
 #endif
 
 using log4cxx::helpers::ThreadUtility;
+using log4cxx::helpers::ThreadConfigurationType;
 
 struct ThreadUtility::priv_data
 {
