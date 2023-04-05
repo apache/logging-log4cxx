@@ -20,7 +20,10 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <apr_network_io.h>
 
-using log4cxx::helpers::APRDatagramSocket;
+namespace log4cxx
+{
+namespace helpers
+{
 
 #define _priv static_cast<APRDatagramSocketPriv*>(m_priv.get())
 
@@ -207,3 +210,6 @@ bool APRDatagramSocket::isClosed() const
 {
 	return _priv->socket != nullptr;
 }
+
+} //namespace helpers
+} //namespace log4cxx

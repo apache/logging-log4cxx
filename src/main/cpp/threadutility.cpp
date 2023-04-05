@@ -31,7 +31,10 @@
 	#include <processthreadsapi.h>
 #endif
 
-using log4cxx::helpers::ThreadUtility;
+namespace log4cxx
+{
+namespace helpers
+{
 
 struct ThreadUtility::priv_data
 {
@@ -42,9 +45,9 @@ struct ThreadUtility::priv_data
 		start_post = nullptr;
 	}
 
-	log4cxx::helpers::ThreadStartPre start_pre;
-	log4cxx::helpers::ThreadStarted started;
-	log4cxx::helpers::ThreadStartPost start_post;
+	ThreadStartPre start_pre;
+	ThreadStarted started;
+	ThreadStartPost start_post;
 };
 
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
@@ -180,17 +183,20 @@ void ThreadUtility::postThreadUnblockSignals()
 }
 
 
-log4cxx::helpers::ThreadStartPre ThreadUtility::preStartFunction()
+ThreadStartPre ThreadUtility::preStartFunction()
 {
 	return m_priv->start_pre;
 }
 
-log4cxx::helpers::ThreadStarted ThreadUtility::threadStartedFunction()
+ThreadStarted ThreadUtility::threadStartedFunction()
 {
 	return m_priv->started;
 }
 
-log4cxx::helpers::ThreadStartPost ThreadUtility::postStartFunction()
+ThreadStartPost ThreadUtility::postStartFunction()
 {
 	return m_priv->start_post;
 }
+
+} //namespace helpers
+} //namespace log4cxx

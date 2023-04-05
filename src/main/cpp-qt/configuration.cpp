@@ -25,7 +25,10 @@
 #include <memory>
 #include <QDebug>
 
-using log4cxx::qt::Configuration;
+namespace log4cxx
+{
+namespace qt
+{
 using log4cxx::helpers::LogLog;
 
 static std::unique_ptr<QFileSystemWatcher> watcher;
@@ -120,3 +123,6 @@ Configuration::configureFromFileAndWatch(const QVector<QString>& directories,
 
 	return {log4cxx::spi::ConfigurationStatus::NotConfigured, QString()};
 }
+
+} //namespace helpers
+} //namespace log4cxx

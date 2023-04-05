@@ -22,7 +22,10 @@
 #include "apr_pools.h"
 #include "apr_poll.h"
 
-using log4cxx::helpers::APRServerSocket;
+namespace log4cxx
+{
+namespace helpers
+{
 
 #define _priv static_cast<APRServerSocketPriv*>(m_priv.get())
 
@@ -98,7 +101,7 @@ void APRServerSocket::close(){
 /** Listens for a connection to be made to this socket and
 accepts it
 */
-log4cxx::helpers::SocketPtr APRServerSocket::accept()
+SocketPtr APRServerSocket::accept()
 {
 	std::unique_lock<std::mutex> lock(_priv->mutex);
 
@@ -155,3 +158,6 @@ log4cxx::helpers::SocketPtr APRServerSocket::accept()
 
 	return std::make_shared<APRSocket>(newSocket, newPool);
 }
+
+} //namespace helpers
+} //namespace log4cxx
