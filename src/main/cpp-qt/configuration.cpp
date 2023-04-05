@@ -25,11 +25,11 @@
 #include <memory>
 #include <QDebug>
 
-using log4cxx::qt::Configuration;
 namespace log4cxx
 {
-namespace helpers
+namespace qt
 {
+using log4cxx::helpers::LogLog;
 
 static std::unique_ptr<QFileSystemWatcher> watcher;
 static QString configFilename;
