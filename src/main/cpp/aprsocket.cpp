@@ -23,9 +23,12 @@
 #include "apr_network_io.h"
 #include "apr_signal.h"
 
-using log4cxx::helpers::APRSocket;
+namespace log4cxx
+{
+namespace helpers
+{
 
-struct APRSocket::APRSocketPriv : public log4cxx::helpers::Socket::SocketPrivate {
+struct APRSocket::APRSocketPriv : public Socket::SocketPrivate {
 	APRSocketPriv() :
 		socket(nullptr)
 	{}
@@ -154,3 +157,6 @@ void APRSocket::close()
 		_priv->socket = 0;
 	}
 }
+
+} //namespace helpers
+} //namespace log4cxx
