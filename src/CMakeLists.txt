@@ -23,7 +23,7 @@ target_compile_definitions(log4cxx PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_
 target_include_directories(log4cxx INTERFACE $<INSTALL_INTERFACE:include> PRIVATE ${APR_INCLUDE_DIR} ${APR_UTIL_INCLUDE_DIR})
 target_link_libraries(log4cxx PRIVATE ${APR_UTIL_LIBRARIES} ${EXPAT_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS})
 if(HAS_LIBESMTP)
-  target_include_directories(log4cxx PRIVATE ${ESMTP_INCLUDE_DIRS})
+  target_include_directories(log4cxx PRIVATE ${ESMTP_INCLUDE_DIR})
   target_link_libraries(log4cxx PRIVATE ${ESMTP_LIBRARIES})
 endif()
 if(WIN32)
