@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/private/string_c11.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/transcoder.h>
@@ -192,7 +193,7 @@ class SMTPMessage
 			const LogString msg, Pool& p)
 		{
 			message = smtp_add_message(session);
-			current_len = str.length();
+			current_len = msg.length();
 			body = current = toMessage(msg, p);
 			messagecbState = 0;
 			smtp_set_reverse_path(message, toAscii(from, p));
@@ -676,23 +677,23 @@ bool SMTPAppender::checkEntryConditions()
 {
 #if LOG4CXX_HAVE_LIBESMTP
 
-	if ((to.empty() && cc.empty() && bcc.empty()) || from.empty() || smtpHost.empty())
+	if ((_priv->to.empty() && _priv->cc.empty() && _priv->bcc.empty()) || _priv->from.empty() || _priv->smtpHost.empty())
 	{
-		errorHandler->error(LOG4CXX_STR("Message not configured."));
+		_priv->errorHandler->error(LOG4CXX_STR("Message not configured."));
 		return false;
 	}
 
-	if (evaluator == 0)
+	if (_priv->evaluator == 0)
 	{
-		errorHandler->error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [") +
-			name + LOG4CXX_STR("]."));
+		_priv->errorHandler->error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [") +
+			_priv->name + LOG4CXX_STR("]."));
 		return false;
 	}
 
 
-	if (layout == 0)
+	if (_priv->layout == 0)
 	{
-		errorHandler->error(LOG4CXX_STR("No layout set for appender named [") + name + LOG4CXX_STR("]."));
+		_priv->errorHandler->error(LOG4CXX_STR("No layout set for appender named [") + _priv->name + LOG4CXX_STR("]."));
 		return false;
 	}
 
@@ -751,22 +752,22 @@ void SMTPAppender::sendBuffer(Pool& p)
 	try
 	{
 		LogString sbuf;
-		layout->appendHeader(sbuf, p);
+		_priv->layout->appendHeader(sbuf, p);
 
-		int len = cb.length();
+		int len = _priv->cb.length();
 
 		for (int i = 0; i < len; i++)
 		{
-			LoggingEventPtr event = cb.get();
-			layout->format(sbuf, event, p);
+			LoggingEventPtr event = _priv->cb.get();
+			_priv->layout->format(sbuf, event, p);
 		}
 
-		layout->appendFooter(sbuf, p);
+		_priv->layout->appendFooter(sbuf, p);
 
-		SMTPSession session(smtpHost, smtpPort, smtpUsername, smtpPassword, p);
+		SMTPSession session(_priv->smtpHost, _priv->smtpPort, _priv->smtpUsername, _priv->smtpPassword, p);
 
-		SMTPMessage message(session, from, to, cc,
-			bcc, subject, sbuf, p);
+		SMTPMessage message(session, _priv->from, _priv->to, _priv->cc,
+			_priv->bcc, _priv->subject, sbuf, p);
 
 		session.send(p);
 
