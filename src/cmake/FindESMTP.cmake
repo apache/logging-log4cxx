@@ -66,7 +66,6 @@ else()
   endif()
 endif()
 
-#message("ESMTP_FOUND=${ESMTP_FOUND}")
 #message("ESMTP_INCLUDE_DIR=${ESMTP_INCLUDE_DIR}")
 #message("ESMTP_LIBRARIES=${ESMTP_LIBRARIES}")
 find_package_handle_standard_args(ESMTP

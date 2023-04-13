@@ -28,14 +28,40 @@ namespace log4cxx
 namespace net
 {
 /**
-Send an e-mail when a specific logging event occurs, typically on
-errors or fatal errors.
-<p>The number of logging events delivered in this e-mail depend on
-the value of <b>BufferSize</b> option. The
-<code>SMTPAppender</code> keeps only the last
-<code>BufferSize</code> logging events in its cyclic buffer. This
-keeps memory requirements at a reasonable level while still
-delivering useful application context.
+Send an e-mail when a specific logging event occurs, typically when
+an <b>ERROR</b> level logging event is sent to the appender.
+
+A value must be provided for the following attributes:
+- <b>smtpHost</b> -
+  The URL or IP address of the SMTP server.
+- <b>from</b> -
+  The email address in the <b>from</b> field of the message.
+- one of <b>to</b>, <b>cc</b>, <b>bcc</b> -
+  An email address in the message.
+  
+The following attributes are optional:
+- <b>smtpPort</b> -
+  The TCP/IP port number on the SMTP server.
+  By default port 25 is assumed.
+- <b>subject</b> -
+  Content for the the <b>subject</b> field of the message.
+- <b>smtpUsername</b> -
+  Provided when the SMTP server requests authentication.
+- <b>smtpPassword</b> -
+  Provided when the SMTP server requests authentication.
+- <b>BufferSize</b> -
+  The number of logging events delivered in an e-mail.
+  The <code>SMTPAppender</code> keeps only the last
+  <code>BufferSize</code> logging events in its cyclic buffer. This
+  keeps memory requirements at a reasonable level while still
+  delivering useful application context.
+  By default 512 logging events are kept in its cyclic buffer.
+- <b>evaluatorClass</b> -
+  The registered TriggeringEventEvaluator sub-class
+  that provides the <code>isTriggeringEvent</code> implementation.
+  The DefaultEvaluator <code>isTriggeringEvent</code> implementation
+  triggers when the level of the logging event
+  is greater or equal to <b>ERROR</b>.
 */
 class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 {
