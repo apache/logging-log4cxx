@@ -24,16 +24,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu18-gcc, ubuntu18-clang, ubuntu20-gcc, ubuntu20-clang, ubuntu22-gcc, ubuntu22-clang, osx-11, osx-12]
+        name: [ubuntu20-gcc, ubuntu20-clang, ubuntu22-gcc, ubuntu22-clang, osx-11, osx-12]
         include:
-          - name: ubuntu18-gcc
-            os: ubuntu-18.04
-            cxx: g++
-            cc: gcc
-          - name: ubuntu18-clang
-            os: ubuntu-18.04
-            cxx: clang++
-            cc: clang
           - name: ubuntu20-gcc
             os: ubuntu-20.04
             cxx: g++

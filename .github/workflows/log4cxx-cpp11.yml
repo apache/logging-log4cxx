@@ -29,14 +29,14 @@ jobs:
     - name: 'Configure Dependencies - Ubuntu'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libapr1-dev libaprutil1-dev libboost-filesystem-dev libboost-thread-dev
+        sudo apt-get install -y libapr1-dev libaprutil1-dev libboost-filesystem-dev libboost-thread-dev libesmtp-dev
 
     - name: 'run cmake - *nix'
       run: |
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_STANDARD=11 ..
+        cmake -DCMAKE_CXX_STANDARD=11 -DLOG4CXX_ENABLE_ESMTP=ON ..
         cmake --build .
 
     - name: run unit tests
