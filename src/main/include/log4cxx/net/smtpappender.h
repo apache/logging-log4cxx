@@ -57,10 +57,10 @@ The following attributes are optional:
   delivering useful application context.
   By default 512 logging events are kept in its cyclic buffer.
 - <b>evaluatorClass</b> -
-  The registered TriggeringEventEvaluator sub-class
+  The registered spi::TriggeringEventEvaluator sub-class
   that provides the <code>isTriggeringEvent</code> implementation.
-  The DefaultEvaluator <code>isTriggeringEvent</code> implementation
-  triggers when the level of the logging event
+  By default an email is sent
+  when the level of the logging event
   is greater or equal to <b>ERROR</b>.
 */
 class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
