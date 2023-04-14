@@ -104,6 +104,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			auto appender = log4cxx::cast<SMTPAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("A1")));
 			LOGUNIT_ASSERT(appender);
 			auto evaluator = appender->getEvaluator();
+			LOGUNIT_ASSERT(evaluator);
 			LOGUNIT_ASSERT_EQUAL(true, evaluator->instanceof(MockTriggeringEventEvaluator::getStaticClass()));
 		}
 
