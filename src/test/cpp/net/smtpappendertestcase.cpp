@@ -18,8 +18,6 @@
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
 
-#if LOG4CXX_HAVE_LIBESMTP
-
 #include <log4cxx/net/smtpappender.h>
 #include "../appenderskeletontestcase.h"
 #include <log4cxx/xml/domconfigurator.h>
@@ -76,6 +74,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testSetOptionThreshold);
 		LOGUNIT_TEST(testTrigger);
 		LOGUNIT_TEST(testInvalid);
+		//LOGUNIT_TEST(testValid);
 		LOGUNIT_TEST_SUITE_END();
 
 
@@ -123,8 +122,15 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			LOG4CXX_ERROR(root, "Sending Message");
 		}
 
+
+		void testValid()
+		{
+			xml::DOMConfigurator::configure("input/xml/smtpAppenderValid.xml");
+			auto root = Logger::getRootLogger();
+			LOG4CXX_INFO(root, "Hello, World.");
+			LOG4CXX_ERROR(root, "Sending Message");
+		}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(SMTPAppenderTestCase);
 
-#endif
