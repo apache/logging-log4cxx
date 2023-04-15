@@ -24,7 +24,7 @@
 #include <limits.h>
 #if !defined(RSIZE_MAX) && defined(SSIZE_MAX)
 #define RSIZE_MAX (SSIZE_MAX >> 4)
-#else !defined(RSIZE_MAX)
+#else // !defined(RSIZE_MAX)
 #define RSIZE_MAX (2 << 20)
 #endif
 

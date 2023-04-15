@@ -107,6 +107,9 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     target_compile_definitions(${testName} PRIVATE ${TEST_COMPILE_DEFINITIONS} ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
     target_include_directories(${testName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
     target_link_libraries(${testName} PRIVATE testingFramework testingUtilities log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads)
+    if(HAS_LIBESMTP)
+      target_link_libraries(${testName} PRIVATE ${ESMTP_LIBRARIES})
+    endif()
     add_test(NAME ${testName}
         COMMAND ${testName} -v
         WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}

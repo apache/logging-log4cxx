@@ -28,14 +28,62 @@ namespace log4cxx
 namespace net
 {
 /**
-Send an e-mail when a specific logging event occurs, typically on
-errors or fatal errors.
-<p>The number of logging events delivered in this e-mail depend on
-the value of <b>BufferSize</b> option. The
-<code>SMTPAppender</code> keeps only the last
-<code>BufferSize</code> logging events in its cyclic buffer. This
-keeps memory requirements at a reasonable level while still
-delivering useful application context.
+Send an e-mail when a specific logging event occurs, typically when
+an <b>ERROR</b> level logging event is sent to the appender.
+
+A value must be provided for the following <b>param</b> elements :
+- <b>smtpHost</b> -
+  The URL or IP address of the SMTP server.
+- <b>from</b> -
+  The email address in the <b>from</b> field of the message.
+- one of <b>to</b>, <b>cc</b>, <b>bcc</b> -
+  An email address in the message.
+  
+The following <b>param</b> elements  are optional:
+- <b>smtpPort</b> -
+  The TCP/IP port number on the SMTP server.
+  By default port 25 is assumed.
+- <b>subject</b> -
+  Content for the the <b>subject</b> field of the message.
+- <b>smtpUsername</b> -
+  Provided when the SMTP server requests authentication.
+- <b>smtpPassword</b> -
+  Provided when the SMTP server requests authentication.
+- <b>BufferSize</b> -
+  The number of logging events delivered in an e-mail.
+  The <code>SMTPAppender</code> keeps only the last
+  <code>BufferSize</code> logging events in its cyclic buffer. This
+  keeps memory requirements at a reasonable level while still
+  delivering useful application context.
+  By default 512 logging events are kept in its cyclic buffer.
+- <b>evaluatorClass</b> -
+  The registered spi::TriggeringEventEvaluator sub-class
+  that provides the <code>isTriggeringEvent</code> implementation.
+  This attribute can also be set using the <b>triggeringPolicy</b> element.
+  By default an email is sent
+  when the level of the logging event
+  is greater or equal to <b>ERROR</b>.
+
+  An example configuration is:
+~~~{.xml}
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="EMAIL" class="org.apache.log4j.net.SMTPAppender">
+    <param name="from"   value="service_name@example.org" />
+    <param name="to" value="some_support_group@example.org" />
+    <param name="subject" value="Service error detected" />
+    <param name="SMTPHost" value="smtp.example.com"/>
+    <layout class="org.apache.log4j.PatternLayout">
+		<param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
+    </layout>
+    <!-- triggeringPolicy class="SpecialTriggeringEventEvaluator" -->
+    <!-- param name="evaluatorClass" value="SpecialTriggeringEventEvaluator" -->
+  </appender>
+  <root>
+    <priority value ="INFO" />
+    <appender-ref ref="EMAIL" />
+  </root>
+</log4j:configuration>
+~~~
 */
 class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 {

@@ -279,11 +279,11 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 				}
 				else
 				{
-					log4cxx::net::SMTPAppenderPtr smtpa = log4cxx::cast<log4cxx::net::SMTPAppender>(appender);
+					auto smtpa = log4cxx::cast<log4cxx::net::SMTPAppender>(appender);
 
 					if (smtpa != NULL)
 					{
-						log4cxx::spi::TriggeringEventEvaluatorPtr evaluator = log4cxx::cast<TriggeringEventEvaluator>(policyPtr);
+						auto evaluator = log4cxx::cast<TriggeringEventEvaluator>(policy);
 						smtpa->setEvaluator(evaluator);
 					}
 				}
