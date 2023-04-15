@@ -24,7 +24,7 @@
     <param name="to" value="somebody@example.org" />
     <param name="subject" value="Test message" />
     <param name="SMTPHost" value="localhost"/>
-    <param name="evaluatorClass" value="org.apache.log4j.net.SMTPAppenderTest$MockTriggeringEventEvaluator"/>
+    <triggeringPolicy class="org.apache.log4j.net.SMTPAppenderTest$MockTriggeringEventEvaluator"/>
 
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
