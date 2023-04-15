@@ -184,7 +184,7 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 	}
 
 	reset_status();
-	fprintf(stdout, "%-20s:  ", subsuite->name.c_str());
+	fprintf(stdout, (verbose ? "%s:\n" :"%-20s:  "), subsuite->name.c_str());
 	update_status();
 	fflush(stdout);
 
@@ -209,6 +209,8 @@ void abts_run_test(abts_suite* ts, const char* name, test_func f, void* value)
 	ss->num_test++;
 	update_status();
 
+	if (verbose)
+		fprintf(stdout, "  %s\n", name);
 	f(&tc, value);
 
 	if (tc.failed)
