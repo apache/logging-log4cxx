@@ -74,7 +74,7 @@ target_sources(rollingfileappendertestcase PRIVATE fileappendertestcase.cpp)
 # Tests defined in subdirectories
 add_subdirectory(helpers)
 add_subdirectory(customlogger)
-if(LOG4CXX_HAS_ODBC OR WIN32)
+if(HAS_ODBC)
     add_subdirectory(db)
 endif()
 add_subdirectory(defaultinit)
