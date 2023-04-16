@@ -15,8 +15,10 @@ else()
   if(NOT ODBC_STATIC) # 'pkg-config --static odbc' does not provide libodbc.a file path
     find_package(PkgConfig)
     pkg_check_modules(odbc odbc)
-    #message("odbc_FOUND=${odbc_FOUND}")
+  else()
+    set(odbc_FOUND 0)
   endif()
+  #message("odbc_FOUND=${odbc_FOUND}")
 
   if(odbc_FOUND)
     find_path(ODBC_INCLUDE_DIR
@@ -31,9 +33,9 @@ else()
   else()
     find_path(ODBC_INCLUDE_DIR odbcinst.h)
     if (ODBC_STATIC OR NOT BUILD_SHARED_LIBS)
-      find_library(ODBC_LIBRARIES NAMES libodbc.a)
+      find_library(ODBC_LIBRARIES NAMES libodbc.a HINTS ${ODBC_LIBRARY_DIRS} )
     else()
-      find_library(ODBC_LIBRARIES NAMES odbc)
+      find_library(ODBC_LIBRARIES NAMES odbc HINTS ${ODBC_LIBRARY_DIRS} )
     endif()
   endif()
 
