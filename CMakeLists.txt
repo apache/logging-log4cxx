@@ -67,6 +67,22 @@ elseif(TARGET expat::expat)
   set(EXPAT_LIBRARIES expat::expat)
 endif()
 
+option(LOG4CXX_ENABLE_ODBC "Support logging via ODBC" OFF)
+if(LOG4CXX_ENABLE_ODBC)
+  find_package(ODBC)
+  if(${ODBC_FOUND})
+    set(HAS_ODBC 1)
+  else()
+    set(HAS_ODBC 0)
+  endif(${ODBC_FOUND})
+
+  if(NOT ${HAS_ODBC})
+    message(SEND_ERROR "ODBC not found but requested")
+  endif()
+else()
+  set(HAS_ODBC 0)
+endif(LOG4CXX_ENABLE_ODBC)
+
 option(LOG4CXX_ENABLE_ESMTP "Support logging via libesmtp" OFF)
 option(LIBESMTP_STATIC "Link to the libesmtp static library" OFF)
 if(LOG4CXX_ENABLE_ESMTP)
@@ -102,6 +118,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_subdirectory(src)
 
 ## Installing
+if(WIN32)
+  option(LOG4CXX_INSTALL_PDB "Install .pdb files (if generated)"  ON)
+endif()
 include(GNUInstallDirs)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/main/include/log4cxx
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
@@ -207,7 +226,6 @@ endif(LOG4CXX_QT_SUPPORT)
 # Get the varaibles from the subdirectories
 #
 get_directory_property( HAS_LIBESMTP DIRECTORY src/main/include DEFINITION HAS_LIBESMTP )
-get_directory_property( HAS_ODBC DIRECTORY src/main/include DEFINITION HAS_ODBC )
 get_directory_property( HAS_SYSLOG DIRECTORY src/main/include DEFINITION HAS_SYSLOG )
 get_directory_property( THREAD_IMPL DIRECTORY src DEFINITION THREAD_IMPL )
 get_directory_property( SMART_PTR_IMPL DIRECTORY src DEFINITION SMART_PTR_IMPL )
