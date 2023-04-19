@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/db/odbcappender.h>
+#include <log4cxx/xml/domconfigurator.h>
 #include "../appenderskeletontestcase.h"
 #include "../logunit.h"
 
@@ -34,11 +35,11 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 {
 		LOGUNIT_TEST_SUITE(ODBCAppenderTestCase);
 		//
-		//    tests inherited from AppenderSkeletonTestCase
+		//	    tests inherited from AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
-
+		//LOGUNIT_TEST(testConnectUsingDSN);
 		LOGUNIT_TEST_SUITE_END();
 
 
@@ -47,6 +48,40 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
 			return new log4cxx::db::ODBCAppender();
+		}
+
+// 'odbcAppenderDSN-Log4cxxTest.xml' requires the data souce name 'Log4cxxTest'
+// containing a 'ApplicationLogs' database
+// with 'UnitTestLog' table
+// containing the fields shown below:
+//
+// USE [ApplicationLogs]
+// GO
+//
+// SET ANSI_NULLS ON
+// GO
+//
+// SET QUOTED_IDENTIFIER ON
+// GO
+//
+// CREATE TABLE [dbo].[UnitTestLog](
+//	 [Item] [bigint] IDENTITY(1,1) NOT NULL, /* auto incremented */
+//	 [Thread] [nchar](20) NULL
+//	 [LogTime] [datetime] NOT NULL,
+//	 [LogName] [nchar](50) NULL,
+//	 [LogLevel] [nchar](10) NULL,
+//	 [FileName] [nchar](300) NULL,
+//	 [FileLine] [int] NULL,
+//	 [Message] [nchar](1000) NULL
+// ) ON [PRIMARY]
+// GO
+//
+		void testConnectUsingDSN()
+		{
+			xml::DOMConfigurator::configure("input/xml/odbcAppenderDSN-Log4cxxTest.xml");
+			auto odbc = Logger::getLogger("DB.UnitTest");
+			LOG4CXX_INFO(odbc, "An information message");
+			LOG4CXX_ERROR(odbc, "An error message");
 		}
 };
 
