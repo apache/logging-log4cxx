@@ -81,7 +81,7 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	/**
 	* ArrayList holding the buffer of Logging Events.
 	*/
-	std::list<spi::LoggingEventPtr> buffer;
+	std::vector<spi::LoggingEventPtr> buffer;
 };
 
 }
