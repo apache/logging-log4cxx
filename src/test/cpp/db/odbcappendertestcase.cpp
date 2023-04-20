@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logmanager.h>
 #include <log4cxx/db/odbcappender.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include "../appenderskeletontestcase.h"
-#include "../logunit.h"
+#include <apr_time.h>
 
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
@@ -26,7 +27,6 @@
 #ifdef LOG4CXX_HAVE_ODBC
 
 using namespace log4cxx;
-using namespace log4cxx::helpers;
 
 /**
    Unit tests of log4cxx::SocketAppender
@@ -47,7 +47,13 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
-			return new log4cxx::db::ODBCAppender();
+			return new db::ODBCAppender();
+		}
+
+		// Flush the last message to the database prior to process termination
+		void tearDown()
+		{
+			LogManager::shutdown();
 		}
 
 // 'odbcAppenderDSN-Log4cxxTest.xml' requires the data souce name 'Log4cxxTest'
@@ -80,8 +86,12 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 		{
 			xml::DOMConfigurator::configure("input/xml/odbcAppenderDSN-Log4cxxTest.xml");
 			auto odbc = Logger::getLogger("DB.UnitTest");
-			LOG4CXX_INFO(odbc, "An information message");
-			LOG4CXX_ERROR(odbc, "An error message");
+			for (int i = 0; i < 100; ++i)
+			{
+				LOG4CXX_INFO(odbc, "Message " << i);
+				apr_sleep(30000);
+			}
+			LOG4CXX_INFO(odbc, "Last message");
 		}
 };
 

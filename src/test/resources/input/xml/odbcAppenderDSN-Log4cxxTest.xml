@@ -27,16 +27,18 @@
 </appender>
 <appender name="SqlAppender" class="ODBCAppender">
  <param name="DSN" value="Log4cxxTest"/>
- <!--param name="BufferSize" value="1"/-->
+ <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m')" />
  <!--param name="User" value="dbo"/-->
  <!--param name="Password" value="myLog4cxxTestPassword"/-->
- <layout class="PatternLayout">
-   <param name="ConversionPattern" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m')" />
- </layout>
+</appender>
+<appender name="ASYNC" class="AsyncAppender">
+  <param name="BufferSize" value="1000"/>
+  <param name="Blocking" value="false"/>
+  <appender-ref ref="SqlAppender"/>
 </appender>
 <logger name="DB">
   <level value="INFO" />
-  <appender-ref ref="SqlAppender" />
+  <appender-ref ref="ASYNC" />
 </logger>
 <root>
   <priority value ="INFO" />
