@@ -51,17 +51,18 @@ The ODBCAppender sends log events to a database.
 the buffer is filled each log event is placed in a sql statement
 (which is configured in the <b>sql</b> element or the attached PatternLayout) and executed.
 
-A value must be provided for the following elements :
-- one of <b>DSN</b>, <b>URL</b>, <b>ConnectionString</b> -
-  The value of the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> <b>serverName</b> parameter.
-- one of <b>sql</b> or an attached PatternLayout -
-  The PatternLayout specifying the statement to execute.
+The SQL insert statement pattern must be provided.
+The SQL statement can be specified in the Log4cxx configuration file
+either using the <b>sql</b> parameter element
+or by attaching a PatternLayout layout element.
   
-The following <b>param</b> elements  are optional:
+The following <b>param</b> elements are optional:
+- one of <b>DSN</b>, <b>URL</b>, <b>ConnectionString</b> -
+  The <b>serverName</b> parameter value in the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> call.
 - <b>User</b> -
-  Provided when the SMTP server requests authentication.
+  The <b>UserName</b> parameter value in the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> call.
 - <b>Password</b> -
-  Provided when the SMTP server requests authentication.
+  The <b>Authentication</b> parameter value in the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> call.
 - <b>BufferSize</b> -
   Delay executing the sql until this many logging events are available.
   One by default, meaning an sql statement is executed
