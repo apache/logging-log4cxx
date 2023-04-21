@@ -20,12 +20,12 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/spi/location/locationinfo.h>
 
-namespace log4cxx
-{
-namespace pattern
-{
+
+using namespace log4cxx;
+using namespace log4cxx::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(MessagePatternConverter)
+
 /**
  * Formats the message of an logging event for a quoted context
   */
@@ -83,7 +83,4 @@ void MessagePatternConverter::format
 {
 	toAppendTo.append(event->getRenderedMessage());
 }
-
-} // namespace pattern
-} // namespace log4cxx
 
