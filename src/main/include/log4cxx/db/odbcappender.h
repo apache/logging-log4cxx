@@ -45,19 +45,28 @@ class LOG4CXX_EXPORT SQLException : public log4cxx::helpers::Exception
 };
 
 /**
-<p><b>WARNING: This version of ODBCAppender
-is very likely to be completely replaced in the future. Moreoever,
-it does not log exceptions.</b> </p>
-
-The ODBCAppender provides for sending log events to a database.
-
+The ODBCAppender sends log events to a database.
 
 <p>Each append call adds to an <code>ArrayList</code> buffer.  When
 the buffer is filled each log event is placed in a sql statement
-(configurable) and executed.
+(which is configured in the <b>sql</b> element or the attached PatternLayout) and executed.
 
-<b>BufferSize</b>, <b>db URL</b>, <b>User</b>, & <b>Password</b> are
-configurable options in the standard log4j ways.
+The SQL insert statement pattern must be provided.
+The SQL statement can be specified in the Log4cxx configuration file
+either using the <b>sql</b> parameter element
+or by attaching a PatternLayout layout element.
+  
+The following <b>param</b> elements are optional:
+- one of <b>DSN</b>, <b>URL</b>, <b>ConnectionString</b> -
+  The <b>serverName</b> parameter value in the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> call.
+- <b>User</b> -
+  The <b>UserName</b> parameter value in the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> call.
+- <b>Password</b> -
+  The <b>Authentication</b> parameter value in the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> call.
+- <b>BufferSize</b> -
+  Delay executing the sql until this many logging events are available.
+  One by default, meaning an sql statement is executed
+  whenever a logging event is appended.
 
 <p>The <code>setSql(String sql)</code> sets the SQL statement to be
 used for logging -- this statement is sent to a
@@ -88,6 +97,25 @@ produce specialized or dynamic statements. The default uses the
 sql option value.
 
 </ul>
+
+An example configuration that writes to the data source named "LoggingDSN" is:
+~~~{.xml}
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+appender name="SqlAppender" class="ODBCAppender">
+ <param name="DSN" value="LoggingDSN"/>
+ <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m')" />
+</appender>
+<appender name="ASYNC" class="AsyncAppender">
+  <param name="BufferSize" value="1000"/>
+  <param name="Blocking" value="false"/>
+  <appender-ref ref="SqlAppender"/>
+</appender>
+<root>
+  <priority value ="INFO" />
+  <appender-ref ref="ASYNC" />
+</root>
+</log4j:configuration>
+~~~
 */
 
 class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton

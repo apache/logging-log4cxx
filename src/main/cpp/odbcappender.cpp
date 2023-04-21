@@ -318,14 +318,11 @@ void ODBCAppender::close()
 
 void ODBCAppender::flushBuffer(Pool& p)
 {
-	std::list<spi::LoggingEventPtr>::iterator i;
-
-	for (i = _priv->buffer.begin(); i != _priv->buffer.end(); i++)
+	for (auto& logEvent : _priv->buffer)
 	{
 		try
 		{
-			const LoggingEventPtr& logEvent = *i;
-			LogString sql = getLogStatement(logEvent, p);
+			auto sql = getLogStatement(logEvent, p);
 			execute(sql, p);
 		}
 		catch (SQLException& e)
