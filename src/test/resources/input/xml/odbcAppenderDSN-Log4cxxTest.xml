@@ -27,7 +27,7 @@
 </appender>
 <appender name="SqlAppender" class="ODBCAppender">
  <param name="DSN" value="Log4cxxTest"/>
- <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m')" />
+ <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m{'}')" />
  <!--param name="User" value="dbo"/-->
  <!--param name="Password" value="myLog4cxxTestPassword"/-->
 </appender>
