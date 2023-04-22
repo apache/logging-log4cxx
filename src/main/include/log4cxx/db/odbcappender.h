@@ -47,15 +47,25 @@ class LOG4CXX_EXPORT SQLException : public log4cxx::helpers::Exception
 /**
 The ODBCAppender sends log events to a database.
 
-<p>Each append call adds to an <code>ArrayList</code> buffer.  When
-the buffer is filled each log event is placed in a sql statement
-(which is configured in the <b>sql</b> element or the attached PatternLayout) and executed.
+<p>Each append call adds the logging event to a buffer.
+When the buffer is full, values are extracted from each LoggingEvent
+and the sql insert statement executed.
 
-The SQL insert statement pattern must be provided.
-The SQL statement can be specified in the Log4cxx configuration file
-either using the <b>sql</b> parameter element
-or by attaching a PatternLayout layout element.
-  
+The SQL insert statement pattern must be provided
+either in the Log4cxx configuration file
+using the <b>sql</b> parameter element
+or programatically by calling the <code>setSql(String sql)</code> method.
+
+If no <b>ColumnMapping</b> element is provided
+the sql statement is assumed to be a PatternLayout layout.
+In this case all the conversion patterns in PatternLayout
+can be used inside of the statement. (see the test cases for examples)
+
+If the <b>sql</b> element is not provided
+and no <b>ColumnMapping</b> element is provided
+the attached a PatternLayout layout element
+is assumed to contain the sql statement.
+
 The following <b>param</b> elements are optional:
 - one of <b>DSN</b>, <b>URL</b>, <b>ConnectionString</b> -
   The <b>serverName</b> parameter value in the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> call.
@@ -67,16 +77,28 @@ The following <b>param</b> elements are optional:
   Delay executing the sql until this many logging events are available.
   One by default, meaning an sql statement is executed
   whenever a logging event is appended.
+- <b>ColumnMapping</b> -
+  One element for each "?" in the <b>sql</b> statement
+  in a sequence corresponding to the columns in the insert statement.
+  The following values are supported:
+  - logger
+  - level
+  - thread
+  - threadname
+  - time
+  - shortfilename
+  - fullfilename
+  - line
+  - class
+  - method
+  - message
+  - ndc
 
-<p>The <code>setSql(String sql)</code> sets the SQL statement to be
-used for logging -- this statement is sent to a
-<code>PatternLayout</code> (either created automaticly by the
+The string provided by a  is sent to a
+<code>PatternLayout</code> (either created automatically by the
 appender or added by the user).  Therefore by default all the
 conversion patterns in <code>PatternLayout</code> can be used
 inside of the statement.  (see the test cases for examples)
-
-<p>Overriding the {@link #getLogStatement} method allows more
-explicit control of the statement used for logging.
 
 <p>For use as a base class:
 
@@ -92,10 +114,6 @@ you override getConnection make sure to implement
 generated.  Typically this would return the connection to the
 pool it came from.
 
-<li>Override getLogStatement to
-produce specialized or dynamic statements. The default uses the
-sql option value.
-
 </ul>
 
 An example configuration that writes to the data source named "LoggingDSN" is:
@@ -103,14 +121,14 @@ An example configuration that writes to the data source named "LoggingDSN" is:
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 <appender name="SqlAppender" class="ODBCAppender">
  <param name="DSN" value="LoggingDSN"/>
- <param name="ColumnMappingSQL" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES (?,?,?,?,?,?,?)" />
- <param name="ColumnMapping" value="%t"/>
- <param name="ColumnMapping" value="%c"/>
- <param name="ColumnMapping" value="%d{dd MMM yyyy HH:mm:ss.SSS}"/>
- <param name="ColumnMapping" value="%p"/>
- <param name="ColumnMapping" value="%f"/>
- <param name="ColumnMapping" value="%L"/>
- <param name="ColumnMapping" value="%m"/>
+ <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES (?,?,?,?,?,?,?)" />
+ <param name="ColumnMapping" value="thread"/>
+ <param name="ColumnMapping" value="logger"/>
+ <param name="ColumnMapping" value="time"/>
+ <param name="ColumnMapping" value="level"/>
+ <param name="ColumnMapping" value="shortfilename"/>
+ <param name="ColumnMapping" value="line"/>
+ <param name="ColumnMapping" value="message"/>
 </appender>
 <appender name="ASYNC" class="AsyncAppender">
   <param name="BufferSize" value="1000"/>
@@ -157,21 +175,18 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		*/
 		void append(const spi::LoggingEventPtr& event, helpers::Pool&) override;
 
+	protected:
 		/**
-		* By default getLogStatement sends the event to the required Layout object.
+		* Sends the event to the attached PatternLayout object.
 		* The layout will format the given pattern into a workable SQL string.
 		*
-		* Overriding this provides direct access to the LoggingEvent
-		* when constructing the logging statement.
-		*
 		*/
-	protected:
 		LogString getLogStatement(const spi::LoggingEventPtr& event,
 			helpers::Pool& p) const;
 
 		/**
 		*
-		* Override this to provide an alertnate method of getting
+		* Override this to provide an alternate method of getting
 		* connections (such as caching).  One method to fix this is to open
 		* connections at the start of flushBuffer() and close them at the
 		* end.  I use a connection pool outside of ODBCAppender which is
@@ -214,12 +229,9 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		virtual void flushBuffer(log4cxx::helpers::Pool& p);
 
 		/**
-		* ODBCAppender requires a layout.
+		* Does this appender require a layout?
 		* */
-		bool requiresLayout() const override
-		{
-			return true;
-		}
+		bool requiresLayout() const override;
 
 		/**
 		* Set pre-formated statement eg: insert into LogTable (msg) values ("%m")
