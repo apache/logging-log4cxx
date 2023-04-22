@@ -40,6 +40,7 @@ class QuotedMessagePatternConverter : public LoggingEventPatternConverter
 
 		using LoggingEventPatternConverter::format;
 
+		// Duplicate any quote character in the event message
 		void format
 			( const spi::LoggingEventPtr& event
 			, LogString&                  toAppendTo
