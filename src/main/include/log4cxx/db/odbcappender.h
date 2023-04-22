@@ -101,9 +101,16 @@ sql option value.
 An example configuration that writes to the data source named "LoggingDSN" is:
 ~~~{.xml}
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-appender name="SqlAppender" class="ODBCAppender">
+<appender name="SqlAppender" class="ODBCAppender">
  <param name="DSN" value="LoggingDSN"/>
- <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m{'}')" />
+ <param name="ColumnMappingSQL" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES (?,?,?,?,?,?,?)" />
+ <param name="ColumnMapping" value="%t"/>
+ <param name="ColumnMapping" value="%c"/>
+ <param name="ColumnMapping" value="%d{dd MMM yyyy HH:mm:ss.SSS}"/>
+ <param name="ColumnMapping" value="%p"/>
+ <param name="ColumnMapping" value="%f"/>
+ <param name="ColumnMapping" value="%L"/>
+ <param name="ColumnMapping" value="%m"/>
 </appender>
 <appender name="ASYNC" class="AsyncAppender">
   <param name="BufferSize" value="1000"/>
