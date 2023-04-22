@@ -45,6 +45,8 @@
 		#include <windows.h>
 	#endif
 	#include <sqlext.h>
+#else
+	typedef void* SQLHSTMT;
 #endif
 #include <log4cxx/private/odbcappender_priv.h>
 #if defined(max)
@@ -399,6 +401,7 @@ void ODBCAppender::close()
 
 void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 {
+#if LOG4CXX_HAVE_ODBC
 	auto ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &this->preparedStatement);
 	if (ret < 0)
 	{
@@ -438,6 +441,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to bind parameter", p);
 		}
 	}
+#endif
 }
 
 void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventPtr& event, Pool& p)
@@ -469,6 +473,7 @@ void ODBCAppender::flushBuffer(Pool& p)
 		{
 			if (!_priv->parameterValue.empty())
 			{
+#if LOG4CXX_HAVE_ODBC
 				if (0 == _priv->preparedStatement)
 					_priv->setPreparedStatement(getConnection(p), p);
 				_priv->setParameterValues(logEvent, p);
@@ -477,6 +482,7 @@ void ODBCAppender::flushBuffer(Pool& p)
 				{
 					throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement", p);
 				}
+#endif
 			}
 			else
 			{
