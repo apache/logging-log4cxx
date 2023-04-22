@@ -21,7 +21,20 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/patternlayout.h>
 #include <apr_strings.h>
-#include <log4cxx/private/odbcappender_priv.h>
+
+#include <log4cxx/pattern/loggerpatternconverter.h>
+#include <log4cxx/pattern/classnamepatternconverter.h>
+#include <log4cxx/pattern/datepatternconverter.h>
+#include <log4cxx/pattern/filelocationpatternconverter.h>
+#include <log4cxx/pattern/fulllocationpatternconverter.h>
+#include <log4cxx/pattern/shortfilelocationpatternconverter.h>
+#include <log4cxx/pattern/linelocationpatternconverter.h>
+#include <log4cxx/pattern/messagepatternconverter.h>
+#include <log4cxx/pattern/methodlocationpatternconverter.h>
+#include <log4cxx/pattern/levelpatternconverter.h>
+#include <log4cxx/pattern/threadpatternconverter.h>
+#include <log4cxx/pattern/threadusernamepatternconverter.h>
+#include <log4cxx/pattern/ndcpatternconverter.h>
 
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
@@ -33,12 +46,14 @@
 	#endif
 	#include <sqlext.h>
 #endif
+#include <log4cxx/private/odbcappender_priv.h>
 
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::db;
 using namespace log4cxx::spi;
+using namespace log4cxx::pattern;
 
 SQLException::SQLException(short fHandleType,
 	void* hInput, const char* prolog,
@@ -103,6 +118,31 @@ ODBCAppender::~ODBCAppender()
 	finalize();
 }
 
+#define RULES_PUT(spec, cls) \
+	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), cls ::newInstance))
+
+static PatternMap& getFormatSpecifiers()
+{
+	static PatternMap specs;
+	if (specs.empty())
+	{
+		RULES_PUT("logger", LoggerPatternConverter);
+		RULES_PUT("class", ClassNamePatternConverter);
+		RULES_PUT("time", DatePatternConverter);
+		RULES_PUT("shortfilename", ShortFileLocationPatternConverter);
+		RULES_PUT("fullfilename", FileLocationPatternConverter);
+		RULES_PUT("location", FullLocationPatternConverter);
+		RULES_PUT("line", LineLocationPatternConverter);
+		RULES_PUT("message", MessagePatternConverter);
+		RULES_PUT("method", MethodLocationPatternConverter);
+		RULES_PUT("level", LevelPatternConverter);
+		RULES_PUT("thread", ThreadPatternConverter);
+		RULES_PUT("threadname", ThreadUsernamePatternConverter);
+		RULES_PUT("ndc", NDCPatternConverter);
+	}
+	return specs;
+}
+
 void ODBCAppender::setOption(const LogString& option, const LogString& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
@@ -127,16 +167,56 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 	{
 		setUser(value);
 	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("MESSAGECHARACTERCOUNT"), LOG4CXX_STR("messagecharactercount")))
+	{
+		_priv->max_message_character_count = (size_t)OptionConverter::toInt(value, 1000);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILEPATHCHARACTERCOUNT"), LOG4CXX_STR("filepathcharactercount")))
+	{
+		_priv->max_file_path_character_count = (size_t)OptionConverter::toInt(value, 300);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("COLUMNMAPPING"), LOG4CXX_STR("columnmapping")))
+	{
+		_priv->mappedName.push_back(value);
+	}
 	else
 	{
 		AppenderSkeleton::setOption(option, value);
 	}
 }
 
+//* Does ODBCAppender require a layout?
+
+bool ODBCAppender::requiresLayout() const
+{
+	return _priv->parameterValue.empty();
+}
+
 void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 {
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
+#else
+	auto& specs = getFormatSpecifiers();
+	for (auto& name : _priv->mappedName)
+	{
+		auto pItem = specs.find(StringHelper::toLowerCase(name));
+		if (specs.end() == pItem)
+			LogLog::error(name + LOG4CXX_STR(" is not a supported ColumnMapping value"));
+		else
+		{
+			std::vector<LogString> options;
+			if (LOG4CXX_STR("time") == pItem->first)
+				options.push_back(LOG4CXX_STR("dd MMM yyyy HH:mm:ss.SSS"));
+			auto converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
+			size_t max_character_count = 30;
+			if (LOG4CXX_STR("message") == pItem->first)
+				max_character_count = _priv->max_message_character_count;
+			else if (LOG4CXX_STR("fullfilename") == pItem->first)
+				max_character_count = _priv->max_file_path_character_count;
+			_priv->parameterValue.emplace_back(converter, (wchar_t*)0, max_character_count);
+		}
+	}
 #endif
 }
 
@@ -210,10 +290,6 @@ is closed (typically when garbage collected).*/
 void ODBCAppender::closeConnection(ODBCAppender::SQLHDBC /* con */)
 {
 }
-
-
-
-
 
 ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 {
@@ -316,14 +392,91 @@ void ODBCAppender::close()
 	_priv->closed = true;
 }
 
+void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
+{
+	auto ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &this->preparedStatement);
+	if (ret < 0)
+	{
+		throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate statement handle.", p);
+	}
+
+	LOG4CXX_ENCODE_CHAR(sql, this->sqlStatement);
+	ret = SQLPrepare(this->preparedStatement, (SQLCHAR*)sql.c_str(), SQL_NTS);
+	if (ret < 0)
+	{
+		throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to prepare sql statement.", p);
+	}
+
+	int parameterNumber = 0;
+	for (auto& item : this->parameterValue)
+	{
+		++parameterNumber;
+		auto max_character_count = std::get<2>(item);
+		auto bufferSize = max_character_count * sizeof(wchar_t);
+		std::get<1>(item) = (wchar_t*) p.palloc(bufferSize + sizeof(wchar_t));
+		SQLLEN cbString = SQL_NTS;
+		auto ret = SQLBindParameter
+			( this->preparedStatement
+			, parameterNumber
+			, SQL_PARAM_INPUT
+			, SQL_C_WCHAR  // ValueType
+			, SQL_DEFAULT  // ParameterType
+			, 0            // ColumnSize
+			, 0            // DecimalDigits
+			, std::get<1>(item)  // ParameterValuePtr
+			, bufferSize         // BufferLength
+			, &cbString          // StrLen_or_IndPtr
+			);
+		if (ret < 0)
+		{
+			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to bind parameter.", p);
+		}
+	}
+}
+
+void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventPtr& event, Pool& p)
+{
+	for (auto& item : this->parameterValue)
+	{
+		LogString sbuf;
+		std::get<0>(item)->format(event, sbuf, p);
+#if LOG4CXX_LOGCHAR_IS_WCHAR_T
+		std::wstring& tmp = sbuf;
+#else
+		std::wstring tmp;
+		Transcoder::encode(sbuf, tmp);
+#endif
+		if (auto dst = std::get<1>(item))
+		{
+			auto sz = max(std::get<2>(item), tmp.size());
+			std::memcpy(dst, tmp.data(), sz * sizeof(wchar_t));
+			dst[sz] = 0;
+		}
+	}
+}
+
 void ODBCAppender::flushBuffer(Pool& p)
 {
 	for (auto& logEvent : _priv->buffer)
 	{
 		try
 		{
-			auto sql = getLogStatement(logEvent, p);
-			execute(sql, p);
+			if (!_priv->parameterValue.empty())
+			{
+				if (0 == _priv->preparedStatement)
+					_priv->setPreparedStatement(getConnection(p), p);
+				_priv->setParameterValues(logEvent, p);
+				auto ret = SQLExecute(_priv->preparedStatement);
+				if (ret < 0)
+				{
+					throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement.", p);
+				}
+			}
+			else
+			{
+				auto sql = getLogStatement(logEvent, p);
+				execute(sql, p);
+			}
 		}
 		catch (SQLException& e)
 		{

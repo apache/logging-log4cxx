@@ -47,8 +47,8 @@ class LOG4CXX_EXPORT SQLException : public log4cxx::helpers::Exception
 /**
 The ODBCAppender sends log events to a database.
 
-<p>Each append call adds the logging event to a buffer.
-When the buffer is full, values are extracted from each LoggingEvent
+<p>Each append call adds the spi::LoggingEvent to a buffer.
+When the buffer is full, values are extracted from each spi::LoggingEvent
 and the sql insert statement executed.
 
 The SQL insert statement pattern must be provided
@@ -56,7 +56,7 @@ either in the Log4cxx configuration file
 using the <b>sql</b> parameter element
 or programatically by calling the <code>setSql(String sql)</code> method.
 
-If no <b>ColumnMapping</b> element is provided
+If no <b>ColumnMapping</b> element is provided in the configuration file
 the sql statement is assumed to be a PatternLayout layout.
 In this case all the conversion patterns in PatternLayout
 can be used inside of the statement. (see the test cases for examples)

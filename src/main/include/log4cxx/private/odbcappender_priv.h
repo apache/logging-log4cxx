@@ -19,9 +19,8 @@
 #define LOG4CXX_ODBCAPPENDER_PRIV
 
 #include <log4cxx/db/odbcappender.h>
+#include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include "appenderskeleton_priv.h"
-
-#include <list>
 
 namespace log4cxx
 {
@@ -30,11 +29,15 @@ namespace db
 
 struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
-	ODBCAppenderPriv() :
-		AppenderSkeletonPrivate(),
-		connection(nullptr),
-		env(nullptr),
-		bufferSize(1) {}
+	ODBCAppenderPriv()
+		: AppenderSkeletonPrivate()
+		, connection(0)
+		, env(0)
+		, preparedStatement(0)
+		, max_message_character_count(1000)
+		, max_file_path_character_count(300)
+		, bufferSize(1)
+		{}
 
 	/**
 	* URL of the DB for default connection handling
@@ -58,8 +61,8 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	* sub-class and overriding the <code>getConnection</code> and
 	* <code>closeConnection</code> methods.
 	*/
-	log4cxx::db::ODBCAppender::SQLHDBC connection;
-	log4cxx::db::ODBCAppender::SQLHENV env;
+	SQLHDBC connection;
+	SQLHENV env;
 
 	/**
 	* Stores the string given to the pattern layout for conversion into a SQL
@@ -71,6 +74,18 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	* Also see PatternLayout.
 	*/
 	LogString sqlStatement;
+
+	/**
+	* The bound column names, converters and buffers
+	*/
+	std::vector<LogString> mappedName;
+	size_t max_message_character_count;
+	size_t max_file_path_character_count;
+	using MappedValue = std::tuple<pattern::LoggingEventPatternConverterPtr, wchar_t*, size_t>;
+	std::vector<MappedValue> parameterValue;
+	SQLHSTMT preparedStatement;
+	void setPreparedStatement(SQLHDBC con, helpers::Pool& p);
+	void setParameterValues(const spi::LoggingEventPtr& event, helpers::Pool& p);
 
 	/**
 	* size of LoggingEvent buffer before writing to the database.
