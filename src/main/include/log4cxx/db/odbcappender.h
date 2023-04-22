@@ -103,7 +103,7 @@ An example configuration that writes to the data source named "LoggingDSN" is:
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 appender name="SqlAppender" class="ODBCAppender">
  <param name="DSN" value="LoggingDSN"/>
- <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m')" />
+ <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m{'}')" />
 </appender>
 <appender name="ASYNC" class="AsyncAppender">
   <param name="BufferSize" value="1000"/>

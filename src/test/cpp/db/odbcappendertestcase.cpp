@@ -88,7 +88,7 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 			auto odbc = Logger::getLogger("DB.UnitTest");
 			for (int i = 0; i < 100; ++i)
 			{
-				LOG4CXX_INFO(odbc, "Message " << i);
+				LOG4CXX_INFO(odbc, "Message '" << i << "'");
 				apr_sleep(30000);
 			}
 			LOG4CXX_INFO(odbc, "Last message");
