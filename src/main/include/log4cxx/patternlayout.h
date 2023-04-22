@@ -159,8 +159,10 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *  <tr>
  *      <td align="center"><strong>m</strong></td>
  *      <td>
- *          Used to output the application supplied message associated with the logging
- *          event.
+ *          Used to output the application supplied message associated with the logging event.
+ *          To output in a quoted context, add set of braces containing the quote character.
+ *          Any quote character in the message is augmented with a second quote character.
+ *          For example, use %m{'} in an SQL insert statement.
  *      </td>
  *  </tr>
  *  <tr>
