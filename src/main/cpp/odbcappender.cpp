@@ -47,6 +47,11 @@
 	#include <sqlext.h>
 #endif
 #include <log4cxx/private/odbcappender_priv.h>
+#if defined(max)
+	#undef max
+#endif
+#include <cstring>
+#include <algorithm>
 
 
 using namespace log4cxx;
@@ -256,7 +261,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate sql handle.", p);
+			throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate sql handle", p);
 		}
 
 		SQLWCHAR* wsql;
@@ -265,7 +270,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			throw SQLException(SQL_HANDLE_STMT, stmt, "Failed to execute sql statement.", p);
+			throw SQLException(SQL_HANDLE_STMT, stmt, "Failed to execute sql statement", p);
 		}
 	}
 	catch (SQLException&)
@@ -302,7 +307,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to allocate SQL handle.", p);
+			SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to allocate SQL handle", p);
 			_priv->env = SQL_NULL_HENV;
 			throw ex;
 		}
@@ -311,7 +316,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to set odbc version.", p);
+			SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to set odbc version", p);
 			SQLFreeHandle(SQL_HANDLE_ENV, _priv->env);
 			_priv->env = SQL_NULL_HENV;
 			throw ex;
@@ -324,7 +329,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_DBC, _priv->connection, "Failed to allocate sql handle.", p);
+			SQLException ex(SQL_HANDLE_DBC, _priv->connection, "Failed to allocate sql handle", p);
 			_priv->connection = SQL_NULL_HDBC;
 			throw ex;
 		}
@@ -343,7 +348,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_DBC, _priv->connection, "Failed to connect to database.", p);
+			SQLException ex(SQL_HANDLE_DBC, _priv->connection, "Failed to connect to database", p);
 			SQLFreeHandle(SQL_HANDLE_DBC, _priv->connection);
 			_priv->connection = SQL_NULL_HDBC;
 			throw ex;
@@ -400,8 +405,9 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 		throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate statement handle.", p);
 	}
 
-	LOG4CXX_ENCODE_CHAR(sql, this->sqlStatement);
-	ret = SQLPrepare(this->preparedStatement, (SQLCHAR*)sql.c_str(), SQL_NTS);
+	SQLWCHAR* wsql;
+	encode(&wsql, this->sqlStatement, p);
+	ret = SQLPrepareW(this->preparedStatement, wsql, SQL_NTS);
 	if (ret < 0)
 	{
 		throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to prepare sql statement.", p);
@@ -429,7 +435,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			);
 		if (ret < 0)
 		{
-			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to bind parameter.", p);
+			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to bind parameter", p);
 		}
 	}
 }
@@ -448,7 +454,7 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 #endif
 		if (auto dst = std::get<1>(item))
 		{
-			auto sz = max(std::get<2>(item), tmp.size());
+			auto sz = std::max(std::get<2>(item), tmp.size());
 			std::memcpy(dst, tmp.data(), sz * sizeof(wchar_t));
 			dst[sz] = 0;
 		}
@@ -469,7 +475,7 @@ void ODBCAppender::flushBuffer(Pool& p)
 				auto ret = SQLExecute(_priv->preparedStatement);
 				if (ret < 0)
 				{
-					throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement.", p);
+					throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement", p);
 				}
 			}
 			else
