@@ -207,7 +207,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 			ODBCAppenderPriv::DataBinding paramData{ 0, 0, 0, 0, 0 };
 			std::vector<LogString> options;
 			if (LOG4CXX_STR("time") == pItem->first)
-				options.push_back(LOG4CXX_STR("dd MMM yyyy HH:mm:ss.SSS"));
+				options.push_back(LOG4CXX_STR("yyyy-mm-ddTHH:mm:ss.SSS"));
 			paramData.converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
 			_priv->parameterValue.push_back(paramData);
 		}
@@ -437,22 +437,23 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 		}
 		item.paramMaxCharCount = 30;
 		item.paramType = SQL_C_CHAR;
-		item.paramValueSize = (SQLINTEGER)item.paramMaxCharCount * sizeof(char);
+		item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char);
 		if (SQL_CHAR == targetType || SQL_VARCHAR == targetType || SQL_LONGVARCHAR == targetType)
 		{
 			item.paramMaxCharCount = targetMaxCharCount;
+			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char) + sizeof(char);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
 		}
 		else if (SQL_WCHAR == targetType || SQL_WVARCHAR == targetType || SQL_WLONGVARCHAR == targetType)
 		{
 			item.paramMaxCharCount = targetMaxCharCount;
 			item.paramType = SQL_C_WCHAR;
-			item.paramValueSize = (SQLINTEGER)targetMaxCharCount * sizeof(wchar_t);
+			item.paramValueSize = (SQLINTEGER)(targetMaxCharCount) * sizeof(wchar_t) + sizeof(wchar_t);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
 		}
 		else
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
-		SQLLEN cbString = SQL_NTS;
+		item.strLen_or_Ind = SQL_NTS;
 		ret = SQLBindParameter
 			( this->preparedStatement
 			, parameterNumber
@@ -463,7 +464,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			, decimalDigits
 			, item.paramValue
 			, item.paramValueSize
-			, &cbString          // StrLen_or_IndPtr
+			, &item.strLen_or_Ind
 			);
 		if (ret < 0)
 		{
@@ -478,7 +479,7 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 	{
 		LogString sbuf;
 		item.converter->format(event, sbuf, p);
-		if (!item.paramValue)
+		if (!item.paramValue || item.paramValueSize <= 0)
 			;
 		else if (SQL_C_WCHAR == item.paramType)
 		{
@@ -489,9 +490,10 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 			Transcoder::encode(sbuf, tmp);
 #endif
 			auto dst = (wchar_t*)item.paramValue;
-			auto sz = std::min(size_t(item.paramMaxCharCount), tmp.size());
-			std::memcpy(dst, tmp.data(), sz * sizeof(wchar_t));
-			dst[sz] = 0;
+			auto charCount = std::min(size_t(item.paramMaxCharCount), tmp.size());
+			auto copySize = std::min(size_t(item.paramValueSize - 1), charCount * sizeof(wchar_t));
+			std::memcpy(dst, tmp.data(), copySize);
+			dst[copySize / sizeof(wchar_t)] = 0;
 		}
 		else // SQL_C_CHAR == item.paramType
 		{
@@ -503,8 +505,9 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 #endif
 			auto dst = (char*)item.paramValue;
 			auto sz = std::min(size_t(item.paramMaxCharCount), tmp.size());
-			std::memcpy(dst, tmp.data(), sz * sizeof(char));
-			dst[sz] = 0;
+			auto copySize = std::min(size_t(item.paramValueSize - 1), sz * sizeof(char));
+			std::memcpy(dst, tmp.data(), copySize);
+			dst[copySize] = 0;
 		}
 	}
 }

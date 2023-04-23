@@ -96,6 +96,7 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 		SQLULEN      paramMaxCharCount;
 		SQLPOINTER   paramValue;
 		SQLINTEGER   paramValueSize;
+		SQLLEN       strLen_or_Ind;
 	};
 	std::vector<LogString>   mappedName;
 	std::vector<DataBinding> parameterValue;
