@@ -196,7 +196,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
 #else
-	auto& specs = getFormatSpecifiers();
+	auto specs = getFormatSpecifiers();
 	for (auto& name : _priv->mappedName)
 	{
 		auto pItem = specs.find(StringHelper::toLowerCase(name));
