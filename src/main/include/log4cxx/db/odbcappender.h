@@ -94,12 +94,6 @@ The following <b>param</b> elements are optional:
   - message
   - ndc
 
-The string provided by a  is sent to a
-<code>PatternLayout</code> (either created automatically by the
-appender or added by the user).  Therefore by default all the
-conversion patterns in <code>PatternLayout</code> can be used
-inside of the statement.  (see the test cases for examples)
-
 <p>For use as a base class:
 
 <ul>

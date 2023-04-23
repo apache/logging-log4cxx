@@ -49,8 +49,8 @@
 	typedef void* SQLHSTMT;
 #endif
 #include <log4cxx/private/odbcappender_priv.h>
-#if defined(max)
-	#undef max
+#if defined(min)
+	#undef min
 #endif
 #include <cstring>
 #include <algorithm>
@@ -174,14 +174,6 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 	{
 		setUser(value);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("MESSAGECHARACTERCOUNT"), LOG4CXX_STR("messagecharactercount")))
-	{
-		_priv->max_message_character_count = (size_t)OptionConverter::toInt(value, 1000);
-	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILEPATHCHARACTERCOUNT"), LOG4CXX_STR("filepathcharactercount")))
-	{
-		_priv->max_file_path_character_count = (size_t)OptionConverter::toInt(value, 300);
-	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("COLUMNMAPPING"), LOG4CXX_STR("columnmapping")))
 	{
 		_priv->mappedName.push_back(value);
@@ -212,16 +204,12 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 			LogLog::error(name + LOG4CXX_STR(" is not a supported ColumnMapping value"));
 		else
 		{
+			ODBCAppenderPriv::DataBinding paramData{ 0, 0, 0, 0, 0 };
 			std::vector<LogString> options;
 			if (LOG4CXX_STR("time") == pItem->first)
 				options.push_back(LOG4CXX_STR("dd MMM yyyy HH:mm:ss.SSS"));
-			auto converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
-			size_t max_character_count = 30;
-			if (LOG4CXX_STR("message") == pItem->first)
-				max_character_count = _priv->max_message_character_count;
-			else if (LOG4CXX_STR("fullfilename") == pItem->first)
-				max_character_count = _priv->max_file_path_character_count;
-			_priv->parameterValue.emplace_back(converter, (wchar_t*)0, max_character_count);
+			paramData.converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
+			_priv->parameterValue.push_back(paramData);
 		}
 	}
 #endif
@@ -266,10 +254,15 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
 			throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate sql handle", p);
 		}
 
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+		ret = SQLExecDirectW(stmt, (SQLWCHAR*)sql.c_str(), SQL_NTS);
+#elsif LOG4CXX_LOGCHAR_IS_UTF8
+		ret = SQLExecDirectA(stmt, (SQLCHAR*)sql.c_str(), SQL_NTS);
+#else
 		SQLWCHAR* wsql;
 		encode(&wsql, sql, p);
 		ret = SQLExecDirectW(stmt, wsql, SQL_NTS);
-
+#endif
 		if (ret < 0)
 		{
 			throw SQLException(SQL_HANDLE_STMT, stmt, "Failed to execute sql statement", p);
@@ -408,9 +401,15 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 		throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate statement handle.", p);
 	}
 
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+	ret = SQLPrepareW(this->preparedStatement, (SQLWCHAR*)this->sqlStatement.c_str(), SQL_NTS);
+#elsif LOG4CXX_LOGCHAR_IS_UTF8
+	ret = SQLPrepareA(this->preparedStatement, (SQLCHAR*)this->sqlStatement.c_str(), SQL_NTS);
+#else
 	SQLWCHAR* wsql;
 	encode(&wsql, this->sqlStatement, p);
 	ret = SQLPrepareW(this->preparedStatement, wsql, SQL_NTS);
+#endif
 	if (ret < 0)
 	{
 		throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to prepare sql statement.", p);
@@ -420,20 +419,50 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 	for (auto& item : this->parameterValue)
 	{
 		++parameterNumber;
-		auto max_character_count = std::get<2>(item);
-		auto bufferSize = max_character_count * sizeof(wchar_t);
-		std::get<1>(item) = (wchar_t*) p.palloc(bufferSize + sizeof(wchar_t));
+		SQLSMALLINT  targetType;
+		SQLULEN      targetMaxCharCount;
+		SQLSMALLINT  decimalDigits;
+		SQLSMALLINT  nullable;
+		auto ret = SQLDescribeParam
+			( this->preparedStatement
+			, parameterNumber
+			, &targetType
+			, &targetMaxCharCount
+			, &decimalDigits
+			, &nullable
+			);
+		if (ret < 0)
+		{
+			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to describe parameter", p);
+		}
+		item.paramMaxCharCount = 30;
+		item.paramType = SQL_C_CHAR;
+		item.paramValueSize = (SQLINTEGER)item.paramMaxCharCount * sizeof(char);
+		if (SQL_CHAR == targetType || SQL_VARCHAR == targetType || SQL_LONGVARCHAR == targetType)
+		{
+			item.paramMaxCharCount = targetMaxCharCount;
+			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
+		}
+		else if (SQL_WCHAR == targetType || SQL_WVARCHAR == targetType || SQL_WLONGVARCHAR == targetType)
+		{
+			item.paramMaxCharCount = targetMaxCharCount;
+			item.paramType = SQL_C_WCHAR;
+			item.paramValueSize = (SQLINTEGER)targetMaxCharCount * sizeof(wchar_t);
+			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
+		}
+		else
+			item.paramValue = (wchar_t*) p.palloc(item.paramValueSize + sizeof(char));
 		SQLLEN cbString = SQL_NTS;
-		auto ret = SQLBindParameter
+		ret = SQLBindParameter
 			( this->preparedStatement
 			, parameterNumber
 			, SQL_PARAM_INPUT
-			, SQL_C_WCHAR  // ValueType
-			, SQL_DEFAULT  // ParameterType
-			, 0            // ColumnSize
-			, 0            // DecimalDigits
-			, std::get<1>(item)  // ParameterValuePtr
-			, bufferSize         // BufferLength
+			, item.paramType  // ValueType
+			, targetType
+			, targetMaxCharCount
+			, decimalDigits
+			, item.paramValue
+			, item.paramValueSize
 			, &cbString          // StrLen_or_IndPtr
 			);
 		if (ret < 0)
@@ -449,17 +478,33 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 	for (auto& item : this->parameterValue)
 	{
 		LogString sbuf;
-		std::get<0>(item)->format(event, sbuf, p);
-#if LOG4CXX_LOGCHAR_IS_WCHAR_T
-		std::wstring& tmp = sbuf;
-#else
-		std::wstring tmp;
-		Transcoder::encode(sbuf, tmp);
-#endif
-		if (auto dst = std::get<1>(item))
+		item.converter->format(event, sbuf, p);
+		if (!item.paramValue)
+			;
+		else if (SQL_C_WCHAR == item.paramType)
 		{
-			auto sz = std::max(std::get<2>(item), tmp.size());
+#if LOG4CXX_LOGCHAR_IS_WCHAR_T
+			std::wstring& tmp = sbuf;
+#else
+			std::wstring tmp;
+			Transcoder::encode(sbuf, tmp);
+#endif
+			auto dst = (wchar_t*)item.paramValue;
+			auto sz = std::min(size_t(item.paramMaxCharCount), tmp.size());
 			std::memcpy(dst, tmp.data(), sz * sizeof(wchar_t));
+			dst[sz] = 0;
+		}
+		else // SQL_C_CHAR == item.paramType
+		{
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			std::string& tmp = sbuf;
+#else
+			std::string tmp;
+			Transcoder::encode(sbuf, tmp);
+#endif
+			auto dst = (char*)item.paramValue;
+			auto sz = std::min(size_t(item.paramMaxCharCount), tmp.size());
+			std::memcpy(dst, tmp.data(), sz * sizeof(char));
 			dst[sz] = 0;
 		}
 	}

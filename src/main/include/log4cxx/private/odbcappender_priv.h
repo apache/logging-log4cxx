@@ -22,6 +22,19 @@
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include "appenderskeleton_priv.h"
 
+#if !defined(LOG4CXX)
+	#define LOG4CXX 1
+#endif
+#include <log4cxx/private/log4cxx_private.h>
+#if LOG4CXX_HAVE_ODBC
+	#if defined(WIN32) || defined(_WIN32)
+		#include <windows.h>
+	#endif
+	#include <sqlext.h>
+#else
+	typedef void* SQLHSTMT;
+#endif
+
 namespace log4cxx
 {
 namespace db
@@ -34,8 +47,6 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 		, connection(0)
 		, env(0)
 		, preparedStatement(0)
-		, max_message_character_count(1000)
-		, max_file_path_character_count(300)
 		, bufferSize(1)
 		{}
 
@@ -63,27 +74,27 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	*/
 	SQLHDBC connection;
 	SQLHENV env;
+	SQLHSTMT preparedStatement;
 
 	/**
 	* Stores the string given to the pattern layout for conversion into a SQL
-	* statement, eg: insert into LogTable (Thread, File, Message) values
-	* ("%t", "%F", "%m")
-	*
-	* Be careful of quotes in your messages!
-	*
-	* Also see PatternLayout.
 	*/
 	LogString sqlStatement;
 
 	/**
 	* The bound column names, converters and buffers
 	*/
-	std::vector<LogString> mappedName;
-	size_t max_message_character_count;
-	size_t max_file_path_character_count;
-	using MappedValue = std::tuple<pattern::LoggingEventPatternConverterPtr, wchar_t*, size_t>;
-	std::vector<MappedValue> parameterValue;
-	SQLHSTMT preparedStatement;
+	struct DataBinding
+	{
+		using ConverterPtr = pattern::LoggingEventPatternConverterPtr;
+		ConverterPtr converter;
+		SQLSMALLINT  paramType;
+		SQLULEN      paramMaxCharCount;
+		SQLPOINTER   paramValue;
+		SQLINTEGER   paramValueSize;
+	};
+	std::vector<LogString>   mappedName;
+	std::vector<DataBinding> parameterValue;
 	void setPreparedStatement(SQLHDBC con, helpers::Pool& p);
 	void setParameterValues(const spi::LoggingEventPtr& event, helpers::Pool& p);
 
