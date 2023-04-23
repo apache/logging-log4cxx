@@ -33,6 +33,10 @@
 	#include <sqlext.h>
 #else
 	typedef void* SQLHSTMT;
+	typedef void* SQLPOINTER;
+	typedef uint64_t SQLULEN;
+	typedef long SQLINTEGER;
+	typedef short SQLSMALLINT;
 #endif
 
 namespace log4cxx
