@@ -35,7 +35,6 @@
 #include <log4cxx/pattern/threadpatternconverter.h>
 #include <log4cxx/pattern/threadusernamepatternconverter.h>
 #include <log4cxx/pattern/ndcpatternconverter.h>
-#include <log4cxx/pattern/patternparser.h>
 
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
@@ -46,12 +45,6 @@
 		#include <windows.h>
 	#endif
 	#include <sqlext.h>
-    #if LOG4CXX_LOGCHAR_IS_WCHAR
-    #define LOG4CXX_SQL_STRING_TYPE SQL_C_WCHAR
-    #else
-    #define LOG4CXX_SQL_STRING_TYPE SQL_CHAR
-    #endif
-
 #else
 	typedef void* SQLHSTMT;
 #endif
@@ -68,22 +61,6 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::db;
 using namespace log4cxx::spi;
 using namespace log4cxx::pattern;
-
-#if LOG4CXX_HAVE_ODBC
-static LogString sqlwchar_to_logstring(SQLWCHAR* wchar_str){
-    std::wstring wstr;
-    LogString output;
-    int x = 0;
-    while(wchar_str[x] != 0){
-        wstr.push_back(wchar_str[x]);
-        x++;
-    }
-
-    Transcoder::decode(wstr, output);
-
-    return output;
-}
-#endif
 
 SQLException::SQLException(short fHandleType,
 	void* hInput, const char* prolog,
@@ -207,8 +184,8 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("COLUMNMAPPING"), LOG4CXX_STR("columnmapping")))
 	{
-        _priv->mappedName.push_back(value);
-    }
+		_priv->mappedName.push_back(value);
+	}
 	else
 	{
 		AppenderSkeleton::setOption(option, value);
@@ -219,10 +196,10 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 
 bool ODBCAppender::requiresLayout() const
 {
-    return _priv->sqlFormatters.empty();
+	return _priv->parameterValue.empty();
 }
 
-void ODBCAppender::activateOptions(log4cxx::helpers::Pool& p)
+void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 {
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
@@ -244,31 +221,9 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool& p)
 				max_character_count = _priv->max_message_character_count;
 			else if (LOG4CXX_STR("fullfilename") == pItem->first)
 				max_character_count = _priv->max_file_path_character_count;
-            _priv->sqlFormatters.emplace_back(converter);
+			_priv->parameterValue.emplace_back(converter, (wchar_t*)0, max_character_count);
 		}
 	}
-
-    SQLHDBC con = getConnection(p);
-
-    if (_priv->preparedStatement != nullptr){
-        SQLFreeHandle(SQL_HANDLE_STMT, _priv->preparedStatement);
-        _priv->preparedStatement = nullptr;
-    }
-    SQLRETURN ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &_priv->preparedStatement);
-    if (ret < 0)
-    {
-        SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to allocate SQL prepared statement", p);
-        _priv->preparedStatement = nullptr;
-        throw ex;
-    }
-
-    SQLWCHAR* wsql;
-    encode(&wsql, _priv->sqlStatement, p);
-    ret = SQLPrepareW(_priv->preparedStatement, wsql, SQL_NTS);
-    if (ret < 0)
-    {
-        throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to prepare sql statement.", p);
-    }
 #endif
 }
 
@@ -429,161 +384,118 @@ void ODBCAppender::close()
 
 #if LOG4CXX_HAVE_ODBC
 
-    if (_priv->preparedStatement != nullptr){
-        SQLFreeHandle(SQL_HANDLE_STMT, _priv->preparedStatement);
-        _priv->preparedStatement = nullptr;
-    }
-
 	if (_priv->connection != SQL_NULL_HDBC)
 	{
 		SQLDisconnect(_priv->connection);
 		SQLFreeHandle(SQL_HANDLE_DBC, _priv->connection);
-        _priv->connection = nullptr;
 	}
 
 	if (_priv->env != SQL_NULL_HENV)
 	{
 		SQLFreeHandle(SQL_HANDLE_ENV, _priv->env);
-        _priv->env = nullptr;
 	}
 
 #endif
 	_priv->closed = true;
 }
 
-//void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
-//{
-//#if LOG4CXX_HAVE_ODBC
-//	auto ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &this->preparedStatement);
-//	if (ret < 0)
-//	{
-//		throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate statement handle.", p);
-//	}
+void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
+{
+#if LOG4CXX_HAVE_ODBC
+	auto ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &this->preparedStatement);
+	if (ret < 0)
+	{
+		throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate statement handle.", p);
+	}
 
-//	SQLWCHAR* wsql;
-//	encode(&wsql, this->sqlStatement, p);
-//	ret = SQLPrepareW(this->preparedStatement, wsql, SQL_NTS);
-//	if (ret < 0)
-//	{
-//		throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to prepare sql statement.", p);
-//	}
+	SQLWCHAR* wsql;
+	encode(&wsql, this->sqlStatement, p);
+	ret = SQLPrepareW(this->preparedStatement, wsql, SQL_NTS);
+	if (ret < 0)
+	{
+		throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to prepare sql statement.", p);
+	}
 
-//	int parameterNumber = 0;
-//    for (auto& item : this->sqlFormatters)
-//	{
-//		++parameterNumber;
-//		auto max_character_count = std::get<2>(item);
-//		auto bufferSize = max_character_count * sizeof(wchar_t);
-//		std::get<1>(item) = (wchar_t*) p.palloc(bufferSize + sizeof(wchar_t));
-//		SQLLEN cbString = SQL_NTS;
-//		auto ret = SQLBindParameter
-//			( this->preparedStatement
-//			, parameterNumber
-//			, SQL_PARAM_INPUT
-//            , SQL_STRING_TYPE  // ValueType
-//			, SQL_DEFAULT  // ParameterType
-//			, 0            // ColumnSize
-//			, 0            // DecimalDigits
-//			, std::get<1>(item)  // ParameterValuePtr
-//			, bufferSize         // BufferLength
-//            , &cbString          // StrLen_or_IndPtr
-//			);
-//		if (ret < 0)
-//		{
-//			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to bind parameter", p);
-//		}
-//	}
-//#endif
-//}
+	int parameterNumber = 0;
+	for (auto& item : this->parameterValue)
+	{
+		++parameterNumber;
+		auto max_character_count = std::get<2>(item);
+		auto bufferSize = max_character_count * sizeof(wchar_t);
+		std::get<1>(item) = (wchar_t*) p.palloc(bufferSize + sizeof(wchar_t));
+		SQLLEN cbString = SQL_NTS;
+		auto ret = SQLBindParameter
+			( this->preparedStatement
+			, parameterNumber
+			, SQL_PARAM_INPUT
+			, SQL_C_WCHAR  // ValueType
+			, SQL_DEFAULT  // ParameterType
+			, 0            // ColumnSize
+			, 0            // DecimalDigits
+			, std::get<1>(item)  // ParameterValuePtr
+			, bufferSize         // BufferLength
+			, &cbString          // StrLen_or_IndPtr
+			);
+		if (ret < 0)
+		{
+			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to bind parameter", p);
+		}
+	}
+#endif
+}
 
-//void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventPtr& event, Pool& p)
-//{
-//    for (auto& item : this->sqlFormatters)
-//	{
-//		LogString sbuf;
-//		std::get<0>(item)->format(event, sbuf, p);
-//#if LOG4CXX_LOGCHAR_IS_WCHAR_T
-//		std::wstring& tmp = sbuf;
-//#else
-//		std::wstring tmp;
-//		Transcoder::encode(sbuf, tmp);
-//#endif
-//		if (auto dst = std::get<1>(item))
-//		{
-//			auto sz = std::max(std::get<2>(item), tmp.size());
-//			std::memcpy(dst, tmp.data(), sz * sizeof(wchar_t));
-//			dst[sz] = 0;
-//		}
-//	}
-//}
+void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventPtr& event, Pool& p)
+{
+	for (auto& item : this->parameterValue)
+	{
+		LogString sbuf;
+		std::get<0>(item)->format(event, sbuf, p);
+#if LOG4CXX_LOGCHAR_IS_WCHAR_T
+		std::wstring& tmp = sbuf;
+#else
+		std::wstring tmp;
+		Transcoder::encode(sbuf, tmp);
+#endif
+		if (auto dst = std::get<1>(item))
+		{
+			auto sz = std::max(std::get<2>(item), tmp.size());
+			std::memcpy(dst, tmp.data(), sz * sizeof(wchar_t));
+			dst[sz] = 0;
+		}
+	}
+}
 
 void ODBCAppender::flushBuffer(Pool& p)
 {
-#if LOG4CXX_HAVE_ODBC
 	for (auto& logEvent : _priv->buffer)
 	{
-
-        try
-        {
-            std::vector<LogString> formattedStrings;
-            int parameterNumber = 1;
-            for (auto& formatter : _priv->sqlFormatters){
-                LogString append;
-                formatter->format(logEvent, append, p);
-//                std::wstring transcoded;
-//                Transcoder::encode(append, transcoded);
-                formattedStrings.push_back(append);
-            }
-
-            for(auto& wstr_value : formattedStrings){
-                SQLLEN cbValue = wstr_value.length();
-                auto ret = SQLBindParameter
-                    ( _priv->preparedStatement
-                    , parameterNumber
-                    , SQL_PARAM_INPUT
-                    , SQL_C_CHAR  // ValueType
-                    , SQL_CHAR  // ParameterType
-                    , 0            // ColumnSize
-                    , 0            // DecimalDigits
-                    , wstr_value.data()  // ParameterValuePtr
-                    , wstr_value.length()         // BufferLength
-                    , &cbValue          // StrLen_or_IndPtr
-                    );
-                if (ret < 0)
-                {
-                    SQLWCHAR errIdBuf[10];
-                    memset(errIdBuf, 0, sizeof(errIdBuf));
-                    SQLINTEGER i;
-                    SQLWCHAR errMsgBuf[255];
-                    SQLGetDiagRecW(SQL_HANDLE_STMT, _priv->preparedStatement, 1, errIdBuf, &i, errMsgBuf, 255, nullptr);
-                    LogString errId = sqlwchar_to_logstring(errIdBuf);
-                    LogString errMsg = sqlwchar_to_logstring(errMsgBuf);
-                    LogString fullMsg = LOG4CXX_STR("Failed to bind parameter: ");
-                    fullMsg.append(errId);
-                    fullMsg.append(LOG4CXX_STR(":"));
-                    fullMsg.append(errMsg);
-                    _priv->errorHandler->error(LOG4CXX_STR("Failed to bind parameter"), std::exception(),
-                        ErrorCode::FLUSH_FAILURE);
-                    break;
-                }
-                parameterNumber++;
-            }
-
-            auto ret = SQLExecute(_priv->preparedStatement);
-            if (ret < 0)
-            {
-                throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement", p);
-            }
+		try
+		{
+			if (!_priv->parameterValue.empty())
+			{
+#if LOG4CXX_HAVE_ODBC
+				if (0 == _priv->preparedStatement)
+					_priv->setPreparedStatement(getConnection(p), p);
+				_priv->setParameterValues(logEvent, p);
+				auto ret = SQLExecute(_priv->preparedStatement);
+				if (ret < 0)
+				{
+					throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement", p);
+				}
+#endif
+			}
+			else
+			{
+				auto sql = getLogStatement(logEvent, p);
+				execute(sql, p);
+			}
 		}
 		catch (SQLException& e)
 		{
 			_priv->errorHandler->error(LOG4CXX_STR("Failed to execute sql"), e,
 				ErrorCode::FLUSH_FAILURE);
 		}
-
-        SQLFreeStmt(_priv->preparedStatement, SQL_RESET_PARAMS);
 	}
-#endif
 
 	// clear the buffer of reported events
 	_priv->buffer.clear();
@@ -591,7 +503,23 @@ void ODBCAppender::flushBuffer(Pool& p)
 
 void ODBCAppender::setSql(const LogString& s)
 {
-    _priv->sqlStatement = s;
+	_priv->sqlStatement = s;
+
+	if (getLayout() == 0)
+	{
+		this->setLayout(std::make_shared<PatternLayout>(s));
+	}
+	else
+	{
+		PatternLayoutPtr patternLayout;
+		LayoutPtr asLayout = this->getLayout();
+		patternLayout = log4cxx::cast<PatternLayout>(asLayout);
+
+		if (patternLayout != 0)
+		{
+			patternLayout->setConversionPattern(s);
+		}
+	}
 }
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
@@ -604,10 +532,6 @@ void ODBCAppender::encode(wchar_t** dest, const LogString& src, Pool& p)
 void ODBCAppender::encode(unsigned short** dest,
 	const LogString& src, Pool& p)
 {
-    if(src.length() == 0){
-        *dest = nullptr;
-        return;
-    }
 	//  worst case double number of characters from UTF-8 or wchar_t
 	*dest = (unsigned short*)
 		p.palloc((src.size() + 1) * 2 * sizeof(unsigned short));
