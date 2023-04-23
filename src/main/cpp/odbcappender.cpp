@@ -207,7 +207,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 			ODBCAppenderPriv::DataBinding paramData{ 0, 0, 0, 0, 0 };
 			std::vector<LogString> options;
 			if (LOG4CXX_STR("time") == pItem->first)
-				options.push_back(LOG4CXX_STR("yyyy-mm-ddTHH:mm:ss.SSS"));
+				options.push_back(LOG4CXX_STR("yyyy-MM-ddTHH:mm:ss.SSS"));
 			paramData.converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
 			_priv->parameterValue.push_back(paramData);
 		}
@@ -435,24 +435,35 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 		{
 			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to describe parameter", p);
 		}
-		item.paramMaxCharCount = 30;
-		item.paramType = SQL_C_CHAR;
-		item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char);
 		if (SQL_CHAR == targetType || SQL_VARCHAR == targetType || SQL_LONGVARCHAR == targetType)
 		{
+			item.paramType = SQL_C_CHAR;
 			item.paramMaxCharCount = targetMaxCharCount;
 			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char) + sizeof(char);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
 		}
 		else if (SQL_WCHAR == targetType || SQL_WVARCHAR == targetType || SQL_WLONGVARCHAR == targetType)
 		{
-			item.paramMaxCharCount = targetMaxCharCount;
 			item.paramType = SQL_C_WCHAR;
+			item.paramMaxCharCount = targetMaxCharCount;
 			item.paramValueSize = (SQLINTEGER)(targetMaxCharCount) * sizeof(wchar_t) + sizeof(wchar_t);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
 		}
+		else if (SQL_TYPE_TIMESTAMP == targetType || SQL_DATETIME == targetType
+			|| SQL_TYPE_DATE == targetType || SQL_TYPE_TIME == targetType)
+		{
+			item.paramType = SQL_C_TYPE_TIMESTAMP;
+			item.paramMaxCharCount = 0;
+			item.paramValueSize = sizeof(SQL_TIMESTAMP_STRUCT);
+			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize);
+		}
 		else
+		{
+			item.paramType = SQL_C_CHAR;
+			item.paramMaxCharCount = 30;
+			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
+		}
 		item.strLen_or_Ind = SQL_NTS;
 		ret = SQLBindParameter
 			( this->preparedStatement
@@ -477,12 +488,12 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 {
 	for (auto& item : this->parameterValue)
 	{
-		LogString sbuf;
-		item.converter->format(event, sbuf, p);
 		if (!item.paramValue || item.paramValueSize <= 0)
 			;
 		else if (SQL_C_WCHAR == item.paramType)
 		{
+			LogString sbuf;
+			item.converter->format(event, sbuf, p);
 #if LOG4CXX_LOGCHAR_IS_WCHAR_T
 			std::wstring& tmp = sbuf;
 #else
@@ -495,8 +506,10 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 			std::memcpy(dst, tmp.data(), copySize);
 			dst[copySize / sizeof(wchar_t)] = 0;
 		}
-		else // SQL_C_CHAR == item.paramType
+		else if (SQL_C_CHAR == item.paramType)
 		{
+			LogString sbuf;
+			item.converter->format(event, sbuf, p);
 #if LOG4CXX_LOGCHAR_IS_UTF8
 			std::string& tmp = sbuf;
 #else
@@ -508,6 +521,17 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 			auto copySize = std::min(size_t(item.paramValueSize - 1), sz * sizeof(char));
 			std::memcpy(dst, tmp.data(), copySize);
 			dst[copySize] = 0;
+		}
+		else if (SQL_C_TYPE_TIMESTAMP == item.paramType)
+		{
+			auto dst = (SQL_TIMESTAMP_STRUCT*)item.paramValue;
+			dst->year = 2023;
+			dst->month = 4;
+			dst->day = 23;
+			dst->hour = 17;
+			dst->minute = 55;
+			dst->second = 20;
+			dst->fraction = 0; // the number of billionths of a second
 		}
 	}
 }
