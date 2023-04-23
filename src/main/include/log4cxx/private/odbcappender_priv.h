@@ -35,6 +35,7 @@
 	typedef void* SQLHSTMT;
 	typedef void* SQLPOINTER;
 	typedef uint64_t SQLULEN;
+	typedef int64_t SQLLEN;
 	typedef long SQLINTEGER;
 	typedef short SQLSMALLINT;
 #endif
