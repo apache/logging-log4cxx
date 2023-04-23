@@ -99,9 +99,10 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	};
 	std::vector<LogString>   mappedName;
 	std::vector<DataBinding> parameterValue;
+#if LOG4CXX_HAVE_ODBC
 	void setPreparedStatement(SQLHDBC con, helpers::Pool& p);
 	void setParameterValues(const spi::LoggingEventPtr& event, helpers::Pool& p);
-
+#endif
 	/**
 	* size of LoggingEvent buffer before writing to the database.
 	* Default is 1.

@@ -392,9 +392,9 @@ void ODBCAppender::close()
 	_priv->closed = true;
 }
 
+#if LOG4CXX_HAVE_ODBC
 void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 {
-#if LOG4CXX_HAVE_ODBC
 	auto ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &this->preparedStatement);
 	if (ret < 0)
 	{
@@ -470,7 +470,6 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to bind parameter", p);
 		}
 	}
-#endif
 }
 
 void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventPtr& event, Pool& p)
@@ -509,6 +508,7 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 		}
 	}
 }
+#endif
 
 void ODBCAppender::flushBuffer(Pool& p)
 {
