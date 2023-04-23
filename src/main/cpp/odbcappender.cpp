@@ -128,9 +128,9 @@ ODBCAppender::~ODBCAppender()
 #define RULES_PUT(spec, cls) \
 	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), cls ::newInstance))
 
-static PatternMap& getFormatSpecifiers()
+static PatternMap getFormatSpecifiers()
 {
-	static PatternMap specs;
+	PatternMap specs;
 	if (specs.empty())
 	{
 		RULES_PUT("logger", LoggerPatternConverter);
@@ -256,7 +256,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 		ret = SQLExecDirectW(stmt, (SQLWCHAR*)sql.c_str(), SQL_NTS);
-#elsif LOG4CXX_LOGCHAR_IS_UTF8
+#elif LOG4CXX_LOGCHAR_IS_UTF8
 		ret = SQLExecDirectA(stmt, (SQLCHAR*)sql.c_str(), SQL_NTS);
 #else
 		SQLWCHAR* wsql;
@@ -403,7 +403,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	ret = SQLPrepareW(this->preparedStatement, (SQLWCHAR*)this->sqlStatement.c_str(), SQL_NTS);
-#elsif LOG4CXX_LOGCHAR_IS_UTF8
+#elif LOG4CXX_LOGCHAR_IS_UTF8
 	ret = SQLPrepareA(this->preparedStatement, (SQLCHAR*)this->sqlStatement.c_str(), SQL_NTS);
 #else
 	SQLWCHAR* wsql;
@@ -451,7 +451,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
 		}
 		else
-			item.paramValue = (wchar_t*) p.palloc(item.paramValueSize + sizeof(char));
+			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
 		SQLLEN cbString = SQL_NTS;
 		ret = SQLBindParameter
 			( this->preparedStatement
