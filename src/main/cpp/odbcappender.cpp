@@ -450,10 +450,11 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			item.paramValueSize = (SQLINTEGER)(targetMaxCharCount) * sizeof(wchar_t) + sizeof(wchar_t);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
 		}
-		else if (SQL_TYPE_TIMESTAMP == targetType || SQL_TYPE_DATE == targetType || SQL_TYPE_TIME == targetType)
+		else if (SQL_TYPE_TIMESTAMP == targetType || SQL_TYPE_DATE == targetType || SQL_TYPE_TIME == targetType
+			|| SQL_DATETIME == targetType)
 		{
 			item.paramType = SQL_C_TYPE_TIMESTAMP;
-			item.paramMaxCharCount = 0;
+			item.paramMaxCharCount = decimalDigits;
 			item.paramValueSize = sizeof(SQL_TIMESTAMP_STRUCT);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize);
 		}
@@ -550,11 +551,14 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 				dst->hour = exploded.tm_hour;
 				dst->minute = exploded.tm_min;
 				dst->second = exploded.tm_sec;
-#ifdef A_NON_ZERO_FRACTION_DOES_NOT_CAUSE_A_DATETIME_FIELD_OVERFLOW
-				dst->fraction = 1000 * exploded.tm_usec;
-#else
-				dst->fraction = 0;
-#endif
+				int roundingExponent = 6 - (int)item.paramMaxCharCount;
+				if (0 < roundingExponent)
+				{
+					int divisor = (int)std::pow(10, roundingExponent);
+					dst->fraction = 1000 * divisor * ((exploded.tm_usec + divisor / 2) / divisor);
+				}
+				else
+					dst->fraction = 1000 * exploded.tm_usec;
 			}
 		}
 	}
