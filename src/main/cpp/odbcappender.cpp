@@ -207,7 +207,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 			ODBCAppenderPriv::DataBinding paramData{ 0, 0, 0, 0, 0 };
 			std::vector<LogString> options;
 			if (LOG4CXX_STR("time") == pItem->first)
-				options.push_back(LOG4CXX_STR("yyyy-MM-ddTHH:mm:ss.SSS"));
+				options.push_back(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss.SSS"));
 			paramData.converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
 			_priv->parameterValue.push_back(paramData);
 		}
@@ -449,8 +449,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			item.paramValueSize = (SQLINTEGER)(targetMaxCharCount) * sizeof(wchar_t) + sizeof(wchar_t);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
 		}
-		else if (SQL_TYPE_TIMESTAMP == targetType || SQL_DATETIME == targetType
-			|| SQL_TYPE_DATE == targetType || SQL_TYPE_TIME == targetType)
+		else if (SQL_TYPE_TIMESTAMP == targetType || SQL_TYPE_DATE == targetType || SQL_TYPE_TIME == targetType)
 		{
 			item.paramType = SQL_C_TYPE_TIMESTAMP;
 			item.paramMaxCharCount = 0;
@@ -459,10 +458,25 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 		}
 		else
 		{
-			item.paramType = SQL_C_CHAR;
+			if (SQL_INTEGER != targetType)
+			{
+				LogString msg(LOG4CXX_STR("Unexpected targetType ("));
+				helpers::StringHelper::toString(targetType, p, msg);
+				msg += LOG4CXX_STR(") at parameter ");
+				helpers::StringHelper::toString(parameterNumber, p, msg);
+				msg += LOG4CXX_STR(" while preparing SQL");
+				LogLog::warn(msg);
+			}
 			item.paramMaxCharCount = 30;
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			item.paramType = SQL_C_CHAR;
 			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
+#else
+			item.paramType = SQL_C_WCHAR;
+			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(wchar_t);
+			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
+#endif
 		}
 		item.strLen_or_Ind = SQL_NTS;
 		ret = SQLBindParameter
@@ -524,14 +538,23 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 		}
 		else if (SQL_C_TYPE_TIMESTAMP == item.paramType)
 		{
-			auto dst = (SQL_TIMESTAMP_STRUCT*)item.paramValue;
-			dst->year = 2023;
-			dst->month = 4;
-			dst->day = 23;
-			dst->hour = 17;
-			dst->minute = 55;
-			dst->second = 20;
-			dst->fraction = 0; // the number of billionths of a second
+			apr_time_exp_t exploded;
+			apr_status_t stat = this->timeZone->explode(&exploded, event->getTimeStamp());
+			if (stat == APR_SUCCESS)
+			{
+				auto dst = (SQL_TIMESTAMP_STRUCT*)item.paramValue;
+				dst->year = 1900 + exploded.tm_year;
+				dst->month = 1 + exploded.tm_mon;
+				dst->day = exploded.tm_mday;
+				dst->hour = exploded.tm_hour;
+				dst->minute = exploded.tm_min;
+				dst->second = exploded.tm_sec;
+#ifdef A_NON_ZERO_FRACTION_DOES_NOT_CAUSE_A_DATETIME_FIELD_OVERFLOW
+				dst->fraction = 1000 * exploded.tm_usec;
+#else
+				dst->fraction = 0;
+#endif
+			}
 		}
 	}
 }

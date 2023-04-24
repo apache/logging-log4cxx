@@ -53,6 +53,7 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 		, env(0)
 		, preparedStatement(0)
 		, bufferSize(1)
+		, timeZone(helpers::TimeZone::getDefault())
 		{}
 
 	/**
@@ -115,6 +116,10 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	* ArrayList holding the buffer of Logging Events.
 	*/
 	std::vector<spi::LoggingEventPtr> buffer;
+
+	/** Provides timestamp components
+	*/
+	helpers::TimeZonePtr timeZone;
 };
 
 }
