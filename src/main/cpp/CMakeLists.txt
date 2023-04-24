@@ -86,6 +86,7 @@ target_sources(log4cxx
   date.cpp
   dateformat.cpp
   datepatternconverter.cpp
+  dbappender.cpp
   defaultconfigurator.cpp
   defaultloggerfactory.cpp
   defaultrepositoryselector.cpp
