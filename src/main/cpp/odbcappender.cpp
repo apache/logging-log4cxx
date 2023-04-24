@@ -208,7 +208,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 			ODBCAppenderPriv::DataBinding paramData{ 0, 0, 0, 0, 0 };
 			std::vector<LogString> options;
 			if (LOG4CXX_STR("time") == pItem->first)
-				options.push_back(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss.SSS"));
+				options.push_back(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss.SSSSSS"));
 			paramData.converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
 			_priv->parameterValue.push_back(paramData);
 		}
