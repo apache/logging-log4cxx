@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/patternlayout.h>
 #include <apr_strings.h>
+#include <apr_time.h>
 
 #include <log4cxx/pattern/loggerpatternconverter.h>
 #include <log4cxx/pattern/classnamepatternconverter.h>
