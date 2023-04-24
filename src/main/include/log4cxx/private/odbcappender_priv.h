@@ -80,16 +80,30 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	*/
 	SQLHDBC connection;
 	SQLHENV env;
-	SQLHSTMT preparedStatement;
 
 	/**
 	* Stores the string given to the pattern layout for conversion into a SQL
 	*/
 	LogString sqlStatement;
+	/**
+	* size of LoggingEvent buffer before writing to the database.
+	* Default is 1.
+	*/
+	size_t bufferSize;
 
 	/**
-	* The bound column names, converters and buffers
+	* ArrayList holding the buffer of Logging Events.
 	*/
+	std::vector<spi::LoggingEventPtr> buffer;
+
+	/** Provides timestamp components
+	*/
+	helpers::TimeZonePtr timeZone;
+
+	/**
+	* The prepared statement handle and the bound column names, converters and buffers
+	*/
+	SQLHSTMT preparedStatement;
 	struct DataBinding
 	{
 		using ConverterPtr = pattern::LoggingEventPatternConverterPtr;
@@ -106,20 +120,6 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	void setPreparedStatement(SQLHDBC con, helpers::Pool& p);
 	void setParameterValues(const spi::LoggingEventPtr& event, helpers::Pool& p);
 #endif
-	/**
-	* size of LoggingEvent buffer before writing to the database.
-	* Default is 1.
-	*/
-	size_t bufferSize;
-
-	/**
-	* ArrayList holding the buffer of Logging Events.
-	*/
-	std::vector<spi::LoggingEventPtr> buffer;
-
-	/** Provides timestamp components
-	*/
-	helpers::TimeZonePtr timeZone;
 };
 
 }
