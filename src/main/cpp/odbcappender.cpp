@@ -22,6 +22,7 @@
 #include <log4cxx/patternlayout.h>
 #include <apr_strings.h>
 #include <apr_time.h>
+#include <cmath> // std::pow
 
 #include <log4cxx/pattern/loggerpatternconverter.h>
 #include <log4cxx/pattern/classnamepatternconverter.h>
