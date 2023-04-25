@@ -211,7 +211,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 			else if (lowerName[3] == 0x7B /* '{' */) // A single MDC entry?
 			{
 				auto index = lowerName.find(0x7D /* '}' */, 4);
-				size_t len = (lowerName.npos == index ? lowerName.size() : index) - 4;
+				auto len = (lowerName.npos == index ? lowerName.size() : index) - 4;
 				ODBCAppenderPriv::DataBinding paramData{ 0, 0, 0, 0, 0 };
 				paramData.converter = std::make_shared<MDCPatternConverter>(lowerName.substr(4, len));
 				_priv->parameterValue.push_back(paramData);

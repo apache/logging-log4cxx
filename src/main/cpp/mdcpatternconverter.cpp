@@ -46,11 +46,11 @@ void MDCPatternConverter::format
 		for (auto key : event->getMDCKeySet())
 		{
 			toAppendTo.append(first ? LOG4CXX_STR("{") : LOG4CXX_STR(","));
-			JSONLayout::appendQuotedEscapedString(toAppendTo, key);
+			JSONLayout::appendItem(key, toAppendTo);
 			toAppendTo.append(LOG4CXX_STR(":"));
 			LogString value;
 			event->getMDC(key, value);
-			JSONLayout::appendQuotedEscapedString(toAppendTo, value);
+			JSONLayout::appendItem(value, toAppendTo);
 			first = false;
 		}
 		if (!first)

@@ -34,6 +34,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(JSONLayoutPrivate, m_priv)
 
 	protected:
+		void appendQuotedEscapedString(LogString& buf, const LogString& input) const;
 		void appendSerializedMDC(LogString& buf,
 			const spi::LoggingEventPtr& event) const;
 		void appendSerializedNDC(LogString& buf,
@@ -42,7 +43,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
 
 	public:
-		static void appendQuotedEscapedString(LogString& buf, const LogString& input);
+		static void appendItem(const LogString& item, LogString& toAppendTo);
 		DECLARE_LOG4CXX_OBJECT(JSONLayout)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(JSONLayout)
