@@ -19,9 +19,26 @@
 #define LOG4CXX_ODBCAPPENDER_PRIV
 
 #include <log4cxx/db/odbcappender.h>
+#include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include "appenderskeleton_priv.h"
 
-#include <list>
+#if !defined(LOG4CXX)
+	#define LOG4CXX 1
+#endif
+#include <log4cxx/private/log4cxx_private.h>
+#if LOG4CXX_HAVE_ODBC
+	#if defined(WIN32) || defined(_WIN32)
+		#include <windows.h>
+	#endif
+	#include <sqlext.h>
+#else
+	typedef void* SQLHSTMT;
+	typedef void* SQLPOINTER;
+	typedef uint64_t SQLULEN;
+	typedef int64_t SQLLEN;
+	typedef long SQLINTEGER;
+	typedef short SQLSMALLINT;
+#endif
 
 namespace log4cxx
 {
@@ -30,11 +47,14 @@ namespace db
 
 struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
-	ODBCAppenderPriv() :
-		AppenderSkeletonPrivate(),
-		connection(nullptr),
-		env(nullptr),
-		bufferSize(1) {}
+	ODBCAppenderPriv()
+		: AppenderSkeletonPrivate()
+		, connection(0)
+		, env(0)
+		, preparedStatement(0)
+		, bufferSize(1)
+		, timeZone(helpers::TimeZone::getDefault())
+		{}
 
 	/**
 	* URL of the DB for default connection handling
@@ -58,20 +78,13 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	* sub-class and overriding the <code>getConnection</code> and
 	* <code>closeConnection</code> methods.
 	*/
-	log4cxx::db::ODBCAppender::SQLHDBC connection;
-	log4cxx::db::ODBCAppender::SQLHENV env;
+	SQLHDBC connection;
+	SQLHENV env;
 
 	/**
 	* Stores the string given to the pattern layout for conversion into a SQL
-	* statement, eg: insert into LogTable (Thread, File, Message) values
-	* ("%t", "%F", "%m")
-	*
-	* Be careful of quotes in your messages!
-	*
-	* Also see PatternLayout.
 	*/
 	LogString sqlStatement;
-
 	/**
 	* size of LoggingEvent buffer before writing to the database.
 	* Default is 1.
@@ -82,6 +95,31 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	* ArrayList holding the buffer of Logging Events.
 	*/
 	std::vector<spi::LoggingEventPtr> buffer;
+
+	/** Provides timestamp components
+	*/
+	helpers::TimeZonePtr timeZone;
+
+	/**
+	* The prepared statement handle and the bound column names, converters and buffers
+	*/
+	SQLHSTMT preparedStatement;
+	struct DataBinding
+	{
+		using ConverterPtr = pattern::LoggingEventPatternConverterPtr;
+		ConverterPtr converter;
+		SQLSMALLINT  paramType;
+		SQLULEN      paramMaxCharCount;
+		SQLPOINTER   paramValue;
+		SQLINTEGER   paramValueSize;
+		SQLLEN       strLen_or_Ind;
+	};
+	std::vector<LogString>   mappedName;
+	std::vector<DataBinding> parameterValue;
+#if LOG4CXX_HAVE_ODBC
+	void setPreparedStatement(SQLHDBC con, helpers::Pool& p);
+	void setParameterValues(const spi::LoggingEventPtr& event, helpers::Pool& p);
+#endif
 };
 
 }
