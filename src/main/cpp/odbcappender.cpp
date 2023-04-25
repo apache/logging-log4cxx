@@ -332,10 +332,12 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 		}
 
 
-		SQLWCHAR* wURL, *wUser, *wPwd;
+		SQLWCHAR* wURL, *wUser = nullptr, *wPwd = nullptr;
 		encode(&wURL, _priv->databaseURL, p);
-		encode(&wUser, _priv->databaseUser, p);
-		encode(&wPwd, _priv->databasePassword, p);
+		if (!_priv->databaseUser.empty())
+			encode(&wUser, _priv->databaseUser, p);
+		if (!_priv->databasePassword.empty())
+			encode(&wPwd, _priv->databasePassword, p);
 
 		ret = SQLConnectW( _priv->connection,
 				wURL, SQL_NTS,
@@ -552,11 +554,12 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 				dst->hour = exploded.tm_hour;
 				dst->minute = exploded.tm_min;
 				dst->second = exploded.tm_sec;
+				// Prevent '[ODBC SQL Server Driver]Datetime field overflow' by rounding to the target field precision
 				int roundingExponent = 6 - (int)item.paramMaxCharCount;
 				if (0 < roundingExponent)
 				{
-					int divisor = (int)std::pow(10, roundingExponent);
-					dst->fraction = 1000 * divisor * ((exploded.tm_usec + divisor / 2) / divisor);
+					int roundingDivisor = (int)std::pow(10, roundingExponent);
+					dst->fraction = 1000 * roundingDivisor * ((exploded.tm_usec + roundingDivisor / 2) / roundingDivisor);
 				}
 				else
 					dst->fraction = 1000 * exploded.tm_usec;
