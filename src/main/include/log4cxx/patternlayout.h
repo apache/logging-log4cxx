@@ -88,7 +88,7 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *  <tr>
  *      <td align="center"><strong>c</strong></td>
  *      <td>
- *          Used to output the logger of the logging event. The logger conversion specifier
+ *          Used to output the name of the logger generating the logging event. The <strong>c</strong> conversion specifier
  *          can be optionally followed by <em>precision specifier</em>, that is a decimal
  *          constant in brackets.
  *          <p>

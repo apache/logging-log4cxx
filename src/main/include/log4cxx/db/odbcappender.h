@@ -89,12 +89,14 @@ The following <b>param</b> elements are optional:
   - <b>shortfilename</b> - the basename of the file containing the logging statement
   - <b>fullfilename</b> - the path of the file containing the logging statement
   - <b>line</b> - the position in the file at which the logging event was generated
-  - <b>class</b> - the class from which the logging event was generated
-  - <b>method</b> - the function in which the logging event was generated
+  - <b>class</b> - the class from which the logging event was generated (\ref usingMacros "1")
+  - <b>method</b> - the function in which the logging event was generated (\ref usingMacros "1")
   - <b>message</b> - the data sent by the logging statement
   - <b>mdc</b> - A JASON format string of all entries in the logging thread's mapped diagnostic context
   - <b>mdc{key}</b> - the value associated with the <b>key</b> entry in the logging thread's mapped diagnostic context 
   - <b>ndc</b> - the last entry the logging thread's nested diagnostic context 
+
+\anchor usingMacros 1. Only available when the LOG4CXX_* macros are used to issue the logging request.
 
 <p>For use as a base class:
 
