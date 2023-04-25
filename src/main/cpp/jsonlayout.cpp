@@ -171,7 +171,7 @@ void JSONLayout::format(LogString& output,
 }
 
 void JSONLayout::appendQuotedEscapedString(LogString& buf,
-	const LogString& input) const
+	const LogString& input)
 {
 	/* add leading quote */
 	buf.push_back(0x22);

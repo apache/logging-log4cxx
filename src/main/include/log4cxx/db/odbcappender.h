@@ -81,18 +81,20 @@ The following <b>param</b> elements are optional:
   One element for each "?" in the <b>sql</b> statement
   in a sequence corresponding to the columns in the insert statement.
   The following values are supported:
-  - logger
-  - level
-  - thread
-  - threadname
-  - time
-  - shortfilename
-  - fullfilename
-  - line
-  - class
-  - method
-  - message
-  - ndc
+  - <b>logger</b> - the name of the logger that generated the logging event
+  - <b>level</b> - the level of the logging event
+  - <b>thread</b> - the thread number as a hex string that generated the logging event
+  - <b>threadname</b> - the name assigned to the thread that generated the logging event
+  - <b>time</b> - a datetime or datetime2 SQL field type at which the event was generated
+  - <b>shortfilename</b> - the basename of the file containing the logging statement
+  - <b>fullfilename</b> - the path of the file containing the logging statement
+  - <b>line</b> - the position in the file at which the logging event was generated
+  - <b>class</b> - the class from which the logging event was generated
+  - <b>method</b> - the function in which the logging event was generated
+  - <b>message</b> - the data sent by the logging statement
+  - <b>mdc</b> - A JASON format string of all entries in the logging thread's mapped diagnostic context
+  - <b>mdc{key}</b> - the value associated with the <b>key</b> entry in the logging thread's mapped diagnostic context 
+  - <b>ndc</b> - the last entry the logging thread's nested diagnostic context 
 
 <p>For use as a base class:
 
