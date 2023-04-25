@@ -224,9 +224,9 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *      <td align="center"><strong>X</strong></td>
  *      <td>
  *          Used to output the MDC (mapped diagnostic context) associated with the thread that
- *          generated the logging event. The <strong>X</strong> conversion character <em>must</em> be
- *          followed by the key for the map placed between braces, as in <strong>%X{clientNumber}</strong>
- *          where <code>clientNumber</code> is the key. The value in the MDC corresponding to
+ *          generated the logging event. All key/value pairs are output, each inside <strong>{}</strong> unless
+ *          the <strong>X</strong> is followed by a key placed between braces, as in <strong>%X{clientNumber}</strong>
+ *          where <code>clientNumber</code> is the key. In this case the value in the MDC corresponding to
  *          the key will be output.
  *          <p>See MDC class for more details.</p>
  *      </td>
