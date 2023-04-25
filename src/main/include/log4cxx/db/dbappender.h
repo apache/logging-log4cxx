@@ -32,28 +32,83 @@ namespace db
 {
 
 /**
+ * The DBAppender lets you log messages to a database.  This utilizes the APR's database support in order
+ * to provide a single way of logging to multiple databases, not just ODBC as the ODBCAppender does.
  *
-<appender name="SqlDBAppender" class="DBAppender">
- <param name="drivername" value="odbc"/>
- <param name="sql" value="INSERT INTO logs (log, time, level, file, line, message) VALUES (%s, %s, %s, %s, %s, %s)" />
- <param name="DatabaseName" value="foo"/>
- <param name="DriverParams" value="DATASOURCE=MariaDB-server"/>
- <param name="ColumnMapping" value="logger"/>
- <param name="ColumnMapping" value="time"/>
- <param name="ColumnMapping" value="level"/>
- <param name="ColumnMapping" value="shortfilename"/>
- <param name="ColumnMapping" value="line"/>
- <param name="ColumnMapping" value="message"/>
-</appender>
-
-CREATE TABLE logs (thread VARCHAR(200),
- log VARCHAR(200),
- time VARCHAR(200),
- level VARCHAR(10),
- file VARCHAR(200),
- line VARCHAR(10),
- message VARCHAR(1000)
-);
+ * The following SQL script is an example of how you may make a table that stores log messages:
+ *
+ * ~~~{.sql}
+ * CREATE TABLE logs (
+ *  logger VARCHAR(200),
+ *  time DATETIME,
+ *  level CHAR(5),
+ *  file VARCHAR(200),
+ *  line_number INT,
+ *  message VARCHAR(1000)
+ * );
+ * ~~~
+ *
+ * Once you have defined the table, you must define the order in which the columns are formatted when they are inserted
+ * along with the insert statement.
+ *
+ * Using APR, the following insert statement can be used to insert log statements: <code>INSERT INTO logs (logger, time, level, file, line_number, message) VALUES (%s, %pDa, %s, %s, %d, %s)</code>
+ * The values to insert must be formatted appropriately and in the correct order.  In order to do this, the parameter <code>ColumnMapping</code> must be specified as many times
+ * as there are columns to insert.
+ *
+ * The following table shows the conversion specifiers.  These are effectively the same as the conversion patterns provided by PatternLayout but with more descriptive names:
+ * |Conversion Specifier|Effect|
+ * |---|---|
+ * |logger|The name of the logger(e.g. com.foo.bar)|
+ * |class|The class that the log message was in|
+ * |time|The time of the log message|
+ * |shortfilename|The short filename where the log message is from|
+ * |fullfilename|The full filename where the log mesasge is from|
+ * |location|The location of the log message|
+ * |line|The line where the log message appears|
+ * |message|The log message|
+ * |method|The method where the message was logged|
+ * |level|The level of the log message|
+ * |thread|The thread where this message was logged|
+ * |threadname|The name of the thread that logged the message|
+ * |ndc|The NDC(nested diagnostic context) of the log|
+ *
+ * Other parameters that are important:
+ * |Parameter name|Usage|
+ * |---|---|
+ * |DriverName|The name of the database driver to load(ex: odbc, sqlite3)|
+ * |DriverParams|A string of parameters to pass to the driver.  This is database-specific|
+ * |DatabaseName|The name of the database to use when connecting to the server|
+ *
+ * The following code shows how you might connect to an ODBC data source and insert the log messages:
+ * ~~~{.xml}
+ * <appender name="SqlDBAppender" class="DBAppender">
+ *   <param name="drivername" value="odbc"/>
+ *   <param name="DriverParams" value="DATASOURCE=MariaDB-server"/>
+ *   <param name="DatabaseName" value="example_database"/>
+ *   <param name="sql" value="INSERT INTO logs (logger, time, level, file, line_number, message) VALUES (%s, %pDa, %s, %s, %d, %s)" />
+ *   <param name="ColumnMapping" value="logger"/>
+ *   <param name="ColumnMapping" value="time"/>
+ *   <param name="ColumnMapping" value="level"/>
+ *   <param name="ColumnMapping" value="shortfilename"/>
+ *   <param name="ColumnMapping" value="line"/>
+ *   <param name="ColumnMapping" value="message"/>
+ * </appender>
+ * ~~~
+ *
+ * A similar configuration can be used for SQLite:
+ *  * ~~~{.xml}
+ * <appender name="SqlDBAppender" class="DBAppender">
+ *   <param name="drivername" value="sqlite3"/>
+ *   <param name="DriverParams" value="/path/to/database.db"/>
+ *   <param name="sql" value="INSERT INTO logs (logger, time, level, file, line_number, message) VALUES (%s, %pDa, %s, %s, %d, %s)" />
+ *   <param name="ColumnMapping" value="logger"/>
+ *   <param name="ColumnMapping" value="time"/>
+ *   <param name="ColumnMapping" value="level"/>
+ *   <param name="ColumnMapping" value="shortfilename"/>
+ *   <param name="ColumnMapping" value="line"/>
+ *   <param name="ColumnMapping" value="message"/>
+ * </appender>
+ * ~~~
  */
 class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
 {
@@ -93,40 +148,18 @@ class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
                 }
 
                 /**
-                * Set pre-formated statement eg: insert into LogTable (msg) values ("%m")
+                * Set pre-formated statement eg: insert into LogTable (msg) values (?)
                 */
                 void setSql(const LogString& s);
 
                 /**
-                * Returns pre-formated statement eg: insert into LogTable (msg) values ("%m")
+                * Returns pre-formated statement eg: insert into LogTable (msg) values (?)
                 */
                 const LogString& getSql() const;
 
-
-//                void setUser(const LogString& user);
-
-//                void setURL(const LogString& url);
-
-//                void setPassword(const LogString& password);
-
-//                void setBufferSize(size_t newBufferSize);
-
-//                const LogString& getUser() const;
-
-//                const LogString& getURL() const;
-
-//                const LogString& getPassword() const;
-
-//                size_t getBufferSize() const;
         private:
                 DBAppender(const DBAppender&);
                 DBAppender& operator=(const DBAppender&);
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
-                static void encode(wchar_t** dest, const LogString& src,
-                        log4cxx::helpers::Pool& p);
-#endif
-                static void encode(unsigned short** dest, const LogString& src,
-                        log4cxx::helpers::Pool& p);
 
         protected:
                 struct DBAppenderPriv;

@@ -56,10 +56,10 @@ struct DBAppender::DBAppenderPriv : public AppenderSkeleton::AppenderSkeletonPri
     apr_dbd_t* m_databaseHandle = nullptr;
     apr_dbd_prepared_t* preparedStmt = nullptr;
     std::vector<LogString> mappedName;
-    LogString driverName;
-    LogString driverParams;
-    LogString databaseName;
-    LogString sqlStatement;
+    std::string driverName;
+    std::string driverParams;
+    std::string databaseName;
+    std::string sqlStatement;
     Pool m_pool;
     std::vector<pattern::LoggingEventPatternConverterPtr> converters;
 };
@@ -114,19 +114,19 @@ void DBAppender::setOption(const LogString& option, const LogString& value){
     }
     else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("DRIVERNAME"), LOG4CXX_STR("drivername")))
     {
-        _priv->driverName = value;
+        Transcoder::encodeUTF8(value, _priv->driverName);
     }
     else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("DRIVERPARAMS"), LOG4CXX_STR("driverparams")))
     {
-        _priv->driverParams = value;
+        Transcoder::encodeUTF8(value, _priv->driverParams);
     }
     else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("DATABASENAME"), LOG4CXX_STR("databasename")))
     {
-        _priv->databaseName = value;
+        Transcoder::encodeUTF8(value, _priv->databaseName);
     }
     else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SQL"), LOG4CXX_STR("sql")))
     {
-        _priv->sqlStatement = value;
+        Transcoder::encodeUTF8(value, _priv->sqlStatement);
     }
     else
     {
@@ -143,6 +143,7 @@ void DBAppender::activateOptions(helpers::Pool& p){
         LogString errMsg = LOG4CXX_STR("Unable to get driver named ");
         errMsg.append(_priv->driverName);
         LogLog::error(errMsg);
+        _priv->errorHandler->error(errMsg);
         return;
     }
 
@@ -152,6 +153,7 @@ void DBAppender::activateOptions(helpers::Pool& p){
                         &_priv->m_databaseHandle);
     if(stat != APR_SUCCESS){
         LogLog::error(LOG4CXX_STR("Unable to open database"));
+        _priv->errorHandler->error(LOG4CXX_STR("Unable to open database"));
         return;
     }
 
@@ -172,6 +174,7 @@ void DBAppender::activateOptions(helpers::Pool& p){
         LogString error = LOG4CXX_STR("Unable to prepare statement: ");
         error.append(apr_dbd_error(_priv->m_driver, _priv->m_databaseHandle, stat));
         LogLog::error(error);
+        _priv->errorHandler->error(error);
         return;
     }
 
@@ -201,6 +204,7 @@ void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
     if(_priv->m_driver == nullptr ||
             _priv->m_databaseHandle == nullptr ||
             _priv->preparedStmt == nullptr){
+        _priv->errorHandler->error(LOG4CXX_STR("DBAppender not initialized properly: logging not available"));
         return;
     }
 
@@ -226,5 +230,6 @@ void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
         LogString error = LOG4CXX_STR("Unable to insert: ");
         error.append(apr_dbd_error(_priv->m_driver, _priv->m_databaseHandle, stat));
         LogLog::error(error);
+        _priv->errorHandler->error(error);
     }
 }
