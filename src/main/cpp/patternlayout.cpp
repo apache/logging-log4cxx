@@ -43,6 +43,7 @@
 #include <log4cxx/pattern/levelpatternconverter.h>
 #include <log4cxx/pattern/relativetimepatternconverter.h>
 #include <log4cxx/pattern/threadpatternconverter.h>
+#include <log4cxx/pattern/mdcpatternconverter.h>
 #include <log4cxx/pattern/ndcpatternconverter.h>
 #include <log4cxx/pattern/propertiespatternconverter.h>
 #include <log4cxx/pattern/throwableinformationpatternconverter.h>
@@ -253,6 +254,7 @@ log4cxx::pattern::PatternMap PatternLayout::getFormatSpecifiers()
 	RULES_PUT("ndc", NDCPatternConverter);
 
 	RULES_PUT("X", PropertiesPatternConverter);
+	RULES_PUT("J", MDCPatternConverter);
 	RULES_PUT("properties", PropertiesPatternConverter);
 
 	RULES_PUT("throwable", ThrowableInformationPatternConverter);

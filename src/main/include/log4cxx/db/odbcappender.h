@@ -81,18 +81,22 @@ The following <b>param</b> elements are optional:
   One element for each "?" in the <b>sql</b> statement
   in a sequence corresponding to the columns in the insert statement.
   The following values are supported:
-  - logger
-  - level
-  - thread
-  - threadname
-  - time
-  - shortfilename
-  - fullfilename
-  - line
-  - class
-  - method
-  - message
-  - ndc
+  - <b>logger</b> - the name of the logger that generated the logging event
+  - <b>level</b> - the level of the logging event
+  - <b>thread</b> - the thread number as a hex string that generated the logging event
+  - <b>threadname</b> - the name assigned to the thread that generated the logging event
+  - <b>time</b> - a datetime or datetime2 SQL field type at which the event was generated
+  - <b>shortfilename</b> - the basename of the file containing the logging statement
+  - <b>fullfilename</b> - the path of the file containing the logging statement
+  - <b>line</b> - the position in the file at which the logging event was generated
+  - <b>class</b> - the class from which the logging event was generated (\ref usingMacros "1")
+  - <b>method</b> - the function in which the logging event was generated (\ref usingMacros "1")
+  - <b>message</b> - the data sent by the logging statement
+  - <b>mdc</b> - A JSON format string of all entries in the logging thread's mapped diagnostic context
+  - <b>mdc{key}</b> - the value associated with the <b>key</b> entry in the logging thread's mapped diagnostic context 
+  - <b>ndc</b> - the last entry the logging thread's nested diagnostic context 
+
+\anchor usingMacros 1. Only available when the LOG4CXX_* macros are used to issue the logging request.
 
 <p>For use as a base class:
 
@@ -113,9 +117,9 @@ pool it came from.
 An example configuration that writes to the data source named "LoggingDSN" is:
 ~~~{.xml}
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-<appender name="SqlAppender" class="ODBCAppender">
+<appender name="PreparedAppender" class="ODBCAppender">
  <param name="DSN" value="LoggingDSN"/>
- <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES (?,?,?,?,?,?,?)" />
+ <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message],[MappedContext]) VALUES (?,?,?,?,?,?,?,?)" />
  <param name="ColumnMapping" value="thread"/>
  <param name="ColumnMapping" value="logger"/>
  <param name="ColumnMapping" value="time"/>
@@ -123,16 +127,21 @@ An example configuration that writes to the data source named "LoggingDSN" is:
  <param name="ColumnMapping" value="shortfilename"/>
  <param name="ColumnMapping" value="line"/>
  <param name="ColumnMapping" value="message"/>
+ <param name="ColumnMapping" value="mdc"/>
 </appender>
 <appender name="ASYNC" class="AsyncAppender">
   <param name="BufferSize" value="1000"/>
   <param name="Blocking" value="false"/>
-  <appender-ref ref="SqlAppender"/>
+  <appender-ref ref="PreparedAppender"/>
 </appender>
 <root>
   <priority value ="INFO" />
   <appender-ref ref="ASYNC" />
 </root>
+<appender name="PatternAppender" class="ODBCAppender">
+ <param name="DSN" value="LoggingDSN"/>
+ <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message],[MappedContext]) VALUES ('%t', '%c','%d{yyyy-MM-dd HH:mm:ss.SSSSSS}','%p','%f','%L','%m{'}','%J{'}')" />
+</appender>
 </log4j:configuration>
 ~~~
 */

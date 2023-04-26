@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/patternlayout.h>
+#include <log4cxx/pattern/mdcpatternconverter.h>
 #include <apr_strings.h>
 #include <apr_time.h>
 #include <cmath> // std::pow
@@ -147,6 +148,7 @@ static PatternMap getFormatSpecifiers()
 		RULES_PUT("level", LevelPatternConverter);
 		RULES_PUT("thread", ThreadPatternConverter);
 		RULES_PUT("threadname", ThreadUsernamePatternConverter);
+		RULES_PUT("mdc", MDCPatternConverter);
 		RULES_PUT("ndc", NDCPatternConverter);
 	}
 	return specs;
@@ -201,9 +203,22 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 	auto specs = getFormatSpecifiers();
 	for (auto& name : _priv->mappedName)
 	{
-		auto pItem = specs.find(StringHelper::toLowerCase(name));
+		auto lowerName = StringHelper::toLowerCase(name);
+		auto pItem = specs.find(lowerName);
 		if (specs.end() == pItem)
-			LogLog::error(name + LOG4CXX_STR(" is not a supported ColumnMapping value"));
+		{
+			if (lowerName.size() < 5
+			 || lowerName.substr(0, 4) != LOG4CXX_STR("mdc{"))
+				LogLog::error(name + LOG4CXX_STR(" is not a supported ColumnMapping value"));
+			else // A single MDC entry
+			{
+				auto index = lowerName.find(0x7D /* '}' */, 4);
+				auto len = (lowerName.npos == index ? lowerName.size() : index) - 4;
+				ODBCAppenderPriv::DataBinding paramData{ 0, 0, 0, 0, 0 };
+				paramData.converter = std::make_shared<MDCPatternConverter>(lowerName.substr(4, len));
+				_priv->parameterValue.push_back(paramData);
+			}
+		}
 		else
 		{
 			ODBCAppenderPriv::DataBinding paramData{ 0, 0, 0, 0, 0 };

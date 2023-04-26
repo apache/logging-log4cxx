@@ -143,6 +143,7 @@ target_sources(log4cxx
   nameabbreviator.cpp
   namepatternconverter.cpp
   ndc.cpp
+  mdcpatternconverter.cpp
   ndcpatternconverter.cpp
   nteventlogappender.cpp
   odbcappender.cpp
