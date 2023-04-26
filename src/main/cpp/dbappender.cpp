@@ -142,7 +142,8 @@ void DBAppender::activateOptions(helpers::Pool& p){
 
     if(stat != APR_SUCCESS){
         LogString errMsg = LOG4CXX_STR("Unable to get driver named ");
-        errMsg.append(_priv->driverName);
+        LOG4CXX_DECODE_CHAR(driverName, _priv->driverName);
+        errMsg.append(driverName);
         LogLog::error(errMsg);
         _priv->errorHandler->error(errMsg);
         return;
@@ -173,7 +174,9 @@ void DBAppender::activateOptions(helpers::Pool& p){
                            &_priv->preparedStmt);
     if(stat != APR_SUCCESS){
         LogString error = LOG4CXX_STR("Unable to prepare statement: ");
-        error.append(apr_dbd_error(_priv->m_driver, _priv->m_databaseHandle, stat));
+        std::string dbdErr(apr_dbd_error(_priv->m_driver, _priv->m_databaseHandle, stat));
+        LOG4CXX_DECODE_CHAR(dbdErrLS, dbdErr);
+        error.append(dbdErrLS);
         LogLog::error(error);
         _priv->errorHandler->error(error);
         return;
