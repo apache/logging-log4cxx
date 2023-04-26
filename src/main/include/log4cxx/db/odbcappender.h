@@ -119,7 +119,7 @@ An example configuration that writes to the data source named "LoggingDSN" is:
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 <appender name="PreparedAppender" class="ODBCAppender">
  <param name="DSN" value="LoggingDSN"/>
- <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES (?,?,?,?,?,?,?)" />
+ <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message],[MappedContext) VALUES ?, />
  <param name="ColumnMapping" value="thread"/>
  <param name="ColumnMapping" value="logger"/>
  <param name="ColumnMapping" value="time"/>
@@ -127,6 +127,7 @@ An example configuration that writes to the data source named "LoggingDSN" is:
  <param name="ColumnMapping" value="shortfilename"/>
  <param name="ColumnMapping" value="line"/>
  <param name="ColumnMapping" value="message"/>
+ <param name="ColumnMapping" value="mdc"/>
 </appender>
 <appender name="ASYNC" class="AsyncAppender">
   <param name="BufferSize" value="1000"/>
@@ -139,7 +140,7 @@ An example configuration that writes to the data source named "LoggingDSN" is:
 </root>
 <appender name="PatternAppender" class="ODBCAppender">
  <param name="DSN" value="LoggingDSN"/>
- <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{yyyy-MM-dd HH:mm:ss.SSSSSS}','%p','%f','%L','%m{'}','%J{'}')" />
+ <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message],[MappedContext]) VALUES ('%t', '%c','%d{yyyy-MM-dd HH:mm:ss.SSSSSS}','%p','%f','%L','%m{'}','%J{'}')" />
 </appender>
 </log4j:configuration>
 ~~~
