@@ -119,7 +119,7 @@ An example configuration that writes to the data source named "LoggingDSN" is:
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 <appender name="PreparedAppender" class="ODBCAppender">
  <param name="DSN" value="LoggingDSN"/>
- <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message],[MappedContext) VALUES ?, />
+ <param name="sql" value="INSERT INTO [SomeDatabaseName].[SomeUserName].[SomeTableName] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message],[MappedContext) VALUES (?,?,?,?,?,?,?,?)" />
  <param name="ColumnMapping" value="thread"/>
  <param name="ColumnMapping" value="logger"/>
  <param name="ColumnMapping" value="time"/>
