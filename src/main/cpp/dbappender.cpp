@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/patternlayout.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/pattern/loggerpatternconverter.h>
 #include <log4cxx/pattern/classnamepatternconverter.h>
 #include <log4cxx/pattern/datepatternconverter.h>
