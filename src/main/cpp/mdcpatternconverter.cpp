@@ -35,10 +35,14 @@ MDCPatternConverter::MDCPatternConverter
 }
 
 PatternConverterPtr MDCPatternConverter::newInstance(
-	const std::vector<LogString>& /* options */)
+	const std::vector<LogString>& options)
 {
-	static PatternConverterPtr def = std::make_shared<MDCPatternConverter>();
-	return def;
+	if (options.empty())
+	{
+		static PatternConverterPtr def = std::make_shared<MDCPatternConverter>();
+		return def;
+	}
+	return std::make_shared<MDCPatternConverter>(LogString(), options.front());
 }
 
 void MDCPatternConverter::format
@@ -47,7 +51,8 @@ void MDCPatternConverter::format
 	, helpers::Pool&           /* p */
 	) const
 {
-	if (m_priv->name.empty())
+	size_t startIndex = toAppendTo.size();
+	if (m_priv->name.empty()) // Full MDC required?
 	{
 		bool first = true;
 		for (auto key : event->getMDCKeySet())
@@ -65,4 +70,14 @@ void MDCPatternConverter::format
 	}
 	else
 		event->getMDC(m_priv->name, toAppendTo);
+	if (!m_priv->style.empty()) // In a quoted context?
+	{
+		auto quote = m_priv->style.front();
+		size_t endIndex;
+		while ((endIndex = toAppendTo.find(quote, startIndex)) != toAppendTo.npos)
+		{
+			toAppendTo.insert(endIndex + 1, 1, quote);
+			startIndex = endIndex + 2;
+		}
+	}
 }

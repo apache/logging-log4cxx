@@ -25,11 +25,9 @@
     <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
   </layout>
 </appender>
-<appender name="DirectAppender" class="ODBCAppender">
+<appender name="PatternAppender" class="ODBCAppender">
  <param name="DSN" value="Log4cxxTest"/>
- <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t', '%c','%d{dd MMM yyyy HH:mm:ss.SSS}','%p','%f','%L','%m{'}')" />
- <!--param name="User" value="dbo"/-->
- <!--param name="Password" value="myLog4cxxTestPassword"/-->
+ <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message]) VALUES ('%t','%c','%d{yyyy-MM-dd HH:mm:ss.SSSSSS}','%p','%f','%L','%m{'}')" />
 </appender>
 <appender name="PreparedAppender" class="ODBCAppender">
  <param name="DSN" value="Log4cxxTest"/>
@@ -41,7 +39,6 @@
  <param name="ColumnMapping" value="shortfilename"/>
  <param name="ColumnMapping" value="line"/>
  <param name="ColumnMapping" value="message"/>
- <!--param name="User" value="dbo"/-->
  <!--param name="User" value="dbo"/-->
  <!--param name="Password" value="myLog4cxxTestPassword"/-->
 </appender>

@@ -27,7 +27,7 @@ namespace pattern
 
 
 /**
- * Provides all key value pairs in JASON or a single value from an event's mapped diagnostic context
+ * Provides all key value pairs in JSON or a single value from an event's mapped diagnostic context
  */
 class LOG4CXX_EXPORT MDCPatternConverter : public LoggingEventPatternConverter
 {
@@ -44,6 +44,10 @@ class LOG4CXX_EXPORT MDCPatternConverter : public LoggingEventPatternConverter
 			, const std::vector<LogString>& options = std::vector<LogString>()
 			);
 
+		/**
+		 * An instance of MDCPatternConverter.
+		 * @param options if not empty, options[0][0] is the character to duplicate
+		 */
 		static PatternConverterPtr newInstance(const std::vector<LogString>& options);
 
 		using LoggingEventPatternConverter::format;

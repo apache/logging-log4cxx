@@ -56,7 +56,7 @@ using namespace log4cxx::spi;
 using namespace log4cxx::config;
 using namespace log4cxx::rolling;
 
-#define MAX_ATTRIBUTE_NAME_LEN 200
+#define MAX_ATTRIBUTE_NAME_LEN 2000
 
 struct DOMConfigurator::DOMConfiguratorPrivate
 {

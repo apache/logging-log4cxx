@@ -234,8 +234,11 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *  <tr>
  *      <td align="center"><strong>J</strong></td>
  *      <td>
- *          Used to output JASON key/value pairs of all MDC (mapped diagnostic context)
+ *          Used to output JSON key/value pairs of all MDC (mapped diagnostic context)
  *          entries associated with the thread that generated the logging event.
+ *          To output in a quoted context, add set of braces containing the quote character.
+ *          Any quote character in the message is augmented with a second quote character.
+ *          For example, use %J{'} in an SQL insert statement.
  *          <p>See MDC class for more details.</p>
  *      </td>
  *  </tr>
