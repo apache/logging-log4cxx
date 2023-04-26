@@ -232,6 +232,14 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *      </td>
  *  </tr>
  *  <tr>
+ *      <td align="center"><strong>J</strong></td>
+ *      <td>
+ *          Used to output JASON key/value pairs of all MDC (mapped diagnostic context)
+ *          entries associated with the thread that generated the logging event.
+ *          <p>See MDC class for more details.</p>
+ *      </td>
+ *  </tr>
+ *  <tr>
  *      <td align="center"><strong>y</strong></td>
  *      <td>
  *          Used to wrap log with color. The <strong>y</strong> is the end of a color block.<br>

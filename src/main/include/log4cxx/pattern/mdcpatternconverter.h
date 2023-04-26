@@ -44,6 +44,8 @@ class LOG4CXX_EXPORT MDCPatternConverter : public LoggingEventPatternConverter
 			, const std::vector<LogString>& options = std::vector<LogString>()
 			);
 
+		static PatternConverterPtr newInstance(const std::vector<LogString>& options);
+
 		using LoggingEventPatternConverter::format;
 
 		void format

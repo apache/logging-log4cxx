@@ -34,6 +34,13 @@ MDCPatternConverter::MDCPatternConverter
 {
 }
 
+PatternConverterPtr MDCPatternConverter::newInstance(
+	const std::vector<LogString>& /* options */)
+{
+	static PatternConverterPtr def = std::make_shared<MDCPatternConverter>();
+	return def;
+}
+
 void MDCPatternConverter::format
 	( const spi::LoggingEventPtr& event
 	, LogString&                  toAppendTo
