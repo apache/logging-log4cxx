@@ -90,7 +90,7 @@ public:
 	{
 		auto threadCount = helpers::StringHelper::toInt
 			(helpers::OptionConverter::getSystemProperty
-				(LOG4CXX_STR("LOG4CXX_BENCHMARK_THREAD_COUNT"), LOG4CXX_STR("")));
+				(LOG4CXX_STR("LOG4CXX_BENCHMARK_THREAD_COUNT"), LOG4CXX_STR("0")));
 		if (threadCount <= 0)
 			threadCount = std::thread::hardware_concurrency() - 2;
 		return threadCount;
@@ -100,7 +100,7 @@ public:
 	{
 		auto milliseconds = helpers::StringHelper::toInt
 			(helpers::OptionConverter::getSystemProperty
-				(LOG4CXX_STR("LOG4CXX_BENCHMARK_WARM_UP_MILLISECONDS"), LOG4CXX_STR("")));
+				(LOG4CXX_STR("LOG4CXX_BENCHMARK_WARM_UP_MILLISECONDS"), LOG4CXX_STR("0")));
 		if (milliseconds <= 0)
 			milliseconds = 100;
 		return milliseconds / 1000;
