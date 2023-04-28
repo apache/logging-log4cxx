@@ -346,7 +346,29 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 			throw ex;
 		}
 
-
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+		SQLWCHAR *wUser = nullptr, *wPwd = nullptr;
+		if (!_priv->databaseUser.empty())
+			wUser = (SQLWCHAR*)_priv->databaseUser.c_str();
+		if (!_priv->databasePassword.empty())
+			wPwd = (SQLWCHAR*)_priv->databasePassword.c_str();
+		ret = SQLConnectW(_priv->connection
+			, (SQLWCHAR*)_priv->databaseURL.c_str(), SQL_NTS
+			, wUser, SQL_NTS
+			, wPwd, SQL_NTS
+			);
+#elif LOG4CXX_LOGCHAR_IS_UTF8
+		SQLCHAR *wUser = nullptr, *wPwd = nullptr;
+		if (!_priv->databaseUser.empty())
+			wUser = (SQLCHAR*)_priv->databaseUser.c_str();
+		if (!_priv->databasePassword.empty())
+			wPwd = (SQLCHAR*)_priv->databasePassword.c_str();
+		ret = SQLConnectA(_priv->connection
+			, (SQLCHAR*)_priv->databaseURL.c_str(), SQL_NTS
+			, wUser, SQL_NTS
+			, wPwd, SQL_NTS
+			);
+#else
 		SQLWCHAR* wURL, *wUser = nullptr, *wPwd = nullptr;
 		encode(&wURL, _priv->databaseURL, p);
 		if (!_priv->databaseUser.empty())
@@ -354,11 +376,12 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 		if (!_priv->databasePassword.empty())
 			encode(&wPwd, _priv->databasePassword, p);
 
-		ret = SQLConnectW( _priv->connection,
-				wURL, SQL_NTS,
-				wUser, SQL_NTS,
-				wPwd, SQL_NTS);
-
+		ret = SQLConnectW( _priv->connection
+			, wURL, SQL_NTS
+			, wUser, SQL_NTS
+			, wPwd, SQL_NTS
+			);
+#endif
 
 		if (ret < 0)
 		{
@@ -472,7 +495,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			|| SQL_DATETIME == targetType)
 		{
 			item.paramType = SQL_C_TYPE_TIMESTAMP;
-			item.paramMaxCharCount = decimalDigits;
+			item.paramMaxCharCount = (0 <= decimalDigits) ? decimalDigits : 6;
 			item.paramValueSize = sizeof(SQL_TIMESTAMP_STRUCT);
 			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize);
 		}
