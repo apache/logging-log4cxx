@@ -30,9 +30,9 @@ namespace net
 Sends spi::LoggingEvent elements
 to a remote a log server, usually in XML format.
 
-A configuration that writes JSON to the TCP input plugin
-of a <a href="https://docs.fluentbit.io/manual/pipeline/inputs/tcp">fluent-bit</a>
-process running on the same system as the application:
+Here is an example configuration that writes JSON to the
+<a href="https://docs.fluentbit.io/manual/pipeline/inputs/tcp">TCP input plugin of a fluent-bit log server</a>
+running on the same system as the application:
 ~~~{.xml}
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 <appender name="A1" class="XMLSocketAppender">
