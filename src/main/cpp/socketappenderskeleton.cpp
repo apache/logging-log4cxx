@@ -107,12 +107,16 @@ void SocketAppenderSkeleton::connect(Pool& p)
 		}
 		catch (SocketException& e)
 		{
-			LogString msg = LOG4CXX_STR("Could not connect to remote log4cxx server at [")
-				+ _priv->address->getHostName() + LOG4CXX_STR("].");
+			LogString msg = LOG4CXX_STR("Could not connect to [")
+				+ _priv->address->getHostName() + LOG4CXX_STR(":");
+			StringHelper::toString(_priv->port, p, msg);
+			msg += LOG4CXX_STR("].");
 
 			if (_priv->reconnectionDelay > 0)
 			{
-				msg += LOG4CXX_STR(" We will try again later. ");
+				msg += LOG4CXX_STR(" We will try again in ");
+				StringHelper::toString(_priv->reconnectionDelay, p, msg);
+				msg += LOG4CXX_STR(" ms");
 			}
 
 			fireConnector(); // fire the connector thread
