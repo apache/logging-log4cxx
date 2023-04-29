@@ -50,13 +50,12 @@ class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
 		void test_fluent_bit()
 		{
 			xml::DOMConfigurator::configure("input/xml/fluent-bit.xml");
-			auto odbc = Logger::getRootLogger();
+			auto log = Logger::getRootLogger();
 			for (int i = 0; i < 100; ++i)
 			{
-				LOG4CXX_INFO(odbc, "Message '" << i << "'");
-				//apr_sleep(30000);
+				LOG4CXX_INFO(log, "Message '" << i << "'");
 			}
-			LOG4CXX_INFO(odbc, "Last message");
+			LOG4CXX_INFO(log, "Last message");
 		}
 };
 
