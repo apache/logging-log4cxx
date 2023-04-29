@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/net/xmlsocketappender.h>
+#include <log4cxx/xml/domconfigurator.h>
 #include "../appenderskeletontestcase.h"
 #include "apr.h"
 
@@ -34,6 +35,7 @@ class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
+		//LOGUNIT_TEST(test_fluent_bit);
 
 		LOGUNIT_TEST_SUITE_END();
 
@@ -43,6 +45,18 @@ class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
 			return new log4cxx::net::XMLSocketAppender();
+		}
+
+		void test_fluent_bit()
+		{
+			xml::DOMConfigurator::configure("input/xml/fluent-bit.xml");
+			auto odbc = Logger::getRootLogger();
+			for (int i = 0; i < 100; ++i)
+			{
+				LOG4CXX_INFO(odbc, "Message '" << i << "'");
+				//apr_sleep(30000);
+			}
+			LOG4CXX_INFO(odbc, "Last message");
 		}
 };
 
