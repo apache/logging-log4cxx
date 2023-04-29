@@ -200,7 +200,7 @@ void DBAppender::activateOptions(helpers::Pool& p){
 }
 
 void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
-    std::vector<LogString> ls_args;
+	std::vector<std::string> ls_args;
     std::vector<const char*> args;
     int stat;
     int num_rows;
@@ -215,7 +215,8 @@ void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
     for(auto& converter : _priv->converters){
         LogString str_data;
         converter->format(event, str_data, p);
-        ls_args.push_back(str_data);
+		LOG4CXX_DECODE_CHAR(new_str_data, str_data);
+		ls_args.push_back(new_str_data);
     }
 
     for(LogString& str : ls_args){
@@ -232,7 +233,8 @@ void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
                           args.data());
     if(stat != APR_SUCCESS){
         LogString error = LOG4CXX_STR("Unable to insert: ");
-        error.append(apr_dbd_error(_priv->m_driver, _priv->m_databaseHandle, stat));
+		LOG4CXX_DECODE_CHAR(local_error, apr_dbd_error(_priv->m_driver, _priv->m_databaseHandle, stat));
+		error.append(local_error);
         LogLog::error(error);
         _priv->errorHandler->error(error);
     }
