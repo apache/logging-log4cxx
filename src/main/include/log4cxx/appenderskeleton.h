@@ -146,8 +146,6 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		/**
 		Set the layout for this appender. Note that some appenders have
 		their own (fixed) layouts or do not use one. For example, the
-		{@link net::XMLSocketAppender XMLSocketAppender} ignores the layout set
-		here.
 		*/
 		void setLayout(const LayoutPtr layout1) override;
 
