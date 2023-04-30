@@ -219,7 +219,7 @@ void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
 		ls_args.push_back(new_str_data);
     }
 
-    for(LogString& str : ls_args){
+	for(std::string& str : ls_args){
         args.push_back(str.data());
     }
     args.push_back(nullptr);
