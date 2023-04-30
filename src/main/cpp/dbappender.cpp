@@ -215,7 +215,7 @@ void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
     for(auto& converter : _priv->converters){
         LogString str_data;
         converter->format(event, str_data, p);
-		LOG4CXX_DECODE_CHAR(new_str_data, str_data);
+		LOG4CXX_ENCODE_CHAR(new_str_data, str_data);
 		ls_args.push_back(new_str_data);
     }
 
