@@ -96,7 +96,7 @@ namespace db
  * ~~~
  *
  * A similar configuration can be used for SQLite:
- *  * ~~~{.xml}
+ * ~~~{.xml}
  * <appender name="SqlDBAppender" class="DBAppender">
  *   <param name="drivername" value="sqlite3"/>
  *   <param name="DriverParams" value="/path/to/database.db"/>

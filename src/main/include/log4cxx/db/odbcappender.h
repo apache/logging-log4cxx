@@ -144,6 +144,8 @@ An example configuration that writes to the data source named "LoggingDSN" is:
 </appender>
 </log4j:configuration>
 ~~~
+
+You may also want to consider the DBAppender class, which uses APR in order to support logging to databases apart from ODBC.
 */
 
 class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
