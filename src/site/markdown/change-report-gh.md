@@ -25,6 +25,7 @@ Changelog {#changelog}
 
 | Version                                                                                | Date       | Description          |
 | -------------------------------------------------------------------------------------- | ---------- | -------------------- |
+| [1.1.0](#rel_1_1_0) | 2023-05-01 | General bugfix release  |
 | [1.0.0](#rel_1_0_0) | 2023-01-01 | Major release to standardize the library and make it ABI stable  |
 | [0.13.0](#rel_13_0) | 2022-04-15 | Maintenance release  |
 | [0.12.1](#rel_12_1) | 2021-09-21 | Bugfix for 0.12.0 |
@@ -42,6 +43,16 @@ Changelog {#changelog}
 | [0.1.1](#rel_1_1)   | 2003-07-09 |                      |
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
+
+## Release 1.1.0 - 2023-05-01 {#rel_1_1_0}
+
+This is a general maintenance release.  The following bugs/issues have been fixed:
+
+* Fix to build on Windows Server 2016
+* Fix compiling errors with older compilers
+* Make ODBC and SMTP opt-in instead of automatic
+* Parameterize statements for ODBC inserts.  Add new generic DBAppender class that uses APR for database support
+* Fix Qt support
 
 ## Release 1.0.0 - 2023-01-01 {#rel_1_0_0}
 
