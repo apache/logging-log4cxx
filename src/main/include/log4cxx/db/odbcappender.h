@@ -56,16 +56,6 @@ either in the Log4cxx configuration file
 using the <b>sql</b> parameter element
 or programatically by calling the <code>setSql(String sql)</code> method.
 
-If no <b>ColumnMapping</b> element is provided in the configuration file
-the sql statement is assumed to be a PatternLayout layout.
-In this case all the conversion patterns in PatternLayout
-can be used inside of the statement. (see the test cases for examples)
-
-If the <b>sql</b> element is not provided
-and no <b>ColumnMapping</b> element is provided
-the attached a PatternLayout layout element
-is assumed to contain the sql statement.
-
 The following <b>param</b> elements are optional:
 - one of <b>DSN</b>, <b>URL</b>, <b>ConnectionString</b> -
   The <b>serverName</b> parameter value in the <a href="https://learn.microsoft.com/en-us/sql/odbc/reference/syntax/sqlconnect-function">SQLConnect</a> call.
@@ -138,10 +128,6 @@ An example configuration that writes to the data source named "LoggingDSN" is:
   <priority value ="INFO" />
   <appender-ref ref="ASYNC" />
 </root>
-<appender name="PatternAppender" class="ODBCAppender">
- <param name="DSN" value="LoggingDSN"/>
- <param name="sql" value="INSERT INTO [ApplicationLogs].[dbo].[UnitTestLog] ([Thread],[LogName],[LogTime],[LogLevel],[FileName],[FileLine],[Message],[MappedContext]) VALUES ('%t', '%c','%d{yyyy-MM-dd HH:mm:ss.SSSSSS}','%p','%f','%L','%m{'}','%J{'}')" />
-</appender>
 </log4j:configuration>
 ~~~
 
@@ -182,20 +168,14 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 
 	protected:
 		/**
-		* Sends the event to the attached PatternLayout object.
-		* The layout will format the given pattern into a workable SQL string.
-		*
+		* To be removed.
 		*/
 		LogString getLogStatement(const spi::LoggingEventPtr& event,
 			helpers::Pool& p) const;
 
 		/**
 		*
-		* Override this to provide an alternate method of getting
-		* connections (such as caching).  One method to fix this is to open
-		* connections at the start of flushBuffer() and close them at the
-		* end.  I use a connection pool outside of ODBCAppender which is
-		* accessed in an override of this method.
+		* To be removed.
 		* */
 		virtual void execute(const LogString& sql,
 			log4cxx::helpers::Pool& p) /*throw(SQLException)*/;

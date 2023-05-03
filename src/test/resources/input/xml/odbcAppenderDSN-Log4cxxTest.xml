@@ -25,15 +25,10 @@
     <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
   </layout>
 </appender>
-<appender name="PatternAppender" class="ODBCAppender">
- <param name="DSN" value="Log4cxxTest"/>
- <param name="sql" value="INSERT INTO UnitTestLog (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES ('%t','%c','%d{yyyy-MM-dd HH:mm:ss.SSSSSS}','%p','%f','%L','%m{'}')" />
- <!--param name="sql" value="INSERT INTO ApplicationLogs.dbo.UnitTestLog (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES ('%t','%c','%d{yyyy-MM-dd HH:mm:ss.SSSSSS}','%p','%f','%L','%m{'}')" /-->
-</appender>
 <appender name="PreparedAppender" class="ODBCAppender">
  <param name="DSN" value="Log4cxxTest"/>
- <param name="sql" value="INSERT INTO UnitTestLog (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES (?,?,?,?,?,?,?)" />
- <!--param name="sql" value="INSERT INTO ApplicationLogs.dbo.UnitTestLog (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES (?,?,?,?,?,?,?)" /-->
+ <!--param name="sql" value="INSERT INTO UnitTestLog (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES (?,?,?,?,?,?,?)" /-->
+ <param name="sql" value="INSERT INTO ApplicationLogs.dbo.UnitTestLog (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES (?,?,?,?,?,?,?)" />
  <param name="ColumnMapping" value="thread"/>
  <param name="ColumnMapping" value="logger"/>
  <param name="ColumnMapping" value="time"/>

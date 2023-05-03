@@ -192,7 +192,7 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 
 bool ODBCAppender::requiresLayout() const
 {
-    return false;
+	return false;
 }
 
 void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
@@ -200,6 +200,10 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
 #else
+	if (_priv->mappedName.empty())
+	{
+		LogLog::error(LOG4CXX_STR("ODBCAppender column mappings not defined, logging events will not be inserted"));
+	}
 	auto specs = getFormatSpecifiers();
 	for (auto& name : _priv->mappedName)
 	{
@@ -248,56 +252,11 @@ void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::P
 
 LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const
 {
-    return event->getMessage();
+    return LogString();
 }
 
 void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
 {
-#if LOG4CXX_HAVE_ODBC
-	SQLRETURN ret;
-	SQLHDBC con = SQL_NULL_HDBC;
-	SQLHSTMT stmt = SQL_NULL_HSTMT;
-
-	try
-	{
-		con = getConnection(p);
-
-		ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &stmt);
-
-		if (ret < 0)
-		{
-			throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate sql handle", p);
-		}
-
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-		ret = SQLExecDirectW(stmt, (SQLWCHAR*)sql.c_str(), SQL_NTS);
-#elif LOG4CXX_LOGCHAR_IS_UTF8
-		ret = SQLExecDirectA(stmt, (SQLCHAR*)sql.c_str(), SQL_NTS);
-#else
-		SQLWCHAR* wsql;
-		encode(&wsql, sql, p);
-		ret = SQLExecDirectW(stmt, wsql, SQL_NTS);
-#endif
-		if (ret < 0)
-		{
-			throw SQLException(SQL_HANDLE_STMT, stmt, "Failed to execute sql statement", p);
-		}
-	}
-	catch (SQLException&)
-	{
-		if (stmt != SQL_NULL_HSTMT)
-		{
-			SQLFreeHandle(SQL_HANDLE_STMT, stmt);
-		}
-
-		throw;
-	}
-
-	SQLFreeHandle(SQL_HANDLE_STMT, stmt);
-	closeConnection(con);
-#else
-	throw SQLException("log4cxx build without ODBC support");
-#endif
 }
 
 /* The default behavior holds a single connection open until the appender
@@ -609,25 +568,18 @@ void ODBCAppender::flushBuffer(Pool& p)
 {
 	for (auto& logEvent : _priv->buffer)
 	{
-		try
-		{
-			if (!_priv->parameterValue.empty())
-			{
+		if (_priv->parameterValue.empty())
+			_priv->errorHandler->error(LOG4CXX_STR("ODBCAppender column mappings not defined"));
 #if LOG4CXX_HAVE_ODBC
-				if (0 == _priv->preparedStatement)
-					_priv->setPreparedStatement(getConnection(p), p);
-				_priv->setParameterValues(logEvent, p);
-				auto ret = SQLExecute(_priv->preparedStatement);
-				if (ret < 0)
-				{
-					throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement", p);
-				}
-#endif
-			}
-			else
+		else try
+		{
+			if (0 == _priv->preparedStatement)
+				_priv->setPreparedStatement(getConnection(p), p);
+			_priv->setParameterValues(logEvent, p);
+			auto ret = SQLExecute(_priv->preparedStatement);
+			if (ret < 0)
 			{
-				auto sql = getLogStatement(logEvent, p);
-				execute(sql, p);
+				throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement", p);
 			}
 		}
 		catch (SQLException& e)
@@ -635,6 +587,7 @@ void ODBCAppender::flushBuffer(Pool& p)
 			_priv->errorHandler->error(LOG4CXX_STR("Failed to execute sql"), e,
 				ErrorCode::FLUSH_FAILURE);
 		}
+#endif
 	}
 
 	// clear the buffer of reported events
