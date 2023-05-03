@@ -200,6 +200,9 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
 #else
+    if(_priv->mappedName.size() == 0){
+        LogLog::error("No column mappings have been defined, messages cannot be inserted");
+    }
 	auto specs = getFormatSpecifiers();
 	for (auto& name : _priv->mappedName)
 	{
@@ -623,12 +626,11 @@ void ODBCAppender::flushBuffer(Pool& p)
 					throw SQLException(SQL_HANDLE_STMT, _priv->preparedStatement, "Failed to execute prepared statement", p);
 				}
 #endif
-			}
-			else
-			{
-				auto sql = getLogStatement(logEvent, p);
-				execute(sql, p);
-			}
+            }
+            else
+            {
+                _priv->errorHandler->error(LOG4CXX_STR("No colum mappings defined"));
+            }
 		}
 		catch (SQLException& e)
 		{
