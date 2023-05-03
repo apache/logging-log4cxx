@@ -192,7 +192,7 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 
 bool ODBCAppender::requiresLayout() const
 {
-    return false;
+	return _priv->parameterValue.empty();
 }
 
 void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
@@ -248,7 +248,9 @@ void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::P
 
 LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const
 {
-    return event->getMessage();
+	LogString sbuf;
+	getLayout()->format(sbuf, event, p);
+	return sbuf;
 }
 
 void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
@@ -643,7 +645,23 @@ void ODBCAppender::flushBuffer(Pool& p)
 
 void ODBCAppender::setSql(const LogString& s)
 {
-    _priv->sqlStatement = s;
+	_priv->sqlStatement = s;
+
+	if (getLayout() == 0)
+	{
+		this->setLayout(std::make_shared<PatternLayout>(s));
+	}
+	else
+	{
+		PatternLayoutPtr patternLayout;
+		LayoutPtr asLayout = this->getLayout();
+		patternLayout = log4cxx::cast<PatternLayout>(asLayout);
+
+		if (patternLayout != 0)
+		{
+			patternLayout->setConversionPattern(s);
+		}
+	}
 }
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
