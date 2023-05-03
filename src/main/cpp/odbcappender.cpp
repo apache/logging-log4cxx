@@ -249,7 +249,10 @@ void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::P
 LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const
 {
 	LogString sbuf;
-	getLayout()->format(sbuf, event, p);
+	if (auto l = getLayout())
+		l->format(sbuf, event, p);
+	else
+		LogLog::error(LOG4CXX_STR("A SQL statement must be provided to ODBCAppender"));
 	return sbuf;
 }
 
