@@ -48,6 +48,7 @@ Changelog {#changelog}
 
 This is a general maintenance release.  The following bugs/issues have been fixed:
 
+* Fix [CVE-2023-31038](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-31038)
 * Fix to build on Windows Server 2016
 * Fix compiling errors with older compilers
 * Make ODBC and SMTP opt-in instead of automatic
