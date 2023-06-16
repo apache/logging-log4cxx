@@ -28,6 +28,8 @@ namespace log4cxx
 namespace rolling{
 
 struct RollingPolicyBase::RollingPolicyBasePrivate {
+    virtual ~RollingPolicyBasePrivate() = default;
+
     /**
      * File name pattern converters.
      */
