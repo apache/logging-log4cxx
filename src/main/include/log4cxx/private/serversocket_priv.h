@@ -26,10 +26,10 @@ namespace helpers
 {
 
 struct ServerSocket::ServerSocketPrivate{
-    ServerSocketPrivate() :
-        timeout(0){}
-
-    int timeout;
+	ServerSocketPrivate() :
+		timeout(0){}
+	~ServerSocketPrivate() = default;
+	int timeout;
 };
 
 }
