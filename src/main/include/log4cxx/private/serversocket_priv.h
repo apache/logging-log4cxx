@@ -28,7 +28,7 @@ namespace helpers
 struct ServerSocket::ServerSocketPrivate{
 	ServerSocketPrivate() :
 		timeout(0){}
-	~ServerSocketPrivate() = default;
+	virtual ~ServerSocketPrivate() = default;
 	int timeout;
 };
 
