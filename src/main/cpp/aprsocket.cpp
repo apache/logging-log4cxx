@@ -29,8 +29,9 @@ namespace helpers
 {
 
 struct APRSocket::APRSocketPriv : public Socket::SocketPrivate {
-	APRSocketPriv() :
-		socket(nullptr)
+	APRSocketPriv(InetAddressPtr& address, int port)
+		: Socket::SocketPrivate(address, port)
+		, socket(nullptr)
 	{}
 
 	APRSocketPriv(apr_socket_t* sock, apr_pool_t* p) :
@@ -45,7 +46,7 @@ struct APRSocket::APRSocketPriv : public Socket::SocketPrivate {
 #define _priv static_cast<APRSocketPriv*>(m_priv.get())
 
 APRSocket::APRSocket(InetAddressPtr& address, int port) :
-	Socket(std::make_unique<APRSocketPriv>()){
+	Socket(std::make_unique<APRSocketPriv>(address, port)){
 	apr_status_t status =
 		apr_socket_create(&_priv->socket, APR_INET, SOCK_STREAM,
 			APR_PROTO_TCP, _priv->pool.getAPRPool());

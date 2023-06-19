@@ -27,20 +27,22 @@ namespace helpers
 
 struct DatagramSocket::DatagramSocketPriv
 {
-        DatagramSocketPriv()
-	        : address(), localAddress(), port(0), localPort(0)
+	DatagramSocketPriv()
+		: port(0), localPort(0)
 	{
 	}
 
 	DatagramSocketPriv(int localPort1)
-	        : address(), localAddress(), port(0), localPort(0)
+		: port(0), localPort(localPort1)
 	{
 	}
 
 	DatagramSocketPriv(int localPort1, InetAddressPtr localAddress1)
-	        : address(), localAddress(), port(0), localPort(0)
+		: localAddress(localAddress1), port(0), localPort(localPort1)
 	{
 	}
+
+	~DatagramSocketPriv() = default;
 
 	InetAddressPtr address;
 

@@ -84,7 +84,7 @@ DatagramSocketUniquePtr DatagramSocket::create(){
 }
 
 DatagramSocketUniquePtr DatagramSocket::create(int localPort1){
-	std::unique_ptr<APRDatagramSocket> sock = std::make_unique<APRDatagramSocket>();
+	auto sock = std::make_unique<APRDatagramSocket>(localPort1);
 	InetAddressPtr bindAddr = InetAddress::anyAddress();
 
 	sock->bind(localPort1, bindAddr);
@@ -92,7 +92,7 @@ DatagramSocketUniquePtr DatagramSocket::create(int localPort1){
 }
 
 DatagramSocketUniquePtr DatagramSocket::create(int localPort1, InetAddressPtr localAddress1){
-	std::unique_ptr<APRDatagramSocket> sock = std::make_unique<APRDatagramSocket>();
+	auto sock = std::make_unique<APRDatagramSocket>(localPort1, localAddress1);
 
 	sock->bind(localPort1, localAddress1);
 	return sock;
