@@ -70,7 +70,7 @@ void LogLog::setInternalDebugging(bool debugEnabled1)
 
 void LogLog::debug(const LogString& msg)
 {
-	if (auto p = getInstance().m_priv.get())
+	if (auto p = getInstance().m_priv.get()) // Not deleted in some other thread?
 	{
 		if (!p->debugEnabled)
 		{
@@ -85,7 +85,7 @@ void LogLog::debug(const LogString& msg)
 
 void LogLog::debug(const LogString& msg, const std::exception& e)
 {
-	if (auto p = getInstance().m_priv.get())
+	if (auto p = getInstance().m_priv.get()) // Not deleted in some other thread?
 	{
 		if (!p->debugEnabled)
 			return;
@@ -99,7 +99,7 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 
 void LogLog::error(const LogString& msg)
 {
-	if (auto p = getInstance().m_priv.get())
+	if (auto p = getInstance().m_priv.get()) // Not deleted in some other thread?
 	{
 		std::unique_lock<std::mutex> lock(p->mutex);
 
@@ -109,7 +109,7 @@ void LogLog::error(const LogString& msg)
 
 void LogLog::error(const LogString& msg, const std::exception& e)
 {
-	if (auto p = getInstance().m_priv.get())
+	if (auto p = getInstance().m_priv.get()) // Not deleted in some other thread?
 	{
 		std::unique_lock<std::mutex> lock(p->mutex);
 		emit(msg);
@@ -126,7 +126,7 @@ void LogLog::setQuietMode(bool quietMode1)
 
 void LogLog::warn(const LogString& msg)
 {
-	if (auto p = getInstance().m_priv.get())
+	if (auto p = getInstance().m_priv.get()) // Not deleted in some other thread?
 	{
 		std::unique_lock<std::mutex> lock(p->mutex);
 		emit(msg);
@@ -135,7 +135,7 @@ void LogLog::warn(const LogString& msg)
 
 void LogLog::warn(const LogString& msg, const std::exception& e)
 {
-	if (auto p = getInstance().m_priv.get())
+	if (auto p = getInstance().m_priv.get()) // Not deleted in some other thread?
 	{
 		std::unique_lock<std::mutex> lock(p->mutex);
 		emit(msg);
