@@ -569,14 +569,13 @@ of Program Design 3*, edited by R. Martin, D. Riehle, and F. Buschmann
 To uniquely stamp each request, the user pushes contextual information
 into the *Nested Diagnostic Context* (NDC) using the *log4cxx::NDC* class.
 For an example refer to \ref trivial.cpp.
+Note that all methods of the *log4cxx::NDC* class are static.
 
 The NDC is managed per thread as a *stack* of contextual information.
-Note that all methods of the *log4cxx::NDC* class are static. Assuming
-that NDC printing is turned on, every time a log request is made, the
-appropriate Log4cxx component will include the entire stack
-(for better control use *log4cxx::MDC*).
-This is done without the intervention of the user, who is responsible only for placing the
-correct information in the NDC by using the *push* and *pop* methods at
+Each log entry will include the entire stack
+for the current thread (for better control use *log4cxx::MDC*).
+The user is responsible for placing the correct information in the NDC
+by using the *push* and *pop* methods at
 a few well-defined points in the code. In contrast, the per-client
 logger approach commands extensive changes in the code.
 
