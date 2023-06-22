@@ -31,14 +31,14 @@ int main()
         BasicConfigurator::configure();
         LoggerPtr rootLogger = Logger::getRootLogger();
 
-        NDC::push("trivial context");
-
-        LOG4CXX_DEBUG(rootLogger, "debug message");
+        NDC::push("[outer]");
+        NDC::push("[inner]");
+        LOG4CXX_DEBUG(rootLogger, "debug message"); // log entry contains "[outer] [inner]"
         LOG4CXX_INFO(rootLogger, "info message");
-        LOG4CXX_WARN(rootLogger, "warn message");
+        NDC::pop();
+        LOG4CXX_WARN(rootLogger, "warn message"); // log entry contains "[outer]"
         LOG4CXX_ERROR(rootLogger, "error message");
         LOG4CXX_FATAL(rootLogger, "fatal message");
-
         NDC::pop();
     }
     catch(std::exception&)
