@@ -25,8 +25,7 @@ Sometimes, you may want to extend Log4cxx, for example by creating
 a new appender to write out data in a new format.  The following
 guide shows how you can extend Log4cxx in order to add a new appender.
 
-The full sample application can be found in the src/examples/cpp
-directory.
+The full sample application can be found at \ref custom-appender.cpp and \ref custom-appender.xml .
 
 The first thing for our example is to create a class that extends
 log4cxx.AppenderSkeleton so that we don't need to implement all of
@@ -139,3 +138,9 @@ to Log4cxx, including(but not limited to):
 * [Appenders](@ref log4cxx.Appender)
 * [Layouts](@ref log4cxx.Layout)
 * [Filters](@ref log4cxx.spi.Filter)
+
+\example custom-appender.cpp
+This example shows how to extend Log4cxx with a new appender.
+
+\example custom-appender.xml
+This example shows how to use a new appender in a configuration file.

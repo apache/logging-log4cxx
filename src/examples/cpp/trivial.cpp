@@ -14,40 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log4cxx/logstring.h>
 #include <stdlib.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
-#include <log4cxx/helpers/exception.h>
 #include <log4cxx/ndc.h>
 #include <locale.h>
 
 using namespace log4cxx;
-using namespace log4cxx::helpers;
 
 int main()
 {
-    setlocale(LC_ALL, "");
+    setlocale(LC_ALL, ""); // Use the user-preferred locale
     int result = EXIT_SUCCESS;
     try
     {
-                BasicConfigurator::configure();
-                LoggerPtr rootLogger = Logger::getRootLogger();
+        BasicConfigurator::configure();
+        LoggerPtr rootLogger = Logger::getRootLogger();
 
-                NDC::push("trivial context");
-
-                LOG4CXX_DEBUG(rootLogger, "debug message");
-                LOG4CXX_INFO(rootLogger, "info message");
-                LOG4CXX_WARN(rootLogger, "warn message");
-                LOG4CXX_ERROR(rootLogger, "error message");
-                LOG4CXX_FATAL(rootLogger, "fatal message");
-
-                NDC::pop();
-        }
-        catch(std::exception&)
+        NDC context1("[outer]");
+        LOG4CXX_INFO(rootLogger, "info message"); // log entry contains "[outer]"
         {
-                result = EXIT_FAILURE;
+            NDC context2("[inner]");
+            LOG4CXX_DEBUG(rootLogger, "debug message"); // log entry contains "[outer] [inner]"
         }
+        LOG4CXX_WARN(rootLogger, "warn message"); // log entry contains "[outer]"
+    }
+    catch(std::exception&)
+    {
+        result = EXIT_FAILURE;
+    }
 
     return result;
 }

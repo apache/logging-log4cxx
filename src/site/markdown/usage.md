@@ -567,34 +567,15 @@ of Program Design 3*, edited by R. Martin, D. Riehle, and F. Buschmann
 (Addison-Wesley, 1997).
 
 To uniquely stamp each request, the user pushes contextual information
-into the NDC, the abbreviation of *Nested Diagnostic Context*. The NDC
-class is shown below.
-
-~~~{.cpp}
-    namespace log4cxx {
-    	class NDC {
-    		public:
-    			// pushes the value on construction and pops on destruction.
-    			NDC(const std::string& value);
-    			NDC(const std::wstring& value);
-
-    			// Remove the top of the context from the NDC.
-    			static LogString pop();
-
-    			// Add diagnostic context for the current thread.
-    			static void push(const std::string& message);
-    			static void push(const std::wstring& message);
-    	}
-    }
-~~~
+into the *Nested Diagnostic Context* (NDC) using the *log4cxx::NDC* class.
+For an example refer to \ref trivial.cpp.
+Note that all methods of the *log4cxx::NDC* class are static.
 
 The NDC is managed per thread as a *stack* of contextual information.
-Note that all methods of the *log4cxx::NDC* class are static. Assuming
-that NDC printing is turned on, every time a log request is made, the
-appropriate Log4cxx component will include the *entire* NDC stack for
-the current thread in the log output. This is done without the
-intervention of the user, who is responsible only for placing the
-correct information in the NDC by using the *push* and *pop* methods at
+Each log entry will include the entire stack
+for the current thread (for better control use *log4cxx::MDC*).
+The user is responsible for placing the correct information in the NDC
+by using the *push* and *pop* methods at
 a few well-defined points in the code. In contrast, the per-client
 logger approach commands extensive changes in the code.
 
@@ -798,6 +779,9 @@ with configuration files. They can be selectively enabled or disabled,
 and sent to different and multiple output targets in user-chosen
 formats. The Log4cxx package is designed so that log statements can
 remain in shipped code without incurring a heavy performance cost.
+
+\example trivial.cpp
+This example shows how to add a context string to each logging message using the NDC.
 
 \example auto-configured.cpp
 This is an example of logging in static initialization code and
