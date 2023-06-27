@@ -24,6 +24,7 @@ Usage {#usage-overview}
 See the following pages for usage information:
 
 * @subpage usage
+* @subpage nested-diagnostic-contexts
 * @subpage filters
 * @subpage threading
 * @subpage extending-log4cxx
