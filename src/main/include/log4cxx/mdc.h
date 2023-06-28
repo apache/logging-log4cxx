@@ -26,12 +26,21 @@ namespace log4cxx
 {
 
 /**
-The MDC class is similar to the {@link log4cxx::NDC NDC} class except that it is
-based on a map instead of a stack. It provides <em>mapped
-diagnostic contexts</em>. A <em>Mapped Diagnostic Context</em>, or
+A <em>Mapped Diagnostic Context</em>, or
 MDC in short, is an instrument for distinguishing interleaved log
 output from different sources. Log output is typically interleaved
 when a server handles multiple clients near-simultaneously.
+
+#MDC provides a constructor and destructor which simply call the #put and
+#remove methods, allowing for automatic cleanup when the current scope ends.
+
+#MDC operations such as #put, #remove and #clear
+affect only logging events emitted in the <em>calling</em> thread.
+The contexts of other threads are not changed.
+That is, <em><b>contexts are managed on a per thread basis</b></em>.
+
+The MDC class is similar to the {@link log4cxx::NDC NDC} class except that it is
+based on a map instead of a stack.
 */
 class LOG4CXX_EXPORT MDC
 {
@@ -44,27 +53,23 @@ class LOG4CXX_EXPORT MDC
 		 *  Places a key/value pair in the MDC for the current thread
 		 *    which will be removed during the corresponding destructor.  Both
 		 *    construction and destruction are expected to be on the same thread.
-		 *    @param key key
-		 *    @param value value.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
 		 */
 		MDC(const std::string& key, const std::string& value);
 		~MDC();
 
 		/**
-		* Put a context value (the <code>o</code> parameter) as identified
-		* with the <code>key</code> parameter into the current thread's
-		* context map.
+		* Set the <code>key</code> context in the current thread's context map to <code>value</code>.
 		*
 		* <p>If the current thread does not have a context map it is
 		* created as a side effect.
-		 *    @param key key
-		 *    @param value value.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
 		*/
 		static void put(const std::string& key, const std::string& value);
 		/**
-		* Put a context value (the <code>o</code> parameter) as identified
-		* with the <code>key</code> parameter into the current thread's
-		* context map.
+		* Set the <code>key</code> context in the current thread's context map to <code>value</code>.
 		*
 		* <p>If the current thread does not have a context map it is
 		* created as a side effect.
@@ -75,7 +80,7 @@ class LOG4CXX_EXPORT MDC
 		* Get the context identified by the <code>key</code> parameter.
 		*
 		*  <p>This method has no side effects.
-		*  @param key key.
+		*  @param key context identifier.
 		*  @return value for key, empty if not set.
 		* */
 		static std::string get(const std::string& key);
@@ -90,7 +95,7 @@ class LOG4CXX_EXPORT MDC
 		/**
 		* Remove the the context identified by the <code>key</code>
 		* parameter.
-		*  @param key key.
+		*  @param key context identifier.
 		* @return value if key had been set, empty if not.
 		*/
 		static std::string remove(const std::string& key);
@@ -99,33 +104,31 @@ class LOG4CXX_EXPORT MDC
 		 *  Places a key/value pair in the MDC for the current thread
 		 *    which will be removed during the corresponding destructor.  Both
 		 *    construction and destruction are expected to be on the same thread.
-		 *    @param key key
-		 *    @param value value.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
 		 */
 		MDC(const std::wstring& key, const std::wstring& value);
 		/**
-		* Put a context value (the <code>o</code> parameter) as identified
-		* with the <code>key</code> parameter into the current thread's
-		* context map.
+		*  Set the <code>key</code> context in the current thread's context map to <code>value</code>.
 		*
 		* <p>If the current thread does not have a context map it is
 		* created as a side effect.
-		 *    @param key key
-		 *    @param value value.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
 		*/
 		static void put(const std::wstring& key, const std::wstring& value);
 		/**
 		* Get the context identified by the <code>key</code> parameter.
 		*
 		*  <p>This method has no side effects.
-		*  @param key key.
+		*  @param key context identifier.
 		*  @return value for key, empty if not set.
 		* */
 		static std::wstring get(const std::wstring& key);
 		/**
 		* Remove the the context identified by the <code>key</code>
 		* parameter.
-		*  @param key key.
+		*  @param key context identifier.
 		* @return value if key had been set, empty if not.
 		*/
 		static std::wstring remove(const std::wstring& key);
@@ -135,33 +138,31 @@ class LOG4CXX_EXPORT MDC
 		 *  Places a key/value pair in the MDC for the current thread
 		 *    which will be removed during the corresponding destructor.  Both
 		 *    construction and destruction are expected to be on the same thread.
-		 *    @param key key
-		 *    @param value value.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
 		 */
 		MDC(const std::basic_string<UniChar>& key, const std::basic_string<UniChar>& value);
 		/**
-		* Put a context value (the <code>o</code> parameter) as identified
-		* with the <code>key</code> parameter into the current thread's
-		* context map.
+		*  Set the <code>key</code> context in the current thread's context map to <code>value</code>.
 		*
 		* <p>If the current thread does not have a context map it is
 		* created as a side effect.
-		 *    @param key key
-		 *    @param value value.
+		 *    @param key context identifier
+		 *    @param value the value.
 		*/
 		static void put(const std::basic_string<UniChar>& key, const std::basic_string<UniChar>& value);
 		/**
 		* Get the context identified by the <code>key</code> parameter.
 		*
 		*  <p>This method has no side effects.
-		*  @param key key.
+		*  @param key context identifier.
 		*  @return value for key, empty if not set.
 		* */
 		static std::basic_string<UniChar> get(const std::basic_string<UniChar>& key);
 		/**
 		* Remove the the context identified by the <code>key</code>
 		* parameter.
-		*  @param key key.
+		*  @param key context identifier.
 		* @return value if key had been set, empty if not.
 		*/
 		static std::basic_string<UniChar> remove(const std::basic_string<UniChar>& key);
@@ -171,33 +172,31 @@ class LOG4CXX_EXPORT MDC
 		 *  Places a key/value pair in the MDC for the current thread
 		 *    which will be removed during the corresponding destructor.  Both
 		 *    construction and destruction are expected to be on the same thread.
-		 *    @param key key
-		 *    @param value value.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
 		 */
 		MDC(const CFStringRef& key, const CFStringRef& value);
 		/**
-		* Put a context value (the <code>o</code> parameter) as identified
-		* with the <code>key</code> parameter into the current thread's
-		* context map.
+		*  Set the <code>key</code> context in the current thread's context map to <code>value</code>.
 		*
 		* <p>If the current thread does not have a context map it is
 		* created as a side effect.
-		 *    @param key key
-		 *    @param value value.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
 		*/
 		static void put(const CFStringRef& key, const CFStringRef& value);
 		/**
 		* Get the context identified by the <code>key</code> parameter.
 		*
 		*  <p>This method has no side effects.
-		*  @param key key.
+		*  @param key context identifier.
 		*  @return value for key, empty if not set.
 		* */
 		static CFStringRef get(const CFStringRef& key);
 		/**
 		* Remove the the context identified by the <code>key</code>
 		* parameter.
-		*  @param key key.
+		*  @param key context identifier.
 		* @return value if key had been set, empty if not.
 		*/
 		static CFStringRef remove(const CFStringRef& key);
@@ -205,7 +204,7 @@ class LOG4CXX_EXPORT MDC
 		/**
 		* Remove the the context identified by the <code>key</code>
 		* parameter.
-		*  @param key key.
+		*  @param key context identifier.
 		* @param prevValue buffer to which previous value is appended.
 		* @return true if key existed in MDC.
 		*/
@@ -213,6 +212,9 @@ class LOG4CXX_EXPORT MDC
 
 		/**
 		* Clear all entries in the MDC.
+		* <p>A thread that adds to the diagnostic context by calling
+		* #put should call this method before exiting
+		* to prevent unbounded memory usage.
 		*/
 		static void clear();
 
