@@ -198,19 +198,10 @@ class LOG4CXX_EXPORT NDC
 		static void pushLS(const LogString& message);
 
 		/**
-		Remove the diagnostic context for this thread.
-		<p>Each thread that created a diagnostic context by calling
-		#push should call this method before exiting. Otherwise,
-		the memory used by the <b>thread</b> cannot be reclaimed.
-		<p>As this is such an important problem in heavy duty systems and
-		because it is difficult to always guarantee that the remove
-		method is called before exiting a thread, this method has been
-		augmented to lazily remove references to dead threads. In
-		practice, this means that you can be a little sloppy and
-		occasionally forget to call #remove before exiting a
-		thread. However, you must call <code>remove</code> sometime. If
-		you never call it, then your application is sure to run out of
-		memory.
+		Remove all the diagnostic context data for this thread.
+		<p>A thread that adds to a diagnostic context by calling
+		#push should call this method before exiting
+		to prevent unbounded memory usage.
 		*/
 		static void remove();
 
