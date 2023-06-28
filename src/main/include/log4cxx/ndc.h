@@ -26,7 +26,7 @@ namespace log4cxx
 {
 
 /**
-A nested diagnostic context, or #NDC in short, is an instrument
+A <em>Nested Diagnostic Context</em>, or #NDC in short, is an instrument
 to distinguish interleaved log output from different sources.
 Log output is typically interleaved when a server handles multiple
 clients near-simultaneously.
