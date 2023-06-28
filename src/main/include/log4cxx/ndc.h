@@ -26,65 +26,53 @@ namespace log4cxx
 {
 
 /**
-the ndc class implements <i>nested diagnostic contexts</i> as
-defined by neil harrison in the article "patterns for logging
-diagnostic messages" part of the book "<i>pattern languages of
-program design 3</i>" edited by martin et al.
-
-<p>a nested diagnostic context, or ndc in short, is an instrument
-to distinguish interleaved log output from different sources. log
-output is typically interleaved when a server handles multiple
+A <em>Nested Diagnostic Context</em>, or #NDC in short, is an instrument
+to distinguish interleaved log output from different sources.
+Log output is typically interleaved when a server handles multiple
 clients near-simultaneously.
+Interleaved log output can still be meaningful if each log entry
+from different contexts have a distinctive stamp.
+This is where contexts come into play.
 
-<p>interleaved log output can still be meaningful if each log entry
-from different contexts had a distinctive stamp. this is where ndcs
-come into play.
+#NDC provides a constructor and destructor which simply call the #push and
+#pop methods, allowing for automatic cleanup when the current scope ends.
 
-<p><em><b>note that ndcs are managed on a per thread
-basis</b></em>. ndc operations such as #push,
-#pop, #clear and #getDepth
-affect the ndc of the <em>current</em> thread only. ndcs of other
-threads remain unaffected.
+#NDC operations such as #push, #pop, #clear and #remove
+affect only logging events emitted in the <em>calling</em> thread.
+The contexts of other threads are not changed.
+That is, <em><b>contexts are managed on a per thread basis</b></em>.
 
-<p>for example, a servlet can build a per client request ndc
-consisting the clients host name and other information contained in
-the the request. <em>cookies</em> are another source of distinctive
-information. to build an ndc one uses the #push
-operation. simply put,
+For example, a servlet can build a per client request context
+consisting of the client's host name and other information contained in
+the the request. <em>Cookies</em> are another source of distinctive
+information.
 
-<p><ul>
- <li>contexts can be nested.
+Contexts can be nested:
+<ul>
+ <li>when entering a context, initialize a <code>log4cxx::NDC</code>
+ type variable with a distinctive string.
+ If there is no nested diagnostic context for the
+ current thread, a NDC stack will be created.
+ The distinctive string will be automatically removed from the
+ current thread's context stack when the variable goes out of scope.
 
- <p><li>when entering a context, call <code>ndc.push</code>. as a
- side effect, if there is no nested diagnostic context for the
- current thread, this method will create it.
-
- <p><li>when leaving a context, call <code>ndc.pop</code>.
-
- <p><li><b>when exiting a thread make sure to call #remove
- </b>.
+ <li>when exiting a thread call NDC::remove to deal with any
+ #push operation not matched with a corresponding #pop.
 </ul>
 
-<p>there is no penalty for forgetting to match each
-<code>push</code> operation with a corresponding <code>pop</code>,
-except the obvious mismatch between the real application context
-and the context set in the ndc.
-
-<p>if configured to do so, PatternLayout and
-TTCCLayout instances automatically retrieve the nested diagnostic
+If configured to do so, PatternLayout, xml::XMLLayout and
+JSONLayout instances automatically retrieve the nested diagnostic
 context for the current thread without any user intervention.
-hence, even if a servlet is serving multiple clients
-simultaneously, the logs emanating from the same code (belonging to
-the same logger) can still be distinguished because each client
-request will have a different ndc tag.
+hence, even if a process is serving multiple clients simultaneously,
+the logging events emanating from the same code
+(belonging to the same logger)
+can still be distinguished because each client
+request will have a different tag.
 
-<p>heavy duty systems should call the #remove method when
-leaving the run method of a thread. this ensures that the memory
-used by the thread can be freed by the java garbage
-collector. there is a mechanism to lazily remove references to dead
-threads. in practice, this means that you can be a little sloppy
-and sometimes forget to call #remove before exiting a
-thread.
+#NDC implements <i>nested diagnostic contexts</i> as
+defined by Neil Harrison in the article "Patterns for Logging
+Diagnostic Messages" part of the book <i>"Pattern Languages of
+Program Design 3"</i> edited by Martin et al.
 
 */
 class LOG4CXX_EXPORT NDC
@@ -97,21 +85,15 @@ class LOG4CXX_EXPORT NDC
 		typedef std::stack<DiagnosticContext> Stack;
 
 		/**
-		 Creates a nested diagnostic context.
-		 Since java performs no automatic cleanup of objects when a
-		 scope is left, in log4j push() and pop() must be used
-		 to manage the NDC. For convenience, log4cxx provides
-		 an NDC constructor and destructor which simply call the push() and
-		 pop() methods, allowing for automatic cleanup when the current
-		 scope ends.
-
-		 @param message The new diagnostic context information.
+		 Add \c message onto the context stack.
 		 @see The #push method.
+
+		 @param message The text added to the diagnostic context information.
 		 */
 		NDC(const std::string& message);
 
 		/**
-		Removes the topmost element from the NDC stack.
+		Remove the topmost element from the context stack associated with the current thread.
 
 		@see The #pop method.
 		*/
@@ -171,90 +153,75 @@ class LOG4CXX_EXPORT NDC
 		static bool empty();
 
 		/**
-		Pop top value off stack.
-		@return top value.
+		Get the value at the top of the stack
+		associated with the current thread and then remove it.
+		<p>The returned value is the value that was pushed last. If no
+		context is available, then the empty string "" is returned.
+		@return String The text of the innermost diagnostic context.
 		*/
 		static LogString pop();
 		/**
-		Pop top value off stack.
+		Append to \c buf the top value in the stack associated with the current thread and then remove it.
 		@param buf to which top value is appended.
 		@return true if NDC contained at least one value.
 		*/
 		static bool pop(std::string& buf);
 
 		/**
-		Looks at the last diagnostic context at the top of this NDC
-		without removing it.
+		Get the value at the top of the stack
+		associated with the current thread without removing it.
 		<p>The returned value is the value that was pushed last. If no
 		context is available, then the empty string "" is returned.
-		@return String The innermost diagnostic context.
+		@return String The text of the innermost diagnostic context.
 		*/
 		static LogString peek();
 		/**
-		Get top value without removing value.
+		Append to \c buf the top value in the stack associated with the current thread without removing it.
 		@param buf to which top value is appended.
 		@return true if NDC contained at least one value.
 		*/
 		static bool peek(std::string& buf);
 
 		/**
-		Push new diagnostic context information for the current thread.
+		Add \c message to the stack associated with the current thread.
 		<p>The contents of the <code>message</code> parameter is
 		determined solely by the client.
-		@param message The new diagnostic context information.
+		@param message The text added to the diagnostic context information.
 		*/
 		static void push(const std::string& message);
 		/**
-		Push new diagnostic context information for the current thread.
+		Add \c message to the stack associated with the current thread.
 		<p>The contents of the <code>message</code> parameter is
 		determined solely by the client.
-		@param message The new diagnostic context information.
+		@param message The text added to the diagnostic context information.
 		*/
 		static void pushLS(const LogString& message);
 
 		/**
-		Remove the diagnostic context for this thread.
-		<p>Each thread that created a diagnostic context by calling
-		#push should call this method before exiting. Otherwise,
-		the memory used by the <b>thread</b> cannot be reclaimed by the
-		VM.
-		<p>As this is such an important problem in heavy duty systems and
-		because it is difficult to always guarantee that the remove
-		method is called before exiting a thread, this method has been
-		augmented to lazily remove references to dead threads. In
-		practice, this means that you can be a little sloppy and
-		occasionally forget to call #remove before exiting a
-		thread. However, you must call <code>remove</code> sometime. If
-		you never call it, then your application is sure to run out of
-		memory.
+		Remove all the diagnostic context data for this thread.
+		<p>A thread that adds to a diagnostic context by calling
+		#push should call this method before exiting
+		to prevent unbounded memory usage.
 		*/
 		static void remove();
 
 #if LOG4CXX_WCHAR_T_API
 		/**
-		  Creates a nested diagnostic context.
-		  Since java performs no automatic cleanup of objects when a
-		  scope is left, in log4j push() and pop() must be used
-		  to manage the NDC. For convenience, log4cxx provides
-		  an NDC constructor and destructor which simply call the push() and
-		  pop() methods, allowing for automatic cleanup when the current
-		  scope ends.
+		 Add \c message onto the context stack.
+		 @see The #push method.
 
-		  @param message The new diagnostic context information.
-		  @see The #push method.
+		 @param message The text added to the diagnostic context information.
 		  */
 		NDC(const std::wstring& message);
 		/**
-		Push new diagnostic context information for the current thread.
-		<p>The contents of the <code>message</code> parameter is
-		determined solely by the client.
-		@param message The new diagnostic context information.
+		Add \c message to the stack associated with the current thread.
+		@param message The text added to the diagnostic context information.
 		*/
 		static void push(const std::wstring& message);
 		/**
-		 *   Appends the current NDC content to the provided string.
-		 *   @param dst destination.
-		 *   @return true if NDC value set.
+		Append to \c dst the top value in the stack associated with the current thread without removing it.
+		@param dst to which top value is appended.
+		@return true if NDC contained at least one value.
 		 */
 		static bool peek(std::wstring& dst);
 		/**
@@ -266,69 +233,55 @@ class LOG4CXX_EXPORT NDC
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		  Creates a nested diagnostic context.
-		  Since java performs no automatic cleanup of objects when a
-		  scope is left, in log4j push() and pop() must be used
-		  to manage the NDC. For convenience, log4cxx provides
-		  an NDC constructor and destructor which simply call the push() and
-		  pop() methods, allowing for automatic cleanup when the current
-		  scope ends.
+		 Add \c message onto the context stack.
+		 @see The #push method.
 
-		  @param message The new diagnostic context information.
-		  @see The #push method.
-		  */
+		 @param message The text added to the diagnostic context information.
+		*/
 		NDC(const std::basic_string<UniChar>& message);
 		/**
-		Push new diagnostic context information for the current thread.
+		Add \c message to the stack associated with the current thread.
 		<p>The contents of the <code>message</code> parameter is
 		determined solely by the client.
-		@param message The new diagnostic context information.
+		@param message The text added to the diagnostic context information.
 		*/
 		static void push(const std::basic_string<UniChar>& message);
 		/**
-		 *   Appends the current NDC content to the provided string.
-		 *   @param dst destination.
-		 *   @return true if NDC value set.
+		Append to \c dst the top value in the stack associated with the current thread without removing it.
+		@param dst to which top value is appended.
+		@return true if NDC contained at least one value.
 		 */
 		static bool peek(std::basic_string<UniChar>& dst);
 		/**
-		 *   Appends the current NDC content to the provided string and removes the value from the NDC.
-		 *   @param dst destination.
-		 *   @return true if NDC value set.
+		Append to \c dst the top value in the stack associated with the current thread and then remove it.
+		@param dst to which top value is appended.
+		@return true if NDC contained at least one value.
 		 */
 		static bool pop(std::basic_string<UniChar>& dst);
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		  Creates a nested diagnostic context.
-		  Since java performs no automatic cleanup of objects when a
-		  scope is left, in log4j push() and pop() must be used
-		  to manage the NDC. For convenience, log4cxx provides
-		  an NDC constructor and destructor which simply call the push() and
-		  pop() methods, allowing for automatic cleanup when the current
-		  scope ends.
+		 Add \c message onto the context stack.
+		 @see The #push method.
 
-		  @param message The new diagnostic context information.
-		  @see The #push method.
+		 @param message The text added to the diagnostic context information.
 		  */
 		NDC(const CFStringRef& message);
 		/**
-		Push new diagnostic context information for the current thread.
-		<p>The contents of the <code>message</code> parameter is
-		determined solely by the client.
-		@param message The new diagnostic context information.
+		Add \c message to the stack associated with the current thread.
+		@param message The text added to the diagnostic context information.
 		*/
 		static void push(const CFStringRef& message);
 		/**
-		 *   Gets the current NDC value.
-		 *   @param dst destination.
-		 *   @return true if NDC value set.
+		Append to \c dst the top value in the stack associated with the current thread without removing it.
+		@param dst to which top value is appended.
+		@return true if NDC contained at least one value.
 		 */
 		static bool peek(CFStringRef& dst);
 		/**
-		 *  Gets and removes the current NDC value.
-		 *   @param dst destination.
-		 *   @return true if NDC value set.
+		Append to \c dst the top value in the stack associated with the current thread and then remove it.
+		@param dst to which top value is appended.
+		@return true if NDC contained at least one value.
 		 */
 		static bool pop(CFStringRef& dst);
 #endif
