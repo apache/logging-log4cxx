@@ -229,27 +229,28 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		log4j.appender.A1.SyslogHost=www.abc.net
 
 		# A1's layout is a PatternLayout, using the conversion pattern
-		# <b>%r %-5p %c{2} %M.%L %x - %m\n</b>. Thus, the log output will
-		# include # the relative time since the start of the application in
-		# milliseconds, followed by the level of the log request,
-		# followed by the two rightmost components of the logger name,
-		# followed by the callers method name, followed by the line number,
+		# "%r %-5p %c{2} %M.%L %x - %m%n". Thus, the log output will include
+		# the relative time since the start of the application in milliseconds, followed by
+		# the level of the log request, followed by
+		# the two rightmost components of the logger name, followed by
+		# the callers method name, followed by the line number,
 		# the nested disgnostic context and finally the message itself.
 		# Refer to the documentation of PatternLayout for further information
 		# on the syntax of the ConversionPattern key.
 		log4j.appender.A1.layout=PatternLayout
-		log4j.appender.A1.layout.ConversionPattern=%-4r %-5p %c{2} %M.%L %x - %m\n
+		log4j.appender.A1.layout.ConversionPattern=%-4r %-5p %%c{2} %%M.%%L %%x - %%m%%n
 
 		# Set options for appender named "A2"
-		# A2 should be a RollingFileAppender, with maximum file size of 10 MB
-		# using at most one backup file. A2's layout is TTCC, using the
-		# ISO8061 date format with context printing enabled.
+		# A2 should be a RollingFileAppender,
+		# with maximum file size of 10 MB using at most one backup file.
+		# A2's layout is: date and time (using the ISO8061 date format),
+		# thread, level, logger name, nested diagnostic context
+		# and finally the message itself.
 		log4j.appender.A2=RollingFileAppender
 		log4j.appender.A2.MaxFileSize=10MB
 		log4j.appender.A2.MaxBackupIndex=1
-		log4j.appender.A2.layout=TTCCLayout
-		log4j.appender.A2.layout.ContextPrinting=enabled
-		log4j.appender.A2.layout.DateFormat=ISO8601
+		log4j.appender.A2.layout=PatternLayout
+		log4j.appender.A2.layout.ConversionPattern=%%d [%%t] %%p %%c %%x - %%m%%n
 
 		# Root logger set to DEBUG using the A2 appender defined above.
 		log4j.rootLogger=DEBUG, A2

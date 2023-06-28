@@ -71,9 +71,8 @@ class LOG4CXX_EXPORT Layout :
 		<code>false</code>. Otherwise, if the layout ignores throwable
 		object, then the layout should return <code>true</code>.
 
-		<p>The SimpleLayout, TTCCLayout,
-		PatternLayout all return <code>true</code>.
-		The {@link xml::XMLLayout XMLLayout} returns <code>false</code>.
+		<p>The SimpleLayout, FMTLayout and PatternLayout return <code>true</code>.
+		The other layouts return <code>false</code>.
 		*/
 		virtual bool ignoresThrowable() const = 0;
 };
