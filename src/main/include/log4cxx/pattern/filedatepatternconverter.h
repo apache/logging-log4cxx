@@ -43,9 +43,12 @@ class LOG4CXX_EXPORT FileDatePatternConverter
 
 	public:
 		/**
-		 * Obtains an instance of pattern converter.
-		 * @param options options, may be null.
-		 * @return instance of pattern converter.
+		 * An instance of pattern converter for date conversion and formatting.
+		 *
+		 * \sa DatePatternConverter::newInstance()
+		 *
+		 * @param options If empty, used the patterm "yyyy-MM-dd".
+		 * @return The date conversion and formatting instance.
 		 */
 		static PatternConverterPtr newInstance(
 			const std::vector<LogString>& options);

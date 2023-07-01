@@ -71,10 +71,19 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		void finalize();
 
 		/**
-		Derived appenders should override this method if option structure
-		requires it.
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
 		*/
 		void activateOptions(helpers::Pool& /* pool */) override {}
+
+		/**
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		Threshold | Trace,Debug,Info,Warn,Error,Fatal,Off,All | All
+		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**

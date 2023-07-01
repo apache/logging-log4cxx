@@ -52,7 +52,9 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		SocketAppenderSkeleton(const LogString& host, int port, int reconnectionDelay);
 
 		/**
-		Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
+		\copybrief AppenderSkeleton::activateOptions()
+
+		Connects to the specified <b>RemoteHost</b> and <b>Port</b>.
 		*/
 		void activateOptions(helpers::Pool& p) override;
 
@@ -122,6 +124,21 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
 		void fireConnector();
 
+		/**
+		\copybrief AppenderSkeleton::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		RemoteHost |  (\ref inetAddress "1") | -
+		Port | {int} | (\ref defaultPort "2")
+		LocationInfo | True,False | False
+
+		\anchor inetAddress 1. A valid internet address.
+
+		\anchor defaultPort 2. Provided by the derived class.
+
+		\sa AppenderSkeleton::setOption()
+		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
 	protected:

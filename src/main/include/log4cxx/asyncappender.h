@@ -176,9 +176,15 @@ class LOG4CXX_EXPORT AsyncAppender :
 
 
 		/**
-		 * Set appender properties by name.
-		 * @param option property name.
-		 * @param value property value.
+		\copybrief AppenderSkeleton::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		LocationInfo | True,False | False
+		BufferSize | int  | 128
+		Blocking | True,False | True
+
+		\sa AppenderSkeleton::setOption()
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 

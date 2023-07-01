@@ -101,10 +101,15 @@ class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy
 		spi::FilterPtr& getFilter();
 
 		/**
-		 *  Prepares the instance for use.
+		\copybrief spi::OptionHandler::activateOptions()
+
+		Activates all attached filters.
 		 */
 		void activateOptions(helpers::Pool&) override;
 
+		/**
+		\copybrief spi::OptionHandler::setOption()
+		 */
 		void setOption(const LogString& option, const LogString& value) override;
 };
 

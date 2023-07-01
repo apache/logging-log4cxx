@@ -83,8 +83,8 @@ The following <b>param</b> elements are optional:
   - <b>method</b> - the function in which the logging event was generated (\ref usingMacros "1")
   - <b>message</b> - the data sent by the logging statement
   - <b>mdc</b> - A JSON format string of all entries in the logging thread's mapped diagnostic context
-  - <b>mdc{key}</b> - the value associated with the <b>key</b> entry in the logging thread's mapped diagnostic context 
-  - <b>ndc</b> - the last entry the logging thread's nested diagnostic context 
+  - <b>mdc{key}</b> - the value associated with the <b>key</b> entry in the logging thread's mapped diagnostic context
+  - <b>ndc</b> - the last entry the logging thread's nested diagnostic context
 
 \anchor usingMacros 1. Only available when the LOG4CXX_* macros are used to issue the logging request.
 
@@ -152,7 +152,22 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		virtual ~ODBCAppender();
 
 		/**
-		Set options
+		\copybrief AppenderSkeleton::setOption()
+
+		Supported options | Supported values | Default value
+		:-------------- | :----------------: | :---------------:
+		BufferSize | {int} | 1
+		ConnectionString | {any} | -
+		URL | {any} | -
+		DSN | {any} | -
+		User | {any} | -
+		Password | {any} | -
+		SQL | {any} | -
+		ColumnMapping | (\ref colName "^") | -
+
+		\anchor colName ^. One value for each '?' character in the SQL value.
+
+		\sa AppenderSkeleton::setOption()
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 

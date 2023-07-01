@@ -93,7 +93,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 * a valid configuration file is found or the end of the list is reached.
 		 *
 		 * @param directories The directories to look in.
-		 * @param filenamse The names of the files to look for
+		 * @param filenames The names of the files to look for
 		 * @return The status of the configuration, and the filename loaded(if a file was found).
 		 */
 		static std::tuple<log4cxx::spi::ConfigurationStatus,LogString> configureFromFile(const std::vector<LogString>& directories,

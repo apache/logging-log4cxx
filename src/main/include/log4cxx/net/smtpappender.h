@@ -38,7 +38,7 @@ A value must be provided for the following <b>param</b> elements :
   The email address in the <b>from</b> field of the message.
 - one of <b>to</b>, <b>cc</b>, <b>bcc</b> -
   An email address in the message.
-  
+
 The following <b>param</b> elements  are optional:
 - <b>smtpPort</b> -
   The TCP/IP port number on the SMTP server.
@@ -136,13 +136,40 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		~SMTPAppender();
 
 		/**
-		 Set options
+		\copybrief AppenderSkeleton::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		smtpHost | {any} | -
+		smtpPort | {int} | 25
+		smtpUserName | {any} | -
+		smtpPassword | {any} | -
+		from | (\ref asciiCheck "1") | -
+		to | (\ref asciiCheck "1") | -
+		cc | (\ref asciiCheck "1") | -
+		bcc | (\ref asciiCheck "1") | -
+		subject | {any} | -
+		subject | {any} | -
+		buffersize | {int} | 512
+		evaluatorClass | (\ref AppenderSkeleton "2") | -
+
+		\anchor asciiCheck "1". Only ASCII charaters
+
+		\anchor TriggeringEventEvaluator "2". A registered class deriving from TriggeringEventEvaluator
+
+		\sa AppenderSkeleton::setOption()
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
-		Activate the specified options, such as the smtp host, the
-		recipient, from, etc.
+		\copybrief AppenderSkeleton::activateOptions()
+
+		Will not activate and will log an error message if:<ul>
+		<li>no layout is provided</li>
+		<li>no TriggeringEventEvaluator is provided</li>
+		<li>any required field is missing</li>
+		<li>a non-ascii character is detected where not permitted</li>
+		</ul>.
 		*/
 		void activateOptions(helpers::Pool& p) override;
 

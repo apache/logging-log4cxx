@@ -90,7 +90,26 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		FixedWindowRollingPolicy();
 		~FixedWindowRollingPolicy();
 
+		/**
+		\copybrief RollingPolicyBase::activateOptions()
+
+		Logs a warning if an option is not valid.
+
+		\sa RollingPolicyBase::activateOptions()
+		*/
 		void activateOptions(helpers::Pool& p) override;
+
+		/**
+		\copybrief RollingPolicyBase::setOption()
+
+		Supported options | Supported values | Default value
+		:-------------- | :----------------: | :---------------:
+		MinIndex | 1-12 | 1
+		MaxIndex | 1-12 | 7
+		ThrowIOExceptionOnForkFailure | True,False | True
+
+		\sa RollingPolicyBase::setOption()
+		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
 		void rollover();
@@ -119,6 +138,11 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 			helpers::Pool& pool) override;
 
 	protected:
+		/**
+		 * A map from "i" and "index" to a integer conversion formatter.
+		 *
+		 * \sa IntegerPatternConverter
+		 */
 		log4cxx::pattern::PatternMap getFormatSpecifiers() const override;
 
 };

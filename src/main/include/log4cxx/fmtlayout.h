@@ -257,7 +257,21 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
 			return true;
 		}
 
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
+		*/
 		void activateOptions(helpers::Pool& /* p */) override;
+
+		/**
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		ConversionPattern | {any} | -
+
+		 */
 		void setOption(const LogString& /* option */,
 		        const LogString& /* value */) override;
 };

@@ -112,12 +112,29 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		LogString getFile() const;
 
 		/**
-		<p>Sets and <i>opens</i> the file where the log output will
+		\copybrief AppenderSkeleton::activateOptions()
+
+		Sets and <i>opens</i> the file where the log output will
 		go. The specified file must be writable.
 
-		<p>If there was already an opened file, then the previous file
-		is closed first.*/
+		If there was already an opened file, then the previous file
+		is closed first.
+		*/
 		void activateOptions(helpers::Pool& p) override;
+
+		/**
+		\copybrief AppenderSkeleton::setOption()
+
+		Supported options | Supported values | Default value
+		:-------------- | :----------------: | :---------------:
+		FileName | {any} | -
+		Append | True,False | True
+		BufferedIO | True,False | True
+		ImmediateFlush | True,False | False
+		BufferSize | {int} | 8 KB
+
+		\sa AppenderSkeleton::setOption()
+		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**

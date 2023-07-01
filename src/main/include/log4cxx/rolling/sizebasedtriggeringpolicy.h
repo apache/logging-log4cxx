@@ -74,7 +74,25 @@ class LOG4CXX_EXPORT SizeBasedTriggeringPolicy : public TriggeringPolicy
 
 		void setMaxFileSize(size_t l);
 
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
+		*/
 		void activateOptions(helpers::Pool&) override;
+
+		/**
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		MaxFileSize | (\ref fileSize "1") | 10 MB
+
+		\anchor fileSize 1. An integer in the range 0 - 2^63.
+		 You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is
+		 interpreted being expressed respectively in kilobytes, megabytes
+		 or gigabytes. For example, the value "10KB" will be interpreted as 10240.
+		*/
 		void setOption(const LogString& option, const LogString& value) override;
 };
 

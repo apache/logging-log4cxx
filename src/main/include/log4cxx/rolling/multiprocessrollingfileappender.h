@@ -47,6 +47,13 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public FileAppender
 	public:
 		MultiprocessRollingFileAppender();
 
+		/**
+		\copybrief FileAppender::activateOptions()
+
+		Activate the attached TriggeringPolicy and RollingPolicy.
+
+		\sa FileAppender::activateOptions()
+		*/
 		void activateOptions(helpers::Pool&) override;
 
 

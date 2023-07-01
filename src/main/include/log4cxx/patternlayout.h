@@ -467,8 +467,9 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		~PatternLayout();
 
 		/**
-		 * Set the <strong>ConversionPattern</strong> option. This is the string which
-		 * controls formatting and consists of a mix of literal content and
+		 * Use \c conversionPattern as to control formatting.
+		 *
+		 * The pattern can be a mix of literal content and
 		 * conversion specifiers.
 		 */
 		void setConversionPattern(const LogString& conversionPattern);
@@ -479,10 +480,30 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		LogString getConversionPattern() const;
 
 		/**
-		 * Call createPatternParser
+		\copybrief spi::OptionHandler::activateOptions()
+
+		Calls createPatternParser
 		 */
 		void activateOptions(helpers::Pool& p) override;
 
+		/**
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		ConversionPattern | {any} | \%m\%n
+		FatalColor | (\ref validColors "1") | -
+		ErrorColor | (\ref validColors "1") | -
+		WarnColor | (\ref validColors "1") | -
+		InfoColor | (\ref validColors "1") | -
+		DebugColor | (\ref validColors "1") | -
+		TraceColor | (\ref validColors "1") | -
+
+		\anchor validColors "1". A <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">valid ANSI escape sequence</a>.
+		The string prefix "\\x1b[" and suffix "m" will be added if not present.
+
+		\sa setConversionPattern
+		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
