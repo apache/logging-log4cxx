@@ -25,7 +25,10 @@ namespace filter
 {
 
 /**
- * A Filter that operates on a Map and can be used like in the following example:
+ * A Filter that operates on the current thread's MDC map.
+
+ For example, to exclude entries from the log where the context
+ has "user.name" set to "test2" and "user.ip" is "127.0.0.1":
  * <pre>
  * &lt;filter class="MapFilter"&gt;
  *     &lt;param name="user.ip"       value="127.0.0.1" /&gt;
