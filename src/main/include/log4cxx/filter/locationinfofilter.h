@@ -52,6 +52,19 @@ class LOG4CXX_EXPORT LocationInfoFilter: public log4cxx::spi::Filter
 
 		~LocationInfoFilter();
 
+		/**
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		Method | {any} | -
+		LineNumber | {int} | -
+		Operator | (\ref andOrAny "1") | Or
+		AcceptOnMatch | True,False | True
+
+		\anchor andOrAny (1). If "And", both method name and line number must match,
+		otherwise either method name or line number match. 
+		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
 		void setLineNumber(int lineNum);

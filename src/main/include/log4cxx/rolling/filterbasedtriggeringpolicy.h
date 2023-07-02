@@ -109,6 +109,10 @@ class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		- | - | -
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 };
