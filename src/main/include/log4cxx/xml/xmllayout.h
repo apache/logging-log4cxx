@@ -97,12 +97,20 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 		*/
 		bool getProperties();
 
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
 
-		/** No options to activate. */
+		No action is performed in this implementation.
+		*/
 		void activateOptions(helpers::Pool& /* p */) override { }
 
 		/**
-		Set options
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		Properties |  True,False | False
+		LocationInfo | True,False | False
 		*/
 		void setOption(const LogString& option,
 			const LogString& value) override;

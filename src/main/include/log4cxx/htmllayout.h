@@ -79,12 +79,19 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		LogString getContentType() const override;
 
 		/**
-		No options to activate.
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
 		*/
 		void activateOptions(helpers::Pool& /* p */) override {}
 
 		/**
-		Set options
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		Title |  {any} | Log4cxx Log Messages
+		LocationInfo | True,False | False
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
