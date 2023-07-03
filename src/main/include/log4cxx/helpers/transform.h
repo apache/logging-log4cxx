@@ -31,21 +31,19 @@ class LOG4CXX_EXPORT Transform
 {
 	public:
 		/**
-		* This method takes a string which may contain HTML tags (ie,
-		* &lt;b&gt;, &lt;table&gt;, etc) and replaces any '<' and '>'
+		* Add \c input, which may contain HTML tags (ie,
+		* &lt;b&gt;, &lt;table&gt;, etc) to \c buf while replaceing any '<' and '>'
 		* characters with respective predefined entity references.
 		*
 		* @param buf output stream where to write the modified string.
 		* @param input The text to be converted.
-		* @return The input string with the characters '<' and '>' replaced with
-		*  &amp;lt; and &amp;gt; respectively.
 		* */
 		static void appendEscapingTags(
 			LogString& buf, const LogString& input);
 
 		/**
-		* Ensures that embeded CDEnd strings (]]>) are handled properly
-		* within message, NDC and throwable tag text.
+		* Add \c input to \c buf while ensuring embeded CDEnd strings (]]>)
+		* are handled properly within the message, NDC and throwable tag text.
 		*
 		* @param buf output stream holding the XML data to this point.  The
 		* initial CDStart (<![CDATA[) and final CDEnd (]]>) of the CDATA

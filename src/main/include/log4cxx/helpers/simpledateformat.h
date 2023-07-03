@@ -79,6 +79,7 @@ class LOG4CXX_EXPORT SimpleDateFormat : public DateFormat
 		 * A time converter and formatter using \c pattern and \c locale.
 		 *
 		 * @param pattern the specifiers describing the date and time format
+		 * @param locale the user-preferred set of immutable facets
 		 */
 		SimpleDateFormat(const LogString& pattern, const std::locale* locale);
 		~SimpleDateFormat();
