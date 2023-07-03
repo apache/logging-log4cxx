@@ -38,8 +38,7 @@ whatever reason.
 logged in the new secondary appender.
 */
 class LOG4CXX_EXPORT FallbackErrorHandler :
-	public virtual spi::ErrorHandler,
-	public virtual helpers::Object
+	public virtual spi::ErrorHandler
 {
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FallbackErrorHandlerPrivate, m_priv)

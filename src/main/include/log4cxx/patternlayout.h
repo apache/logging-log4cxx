@@ -499,11 +499,11 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		DebugColor | (\ref validColors "1") | cyan
 		TraceColor | (\ref validColors "1") | blue
 
-		\anchor validColors "1". The word "None" or
+		\anchor validColors "1". The word <code>None</code> or
 		<a href="https://en.wikipedia.org/wiki/ANSI_escape_code">valid ANSI escape sequence</a>.
-		A prefix of <code>\x1b</code> will be replaced with the <code>ESC</code> character.
+		A prefix of <code>\\x1b</code> will be replaced with the <code>ESC</code> character.
 		The character prefix <code>ESC</code> and suffix <code>m</code> will be added
-		to the value if it does not begin with <code>\x1b</code>.
+		to the value if it does not begin with <code>\\x1b</code>.
 		Color names can be combined with graphic modes using a <code>|</code> separator.
 		Enclose the color name in <code>bg()</code> to set the background.
 		Enclose the color name in <code>fg()</code> to set the foreground.

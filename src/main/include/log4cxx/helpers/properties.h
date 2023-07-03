@@ -75,7 +75,7 @@ class LOG4CXX_EXPORT Properties
 		and any whitespace characters after it are also skipped. All remaining
 		characters on the line become part of the associated element string.
 		Within the element string, the ASCII escape sequences <code>\\t</code>,
-		<code>\\n</code>, <code>\\r</code>, <code>\\</code>, <code>\\"</code>,
+		<code>\\n</code>, <code>\\r</code>, <code>\\ </code>, <code>\\\"</code>,
 		<code>\\'</code>, <code>\\</code> (a backslash and a space), and
 		<code>\\uxxxx</code> are recognized
 		and converted to single characters. Moreover, if the last character on
@@ -102,7 +102,7 @@ class LOG4CXX_EXPORT Properties
 		          cantaloupe, watermelon, \
 		          kiwi, mango
 		</pre>
-		The key is "<code>fruits</code>" and the associated element is:
+		The key is <code>"fruits"</code> and the associated element is:
 		<pre>
 		"apple, banana, pear, cantaloupe, watermelon, kiwi, mango"
 		</pre>
@@ -115,7 +115,7 @@ class LOG4CXX_EXPORT Properties
 		<pre>
 		cheeses
 		</pre>
-		specifies that the key is "<code>cheeses</code>" and the associated
+		specifies that the key is <code>"cheeses"</code> and the associated
 		element is the empty string.
 
 		@param inStream the input stream.

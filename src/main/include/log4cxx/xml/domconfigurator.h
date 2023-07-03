@@ -60,8 +60,7 @@ files. You can enable log4cxx internal logging by setting the
 <p>There are sample XML files included in the package.
 */
 class LOG4CXX_EXPORT DOMConfigurator :
-	virtual public spi::Configurator,
-	virtual public helpers::Object
+	virtual public spi::Configurator
 {
 	public:
 		~DOMConfigurator();

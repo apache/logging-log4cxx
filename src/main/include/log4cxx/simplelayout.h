@@ -48,8 +48,6 @@ class LOG4CXX_EXPORT SimpleLayout : public Layout
 		<code>level</code>, followed by " - " and then the
 		<code>message</code>. For example, <pre> INFO - "A message"
 		</pre>
-
-		@return A byte array in SimpleLayout format.
 		*/
 		void format(LogString& output,
 			const spi::LoggingEventPtr& event,
