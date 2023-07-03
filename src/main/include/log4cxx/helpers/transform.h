@@ -31,9 +31,10 @@ class LOG4CXX_EXPORT Transform
 {
 	public:
 		/**
-		* Add \c input, which may contain HTML tags (ie,
-		* &lt;b&gt;, &lt;table&gt;, etc) to \c buf while replaceing any '<' and '>'
-		* characters with respective predefined entity references.
+		* Add \c input, which may contain HTML tags
+		* (ie, &lt;b&gt;, &lt;table&gt;, etc) to \c buf
+		* while replacing any '<' and '>' characters
+		* with respective predefined entity references.
 		*
 		* @param buf output stream where to write the modified string.
 		* @param input The text to be converted.
