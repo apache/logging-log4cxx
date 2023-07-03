@@ -58,11 +58,19 @@ class LOG4CXX_EXPORT OptionConverter
 		<code>true</code> is returned. Otherwise, <code>default</code> is
 		returned.
 
-		<p>Case of value is unimportant.
+		<p>Case of \c value is unimportant.
 		*/
 		static bool toBoolean(const LogString& value, bool dEfault);
 		static int toInt(const LogString& value, int dEfault);
 		static long toFileSize(const LogString& value, long dEfault);
+		/**
+		The Level indicated by \c value if recognised otherwise \c defaultValue.
+
+		To be recognised, \c value must be one of "Trace", "Debug", "Info", "Warn", "Error", "Fatal", "Off", "All"
+		or a custom level in which case it is of the form <code>{levelName}#{registeredClassName}</code>.
+
+		<p>Case of \c value is unimportant.
+		*/
 		static LevelPtr toLevel(const LogString& value,
 			const LevelPtr& defaultValue);
 

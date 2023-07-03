@@ -25,7 +25,10 @@ namespace filter
 {
 
 /**
- * A Filter that operates on a Map and can be used like in the following example:
+ * A Filter that operates on the current thread's MDC map.
+
+ For example, to exclude entries from the log where the context
+ has "user.name" set to "test2" and "user.ip" is "127.0.0.1":
  * <pre>
  * &lt;filter class="MapFilter"&gt;
  *     &lt;param name="user.ip"       value="127.0.0.1" /&gt;
@@ -53,7 +56,16 @@ class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 		~MapFilter();
 
 		/**
-		Set options
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		Operator | (\ref andOrOne "1") | Or
+		AcceptOnMatch | True,False | True
+		{anyKey} | {anyValue} | -
+
+		\anchor andOrOne (1). If "And", the MDC must contain all configured key-value pairs,
+		otherwise only one configured key-value pair needs to match. 
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 

@@ -56,9 +56,34 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 	public:
 		RollingPolicyBase();
 		virtual ~RollingPolicyBase();
-		void activateOptions(log4cxx::helpers::Pool& p) override;
-		virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
 
+		/**
+		\copybrief RollingPolicy::activateOptions()
+
+		Logs a warning if FileNamePattern is not set.
+
+		\sa RollingPolicy::activateOptions()
+		*/
+		void activateOptions(helpers::Pool& p) override;
+
+		/**
+		A map from a name to the object implementing the (date or index) formatting.
+		*/
+		virtual pattern::PatternMap getFormatSpecifiers() const = 0;
+
+
+		/**
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		:-------------- | :----------------: | :---------------:
+		FileNamePattern | (\ref legalChars "^") | -
+		CreateIntermediateDirectories | True,False | False
+
+		\anchor legalChars ^. Legal file name characters plus any conversion specifier supported by the concrete class.
+
+		\sa getFormatSpecifiers()
+		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**

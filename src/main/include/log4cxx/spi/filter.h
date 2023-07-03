@@ -102,13 +102,20 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 
 		};
 
-
 		/**
-		Usually filters options become active when set. We provide a
+		\copybrief spi::OptionHandler::activateOptions()
 
-		default do-nothing implementation for convenience.
+		No action is performed in this implementation.
 		*/
 		void activateOptions(helpers::Pool& p) override;
+
+		/**
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		- | - | -
+		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**

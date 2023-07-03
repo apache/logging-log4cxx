@@ -153,6 +153,14 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 	public:
 		TimeBasedRollingPolicy();
 		virtual ~TimeBasedRollingPolicy();
+
+		/**
+		\copybrief RollingPolicyBase::activateOptions()
+
+		Logs a warning if an option is not valid.
+
+		\sa RollingPolicyBase::activateOptions()
+		*/
 		void activateOptions(helpers::Pool& ) override;
 
 		void setMultiprocess(bool multiprocess);
@@ -190,9 +198,23 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 			const LogString& filename,
 			size_t fileLength) override;
 
+		/**
+		\copybrief RollingPolicyBase::setOption()
+
+		Supported options | Supported values | Default value
+		:-------------- | :----------------: | :---------------:
+		ThrowIOExceptionOnForkFailure | True,False | True
+
+		\sa RollingPolicyBase::setOption()
+		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
 	protected:
+		/**
+		 * A map from "d" and "date" to a date conversion formatter.
+		 *
+		 * \sa FileDatePatternConverter
+		 */
 		log4cxx::pattern::PatternMap getFormatSpecifiers() const override;
 
 	private:

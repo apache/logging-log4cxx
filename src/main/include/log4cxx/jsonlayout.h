@@ -89,10 +89,20 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		*/
 		LogString getContentType() const override;
 
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
+		*/
 		void activateOptions(helpers::Pool& /* p */) override;
 
 		/**
-		Set options
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		LocationInfo | True,False | false
+		PrettyPrint | True,False | false
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 

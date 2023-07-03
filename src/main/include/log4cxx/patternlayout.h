@@ -467,8 +467,9 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		~PatternLayout();
 
 		/**
-		 * Set the <strong>ConversionPattern</strong> option. This is the string which
-		 * controls formatting and consists of a mix of literal content and
+		 * Use \c conversionPattern as to control formatting.
+		 *
+		 * The pattern can be a mix of literal content and
 		 * conversion specifiers.
 		 */
 		void setConversionPattern(const LogString& conversionPattern);
@@ -479,10 +480,36 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		LogString getConversionPattern() const;
 
 		/**
-		 * Call createPatternParser
+		\copybrief spi::OptionHandler::activateOptions()
+
+		Calls createPatternParser
 		 */
 		void activateOptions(helpers::Pool& p) override;
 
+		/**
+		\copybrief spi::OptionHandler::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		ConversionPattern | {any} | \%m\%n
+		FatalColor | (\ref validColors "1") | magenta
+		ErrorColor | (\ref validColors "1") | red
+		WarnColor | (\ref validColors "1") | yellow
+		InfoColor | (\ref validColors "1") | green
+		DebugColor | (\ref validColors "1") | cyan
+		TraceColor | (\ref validColors "1") | blue
+
+		\anchor validColors "1". The word "None" or
+		<a href="https://en.wikipedia.org/wiki/ANSI_escape_code">valid ANSI escape sequence</a>.
+		A prefix of <code>\x1b</code> will be replaced with the <code>ESC</code> character.
+		The character prefix <code>ESC</code> and suffix <code>m</code> will be added
+		to the value if it does not begin with <code>\x1b</code>.
+		Color names can be combined with graphic modes using a <code>|</code> separator.
+		Enclose the color name in <code>bg()</code> to set the background.
+		Enclose the color name in <code>fg()</code> to set the foreground.
+
+		\sa setConversionPattern
+		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**

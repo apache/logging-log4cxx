@@ -76,7 +76,21 @@ class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
 		*/
 		LogString getTarget() const;
 
+		/**
+		\copybrief WriterAppender::activateOptions()
+
+		No action is performed in this implementation.
+		*/
 		void activateOptions(helpers::Pool& p) override;
+		/**
+		\copybrief WriterAppender::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		Target | System.err,System.out | System.out
+
+		\sa WriterAppender::setOption()
+		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**

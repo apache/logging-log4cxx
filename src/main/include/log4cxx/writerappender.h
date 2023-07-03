@@ -131,22 +131,40 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		virtual helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os);
 
 	public:
+		/**
+		The current encoding value.
+
+		\sa setOption
+		 */
 		LogString getEncoding() const;
+		/**
+		Set the encoding to \c value.
+
+		\sa setOption
+		 */
 		void setEncoding(const LogString& value);
+
+		/**
+		\copybrief AppenderSkeleton::setOption()
+
+		Supported options | Supported values | Default value
+		-------------- | ---------------- | ---------------
+		Encoding | C,UTF-8,UTF-16,UTF-16BE,UTF-16LE,646,US-ASCII,ISO646-US,ANSI_X3.4-1968,ISO-8859-1,ISO-LATIN-1 | UTF-8
+
+		\sa AppenderSkeleton::setOption()
+		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
-		  <p>Sets the Writer where the log output will go. The
-		  specified Writer must be opened by the user and be
-		  writable.
+		  <p>Send log output to \c writer which must be open and be writable.
 
-		  <p>The <code>java.io.Writer</code> will be closed when the
+		  <p>The helpers::Writer will be closed when the
 		  appender instance is closed.
 
+		  <b>WARNING:</b> Logging to an unopened Writer will fail.
 
-		  <p><b>WARNING:</b> Logging to an unopened Writer will fail.
-		  <p>
-		  @param writer An already opened Writer.  */
+		  @param writer An already opened Writer.
+		*/
 		void setWriter(const log4cxx::helpers::WriterPtr& writer);
 
 		const log4cxx::helpers::WriterPtr getWriter() const;
