@@ -25,8 +25,8 @@ the [Apache License], an open source license certified by the [Open Source Initi
 Experience indicates that almost every large application needs runtime configurable logging.
 In the usual configuration, informational, warning and error log messages
 are saved to a persistent medium so they are available for study at a later time.
-With Log4cxx it is possible to temporarily activate additional logging output
-from one or more modules of the running application by changing the configuration file.
+With Log4cxx it is possible to activate additional logging output or disable some output
+for one or more modules of the running application by changing the configuration file.
 
 In the development cycle, logging can be an auditing tool.
 Debugging log output can be activated for an aspect of the application
