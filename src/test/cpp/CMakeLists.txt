@@ -44,6 +44,7 @@ set(ALL_LOG4CXX_TESTS
     encodingtest
     fileappendertest
     filetestcase
+    hexdumptestcase
     hierarchytest
     hierarchythresholdtestcase
     jsonlayouttest
