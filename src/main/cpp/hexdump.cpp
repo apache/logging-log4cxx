@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #include <log4cxx/hexdump.h>
+#include <log4cxx/log4cxx.h>
 #include <sstream>
 #include <ios>
 #include <iomanip>
@@ -28,7 +29,7 @@ LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 	const uint8_t* bytes_u8 = static_cast<const uint8_t*>(bytes);
 	LogStream sstream;
 #if LOG4CXX_LOGCHAR_IS_WCHAR
-	const wchar_t fill_char = '0';
+	const wchar_t fill_char = L'0';
 #else
 	const char fill_char = '0';
 #endif
