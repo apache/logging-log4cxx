@@ -22,15 +22,9 @@ FAQ {#faq}
 -->
 
 # Frequently Asked Technical Questions
-## <a name="table_of_contents"></a>Table of contents
+[TOC]
 
-<ol>
-	<li><a href="#custom_levels">How do I add a custom level to Apache Log4cxx?</a></li>
-	<li><a href="#msvc_crash">My application on Windows crashes on shutdown?</a></li>
-	<li><a href="#unicode_supported">Does Apache Log4cxx support Unicode?</a></li>
-</ol>
-
-## <a name="custom_levels"></a>How do I add a custom level to Apache Log4cxx?
+## How do I add a custom level to Apache Log4cxx?{#custom_levels}
 
 This is a common topic for all the Apache logging frameworks and typically motivated to try to
 categorize events by functionality or audience.  An common request is to add an AUDIT level so that
@@ -42,7 +36,7 @@ to use a logger names like "AUDIT.com.example.MyPackage.MyClass" that allow all 
 routed to a particular appender. If you attempted to use a level for that then you would lose the
 ability to distinguish between different significances within the audit messages.
 
-## <a name="msvc_crash"></a>My application on Windows crashes on shutdown?
+## My application on Windows crashes on shutdown?{#msvc_crash}
 
 Apache Log4cxx API calls use C++ Standard Template Library string parameters. If the caller is using
 a different instance or type of the C Runtime Library that Log4cxx, then it is very likely that some
@@ -50,7 +44,7 @@ memory that was originally allocated by Log4cxx would be freed by the caller. If
 caller are using different C RTL's, the program will likely crash at the point. Use "Multithread
 DLL" with release builds of Log4cxx and "Multithread DLL Debug" with debug builds.
 
-## <a name="unicode_supported"></a>Does Apache Log4cxx support Unicode?
+## Does Apache Log4cxx support Unicode?{#unicode_supported}
 
 Yes. Apache Log4cxx exposes API methods in multiple string flavors supporting differently encoded
 textual content, like `char*`, `std::string`, `wchar_t*`, `std::wstring`, `CFStringRef` et al. All
