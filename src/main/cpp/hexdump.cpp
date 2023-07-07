@@ -23,10 +23,15 @@ using namespace log4cxx;
 
 typedef std::basic_stringstream<logchar> LogStream;
 
-LogString log4cxx::hexdump(void* bytes, uint32_t len, HexdumpFlags flags){
+LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 	LogString ret;
-	uint8_t* bytes_u8 = static_cast<uint8_t*>(bytes);
+	const uint8_t* bytes_u8 = static_cast<const uint8_t*>(bytes);
 	LogStream sstream;
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+	const wchar_t fill_char = '0';
+#else
+	const char fill_char = '0';
+#endif
 
 	if(flags & HexdumpFlags::AddStartingNewline){
 		sstream << LOG4CXX_EOL;
@@ -38,7 +43,7 @@ LogString log4cxx::hexdump(void* bytes, uint32_t len, HexdumpFlags flags){
 		}
 
 		// Print out the offset
-		sstream << std::hex << std::setw(8) << std::setfill('0') << offset << std::resetiosflags(std::ios_base::fmtflags(0));
+		sstream << std::hex << std::setw(8) << std::setfill(fill_char) << offset << std::resetiosflags(std::ios_base::fmtflags(0));
 
 		sstream << std::setw(0) << LOG4CXX_STR("  ");
 
@@ -52,7 +57,7 @@ LogString log4cxx::hexdump(void* bytes, uint32_t len, HexdumpFlags flags){
 				continue;
 			}
 
-			sstream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(bytes_u8[offset + byte]) << std::resetiosflags(std::ios_base::fmtflags(0));
+			sstream << std::hex << std::setw(2) << std::setfill(fill_char) << static_cast<int>(bytes_u8[offset + byte]) << std::resetiosflags(std::ios_base::fmtflags(0));
 			sstream << std::setfill(' ');
 			if(byte != 8){
 				sstream << LOG4CXX_STR(" ");
@@ -71,7 +76,7 @@ LogString log4cxx::hexdump(void* bytes, uint32_t len, HexdumpFlags flags){
 				continue;
 			}
 
-			sstream << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(bytes_u8[offset + byte]) << std::resetiosflags(std::ios_base::fmtflags(0));
+			sstream << std::hex << std::setw(2) << std::setfill(fill_char) << static_cast<int>(bytes_u8[offset + byte]) << std::resetiosflags(std::ios_base::fmtflags(0));
 			if(byte != 15){
 				sstream << LOG4CXX_STR(" ");
 			}

@@ -51,7 +51,7 @@ inline HexdumpFlags operator|(HexdumpFlags a, HexdumpFlags b){
  * @return A LogString with the hexdump output
  */
 LOG4CXX_EXPORT
-LogString hexdump(void* bytes, uint32_t len, HexdumpFlags flags = HexdumpFlags::None);
+LogString hexdump(const void* bytes, uint32_t len, HexdumpFlags flags = HexdumpFlags::None);
 
 }
 #endif // LOG4CXX_HEXDUMP_H
