@@ -52,7 +52,7 @@ LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 
 		// Print out the first 8 bytes
 		for(int byte = 0; byte < 8; byte++){
-			if(offset + byte > len){
+			if(offset + byte >= len){
 				sstream << LOG4CXX_STR("  ");
 				if(byte != 8){
 					sstream << LOG4CXX_STR(" ");
@@ -71,7 +71,7 @@ LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 
 		// Print out the last 8 bytes
 		for(int byte = 8; byte < 16; byte++){
-			if(offset + byte > len){
+			if(offset + byte >= len){
 				sstream << LOG4CXX_STR("  ");
 				if(byte != 15){
 					sstream << LOG4CXX_STR(" ");
@@ -88,7 +88,7 @@ LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 		// Print out the ASCII text
 		sstream << LOG4CXX_STR("  |");
 		for(int byte = 0; byte < 16; byte++){
-			if(offset + byte > len){
+			if(offset + byte >= len){
 				break;
 			}
 			if(std::isprint(bytes_u8[offset + byte])){

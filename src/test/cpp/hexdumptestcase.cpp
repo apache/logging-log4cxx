@@ -41,18 +41,25 @@ public:
 
 	void test1()
 	{
-		LogString hexdump_str = LOG4CXX_STR("test1");
+		unsigned char test1_str[] = {
+		  0x74, 0x65, 0x73, 0x74, 0x31
+		};
+
 		LogString expectedOutput =
 				LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|");
 
-		// Hexdump up until the NULL char
-		LogString dumped = log4cxx::hexdump(hexdump_str.data(), hexdump_str.length() - 1);
+		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str));
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 
 	void test2()
 	{
-		LogString hexdump_str = LOG4CXX_STR("The quick brown fox jumps over the lazy dog");
+		unsigned char quick_brown_fox[] = {
+		  0x54, 0x68, 0x65, 0x20, 0x71, 0x75, 0x69, 0x63, 0x6b, 0x20, 0x62, 0x72,
+		  0x6f, 0x77, 0x6e, 0x20, 0x66, 0x6f, 0x78, 0x20, 0x6a, 0x75, 0x6d, 0x70,
+		  0x73, 0x20, 0x6f, 0x76, 0x65, 0x72, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6c,
+		  0x61, 0x7a, 0x79, 0x20, 0x64, 0x6f, 0x67
+		};
 		LogString expectedOutput =
 				LOG4CXX_STR("00000000  54 68 65 20 71 75 69 63  6b 20 62 72 6f 77 6e 20  |The quick brown |")
 				LOG4CXX_EOL
@@ -61,33 +68,35 @@ public:
 				LOG4CXX_STR("00000020  68 65 20 6c 61 7a 79 20  64 6f 67                 |he lazy dog|");
 
 		// Hexdump up until the NULL char
-		LogString dumped = log4cxx::hexdump(hexdump_str.data(), hexdump_str.length() - 1);
+		LogString dumped = log4cxx::hexdump(quick_brown_fox, sizeof(quick_brown_fox));
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 
 	void test_newline()
 	{
-		LogString hexdump_str = LOG4CXX_STR("test1");
+		unsigned char test1_str[] = {
+		  0x74, 0x65, 0x73, 0x74, 0x31
+		};
 		LogString expectedOutput =
 				LOG4CXX_EOL
 				LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|")
 				LOG4CXX_EOL;
 
-		// Hexdump up until the NULL char
-		LogString dumped = log4cxx::hexdump(hexdump_str.data(), hexdump_str.length() - 1, HexdumpFlags::AddNewline);
+		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddNewline);
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 
 	void test_newline2()
 	{
-		LogString hexdump_str = LOG4CXX_STR("test1");
+		unsigned char test1_str[] = {
+		  0x74, 0x65, 0x73, 0x74, 0x31
+		};
 		LogString expectedOutput =
 				LOG4CXX_EOL
 				LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|")
 				LOG4CXX_EOL;
 
-		// Hexdump up until the NULL char
-		LogString dumped = log4cxx::hexdump(hexdump_str.data(), hexdump_str.length() - 1, HexdumpFlags::AddStartingNewline | HexdumpFlags::AddEndingNewline);
+		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddStartingNewline | HexdumpFlags::AddEndingNewline);
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 
