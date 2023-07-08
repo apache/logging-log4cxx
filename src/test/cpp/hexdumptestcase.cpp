@@ -20,7 +20,6 @@
 #include <iostream>
 
 using namespace log4cxx;
-using namespace log4cxx::helpers;
 
 LOGUNIT_CLASS(HexdumpTestCase)
 {
