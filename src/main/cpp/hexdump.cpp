@@ -30,8 +30,10 @@ LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 	LogStream sstream;
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	const wchar_t fill_char = L'0';
+	const wchar_t space_fill_char = L' ';
 #else
 	const char fill_char = '0';
+	const char space_fill_char = ' ';
 #endif
 
 	if(flags & HexdumpFlags::AddStartingNewline){
@@ -59,7 +61,7 @@ LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 			}
 
 			sstream << std::hex << std::setw(2) << std::setfill(fill_char) << static_cast<int>(bytes_u8[offset + byte]) << std::resetiosflags(std::ios_base::fmtflags(0));
-			sstream << std::setfill(' ');
+			sstream << std::setfill(space_fill_char);
 			if(byte != 8){
 				sstream << LOG4CXX_STR(" ");
 			}
