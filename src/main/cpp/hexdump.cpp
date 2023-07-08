@@ -92,7 +92,8 @@ LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 				break;
 			}
 			if(std::isprint(bytes_u8[offset + byte])){
-				sstream << bytes_u8[offset + byte];
+				logchar to_append = bytes_u8[offset + byte];
+				sstream << to_append;
 			}else{
 				sstream << LOG4CXX_STR(".");
 			}
