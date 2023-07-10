@@ -62,7 +62,7 @@ class LOG4CXX_EXPORT LocationInfoFilter: public log4cxx::spi::Filter
 		Operator | (\ref andOrAny "1") | Or
 		AcceptOnMatch | True,False | True
 
-		\anchor andOrAny (1). If "And", both method name and line number must match,
+		\anchor andOrAny (1) If "And", both method name and line number must match,
 		otherwise either method name or line number match. 
 		*/
 		void setOption(const LogString& option, const LogString& value) override;

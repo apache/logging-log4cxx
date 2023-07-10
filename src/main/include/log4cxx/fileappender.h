@@ -131,7 +131,12 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		Append | True,False | True
 		BufferedIO | True,False | True
 		ImmediateFlush | True,False | False
-		BufferSize | {int} | 8 KB
+		BufferSize | (\ref fileSz1 "1") | 8 KB
+
+		\anchor fileSz1 (1) An integer in the range 0 - 2^63.
+		 You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is
+		 interpreted being expressed respectively in kilobytes, megabytes
+		 or gigabytes. For example, the value "10KB" will be interpreted as 10240.
 
 		\sa AppenderSkeleton::setOption()
 		*/

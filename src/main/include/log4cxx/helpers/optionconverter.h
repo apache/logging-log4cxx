@@ -53,16 +53,29 @@ class LOG4CXX_EXPORT OptionConverter
 		static LogString convertSpecialChars(const LogString& s);
 
 		/**
+		 The boolean equivalent of \c value if it is not empty, otherwise \c defaultValue.
+
 		If <code>value</code> is "true", then <code>true</code> is
 		returned. If <code>value</code> is "false", then
-		<code>true</code> is returned. Otherwise, <code>default</code> is
-		returned.
+		<code>true</code> is returned. Case of \c value is unimportant.
 
-		<p>Case of \c value is unimportant.
+		@return  <code>defaultValue</code> if \c value is not "true" or "false", otherwise the boolean equivalent of \c value
 		*/
-		static bool toBoolean(const LogString& value, bool dEfault);
-		static int toInt(const LogString& value, int dEfault);
-		static long toFileSize(const LogString& value, long dEfault);
+		static bool toBoolean(const LogString& value, bool defaultValue);
+		/**
+		 The numeric equivalent of \c value if it is not empty, otherwise \c defaultValue.
+
+		@return Zero if \c value does not begin with a valid integral number otherwise the numeric equivalent of \c value
+		*/
+		static int toInt(const LogString& value, int defaultValue);
+		/**
+		 The numeric equivalent of \c value if it is not empty, otherwise \c defaultValue.
+
+		 A suffix "KB", "MB" or "GB" after an integer value
+		 converts the provided number respectively to kilobytes, megabytes
+		 and gigabytes. For example, the value "10KB" will be interpreted as 10240.
+		*/
+		static long toFileSize(const LogString& value, long defaultValue);
 		/**
 		The Level indicated by \c value if recognised otherwise \c defaultValue.
 

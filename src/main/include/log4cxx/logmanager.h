@@ -38,9 +38,9 @@ typedef std::shared_ptr<LoggerFactory> LoggerFactoryPtr;
 * Use the <code>LogManager</code> class to retreive Logger
 * instances or to operate on the current
 * {@link log4cxx::spi::LoggerRepository LoggerRepository}.
-* When the <code>LogManager</code> class is loaded
-* into memory the default initialization procedure is inititated.
-    */
+* DefaultConfigurator::configure will be used to configure LoggerRepository
+* when the first logger is retrieved if it is not already configured.
+*/
 class LOG4CXX_EXPORT LogManager
 {
 	private:

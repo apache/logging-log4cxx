@@ -134,13 +134,13 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		:-------------- | :----------------: | :---------------:
 		FileDatePattern | (\ref dateChars "1") | -
 		MaxBackupIndex | 1-12 | 0
-		MaxFileSize | (\ref fileSz "1") | 10 MB
+		MaxFileSize | (\ref fileSz "2") | 10 MB
 
-		\anchor dateChars 1. A pattern compatible with
+		\anchor dateChars (1) A pattern compatible with
 		  java.text.SimpleDateFormat, "ABSOLUTE", "DATE" or "ISO8601".
 		  For example, "HH:mm:ss,SSS", "dd MMM yyyy HH:mm:ss,SSS" or "DATE".
 
-		\anchor fileSz 2. An integer in the range 0 - 2^63.
+		\anchor fileSz (2) An integer in the range 0 - 2^63.
 		 You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is
 		 interpreted being expressed respectively in kilobytes, megabytes
 		 or gigabytes. For example, the value "10KB" will be interpreted as 10240.
