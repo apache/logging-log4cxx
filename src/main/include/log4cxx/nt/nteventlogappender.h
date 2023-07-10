@@ -59,9 +59,9 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		Source | (\ref winapi "1") | -
 		Log | (\ref eventLog "2") | Application
 
-		\anchor winapi 1. Passed to the Win32 API method <a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-registereventsourcew">RegisterEventSource</a>.
+		\anchor winapi (1) Passed to the Win32 API method <a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-registereventsourcew">RegisterEventSource</a>.
 
-		\anchor eventLog 2. An event log name.
+		\anchor eventLog (2) An event log name.
 
 		\sa AppenderSkeleton::setOption()
 		*/

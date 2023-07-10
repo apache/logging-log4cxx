@@ -80,7 +80,7 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		FileNamePattern | (\ref legalChars "^") | -
 		CreateIntermediateDirectories | True,False | False
 
-		\anchor legalChars ^. Legal file name characters plus any conversion specifier supported by the concrete class.
+		\anchor legalChars (^) Legal file name characters plus any conversion specifier supported by the concrete class.
 
 		\sa getFormatSpecifiers()
 		*/

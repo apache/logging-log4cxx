@@ -91,9 +91,9 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		Facility | (\ref facility "2") | -
 		MaxMessageLength | {int} | 1024
 
-		\anchor sysLogAddress 1. A valid internet address, optionally with the port number as a suffix after a ':'.
+		\anchor sysLogAddress (1) A valid internet address, optionally with the port number as a suffix after a ':'.
 
-		\anchor facility 2. One of kern,user,mail,daemon,auth,syslog,lpr,news,uucp,cron,ftp,local0,local1,local2,local3,local4,local5,local6,local7 2. Provided by the derived class.
+		\anchor facility (2) One of kern,user,mail,daemon,auth,syslog,lpr,news,uucp,cron,ftp,local0,local1,local2,local3,local4,local5,local6,local7 2. Provided by the derived class.
 
 		\sa AppenderSkeleton::setOption()
 		*/

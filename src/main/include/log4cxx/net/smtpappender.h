@@ -153,9 +153,9 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		buffersize | {int} | 512
 		evaluatorClass | (\ref AppenderSkeleton "2") | -
 
-		\anchor asciiCheck "1". Only ASCII charaters
+		\anchor asciiCheck (1) Only ASCII charaters
 
-		\anchor TriggeringEventEvaluator "2". A registered class deriving from TriggeringEventEvaluator
+		\anchor TriggeringEventEvaluator (2) A registered class deriving from TriggeringEventEvaluator
 
 		\sa AppenderSkeleton::setOption()
 		*/

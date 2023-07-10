@@ -64,7 +64,7 @@ class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 		AcceptOnMatch | True,False | True
 		{anyKey} | {anyValue} | -
 
-		\anchor andOrOne (1). If "And", the MDC must contain all configured key-value pairs,
+		\anchor andOrOne (1) If "And", the MDC must contain all configured key-value pairs,
 		otherwise only one configured key-value pair needs to match. 
 		*/
 		void setOption(const LogString& option, const LogString& value) override;

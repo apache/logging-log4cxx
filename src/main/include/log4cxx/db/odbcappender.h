@@ -86,7 +86,7 @@ The following <b>param</b> elements are optional:
   - <b>mdc{key}</b> - the value associated with the <b>key</b> entry in the logging thread's mapped diagnostic context
   - <b>ndc</b> - the last entry the logging thread's nested diagnostic context
 
-\anchor usingMacros 1. Only available when the LOG4CXX_* macros are used to issue the logging request.
+\anchor usingMacros (1) Only available when the LOG4CXX_* macros are used to issue the logging request.
 
 <p>For use as a base class:
 
@@ -165,7 +165,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		SQL | {any} | -
 		ColumnMapping | (\ref colName "^") | -
 
-		\anchor colName ^. One value for each '?' character in the SQL value.
+		\anchor colName (^) One value for each '?' character in the SQL value.
 
 		\sa AppenderSkeleton::setOption()
 		*/

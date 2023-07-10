@@ -133,7 +133,7 @@ class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
                 SQL | {any} | -
                 ColumnMapping | (\ref rep "^") | -
 
-                \anchor rep ^. One value for each '%%' character in the SQL value.
+                \anchor rep (^) One value for each '%%' character in the SQL value.
                 \sa AppenderSkeleton::setOption()
                 */
                 void setOption(const LogString& option, const LogString& value) override;
