@@ -48,7 +48,7 @@ Using {fmt} over `operator<<` for log messages is both cleaner from a code
 standpoint, and is also significantly faster(approximately 2x as fast).
 
 These two pieces of logging code are logically equivalent(printing out the same
-values), however the one utilizing fmt is close to 2x as fast.
+values), however the one utilizing fmt is close to 2x as fast on some systems.
 
 ```{.cpp}
    for( int x = 0; x < howmany; x++ ){
