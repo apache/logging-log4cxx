@@ -107,6 +107,7 @@ target_sources(log4cxx
   formattinginfo.cpp
   fulllocationpatternconverter.cpp
   gzcompressaction.cpp
+  hexdump.cpp
   hierarchy.cpp
   htmllayout.cpp
   inetaddress.cpp
