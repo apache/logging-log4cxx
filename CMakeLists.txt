@@ -105,10 +105,10 @@ else()
     set(ENABLE_FMT_LAYOUT "OFF")
 endif()
 
-# Request C++17, if available
+# Request C++20, if available
 # This *should* fallback to an older standard if it is not available
 if( NOT "${CMAKE_CXX_STANDARD}")
-    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 20)
 endif()
 
 # Don't allow for compiler-specific extensions
