@@ -29,7 +29,7 @@ else()
 endif()
 
 foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
-    set(PROGRAM_NAME "example-${exampleName}")
+    set(PROGRAM_NAME "${exampleName}")
     add_executable(${PROGRAM_NAME} ${exampleName}.cpp)
     if(${exampleName} STREQUAL MyApp2)
         target_sources(${PROGRAM_NAME} PRIVATE com/foo/config2.cpp com/foo/bar.cpp)
@@ -44,6 +44,7 @@ foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
         set_target_properties(${PROGRAM_NAME} PROPERTIES
           VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
           VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+          FOLDER Examples
         )
     endif()
 endforeach()
@@ -57,6 +58,8 @@ if(${fmt_FOUND})
     if( WIN32 )
         set_target_properties( format-string PROPERTIES
           VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
+          VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+          FOLDER Examples
         )
     endif()
 endif(${fmt_FOUND})

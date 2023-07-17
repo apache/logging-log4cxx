@@ -114,6 +114,9 @@ endif()
 # Don't allow for compiler-specific extensions
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Use solution folders.
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 # Building
 add_subdirectory(src)
 

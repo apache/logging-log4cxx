@@ -116,10 +116,10 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
     )
     set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
-
     if(WIN32)
         set_target_properties(${testName} PROPERTIES
           VS_DEBUGGER_WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
+          FOLDER UnitTests
         )
         set_target_properties(${testName} PROPERTIES
           VS_DEBUGGER_COMMAND_ARGUMENTS "-v"

@@ -62,7 +62,7 @@ int main( int argc, char** argv )
 {
     using namespace log4cxx;
 
-	xml::DOMConfigurator::configure( "example-custom-appender.xml" );
+	xml::DOMConfigurator::configure( "custom-appender.xml" );
 
 	LoggerPtr rootLogger = Logger::getRootLogger();
 	LoggerPtr nullLogger = Logger::getLogger( "NullLogger" );
