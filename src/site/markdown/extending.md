@@ -142,5 +142,5 @@ to Log4cxx, including(but not limited to):
 \example custom-appender.cpp
 This example shows how to extend Log4cxx with a new appender.
 
-\example example-custom-appender.xml
+\example custom-appender.xml
 This example shows how to use a new appender in a configuration file.
