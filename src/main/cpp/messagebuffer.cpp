@@ -27,14 +27,6 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 
-#if __cplusplus >= 202002L
-#define std_basic_ostringstream_provides_efficient_access_to_basic_stringbuf 1
-#elif _HAS_CXX20
-#define std_basic_ostringstream_provides_efficient_access_to_basic_stringbuf 1
-#else
-#define std_basic_ostringstream_provides_efficient_access_to_basic_stringbuf 0
-#endif
-
 using namespace log4cxx::helpers;
 
 template <typename T>
@@ -62,16 +54,13 @@ struct StringOrStream
 #if LOG4CXX_HAS_THREAD_LOCAL
 			thread_local static std::basic_ostringstream<T> sStream;
 			this->stream = &sStream;
+			this->stream->clear();
 #else
 			this->stream = new std::basic_ostringstream<T>();
 #endif
-#if std_basic_ostringstream_provides_efficient_access_to_basic_stringbuf
 			auto index = this->buf.size();
 			this->stream->str(std::move(this->buf));
 			this->stream->seekp(index);
-#else
-			*this->stream << this->buf;
-#endif
 		}
 		return *this->stream;
 	}
@@ -83,11 +72,9 @@ struct StringOrStream
 		if (this->stream)
 		{
 			this->buf = std::move(*this->stream).str();
-#if !std_basic_ostringstream_provides_efficient_access_to_basic_stringbuf
 			this->stream->seekp(0);
 			this->stream->str(std::basic_string<T>());
 			this->stream->clear();
-#endif
 		}
 		return this->buf;
 	}
