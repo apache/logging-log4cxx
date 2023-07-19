@@ -106,7 +106,7 @@ void FMTLayout::format(LogString& output,
 	auto endOfLine = LOG4CXX_EOL;
 #endif
 	fmt::format_to(std::back_inserter(output),
-				   sPattern,
+				   fmt::runtime(sPattern),
 				   fmt::arg("d", event->getChronoTimeStamp()),
 				   fmt::arg("c", sLogger),
 				   fmt::arg("logger", sLogger),
