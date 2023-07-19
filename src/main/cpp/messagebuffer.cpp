@@ -30,26 +30,57 @@
 using namespace log4cxx::helpers;
 
 template <typename T>
-void ResetStream(std::basic_ostringstream<T>& stream)
+struct StringOrStream
 {
-	stream.seekp(0);
-	stream.str(std::basic_string<T>());
-	stream.clear();
-}
+	std::basic_string<T> buf;
+	std::basic_ostringstream<T>* stream;
 
-struct CharMessageBuffer::CharMessageBufferPrivate{
-	CharMessageBufferPrivate() :
-		stream(nullptr){}
-
+	StringOrStream()
+		: stream(nullptr)
+		{}
+	~StringOrStream()
+	{
+#if !LOG4CXX_HAS_THREAD_LOCAL
+		delete stream;
+#endif
+	}
 	/**
-	   * Encapsulated std::string.
-	   */
-	std::basic_string<char> buf;
-	/**
-	 *  Encapsulated stream, created on demand.
+	 * Move the character buffer from \c buf to \c stream
 	 */
-	std::basic_ostringstream<char>* stream;
+	std::basic_ostringstream<T>& StreamFromBuf()
+	{
+		if (!this->stream)
+		{
+#if LOG4CXX_HAS_THREAD_LOCAL
+			thread_local static std::basic_ostringstream<T> sStream;
+			this->stream = &sStream;
+			this->stream->clear();
+#else
+			this->stream = new std::basic_ostringstream<T>();
+#endif
+			auto index = this->buf.size();
+			this->stream->str(std::move(this->buf));
+			this->stream->seekp(index);
+		}
+		return *this->stream;
+	}
+	/**
+	 * Move the character buffer from \c stream to \c buf
+	 */
+	std::basic_string<T>& BufFromStream()
+	{
+		if (this->stream)
+		{
+			this->buf = std::move(*this->stream).str();
+			this->stream->seekp(0);
+			this->stream->str(std::basic_string<T>());
+			this->stream->clear();
+		}
+		return this->buf;
+	}
 };
+
+struct CharMessageBuffer::CharMessageBufferPrivate : public StringOrStream<char> {};
 
 CharMessageBuffer::CharMessageBuffer() : m_priv(std::make_unique<CharMessageBufferPrivate>())
 {
@@ -57,9 +88,6 @@ CharMessageBuffer::CharMessageBuffer() : m_priv(std::make_unique<CharMessageBuff
 
 CharMessageBuffer::~CharMessageBuffer()
 {
-#if !LOG4CXX_HAS_THREAD_LOCAL
-	delete m_priv->stream;
-#endif
 }
 
 CharMessageBuffer& CharMessageBuffer::operator<<(const std::basic_string<char>& msg)
@@ -118,30 +146,12 @@ CharMessageBuffer& CharMessageBuffer::operator<<(const char msg)
 
 CharMessageBuffer::operator std::basic_ostream<char>& ()
 {
-	if (!m_priv->stream)
-	{
-#if LOG4CXX_HAS_THREAD_LOCAL
-		thread_local static std::basic_ostringstream<char> sStream;
-		m_priv->stream = &sStream;
-#else
-		m_priv->stream = new std::basic_ostringstream<char>();
-#endif
-		if (!m_priv->buf.empty())
-		{
-			*m_priv->stream << m_priv->buf;
-		}
-	}
-
-	return *m_priv->stream;
+	return m_priv->StreamFromBuf();
 }
 
 const std::basic_string<char>& CharMessageBuffer::str(std::basic_ostream<char>&)
 {
-	m_priv->buf = m_priv->stream->str();
-
-	ResetStream(*m_priv->stream);
-
-	return m_priv->buf;
+	return m_priv->BufFromStream();
 }
 
 const std::basic_string<char>& CharMessageBuffer::str(CharMessageBuffer&)
@@ -203,20 +213,7 @@ std::ostream& CharMessageBuffer::operator<<(void* val)
 }
 
 #if LOG4CXX_WCHAR_T_API
-struct WideMessageBuffer::WideMessageBufferPrivate{
-	WideMessageBufferPrivate() :
-		stream(nullptr){}
-
-	/**
-	   * Encapsulated std::string.
-	   */
-	std::basic_string<wchar_t> buf;
-	/**
-	 *  Encapsulated stream, created on demand.
-	 */
-	std::basic_ostringstream<wchar_t>* stream;
-};
-
+struct WideMessageBuffer::WideMessageBufferPrivate : public StringOrStream<wchar_t> {};
 
 WideMessageBuffer::WideMessageBuffer() :
 	m_priv(std::make_unique<WideMessageBufferPrivate>())
@@ -225,9 +222,6 @@ WideMessageBuffer::WideMessageBuffer() :
 
 WideMessageBuffer::~WideMessageBuffer()
 {
-#if !LOG4CXX_HAS_THREAD_LOCAL
-	delete m_priv->stream;
-#endif
 }
 
 WideMessageBuffer& WideMessageBuffer::operator<<(const std::basic_string<wchar_t>& msg)
@@ -287,30 +281,12 @@ WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t msg)
 
 WideMessageBuffer::operator std::basic_ostream<wchar_t>& ()
 {
-	if (!m_priv->stream)
-	{
-#if LOG4CXX_HAS_THREAD_LOCAL
-		thread_local static std::basic_ostringstream<wchar_t> sStream;
-		m_priv->stream = &sStream;
-#else
-		m_priv->stream = new std::basic_ostringstream<wchar_t>();
-#endif
-		if (!m_priv->buf.empty())
-		{
-			*m_priv->stream << m_priv->buf;
-		}
-	}
-
-	return *m_priv->stream;
+	return m_priv->StreamFromBuf();
 }
 
 const std::basic_string<wchar_t>& WideMessageBuffer::str(std::basic_ostream<wchar_t>&)
 {
-	m_priv->buf = m_priv->stream->str();
-
-	ResetStream(*m_priv->stream);
-
-	return m_priv->buf;
+	return m_priv->BufFromStream();
 }
 
 const std::basic_string<wchar_t>& WideMessageBuffer::str(WideMessageBuffer&)
@@ -561,19 +537,7 @@ const std::basic_string<log4cxx::UniChar>& MessageBuffer::str(std::basic_ostream
 #endif // LOG4CXX_WCHAR_T_API
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
-struct UniCharMessageBuffer::UniCharMessageBufferPrivate {
-	UniCharMessageBufferPrivate() :
-		stream(nullptr){}
-
-	/**
-	   * Encapsulated std::string.
-	   */
-	std::basic_string<UniChar> buf;
-	/**
-	 *  Encapsulated stream, created on demand.
-	 */
-	std::basic_ostringstream<UniChar>* stream;
-};
+struct UniCharMessageBuffer::UniCharMessageBufferPrivate : public StringOrStream<UniChar> {};
 
 UniCharMessageBuffer::UniCharMessageBuffer() :
 	m_priv(std::make_unique<UniCharMessageBufferPrivate>())
@@ -582,9 +546,6 @@ UniCharMessageBuffer::UniCharMessageBuffer() :
 
 UniCharMessageBuffer::~UniCharMessageBuffer()
 {
-#if !LOG4CXX_HAS_THREAD_LOCAL
-	delete m_priv->stream;
-#endif
 }
 
 
@@ -645,28 +606,12 @@ UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const log4cxx::UniChar ms
 
 UniCharMessageBuffer::operator UniCharMessageBuffer::uostream& ()
 {
-	if (!m_priv->stream)
-	{
-#if LOG4CXX_HAS_THREAD_LOCAL
-		thread_local static std::basic_ostringstream<log4cxx::UniChar> sStream;
-		m_priv->stream = &sStream;
-#else
-		m_priv->stream = new std::basic_ostringstream<log4cxx::UniChar>();
-#endif
-		if (!m_priv->buf.empty())
-		{
-			*m_priv->stream << m_priv->buf;
-		}
-	}
-
-	return *m_priv->stream;
+	return m_priv->StreamFromBuf();
 }
 
 const std::basic_string<log4cxx::UniChar>& UniCharMessageBuffer::str(UniCharMessageBuffer::uostream&)
 {
-	m_priv->buf = m_priv->stream->str();
-	ResetStream(*m_priv->stream);
-	return m_priv->buf;
+	return m_priv->BufFromStream();
 }
 
 const std::basic_string<log4cxx::UniChar>& UniCharMessageBuffer::str(UniCharMessageBuffer&)
