@@ -499,10 +499,12 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
-		@param level the level to log.
-		@param message message.
-		@param location location of source of logging request.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
 		*/
+		void addEvent(const LevelPtr& level, std::string&& message
+			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 		void forcedLog(const LevelPtr& level, const std::string& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -517,10 +519,12 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
-		@param level the level to log.
-		@param message message.
-		@param location location of source of logging request.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
 		*/
+		void addEvent(const LevelPtr& level, std::wstring&& message
+			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 		void forcedLog(const LevelPtr& level, const std::wstring& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -574,6 +578,8 @@ class LOG4CXX_EXPORT Logger :
 		@param message the message string to log.
 		@param location location of the logging statement.
 		*/
+		void addEventLS(const LevelPtr& level, LogString&& message
+			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 		void forcedLogLS(const LevelPtr& level, const LogString& message,
 			const log4cxx::spi::LocationInfo& location) const;
 
@@ -1987,7 +1993,7 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 #define LOG4CXX_LOG(logger, level, message) do { \
 		if (logger->isEnabledFor(level)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(level, oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if this logger is enabled for \c events.
@@ -1998,7 +2004,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_LOG_FMT(logger, level, ...) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->forcedLog(level, fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(level, fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
@@ -2010,7 +2016,7 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 #define LOG4CXX_LOGLS(logger, level, message) do { \
 		if (logger->isEnabledFor(level)) {\
 			::log4cxx::helpers::LogCharMessageBuffer oss_; \
-			logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(level, oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000
 /**
@@ -2034,7 +2040,7 @@ LOG4CXX_DEBUG(m_log, "AddMesh:"
 #define LOG4CXX_DEBUG(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isDebugEnabledFor(logger))) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getDebug(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>DEBUG</code> events.
@@ -2044,7 +2050,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_DEBUG_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isDebugEnabledFor(logger))) {\
-			logger->forcedLog(::log4cxx::Level::getDebug(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getDebug(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
 #define LOG4CXX_DEBUG_FMT(logger, ...)
@@ -2066,7 +2072,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 #define LOG4CXX_TRACE(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isTraceEnabledFor(logger))) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getTrace(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>TRACE</code> events.
@@ -2076,7 +2082,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_TRACE_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isTraceEnabledFor(logger))) {\
-			logger->forcedLog(::log4cxx::Level::getTrace(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getTrace(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
 #define LOG4CXX_TRACE_FMT(logger, ...)
@@ -2102,7 +2108,7 @@ LOG4CXX_INFO(m_log, surface->GetName()
 #define LOG4CXX_INFO(logger, message) do { \
 		if (::log4cxx::Logger::isInfoEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getInfo(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>INFO</code> events.
@@ -2112,7 +2118,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_INFO_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isInfoEnabledFor(logger)) {\
-			logger->forcedLog(::log4cxx::Level::getInfo(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getInfo(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
 #define LOG4CXX_INFO_FMT(logger, ...)
@@ -2136,7 +2142,7 @@ catch (const std::exception& ex)
 #define LOG4CXX_WARN(logger, message) do { \
 		if (::log4cxx::Logger::isWarnEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getWarn(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>WARN</code> events.
@@ -2146,7 +2152,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_WARN_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isWarnEnabledFor(logger)) {\
-			logger->forcedLog(::log4cxx::Level::getWarn(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getWarn(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
 #define LOG4CXX_WARN_FMT(logger, ...)
@@ -2170,7 +2176,7 @@ catch (std::exception& ex)
 #define LOG4CXX_ERROR(logger, message) do { \
 		if (::log4cxx::Logger::isErrorEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getError(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
@@ -2180,7 +2186,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_ERROR_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isErrorEnabledFor(logger)) {\
-			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
 If \c condition is not true, add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
@@ -2193,7 +2199,7 @@ If \c condition is not true, add a new logging event containing \c message to at
 		if (!(condition) && ::log4cxx::Logger::isErrorEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
 			LOG4CXX_STACKTRACE \
-			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getError(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 If \c condition is not true, add a new logging event containing libfmt formatted \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
@@ -2205,7 +2211,7 @@ If \c condition is not true, add a new logging event containing libfmt formatted
 #define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
 		if (!(condition) && ::log4cxx::Logger::isErrorEnabledFor(logger)) {\
 			LOG4CXX_STACKTRACE \
-			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 #else
 #define LOG4CXX_ERROR(logger, message)
@@ -2229,7 +2235,7 @@ LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
 #define LOG4CXX_FATAL(logger, message) do { \
 		if (::log4cxx::Logger::isFatalEnabledFor(logger)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getFatal(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>FATAL</code> events.
@@ -2239,7 +2245,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_FATAL_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isFatalEnabledFor(logger)) {\
-			logger->forcedLog(::log4cxx::Level::getFatal(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::log4cxx::Level::getFatal(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
 #define LOG4CXX_FATAL_FMT(logger, ...)

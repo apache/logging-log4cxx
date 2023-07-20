@@ -149,6 +149,20 @@ class LOG4CXX_EXPORT CharMessageBuffer
 		operator std::basic_ostream<char>& ();
 
 		/**
+		 *   Remove the constucted string.
+		 *   @param os used only to signal that
+		 *       the embedded stream was used.
+		 */
+		std::basic_string<char> extract_str(std::basic_ostream<char>& os);
+
+		/**
+		 *   Remove the constucted string.
+		 *   @param buf used only to signal that
+		 *       the embedded stream was not used.
+		 */
+		std::basic_string<char> extract_str(CharMessageBuffer& buf);
+
+		/**
 		 *   Get content of buffer.
 		 *   @param os used only to signal that
 		 *       the embedded stream was used.
@@ -319,6 +333,20 @@ class LOG4CXX_EXPORT UniCharMessageBuffer
 		operator uostream& ();
 
 		/**
+		 *   Remove the constructed string.
+		 *   @param os used only to signal that
+		 *       the embedded stream was used.
+		 */
+		std::basic_string<UniChar> extract_str(uostream& os);
+
+		/**
+		 *   Remove the constructed string.
+		 *   @param buf used only to signal that
+		 *       the embedded stream was not used.
+		 */
+		std::basic_string<UniChar> extract_str(UniCharMessageBuffer& buf);
+
+		/**
 		 *   Get content of buffer.
 		 *   @param os used only to signal that
 		 *       the embedded stream was used.
@@ -478,6 +506,20 @@ class LOG4CXX_EXPORT WideMessageBuffer
 		operator std::basic_ostream<wchar_t>& ();
 
 		/**
+		 *   Remove the constructed string.
+		 *   @param os used only to signal that
+		 *       the embedded stream was used.
+		 */
+		std::basic_string<wchar_t> extract_str(std::basic_ostream<wchar_t>& os);
+
+		/**
+		 *   Remove the constructed string.
+		 *   @param buf used only to signal that
+		 *       the embedded stream was not used.
+		 */
+		std::basic_string<wchar_t> extract_str(WideMessageBuffer& buf);
+
+		/**
 		 *   Get content of buffer.
 		 *   @param os used only to signal that
 		 *       the embedded stream was used.
@@ -567,6 +609,22 @@ class LOG4CXX_EXPORT MessageBuffer
 		 *   @return encapsulated CharMessageBuffer.
 		 */
 		CharMessageBuffer& operator<<(const char msg);
+
+		/**
+		 *   Remove the constructed string.
+		 *   @param buf used only to signal
+		 *       the character type and that
+		 *       the embedded stream was not used.
+		 */
+		std::string extract_str(CharMessageBuffer& buf);
+
+		/**
+		 *   Remove the constructed string.
+		 *   @param os used only to signal
+		 *       the character type and that
+		 *       the embedded stream was used.
+		 */
+		std::string extract_str(std::ostream& os);
 
 		/**
 		 *   Get content of buffer.
@@ -722,6 +780,22 @@ class LOG4CXX_EXPORT MessageBuffer
 		 *   @return encapsulated STL stream.
 		 */
 		std::ostream& operator<<(void* val);
+		/**
+		 *   Remove the constructed string.
+		 *   @param buf used only to signal
+		 *       the character type and that
+		 *       the embedded stream was not used.
+		 */
+		std::wstring extract_str(WideMessageBuffer& buf);
+
+		/**
+		 *   Remove the constructed string.
+		 *   @param os used only to signal
+		 *       the character type and that
+		 *       the embedded stream was used.
+		 */
+		std::wstring extract_str(std::basic_ostream<wchar_t>& os);
+
 		/**
 		 *   Get content of buffer.
 		 *   @param buf used only to signal

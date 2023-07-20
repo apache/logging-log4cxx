@@ -69,8 +69,26 @@ class LOG4CXX_EXPORT LoggingEvent :
 		<p>
 		@param logger The logger of this event.
 		@param level The level of this event.
-		@param message  The message of this event.
-		@param location location of logging request.
+		@param location The source code location of the logging request.
+		@param message  The text to add to this event.
+		*/
+		LoggingEvent
+			( const LogString& logger
+			, const LevelPtr& level
+			, const spi::LocationInfo& location
+			, LogString&& message
+			);
+
+		/**
+		Instantiate a LoggingEvent from the supplied parameters.
+
+		<p>Except timeStamp all the other fields of
+		<code>LoggingEvent</code> are filled when actually needed.
+		<p>
+		@param logger The logger of this event.
+		@param level The level of this event.
+		@param message  The text to add to this event.
+		@param location The source code location of the logging request.
 		*/
 		LoggingEvent(const LogString& logger,
 			const LevelPtr& level,   const LogString& message,
