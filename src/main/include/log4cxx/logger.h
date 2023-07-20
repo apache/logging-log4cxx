@@ -116,7 +116,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 		*/
 		void debug(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -146,7 +146,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_DEBUG.
 		*/
@@ -179,7 +179,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_DEBUG.
 		*/
@@ -212,7 +212,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_DEBUG.
 		*/
@@ -245,7 +245,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_ERROR.
 		*/
@@ -292,7 +292,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_ERROR.
 		*/
@@ -310,7 +310,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_ERROR.
 		*/
@@ -343,7 +343,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_ERROR.
 		*/
@@ -376,7 +376,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_FATAL.
 		*/
@@ -408,7 +408,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_FATAL.
 		*/
@@ -441,7 +441,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_FATAL.
 		*/
@@ -474,7 +474,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_FATAL.
 		*/
@@ -518,8 +518,8 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Add a new logging event containing \c message to attached appender(s).
 		without further checks.
-		@param level the level to log.
-		@param message message.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
 		*/
 		void forcedLog(const LevelPtr& level, const std::string& message) const;
 
@@ -546,8 +546,8 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Add a new logging event containing \c message to attached appender(s).
 		without further checks.
-		@param level the level to log.
-		@param message message.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
 		*/
 		void forcedLog(const LevelPtr& level, const std::wstring& message) const;
 #endif
@@ -555,17 +555,26 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
-		@param level the level to log.
-		@param message message.
-		@param location location of source of logging request.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addEvent(const LevelPtr& level, std::basic_string<UniChar>&& message,
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+		/**
+		Add a new logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
 		*/
 		void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
 		Add a new logging event containing \c message to attached appender(s).
 		without further checks.
-		@param level the level to log.
-		@param message message.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
 		*/
 		void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message) const;
 #endif
@@ -573,24 +582,24 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
-		@param level the level to log.
-		@param message message.
-		@param location location of source of logging request.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
 		*/
 		void forcedLog(const LevelPtr& level, const CFStringRef& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
 		Add a new logging event containing \c message to attached appender(s).
 		without further checks.
-		@param level the level to log.
-		@param message message.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
 		*/
 		void forcedLog(const LevelPtr& level, const CFStringRef& message) const;
 #endif
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
-		@param level the level to log.
+		@param level The logging event level.
 		@param message the message string to log.
 		@param location location of the logging statement.
 		*/
@@ -600,7 +609,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
-		@param level the level to log.
+		@param level The logging event level.
 		@param message the message string to log.
 		@param location location of the logging statement.
 		*/
@@ -856,7 +865,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_INFO.
 		*/
@@ -888,7 +897,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_INFO.
 		*/
@@ -921,7 +930,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 		        */
 		void info(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -952,7 +961,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_INFO.
 		*/
@@ -1021,7 +1030,7 @@ class LOG4CXX_EXPORT Logger :
 		 *  <p>By writing
 		 *  ~~~{.cpp}
 		 *    if(log4cxx::Logger::isDebugEnabledFor(logger)) {
-		 *      logger->forcedLog(log4cxx::Level::getDebug(), "Component: " + std::to_string(componentNumber));
+		 *      logger->addEvent(log4cxx::Level::getDebug(), "Component: " + std::to_string(componentNumber));
 		 *    }
 		 *  ~~~
 		 *  you minimise the computational cost
@@ -1696,7 +1705,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_WARN.
 		*/
@@ -1729,7 +1738,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_WARN.
 		*/
@@ -1762,7 +1771,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_WARN.
 		*/
@@ -1794,7 +1803,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_WARN.
 		*/
@@ -1827,7 +1836,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_TRACE.
 		*/
@@ -1860,7 +1869,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_TRACE.
 		*/
@@ -1893,7 +1902,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_TRACE.
 		*/
@@ -1925,7 +1934,7 @@ class LOG4CXX_EXPORT Logger :
 		hierarchy depending on the value of the additivity flag.
 
 		@param msg the message string to log.
-		@param location location of source of logging request.
+		@param location The source code location of the logging request.
 
 		See also #LOG4CXX_TRACE.
 		*/
@@ -2011,7 +2020,7 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
 
 @param logger the logger to be used.
-@param level the level to log.
+@param level The logging event level.
 @param message the message string to log.
 */
 #define LOG4CXX_LOG(logger, level, message) do { \
@@ -2023,7 +2032,7 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if this logger is enabled for \c events.
 
 @param logger the logger to be used.
-@param level the level to log.
+@param level The logging event level.
 @param ... The format string and message to log
 */
 #define LOG4CXX_LOG_FMT(logger, level, ...) do { \
@@ -2034,7 +2043,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
 
 @param logger the logger to be used.
-@param level the level to log.
+@param level The logging event level.
 @param message the message string to log in the internal encoding.
 */
 #define LOG4CXX_LOGLS(logger, level, message) do { \
@@ -2279,7 +2288,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 Add a new logging event containing the localized message \c key to attached appender(s) if \c logger is enabled for \c level events.
 
 @param logger the logger to be used.
-@param level the level to log.
+@param level The logging event level.
 @param key the key to be searched in the resourceBundle of the logger.
 */
 #define LOG4CXX_L7DLOG(logger, level, key) do { \
@@ -2290,7 +2299,7 @@ Add a new logging event containing the localized message \c key to attached appe
 Add a new logging event containing the localized message \c key to attached appender(s) if \c logger is enabled for \c level events with one parameter.
 
 @param logger the logger to be used.
-@param level the level to log.
+@param level The logging event level.
 @param key the key to be searched in the resourceBundle of the logger.
 @param p1 the unique parameter.
 */
@@ -2302,7 +2311,7 @@ Add a new logging event containing the localized message \c key to attached appe
 Add a new logging event containing the localized message \c key to attached appender(s) if \c logger is enabled for \c level events with two parameters.
 
 @param logger the logger to be used.
-@param level the level to log.
+@param level The logging event level.
 @param key the key to be searched in the resourceBundle of the logger.
 @param p1 the first parameter.
 @param p2 the second parameter.
@@ -2315,7 +2324,7 @@ Add a new logging event containing the localized message \c key to attached appe
 Add a new logging event containing the localized message \c key to attached appender(s) if \c logger is enabled for \c level events with three parameters.
 
 @param logger the logger to be used.
-@param level the level to log.
+@param level The logging event level.
 @param key the key to be searched in the resourceBundle of the logger.
 @param p1 the first parameter.
 @param p2 the second parameter.
