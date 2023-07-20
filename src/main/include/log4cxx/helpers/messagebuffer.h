@@ -149,14 +149,14 @@ class LOG4CXX_EXPORT CharMessageBuffer
 		operator std::basic_ostream<char>& ();
 
 		/**
-		 *   Remove the constucted string.
+		 *   Remove the constructed string.
 		 *   @param os used only to signal that
 		 *       the embedded stream was used.
 		 */
 		std::basic_string<char> extract_str(std::basic_ostream<char>& os);
 
 		/**
-		 *   Remove the constucted string.
+		 *   Remove the constructed string.
 		 *   @param buf used only to signal that
 		 *       the embedded stream was not used.
 		 */

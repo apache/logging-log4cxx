@@ -505,6 +505,14 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void addEvent(const LevelPtr& level, std::string&& message
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
 		void forcedLog(const LevelPtr& level, const std::string& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -525,6 +533,14 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void addEvent(const LevelPtr& level, std::wstring&& message
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
 		void forcedLog(const LevelPtr& level, const std::wstring& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
@@ -580,6 +596,14 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void addEventLS(const LevelPtr& level, LogString&& message
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param level the level to log.
+		@param message the message string to log.
+		@param location location of the logging statement.
+		*/
 		void forcedLogLS(const LevelPtr& level, const LogString& message,
 			const log4cxx::spi::LocationInfo& location) const;
 

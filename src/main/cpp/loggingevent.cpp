@@ -197,6 +197,7 @@ LoggingEvent::LoggingEvent(
 	m_priv(std::make_unique<LoggingEventPrivate>(logger1, level1, message1, locationInfo1))
 {
 }
+
 LoggingEvent::~LoggingEvent()
 {
 }
