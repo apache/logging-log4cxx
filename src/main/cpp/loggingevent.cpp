@@ -70,7 +70,7 @@ struct LoggingEvent::LoggingEventPrivate
 		properties(0),
 		ndcLookupRequired(true),
 		mdcCopyLookupRequired(true),
-		message(message1),
+		message(std::move(message1)),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
 		threadName(getCurrentThreadName()),
