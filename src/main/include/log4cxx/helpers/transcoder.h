@@ -86,6 +86,7 @@ class LOG4CXX_EXPORT Transcoder
 		 *       to a LogString.
 		 */
 		static void decode(const std::string& src, LogString& dst);
+
 		/**
 		 *     Appends a LogString to a string in the current
 		 *        code-page.  Unrepresentable characters may be
@@ -191,6 +192,15 @@ class LOG4CXX_EXPORT Transcoder
 }
 }
 
+#if LOG4CXX_LOGCHAR_IS_UTF8
+
+#define LOG4CXX_ENCODE_CHAR(var, src) \
+	const std::string& var = src
+
+#define LOG4CXX_DECODE_CHAR(var, src) \
+	const log4cxx::LogString& var = src
+#else
+
 #define LOG4CXX_ENCODE_CHAR(var, src) \
 	std::string var;                      \
 	log4cxx::helpers::Transcoder::encode(src, var)
@@ -198,6 +208,7 @@ class LOG4CXX_EXPORT Transcoder
 #define LOG4CXX_DECODE_CHAR(var, src) \
 	log4cxx::LogString var;                      \
 	log4cxx::helpers::Transcoder::decode(src, var)
+#endif
 
 #define LOG4CXX_DECODE_CFSTRING(var, src) \
 	log4cxx::LogString var;                      \
