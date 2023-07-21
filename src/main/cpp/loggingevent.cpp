@@ -57,6 +57,28 @@ struct LoggingEvent::LoggingEventPrivate
 	{
 	}
 
+	LoggingEventPrivate
+		( const LogString& logger1
+		, const LevelPtr& level1
+		, const LocationInfo& locationInfo1
+		, LogString&& message1
+		) :
+		logger(logger1),
+		level(level1),
+		ndc(0),
+		mdcCopy(0),
+		properties(0),
+		ndcLookupRequired(true),
+		mdcCopyLookupRequired(true),
+		message(std::move(message1)),
+		timeStamp(Date::currentTime()),
+		locationInfo(locationInfo1),
+		threadName(getCurrentThreadName()),
+		threadUserName(getCurrentThreadUserName()),
+		chronoTimeStamp(std::chrono::microseconds(timeStamp))
+	{
+	}
+
 	LoggingEventPrivate(
 		const LogString& logger1, const LevelPtr& level1,
 		const LogString& message1, const LocationInfo& locationInfo1) :
@@ -156,6 +178,16 @@ log4cxx_time_t LoggingEvent::getStartTime()
 
 LoggingEvent::LoggingEvent() :
 	m_priv(std::make_unique<LoggingEventPrivate>())
+{
+}
+
+LoggingEvent::LoggingEvent
+	( const LogString&    logger
+	, const LevelPtr&     level
+	, const LocationInfo& location
+	, LogString&&         message
+	)
+	: m_priv(std::make_unique<LoggingEventPrivate>(logger, level, location, std::move(message)))
 {
 }
 

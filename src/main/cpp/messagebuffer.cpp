@@ -149,6 +149,16 @@ CharMessageBuffer::operator std::basic_ostream<char>& ()
 	return m_priv->StreamFromBuf();
 }
 
+std::basic_string<char> CharMessageBuffer::extract_str(std::basic_ostream<char>&)
+{
+	return std::move(m_priv->BufFromStream());
+}
+
+std::basic_string<char> CharMessageBuffer::extract_str(CharMessageBuffer&)
+{
+	return std::move(m_priv->buf);
+}
+
 const std::basic_string<char>& CharMessageBuffer::str(std::basic_ostream<char>&)
 {
 	return m_priv->BufFromStream();
@@ -284,6 +294,16 @@ WideMessageBuffer::operator std::basic_ostream<wchar_t>& ()
 	return m_priv->StreamFromBuf();
 }
 
+std::basic_string<wchar_t> WideMessageBuffer::extract_str(std::basic_ostream<wchar_t>&)
+{
+	return std::move(m_priv->BufFromStream());
+}
+
+std::basic_string<wchar_t> WideMessageBuffer::extract_str(WideMessageBuffer&)
+{
+	return std::move(m_priv->buf);
+}
+
 const std::basic_string<wchar_t>& WideMessageBuffer::str(std::basic_ostream<wchar_t>&)
 {
 	return m_priv->BufFromStream();
@@ -416,6 +436,16 @@ CharMessageBuffer& MessageBuffer::operator<<(const char msg)
 	return m_priv->cbuf.operator << (msg);
 }
 
+std::string MessageBuffer::extract_str(CharMessageBuffer& buf)
+{
+	return std::move(m_priv->cbuf.extract_str(buf));
+}
+
+std::string MessageBuffer::extract_str(std::ostream& os)
+{
+	return std::move(m_priv->cbuf.extract_str(os));
+}
+
 const std::string& MessageBuffer::str(CharMessageBuffer& buf)
 {
 	return m_priv->cbuf.str(buf);
@@ -447,6 +477,16 @@ WideMessageBuffer& MessageBuffer::operator<<(const wchar_t msg)
 {
 	m_priv->wbuf = std::make_unique<WideMessageBuffer>();
 	return (*m_priv->wbuf) << msg;
+}
+
+std::wstring MessageBuffer::extract_str(WideMessageBuffer& buf)
+{
+	return std::move(m_priv->wbuf->extract_str(buf));
+}
+
+std::wstring MessageBuffer::extract_str(std::basic_ostream<wchar_t>& os)
+{
+	return std::move(m_priv->wbuf->extract_str(os));
 }
 
 const std::wstring& MessageBuffer::str(WideMessageBuffer& buf)
@@ -522,6 +562,16 @@ UniCharMessageBuffer& MessageBuffer::operator<<(const log4cxx::UniChar msg)
 {
 	m_priv->ubuf = std::make_unique<UniCharMessageBuffer>();
 	return (*m_priv->ubuf) << msg;
+}
+
+std::basic_string<log4cxx::UniChar> MessageBuffer::extract_str(UniCharMessageBuffer& buf)
+{
+	return std::move(m_priv->ubuf->extract_str(buf));
+}
+
+std::basic_string<log4cxx::UniChar> MessageBuffer::extract_str(std::basic_ostream<log4cxx::UniChar>& os)
+{
+	return std::move(m_priv->ubuf->extract_str(os));
 }
 
 const std::basic_string<log4cxx::UniChar>& MessageBuffer::str(UniCharMessageBuffer& buf)
@@ -607,6 +657,16 @@ UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const log4cxx::UniChar ms
 UniCharMessageBuffer::operator UniCharMessageBuffer::uostream& ()
 {
 	return m_priv->StreamFromBuf();
+}
+
+std::basic_string<log4cxx::UniChar> UniCharMessageBuffer::extract_str(UniCharMessageBuffer::uostream&)
+{
+	return std::move(m_priv->BufFromStream());
+}
+
+std::basic_string<log4cxx::UniChar> UniCharMessageBuffer::extract_str(UniCharMessageBuffer&)
+{
+	return std::move(m_priv->buf);
 }
 
 const std::basic_string<log4cxx::UniChar>& UniCharMessageBuffer::str(UniCharMessageBuffer::uostream&)
