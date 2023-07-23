@@ -49,7 +49,7 @@ DLL" with release builds of Log4cxx and "Multithread DLL Debug" with debug build
 Yes. Apache Log4cxx exposes API methods in multiple string flavors supporting differently encoded
 textual content, like `char*`, `std::string`, `wchar_t*`, `std::wstring`, `CFStringRef` et al. All
 provided texts will be converted to the `LogString` type before further processing, which is one of
-several supported Unicode representations selected by the `--with-logchar` option. If methods are
+several supported Unicode representations selected by the `LOG4CXX_CHAR` cmake option. If methods are
 used that take `LogString` as arguments, the macro `LOG4CXX_STR()` can be used to convert literals
 to the current `LogString` type. FileAppenders support an encoding property as well, which should be
 explicitly specified to `UTF-8` or `UTF-16` for e.g. XML files. The important point is to get the

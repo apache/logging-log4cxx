@@ -2056,7 +2056,7 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>DEBUG</code> events.
 
 @param logger the logger that has the enabled status.
-@param message a valid r-value expression of an <code>operator<<(std::basic::ostream&. ...)</code> overload.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
 <p>Example:
 ~~~{.cpp}
@@ -2094,7 +2094,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>TRACE</code> events.
 
 @param logger the logger that has the enabled status.
-@param message a valid r-value expression of an <code>operator<<(std::basic::ostream&. ...)</code> overload.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
 <p>Example:
 ~~~{.cpp}
@@ -2126,7 +2126,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>INFO</code> events.
 
 @param logger the logger that has the enabled status.
-@param message a valid r-value expression of an <code>operator<<(std::basic::ostream&. ...)</code> overload.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
 <p>Example:
 ~~~{.cpp}

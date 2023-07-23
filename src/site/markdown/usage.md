@@ -31,12 +31,15 @@ runtime how these messages are formatted and where they are reported.
 
 The first and foremost advantage of any logging API over plain
 `std::cout` resides in its ability to disable certain log statements
-while allowing others to print unhindered. This capability assumes that
-the logging space, that is, the space of all possible logging
-statements, is categorized according to some developer-chosen criteria.
-
-Loggers are named entities. Logger names are case-sensitive and they
-follow the hierarchical naming rule:
+while allowing others to print unhindered. This capability is provided
+by assigning each logging request to a category.
+A Log4cxx category is a name and it is held by a log4cxx::Logger instance.
+The name of the class in which the logging request appears
+is a commonly used naming scheme
+but any category naming scheme may be used.
+Logging category names (or equivalently logger name)
+are case-sensitive and they
+follow a hierarchical naming rule:
 
 ## Hierarchy {#hierarchy}
 
@@ -56,11 +59,19 @@ exceptional in two ways:
 1.  it always exists,
 2.  it cannot be retrieved by name.
 
-Invoking the class static
-log4cxx::Logger::getRootLogger method retrieves it. All other loggers are instantiated and retrieved
-with the class static log4cxx::Logger::getLogger
-method. This method takes the name of the desired logger as a parameter.
-Some of the basic methods in the Logger class are listed below.
+Use the class static method
+log4cxx::Logger::getRootLogger or
+log4cxx::LogManager::getRootLogger to retrieve it.
+
+All other loggers are held in a log4cxx::spi::LoggerRepository singleton.
+They can be retrieved by calling a log4cxx::Logger::getLogger
+static class method which takes the name of the desired logger as an argument.
+An instance of log4cxx::Logger is instantiated
+if a logger of that name is not already held
+by the log4cxx::spi::LoggerRepository instance.
+
+The core Log4cxx API is made available by <code>#include <log4cxx/logger.h></code>.
+The commonly used log4cxx/logger.h methods and macros are listed below.
 
 ~~~{.cpp}
     namespace log4cxx {
@@ -76,8 +87,8 @@ Some of the basic methods in the Logger class are listed below.
     //
     // Use these macros instead of calling Logger methods directly.
     // Macros will handle char or wchar_t pointers or strings
-    // or most right-hand side expressions of an
-    // std::basic_string::operator<<.
+    // and any object that provides a
+    // <code>operator<<(std::ostream&, ...)</code> overload.
     //
     #define LOG4CXX_TRACE(logger, expression) ...
     #define LOG4CXX_DEBUG(logger, expression) ...
@@ -89,17 +100,21 @@ Some of the basic methods in the Logger class are listed below.
 
 ## Levels {#levels}
 
-Loggers *may* be assigned levels. The pre-defined levels: TRACE, DEBUG,
-INFO, WARN, ERROR and FATAL are defined in the
-log4cxx::Level class which provides accessor functions.
+A log4cxx::Logger instance *may* be assigned a specific level
+otherwise it will inherit it from the
+closest ancestor with an assigned level.
+The root logger always has an assigned level.
 
-If a given logger is not assigned a level, then it inherits one from its
-closest ancestor with an assigned level. More formally:
+The pre-defined levels: TRACE, DEBUG,
+INFO, WARN, ERROR and FATAL are available.
+These are defined in the log4cxx/level.h file.
+Additional levels may be registered by the application
+but this is not recommended (See [Custom_levels]).
 
 ### Level Inheritance {#level-inheritance}
 
 The *inherited level* for a given logger *C*, is equal to the first
-non-null level in the logger hierarchy, starting at *C* and proceeding
+assigned in the logger hierarchy, starting at *C* and proceeding
 upwards in the hierarchy towards the *root* logger.
 
 To ensure that all loggers can eventually inherit a level, the root
@@ -108,57 +123,57 @@ logger always has an assigned level.
 Below are four tables with various assigned level values and the
 resulting inherited levels according to the above rule.
 
-| Logger name | Assigned level | Inherited level |
+| Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
-| root        | Proot          | Proot           |
-| X           | none           | Proot           |
-| X.Y         | none           | Proot           |
-| X.Y.Z       | none           | Proot           |
+| root        | INFO           | INFO            |
+| X           | none           | INFO            |
+| X.Y         | none           | INFO            |
+| X.Y.Z       | none           | INFO            |
 
 Example 1
 
 In example 1 above, only the root logger is assigned a level. This level
-value, *Proot*, is inherited by the other loggers *X*, *X.Y* and
+value, *INFO*, is inherited by the other loggers *X*, *X.Y* and
 *X.Y.Z*.
 
-| Logger name | Assigned level | Inherited level |
+| Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
-| root        | Proot          | Proot           |
-| X           | Px             | Px              |
-| X.Y         | Pxy            | Pxy             |
-| X.Y.Z       | Pxyz           | Pxyz            |
+| root        | INFO           | INFO            |
+| X           | WARN           | WARN            |
+| X.Y         | DEBUG          | DEBUG           |
+| X.Y.Z       | TRACE          | TRACE           |
 
 Example 2
 
 In example 2, all loggers have an assigned level value. There is no need
 for level inheritence.
 
-| Logger name | Assigned level | Inherited level |
+| Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
-| root        | Proot          | Proot           |
-| X           | Px             | Px              |
-| X.Y         | none           | Px              |
-| X.Y.Z       | Pxyz           | Pxyz            |
+| root        | INFO           | INFO            |
+| X           | DEBUG          | DEBUG           |
+| X.Y         | none           | DEBUG           |
+| X.Y.Z       | WARN           | WARN            |
 
 Example 3
 
 In example 3, the loggers *root*, *X* and *X.Y.Z* are assigned the
-levels *Proot*, *Px* and *Pxyz* respectively. The logger *X.Y* inherits
+levels *INFO*, *DEBUG* and *WARN* respectively. The logger *X.Y* inherits
 its level value from its parent *X*.
 
-| Logger name | Assigned level | Inherited level |
+| Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
-| root        | Proot          | Proot           |
-| X           | Px             | Px              |
-| X.Y         | none           | Px              |
-| X.Y.Z       | none           | Px              |
+| root        | INFO           | INFO            |
+| X           | DEBUG          | DEBUG           |
+| X.Y         | none           | DEBUG           |
+| X.Y.Z       | none           | DEBUG           |
 
 Example 4
 
 In example 4, the loggers *root* and *X* and are assigned the levels
-*Proot* and *Px* respectively. The loggers *X.Y* and *X.Y.Z* inherits
-their level value from their nearest parent *X* having an assigned
-level.
+*INFO* and *DEBUG* respectively. The loggers *X.Y* and *X.Y.Z* inherit
+their level from their nearest parent having an assigned
+level, *X*.
 
 ## Requests {#requests}
 
@@ -743,3 +758,5 @@ This file is an example of how to use the current module name to select the Log4
 
 \example format-string.cpp
 This example shows logging using the [{fmt}](https://fmt.dev/latest/index.html) library.
+
+[Custom_levels]:faq.html#custom_levels
