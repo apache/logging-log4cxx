@@ -113,7 +113,7 @@ but this is not recommended (See [Custom_levels]).
 
 ### Level Inheritance {#level-inheritance}
 
-The *inherited level* for a given logger *C*, is equal to the first
+The *effective level* for a given logger *C*, is equal to the first
 assigned in the logger hierarchy, starting at *C* and proceeding
 upwards in the hierarchy towards the *root* logger.
 
@@ -121,7 +121,7 @@ To ensure that all loggers can eventually inherit a level, the root
 logger always has an assigned level.
 
 Below are four tables with various assigned level values and the
-resulting inherited levels according to the above rule.
+resulting effective levels according to the above rule.
 
 | Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
@@ -145,8 +145,8 @@ value, *INFO*, is inherited by the other loggers *X*, *X.Y* and
 
 Example 2
 
-In example 2, all loggers have an assigned level value. There is no need
-for level inheritence.
+In example 2, all loggers have an assigned level value. There is no
+use of level inheritence.
 
 | Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
@@ -159,7 +159,7 @@ Example 3
 
 In example 3, the loggers *root*, *X* and *X.Y.Z* are assigned the
 levels *INFO*, *DEBUG* and *WARN* respectively. The logger *X.Y* inherits
-its level value from its parent *X*.
+its level from its parent *X*.
 
 | Logger name | Assigned level | Effective level |
 | ----------- | -------------- | --------------- |
