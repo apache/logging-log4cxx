@@ -52,14 +52,6 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		virtual void addHierarchyEventListener(const HierarchyEventListenerPtr&
 			listener) = 0;
 
-        /**
-         * Remove a previously added {@link spi::HierarchyEventListener HierarchyEventListener}
-         *
-         * @param listener The listener to remove
-         */
-        virtual void removeHierarchyEventListener(const HierarchyEventListenerPtr&
-            listener) = 0;
-
 		/**
 		 * Call \c configurator if not yet configured.
 		 */
