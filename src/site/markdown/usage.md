@@ -27,6 +27,10 @@ These three types of components work together to enable developers to
 log messages according to message type and level, and to control at
 runtime how these messages are formatted and where they are reported.
 
+Configuration of the Log4cxx environment is typically done at
+application initialization. The preferred way is by reading a
+configuration file. This approach will be discussed shortly.
+
 # Loggers {#loggers}
 
 The first and foremost advantage of any logging API over plain
@@ -38,10 +42,33 @@ The name of the class in which the logging request appears
 is a commonly used naming scheme
 but any category naming scheme may be used.
 Logging category names (or equivalently logger name)
-are case-sensitive and they
-follow a hierarchical naming rule:
+are case-sensitive.
 
-The root logger resides at the top of the logger hierarchy. It is
+Log4cxx makes it easy to name loggers by *software component*. This can
+be accomplished by statically instantiating a logger in each class, with
+the logger name equal to the fully qualified name of the class. This is
+a useful and straightforward method of defining loggers. As the log
+output bears the name of the generating logger, this naming strategy
+makes it easy to identify the origin of a log message. However, this is
+only one possible, albeit common, strategy for naming loggers. Log4cxx
+does not restrict the possible set of loggers. The developer is free to
+name the loggers as desired.
+
+Nevertheless, naming loggers after the class where they are located
+seems to be the best strategy known so far.
+
+Logger names follow a hierarchical naming rule.
+A logger is said to be an *ancestor* of another logger if its name
+followed by a dot is a prefix of the *descendant* logger name. A logger
+is said to be a *parent* of a *child* logger if there are no ancestors
+between itself and the descendant logger.
+
+For example, the logger named `com.foo` is a parent of the logger
+named `com.foo.Bar`. Similarly, `java` is a parent of `java.util`
+and an ancestor of `java.util.Vector`. This naming scheme should be
+familiar to most developers.
+
+The root logger resides at the top of the hierarchy. It is
 exceptional in two ways:
 
 1.  it always exists,
@@ -86,6 +113,25 @@ The commonly used log4cxx/logger.h methods and macros are listed below.
     #define LOG4CXX_FATAL(logger, expression) ...
 ~~~
 
+Calling the *getLogger* method with the same name will always return a
+reference to the exact same logger object.
+
+For example, in
+
+~~~{.cpp}
+    auto x = log4cxx::Logger::getLogger("wombat");
+    auto y = log4cxx::Logger::getLogger("wombat");
+~~~
+
+*x* and *y* refer to *exactly* the same logger object.
+
+Thus, it is possible to configure a logger and then to retrieve the same
+instance somewhere else in the code without passing around references.
+In fundamental contradiction to biological parenthood, where parents
+always preceed their children, Log4cxx loggers can be created and
+configured in any order. In particular, a "parent" logger will find and
+link to its descendants even if it is instantiated after them.
+
 ## Requests {#requests}
 
 Logging requests are made by invoking a method of a logger instance,
@@ -106,47 +152,6 @@ the insertion operator (\<\<) in the message parameter.
     LOG4CXX_WARN(logger, L"" << i << L" is the number of the iteration.");
 ~~~
 
-A logging request is said to be *enabled* if its level is higher than or
-equal to the level of its logger. Otherwise, the request is said to be
-*disabled*. A logger without an assigned level will inherit one from the
-hierarchy. This rule is summarized below.
-
-Calling the *getLogger* method with the same name will always return a
-reference to the exact same logger object.
-
-For example, in
-
-~~~{.cpp}
-    auto x = log4cxx::Logger::getLogger("wombat");
-    auto y = log4cxx::Logger::getLogger("wombat");
-~~~
-
-*x* and *y* refer to *exactly* the same logger object.
-
-Thus, it is possible to configure a logger and then to retrieve the same
-instance somewhere else in the code without passing around references.
-In fundamental contradiction to biological parenthood, where parents
-always preceed their children, Log4cxx loggers can be created and
-configured in any order. In particular, a "parent" logger will find and
-link to its descendants even if it is instantiated after them.
-
-Configuration of the Log4cxx environment is typically done at
-application initialization. The preferred way is by reading a
-configuration file. This approach will be discussed shortly.
-
-Log4cxx makes it easy to name loggers by *software component*. This can
-be accomplished by statically instantiating a logger in each class, with
-the logger name equal to the fully qualified name of the class. This is
-a useful and straightforward method of defining loggers. As the log
-output bears the name of the generating logger, this naming strategy
-makes it easy to identify the origin of a log message. However, this is
-only one possible, albeit common, strategy for naming loggers. Log4cxx
-does not restrict the possible set of loggers. The developer is free to
-name the loggers as desired.
-
-Nevertheless, naming loggers after the class where they are located
-seems to be the best strategy known so far.
-
 ## Levels {#levels}
 
 A log4cxx::Logger instance *may* be assigned a specific level
@@ -160,19 +165,12 @@ These are defined in the log4cxx/level.h file.
 Additional levels may be registered by the application
 but this is not recommended (See [Custom_levels]).
 
-## Hierarchy {#hierarchy}
+A logging request is said to be *enabled* if its level is higher than or
+equal to the level of its logger. Otherwise, the request is said to be
+*disabled*. A logger without an assigned level will inherit one from the
+hierarchy. This rule is summarized below.
 
-A logger is said to be an *ancestor* of another logger if its name
-followed by a dot is a prefix of the *descendant* logger name. A logger
-is said to be a *parent* of a *child* logger if there are no ancestors
-between itself and the descendant logger.
-
-For example, the logger named `com.foo` is a parent of the logger
-named `com.foo.Bar`. Similarly, `java` is a parent of `java.util`
-and an ancestor of `java.util.Vector`. This naming scheme should be
-familiar to most developers.
-
-### Level Inheritance {#level-inheritance}
+## Level Inheritance {#level-inheritance}
 
 The *effective level* for a given logger *C*, is equal to the first
 assigned in the logger hierarchy, starting at *C* and proceeding
