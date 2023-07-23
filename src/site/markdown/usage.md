@@ -41,18 +41,6 @@ Logging category names (or equivalently logger name)
 are case-sensitive and they
 follow a hierarchical naming rule:
 
-## Hierarchy {#hierarchy}
-
-A logger is said to be an *ancestor* of another logger if its name
-followed by a dot is a prefix of the *descendant* logger name. A logger
-is said to be a *parent* of a *child* logger if there are no ancestors
-between itself and the descendant logger.
-
-For example, the logger named `com.foo` is a parent of the logger
-named `com.foo.Bar`. Similarly, `java` is a parent of `java.util`
-and an ancestor of `java.util.Vector`. This naming scheme should be
-familiar to most developers.
-
 The root logger resides at the top of the logger hierarchy. It is
 exceptional in two ways:
 
@@ -98,6 +86,67 @@ The commonly used log4cxx/logger.h methods and macros are listed below.
     #define LOG4CXX_FATAL(logger, expression) ...
 ~~~
 
+## Requests {#requests}
+
+Logging requests are made by invoking a method of a logger instance,
+preferrably through the use of LOG4CXX\_INFO or similar macros which
+support short-circuiting if the threshold is not satisfied and use of
+the insertion operator (\<\<) in the message parameter.
+
+~~~{.cpp}
+    log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("com.foo"));
+    const char* region = "World";
+    LOG4CXX_INFO(logger, "Simple message text.");
+    LOG4CXX_INFO(logger, "Hello, " << region);
+    LOG4CXX_DEBUG(logger, L"Iteration " << i);
+    LOG4CXX_DEBUG(logger, "e^10 = " << std::scientific << exp(10.0));
+    //
+    // Use a wchar_t first operand to force use of wchar_t based stream.
+    //
+    LOG4CXX_WARN(logger, L"" << i << L" is the number of the iteration.");
+~~~
+
+A logging request is said to be *enabled* if its level is higher than or
+equal to the level of its logger. Otherwise, the request is said to be
+*disabled*. A logger without an assigned level will inherit one from the
+hierarchy. This rule is summarized below.
+
+Calling the *getLogger* method with the same name will always return a
+reference to the exact same logger object.
+
+For example, in
+
+~~~{.cpp}
+    auto x = log4cxx::Logger::getLogger("wombat");
+    auto y = log4cxx::Logger::getLogger("wombat");
+~~~
+
+*x* and *y* refer to *exactly* the same logger object.
+
+Thus, it is possible to configure a logger and then to retrieve the same
+instance somewhere else in the code without passing around references.
+In fundamental contradiction to biological parenthood, where parents
+always preceed their children, Log4cxx loggers can be created and
+configured in any order. In particular, a "parent" logger will find and
+link to its descendants even if it is instantiated after them.
+
+Configuration of the Log4cxx environment is typically done at
+application initialization. The preferred way is by reading a
+configuration file. This approach will be discussed shortly.
+
+Log4cxx makes it easy to name loggers by *software component*. This can
+be accomplished by statically instantiating a logger in each class, with
+the logger name equal to the fully qualified name of the class. This is
+a useful and straightforward method of defining loggers. As the log
+output bears the name of the generating logger, this naming strategy
+makes it easy to identify the origin of a log message. However, this is
+only one possible, albeit common, strategy for naming loggers. Log4cxx
+does not restrict the possible set of loggers. The developer is free to
+name the loggers as desired.
+
+Nevertheless, naming loggers after the class where they are located
+seems to be the best strategy known so far.
+
 ## Levels {#levels}
 
 A log4cxx::Logger instance *may* be assigned a specific level
@@ -110,6 +159,18 @@ INFO, WARN, ERROR and FATAL are available.
 These are defined in the log4cxx/level.h file.
 Additional levels may be registered by the application
 but this is not recommended (See [Custom_levels]).
+
+## Hierarchy {#hierarchy}
+
+A logger is said to be an *ancestor* of another logger if its name
+followed by a dot is a prefix of the *descendant* logger name. A logger
+is said to be a *parent* of a *child* logger if there are no ancestors
+between itself and the descendant logger.
+
+For example, the logger named `com.foo` is a parent of the logger
+named `com.foo.Bar`. Similarly, `java` is a parent of `java.util`
+and an ancestor of `java.util.Vector`. This naming scheme should be
+familiar to most developers.
 
 ### Level Inheritance {#level-inheritance}
 
@@ -175,31 +236,6 @@ In example 4, the loggers *root* and *X* and are assigned the levels
 their level from their nearest parent having an assigned
 level, *X*.
 
-## Requests {#requests}
-
-Logging requests are made by invoking a method of a logger instance,
-preferrably through the use of LOG4CXX\_INFO or similar macros which
-support short-circuiting if the threshold is not satisfied and use of
-the insertion operator (\<\<) in the message parameter.
-
-~~~{.cpp}
-    log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("com.foo"));
-    const char* region = "World";
-    LOG4CXX_INFO(logger, "Simple message text.");
-    LOG4CXX_INFO(logger, "Hello, " << region);
-    LOG4CXX_DEBUG(logger, L"Iteration " << i);
-    LOG4CXX_DEBUG(logger, "e^10 = " << std::scientific << exp(10.0));
-    //
-    // Use a wchar_t first operand to force use of wchar_t based stream.
-    //
-    LOG4CXX_WARN(logger, L"" << i << L" is the number of the iteration.");
-~~~
-
-A logging request is said to be *enabled* if its level is higher than or
-equal to the level of its logger. Otherwise, the request is said to be
-*disabled*. A logger without an assigned level will inherit one from the
-hierarchy. This rule is summarized below.
-
 ## Basic Selection Rule {#selection-rule}
 
 A log request of level *p* in a logger with (either assigned or
@@ -237,42 +273,6 @@ Here is an example of this rule.
     // This request is disabled, because DEBUG < INFO.
     LOG4CXX_DEBUG(barlogger, "Exiting gas station search");
 ~~~
-
-Calling the *getLogger* method with the same name will always return a
-reference to the exact same logger object.
-
-For example, in
-
-~~~{.cpp}
-    auto x = log4cxx::Logger::getLogger("wombat");
-    auto y = log4cxx::Logger::getLogger("wombat");
-~~~
-
-*x* and *y* refer to *exactly* the same logger object.
-
-Thus, it is possible to configure a logger and then to retrieve the same
-instance somewhere else in the code without passing around references.
-In fundamental contradiction to biological parenthood, where parents
-always preceed their children, Log4cxx loggers can be created and
-configured in any order. In particular, a "parent" logger will find and
-link to its descendants even if it is instantiated after them.
-
-Configuration of the Log4cxx environment is typically done at
-application initialization. The preferred way is by reading a
-configuration file. This approach will be discussed shortly.
-
-Log4cxx makes it easy to name loggers by *software component*. This can
-be accomplished by statically instantiating a logger in each class, with
-the logger name equal to the fully qualified name of the class. This is
-a useful and straightforward method of defining loggers. As the log
-output bears the name of the generating logger, this naming strategy
-makes it easy to identify the origin of a log message. However, this is
-only one possible, albeit common, strategy for naming loggers. Log4cxx
-does not restrict the possible set of loggers. The developer is free to
-name the loggers as desired.
-
-Nevertheless, naming loggers after the class where they are located
-seems to be the best strategy known so far.
 
 # Appenders {#appenders}
 
