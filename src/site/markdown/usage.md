@@ -448,6 +448,7 @@ If the same file receives log requests concurrently from multiple process,
 use [this appender](@ref log4cxx.rolling.MultiprocessRollingFileAppender).
 It is also possible to log [asynchronously](@ref log4cxx.AsyncAppender)
 to another appender.
+See \ref async-example.xml
 
 The [addAppender](@ref log4cxx.Logger.addAppender)
 method adds an appender to a given logger.
@@ -595,5 +596,8 @@ The other layouts provided in Log4cxx are:
 
 \example format-string.cpp
 This example shows logging using the [{fmt}](https://fmt.dev/latest/index.html) library.
+
+\example async-example.xml
+This example shows a configuration using the [asynchronous appender](@ref log4cxx.AsyncAppender).
 
 [Custom_levels]:faq.html#custom_levels
