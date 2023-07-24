@@ -1,9 +1,5 @@
-Usage {#usage-overview}
+Internal Debugging {#internal-debugging}
 ===
-<!--
- Note: License header cannot be first, as doxygen does not generate
- cleanly if it before the '==='
--->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -21,21 +17,14 @@ Usage {#usage-overview}
  limitations under the License.
 -->
 
-See the following pages for usage information:
+Because Log4cxx is a logging library, we can't use it to output errors from
+the library itself.  There are several ways to activate internal logging:
 
-* @subpage usage
-* @subpage coding
-* @subpage filters
-* @subpage threading
-* @subpage nested-diagnostic-contexts
-* @subpage extending-log4cxx
-* @subpage stacktrace-support
-* @subpage faq
-* @subpage configuration-samples
-* @subpage qt-support
-* @subpage performance
-* @subpage multiprocess-logging
-* @subpage environment-variables
-* @subpage macros-influencing-log4cxx
-* @subpage internal-debugging
-* @subpage conclusions
+1. Configure the library directly by calling the
+[LogLog::setInternalDebugging](@ref log4cxx.helpers.LogLog.setInternalDebugging)
+method
+2. If using a properties file, set the value `log4j.debug=true` in your configuration file
+3. If using an XML file, set the attribute `internalDebug=true` in the root node
+4. From the environment: `LOG4CXX_DEBUG=true`
+
+All error and warning messages are sent to stderr.

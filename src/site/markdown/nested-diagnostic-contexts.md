@@ -67,3 +67,6 @@ and also depending on the software component issuing the request. Recent
 Log4cxx releases support multiple hierarchy trees. This enhancement
 allows each virtual host to possess its own copy of the logger
 hierarchy.
+
+\example trivial.cpp
+This example shows how to add a context string to each logging message using the NDC.

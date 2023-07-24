@@ -1,4 +1,4 @@
-Usage {#usage-overview}
+Conclusions {#conclusions}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,21 +21,15 @@ Usage {#usage-overview}
  limitations under the License.
 -->
 
-See the following pages for usage information:
+Apache Log4cxx is a popular logging package written in C++. One of its
+distinctive features is the notion of inheritance in loggers. Using a
+logger hierarchy it is possible to control which log statements are
+output at arbitrary granularity. This helps reduce the volume of logged
+output and minimize the cost of logging.
 
-* @subpage usage
-* @subpage coding
-* @subpage filters
-* @subpage threading
-* @subpage nested-diagnostic-contexts
-* @subpage extending-log4cxx
-* @subpage stacktrace-support
-* @subpage faq
-* @subpage configuration-samples
-* @subpage qt-support
-* @subpage performance
-* @subpage multiprocess-logging
-* @subpage environment-variables
-* @subpage macros-influencing-log4cxx
-* @subpage internal-debugging
-* @subpage conclusions
+One of the advantages of the Log4cxx API is its manageability. Once the
+log statements have been inserted into the code, they can be controlled
+with configuration files. They can be selectively enabled or disabled,
+and sent to different and multiple output targets in user-chosen
+formats. The Log4cxx package is designed so that log statements can
+remain in shipped code without incurring a heavy performance cost.

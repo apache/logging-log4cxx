@@ -152,6 +152,159 @@ the insertion operator (\<\<) in the message parameter.
     LOG4CXX_WARN(logger, L"" << i << L" is the number of the iteration.");
 ~~~
 
+### Logging Custom Types {#custom-types}
+
+Often, the data that needs to be logged is not just standard data types
+(such as int, string, etc), but amalgamations of those types in a data
+structure such as a class or struct.  In order to log these custom types,
+simply override an `operator<<` function, the same as if you would
+print the custom type to `std::cout`.  This can be accomplished by
+doing the following:
+
+~~~{.cpp}
+struct MyStruct {
+	int x;
+};
+
+std::ostream& operator<<( std::ostream& stream, const MyStruct& mystruct ){
+	stream << "[MyStruct x:" << mystruct.x << "]";
+	return stream;
+}
+
+void someMethod(){
+	MyStruct mine;
+	mine.x = 90;
+	LOG4CXX_INFO( logger, "Some important information: " << mine );
+}
+~~~
+
+This will output data similar to the following:
+
+~~~
+0 [0x7fd1eed63bc0] INFO root null - Some important information: [MyStruct x:90]
+~~~
+
+### Using {fmt} style requests {#logging-with-fmt}
+
+One issue with utilizing Log4cxx and its ostream style of logging is that log
+statements can be very awkward if you need to precisely format something:
+
+~~~{.cpp}
+LOG4CXX_INFO( rootLogger, "Numbers can be formatted with excessive operator<<: "
+			  << std::setprecision(3) << 22.456
+			  << " And as hex: "
+			  << std::setbase( 16 ) << 123 );
+~~~
+
+This leads to very awkward code to read and write, especially as iostreams don't
+support positional arguments at all.
+
+In order to get around this, one popular library(that has been standardized as
+part of C++20) is [{fmt}](https://fmt.dev/latest/index.html).  Supporting
+positional arguments and printf-like formatting, it makes for much clearer
+code like the following:
+
+~~~{.cpp}
+LOG4CXX_INFO_FMT( rootLogger, "Numbers can be formatted with a format string {:.1f} and as hex: {:x}", 22.456, 123 );
+~~~
+
+Note that Log4cxx does not include a copy of {fmt}, so you must include the
+correct headers and linker flags in order to use the `LOG4CXX_[level]_FMT`
+family of macros.
+
+As with the standard logger macros, these macros will also be compiled out
+if the `LOG4CXX_THRESHOLD` macro is set to a level that will compile out
+the non-FMT macros.
+
+A full example can be seen in the \ref format-string.cpp file.
+
+### Overhead {#request-cost}
+
+One of the often-cited arguments against logging is its computational
+cost. This is a legitimate concern as even moderately sized applications
+can generate thousands of log requests. Much effort was spent measuring
+and tweaking logging performance. Log4cxx claims to be fast and
+flexible: speed first, flexibility second.
+
+For performance sensitive applications, you should be aware of the following.
+
+1.  **Logging performance when logging is turned off.**
+
+    The LOG4CXX\_DEBUG and similar macros have a
+    cost of an in-lined null pointer check plus an integer comparison
+    when the logger not currently enabled for that level.
+    The other terms inside the macro are not evaluated.
+
+    When the level is enabled for a logger but the logging hierarchy is turned off
+    entirely or just for a set of levels, the cost of a log request consists
+    of a method invocation plus an integer comparison.
+
+2.  **Actually outputting log messages**
+
+    This is the cost of formatting the log output and sending it to its
+    target destination. Here again, a serious effort was made to make
+    layouts (formatters) perform as quickly as possible. The same is
+    true for appenders.
+
+3.  **The cost of changing a logger's level.**
+
+    The threshold value stored in any child logger is updated.
+    This is done iterating over the map of all known logger objects
+    and walking the hierarchy of each.
+
+    There has been a serious effort to make this hierarchy walk to be as
+    fast as possible. For example, child loggers link only to their
+    existing ancestors. In the *BasicConfigurator* example shown
+    earlier, the logger named *com.foo.Bar* is linked directly to the
+    root logger, thereby circumventing the nonexistent *com* or
+    *com.foo* loggers. This significantly improves the speed of the
+    walk, especially in "sparse" hierarchies.
+
+### Removing log requests {#removing-log-statements}
+
+Sometimes, you may want to remove all log statements from your program,
+either for speed purposes or to remove sensitive information.  This can easily
+be accomplished at build-time when using the standard `LOG4CXX_[level]` macros
+(`LOG4CXX_TRACE`, `LOG4CXX_DEBUG`, `LOG4CXX_INFO`, `LOG4CXX_WARN`,
+`LOG4CXX_ERROR`, `LOG4CXX_FATAL`).
+
+Log statements can be removed either above a certain level, or they
+can be disabled entirely.
+
+For example, if we want to remove all log statements within our program
+that use the `LOG4CXX_[level]` family of macros, add a preprocessor
+definition `LOG4CXX_THRESHOLD` set to 50001
+or greater.  This will ensure that any log statement that uses the
+`LOG4CXX_[level]`-macro will be compiled out of the program.  To remove
+all log statements at `DEBUG` or below, set `LOG4CXX_THRESHOLD` to a
+value between 10001-20000.
+
+The levels are set as follows:
+
+|Logger Level|Integer Value|
+|------------|-------------|
+|TRACE       |5000         |
+|DEBUG       |10000        |
+|INFO        |20000        |
+|WARN        |30000        |
+|ERROR(1)    |40000        |
+|FATAL       |50000        |
+
+(1) The `LOG4CXX_ASSERT` macro is the same level as `LOG4CXX_ERROR`
+
+Note that this has no effect on other macros, such as using the
+`LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
+
+### Removing location information {#removing-location-information}
+
+Whenever you log a message with Log4cxx, metadata about the location of the
+logging statement is captured as well through the preprocessor.  This includes
+the file name, the method name, and the line number.  If you would not like to
+include this information in your build but you still wish to keep the log
+statements, define `LOG4CXX_DISABLE_LOCATION_INFO` in your build system.  This
+will allow log messages to still be created, but the location information
+will be invalid.
+
 ## Levels {#levels}
 
 A log4cxx::Logger instance *may* be assigned a specific level
@@ -364,6 +517,71 @@ third field is the level of the log statement. The fourth field is the
 name of the logger associated with the log request. The text after the
 '-' is the message of the statement.
 
+The following examples show how you might configure the PatternLayout in order to
+achieve the results shown.
+Each example has two blocks of code: the layout for the PatternLayout,
+and a sample output message.
+
+## Pattern 1 {#pattern1}
+
+This pattern contains the date in an ISO-8601 format(without fractional seconds),
+followed by the logger name, the level, and then the message.
+
+~~~
+[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n
+~~~
+
+~~~
+[2020-12-24 15:31:46] root INFO  - Hello there!
+~~~
+
+## Pattern 2 {#pattern2}
+
+Similar to Pattern 1, except using ISO-8601 with fractional seconds
+
+~~~
+[%d] %c %-5p - %m%n
+~~~
+
+~~~
+[2020-12-24 15:35:39,225] root INFO  - Hello there!
+~~~
+
+## Pattern 3 {#pattern3}
+
+Prints out the number of milliseconds since the start of the application,
+followed by the level(5 character width), followed by the logger name
+(20 character width), followed by the message.
+
+~~~
+%r %-5p %-20c %m%n
+~~~
+
+~~~
+0 INFO  root                 Hello there!
+~~~
+
+## Pattern 4 {#pattern4}
+
+If you have no idea where a log message is coming from, it's possible to print
+out more information about the place the log statement is coming from.  For example,
+we can get the filename, class name, method name, and line number in one log
+message.  This utilises the %%F(file name), %%C(class name), %%M(method name), %%L(line number)
+patterns to output more information:
+
+~~~
+(%F:%C[%M]:%L) %m%n
+~~~
+
+Possible output:
+~~~
+(/home/robert/log4cxx-test-programs/fooclass.cpp:FooClass[FooClass]:9) Constructor running
+(/home/robert/log4cxx-test-programs/fooclass.cpp:FooClass[doFoo]:13) Doing foo
+~~~
+
+Note that unlike Java logging, the location information is free(as it utilizes
+macros to determine this information at compile-time).
+
 The other layouts provided in Log4cxx are:
 
 - [libfmt patterns](@ref log4cxx.FMTLayout)
@@ -371,388 +589,6 @@ The other layouts provided in Log4cxx are:
 - [a JSON dictionary](@ref log4cxx.JSONLayout)
 - [level - message](@ref log4cxx.SimpleLayout)
 - [log4j event elements](@ref log4cxx.xml.XMLLayout)
-
-# Example Programs {#coding}
-
-Creating useful log information requires a fair amount
-of planning and effort. Observation shows that approximately 4 percent
-of code is dedicated to logging. Consequently, even moderately sized
-applications will have thousands of logging statements embedded within
-their code. Given their number, it becomes imperative to manage these
-log statements without the need to modify them manually.
-
-Let us give a taste of how this is done with the help of an imaginary
-application *MyApp* that uses Log4cxx.
-
-## A Simple Example {#example1}
-
-In order to start using Log4cxx, a simple example program is shown below.
-This program does nothing useful, but it shows the basics of how to start using Log4cxx.
-Using the [BasicConfigurator](@ref log4cxx.BasicConfigurator) class, we are able to quickly configure the library
-to output DEBUG, INFO, etc level messages to standard output.
-\include MyApp1.cpp
-
-The above application does nothing useful except to show how to initialize logging
-with the BasicConfigurator and do logging with different loggers.
-Note that file based configurations are also possible -
-see [DOMConfigurator](@ref log4cxx.xml.DOMConfigurator.configure)
-and [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure).
-
-Configuring Log4cxx in the main function has the limitation that
-any logging statements in static initialization code will not generate output.
-Log4cxx must be configured before it is used and
-in this example Log4cxx is not configured until the main() function starts.
-
-## A Less Simple Example {#example2}
-
-In this example we use a *getLogger()* wrapper function
-which configures Log4cxx on the first usage.
-The advantages of this approach are:
-
-- Log4cxx configuration can be reused in multiple applications.
-- The structure exhibits better [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns).
-- Log statements in static initialization code will generate output.
-
-This program (*MyApp*) begins by including the file
-that defines the com::foo::getLogger() function.
-It obtains a logger named *MyApp*
-(which in this example is the fully qualified name)
-from the com::foo::getLogger() function.
-
-*MyApp* uses the *com::foo::Bar* class defined in header file *com/foo/bar.h*.
-\include MyApp2.cpp
-
-The *com::foo::Bar* class is defined in header file *com/foo/bar.h*.
-\include com/foo/bar.h
-
-The *com::foo::Bar* class is implemented in the file *com/foo/bar.cpp*.
-\include com/foo/bar.cpp
-
-The header file *com/foo/config.h* defines the com::foo::getLogger() function
-and a *LoggerPtr* type for convenience.
-\include com/foo/config.h
-
-The file *com/foo/config.cpp* which implements the com::foo::getLogger() function
-defines *initAndShutdown* as a *static struct* so its constructor
-is invoked on the first call to the com::foo::getLogger() function
-and its destructor is automatically called during application exit.
-\include com/foo/config1.cpp
-
-The invocation of the
-[BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure)
-method creates a rather simple Log4cxx setup. This method is hardwired
-to add to the root logger a [ConsoleAppender](@ref log4cxx.ConsoleAppender).
-The output will be formatted using a
-[PatternLayout](@ref log4cxx.PatternLayout)
-set to the pattern `%%r [%%t] %%p %%c %%x - %%m%%n`.
-
-Note that by default, the root logger is assigned a *DEBUG* level.
-
-The output of MyApp is:
-
-~~~
-    0 [12345] INFO MyApp null - Entering application.
-    0 [12345] DEBUG com.foo.Bar null - Did it again!
-    0 [12345] INFO MyApp null - Exiting application.
-~~~
-
-## Runtime Configuration {#configuration}
-
-The Log4cxx environment is fully configurable programmatically. However,
-it is far more flexible to configure Log4cxx using configuration files.
-Currently, configuration files can be written in XML or in Java
-properties (key=value) format.
-
-The previous example always outputs the same log information.
-Fortunately, it is easy to modify *config.cpp* so that the log output can be
-controlled at runtime. Here is a slightly modified version.
-\include com/foo/config2.cpp
-
-This version of *config.cpp* instructs [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure)
-to use the *MyApp.properties* file to configure Log4cxx.
-A more realistic approach would (for example)
-use the current module name to select the configuration file
-(see the \ref com/foo/config3.cpp file for how to do this).
-
-Here is a sample *MyApp.properties* configuration file that results in exactly same output
-as the previous [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure) based example.
-
-~~~
-    # Set root logger level to DEBUG and its only appender to A1.
-    log4j.rootLogger=DEBUG, A1
-
-    # A1 is set to be a ConsoleAppender.
-    log4j.appender.A1=org.apache.log4j.ConsoleAppender
-
-    # A1 uses PatternLayout.
-    log4j.appender.A1.layout=org.apache.log4j.PatternLayout
-    log4j.appender.A1.layout.ConversionPattern=%r [%t] %-5p %c %x - %m%n
-~~~
-
-It can be noticed that the PropertyConfigurator file format is the same
-as log4j.
-
-Suppose we are no longer interested in seeing the output of any
-component belonging to the *com::foo* package. The following
-configuration file shows one possible way of achieving this.
-
-~~~
-    log4j.rootLogger=DEBUG, A1
-    log4j.appender.A1=org.apache.log4j.ConsoleAppender
-    log4j.appender.A1.layout=org.apache.log4j.PatternLayout
-
-    # Print the date in ISO 8601 format
-    log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
-
-    # Print only messages of level WARN or above in the package com.foo.
-    log4j.logger.com.foo=WARN
-~~~
-
-The output of *MyApp* configured with this file is shown below.
-
-~~~
-    2022-12-13 11:01:45,091 [12345] INFO  MyApp - Entering application.
-    2022-12-13 11:01:45,091 [12345] INFO  MyApp - Exiting application.
-~~~
-
-As the logger *com.foo.Bar* does not have an assigned level, it inherits
-its level from *com.foo*, which was set to WARN in the configuration
-file. The log statement from the *Bar::doIt* method has the level *DEBUG*,
-lower than the logger level WARN. Consequently, *doIt()* method's log
-request is suppressed.
-
-Here is another configuration file that uses multiple appenders.
-\include MyApp.properties
-
-Calling the enhanced MyApp with the this configuration file will output
-the following on the console.
-
-~~~
-     INFO [12345] (MyApp.cpp:8) - Entering application.
-    DEBUG [12345] (bar.cpp:8) - Did it again!
-     INFO [12345] (MyApp.cpp:11) - Exiting application.
-~~~
-
-In addition, as the root logger has been allocated a second appender,
-output will also be directed to the *example.log* file. This file will
-be rolled over when it reaches 100KB. When roll-over occurs, the old
-version of *example.log* is automatically moved to *example.log.1*.
-
-Note that to obtain these different logging behaviors we did not need to
-recompile code. We could just as easily have logged to a UNIX Syslog
-daemon, redirected all *com.foo* output to an NT Event logger, or
-forwarded logging events to a remote Log4cxx server, which would log
-according to local server policy, for example by forwarding the log
-event to a second Log4cxx server.
-
-# Default Initialization {#default-initialization}
-
-The Log4cxx library does not make any assumptions about its environment.
-In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
-However the library will attempt automatic configuration.
-
-If the LoggerRepositoy is not yet configured on the first call to
-[getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
-the [configure](@ref log4cxx.DefaultConfigurator.configure) method
-of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
-via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
-of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
-
-To use automatic configuration with a non-standard file name
-create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
-A full example can be seen in the \ref com/foo/config3.cpp file.
-
-# Logging Custom Types {#custom-types}
-
-Often, the data that needs to be logged is not just standard data types
-(such as int, string, etc), but amalgamations of those types in a data
-structure such as a class or struct.  In order to log these custom types,
-simply override an `operator<<` function, the same as if you would
-print the custom type to `std::cout`.  This can be accomplished by
-doing the following:
-
-~~~{.cpp}
-struct MyStruct {
-	int x;
-};
-
-std::ostream& operator<<( std::ostream& stream, const MyStruct& mystruct ){
-	stream << "[MyStruct x:" << mystruct.x << "]";
-	return stream;
-}
-
-void someMethod(){
-	MyStruct mine;
-	mine.x = 90;
-	LOG4CXX_INFO( logger, "Some important information: " << mine );
-}
-~~~
-
-This will output data similar to the following:
-
-~~~
-0 [0x7fd1eed63bc0] INFO root null - Some important information: [MyStruct x:90]
-~~~
-
-# Logging with {fmt} {#logging-with-fmt}
-
-One issue with utilizing Log4cxx and its ostream style of logging is that log
-statements can be very awkward if you need to precisely format something:
-
-~~~{.cpp}
-LOG4CXX_INFO( rootLogger, "Numbers can be formatted with excessive operator<<: "
-			  << std::setprecision(3) << 22.456
-			  << " And as hex: "
-			  << std::setbase( 16 ) << 123 );
-~~~
-
-This leads to very awkward code to read and write, especially as iostreams don't
-support positional arguments at all.
-
-In order to get around this, one popular library(that has been standardized as
-part of C++20) is [{fmt}](https://fmt.dev/latest/index.html).  Supporting
-positional arguments and printf-like formatting, it makes for much clearer
-code like the following:
-
-~~~{.cpp}
-LOG4CXX_INFO_FMT( rootLogger, "Numbers can be formatted with a format string {:.1f} and as hex: {:x}", 22.456, 123 );
-~~~
-
-Note that Log4cxx does not include a copy of {fmt}, so you must include the
-correct headers and linker flags in order to use the `LOG4CXX_[level]_FMT`
-family of macros.
-
-As with the standard logger macros, these macros will also be compiled out
-if the `LOG4CXX_THRESHOLD` macro is set to a level that will compile out
-the non-FMT macros.
-
-A full example can be seen in the \ref format-string.cpp file.
-
-# Internal Debugging {#internal-debugging}
-
-Because Log4cxx is a logging library, we can't use it to output errors from
-the library itself.  There are several ways to activate internal logging:
-
-1. Configure the library directly by calling the
-[LogLog::setInternalDebugging](@ref log4cxx.helpers.LogLog.setInternalDebugging)
-method
-2. If using a properties file, set the value `log4j.debug=true` in your configuration file
-3. If using an XML file, set the attribute `internalDebug=true` in the root node
-4. From the environment: `LOG4CXX_DEBUG=true`
-
-All error and warning messages are sent to stderr.
-
-# Overhead {#request-cost}
-
-One of the often-cited arguments against logging is its computational
-cost. This is a legitimate concern as even moderately sized applications
-can generate thousands of log requests. Much effort was spent measuring
-and tweaking logging performance. Log4cxx claims to be fast and
-flexible: speed first, flexibility second.
-
-For performance sensitive applications, you should be aware of the following.
-
-1.  **Logging performance when logging is turned off.**
-
-    The LOG4CXX\_DEBUG and similar macros have a
-    cost of an in-lined null pointer check plus an integer comparison
-    when the logger not currently enabled for that level.
-    The other terms inside the macro are not evaluated.
-
-    When the level is enabled for a logger but the logging hierarchy is turned off
-    entirely or just for a set of levels, the cost of a log request consists
-    of a method invocation plus an integer comparison.
-
-2.  **Actually outputting log messages**
-
-    This is the cost of formatting the log output and sending it to its
-    target destination. Here again, a serious effort was made to make
-    layouts (formatters) perform as quickly as possible. The same is
-    true for appenders.
-
-3.  **The cost of changing a logger's level.**
-
-    The threshold value stored in any child logger is updated.
-    This is done iterating over the map of all known logger objects
-    and walking the hierarchy of each.
-
-    There has been a serious effort to make this hierarchy walk to be as
-    fast as possible. For example, child loggers link only to their
-    existing ancestors. In the *BasicConfigurator* example shown
-    earlier, the logger named *com.foo.Bar* is linked directly to the
-    root logger, thereby circumventing the nonexistent *com* or
-    *com.foo* loggers. This significantly improves the speed of the
-    walk, especially in "sparse" hierarchies.
-
-## Removing log statements {#removing-log-statements}
-
-Sometimes, you may want to remove all log statements from your program,
-either for speed purposes or to remove sensitive information.  This can easily
-be accomplished at build-time when using the standard `LOG4CXX_[level]` macros
-(`LOG4CXX_TRACE`, `LOG4CXX_DEBUG`, `LOG4CXX_INFO`, `LOG4CXX_WARN`,
-`LOG4CXX_ERROR`, `LOG4CXX_FATAL`).
-
-Log statements can be removed either above a certain level, or they
-can be disabled entirely.
-
-For example, if we want to remove all log statements within our program
-that use the `LOG4CXX_[level]` family of macros, add a preprocessor
-definition `LOG4CXX_THRESHOLD` set to 50001
-or greater.  This will ensure that any log statement that uses the
-`LOG4CXX_[level]`-macro will be compiled out of the program.  To remove
-all log statements at `DEBUG` or below, set `LOG4CXX_THRESHOLD` to a
-value between 10001-20000.
-
-The levels are set as follows:
-
-|Logger Level|Integer Value|
-|------------|-------------|
-|TRACE       |5000         |
-|DEBUG       |10000        |
-|INFO        |20000        |
-|WARN        |30000        |
-|ERROR(1)    |40000        |
-|FATAL       |50000        |
-
-(1) The `LOG4CXX_ASSERT` macro is the same level as `LOG4CXX_ERROR`
-
-Note that this has no effect on other macros, such as using the
-`LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
-
-## Removing location information {#removing-location-information}
-
-Whenever you log a message with Log4cxx, metadata about the location of the
-logging statement is captured as well through the preprocessor.  This includes
-the file name, the method name, and the line number.  If you would not like to
-include this information in your build but you still wish to keep the log
-statements, define `LOG4CXX_DISABLE_LOCATION_INFO` in your build system.  This
-will allow log messages to still be created, but the location information
-will be invalid.
-
-# Conclusions {#conclusions}
-
-Apache Log4cxx is a popular logging package written in C++. One of its
-distinctive features is the notion of inheritance in loggers. Using a
-logger hierarchy it is possible to control which log statements are
-output at arbitrary granularity. This helps reduce the volume of logged
-output and minimize the cost of logging.
-
-One of the advantages of the Log4cxx API is its manageability. Once the
-log statements have been inserted into the code, they can be controlled
-with configuration files. They can be selectively enabled or disabled,
-and sent to different and multiple output targets in user-chosen
-formats. The Log4cxx package is designed so that log statements can
-remain in shipped code without incurring a heavy performance cost.
-
-\example trivial.cpp
-This example shows how to add a context string to each logging message using the NDC.
-
-\example auto-configured.cpp
-This is an example of logging in static initialization code and
-using the current module name to select the Log4cxx configuration file.
-
-\example com/foo/config3.cpp
-This file is an example of how to use the current module name to select the Log4cxx configuration file.
 
 \example format-string.cpp
 This example shows logging using the [{fmt}](https://fmt.dev/latest/index.html) library.
