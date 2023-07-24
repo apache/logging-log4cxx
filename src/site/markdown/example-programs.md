@@ -16,6 +16,8 @@ Example Programs {#coding}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+[TOC]
+
 Creating useful log information requires a fair amount
 of planning and effort. Observation shows that approximately 4 percent
 of code is dedicated to logging. Consequently, even moderately sized
