@@ -305,7 +305,7 @@ statements, define `LOG4CXX_DISABLE_LOCATION_INFO` in your build system.  This
 will allow log messages to still be created, but the location information
 will be invalid.
 
-# Levels {#levels}
+## Levels {#levels}
 
 A log4cxx::Logger instance *may* be assigned a specific level
 otherwise it will inherit it from the
@@ -323,7 +323,7 @@ equal to the level of its logger. Otherwise, the request is said to be
 *disabled*. A logger without an assigned level will inherit one from the
 hierarchy. This rule is summarized below.
 
-## Level Inheritance {#level-inheritance}
+### Level Inheritance {#level-inheritance}
 
 The *effective level* for a given logger *C*, is equal to the first
 assigned in the logger hierarchy, starting at *C* and proceeding
@@ -387,7 +387,7 @@ In example 4, the loggers *root* and *X* and are assigned the levels
 their level from their nearest parent having an assigned
 level, *X*.
 
-## Basic Selection Rule {#selection-rule}
+### Basic Selection Rule {#selection-rule}
 
 A log request of level *p* in a logger with (either assigned or
 inherited, whichever is appropriate) level *q*, is enabled if *p \>= q*.
