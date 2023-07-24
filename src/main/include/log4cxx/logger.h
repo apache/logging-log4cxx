@@ -2021,7 +2021,7 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 
 @param logger the logger to be used.
 @param level The logging event level.
-@param message the message string to log.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 */
 #define LOG4CXX_LOG(logger, level, message) do { \
 		if (logger->isEnabledFor(level)) {\
@@ -2033,7 +2033,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 
 @param logger the logger to be used.
 @param level The logging event level.
-@param ... The format string and message to log
+@param ... The format string and parameters that define the log message.
 */
 #define LOG4CXX_LOG_FMT(logger, level, ...) do { \
 		if (logger->isEnabledFor(level)) {\
@@ -2044,7 +2044,7 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 
 @param logger the logger to be used.
 @param level The logging event level.
-@param message the message string to log in the internal encoding.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload. in the internal encoding.
 */
 #define LOG4CXX_LOGLS(logger, level, message) do { \
 		if (logger->isEnabledFor(level)) {\
@@ -2079,7 +2079,7 @@ LOG4CXX_DEBUG(m_log, "AddMesh:"
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>DEBUG</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and message to log
+@param ... The format string and parameters that define the log message.
 */
 #define LOG4CXX_DEBUG_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isDebugEnabledFor(logger))) {\
@@ -2111,7 +2111,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>TRACE</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and message to log
+@param ... The format string and parameters that define the log message.
 */
 #define LOG4CXX_TRACE_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(::log4cxx::Logger::isTraceEnabledFor(logger))) {\
@@ -2147,7 +2147,7 @@ LOG4CXX_INFO(m_log, surface->GetName()
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>INFO</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and message to log
+@param ... The format string and parameters that define the log message.
 */
 #define LOG4CXX_INFO_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isInfoEnabledFor(logger)) {\
@@ -2162,7 +2162,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>WARN</code> events.
 
 @param logger the logger to be used.
-@param message the message string to log.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
 <p>Example:
 ~~~{.cpp}
@@ -2181,7 +2181,7 @@ catch (const std::exception& ex)
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>WARN</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and message to log
+@param ... The format string and parameters that define the log message.
 */
 #define LOG4CXX_WARN_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isWarnEnabledFor(logger)) {\
@@ -2196,7 +2196,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
 
 @param logger the logger to be used.
-@param message the message string to log.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
 <p>Example:
 ~~~{.cpp}
@@ -2215,7 +2215,7 @@ catch (std::exception& ex)
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and message to log
+@param ... The format string and parameters that define the log message.
 */
 #define LOG4CXX_ERROR_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isErrorEnabledFor(logger)) {\
@@ -2226,7 +2226,7 @@ If \c condition is not true, add a new logging event containing \c message to at
 
 @param logger the logger to be used.
 @param condition condition
-@param message the message string to log.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 */
 #define LOG4CXX_ASSERT(logger, condition, message) do { \
 		if (!(condition) && ::log4cxx::Logger::isErrorEnabledFor(logger)) {\
@@ -2258,7 +2258,7 @@ If \c condition is not true, add a new logging event containing libfmt formatted
 Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>FATAL</code> events.
 
 @param logger the logger to be used.
-@param message the message string to log.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
 <p>Example:
 ~~~{.cpp}
