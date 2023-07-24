@@ -266,7 +266,10 @@ Sometimes, you may want to remove all log statements from your program,
 either for speed purposes or to remove sensitive information.  This can easily
 be accomplished at build-time when using the standard `LOG4CXX_[level]` macros
 (`LOG4CXX_TRACE`, `LOG4CXX_DEBUG`, `LOG4CXX_INFO`, `LOG4CXX_WARN`,
-`LOG4CXX_ERROR`, `LOG4CXX_FATAL`).
+`LOG4CXX_ERROR`, `LOG4CXX_FATAL`)
+or their {fmt} library equivalents
+(`LOG4CXX_TRACE_FMT`, `LOG4CXX_DEBUG_FMT`, `LOG4CXX_INFO_FMT`, `LOG4CXX_WARN_FMT`,
+`LOG4CXX_ERROR_FMT`, `LOG4CXX_FATAL_FMT`).
 
 Log statements can be removed either above a certain level, or they
 can be disabled entirely.
