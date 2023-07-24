@@ -1,4 +1,4 @@
-Configuration {#configuration-samples}
+Configuration Samples {#configuration-samples}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,11 +21,11 @@ Configuration {#configuration-samples}
  limitations under the License.
 -->
 
-The following snippets show various ways of configuring Log4cxx.
-
 [TOC]
 
-# Default Behaviour {#default-initialization}
+The following snippets show various ways of configuring Log4cxx.
+
+# Default Initialization Behaviour {#default-initialization}
 
 The Log4cxx library does not make any assumptions about its environment.
 In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.

@@ -1,4 +1,4 @@
-Macros Influencing Log4cxx {#macros-influencing-log4cxx}
+Preprocessor Macros Influencing Log4cxx {#macros-influencing-log4cxx}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -20,8 +20,6 @@ Macros Influencing Log4cxx {#macros-influencing-log4cxx}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-# Macros that influence Log4cxx
 
 The following macros can be defined in client code to influence how log messages
 are set or not.

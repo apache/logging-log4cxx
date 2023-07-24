@@ -1,4 +1,4 @@
-Environment Variables {#environment-variables}
+Environment Variables Used by Log4cxx {#environment-variables}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -20,8 +20,6 @@ Environment Variables {#environment-variables}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-# Environment Variables Used by Log4cxx
 
 There are several environment variables that can be set in order to influence how
 Log4cxx works.  They are summarized in the following table:

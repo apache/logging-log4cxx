@@ -25,17 +25,16 @@ See the following pages for usage information:
 
 * @subpage usage
 * @subpage coding
-* @subpage filters
-* @subpage threading
-* @subpage nested-diagnostic-contexts
-* @subpage extending-log4cxx
-* @subpage stacktrace-support
-* @subpage faq
 * @subpage configuration-samples
+* @subpage filters
 * @subpage qt-support
-* @subpage performance
+* @subpage stacktrace-support
+* @subpage extending-log4cxx
+* @subpage threading
 * @subpage multiprocess-logging
 * @subpage environment-variables
 * @subpage macros-influencing-log4cxx
 * @subpage internal-debugging
+* @subpage performance
 * @subpage conclusions
+* @subpage faq

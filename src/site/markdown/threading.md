@@ -22,8 +22,6 @@ Threading {#threading}
 -->
 [TOC]
 
-# Threading Notes with Log4cxx {#threading-notes}
-
 Log4cxx is designed to be thread-safe under under normal usage.  This
 means that logging itself is always thread-safe, however there are
 certain circumstances that can cause threading issues with Log4cxx.

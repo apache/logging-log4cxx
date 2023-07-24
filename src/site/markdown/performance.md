@@ -20,9 +20,6 @@ Log4cxx Performance {#performance}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-[TOC]
-
-# Log4cxx Performance
 
 One important question with a logging library is: is it fast enough?  While
 Log4cxx may not be the fastest logging implementation, it is more than fast

@@ -1,4 +1,4 @@
-FAQ {#faq}
+Frequently Asked Technical Questions {#faq}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -20,8 +20,6 @@ FAQ {#faq}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-# Frequently Asked Technical Questions
 [TOC]
 
 ## How do I add a custom level to Apache Log4cxx?{#custom_levels}

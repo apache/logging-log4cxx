@@ -20,7 +20,6 @@ Stacktrace Support {#stacktrace-support}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Stacktrace Support
 When debugging a code base and an assertion is hit, it is often useful to
 have a stacktrace as part of an assertion in order for you to tell where
 you are in the code to know why it is buggy.  Generating a stacktrace can
