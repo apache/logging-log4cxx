@@ -2239,7 +2239,7 @@ If \c condition is not true, add a new logging event containing libfmt formatted
 
 @param logger the logger to be used.
 @param condition condition
-@param ... The format string and message to log
+@param ... The format string and parameters that define the log message.
 */
 #define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
 		if (!(condition) && ::log4cxx::Logger::isErrorEnabledFor(logger)) {\
@@ -2274,7 +2274,7 @@ LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
 Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>FATAL</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and message to log
+@param ... The format string and parameters that define the log message.
 */
 #define LOG4CXX_FATAL_FMT(logger, ...) do { \
 		if (::log4cxx::Logger::isFatalEnabledFor(logger)) {\
