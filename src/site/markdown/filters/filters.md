@@ -22,9 +22,9 @@ Filtering Log Messages {#filters}
 -->
 [TOC]
 
-## Labelling Log Output
+## Labeling Log Output {#labeling-log-output}
 
-To uniquely stamp each request which realtes to a different source,
+To uniquely stamp each request to relate it to a particular source,
 you can push contextual information
 into the *Nested Diagnostic Context* (NDC) using the *log4cxx::NDC* class
 or the *Mapped Diagnostic Context* provided by *log4cxx::MDC* class.
@@ -59,7 +59,7 @@ Log4cxx releases support multiple hierarchy trees. This enhancement
 allows each virtual host to possess its own copy of the logger
 hierarchy.
 
-## Excluding Log Output
+## Excluding Log Output {#excluding-log-output}
 
 When dealing with large amounts of logging information, it can be useful
 to filter on messages that we are interested in.  This filtering only

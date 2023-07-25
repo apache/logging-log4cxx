@@ -23,8 +23,8 @@ Usage {#usage-overview}
 
 See the following pages for usage information:
 
-* @subpage usage
-* @subpage coding
+* @subpage quick-start
+* @subpage concepts
 * @subpage configuration-samples
 * @subpage filters
 * @subpage qt-support

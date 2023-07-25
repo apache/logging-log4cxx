@@ -79,9 +79,8 @@ Hello there!
 
 ## XML Example 2 {#xml-example-2}
 
-This example sends data to both stdout, as well as to a file.  In this case,
-the file will be in our working directory.  The pattern has also been updated
-to match with pattern example 1
+This example sends data to both stdout, as well as to a file.
+With this configuration the "example.log" file will be created in our working directory.
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -136,6 +135,7 @@ Assume that our loggers are in our code as such:
 For this configuration, we have set any logger that is at the `com` level or below
 to be debug.  However, we have also set the logger `com.example` to have a more
 verbose `trace` level to see more information from that particular logger.
+The "example.log" file will be created in our temporary directory.
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -149,7 +149,7 @@ verbose `trace` level to see more information from that particular logger.
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="example.log" />
+    <param name="file" value="${TMP}/example.log" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
     </layout>

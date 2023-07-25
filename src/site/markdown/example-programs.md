@@ -1,4 +1,4 @@
-Example Programs {#coding}
+Quick Start {#quick-start}
 ===
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more

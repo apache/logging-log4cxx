@@ -1,4 +1,4 @@
-Loggers, Appenders and Layouts {#usage}
+Loggers, Appenders and Layouts {#concepts}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -85,7 +85,7 @@ An instance of log4cxx::Logger is instantiated
 if a logger of that name is not already held
 by the log4cxx::spi::LoggerRepository instance.
 
-The core Log4cxx API is made available by <code>#include <log4cxx/logger.h></code>.
+The core Log4cxx API is made available by <code>\#include <log4cxx/logger.h></code>.
 The commonly used log4cxx/logger.h methods and macros are listed below.
 
 ~~~{.cpp}
@@ -328,8 +328,8 @@ hierarchy. This rule is summarized below.
 
 ### Level Inheritance {#level-inheritance}
 
-The *effective level* for a given logger *C*, is equal to the first
-assigned in the logger hierarchy, starting at *C* and proceeding
+The *effective level* for a given logger *X.Y.Z*, is equal to the first
+assigned in the logger hierarchy, starting at *X.Y.Z* and proceeding
 upwards in the hierarchy towards the *root* logger.
 
 To ensure that all loggers can eventually inherit a level, the root
