@@ -29,7 +29,7 @@ runtime how these messages are formatted and where they are reported.
 
 Configuration of the Log4cxx environment is typically done at
 application initialization. The preferred way is by reading a
-configuration file. This approach will be discussed shortly.
+configuration file. This approach was discussed in [Runtime Configuration].
 
 # Loggers {#loggers}
 
@@ -601,3 +601,4 @@ This example shows logging using the [{fmt}](https://fmt.dev/latest/index.html) 
 This example shows a configuration using the [asynchronous appender](@ref log4cxx.AsyncAppender).
 
 [Custom_levels]:faq.html#custom_levels
+[Runtime Configuration]:quick-start.html#configuration
