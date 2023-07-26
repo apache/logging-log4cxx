@@ -1,9 +1,5 @@
-Logging With Multiple Processes {#multiprocess-logging}
+Internal Debugging {#internal-debugging}
 ===
-<!--
- Note: License header cannot be first, as doxygen does not generate
- cleanly if it before the '==='
--->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -21,14 +17,14 @@ Logging With Multiple Processes {#multiprocess-logging}
  limitations under the License.
 -->
 
-If you have multiple applications that all log to the same file, it is often
-desirable that the file that these applications write to will roll over when
-required.  In order for that to happen, Log4cxx provides the
-log4cxx::rolling::MultiprocessRollingFileAppender that will check the size of the file when
-writing to the file and roll it over appropriately.
+Because Log4cxx is a logging library, we can't use it to output errors from
+the library itself.  There are several ways to activate internal logging:
 
-This is an optional feature, and thus must be explicitly enabled when building
-Log4cxx.  This feature is also only supported on Linux at the moment.
-Because this feature is non-standard, it may not work properly in all
-circumstances.
+1. Configure the library directly by calling the
+[LogLog::setInternalDebugging](@ref log4cxx.helpers.LogLog.setInternalDebugging)
+method
+2. If using a properties file, set the value `log4j.debug=true` in your configuration file
+3. If using an XML file, set the attribute `internalDebug=true` in the root node
+4. From the environment: `LOG4CXX_DEBUG=true`
 
+All error and warning messages are sent to stderr.

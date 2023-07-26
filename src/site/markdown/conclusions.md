@@ -1,4 +1,4 @@
-Logging With Multiple Processes {#multiprocess-logging}
+Conclusions {#conclusions}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,14 +21,15 @@ Logging With Multiple Processes {#multiprocess-logging}
  limitations under the License.
 -->
 
-If you have multiple applications that all log to the same file, it is often
-desirable that the file that these applications write to will roll over when
-required.  In order for that to happen, Log4cxx provides the
-log4cxx::rolling::MultiprocessRollingFileAppender that will check the size of the file when
-writing to the file and roll it over appropriately.
+Apache Log4cxx is a popular logging package written in C++. One of its
+distinctive features is the notion of inheritance in loggers. Using a
+logger hierarchy it is possible to control which log statements are
+output at arbitrary granularity. This helps reduce the volume of logged
+output and minimize the cost of logging.
 
-This is an optional feature, and thus must be explicitly enabled when building
-Log4cxx.  This feature is also only supported on Linux at the moment.
-Because this feature is non-standard, it may not work properly in all
-circumstances.
-
+One of the advantages of the Log4cxx API is its manageability. Once the
+log statements have been inserted into the code, they can be controlled
+with configuration files. They can be selectively enabled or disabled,
+and sent to different and multiple output targets in user-chosen
+formats. The Log4cxx package is designed so that log statements can
+remain in shipped code without incurring a heavy performance cost.

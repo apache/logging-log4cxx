@@ -21,79 +21,26 @@ Configuration Samples {#configuration-samples}
  limitations under the License.
 -->
 
-The following snippets show various ways of configuring Log4cxx.
-
 [TOC]
 
-# Patterns {#patterns}
+The following snippets show various ways of configuring Log4cxx.
 
-The basic way of outputing messages is by using a [PatternLayout](@ref log4cxx.PatternLayout),
-and then sending the messages to stderr/stdout/file.  The following
-examples show how you might configure the PatternLayout in order to
-achieve the results shown.
+# Default Initialization Behaviour {#default-initialization}
 
-Each example has two blocks of code: the layout for the PatternLayout,
-and a sample output message.
+The Log4cxx library does not make any assumptions about its environment.
+In particular, when initially created the root [Logger](@ref log4cxx.Logger) has no appender.
+However the library will attempt automatic configuration.
 
-## Pattern 1 {#pattern1}
+If the LoggerRepositoy is not yet configured on the first call to
+[getLogger](@ref log4cxx.LogManager.getLogger) of [LogManager](@ref log4cxx.LogManager),
+the [configure](@ref log4cxx.DefaultConfigurator.configure) method
+of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
+via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
+of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
 
-This pattern contains the date in an ISO-8601 format(without fractional seconds),
-followed by the logger name, the level, and then the message.
-
-~~~
-[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n
-~~~
-
-~~~
-[2020-12-24 15:31:46] root INFO  - Hello there!
-~~~
-
-## Pattern 2 {#pattern2}
-
-Similar to Pattern 1, except using ISO-8601 with fractional seconds
-
-~~~
-[%d] %c %-5p - %m%n
-~~~
-
-~~~
-[2020-12-24 15:35:39,225] root INFO  - Hello there!
-~~~
-
-## Pattern 3 {#pattern3}
-
-Prints out the number of milliseconds since the start of the application,
-followed by the level(5 character width), followed by the logger name
-(20 character width), followed by the message.
-
-~~~
-%r %-5p %-20c %m%n
-~~~
-
-~~~
-0 INFO  root                 Hello there!
-~~~
-
-## Pattern 4 {#pattern4}
-
-If you have no idea where a log message is coming from, it's possible to print
-out more information about the place the log statement is coming from.  For example,
-we can get the filename, class name, method name, and line number in one log
-message.  This utilises the %%F(file name), %%C(class name), %%M(method name), %%L(line number)
-patterns to output more information:
-
-~~~
-(%F:%C[%M]:%L) %m%n
-~~~
-
-Possible output:
-~~~
-(/home/robert/log4cxx-test-programs/fooclass.cpp:FooClass[FooClass]:9) Constructor running
-(/home/robert/log4cxx-test-programs/fooclass.cpp:FooClass[doFoo]:13) Doing foo
-~~~
-
-Note that unlike Java logging, the location information is free(as it utilizes
-macros to determine this information at compile-time).
+To use automatic configuration with a non-standard file name
+create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
+A full example can be seen in the \ref com/foo/config3.cpp file.
 
 # XML Files {#xmlfiles}
 
@@ -132,9 +79,8 @@ Hello there!
 
 ## XML Example 2 {#xml-example-2}
 
-This example sends data to both stdout, as well as to a file.  In this case,
-the file will be in our working directory.  The pattern has also been updated
-to match with pattern example 1
+This example sends data to both stdout, as well as to a file.
+With this configuration the "example.log" file will be created in our working directory.
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -189,6 +135,7 @@ Assume that our loggers are in our code as such:
 For this configuration, we have set any logger that is at the `com` level or below
 to be debug.  However, we have also set the logger `com.example` to have a more
 verbose `trace` level to see more information from that particular logger.
+The "example.log" file will be created in our temporary directory.
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -202,7 +149,7 @@ verbose `trace` level to see more information from that particular logger.
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="example.log" />
+    <param name="file" value="${TMP}/example.log" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
     </layout>
@@ -288,3 +235,7 @@ Sample output:
 
 Note that even though we have the root logger set to the most verbose level(trace),
 the only messages that we saw were the ones with "specific" in them.
+
+\example auto-configured.cpp
+This is an example of logging in static initialization code and
+using the current module name to select the Log4cxx configuration file.

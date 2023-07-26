@@ -65,38 +65,8 @@ The following <b>param</b> elements  are optional:
   is greater or equal to <b>ERROR</b>.
 
   An example configuration is:
-~~~{.xml}
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-  <appender name="A1" class="RollingFileAppender">
-    <param name="File"   value="${TEMP}/SomeApplicationName.log" />
-    <param name="Append" value="true" />
-    <layout class="PatternLayout">
-      <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
-    </layout>
-  </appender>
-  <appender name="SENDMAIL" class="SMTPAppender">
-    <param name="from"   value="service_name@example.org" />
-    <param name="to" value="some_support_group@example.org" />
-    <param name="subject" value="Service error detected" />
-    <param name="SMTPHost" value="smtp.example.com"/>
-    <layout class="PatternLayout">
-		<param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
-    </layout>
-    <!-- triggeringPolicy class="SpecialTriggeringEventEvaluator" -->
-    <!-- param name="evaluatorClass" value="SpecialTriggeringEventEvaluator" -->
-  </appender>
-  <appender name="ASYNC" class="AsyncAppender">
-    <param name="BufferSize" value="1000"/>
-    <param name="Blocking" value="false"/>
-    <appender-ref ref="SENDMAIL"/>
-  </appender>
-  <root>
-    <priority value ="INFO" />
-    <appender-ref ref="A1" />
-    <appender-ref ref="ASYNC" />
-  </root>
-</log4j:configuration>
-~~~
+  \include async-example.xml
+
 */
 class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 {

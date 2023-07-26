@@ -22,7 +22,44 @@ Filtering Log Messages {#filters}
 -->
 [TOC]
 
-# Filtering Messages {#filtering}
+## Labeling Log Output {#labeling-log-output}
+
+To uniquely stamp each request to relate it to a particular source,
+you can push contextual information
+into the *Nested Diagnostic Context* (NDC) using the *log4cxx::NDC* class
+or the *Mapped Diagnostic Context* provided by *log4cxx::MDC* class.
+For an example using log4cxx::NDC refer to \ref trivial.cpp.
+
+The NDC is managed per thread as a *stack* of contextual information.
+When the layout specifies that the NDC is to be included,
+each log entry will include the entire stack for the current thread.
+A log4cxx::PatternLayout allows named entries of the MDC
+to be included in the log message.
+The user is responsible for placing the correct information in the NDC/MDC
+by creating a *log4cxx::NDC* or *log4cxx::MDC* stack variable at
+a few well-defined points in the code. In contrast, the per-client
+logger approach commands extensive changes in the code.
+
+To illustrate this point, let us take the example of a servlet
+delivering content to numerous clients. The servlet can build the NDC at
+the very beginning of the request before executing other code. The
+contextual information can be the client's host name and other
+information inherent to the request, typically information contained in
+cookies. Hence, even if the servlet is serving multiple clients
+simultaneously, the logs initiated by the same code, i.e. belonging to
+the same logger, can still be distinguished because each client request
+will have a different NDC stack. Contrast this with the complexity of
+passing a freshly instantiated logger to all code exercised during the
+client's request.
+
+Nevertheless, some sophisticated applications, such as virtual hosting
+web servers, must log differently depending on the virtual host context
+and also depending on the software component issuing the request. Recent
+Log4cxx releases support multiple hierarchy trees. This enhancement
+allows each virtual host to possess its own copy of the logger
+hierarchy.
+
+## Excluding Log Output {#excluding-log-output}
 
 When dealing with large amounts of logging information, it can be useful
 to filter on messages that we are interested in.  This filtering only
@@ -55,3 +92,6 @@ The following pages have information on specific filters:
 
 * @subpage map-filter
 * @subpage location-info-filter
+
+\example trivial.cpp
+This example shows how to add a context string to each logging message using the NDC.
