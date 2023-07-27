@@ -54,7 +54,15 @@ in many unix distributions.
 
 ## Previous Releases
 
-All previous releases of Apache Log4cxx can be found in the [archive repository](https://archive.apache.org/dist/logging/log4cxx).
+| Version                  | Release Date |
+| :--------------------------: |  :----------------------:   |
+| [1.1.0](https://logging.apache.org/log4cxx/1.1.0/download.html) | May-2023 |
+| [1.0.0](https://logging.apache.org/log4cxx/1.0.0/download.html) | Jan-2023 |
+| [0.13.0](https://logging.apache.org/log4cxx/0.13.0/download.html) | Aug-2022 |
+| [0.12.1](https://logging.apache.org/log4cxx/0.12.1/download.html) | Sept-2021 |
+| [0.11.0](https://logging.apache.org/log4cxx/0.11.0/download.html) | Aug-2020 |
+| [0.10.0](https://logging.apache.org/log4cxx/0.10.0/download.html) | 2008 |
+
 
 [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz]:https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz
 [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512
