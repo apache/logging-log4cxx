@@ -64,7 +64,6 @@ $ cmake --build buildtrees/Log4cxx --target install --config Release
 |------------------------|-------|
 | -DLOG4CXX_WCHAR_T=no   | Enable wchar_t API methods, choice of yes (default), no.                                    |
 | -DLOG4CXX_UNICHAR=yes  | Enable UniChar API methods, choice of yes, no (default).                                    |
-| -DLOG4CXX_CFSTRING=yes | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
 | -DBUILD_TESTING=off    | Do not build tests.  Tests are built by default                                             |
 | -DBUILD_SHARED_LIBS=off| Build Log4cxx as a static library. A dynamically linked Log4cxx library is built by default. Any compilation unit that includes a Log4cxx header must define LOG4CXX_STATIC.             |
 | -DAPU_STATIC=yes       | Link to the APR-Util static library. By default, the Log4cxx shared library is linked to the APR-Util shared library. If BUILD_SHARED_LIBS=off, the static APR-Util library is used.     |
