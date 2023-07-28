@@ -111,6 +111,16 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 	}
 }
 
+void Hierarchy::removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
+{
+    std::unique_lock<std::mutex> lock(m_priv->mutex);
+
+    auto found = std::find(m_priv->listeners.begin(), m_priv->listeners.end(), listener);
+    if(found != m_priv->listeners.end()){
+        m_priv->listeners.erase(found);
+    }
+}
+
 void Hierarchy::clear()
 {
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
