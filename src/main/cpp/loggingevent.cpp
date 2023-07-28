@@ -379,7 +379,7 @@ const LogString& LoggingEvent::getCurrentThreadName()
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif /* _WIN32 */
 
-	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
+	thread_id_string = helpers::Transcoder::decode(result);
 
 #else
     thread_id_string = LOG4CXX_STR("0x00000000");

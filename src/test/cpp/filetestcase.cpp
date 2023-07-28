@@ -28,10 +28,6 @@
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/fileinputstream.h>
 
-#if LOG4CXX_CFSTRING_API
-	#include <CoreFoundation/CFString.h>
-#endif
-
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -51,8 +47,8 @@ LOGUNIT_CLASS(FileTestCase)
 #if LOG4CXX_UNICHAR_API
 	LOGUNIT_TEST(unicharConstructor);
 #endif
-#if LOG4CXX_CFSTRING_API
-	LOGUNIT_TEST(cfstringConstructor);
+#if LOG4CXX_QSTRING_API
+	LOGUNIT_TEST(qstringConstructor);
 #endif
 	LOGUNIT_TEST(copyConstructor);
 	LOGUNIT_TEST(assignment);
@@ -120,10 +116,10 @@ public:
 	}
 #endif
 
-#if LOG4CXX_CFSTRING_API
-	void cfstringConstructor()
+#if LOG4CXX_QSTRING_API
+	void qstringConstructor()
 	{
-		File propFile(CFSTR("input/patternLayout.properties"));
+		File propFile(QString("input/patternLayout.properties"));
 		Pool pool;
 		bool exists = propFile.exists(pool);
 		LOGUNIT_ASSERT_EQUAL(true, exists);

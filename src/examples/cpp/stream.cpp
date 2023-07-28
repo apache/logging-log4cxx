@@ -34,7 +34,7 @@ int main()
                 BasicConfigurator::configure();
                 LoggerPtr rootLogger = Logger::getRootLogger();
 
-                NDC::push("trivial context");
+                NDC ctx("trivial context");
 
                 log4cxx::logstream logstream(rootLogger, Level::getDebug());
                 logstream << "debug message " << 1 << LOG4CXX_ENDMSG;
@@ -43,9 +43,6 @@ int main()
                 logstream << Level::getWarn() << "warn message" << LOG4CXX_ENDMSG;
                 logstream << Level::getError() << "error message" << LOG4CXX_ENDMSG;
                 logstream << Level::getFatal() << "fatal message" << LOG4CXX_ENDMSG;
-
-
-                NDC::pop();
         }
         catch(std::exception&)
         {

@@ -169,27 +169,6 @@ LoggerPtr LogManager::exists(const std::basic_string<UniChar>& name)
 }
 #endif
 
-#if LOG4CXX_CFSTRING_API
-LoggerPtr LogManager::getLogger(const CFStringRef& name)
-{
-	LOG4CXX_DECODE_CFSTRING(n, name);
-	return getLoggerLS(n);
-}
-
-LoggerPtr LogManager::getLogger(const CFStringRef& name,
-	const spi::LoggerFactoryPtr& factory)
-{
-	LOG4CXX_DECODE_CFSTRING(n, name);
-	return getLoggerLS(n, factory);
-}
-
-LoggerPtr LogManager::exists(const CFStringRef& name)
-{
-	LOG4CXX_DECODE_CFSTRING(n, name);
-	return existsLS(n);
-}
-#endif
-
 LoggerPtr LogManager::existsLS(const LogString& name)
 {
 	return getLoggerRepository()->exists(name);

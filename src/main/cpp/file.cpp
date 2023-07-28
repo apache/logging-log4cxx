@@ -58,7 +58,7 @@ static LogString decodeLS(const S* src)
 
 	if (src != 0)
 	{
-		Transcoder::decode(src, dst);
+		Transcoder::decode(std::basic_string<S>(src), dst);
 	}
 
 	return dst;
@@ -107,9 +107,15 @@ File::File(const UniChar* name1)
 }
 #endif
 
-#if LOG4CXX_CFSTRING_API
-File::File(const CFStringRef& name1)
-	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
+#if LOG4CXX_QSTRING_API
+static LogString decodeLS(const QString& src)
+{
+	LogString dst;
+	Transcoder::decode(src, dst);
+	return dst;
+}
+File::File(const QString& name)
+	: m_priv(std::make_unique<FilePrivate>(decodeLS(name)))
 {
 }
 #endif
@@ -287,7 +293,7 @@ std::vector<LogString> File::list(Pool& p) const
 				}
 				else
 				{
-					Transcoder::decode(entry.name, filename);
+					filename = Transcoder::decode(entry.name);
 				}
 
 				filenames.push_back(filename);

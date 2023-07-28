@@ -131,9 +131,7 @@ class LocalTimeZone : public TimeZone
 			}
 
 			tzName[tzLength] = 0;
-			LogString retval;
-			log4cxx::helpers::Transcoder::decode(tzName, retval);
-			return retval;
+			return helpers::Transcoder::decode(tzName);
 		}
 
 };

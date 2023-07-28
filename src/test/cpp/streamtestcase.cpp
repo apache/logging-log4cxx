@@ -17,7 +17,7 @@
 
 #include <log4cxx/log4cxx.h>
  /* Prevent error C2491: 'std::numpunct<_Elem>::id': definition of dllimport static data member not allowed */
-#if defined(_MSC_VER) && (LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API)
+#if defined(_MSC_VER) && (LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API)
 #define __FORCE_INSTANCE
 #endif
 #include <ostream>
@@ -30,10 +30,6 @@
 #include "insertwide.h"
 #include "logunit.h"
 #include <log4cxx/stream.h>
-
-#if LOG4CXX_CFSTRING_API
-	#include <CoreFoundation/CFString.h>
-#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -118,11 +114,11 @@ LOGUNIT_CLASS(StreamTestCase)
 	//                LOGUNIT_TEST(testULogStreamFormattingPersists);
 	//                LOGUNIT_TEST(testUSetWidthInsert);
 #endif
-#if LOG4CXX_CFSTRING_API
-	LOGUNIT_TEST(testCFString);
-	LOGUNIT_TEST(testCFStringAppend);
-	LOGUNIT_TEST(testULogStreamCFString);
-	LOGUNIT_TEST(testULogStreamCFString2);
+#if LOG4CXX_QSTRING_API
+	LOGUNIT_TEST(testQString);
+	LOGUNIT_TEST(testQStringAppend);
+	LOGUNIT_TEST(testULogStreamQString);
+	LOGUNIT_TEST(testULogStreamQString2);
 #endif
 	LOGUNIT_TEST_SUITE_END();
 
@@ -619,32 +615,32 @@ public:
 
 #endif
 
-#if LOG4CXX_CFSTRING_API
-	void testCFString()
+#if LOG4CXX_QSTRING_API
+	void testQString()
 	{
 		LoggerPtr root(Logger::getRootLogger());
-		LOG4CXX_INFO(root, CFSTR("This is a test"))
+		LOG4CXX_INFO(root, QString("This is a test"));
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 
-	void testCFStringAppend()
+	void testQStringAppend()
 	{
 		LoggerPtr root(Logger::getRootLogger());
-		LOG4CXX_INFO(root, CFSTR("This is a test") << CFSTR(": Details to follow"))
+		LOG4CXX_INFO(root, QString("This is a test") << QString(": Details to follow"));
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 
-	void testULogStreamCFString()
+	void testULogStreamQString()
 	{
 		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		root << CFSTR("This is a test") << LOG4CXX_ENDMSG;
+		root << QString("This is a test") << LOG4CXX_ENDMSG;
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 
-	void testULogStreamCFString2()
+	void testULogStreamQString2()
 	{
 		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		root << CFSTR("This is a test") << CFSTR(": Details to follow") << LOG4CXX_ENDMSG;
+		root << QString("This is a test") << QString(": Details to follow") << LOG4CXX_ENDMSG;
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 #endif

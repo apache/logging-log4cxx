@@ -170,7 +170,7 @@ void LogLog::emit(const std::exception& ex)
 
 	if (raw != 0)
 	{
-		Transcoder::decode(raw, out);
+		Transcoder::decode(std::string(raw), out);
 	}
 	else
 	{

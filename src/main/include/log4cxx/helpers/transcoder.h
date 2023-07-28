@@ -82,13 +82,17 @@ class LOG4CXX_EXPORT Transcoder
 		static void encode(unsigned int ch, std::string& dst);
 
 		/**
-		 *    Appends string in the current code-page
-		 *       to a LogString.
+		 *    Appends \c src in the current code-page to \c dst.
+		 */
+		static void decode(const char* src, LogString& dst);
+
+		/**
+		 *    Appends \c src in the current code-page to \c dst.
 		 */
 		static void decode(const std::string& src, LogString& dst);
 
 		/**
-		 *     Appends a LogString to a string in the current
+		 *     Appends \c src to a string in the current
 		 *        code-page.  Unrepresentable characters may be
 		 *        replaced with loss characters.
 		*/
@@ -130,7 +134,7 @@ class LOG4CXX_EXPORT Transcoder
 #endif
 
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		static void decode(const std::basic_string<UniChar>& src, LogString& dst);
 		static void encode(const LogString& src, std::basic_string<UniChar>& dst);
 
@@ -153,9 +157,9 @@ class LOG4CXX_EXPORT Transcoder
 
 #endif
 
-#if LOG4CXX_CFSTRING_API
-		static void decode(const CFStringRef& src, LogString& dst);
-		static CFStringRef encode(const LogString& src);
+#if LOG4CXX_QSTRING_API
+		static void decode(const QString& src, LogString& dst);
+		static QString encode(const LogString& src);
 #endif
 
 		enum { LOSSCHAR = 0x3F };
@@ -210,12 +214,12 @@ class LOG4CXX_EXPORT Transcoder
 	log4cxx::helpers::Transcoder::decode(src, var)
 #endif
 
-#define LOG4CXX_DECODE_CFSTRING(var, src) \
+#define LOG4CXX_DECODE_QSTRING(var, src) \
 	log4cxx::LogString var;                      \
 	log4cxx::helpers::Transcoder::decode(src, var)
 
-#define LOG4CXX_ENCODE_CFSTRING(var, src) \
-	CFStringRef var = log4cxx::helpers::Transcoder::encode(src)
+#define LOG4CXX_ENCODE_QSTRING(var, src) \
+	QString var = log4cxx::helpers::Transcoder::encode(src)
 
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR

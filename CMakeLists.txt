@@ -143,19 +143,6 @@ install(TARGETS log4cxx EXPORT log4cxxTargets
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-if(LOG4CXX_QT_SUPPORT)
-    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/main/include/log4cxx-qt
-      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-      FILES_MATCHING PATTERN "*.h"
-    )
-    install(TARGETS log4cxx-qt EXPORT log4cxx-qtTargets
-      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    )
-endif(LOG4CXX_QT_SUPPORT)
-
 IF(WIN32 AND BUILD_SHARED_LIBS AND LOG4CXX_INSTALL_PDB)
   INSTALL(FILES $<TARGET_PDB_FILE:log4cxx>
           DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -176,20 +163,6 @@ if(UNIX)
 
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx.pc" 
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-
-  if(LOG4CXX_QT_SUPPORT)
-      set(prefix "${CMAKE_INSTALL_PREFIX}")
-      set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
-      set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
-      set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
-      set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
-      configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx-qt.pc.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
-      )
-
-      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-  endif(LOG4CXX_QT_SUPPORT)
 endif(UNIX)
 
 # Support for find_package(log4cxx) in consuming CMake projects using
@@ -208,22 +181,6 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersi
 install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
   DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
 )
-
-if(LOG4CXX_QT_SUPPORT)
-    install(EXPORT log4cxx-qtTargets
-      FILE        log4cxx-qtConfig.cmake
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx-qt
-    )
-    # Support for find_package(log4cxx 0.11) in consuming CMake projects
-    include(CMakePackageConfigHelpers)
-    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
-      VERSION       ${PROJECT_VERSION}
-      COMPATIBILITY SameMinorVersion
-    )
-    install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
-      DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx-qt
-    )
-endif(LOG4CXX_QT_SUPPORT)
 
 #
 # Get the varaibles from the subdirectories

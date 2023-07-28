@@ -217,15 +217,10 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		/**
 		A static version of #doConfigure.
 		*/
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+		static spi::ConfigurationStatus configure(const File& filename);
+#else // Preserve ABI compatability
 		static spi::ConfigurationStatus configure(const std::string& filename);
-#if LOG4CXX_WCHAR_T_API
-		static spi::ConfigurationStatus configure(const std::wstring& filename);
-#endif
-#if LOG4CXX_UNICHAR_API
-		static spi::ConfigurationStatus configure(const std::basic_string<UniChar>& filename);
-#endif
-#if LOG4CXX_CFSTRING_API
-		static spi::ConfigurationStatus configure(const CFStringRef& filename);
 #endif
 		/**
 		Like #configureAndWatch(const std::string& configFilename, long delay)
@@ -233,15 +228,10 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
 		@param configFilename A log4j configuration file in XML format.
 		*/
-		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename);
-#if LOG4CXX_WCHAR_T_API
-		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename);
-#endif
-#if LOG4CXX_UNICHAR_API
-		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename);
-#endif
-#if LOG4CXX_CFSTRING_API
-		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename);
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+		static spi::ConfigurationStatus configureAndWatch(const File& filename);
+#else // Preserve ABI compatability
+		static spi::ConfigurationStatus configureAndWatch(const std::string& filename);
 #endif
 		/**
 		Read the configuration file <code>configFilename</code> if it
@@ -254,19 +244,10 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		@param configFilename A log4j configuration file in XML format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
-		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename,
-			long delay);
-#if LOG4CXX_WCHAR_T_API
-		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename,
-			long delay);
-#endif
-#if LOG4CXX_UNICHAR_API
-		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename,
-			long delay);
-#endif
-#if LOG4CXX_CFSTRING_API
-		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename,
-			long delay);
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+		static spi::ConfigurationStatus configureAndWatch(const File& filename, long delay);
+#else // Preserve ABI compatability
+		static spi::ConfigurationStatus configureAndWatch(const std::string& filename, long delay)
 #endif
 
 		/**

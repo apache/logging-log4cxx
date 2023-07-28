@@ -91,7 +91,7 @@ APRSocket::APRSocket(apr_socket_t* s, apr_pool_t* pool) :
 
 		if (sa->hostname != NULL)
 		{
-			Transcoder::decode(sa->hostname, remotename);
+			remotename = Transcoder::decode(sa->hostname);
 		}
 
 		char* buf = 0;
@@ -99,7 +99,7 @@ APRSocket::APRSocket(apr_socket_t* s, apr_pool_t* pool) :
 
 		if (status == APR_SUCCESS)
 		{
-			Transcoder::decode(buf, remoteip);
+			remoteip = Transcoder::decode(buf);
 		}
 
 		_priv->address = std::make_shared<InetAddress>(remotename, remoteip);

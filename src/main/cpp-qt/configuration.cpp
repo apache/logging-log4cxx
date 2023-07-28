@@ -72,10 +72,10 @@ log4cxx::spi::ConfigurationStatus Configuration::tryLoadFile(const QString& file
 	bool isXML = false;
 
 	if(filename.endsWith(".xml")){
-		stat = log4cxx::xml::DOMConfigurator::configure(filename.toStdString());
+		stat = log4cxx::xml::DOMConfigurator::configure(filename);
 		isXML = true;
 	}else if(filename.endsWith(".properties")){
-		stat = log4cxx::PropertyConfigurator::configure(filename.toStdString());
+		stat = log4cxx::PropertyConfigurator::configure(filename);
 	}
 
 	if( stat == log4cxx::spi::ConfigurationStatus::Configured ){

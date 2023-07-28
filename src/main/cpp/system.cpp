@@ -46,7 +46,7 @@ LogString System::getProperty(const LogString& lkey)
 
 		if (stat == APR_SUCCESS)
 		{
-			Transcoder::decode(dir, rv);
+			rv = Transcoder::decode(dir);
 		}
 
 		return rv;
@@ -61,7 +61,7 @@ LogString System::getProperty(const LogString& lkey)
 
 		if (stat == APR_SUCCESS)
 		{
-			Transcoder::decode(dir, rv);
+			rv = Transcoder::decode(dir);
 		}
 
 		return rv;
@@ -86,7 +86,7 @@ LogString System::getProperty(const LogString& lkey)
 			{
 				if (lkey == LOG4CXX_STR("user.name"))
 				{
-					Transcoder::decode(username, rv);
+					rv = Transcoder::decode(username);
 				}
 				else
 				{
@@ -95,7 +95,7 @@ LogString System::getProperty(const LogString& lkey)
 
 					if (stat == APR_SUCCESS)
 					{
-						Transcoder::decode(dirname, rv);
+						rv = Transcoder::decode(dirname);
 					}
 				}
 			}
@@ -114,7 +114,7 @@ LogString System::getProperty(const LogString& lkey)
 
 	if (stat == APR_SUCCESS)
 	{
-		Transcoder::decode((const char*) value, rv);
+		rv = Transcoder::decode(value);
 	}
 
 	return rv;

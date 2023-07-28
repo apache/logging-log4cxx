@@ -201,7 +201,7 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val)
 	return ((std::basic_ostream<char>&) os) << val;
 }
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 /**
  *   This class is designed to support insertion operations
 *   in the message argument to the LOG4CXX_INFO and similar
@@ -248,14 +248,14 @@ class LOG4CXX_EXPORT UniCharMessageBuffer
 		 */
 		UniCharMessageBuffer& operator<<(const UniChar msg);
 
-#if LOG4CXX_CFSTRING_API
+#if LOG4CXX_QSTRING_API
 		/**
 		   *   Appends a string into the buffer and
 		   *   fixes the buffer to use char characters.
 		   *   @param msg message to append.
 		   *   @return encapsulated CharMessageBuffer.
 		   */
-		UniCharMessageBuffer& operator<<(const CFStringRef& msg);
+		UniCharMessageBuffer& operator<<(const QString& msg);
 #endif
 
 		/**
@@ -671,7 +671,7 @@ class LOG4CXX_EXPORT MessageBuffer
 		 */
 		WideMessageBuffer& operator<<(const wchar_t msg);
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
 		/**
 		   *   Appends a string into the buffer and
 		   *   fixes the buffer to use char characters.
@@ -702,14 +702,14 @@ class LOG4CXX_EXPORT MessageBuffer
 		UniCharMessageBuffer& operator<<(const UniChar msg);
 #endif
 
-#if LOG4CXX_CFSTRING_API
+#if LOG4CXX_QSTRING_API
 		/**
 		   *   Appends a string into the buffer and
 		   *   fixes the buffer to use char characters.
 		   *   @param msg message to append.
 		   *   @return encapsulated CharMessageBuffer.
 		   */
-		UniCharMessageBuffer& operator<<(const CFStringRef& msg);
+		UniCharMessageBuffer& operator<<(const QString& msg);
 #endif
 
 		/**
@@ -812,7 +812,22 @@ class LOG4CXX_EXPORT MessageBuffer
 		 */
 		const std::wstring& str(std::basic_ostream<wchar_t>& os);
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+		/**
+		 *   Remove the constructed string.
+		 *   @param buf used only to signal
+		 *       the character type and that
+		 *       the embedded stream was not used.
+		 */
+		std::basic_string<UniChar> extract_str(UniCharMessageBuffer& buf);
+
+		/**
+		 *   Remove the constructed string.
+		 *   @param os used only to signal
+		 *       the character type and that
+		 *       the embedded stream was used.
+		 */
+		std::basic_string<UniChar> extract_str(UniCharMessageBuffer::uostream& os);
 		/**
 		 *   Get content of buffer.
 		 *   @param buf used only to signal

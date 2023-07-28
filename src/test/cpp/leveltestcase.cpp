@@ -20,10 +20,6 @@
 #include "testchar.h"
 #include "logunit.h"
 
-#if LOG4CXX_CFSTRING_API
-	#include <CoreFoundation/CFString.h>
-#endif
-
 using namespace log4cxx;
 
 LOGUNIT_CLASS(LevelTestCase)
@@ -39,9 +35,6 @@ LOGUNIT_CLASS(LevelTestCase)
 #endif
 #if LOG4CXX_UNICHAR_API
 	LOGUNIT_TEST(testUniCharStringToTrace);
-#endif
-#if LOG4CXX_CFSTRING_API
-	LOGUNIT_TEST(testCFStringToTrace);
 #endif
 	LOGUNIT_TEST(testTrimmedToTrace);
 	LOGUNIT_TEST_SUITE_END();
@@ -108,17 +101,6 @@ public:
 	{
 		const log4cxx::UniChar name[] = { 'T', 'R', 'A', 'C', 'E', 0 };
 		LevelPtr trace(Level::toLevel(name));
-		LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
-	}
-#endif
-
-#if LOG4CXX_CFSTRING_API
-	/**
-	 * Tests Level.toLevel(CFSTR("TRACE"));
-	 */
-	void testCFStringToTrace()
-	{
-		LevelPtr trace(Level::toLevel(CFSTR("TRACE")));
 		LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
 	}
 #endif

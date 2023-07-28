@@ -21,10 +21,6 @@
 #include "../logunit.h"
 #include <log4cxx/logstring.h>
 
-#if LOG4CXX_CFSTRING_API
-	#include <CoreFoundation/CFString.h>
-#endif
-
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -50,8 +46,8 @@ LOGUNIT_CLASS(MessageBufferTest)
 	LOGUNIT_TEST(testInsertConstUStr);
 	LOGUNIT_TEST(testInsertUString);
 #endif
-#if LOG4CXX_CFSTRING_API
-	LOGUNIT_TEST(testInsertCFString);
+#if LOG4CXX_QSTRING_API
+	LOGUNIT_TEST(testInsertQString);
 #endif
 	LOGUNIT_TEST_SUITE_END();
 
@@ -191,15 +187,15 @@ public:
 
 #endif
 
-#if LOG4CXX_CFSTRING_API
-	void testInsertCFString()
+#if LOG4CXX_QSTRING_API
+	void testInsertQString()
 	{
 		MessageBuffer buf;
 		const log4cxx::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o',
 				',', ' ', 'W', 'o', 'r', 'l', 'd', 0
 			};
-		UniCharMessageBuffer& retval = buf << CFSTR("Hello")
-			<< CFSTR(", World");
+		UniCharMessageBuffer& retval = buf << QString("Hello")
+			<< QString(", World");
 		LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval));
 		LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
 	}

@@ -30,10 +30,6 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 
-#if LOG4CXX_CFSTRING_API
-	#include <CoreFoundation/CFString.h>
-#endif
-
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -308,6 +304,10 @@ void Transcoder::encode(unsigned int sv, std::string& dst)
 	dst.append(tmp, bytes);
 }
 
+void Transcoder::decode(const char* src, LogString& dst)
+{
+	Transcoder::decode(std::string(src), dst);
+}
 
 void Transcoder::decode(const std::string& src, LogString& dst)
 {
@@ -574,7 +574,7 @@ void Transcoder::encode(unsigned int sv, std::wstring& dst)
 
 
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
 void Transcoder::decode(const std::basic_string<UniChar>& src, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_UNICHAR
@@ -620,38 +620,33 @@ void Transcoder::encode(unsigned int sv, std::basic_string<UniChar>& dst)
 
 #endif
 
-#if LOG4CXX_CFSTRING_API
-void Transcoder::decode(const CFStringRef& src, LogString& dst)
+#if LOG4CXX_QSTRING_API
+void Transcoder::decode(const QString& src, LogString& dst)
 {
-	const UniChar* chars = CFStringGetCharactersPtr(src);
-
-	if (chars)
-	{
-		decode(chars, dst);
-	}
-	else
-	{
-		size_t length = CFStringGetLength(src);
-
-		if (length > 0)
-		{
-			std::vector<UniChar> tmp(length);
-			CFStringGetCharacters(src, CFRangeMake(0, length), &tmp[0]);
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-			dst.append(&tmp[0], tmp.size());
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	dst = src.toUtf8().constData();
+#elif LOG4CXX_LOGCHAR_IS_WCHAR
+	dst = src.toStdWString();
+#elif LOG4CXX_LOGCHAR_IS_UNICHAR
+	dst = src.toStdU16String();
 #else
-			decode(std::basic_string<UniChar>(&tmp[0], tmp.size()), dst);
+	#error logchar is unrecognized
 #endif
-		}
-	}
 }
 
-CFStringRef Transcoder::encode(const LogString& src)
+QString Transcoder::encode(const LogString& src)
 {
-	LOG4CXX_ENCODE_UNICHAR(tmp, src);
-	return CFStringCreateWithCharacters(kCFAllocatorDefault, tmp.data(), tmp.size());
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	return QString::fromStdString(src);
+#elif LOG4CXX_LOGCHAR_IS_WCHAR
+	return QString::fromStdWString(src);
+#elif LOG4CXX_LOGCHAR_IS_UNICHAR
+	return QString::fromUtf16(src.c_str());
+#else
+	#error logchar is unrecognized
+#endif
 }
-#endif // #if LOG4CXX_CFSTRING_API
+#endif // #if LOG4CXX_QSTRING_API
 
 
 logchar Transcoder::decode(char val)

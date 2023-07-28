@@ -189,13 +189,10 @@ void SocketAppenderSkeleton::monitor()
 		}
 		catch (IOException& e)
 		{
-			LogString exmsg;
-			log4cxx::helpers::Transcoder::decode(e.what(), exmsg);
-
 			LogLog::debug(((LogString) LOG4CXX_STR("Could not connect to "))
 				+ _priv->address->getHostName()
 				+ LOG4CXX_STR(". Exception is ")
-				+ exmsg);
+				+ helpers::Transcoder::decode(e.what()));
 		}
 
 		std::unique_lock<std::mutex> lock( _priv->interrupt_mutex );
