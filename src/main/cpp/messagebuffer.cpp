@@ -736,8 +736,19 @@ UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(void* val)
 
 
 #if LOG4CXX_QSTRING_API
-#include <QString>
-#include <vector>
+CharMessageBuffer& CharMessageBuffer::operator<<(const QString& msg)
+{
+	if (m_priv->stream == 0)
+	{
+		m_priv->buf.append(msg.toUtf8().constData());
+	}
+	else
+	{
+		*m_priv->stream << msg.toUtf8().constData();
+	}
+
+	return *this;
+}
 
 UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const QString& msg)
 {
@@ -750,7 +761,6 @@ UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const QString& msg)
 
 	return *this;
 }
-
 
 UniCharMessageBuffer& MessageBuffer::operator<<(const QString& msg)
 {

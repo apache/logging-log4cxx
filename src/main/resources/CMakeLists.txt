@@ -17,7 +17,7 @@
 
 # Configure
 if(WIN32)
-target_sources(log4cxx
+target_sources(${LOG4CXX_LIB_NAME}
   PRIVATE
   ../resources/log4cxx.rc
 )

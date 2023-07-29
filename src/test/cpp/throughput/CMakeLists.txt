@@ -42,7 +42,7 @@ if( WIN32 )
 
 
   set(EXPAT_DLL_DIR "${EXPAT_LIB_DIR}/../bin")
-  set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>;")
+  set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:${LOG4CXX_LIB_NAME}>>;")
   set(PATH_FOR_TESTS ${CMAKE_PROGRAM_PATH};${APR_DLL_DIR};${APR_UTIL_DLL_DIR};${LOG4CXX_DLL_DIR};${EXPAT_DLL_DIR}\;)
   list(REMOVE_DUPLICATES PATH_FOR_TESTS)
   set(NORMAL_PATH $ENV{PATH})
@@ -56,7 +56,7 @@ if( WIN32 )
 endif( WIN32 )
 
 target_compile_definitions(throughputtests PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
-target_include_directories(throughputtests PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
-target_link_libraries(throughputtests PRIVATE log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads fmt::fmt)
+target_include_directories(throughputtests PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:${LOG4CXX_LIB_NAME},INCLUDE_DIRECTORIES>)
+target_link_libraries(throughputtests PRIVATE ${LOG4CXX_LIB_NAME} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads fmt::fmt)
 
 add_custom_target(run-throughput COMMAND throughputtests DEPENDS throughputtests)

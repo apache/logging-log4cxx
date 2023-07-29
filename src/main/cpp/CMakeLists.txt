@@ -19,13 +19,13 @@
 option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
 
 # Build the log4cxx library
-add_library(log4cxx)
+add_library(${LOG4CXX_LIB_NAME})
 if(BUILD_SHARED_LIBS)
-    target_compile_definitions(log4cxx PRIVATE LOG4CXX)
+    target_compile_definitions(${LOG4CXX_LIB_NAME} PRIVATE LOG4CXX)
 else()
-    target_compile_definitions(log4cxx PUBLIC LOG4CXX_STATIC)
+    target_compile_definitions(${LOG4CXX_LIB_NAME} PUBLIC LOG4CXX_STATIC)
 endif()
-add_dependencies(log4cxx configure_log4cxx)
+add_dependencies(${LOG4CXX_LIB_NAME} configure_log4cxx)
 
 set(extra_classes "")
 
@@ -59,7 +59,7 @@ if(${ENABLE_FMT_LAYOUT})
 	)
 endif()
 
-target_sources(log4cxx
+target_sources(${LOG4CXX_LIB_NAME}
   PRIVATE
   action.cpp
   andfilter.cpp
@@ -201,19 +201,19 @@ target_sources(log4cxx
   zipcompressaction.cpp
   ${extra_classes}
 )
-set_target_properties(log4cxx PROPERTIES
+set_target_properties(${LOG4CXX_LIB_NAME} PROPERTIES
   VERSION ${LIBLOG4CXX_LIB_VERSION}
   SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
 )
-boostfallback_link(log4cxx)
+boostfallback_link(${LOG4CXX_LIB_NAME})
 get_directory_property( FILESYSTEM_IMPL DIRECTORY "${LOG4CXX_SOURCE_DIR}/src/main/include" DEFINITION FILESYSTEM_IMPL )
 if("${FILESYSTEM_IMPL}" STREQUAL "std::filesystem" OR
    "${FILESYSTEM_IMPL}" STREQUAL "std::experimental::filesystem" )
-  target_link_libraries(log4cxx PUBLIC $<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:stdc++fs>)
+  target_link_libraries(${LOG4CXX_LIB_NAME} PUBLIC $<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:stdc++fs>)
 endif()
 
 if(${ENABLE_FMT_LAYOUT})
-    target_link_libraries(log4cxx PUBLIC fmt::fmt)
+    target_link_libraries(${LOG4CXX_LIB_NAME} PUBLIC fmt::fmt)
 endif()
 
 if(LOG4CXX_ABI_CHECK)
@@ -242,12 +242,12 @@ if(LOG4CXX_ABI_CHECK)
     set(abi-compliance-script ${abi-compliance-checker_SOURCE_DIR}/abi-compliance-checker.pl)
 
     add_custom_target(dump-abi ALL
-        COMMAND perl ${abi-dumper-script} -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:log4cxx>
-	DEPENDS log4cxx
+        COMMAND perl ${abi-dumper-script} -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:${LOG4CXX_LIB_NAME}>
+	DEPENDS ${LOG4CXX_LIB_NAME}
 	COMMENT "Dumping ABI symbols")
 
     add_custom_target(compare-abi ALL
-	COMMAND perl ${abi-compliance-script} -skip-internal-symbols "\\d\\(fmt\\)" -skip-internal-types "\\(fmt\\)::" -l log4cxx -old ${LOG4CXX_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump
+	COMMAND perl ${abi-compliance-script} -skip-internal-symbols "\\d\\(fmt\\)" -skip-internal-types "\\(fmt\\)::" -l ${LOG4CXX_LIB_NAME} -old ${LOG4CXX_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump
 	DEPENDS dump-abi
 	COMMENT "Comparing ABI symbols")
 endif(LOG4CXX_ABI_CHECK)

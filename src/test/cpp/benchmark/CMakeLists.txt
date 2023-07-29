@@ -44,7 +44,7 @@ if( WIN32 )
 
 
   set(EXPAT_DLL_DIR "${EXPAT_LIB_DIR}/../bin")
-  set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>;")
+  set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:${LOG4CXX_LIB_NAME}>>;")
   set(PATH_FOR_TESTS ${CMAKE_PROGRAM_PATH};${APR_DLL_DIR};${APR_UTIL_DLL_DIR};${LOG4CXX_DLL_DIR};${EXPAT_DLL_DIR}\;)
   list(REMOVE_DUPLICATES PATH_FOR_TESTS)
   set(NORMAL_PATH $ENV{PATH})
@@ -60,5 +60,5 @@ add_custom_target(run-benchmarks COMMAND benchmark DEPENDS benchmark)
 endif( WIN32 )
 
 target_compile_definitions(benchmark PRIVATE "LOG4CXX_HAS_FMT=${LOG4CXX_HAS_FMT}" ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
-target_include_directories(benchmark PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
-target_link_libraries(benchmark PRIVATE log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads fmt::fmt benchmark::benchmark benchmark::benchmark_main)
+target_include_directories(benchmark PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:${LOG4CXX_LIB_NAME},INCLUDE_DIRECTORIES>)
+target_link_libraries(benchmark PRIVATE ${LOG4CXX_LIB_NAME} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads fmt::fmt benchmark::benchmark benchmark::benchmark_main)

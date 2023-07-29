@@ -16,12 +16,14 @@
 #
 add_subdirectory(include)
 add_subdirectory(cpp)
-add_subdirectory(cpp-qt)
+if(LOG4CXX_QT_SUPPORT)
+  add_subdirectory(cpp-qt)
+endif(LOG4CXX_QT_SUPPORT)
 add_subdirectory(resources)
 
 # setup include directories 
 include(GNUInstallDirs)
-target_include_directories(log4cxx PUBLIC 
+target_include_directories(${LOG4CXX_LIB_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )

@@ -15,17 +15,12 @@
 # limitations under the License.
 #
 
-option(LOG4CXX_QT_SUPPORT "Qt support/integration" OFF)
-
 # Log4cxx Qt support, if enabled
-if(LOG4CXX_QT_SUPPORT)
-    find_package(Qt5 COMPONENTS Core REQUIRED)
 
-    target_compile_definitions(log4cxx PRIVATE "QT_NO_KEYWORDS")
-    target_link_libraries(log4cxx PRIVATE Qt5::Core)
-    target_sources(log4cxx
-      PRIVATE
-        messagehandler.cpp
-        configuration.cpp
-    )
-endif( LOG4CXX_QT_SUPPORT)
+target_compile_definitions(${LOG4CXX_LIB_NAME} PRIVATE "QT_NO_KEYWORDS")
+target_link_libraries(${LOG4CXX_LIB_NAME} PRIVATE Qt5::Core)
+target_sources(${LOG4CXX_LIB_NAME}
+  PRIVATE
+    messagehandler.cpp
+    configuration.cpp
+)

@@ -19,6 +19,10 @@ include(src/cmake/projectVersionDetails.cmake)
 project(log4cxx VERSION ${log4cxx_VER} LANGUAGES CXX)
 include(CTest)
 
+# Allow option based library naming.
+# This is the default name.
+set(LOG4CXX_LIB_NAME log4cxx)
+
 # If you are including log4cxx from a higher-level CMake file(perhaps as a submodule?)
 # CMAKE_SOURCE_DIR will refer to the first CMakeLists.txt.  Since we need some files
 # in relation to the log4cxx source root, set a variable that contains the log4cxx root.
@@ -66,6 +70,12 @@ if(TARGET EXPAT::EXPAT)
 elseif(TARGET expat::expat)
   set(EXPAT_LIBRARIES expat::expat)
 endif()
+
+option(LOG4CXX_QT_SUPPORT "Qt support/integration" OFF)
+if(LOG4CXX_QT_SUPPORT)
+    find_package(Qt5 COMPONENTS Core REQUIRED)
+    set(LOG4CXX_LIB_NAME log4cxx-qt)
+endif(LOG4CXX_QT_SUPPORT)
 
 option(LOG4CXX_ENABLE_ODBC "Support logging via ODBC" OFF)
 if(LOG4CXX_ENABLE_ODBC)
@@ -136,7 +146,7 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/main/include/log4cxx
   PATTERN "Private" EXCLUDE
 )
 
-install(TARGETS log4cxx EXPORT log4cxxTargets
+install(TARGETS ${LOG4CXX_LIB_NAME} EXPORT log4cxxTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} 
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -144,7 +154,7 @@ install(TARGETS log4cxx EXPORT log4cxxTargets
 )
 
 IF(WIN32 AND BUILD_SHARED_LIBS AND LOG4CXX_INSTALL_PDB)
-  INSTALL(FILES $<TARGET_PDB_FILE:log4cxx>
+  INSTALL(FILES $<TARGET_PDB_FILE:${LOG4CXX_LIB_NAME}>
           DESTINATION ${CMAKE_INSTALL_BINDIR}
           CONFIGURATIONS RelWithDebInfo Debug
   )

@@ -38,8 +38,8 @@ foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
         target_sources(${PROGRAM_NAME} PRIVATE com/foo/config3.cpp )
     endif()
     target_compile_definitions(${PROGRAM_NAME} PRIVATE ${EXAMPLE_COMPILE_DEFINITIONS} ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
-    target_include_directories(${PROGRAM_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
-    target_link_libraries(${PROGRAM_NAME} PRIVATE log4cxx ${APR_UTIL_LIBRARIES} ${EXPAT_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS})
+    target_include_directories(${PROGRAM_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:${LOG4CXX_LIB_NAME},INCLUDE_DIRECTORIES>)
+    target_link_libraries(${PROGRAM_NAME} PRIVATE ${LOG4CXX_LIB_NAME} ${APR_UTIL_LIBRARIES} ${EXPAT_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS})
     if( WIN32 )
         set_target_properties(${PROGRAM_NAME} PROPERTIES
           VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
@@ -53,8 +53,8 @@ endforeach()
 if(${fmt_FOUND})
     add_executable( format-string format-string.cpp )
     target_compile_definitions(format-string PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
-    target_include_directories(format-string PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
-    target_link_libraries(format-string PRIVATE log4cxx ${APR_UTIL_LIBRARIES} ${EXPAT_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} fmt::fmt)
+    target_include_directories(format-string PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:${LOG4CXX_LIB_NAME},INCLUDE_DIRECTORIES>)
+    target_link_libraries(format-string PRIVATE ${LOG4CXX_LIB_NAME} ${APR_UTIL_LIBRARIES} ${EXPAT_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} fmt::fmt)
     if( WIN32 )
         set_target_properties( format-string PROPERTIES
           VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"

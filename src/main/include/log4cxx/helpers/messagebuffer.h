@@ -75,6 +75,16 @@ class LOG4CXX_EXPORT CharMessageBuffer
 		 */
 		CharMessageBuffer& operator<<(const char msg);
 
+#if LOG4CXX_QSTRING_API
+		/**
+		   *   Appends a string into the buffer and
+		   *   fixes the buffer to use char characters.
+		   *   @param msg message to append.
+		   *   @return encapsulated CharMessageBuffer.
+		   */
+		CharMessageBuffer& operator<<(const QString& msg);
+#endif
+
 		/**
 		 *   Insertion operator for STL manipulators such as std::fixed.
 		 *   @param manip manipulator.
