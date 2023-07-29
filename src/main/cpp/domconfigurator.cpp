@@ -31,7 +31,6 @@
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/defaultloggerfactory.h>
-#include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/pool.h>
@@ -850,37 +849,79 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 
 	return spi::ConfigurationStatus::Configured;
 }
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+#if LOG4CXX_QSTRING_API || 15 < LOG4CXX_ABI_VERSION
 spi::ConfigurationStatus DOMConfigurator::configure(const File& filename)
 {
-#else
-spi::ConfigurationStatus DOMConfigurator::configure(const std::string& s)
-{
-	File filename(s);
-#endif
 	return DOMConfigurator().doConfigure(filename, LogManager::getLoggerRepository());
 }
-
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& filename)
-#else
+#else // ABI 15 API
 spi::ConfigurationStatus DOMConfigurator::configure(const std::string& filename)
+{
+	File file(filename);
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+}
+
+#if LOG4CXX_WCHAR_T_API
+spi::ConfigurationStatus DOMConfigurator::configure(const std::wstring& filename)
+{
+	File file(filename);
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+}
 #endif
+
+#if LOG4CXX_UNICHAR_API
+spi::ConfigurationStatus DOMConfigurator::configure(const std::basic_string<UniChar>& filename)
+{
+	File file(filename);
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+}
+#endif
+
+
+#if LOG4CXX_CFSTRING_API
+spi::ConfigurationStatus DOMConfigurator::configure(const CFStringRef& filename)
+{
+	File file(filename);
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+}
+#endif
+
+
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename)
 {
 	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
 }
 
+#if LOG4CXX_WCHAR_T_API
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename)
+{
+	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+}
+#endif
 
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+#if LOG4CXX_UNICHAR_API
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename)
+{
+	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+}
+#endif
+
+#if LOG4CXX_CFSTRING_API
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& filename)
+{
+	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+}
+#endif
+#endif // ABI 15 API
+
+#if LOG4CXX_QSTRING_API || 15 < LOG4CXX_ABI_VERSION
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& file, long delay)
 {
-#else
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
+#else // ABI 15 API
+static spi::ConfigurationStatus doConfigureAndWatch(XMLWatchdog*& xdog, const File& file, long delay)
 {
-	File file(filename);
 #endif
 #if APR_HAS_THREADS
-
 	if ( xdog )
 	{
 		APRInitializer::unregisterCleanup(xdog);
@@ -899,6 +940,35 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& f
 	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif
 }
+
+#if !LOG4CXX_QSTRING_API && 15 == LOG4CXX_ABI_VERSION
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
+{
+	return doConfigureAndWatch(xdog, File(filename), delay);
+}
+
+#if LOG4CXX_WCHAR_T_API
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
+{
+	return doConfigureAndWatch(xdog, File(filename), delay);
+}
+#endif
+
+#if LOG4CXX_UNICHAR_API
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename, long delay)
+{
+	return doConfigureAndWatch(xdog, File(filename), delay);
+}
+#endif
+
+#if LOG4CXX_CFSTRING_API
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
+{
+	return doConfigureAndWatch(xdog, File(filename), delay);
+}
+#endif
+
+#endif // ABI 15
 
 void DOMConfigurator::parse(
 	Pool& p,

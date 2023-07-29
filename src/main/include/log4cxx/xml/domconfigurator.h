@@ -26,6 +26,7 @@
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/spi/configurator.h>
 #include <log4cxx/helpers/charsetdecoder.h>
+#include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/rolling/triggeringpolicy.h>
 #include <log4cxx/rolling/rollingpolicy.h>
@@ -217,21 +218,50 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		/**
 		A static version of #doConfigure.
 		*/
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+#if LOG4CXX_QSTRING_API || 15 < LOG4CXX_ABI_VERSION
 		static spi::ConfigurationStatus configure(const File& filename);
-#else // Preserve ABI compatability
+#else // ABI 15
 		static spi::ConfigurationStatus configure(const std::string& filename);
+#if LOG4CXX_WCHAR_T_API
+		static spi::ConfigurationStatus configure(const std::wstring& filename);
 #endif
+#if LOG4CXX_UNICHAR_API
+		static spi::ConfigurationStatus configure(const std::basic_string<UniChar>& filename);
+#endif
+#if LOG4CXX_CFSTRING_API
+		static spi::ConfigurationStatus configure(const CFStringRef& filename);
+#endif
+#endif // ABI 15
+
+#if LOG4CXX_QSTRING_API || 15 < LOG4CXX_ABI_VERSION
+		/**
+		Load the log4cxx configuration from <code>filename</code>.
+		A thread will be created that will periodically
+		check if <code>filename</code> has been created or
+		modified. The period is determined by the <code>millisecondDelay</code>
+		argument. If a change or file creation is detected, then
+		<code>filename</code> is read to configure log4cxx.
+
+		@param filename A XML format log4j configuration file.
+		@param millisecondDelay The duration in milliseconds to wait between each check.
+		*/
+		static spi::ConfigurationStatus configureAndWatch(const File& filename, long millisecondDelay = helpers::FileWatchdog::DEFAULT_DELAY);
+#else // ABI 15
 		/**
 		Like #configureAndWatch(const std::string& configFilename, long delay)
 		except that the default delay as defined by
 		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
 		@param configFilename A log4j configuration file in XML format.
 		*/
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
-		static spi::ConfigurationStatus configureAndWatch(const File& filename);
-#else // Preserve ABI compatability
-		static spi::ConfigurationStatus configureAndWatch(const std::string& filename);
+		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename);
+#if LOG4CXX_WCHAR_T_API
+		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename);
+#endif
+#if LOG4CXX_UNICHAR_API
+		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename);
+#endif
+#if LOG4CXX_CFSTRING_API
+		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename);
 #endif
 		/**
 		Read the configuration file <code>configFilename</code> if it
@@ -244,11 +274,21 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		@param configFilename A log4j configuration file in XML format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
-		static spi::ConfigurationStatus configureAndWatch(const File& filename, long delay);
-#else // Preserve ABI compatability
-		static spi::ConfigurationStatus configureAndWatch(const std::string& filename, long delay)
+		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename,
+			long delay);
+#if LOG4CXX_WCHAR_T_API
+		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename,
+			long delay);
 #endif
+#if LOG4CXX_UNICHAR_API
+		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename,
+			long delay);
+#endif
+#if LOG4CXX_CFSTRING_API
+		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename,
+			long delay);
+#endif
+#endif // ABI 15 compatabile API
 
 		/**
 		Interpret the XML file pointed by <code>filename</code> and set up
