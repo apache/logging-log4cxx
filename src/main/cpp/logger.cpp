@@ -1050,36 +1050,36 @@ void Logger::warn(const std::basic_string<UniChar>& msg) const
 
 
 #if LOG4CXX_CFSTRING_API
-void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message,
+void Logger::forcedLog(const LevelPtr& level, const CFStringRef& message,
 	const LocationInfo& location) const
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;
 	Pool p;
 	LOG4CXX_DECODE_CFSTRING(msg, message);
-	auto event = std::make_shared<LoggingEvent>(name, level1, location, std::move(msg));
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
 	callAppenders(event, p);
 }
 
-void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message) const
+void Logger::forcedLog(const LevelPtr& level, const CFStringRef& message) const
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;
 	Pool p;
 	LOG4CXX_DECODE_CFSTRING(msg, message);
-	auto event = std::make_shared<LoggingEvent>(name, level1, msg,
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, msg,
 			LocationInfo::getLocationUnavailable());
 	callAppenders(event, p);
 }
 
 void Logger::getName(CFStringRef& rv) const
 {
-	rv = Transcoder::encode(name);
+	rv = Transcoder::encode(m_priv->name);
 }
 
 LoggerPtr Logger::getLogger(const CFStringRef& name)
 {
-	return LogManager::getLogger(name);
+	return LogManager::getLogger(m_priv->name);
 }
 
 void Logger::trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const
