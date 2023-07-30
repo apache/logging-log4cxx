@@ -54,9 +54,11 @@ if()
 endif()
 
 if(${ENABLE_FMT_LAYOUT})
-    set(extra_classes ${extra_classes}
-	fmtlayout.cpp
-	)
+    list(APPEND extra_classes fmtlayout.cpp)
+endif()
+# Workaround compilation error "implicit instantiation of undefined template 'std::ctype<unsigned short>'"
+if(NOT LOG4CXX_CFSTRING)
+    list(APPEND extra_classes logstream.cpp)
 endif()
 
 target_sources(log4cxx
@@ -135,7 +137,6 @@ target_sources(log4cxx
   loggingeventpatternconverter.cpp
   loglog.cpp
   logmanager.cpp
-  logstream.cpp
   manualtriggeringpolicy.cpp
   mapfilter.cpp
   mdc.cpp
