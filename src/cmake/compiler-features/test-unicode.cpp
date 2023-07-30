@@ -5,7 +5,7 @@
 #include <string>
 #include <sstream>
 
-using UniChar = unsigned short;
+using UniChar = char16_t;
 using StringType = std::basic_string<UniChar>;
 using StreamType = std::basic_ostringstream<UniChar>;
 int main()

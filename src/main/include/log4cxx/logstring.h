@@ -35,7 +35,7 @@ namespace log4cxx
 {
 
 #if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
-	typedef unsigned short UniChar;
+	typedef char16_t UniChar;
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
