@@ -1079,7 +1079,7 @@ void Logger::getName(CFStringRef& rv) const
 
 LoggerPtr Logger::getLogger(const CFStringRef& name)
 {
-	return LogManager::getLogger(m_priv->name);
+	return LogManager::getLogger(name);
 }
 
 void Logger::trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const
