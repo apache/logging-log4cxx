@@ -707,6 +707,13 @@ class LOG4CXX_EXPORT MessageBuffer
 		 *       the embedded stream was not used.
 		 */
 		std::basic_string<UniChar> extract_str(UniCharMessageBuffer& buf);
+
+		/**
+		 *   Remove the constructed string.
+		 *   @param buf used only to signal that
+		 *       the embedded stream was not used.
+		 */
+		std::basic_string<UniChar> extract_str(std::basic_ostream<UniChar>& os);
 #endif
 
 #if LOG4CXX_CFSTRING_API
