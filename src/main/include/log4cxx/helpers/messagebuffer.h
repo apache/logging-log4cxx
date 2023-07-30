@@ -700,6 +700,13 @@ class LOG4CXX_EXPORT MessageBuffer
 		 *   @return encapsulated CharMessageBuffer.
 		 */
 		UniCharMessageBuffer& operator<<(const UniChar msg);
+
+		/**
+		 *   Remove the constructed string.
+		 *   @param buf used only to signal that
+		 *       the embedded stream was not used.
+		 */
+		std::basic_string<UniChar> extract_str(UniCharMessageBuffer& buf);
 #endif
 
 #if LOG4CXX_CFSTRING_API
