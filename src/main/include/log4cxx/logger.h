@@ -190,7 +190,7 @@ class LOG4CXX_EXPORT Logger :
 		<p>This method first checks if this logger is <code>DEBUG</code>
 		enabled by comparing the level of this logger with the
 		DEBUG level. If this logger is
-		<code>DEBUG</code> enabled, it proceeds to call alls the
+		<code>DEBUG</code> enabled, it proceeds to call all the
 		registered appenders in this logger and also higher in the
 		hierarchy depending on the value of the additivity flag.
 
