@@ -121,6 +121,8 @@ LOGUNIT_CLASS(StreamTestCase)
 #if LOG4CXX_CFSTRING_API
 	LOGUNIT_TEST(testCFString);
 	LOGUNIT_TEST(testCFStringAppend);
+#endif
+#if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
 	LOGUNIT_TEST(testULogStreamCFString);
 	LOGUNIT_TEST(testULogStreamCFString2);
 #endif
