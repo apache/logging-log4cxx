@@ -774,14 +774,21 @@ UniCharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
 	m_priv->ubuf = std::make_unique<UniCharMessageBuffer>();
 	return (*m_priv->ubuf) << msg;
 }
+
 #elif LOG4CXX_CFSTRING_API
 #include <CoreFoundation/CFString.h>
 #include <vector>
 
+#if LOG4CXX_WCHAR_T_API
 MessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
 {
 	LOG4CXX_DECODE_CFSTRING(tmp, msg);
-
+	return m_priv->cbuf.operator << tmp;
+}
+#else // MessageBuffer is CharMessageBuffer
+CharMessageBuffer& CharMessageBuffer::operator<<(const CFStringRef& msg)
+{
+	LOG4CXX_DECODE_CFSTRING(tmp, msg);
 	if (m_priv->stream)
 	{
 		*m_priv->stream << tmp;
@@ -790,8 +797,8 @@ MessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
 	{
 		m_priv->buf.append(&tmp[0], tmp.size());
 	}
-
 	return *this;
 }
+#endif // MessageBuffer is CharMessageBuffer
 #endif // LOG4CXX_CFSTRING_API
 

@@ -30,7 +30,7 @@ add_dependencies(log4cxx configure_log4cxx)
 set(extra_classes "")
 
 if(LOG4CXX_NETWORKING_SUPPORT)
-    list(APPEND extra_classes
+    set(extra_classes ${extra_classes}
 	datagrampacket.cpp
 	datagramsocket.cpp
 	aprdatagramsocket.cpp
@@ -47,12 +47,16 @@ if(LOG4CXX_NETWORKING_SUPPORT)
 	)
 endif()
 
-if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
-    list(APPEND extra_classes multiprocessrollingfileappender.cpp)
+if()
+    set(extra_classes ${extra_classes}
+	multiprocessrollingfileappender.cpp
+	)
 endif()
 
-if(ENABLE_FMT_LAYOUT)
-    list(APPEND extra_classes fmtlayout.cpp)
+if(${ENABLE_FMT_LAYOUT})
+    set(extra_classes ${extra_classes}
+	fmtlayout.cpp
+	)
 endif()
 
 target_sources(log4cxx
