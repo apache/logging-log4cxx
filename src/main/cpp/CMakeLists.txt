@@ -217,7 +217,7 @@ if(${ENABLE_FMT_LAYOUT})
 endif()
 
 if (LOG4CXX_CFSTRING)
-    target_link_libraries(log4cxx PRIVATE -framework CoreFoundation)
+    target_link_libraries(log4cxx PRIVATE "-framework CoreFoundation")
 endif()
 
 if(LOG4CXX_ABI_CHECK)
