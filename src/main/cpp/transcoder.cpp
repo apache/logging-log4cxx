@@ -631,11 +631,11 @@ void Transcoder::decode(const CFStringRef& src, LogString& dst)
 
 		if (length > 0)
 		{
-			std::vector<char16_t> tmp(length);
+			std::vector<unsigned short> tmp(length);
 			CFStringGetCharacters(src, CFRangeMake(0, length), &tmp[0]);
 			for (auto i = tmp.begin(); i != tmp.end(); )
 			{
-				unsigned int cp = decodeUTF16(src, i);
+				unsigned int cp = decodeUTF16(tmp, i);
 				encode(cp, dst);
 			}
 		}
@@ -644,7 +644,7 @@ void Transcoder::decode(const CFStringRef& src, LogString& dst)
 
 CFStringRef Transcoder::encode(const LogString& src)
 {
-	std::basic_string<char16_t> tmp;
+	std::basic_string<unsigned short> tmp;
 	for (auto ch : src)
 		encodeUTF16(ch, tmp);
 	return CFStringCreateWithCharacters(kCFAllocatorDefault, tmp.data(), tmp.size());
