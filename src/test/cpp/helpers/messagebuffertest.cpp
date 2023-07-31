@@ -191,7 +191,7 @@ public:
 
 #endif
 
-#if LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
 	void testInsertCFString()
 	{
 		MessageBuffer buf;
