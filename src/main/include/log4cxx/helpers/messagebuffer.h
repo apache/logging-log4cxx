@@ -742,7 +742,7 @@ class LOG4CXX_EXPORT MessageBuffer
 		   *   @param msg message to append.
 		   *   @return encapsulated CharMessageBuffer.
 		   */
-		MessageBuffer& operator<<(const CFStringRef& msg);
+		CharMessageBuffer& operator<<(const CFStringRef& msg);
 
 #endif
 

@@ -780,10 +780,10 @@ UniCharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
 #include <vector>
 
 #if LOG4CXX_WCHAR_T_API
-MessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
+CharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
 {
 	LOG4CXX_DECODE_CFSTRING(tmp, msg);
-	return m_priv->cbuf.operator << tmp;
+	return m_priv->cbuf << tmp;
 }
 #else // MessageBuffer is CharMessageBuffer
 CharMessageBuffer& CharMessageBuffer::operator<<(const CFStringRef& msg)
