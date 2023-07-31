@@ -574,7 +574,7 @@ void Transcoder::encode(unsigned int sv, std::wstring& dst)
 
 
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 void Transcoder::decode(const std::basic_string<UniChar>& src, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_UNICHAR
@@ -623,32 +623,30 @@ void Transcoder::encode(unsigned int sv, std::basic_string<UniChar>& dst)
 #if LOG4CXX_CFSTRING_API
 void Transcoder::decode(const CFStringRef& src, LogString& dst)
 {
-	const UniChar* chars = CFStringGetCharactersPtr(src);
+	auto chars = CFStringGetCharactersPtr(src);
 
 	if (chars)
 	{
-		decode(chars, dst);
-	}
-	else
-	{
-		size_t length = CFStringGetLength(src);
+		auto length = CFStringGetLength(src);
 
 		if (length > 0)
 		{
-			std::vector<UniChar> tmp(length);
+			std::vector<char16_t> tmp(length);
 			CFStringGetCharacters(src, CFRangeMake(0, length), &tmp[0]);
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-			dst.append(&tmp[0], tmp.size());
-#else
-			decode(std::basic_string<UniChar>(&tmp[0], tmp.size()), dst);
-#endif
+			for (auto i = tmp.begin(); i != tmp.end(); )
+			{
+				unsigned int cp = decodeUTF16(src, i);
+				encode(cp, dst);
+			}
 		}
 	}
 }
 
 CFStringRef Transcoder::encode(const LogString& src)
 {
-	LOG4CXX_ENCODE_UNICHAR(tmp, src);
+	std::basic_string<char16_t> tmp;
+	for (auto ch : src)
+		encodeUTF16(ch, tmp);
 	return CFStringCreateWithCharacters(kCFAllocatorDefault, tmp.data(), tmp.size());
 }
 #endif // #if LOG4CXX_CFSTRING_API

@@ -887,7 +887,7 @@ void Logger::warn(const std::wstring& msg) const
 #endif
 
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 void Logger::addEvent(const LevelPtr& level1, std::basic_string<UniChar>&& message,	const LocationInfo& location) const
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
@@ -919,9 +919,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 			LocationInfo::getLocationUnavailable());
 	callAppenders(event, p);
 }
-#endif
 
-#if LOG4CXX_UNICHAR_API
 void Logger::getName(std::basic_string<UniChar>& rv) const
 {
 	Transcoder::encode(m_priv->name, rv);

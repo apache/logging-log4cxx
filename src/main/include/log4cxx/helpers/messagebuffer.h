@@ -74,6 +74,16 @@ class LOG4CXX_EXPORT CharMessageBuffer
 		 *   @return this buffer.
 		 */
 		CharMessageBuffer& operator<<(const char msg);
+#if LOG4CXX_CFSTRING_API && !LOG4CXX_WCHAR_T_API
+		/**
+		   *   Appends a string into the buffer and
+		   *   fixes the buffer to use char characters.
+		   *   @param msg message to append.
+		   *   @return encapsulated CharMessageBuffer.
+		   */
+		CharMessageBuffer& operator<<(const CFStringRef& msg);
+
+#endif
 
 		/**
 		 *   Insertion operator for STL manipulators such as std::fixed.
@@ -201,7 +211,7 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val)
 	return ((std::basic_ostream<char>&) os) << val;
 }
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 /**
  *   This class is designed to support insertion operations
 *   in the message argument to the LOG4CXX_INFO and similar
@@ -671,7 +681,7 @@ class LOG4CXX_EXPORT MessageBuffer
 		 */
 		WideMessageBuffer& operator<<(const wchar_t msg);
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 		/**
 		   *   Appends a string into the buffer and
 		   *   fixes the buffer to use char characters.
@@ -716,7 +726,7 @@ class LOG4CXX_EXPORT MessageBuffer
 		std::basic_string<UniChar> extract_str(std::basic_ostream<UniChar>& os);
 #endif
 
-#if LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
 		/**
 		   *   Appends a string into the buffer and
 		   *   fixes the buffer to use char characters.
@@ -724,6 +734,16 @@ class LOG4CXX_EXPORT MessageBuffer
 		   *   @return encapsulated CharMessageBuffer.
 		   */
 		UniCharMessageBuffer& operator<<(const CFStringRef& msg);
+
+#elif LOG4CXX_CFSTRING_API
+		/**
+		   *   Appends a string into the buffer and
+		   *   fixes the buffer to use char characters.
+		   *   @param msg message to append.
+		   *   @return encapsulated CharMessageBuffer.
+		   */
+		MessageBuffer& operator<<(const CFStringRef& msg);
+
 #endif
 
 		/**
@@ -826,7 +846,7 @@ class LOG4CXX_EXPORT MessageBuffer
 		 */
 		const std::wstring& str(std::basic_ostream<wchar_t>& os);
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 		/**
 		 *   Get content of buffer.
 		 *   @param buf used only to signal

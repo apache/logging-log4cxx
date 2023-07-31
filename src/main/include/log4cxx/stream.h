@@ -420,7 +420,7 @@ class LOG4CXX_EXPORT wlogstream : public logstream_base
 };
 #endif
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 /**
  *  An STL-like stream API for log4cxx using UniChar as the character type.
 *. Instances of log4cxx::logstream

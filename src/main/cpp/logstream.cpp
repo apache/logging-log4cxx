@@ -17,7 +17,7 @@
 
 #include <log4cxx/log4cxx.h>
 /* Prevent std::basic_streambuf etc destructor ... already defined in logstream.obj */
-#if defined(_MSC_VER) && (LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API)
+#if defined(_MSC_VER) && LOG4CXX_UNICHAR_API
 #define __FORCE_INSTANCE
 #endif
 #include <log4cxx/logstring.h>
@@ -492,7 +492,7 @@ ulogstream::ulogstream(const CFStringRef& loggerName,
 #endif
 
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 
 ulogstream::ulogstream(const log4cxx::LoggerPtr& logger,
 	const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0)
