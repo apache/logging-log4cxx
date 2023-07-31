@@ -633,7 +633,9 @@ public:
 		LOG4CXX_INFO(root, CFSTR("This is a test") << CFSTR(": Details to follow"));
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
+#endif
 
+#if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
 	void testULogStreamCFString()
 	{
 		ulogstream root(Logger::getRootLogger(), Level::getInfo());
