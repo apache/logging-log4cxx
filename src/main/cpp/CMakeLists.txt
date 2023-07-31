@@ -216,6 +216,10 @@ if(${ENABLE_FMT_LAYOUT})
     target_link_libraries(log4cxx PUBLIC fmt::fmt)
 endif()
 
+if (LOG4CXX_CFSTRING)
+    target_link_libraries(log4cxx PRIVATE -framework Cocoa)
+endif()
+
 if(LOG4CXX_ABI_CHECK)
     message("Getting dependencies for ABI compatability check...")
     # Get the latest version of abi-dumper and abi-compliance-checker
