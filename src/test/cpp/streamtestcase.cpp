@@ -623,14 +623,14 @@ public:
 	void testCFString()
 	{
 		LoggerPtr root(Logger::getRootLogger());
-		LOG4CXX_INFO(root, CFSTR("This is a test"))
+		LOG4CXX_INFO(root, CFSTR("This is a test"));
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 
 	void testCFStringAppend()
 	{
 		LoggerPtr root(Logger::getRootLogger());
-		LOG4CXX_INFO(root, CFSTR("This is a test") << CFSTR(": Details to follow"))
+		LOG4CXX_INFO(root, CFSTR("This is a test") << CFSTR(": Details to follow"));
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 
