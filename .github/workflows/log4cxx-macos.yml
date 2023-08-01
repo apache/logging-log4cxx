@@ -45,7 +45,7 @@ jobs:
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=on -DLOG4CXX_CFSTRING=on ..
+        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=ON -DLOG4CXX_CFSTRING=ON ..
         cmake --build .
 
     - name: run unit tests

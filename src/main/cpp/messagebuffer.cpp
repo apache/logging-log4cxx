@@ -779,13 +779,6 @@ UniCharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
 #include <CoreFoundation/CFString.h>
 #include <vector>
 
-#if LOG4CXX_WCHAR_T_API
-CharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
-{
-	LOG4CXX_DECODE_CFSTRING(tmp, msg);
-	return m_priv->cbuf << tmp;
-}
-#else // MessageBuffer is CharMessageBuffer
 CharMessageBuffer& CharMessageBuffer::operator<<(const CFStringRef& msg)
 {
 	LOG4CXX_DECODE_CFSTRING(tmp, msg);
@@ -799,6 +792,14 @@ CharMessageBuffer& CharMessageBuffer::operator<<(const CFStringRef& msg)
 	}
 	return *this;
 }
-#endif // MessageBuffer is CharMessageBuffer
+
+#if LOG4CXX_WCHAR_T_API
+CharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
+{
+	LOG4CXX_DECODE_CFSTRING(tmp, msg);
+	return m_priv->cbuf << tmp;
+}
+#endif // LOG4CXX_WCHAR_T_API
+
 #endif // LOG4CXX_CFSTRING_API
 

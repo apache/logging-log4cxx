@@ -74,7 +74,7 @@ class LOG4CXX_EXPORT CharMessageBuffer
 		 *   @return this buffer.
 		 */
 		CharMessageBuffer& operator<<(const char msg);
-#if LOG4CXX_CFSTRING_API && !LOG4CXX_WCHAR_T_API
+#if LOG4CXX_CFSTRING_API
 		/**
 		   *   Appends a string into the buffer and
 		   *   fixes the buffer to use char characters.
@@ -82,7 +82,6 @@ class LOG4CXX_EXPORT CharMessageBuffer
 		   *   @return encapsulated CharMessageBuffer.
 		   */
 		CharMessageBuffer& operator<<(const CFStringRef& msg);
-
 #endif
 
 		/**
@@ -743,7 +742,6 @@ class LOG4CXX_EXPORT MessageBuffer
 		   *   @return encapsulated CharMessageBuffer.
 		   */
 		CharMessageBuffer& operator<<(const CFStringRef& msg);
-
 #endif
 
 		/**
