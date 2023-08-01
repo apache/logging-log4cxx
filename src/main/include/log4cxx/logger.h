@@ -551,7 +551,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void forcedLog(const LevelPtr& level, const std::wstring& message) const;
 #endif
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.

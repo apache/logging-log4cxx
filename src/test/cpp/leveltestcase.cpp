@@ -19,6 +19,7 @@
 #include <log4cxx/level.h>
 #include "testchar.h"
 #include "logunit.h"
+#include <log4cxx/helpers/loglog.h>
 
 #if LOG4CXX_CFSTRING_API
 	#include <CoreFoundation/CFString.h>
@@ -45,6 +46,15 @@ LOGUNIT_CLASS(LevelTestCase)
 #endif
 	LOGUNIT_TEST(testTrimmedToTrace);
 	LOGUNIT_TEST_SUITE_END();
+
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 public:
 	void testToLevelFatal()

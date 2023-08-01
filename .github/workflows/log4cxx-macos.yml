@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-name: log4cxx-posix
+name: log4cxx-osx
 
 on: [push, pull_request]
 
@@ -24,24 +24,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu20-gcc, ubuntu20-clang, ubuntu22-gcc, ubuntu22-clang, osx-11, osx-12]
+        name: [osx-11, osx-12]
         include:
-          - name: ubuntu20-gcc
-            os: ubuntu-20.04
-            cxx: g++
-            cc: gcc
-          - name: ubuntu20-clang
-            os: ubuntu-20.04
-            cxx: clang++
-            cc: clang
-          - name: ubuntu22-gcc
-            os: ubuntu-22.04
-            cxx: g++
-            cc: gcc
-          - name: ubuntu22-clang
-            os: ubuntu-22.04
-            cxx: clang++
-            cc: clang
           - name: osx-11
             os: macos-11
             cxx: clang++
@@ -56,18 +40,12 @@ jobs:
       with:
         path: main
 
-    - name: 'Configure Dependencies - Ubuntu'
-      if: startsWith( matrix.name,'ubuntu' )
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libapr1-dev libaprutil1-dev libfmt-dev unixodbc-dev
-
-    - name: 'run cmake - posix'
+    - name: 'configure and build'
       run: |
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=on ..
+        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=ON -DLOG4CXX_CFSTRING=ON -DCMAKE_BUILD_TYPE=Debug ..
         cmake --build .
 
     - name: run unit tests

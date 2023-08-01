@@ -17,7 +17,7 @@
 
 #include <log4cxx/log4cxx.h>
 /* Prevent error C2491: 'std::numpunct<_Elem>::id': definition of dllimport static data member not allowed */
-#if defined(_MSC_VER) && (LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API)
+#if defined(_MSC_VER) && LOG4CXX_UNICHAR_API
 #define __FORCE_INSTANCE
 #endif
 #include <log4cxx/helpers/messagebuffer.h>
@@ -379,7 +379,7 @@ struct MessageBuffer::MessageBufferPrivate{
 	 * Encapsulated wide message buffer, created on demand.
 	 */
 	std::unique_ptr<WideMessageBuffer> wbuf;
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 	/**
 	 * Encapsulated wide message buffer, created on demand.
 	 */
@@ -399,7 +399,7 @@ MessageBuffer::~MessageBuffer()
 bool MessageBuffer::hasStream() const
 {
 	bool retval = m_priv->cbuf.hasStream() || (m_priv->wbuf != 0 && m_priv->wbuf->hasStream());
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 	retval = retval || (m_priv->ubuf != 0 && m_priv->ubuf->hasStream());
 #endif
 	return retval;
@@ -540,7 +540,7 @@ std::ostream& MessageBuffer::operator<<(void* val)
 	return m_priv->cbuf.operator << (val);
 }
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 UniCharMessageBuffer& MessageBuffer::operator<<(const std::basic_string<log4cxx::UniChar>& msg)
 {
 	m_priv->ubuf = std::make_unique<UniCharMessageBuffer>();
@@ -583,10 +583,11 @@ const std::basic_string<log4cxx::UniChar>& MessageBuffer::str(std::basic_ostream
 {
 	return m_priv->ubuf->str(os);
 }
-#endif //LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#endif //LOG4CXX_UNICHAR_API
+
 #endif // LOG4CXX_WCHAR_T_API
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API
 struct UniCharMessageBuffer::UniCharMessageBufferPrivate : public StringOrStream<UniChar> {};
 
 UniCharMessageBuffer::UniCharMessageBuffer() :
@@ -732,10 +733,10 @@ UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(void* val)
 	return ((UniCharMessageBuffer::uostream&) * this).operator << (val);
 }
 
-#endif // LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#endif // LOG4CXX_UNICHAR_API
 
 
-#if LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
 #include <CoreFoundation/CFString.h>
 #include <vector>
 
@@ -773,5 +774,32 @@ UniCharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
 	m_priv->ubuf = std::make_unique<UniCharMessageBuffer>();
 	return (*m_priv->ubuf) << msg;
 }
+
+#elif LOG4CXX_CFSTRING_API
+#include <CoreFoundation/CFString.h>
+#include <vector>
+
+CharMessageBuffer& CharMessageBuffer::operator<<(const CFStringRef& msg)
+{
+	LOG4CXX_DECODE_CFSTRING(tmp, msg);
+	if (m_priv->stream)
+	{
+		*m_priv->stream << tmp;
+	}
+	else
+	{
+		m_priv->buf.append(&tmp[0], tmp.size());
+	}
+	return *this;
+}
+
+#if LOG4CXX_WCHAR_T_API
+CharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
+{
+	LOG4CXX_DECODE_CFSTRING(tmp, msg);
+	return m_priv->cbuf << tmp;
+}
+#endif // LOG4CXX_WCHAR_T_API
+
 #endif // LOG4CXX_CFSTRING_API
 

@@ -77,7 +77,7 @@ class TestFixture
 			const char* actualExpr,
 			int lineno);
 #endif
-#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API
 		void assertEquals(const std::basic_string<log4cxx::UniChar> expected,
 			const std::basic_string<log4cxx::UniChar> actual,
 			const char* expectedExpr,
