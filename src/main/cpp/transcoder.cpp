@@ -625,27 +625,23 @@ void Transcoder::encode(unsigned int sv, std::basic_string<UniChar>& dst)
 #if LOG4CXX_CFSTRING_API
 void Transcoder::decode(const CFStringRef& src, LogString& dst)
 {
-	auto chars = CFStringGetCharactersPtr(src);
+	auto length = CFStringGetLength(src);
+#if defined(_DEBUG)
 	Pool pool;
-	LogString msg(LOG4CXX_STR("Transcoder::decodeCFString@"));
-	StringHelper::toString((size_t)chars, pool, msg);
+	LogString msg(LOG4CXX_STR("Transcoder::decodeCFString"));
 	msg += LOG4CXX_STR(" length ");
-	StringHelper::toString((size_t)CFStringGetLength(src), pool, msg);
+	StringHelper::toString((size_t)length, pool, msg);
 	LogLog::debug(msg);
+#endif
 
-	if (chars)
+	if (length > 0)
 	{
-		auto length = CFStringGetLength(src);
-
-		if (length > 0)
+		std::vector<unsigned short> tmp(length);
+		CFStringGetCharacters(src, CFRangeMake(0, length), &tmp[0]);
+		for (auto i = tmp.begin(); i != tmp.end(); )
 		{
-			std::vector<unsigned short> tmp(length);
-			CFStringGetCharacters(src, CFRangeMake(0, length), &tmp[0]);
-			for (auto i = tmp.begin(); i != tmp.end(); )
-			{
-				unsigned int cp = decodeUTF16(tmp, i);
-				encode(cp, dst);
-			}
+			unsigned int cp = decodeUTF16(tmp, i);
+			encode(cp, dst);
 		}
 	}
 }
