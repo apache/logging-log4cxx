@@ -203,7 +203,18 @@ public:
 		LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval));
 		LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
 	}
-
+#elif LOG4CXX_CFSTRING_API
+	void testInsertCFString()
+	{
+		MessageBuffer buf;
+		const log4cxx::logchar greeting[] = { 'H', 'e', 'l', 'l', 'o',
+				',', ' ', 'W', 'o', 'r', 'l', 'd', 0
+			};
+		CharMessageBuffer& retval = buf << CFSTR("Hello")
+			<< CFSTR(", World");
+		LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::logchar>(greeting), buf.str(retval));
+		LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
+	}
 #endif
 
 };
