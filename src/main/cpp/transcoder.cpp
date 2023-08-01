@@ -626,14 +626,12 @@ void Transcoder::encode(unsigned int sv, std::basic_string<UniChar>& dst)
 void Transcoder::decode(const CFStringRef& src, LogString& dst)
 {
 	auto chars = CFStringGetCharactersPtr(src);
-#if defined(_DEBUG)
 	Pool pool;
 	LogString msg(LOG4CXX_STR("Transcoder::decodeCFString@"));
 	StringHelper::toString((size_t)chars, pool, msg);
 	msg += LOG4CXX_STR(" length ");
 	StringHelper::toString((size_t)CFStringGetLength(src), pool, msg);
 	LogLog::debug(msg);
-#endif
 
 	if (chars)
 	{
