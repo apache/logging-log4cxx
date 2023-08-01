@@ -27,6 +27,7 @@
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/fileinputstream.h>
+#include <log4cxx/helpers/loglog.h>
 
 #if LOG4CXX_CFSTRING_API
 	#include <CoreFoundation/CFString.h>
@@ -58,6 +59,15 @@ LOGUNIT_CLASS(FileTestCase)
 	LOGUNIT_TEST(assignment);
 	LOGUNIT_TEST(deleteBackslashedFileName);
 	LOGUNIT_TEST_SUITE_END();
+
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 public:
 	void defaultConstructor()
@@ -123,7 +133,7 @@ public:
 #if LOG4CXX_CFSTRING_API
 	void cfstringConstructor()
 	{
-		File propFile(CFSTR("input/patternLayout.properties"));
+		File propFile(CFSTR("input/patternLayout1.properties"));
 		Pool pool;
 		bool exists = propFile.exists(pool);
 		LOGUNIT_ASSERT_EQUAL(true, exists);

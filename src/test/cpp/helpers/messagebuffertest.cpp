@@ -20,6 +20,7 @@
 #include "../insertwide.h"
 #include "../logunit.h"
 #include <log4cxx/logstring.h>
+#include <log4cxx/helpers/loglog.h>
 
 #if LOG4CXX_CFSTRING_API
 	#include <CoreFoundation/CFString.h>
@@ -55,6 +56,15 @@ LOGUNIT_CLASS(MessageBufferTest)
 #endif
 	LOGUNIT_TEST_SUITE_END();
 
+
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 public:
 	void testInsertChar()
