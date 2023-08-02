@@ -19,6 +19,9 @@
 #include "../insertwide.h"
 #include "../logunit.h"
 
+#if LOG4CXX_CFSTRING_API
+	#include <CoreFoundation/CFString.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -35,6 +38,9 @@ LOGUNIT_CLASS(TranscoderTestCase)
 #if LOG4CXX_WCHAR_T_API
 	LOGUNIT_TEST(decode4);
 #endif
+#if LOG4CXX_CFSTRING_API
+	LOGUNIT_TEST(decode5);
+#endif
 	LOGUNIT_TEST(decode7);
 	LOGUNIT_TEST(decode8);
 #if LOG4CXX_WCHAR_T_API
@@ -50,6 +56,9 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(encode5);
 #endif
 	LOGUNIT_TEST(encode6);
+#if LOG4CXX_CFSTRING_API
+	LOGUNIT_TEST(encode7);
+#endif
 	LOGUNIT_TEST(testDecodeUTF8_1);
 	LOGUNIT_TEST(testDecodeUTF8_2);
 	LOGUNIT_TEST(testDecodeUTF8_3);
@@ -103,6 +112,16 @@ public:
 		LogString decoded(LOG4CXX_STR("foo\n"));
 		Transcoder::decode(nothing, decoded);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
+	}
+#endif
+
+#if LOG4CXX_CFSTRING_API
+	void decode5()
+	{
+		LogString nothing;
+		LogString decoded(LOG4CXX_STR("foo\n"));
+		Transcoder::decode(nothing, decoded);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("foo\n"), decoded);
 	}
 #endif
 
@@ -169,7 +188,7 @@ public:
 	{
 		// Test invalid multibyte string
 		LogString greeting;
-		greeting.push_back( 0xff );
+		greeting.push_back( logchar(0xff) );
 		std::wstring encoded;
 		Transcoder::encode(greeting, encoded);
 
@@ -247,6 +266,17 @@ public:
 		Transcoder::encode(decoded, encoded);
 	}
 
+#if LOG4CXX_CFSTRING_API
+	void encode7()
+	{
+		const LogString greeting(LOG4CXX_STR("Hello, World"));
+		CFStringRef encoded = Transcoder::encode(greeting);
+		LogString decoded;
+		Transcoder::decode(encoded, decoded);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("Hello, World"), decoded);
+	}
+#endif
+
 	void testDecodeUTF8_1()
 	{
 		std::string src("a");
@@ -257,7 +287,7 @@ public:
 
 	void testDecodeUTF8_2()
 	{
-		std::string src(1, 0x80);
+		std::string src(1, char(0x80));
 		LogString out;
 		Transcoder::decodeUTF8(src, out);
 		LOGUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);

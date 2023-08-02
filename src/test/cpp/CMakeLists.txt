@@ -105,7 +105,7 @@ endif()
 
 get_filename_component(UNIT_TEST_WORKING_DIR ../resources ABSOLUTE)
 if(LOG4CXX_CFSTRING)
-  set(CFSTR_TESTS filetestcase messagebuffertest leveltestcase streamtestcase)
+  set(CFSTR_TESTS filetestcase messagebuffertest leveltestcase streamtestcase transcodertestcase)
 endif()
 foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     if (${testName} IN_LIST CFSTR_TESTS)
