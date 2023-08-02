@@ -242,13 +242,17 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 			if (stat == APR_SUCCESS)
 			{
-				snprintf(szUid, MAX_FILE_LEN, "%u", uid);
+#ifdef WIN32
+				snprintf(szUid, MAX_FILE_LEN, "%p", uid);
+#else
+				snprintf(szUid, MAX_FILE_LEN, "%u", (unsigned int)uid);
+#endif
 			}
 
 			log4cxx::filesystem::path path = szDirName;
-			const LogString lockname = path.parent_path() / (path.filename().string() + szUid + ".lock");
+			const auto lockname = path.parent_path() / (path.filename().string() + szUid + ".lock");
 			apr_file_t* lock_file;
-			stat = apr_file_open(&lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, p.getAPRPool());
+			stat = apr_file_open(&lock_file, lockname.string().c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, p.getAPRPool());
 
 			if (stat != APR_SUCCESS)
 			{

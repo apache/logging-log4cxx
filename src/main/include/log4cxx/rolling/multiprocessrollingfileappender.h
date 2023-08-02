@@ -71,7 +71,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public FileAppender
 		   <code>File</code> is truncated with no backup files created.
 
 		 */
-		bool rollover(helpers::Pool& p) override;
+		bool rollover(helpers::Pool& p);
 
 	protected:
 
