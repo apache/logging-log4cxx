@@ -55,8 +55,9 @@ void CFStringGetCharacters(CFStringRef theString, CFRange range, UniChar *buffer
 }
 CFStringRef CFStringCreateWithCharacters(CFAllocatorRef alloc, const UniChar *chars, CFIndex numChars) {
 	UniChar* result = (UniChar*)apr_palloc(getStringPool(), (numChars + 1) * sizeof(UniChar));
-	for (UniChar* p = result; *p++ = *chars++;)
-		;
+	result[numChars] = 0;
+	for (UniChar* p = result; 0 < numChars; --numChars)
+		*p++ = *chars++;
 	return (CFStringRef)result;
 }
 CFStringRef CFStringCreateWithCString(CFAllocatorRef alloc, const char *cStr, CFStringEncoding encoding) {
