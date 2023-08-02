@@ -788,7 +788,7 @@ CharMessageBuffer& CharMessageBuffer::operator<<(const CFStringRef& msg)
 	}
 	else
 	{
-		m_priv->buf.append(&tmp[0], tmp.size());
+		m_priv->buf.append(tmp);
 	}
 	return *this;
 }
