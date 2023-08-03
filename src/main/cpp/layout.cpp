@@ -41,7 +41,7 @@ size_t Layout::getFormattedEventCharacterCount() const
 {
 	auto exampleEvent = std::make_shared<spi::LoggingEvent>
 		( LOG4CXX_STR("example.logger")
-		, Level::getInfo()
+		, Level::getDebug()
 		, LOG4CXX_LOCATION
 		, LogString()
 		);
