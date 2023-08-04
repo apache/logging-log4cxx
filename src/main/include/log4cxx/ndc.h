@@ -263,6 +263,7 @@ class LOG4CXX_EXPORT NDC
 		/**
 		 Add \c message onto the context stack.
 		 @see The #push method.
+
 		 @param message The text added to the diagnostic context information.
 		  */
 		NDC(const CFStringRef& message);

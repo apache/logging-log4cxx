@@ -356,6 +356,7 @@ bool NDC::peek(std::basic_string<UniChar>& dst)
 
 #endif
 
+
 #if LOG4CXX_CFSTRING_API
 NDC::NDC(const CFStringRef& message)
 {

@@ -23,6 +23,7 @@
 	#include <CoreFoundation/CFString.h>
 #endif
 
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -227,6 +228,7 @@ std::basic_string<log4cxx::UniChar> MDC::remove(const std::basic_string<log4cxx:
 #endif
 
 #if LOG4CXX_CFSTRING_API
+
 MDC::MDC(const CFStringRef& key1, const CFStringRef& value)
 {
 	Transcoder::decode(key1, key);
@@ -270,3 +272,4 @@ CFStringRef MDC::remove(const CFStringRef& key)
 	return CFSTR("");
 }
 #endif
+
