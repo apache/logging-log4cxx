@@ -218,6 +218,40 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void qdebug(const QString& msg, const log4cxx::spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>DEBUG</code> events.
+
+		<p>This method first checks if this logger is <code>DEBUG</code>
+		enabled by comparing the level of this logger with the
+		DEBUG level. If this logger is
+		<code>DEBUG</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_DEBUG.
+		*/
+		void debug(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+		/**
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>DEBUG</code> events.
+
+		<p>This method first checks if this logger is <code>DEBUG</code>
+		enabled by comparing the level of this logger with the
+		DEBUG level. If this logger is
+		<code>DEBUG</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_DEBUG.
+		*/
+		void debug(const CFStringRef& msg) const;
+#endif
 
 		/**
 		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
@@ -333,6 +367,24 @@ class LOG4CXX_EXPORT Logger :
 		See also #LOG4CXX_ERROR.
 		*/
 		void qerror(const QString& msg, const log4cxx::spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+#endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+
+		<p>This method first checks if this logger is <code>ERROR</code>
+		enabled by comparing the level of this logger with the
+		ERROR level. If this logger is
+		<code>ERROR</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_ERROR.
+		*/
+		void error(const CFStringRef& msg) const;
 #endif
 
 		/**
@@ -450,6 +502,24 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void qfatal(const QString& msg, const log4cxx::spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+
+		<p>This method first checks if this logger is <code>ERROR</code>
+		enabled by comparing the level of this logger with the
+		ERROR level. If this logger is
+		<code>ERROR</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_FATAL.
+		*/
+		void fatal(const CFStringRef& msg) const;
+#endif
 
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
@@ -533,7 +603,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message) const;
 #endif
-#if LOG4CXX_QSTRING_API
+#if LOG4CXX_CFSTRING_API
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
@@ -541,8 +611,16 @@ class LOG4CXX_EXPORT Logger :
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
 		*/
-		void addEvent(const LevelPtr& level, QString&& message,
-			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+		void forcedLog(const LevelPtr& level, const CFStringRef& message,
+						const log4cxx::spi::LocationInfo& location) const;
+		/**
+		Add a new logging event containing \c message to attached appender(s).
+		without further checks.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void forcedLog(const LevelPtr& level, const CFStringRef& message) const;
 #endif
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
@@ -632,6 +710,13 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void getName(QString& name) const;
 #endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		* Put name of this logger into \c name.
+		* @param name buffer to which name is appended.
+		*/
+		void getName(CFStringRef& name) const;
+#endif
 
 		/**
 		The parent of this logger. Note that the parent of a
@@ -677,6 +762,13 @@ class LOG4CXX_EXPORT Logger :
 		* @param name logger name.
 		*/
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
+#endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		* Retrieve a logger by name.
+		* @param name logger name.
+		*/
+		static LoggerPtr getLogger(const CFStringRef& name);
 #endif
 		/**
 		* Retrieve a logger by name in Unicode.
@@ -751,6 +843,23 @@ class LOG4CXX_EXPORT Logger :
 		actually create a new Instance.
 		*/
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
+			const log4cxx::spi::LoggerFactoryPtr& factory);
+#endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Like #getLogger except that the type of logger
+		instantiated depends on the type returned by the
+		LoggerFactory#makeNewLoggerInstance method of the
+		<code>factory</code> parameter.
+
+		<p>This method is intended to be used by sub-classes.
+
+		@param name The name of the logger to retrieve.
+
+		@param factory A LoggerFactory implementation that will
+		actually create a new Instance.
+		*/
+		static LoggerPtr getLogger(const CFStringRef& name,
 			const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 
@@ -890,6 +999,24 @@ class LOG4CXX_EXPORT Logger :
 		See also #LOG4CXX_INFO.
 		*/
 		void qinfo(const QString& msg, const log4cxx::spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+#endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>INFO</code> events.
+
+		<p>This method first checks if this logger is <code>INFO</code>
+		enabled by comparing the level of this logger with the
+		INFO level. If this logger is
+		<code>INFO</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_INFO.
+		*/
+		void info(const CFStringRef& msg) const;
 #endif
 
 		/**
@@ -1438,6 +1565,27 @@ class LOG4CXX_EXPORT Logger :
 		void qlog(const LevelPtr& level, const QString& message,
 			const log4cxx::spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
+		This is the most generic printing method. It is intended to be
+		invoked by <b>wrapper</b> classes.
+
+		@param level The level of the logging request.
+		@param message The message of the logging request.
+		@param location The source file of the logging request, may be null. */
+		void log(const LevelPtr& level, const CFStringRef& message,
+			const log4cxx::spi::LocationInfo& location) const;
+		/**
+		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
+		This is the most generic printing method. It is intended to be
+		invoked by <b>wrapper</b> classes.
+
+		@param level The level of the logging request.
+		@param message The message of the logging request.
+		*/
+		void log(const LevelPtr& level, const CFStringRef& message) const;
+#endif
 		/**
 		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
@@ -1594,6 +1742,40 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void qwarn(const QString& msg, const log4cxx::spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>WARN</code> events.
+
+		<p>This method first checks if this logger is <code>WARN</code>
+		enabled by comparing the level of this logger with the
+		WARN level. If this logger is
+		<code>WARN</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_WARN.
+		*/
+		void warn(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+		/**
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>WARN</code> events.
+
+		<p>This method first checks if this logger is <code>WARN</code>
+		enabled by comparing the level of this logger with the
+		WARN level. If this logger is
+		<code>WARN</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_WARN.
+		*/
+		void warn(const CFStringRef& msg) const;
+#endif
 		/**
 		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>WARN</code> events.
 
@@ -1709,6 +1891,40 @@ class LOG4CXX_EXPORT Logger :
 		See also #LOG4CXX_TRACE.
 		*/
 		void qtrace(const QString& msg, const log4cxx::spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+#endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>TRACE</code> events.
+
+		<p>This method first checks if this logger is <code>TRACE</code>
+		enabled by comparing the level of this logger with the
+		TRACE level. If this logger is
+		<code>TRACE</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_TRACE.
+		*/
+		void trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+		/**
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>TRACE</code> events.
+
+		<p>This method first checks if this logger is <code>TRACE</code>
+		enabled by comparing the level of this logger with the
+		TRACE level. If this logger is
+		<code>TRACE</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
+
+		@param msg the message string to log.
+		@param location The source code location of the logging request.
+
+		See also #LOG4CXX_TRACE.
+		*/
+		void trace(const CFStringRef& msg) const;
 #endif
 		/**
 		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>TRACE</code> events.
