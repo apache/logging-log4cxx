@@ -190,6 +190,27 @@ LoggerPtr LogManager::exists(const CFStringRef& name)
 }
 #endif
 
+#if LOG4CXX_QSTRING_API
+LoggerPtr LogManager::getLogger(const QString& name)
+{
+	LOG4CXX_DECODE_QSTRING(n, name);
+	return getLoggerLS(n);
+}
+
+LoggerPtr LogManager::getLogger(const QString& name,
+	const spi::LoggerFactoryPtr& factory)
+{
+	LOG4CXX_DECODE_QSTRING(n, name);
+	return getLoggerLS(n, factory);
+}
+
+LoggerPtr LogManager::exists(const QString& name)
+{
+	LOG4CXX_DECODE_QSTRING(n, name);
+	return existsLS(n);
+}
+#endif
+
 LoggerPtr LogManager::existsLS(const LogString& name)
 {
 	return getLoggerRepository()->exists(name);

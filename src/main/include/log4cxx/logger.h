@@ -809,6 +809,13 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		static LoggerPtr getLogger(const CFStringRef& name);
 #endif
+#if LOG4CXX_QSTRING_API
+		/**
+		* Retrieve a logger by name.
+		* @param name logger name.
+		*/
+		static LoggerPtr getLogger(const QString& name);
+#endif
 		/**
 		* Retrieve a logger by name in Unicode.
 		* @param name logger name.

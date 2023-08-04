@@ -562,7 +562,7 @@ LoggerPtr Logger::getLogger(const std::string& name)
 
 LoggerPtr Logger::getLogger(const char* const name)
 {
-	return LogManager::getLogger(name);
+	return LogManager::getLogger(std::string(name));
 }
 
 void Logger::setResourceBundle(const helpers::ResourceBundlePtr& bundle)
@@ -1205,6 +1205,11 @@ void Logger::addEvent(const LevelPtr& level, QString& message, const LocationInf
 void Logger::getName(QString& rv) const
 {
 	rv = Transcoder::encode(m_priv->name);
+}
+
+LoggerPtr Logger::getLogger(const QString& name)
+{
+	return LogManager::getLogger(name);
 }
 
 void Logger::qtrace(const QString& msg, const spi::LocationInfo& location) const

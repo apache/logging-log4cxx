@@ -735,6 +735,19 @@ UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(void* val)
 #endif // LOG4CXX_UNICHAR_API
 
 #if LOG4CXX_UNICHAR_API && LOG4CXX_QSTRING_API
+UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const QString& msg)
+{
+	if (m_priv->stream)
+	{
+		*m_priv->stream << msg.utf16();
+	}
+	else
+	{
+		m_priv->buf.append(msg.utf16());
+	}
+	return *this;
+}
+
 UniCharMessageBuffer& MessageBuffer::operator<<(const QString& msg)
 {
 	m_priv->ubuf = std::make_unique<UniCharMessageBuffer>();

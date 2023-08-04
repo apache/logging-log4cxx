@@ -180,6 +180,32 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr exists(const CFStringRef& name);
 #endif
 
+#if LOG4CXX_QSTRING_API
+		/**
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using DefaultLoggerFactory to create it if required.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
+		passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
+		*/
+		static LoggerPtr getLogger(const QString& name);
+		/**
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using \c factory to create it if required.
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
+		passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
+		*/
+		static LoggerPtr getLogger(const QString& name,
+			const spi::LoggerFactoryPtr& factory);
+		/**
+		 Does the logger \c name exist in the hierarchy?
+		 */
+		static LoggerPtr exists(const QString& name);
+#endif
+
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
