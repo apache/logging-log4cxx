@@ -29,6 +29,10 @@
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/loglog.h>
 
+#if LOG4CXX_CFSTRING_API
+	#include <CoreFoundation/CFString.h>
+#endif
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
