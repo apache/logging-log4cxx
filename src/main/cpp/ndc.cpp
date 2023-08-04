@@ -356,4 +356,59 @@ bool NDC::peek(std::basic_string<UniChar>& dst)
 
 #endif
 
+#if LOG4CXX_CFSTRING_API
+NDC::NDC(const CFStringRef& message)
+{
+	push(message);
+}
+
+void NDC::push(const CFStringRef& message)
+{
+	LOG4CXX_DECODE_CFSTRING(msg, message);
+	pushLS(msg);
+}
+
+bool NDC::pop(CFStringRef& dst)
+{
+	ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+
+	if (data != 0)
+	{
+		Stack& stack = data->getStack();
+
+		if (!stack.empty())
+		{
+			dst = Transcoder::encode(getMessage(stack.top()));
+			stack.pop();
+			data->recycle();
+			return true;
+		}
+
+		data->recycle();
+	}
+
+	return false;
+}
+
+bool NDC::peek(CFStringRef& dst)
+{
+	ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+
+	if (data != 0)
+	{
+		Stack& stack = data->getStack();
+
+		if (!stack.empty())
+		{
+			dst = Transcoder::encode(getMessage(stack.top()));
+			return true;
+		}
+
+		data->recycle();
+	}
+
+	return false;
+}
+
+#endif
 

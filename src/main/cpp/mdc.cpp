@@ -19,6 +19,10 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 
+#if LOG4CXX_CFSTRING_API
+	#include <CoreFoundation/CFString.h>
+#endif
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -222,3 +226,47 @@ std::basic_string<log4cxx::UniChar> MDC::remove(const std::basic_string<log4cxx:
 }
 #endif
 
+#if LOG4CXX_CFSTRING_API
+MDC::MDC(const CFStringRef& key1, const CFStringRef& value)
+{
+	Transcoder::decode(key1, key);
+	LOG4CXX_DECODE_CFSTRING(v, value);
+	putLS(key, v);
+}
+
+CFStringRef MDC::get(const CFStringRef& key)
+{
+	LOG4CXX_DECODE_CFSTRING(lkey, key);
+	LogString lvalue;
+
+	if (get(lkey, lvalue))
+	{
+		LOG4CXX_ENCODE_CFSTRING(value, lvalue);
+		return value;
+	}
+
+	return CFSTR("");
+}
+
+void MDC::put(const CFStringRef& key, const CFStringRef& value)
+{
+	LOG4CXX_DECODE_CFSTRING(lkey, key);
+	LOG4CXX_DECODE_CFSTRING(lvalue, value);
+	putLS(lkey, lvalue);
+}
+
+
+CFStringRef MDC::remove(const CFStringRef& key)
+{
+	LOG4CXX_DECODE_CFSTRING(lkey, key);
+	LogString lvalue;
+
+	if (remove(lkey, lvalue))
+	{
+		LOG4CXX_ENCODE_CFSTRING(value, lvalue);
+		return value;
+	}
+
+	return CFSTR("");
+}
+#endif

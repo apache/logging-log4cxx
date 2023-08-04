@@ -192,6 +192,25 @@ void Level::toString(std::basic_string<UniChar>& dst) const
 
 #endif
 
+#if LOG4CXX_CFSTRING_API
+LevelPtr Level::toLevel(const CFStringRef& sArg)
+{
+	return toLevel(sArg, Level::getDebug());
+}
+
+LevelPtr Level::toLevel(const CFStringRef& sArg, const LevelPtr& defaultLevel)
+{
+	LogString s;
+	Transcoder::decode(sArg, s);
+	return toLevelLS(s, defaultLevel);
+}
+
+void Level::toString(CFStringRef& dst) const
+{
+	dst = Transcoder::encode(name);
+}
+#endif
+
 LevelPtr Level::toLevelLS(const LogString& sArg, const LevelPtr& defaultLevel)
 {
 	const LogString trimmed(StringHelper::trim(sArg));

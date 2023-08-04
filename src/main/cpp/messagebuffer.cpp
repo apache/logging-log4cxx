@@ -765,39 +765,30 @@ CharMessageBuffer& MessageBuffer::operator<<(const QString& msg)
 
 #endif // LOG4CXX_QSTRING_API
 
-  #if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
+#if LOG4CXX_CFSTRING_API
 #include <CoreFoundation/CFString.h>
 #include <vector>
 
+#if LOG4CXX_UNICHAR_API
 UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const CFStringRef& msg)
 {
-	if (m_priv->stream == 0)
+	size_t length = CFStringGetLength(msg);
+	if (0 < length)
 	{
-		m_priv->buf.append(msg.toUtf8().constData());
+		std::vector<unsigned short> tmp(length);
+		CFStringGetCharacters(msg, CFRangeMake(0, length), &tmp[0]);
+		if (m_priv->stream)
+		{
+			*m_priv->stream << std::basic_string<UniChar>(&tmp[0], tmp.size());
+		}
+		else
+		{
+			m_priv->buf.append(&tmp[0], tmp.size());
+		}
 	}
-	else
-	{
-		*m_priv->stream << msg.toUtf8().constData();
-	}
-
 	return *this;
 }
-
-UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const QString& msg)
-{
-	const UniChar* chars = msg.utf16();
-
-	if (chars != 0)
-	{
-		return operator<<(chars);
-	}
-
-	return *this;
-}
-elif LOG4CXX_CFSTRING_API
-#include <CoreFoundation/CFString.h>
-#include <vector>
-
+#else
 CharMessageBuffer& CharMessageBuffer::operator<<(const CFStringRef& msg)
 {
 	LOG4CXX_DECODE_CFSTRING(tmp, msg);
@@ -819,7 +810,5 @@ CharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg)
 	return m_priv->cbuf << tmp;
 }
 #endif // LOG4CXX_WCHAR_T_API
-
+#endif // LOG4CXX_UNICHAR_API
 #endif // LOG4CXX_CFSTRING_API
-
-

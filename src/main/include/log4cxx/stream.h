@@ -459,6 +459,11 @@ class LOG4CXX_EXPORT ulogstream : public logstream_base
 			const log4cxx::LevelPtr& level);
 #endif
 
+#if LOG4CXX_CFSTRING_API
+		ulogstream(const CFStringRef& loggerName,
+			const log4cxx::LevelPtr& level);
+#endif
+
 		~ulogstream();
 
 		/**

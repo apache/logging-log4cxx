@@ -120,6 +120,19 @@ File::File(const QString& name)
 }
 #endif
 
+#if LOG4CXX_CFSTRING_API
+static LogString decodeLS(const CFStringRef& src)
+{
+	LogString dst;
+	Transcoder::decode(src, dst);
+	return dst;
+}
+File::File(const CFStringRef& name)
+	: m_priv(std::make_unique<FilePrivate>(decodeLS(name)))
+{
+}
+#endif
+
 File::File(const File& src)
 	: m_priv(std::make_unique<FilePrivate>(src.m_priv->path, src.m_priv->autoDelete))
 {

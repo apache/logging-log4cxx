@@ -32,6 +32,10 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 
+#if LOG4CXX_CFSTRING_API
+	#include <CoreFoundation/CFString.h>
+#endif
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -650,7 +654,7 @@ QString Transcoder::encode(const LogString& src)
 #if LOG4CXX_CFSTRING_API
 void Transcoder::decode(const CFStringRef& src, LogString& dst)
 {
-  auto length = CFStringGetLength(src);
+	auto length = CFStringGetLength(src);
 #if defined(_DEBUG)
 	Pool pool;
 	LogString msg(LOG4CXX_STR("Transcoder::decodeCFString"));
@@ -673,7 +677,7 @@ void Transcoder::decode(const CFStringRef& src, LogString& dst)
 
 CFStringRef Transcoder::encode(const LogString& src)
 {
-  std::basic_string<unsigned short> tmp;
+	std::basic_string<unsigned short> tmp;
 	for (auto ch : src)
 		encodeUTF16(ch, tmp);
 	return CFStringCreateWithCharacters(kCFAllocatorDefault, tmp.data(), tmp.size());

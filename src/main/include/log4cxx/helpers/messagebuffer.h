@@ -277,6 +277,16 @@ class LOG4CXX_EXPORT UniCharMessageBuffer
 		UniCharMessageBuffer& operator<<(const QString& msg);
 #endif
 
+#if LOG4CXX_CFSTRING_API
+		/**
+		   *   Appends a string into the buffer and
+		   *   fixes the buffer to use char characters.
+		   *   @param msg message to append.
+		   *   @return encapsulated CharMessageBuffer.
+		   */
+		UniCharMessageBuffer& operator<<(const CFStringRef& msg);
+#endif
+
 		/**
 		 *   Insertion operator for STL manipulators such as std::fixed.
 		 *   @param manip manipulator.

@@ -167,6 +167,40 @@ class LOG4CXX_EXPORT MDC
 		*/
 		static std::basic_string<UniChar> remove(const std::basic_string<UniChar>& key);
 #endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		 *  Places a key/value pair in the MDC for the current thread
+		 *    which will be removed during the corresponding destructor.  Both
+		 *    construction and destruction are expected to be on the same thread.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
+		 */
+		MDC(const CFStringRef& key, const CFStringRef& value);
+		/**
+		*  Set the <code>key</code> context in the current thread's context map to <code>value</code>.
+		*
+		* <p>If the current thread does not have a context map it is
+		* created as a side effect.
+		 *    @param key context identifier
+		 *    @param value a string that distinguishes this context.
+		*/
+		static void put(const CFStringRef& key, const CFStringRef& value);
+		/**
+		* Get the context identified by the <code>key</code> parameter.
+		*
+		*  <p>This method has no side effects.
+		*  @param key context identifier.
+		*  @return value for key, empty if not set.
+		* */
+		static CFStringRef get(const CFStringRef& key);
+		/**
+		* Remove the the context identified by the <code>key</code>
+		* parameter.
+		*  @param key context identifier.
+		* @return value if key had been set, empty if not.
+		*/
+		static CFStringRef remove(const CFStringRef& key);
+#endif
 		/**
 		* Remove the the context identified by the <code>key</code>
 		* parameter.

@@ -480,9 +480,14 @@ ulogstream::ulogstream(const std::basic_string<Ch>& loggerName,
 	const log4cxx::LevelPtr& level) : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
 {
 }
-#endif
 
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_CFSTRING_API
+ulogstream::ulogstream(const CFStringRef& loggerName,
+	const log4cxx::LevelPtr& level)
+	: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+{
+}
+#endif
 
 ulogstream::ulogstream(const log4cxx::LoggerPtr& logger,
 	const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0)

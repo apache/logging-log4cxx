@@ -133,10 +133,6 @@ class LOG4CXX_EXPORT Transcoder
 
 #endif
 
-#if LOG4CXX_QSTRING_API
-		static void decode(const QString& src, LogString& dst);
-		static QString encode(const LogString& src);
-#endif
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		static void decode(const std::basic_string<UniChar>& src, LogString& dst);
@@ -159,6 +155,16 @@ class LOG4CXX_EXPORT Transcoder
 		  */
 		static void encode(unsigned int ch, std::basic_string<UniChar>& dst);
 
+#endif
+
+#if LOG4CXX_QSTRING_API
+		static void decode(const QString& src, LogString& dst);
+		static QString encode(const LogString& src);
+#endif
+
+#if LOG4CXX_CFSTRING_API
+		static void decode(const CFStringRef& src, LogString& dst);
+		static CFStringRef encode(const LogString& src);
 #endif
 
 
@@ -220,6 +226,13 @@ class LOG4CXX_EXPORT Transcoder
 
 #define LOG4CXX_ENCODE_QSTRING(var, src) \
 	QString var = log4cxx::helpers::Transcoder::encode(src)
+
+#define LOG4CXX_DECODE_CFSTRING(var, src) \
+	log4cxx::LogString var;                      \
+	log4cxx::helpers::Transcoder::decode(src, var)
+
+#define LOG4CXX_ENCODE_CFSTRING(var, src) \
+	CFStringRef var = log4cxx::helpers::Transcoder::encode(src)
 
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR

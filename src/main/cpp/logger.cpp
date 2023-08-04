@@ -1058,9 +1058,7 @@ void Logger::addEvent(const LevelPtr& level, QString&& message, const LocationIn
 
 void Logger::getName(QString& rv) const
 {
-	LOG4CXX_DECODE_QSTRING(msg, message);
-	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
-	callAppenders(event, p);
+	rv = Transcoder::encode(m_priv->name);
 }
 
 void Logger::qtrace(const QString& msg, const spi::LocationInfo& location) const

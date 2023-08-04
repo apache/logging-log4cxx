@@ -85,7 +85,13 @@ class LOG4CXX_EXPORT File
 		*/
 		File(const QString& path);
 #endif
+#if LOG4CXX_CFSTRING_API
 		/**
+		*   Construct a new instance.  Use setPath to specify path using a LogString.
+		* @param path file path.
+		*/
+		File(const CFStringRef& path);
+#endif		/**
 		 *  Copy constructor.
 		 */
 		File(const File& src);

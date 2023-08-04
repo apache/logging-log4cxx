@@ -24,9 +24,17 @@
 #if (LOG4CXX_LOGCHAR_IS_WCHAR + LOG4CXX_LOGCHAR_IS_UTF8 + LOG4CXX_LOGCHAR_IS_UNICHAR)>1
 	#error only one of LOG4CXX_LOGCHAR_IS_WCHAR, LOG4CXX_LOGCHAR_IS_UTF8 or LOG4CXX_LOGCHAR_IS_UNICHAR may be true
 #endif
+
 #if LOG4CXX_QSTRING_API
 #include <QString>
 #endif
+
+#if LOG4CXX_CFSTRING_API
+extern "C" {
+	typedef const struct __CFString* CFStringRef;
+}
+#endif
+
 namespace log4cxx
 {
 
