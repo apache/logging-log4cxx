@@ -57,9 +57,13 @@ using namespace log4cxx::pattern;
 
 struct PatternLayout::PatternLayoutPrivate
 {
-	PatternLayoutPrivate() {}
-	PatternLayoutPrivate(const LogString& pattern) :
-		conversionPattern(pattern) {}
+	PatternLayoutPrivate()
+		: expectedPatternLength(100)
+		{}
+	PatternLayoutPrivate(const LogString& pattern)
+		: conversionPattern(pattern)
+		, expectedPatternLength(100)
+		{}
 
 	/**
 	 * Conversion pattern.
@@ -82,6 +86,9 @@ struct PatternLayout::PatternLayoutPrivate
 	LogString m_infoColor = LOG4CXX_STR("\\x1B[32m"); //green
 	LogString m_debugColor = LOG4CXX_STR("\\x1B[36m"); //cyan;
 	LogString m_traceColor = LOG4CXX_STR("\\x1B[34m"); //blue;
+
+	// Expected length of a formatted event excluding the message text
+	size_t expectedPatternLength;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(PatternLayout)
@@ -115,6 +122,7 @@ void PatternLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& pool) const
 {
+	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
 	std::vector<FormattingInfoPtr>::const_iterator formatterIter =
 		m_priv->patternFields.begin();
 
@@ -199,6 +207,7 @@ void PatternLayout::activateOptions(Pool&)
 			m_priv->patternConverters.push_back(eventConverter);
 		}
 	}
+	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 }
 
 #define RULES_PUT(spec, cls) \
