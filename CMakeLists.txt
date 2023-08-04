@@ -20,7 +20,6 @@ project(log4cxx VERSION ${log4cxx_VER} LANGUAGES CXX)
 include(CTest)
 
 # Allow option based library naming.
-# This is the default name.
 set(LOG4CXX_LIB_NAME "log4cxx${LOG4CXX_LIBRARY_SUFFIX}")
 
 # If you are including log4cxx from a higher-level CMake file(perhaps as a submodule?)

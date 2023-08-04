@@ -1545,6 +1545,89 @@ class LOG4CXX_EXPORT Logger :
 			const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2,
 			const std::basic_string<UniChar>& val3) const;
 #endif
+#if LOG4CXX_CFSTRING_API
+		/**
+		Add a new logging event containing \c locationInfo and the localized message \c key to attached appender(s) if this logger is enabled for \c level events.
+
+		First, the user supplied
+		<code>key</code> is searched in the resource bundle. Next, the resulting
+		pattern is formatted using helpers::StringHelper::format method.
+
+		@param level The level of the logging request.
+		@param key The key to be searched in the ResourceBundle.
+		@param locationInfo The location info of the logging request.
+
+		@see #setResourceBundle
+
+		See also #LOG4CXX_L7DLOG.
+		*/
+		void l7dlog(const LevelPtr& level, const CFStringRef& key,
+			const log4cxx::spi::LocationInfo& locationInfo) const;
+		/**
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameter \c val to attached appender(s) if this logger is enabled for \c level events.
+
+		First, the user supplied
+		<code>key</code> is searched in the resource bundle. Next, the resulting
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameter in a string array.
+
+		@param level The level of the logging request.
+		@param key The key to be searched in the ResourceBundle.
+		@param locationInfo The location info of the logging request.
+		@param val1 The value for the first placeholder within the pattern.
+
+		@see #setResourceBundle
+
+		See also #LOG4CXX_L7DLOG1.
+		*/
+		void l7dlog(const LevelPtr& level, const CFStringRef& key,
+			const log4cxx::spi::LocationInfo& locationInfo,
+			const CFStringRef& val1) const;
+		/**
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1 and \c val2 to attached appender(s) if this logger is enabled for \c level events.
+
+		First, the user supplied
+		<code>key</code> is searched in the resource bundle. Next, the resulting
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
+
+		@param level The level of the logging request.
+		@param key The key to be searched in the ResourceBundle.
+		@param locationInfo The location info of the logging request.
+		@param val1 The value for the first placeholder within the pattern.
+		@param val2 The value for the second placeholder within the pattern.
+
+		@see #setResourceBundle
+
+		See also #LOG4CXX_L7DLOG2.
+		*/
+		void l7dlog(const LevelPtr& level, const CFStringRef& key,
+			const log4cxx::spi::LocationInfo& locationInfo,
+			const CFStringRef& val1, const CFStringRef& val2) const;
+		/**
+		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and \c val3 to attached appender(s) if this logger is enabled for \c level events.
+
+		First, the user supplied
+		<code>key</code> is searched in the resource bundle. Next, the resulting
+		pattern is formatted using helpers::StringHelper::format method with the
+		supplied parameters in a string array.
+
+		@param level The level of the logging request.
+		@param key The key to be searched in the ResourceBundle.
+		@param locationInfo The location info of the logging request.
+		@param val1 The value for the first placeholder within the pattern.
+		@param val2 The value for the second placeholder within the pattern.
+		@param val3 The value for the third placeholder within the pattern.
+
+		@see #setResourceBundle
+
+		See also #LOG4CXX_L7DLOG3.
+		*/
+		void l7dlog(const LevelPtr& level, const CFStringRef& key,
+			const log4cxx::spi::LocationInfo& locationInfo,
+			const CFStringRef& val1, const CFStringRef& val2,
+			const CFStringRef& val3) const;
+#endif
 
 		/**
 		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
@@ -1778,7 +1861,6 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void warn(const std::basic_string<UniChar>& msg) const;
 #endif
-
 #if LOG4CXX_CFSTRING_API
 		/**
 		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>WARN</code> events.

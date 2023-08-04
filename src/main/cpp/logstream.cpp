@@ -489,6 +489,14 @@ ulogstream::ulogstream(const CFStringRef& loggerName,
 }
 #endif
 
+#if LOG4CXX_QSTRING_API
+ulogstream::ulogstream(const QString& loggerName,
+			const log4cxx::LevelPtr& level)
+	: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+{
+}
+#endif
+
 ulogstream::ulogstream(const log4cxx::LoggerPtr& logger,
 	const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0)
 {

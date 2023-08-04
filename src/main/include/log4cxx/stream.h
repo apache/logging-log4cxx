@@ -440,7 +440,7 @@ class LOG4CXX_EXPORT ulogstream : public logstream_base
 		ulogstream(const log4cxx::LoggerPtr& logger,
 			const log4cxx::LevelPtr& level);
 
-#if LOG4CXX_UNICHAR_API
+
 		/**
 		 *   Constructor.
 		 */
@@ -452,15 +452,14 @@ class LOG4CXX_EXPORT ulogstream : public logstream_base
 		 */
 		ulogstream(const std::basic_string<Ch>& loggerName,
 			const log4cxx::LevelPtr& level);
+
+#if LOG4CXX_CFSTRING_API
+		ulogstream(const CFStringRef& loggerName,
+			const log4cxx::LevelPtr& level);
 #endif
 
 #if LOG4CXX_QSTRING_API
 		ulogstream(const QString& loggerName,
-			const log4cxx::LevelPtr& level);
-#endif
-
-#if LOG4CXX_CFSTRING_API
-		ulogstream(const CFStringRef& loggerName,
 			const log4cxx::LevelPtr& level);
 #endif
 
