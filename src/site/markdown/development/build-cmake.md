@@ -72,6 +72,7 @@ $ cmake --build buildtrees/Log4cxx --target install --config Release
 | -DAPR_STATIC=yes       | Link to the APR static library. By default, the Log4cxx shared library is linked to the APR shared library. If BUILD_SHARED_LIBS=off, the static APR library is always used.        |
 |-DLOG4CXX_TEST_PROGRAM_PATH=path| An extra path to prepend to the PATH for test programs.  Log4cxx requires zip, sed, and grep on the PATH in order for the tests to work properly.                          |
 | -DPREFER_BOOST=on      | Prefer the Boost version of dependent libraries over standard library |
+|-DLOG4CXX_LIBRARY_SUFFIX=qt| Change the Log4cxx library name. Allows side by side installation when using non-standard options (a different ABI).                         |
 
 ## A note on C++ version and Boost
 

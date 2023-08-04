@@ -17,10 +17,10 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: log4cxx
+Name: log4cxx@libsuffix@
 Description: log4cxx C++ logging framework
 Version: @VERSION@
-Libs: -L${libdir} -llog4cxx
+Libs: -L${libdir} -llog4cxx@libsuffix@
 Cflags: -I${includedir}
 Requires.private: apr-1 apr-util-1
 

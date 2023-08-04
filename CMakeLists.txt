@@ -21,7 +21,7 @@ include(CTest)
 
 # Allow option based library naming.
 # This is the default name.
-set(LOG4CXX_LIB_NAME log4cxx)
+set(LOG4CXX_LIB_NAME "log4cxx${LOG4CXX_LIBRARY_SUFFIX}")
 
 # If you are including log4cxx from a higher-level CMake file(perhaps as a submodule?)
 # CMAKE_SOURCE_DIR will refer to the first CMakeLists.txt.  Since we need some files
@@ -74,7 +74,6 @@ endif()
 option(LOG4CXX_QT_SUPPORT "Qt support/integration" OFF)
 if(LOG4CXX_QT_SUPPORT)
     find_package(Qt5 COMPONENTS Core REQUIRED)
-    set(LOG4CXX_LIB_NAME log4cxx-qt)
 endif(LOG4CXX_QT_SUPPORT)
 
 option(LOG4CXX_ENABLE_ODBC "Support logging via ODBC" OFF)
@@ -136,12 +135,12 @@ if(WIN32)
 endif()
 include(GNUInstallDirs)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/main/include/log4cxx
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LOG4CXX_LIBRARY_SUFFIX}"
   FILES_MATCHING PATTERN "*.h"
   PATTERN "Private" EXCLUDE
 )
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/main/include/log4cxx
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LOG4CXX_LIBRARY_SUFFIX}"
   FILES_MATCHING PATTERN "*.h"
   PATTERN "Private" EXCLUDE
 )
@@ -150,7 +149,6 @@ install(TARGETS ${LOG4CXX_LIB_NAME} EXPORT log4cxxTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} 
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 IF(WIN32 AND BUILD_SHARED_LIBS AND LOG4CXX_INSTALL_PDB)
@@ -164,14 +162,15 @@ if(UNIX)
   # Support for pkg-config in consuming projects
   set(prefix "${CMAKE_INSTALL_PREFIX}")
   set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
+  set(libsuffix "${LOG4CXX_LIBRARY_SUFFIX}")
   set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
-  set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+  set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}/${LOG4CXX_LIBRARY_SUFFIX}")
   set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx.pc.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx.pc"
+    "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc"
   )
 
-  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx.pc" 
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif(UNIX)
 
@@ -180,7 +179,7 @@ endif(UNIX)
 # target_link_libraries( myApplication PRIVATE log4cxx)
 install(EXPORT log4cxxTargets
   FILE        log4cxxConfig.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
 )
 # Support for find_package(log4cxx 0.11) in consuming CMake projects
 include(CMakePackageConfigHelpers)
@@ -189,7 +188,7 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersi
   COMPATIBILITY SameMinorVersion
 )
 install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
-  DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
+  DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
 )
 
 #
