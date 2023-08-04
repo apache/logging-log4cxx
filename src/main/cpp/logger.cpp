@@ -1192,7 +1192,7 @@ void Logger::warn(const CFStringRef& msg) const
 #endif
 
 #if LOG4CXX_QSTRING_API
-void Logger::addEvent(const LevelPtr& level, QString&& message, const LocationInfo& location) const
+void Logger::addEvent(const LevelPtr& level, QString& message, const LocationInfo& location) const
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;

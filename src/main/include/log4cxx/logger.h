@@ -650,6 +650,17 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void forcedLog(const LevelPtr& level, const CFStringRef& message) const;
 #endif
+#if LOG4CXX_QSTRING_API
+		/**
+		Add a new logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addEvent(const LevelPtr& level, QString& message,
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+#endif
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
