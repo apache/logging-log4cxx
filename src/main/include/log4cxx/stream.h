@@ -511,6 +511,18 @@ class LOG4CXX_EXPORT ulogstream : public logstream_base
 
 			return *this;
 		}
+
+#if LOG4CXX_QSTRING_API
+		inline ulogstream& operator<<(const QString& val)
+		{
+			if (LOG4CXX_UNLIKELY(isEnabled()))
+			{
+				((std::basic_ostream<Ch>&) * this) << val.utf16();
+			}
+
+			return *this;
+		}
+#endif
 #endif
 
 	protected:
