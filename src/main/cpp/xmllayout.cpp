@@ -34,11 +34,18 @@ using namespace log4cxx::xml;
 
 struct XMLLayout::XMLLayoutPrivate
 {
-	XMLLayoutPrivate() : locationInfo(false), properties(false) {}
+	XMLLayoutPrivate()
+		: locationInfo(false)
+		, properties(false)
+		, expectedPatternLength(100)
+		{}
 
 	// Print no location info by default
 	bool locationInfo; //= false
 	bool properties; // = false
+
+	// Expected length of a formatted event excluding the message text
+	size_t expectedPatternLength;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLLayout)
@@ -46,6 +53,7 @@ IMPLEMENT_LOG4CXX_OBJECT(XMLLayout)
 XMLLayout::XMLLayout()
 	: m_priv(std::make_unique<XMLLayoutPrivate>())
 {
+	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 }
 
 XMLLayout::~XMLLayout() {}
@@ -56,11 +64,13 @@ void XMLLayout::setOption(const LogString& option,
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, false));
+		m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 	}
 
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("PROPERTIES"), LOG4CXX_STR("properties")))
 	{
 		setProperties(OptionConverter::toBoolean(value, false));
+		m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 	}
 }
 
@@ -68,6 +78,7 @@ void XMLLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
 {
+	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
 	output.append(LOG4CXX_STR("<log4j:event logger=\""));
 	Transform::appendEscapingTags(output, event->getLoggerName());
 	output.append(LOG4CXX_STR("\" timestamp=\""));

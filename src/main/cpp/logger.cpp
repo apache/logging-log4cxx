@@ -1045,7 +1045,6 @@ void Logger::warn(const std::basic_string<UniChar>& msg) const
 
 #endif
 
-
 #if LOG4CXX_QSTRING_API
 void Logger::addEvent(const LevelPtr& level, QString&& message, const LocationInfo& location) const
 {
@@ -1059,7 +1058,9 @@ void Logger::addEvent(const LevelPtr& level, QString&& message, const LocationIn
 
 void Logger::getName(QString& rv) const
 {
-	rv = Transcoder::encode(m_priv->name);
+	LOG4CXX_DECODE_QSTRING(msg, message);
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
+	callAppenders(event, p);
 }
 
 void Logger::qtrace(const QString& msg, const spi::LocationInfo& location) const
@@ -1098,7 +1099,6 @@ void Logger::qfatal(const QString& msg, const spi::LocationInfo& location) const
 	}
 }
 
-
 void Logger::qinfo(const QString& msg, const spi::LocationInfo& location) const
 {
 	if (isInfoEnabled())
@@ -1107,7 +1107,6 @@ void Logger::qinfo(const QString& msg, const spi::LocationInfo& location) const
 		addEventLS(Level::getInfo(), std::move(tmp), location);
 	}
 }
-
 
 void Logger::qlog(const LevelPtr& level, const QString& msg,
 	const spi::LocationInfo& location) const
@@ -1127,7 +1126,46 @@ void Logger::qwarn(const QString& msg, const spi::LocationInfo& location) const
 		addEventLS(Level::getWarn(), std::move(tmp), location);
 	}
 }
-
 #endif
+
+#if LOG4CXX_CFSTRING_API
+void Logger::forcedLog(const LevelPtr& level, const CFStringRef& message,
+	const LocationInfo& location) const
+{
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
+	Pool p;
+	LOG4CXX_DECODE_CFSTRING(msg, message);
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
+	callAppenders(event, p);
+}
+
+void Logger::forcedLog(const LevelPtr& level, const CFStringRef& message) const
+{
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
+	Pool p;
+	LOG4CXX_DECODE_CFSTRING(msg, message);
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, msg,
+			LocationInfo::getLocationUnavailable());
+	callAppenders(event, p);
+}
+
+void Logger::getName(CFStringRef& rv) const
+{
+	rv = Transcoder::encode(m_priv->name);
+}
+
+LoggerPtr Logger::getLogger(const CFStringRef& name)
+{
+	return LogManager::getLogger(name);
+}
+
+void Logger::trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const
+{
+	rv = Transcoder::encode(m_priv->name);
+}
+#endif
+
 
 

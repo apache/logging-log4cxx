@@ -133,8 +133,12 @@ class LOG4CXX_EXPORT Transcoder
 
 #endif
 
+#if LOG4CXX_QSTRING_API
+		static void decode(const QString& src, LogString& dst);
+		static QString encode(const LogString& src);
+#endif
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		static void decode(const std::basic_string<UniChar>& src, LogString& dst);
 		static void encode(const LogString& src, std::basic_string<UniChar>& dst);
 
@@ -157,10 +161,6 @@ class LOG4CXX_EXPORT Transcoder
 
 #endif
 
-#if LOG4CXX_QSTRING_API
-		static void decode(const QString& src, LogString& dst);
-		static QString encode(const LogString& src);
-#endif
 
 		enum { LOSSCHAR = 0x3F };
 

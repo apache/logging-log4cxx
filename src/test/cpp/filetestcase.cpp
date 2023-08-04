@@ -27,6 +27,7 @@
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/fileinputstream.h>
+#include <log4cxx/helpers/loglog.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -50,10 +51,22 @@ LOGUNIT_CLASS(FileTestCase)
 #if LOG4CXX_QSTRING_API
 	LOGUNIT_TEST(qstringConstructor);
 #endif
+#if LOG4CXX_CFSTRING_API
+	LOGUNIT_TEST(cfstringConstructor);
+#endif
 	LOGUNIT_TEST(copyConstructor);
 	LOGUNIT_TEST(assignment);
 	LOGUNIT_TEST(deleteBackslashedFileName);
 	LOGUNIT_TEST_SUITE_END();
+
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 public:
 	void defaultConstructor()
@@ -119,7 +132,17 @@ public:
 #if LOG4CXX_QSTRING_API
 	void qstringConstructor()
 	{
-		File propFile(QString("input/patternLayout.properties"));
+		File propFile(QString("input/patternLayout1.properties"));
+		Pool pool;
+		bool exists = propFile.exists(pool);
+		LOGUNIT_ASSERT_EQUAL(true, exists);
+	}
+#endif
+
+#if LOG4CXX_CFSTRING_API
+	void cfstringConstructor()
+	{
+		File propFile(CFSTR("input/patternLayout1.properties"));
 		Pool pool;
 		bool exists = propFile.exists(pool);
 		LOGUNIT_ASSERT_EQUAL(true, exists);

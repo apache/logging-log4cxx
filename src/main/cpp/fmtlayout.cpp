@@ -31,13 +31,19 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 
 struct FMTLayout::FMTLayoutPrivate{
-	FMTLayoutPrivate(){}
+	FMTLayoutPrivate()
+		: expectedPatternLength(100)
+		{}
 
-	FMTLayoutPrivate(const LogString& pattern) :
-		conversionPattern(pattern)
+	FMTLayoutPrivate(const LogString& pattern)
+		: conversionPattern(pattern)
+		, expectedPatternLength(100)
 	{}
 
 	LogString conversionPattern;
+
+	// Expected length of a formatted event excluding the message text
+	size_t expectedPatternLength;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FMTLayout)
@@ -76,13 +82,14 @@ void FMTLayout::setOption(const LogString& option, const LogString& value)
 
 void FMTLayout::activateOptions(helpers::Pool&)
 {
-
+	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 }
 
 void FMTLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	log4cxx::helpers::Pool&) const
 {
+	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
 	auto locationFull = fmt::format("{}({})",
 										 event->getLocationInformation().getFileName(),
 										 event->getLocationInformation().getLineNumber());

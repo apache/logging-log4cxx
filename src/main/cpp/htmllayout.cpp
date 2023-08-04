@@ -35,8 +35,12 @@ using namespace log4cxx::spi;
 
 struct HTMLLayout::HTMLLayoutPrivate
 {
-	HTMLLayoutPrivate() : locationInfo(false), title(LOG4CXX_STR("Log4cxx Log Messages")),
-		dateFormat() {}
+	HTMLLayoutPrivate()
+		: locationInfo(false)
+		, title(LOG4CXX_STR("Log4cxx Log Messages"))
+		, dateFormat()
+		, expectedPatternLength(100)
+		{}
 
 	// Print no location info by default
 	bool locationInfo; //= false
@@ -44,6 +48,9 @@ struct HTMLLayout::HTMLLayoutPrivate
 	LogString title;
 
 	helpers::ISO8601DateFormat dateFormat;
+
+	// Expected length of a formatted event excluding the message text
+	size_t expectedPatternLength;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(HTMLLayout)
@@ -53,6 +60,7 @@ HTMLLayout::HTMLLayout()
 	: m_priv(std::make_unique<HTMLLayoutPrivate>())
 {
 	m_priv->dateFormat.setTimeZone(TimeZone::getGMT());
+	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 }
 
 HTMLLayout::~HTMLLayout() {}
@@ -71,6 +79,7 @@ void HTMLLayout::setOption(const LogString& option,
 			LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, false));
+		m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 	}
 }
 
@@ -78,6 +87,7 @@ void HTMLLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
 {
+	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("<tr>"));
 	output.append(LOG4CXX_EOL);

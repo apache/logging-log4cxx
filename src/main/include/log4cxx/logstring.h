@@ -30,7 +30,7 @@
 namespace log4cxx
 {
 
-#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API
 	typedef unsigned short UniChar;
 #endif
 

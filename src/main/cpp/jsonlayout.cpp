@@ -39,7 +39,8 @@ struct JSONLayout::JSONLayoutPrivate
 		prettyPrint(false),
 		dateFormat(),
 		ppIndentL1(LOG4CXX_STR("  ")),
-		ppIndentL2(LOG4CXX_STR("    ")) {}
+		ppIndentL2(LOG4CXX_STR("    ")),
+		expectedPatternLength(100) {}
 
 	// Print no location info by default
 	bool locationInfo; //= false
@@ -49,6 +50,9 @@ struct JSONLayout::JSONLayoutPrivate
 
 	LogString ppIndentL1;
 	LogString ppIndentL2;
+
+	// Expected length of a formatted event excluding the message text
+	size_t expectedPatternLength;
 };
 
 JSONLayout::JSONLayout() :
@@ -85,7 +89,7 @@ LogString JSONLayout::getContentType() const
 
 void JSONLayout::activateOptions(helpers::Pool& /* p */)
 {
-
+	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 }
 
 void JSONLayout::setOption(const LogString& option, const LogString& value)
@@ -106,6 +110,7 @@ void JSONLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
 {
+	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
 	output.append(LOG4CXX_STR("{"));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 

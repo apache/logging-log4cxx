@@ -14,31 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-add_subdirectory(include)
-add_subdirectory(cpp)
-if(LOG4CXX_QT_SUPPORT)
-  add_subdirectory(cpp-qt)
-endif(LOG4CXX_QT_SUPPORT)
-add_subdirectory(resources)
 
-# setup include directories 
-include(GNUInstallDirs)
-target_include_directories(${LOG4CXX_LIB_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
+# Build the MockCoreFoundation library
+add_library(MockCoreFoundation STATIC CFString.cpp)
+target_compile_definitions(MockCoreFoundation PRIVATE ${APR_COMPILE_DEFINITIONS})
+target_include_directories(MockCoreFoundation INTERFACE PRIVATE ${APR_INCLUDE_DIR})
 
-if(LOG4CXX_CFSTRING)
-  if(APPLE)
-    target_link_libraries(log4cxx PUBLIC "-framework CoreFoundation")
-  else()
-    add_subdirectory(mock-apple)
-  endif()
-endif()
-
-if(LOG4CXX_QT_SUPPORT)
-    target_include_directories(log4cxx-qt PUBLIC
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    )
-endif(LOG4CXX_QT_SUPPORT)
-
+# Add to log4cxx as a dependency
+target_link_libraries(log4cxx PRIVATE MockCoreFoundation)
+target_include_directories(log4cxx INTERFACE PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)

@@ -206,7 +206,7 @@ void TestFixture::assertEquals(const std::wstring expected,
 	}
 }
 #endif
-#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API || LOG4CXX_QSTRING_API
+#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API
 void TestFixture::assertEquals(const std::basic_string<log4cxx::UniChar> expected,
 	const std::basic_string<log4cxx::UniChar> actual,
 	const char* expectedExpr,

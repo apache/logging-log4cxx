@@ -75,6 +75,12 @@ class LOG4CXX_EXPORT Layout :
 		The other layouts return <code>false</code>.
 		*/
 		virtual bool ignoresThrowable() const = 0;
+
+	protected:
+		/**
+		 * The expected length of a formatted event excluding the message text
+		 */
+		size_t getFormattedEventCharacterCount() const;
 };
 LOG4CXX_PTR_DEF(Layout);
 }
