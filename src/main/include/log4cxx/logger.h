@@ -1608,7 +1608,7 @@ class LOG4CXX_EXPORT Logger :
 		void log(const LevelPtr& level, const CFStringRef& message,
 			const log4cxx::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
+		Add a new logging event containing \c message to the appenders attached to this logger if this logger is enabled for \c level events.
 		This is the most generic printing method. It is intended to be
 		invoked by <b>wrapper</b> classes.
 
