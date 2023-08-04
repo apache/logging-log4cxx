@@ -51,21 +51,21 @@ File::File() :
 {
 }
 
-template<class S>
-static LogString decodeLS(const S* src)
+template<class CharT>
+static LogString decodeChar(const CharT* src)
 {
 	LogString dst;
 
 	if (src != 0)
 	{
-		Transcoder::decode(std::basic_string<S>(src), dst);
+		Transcoder::decode(src, dst);
 	}
 
 	return dst;
 }
 
 template<class S>
-static LogString decodeLS(const std::basic_string<S>& src)
+static LogString decodeLS(const S& src)
 {
 	LogString dst;
 	Transcoder::decode(src, dst);
@@ -79,7 +79,7 @@ File::File(const std::string& name1)
 }
 
 File::File(const char* name1)
-	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
+	: m_priv(std::make_unique<FilePrivate>(decodeChar(name1)))
 {
 }
 
@@ -90,7 +90,7 @@ File::File(const std::wstring& name1)
 }
 
 File::File(const wchar_t* name1)
-	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
+	: m_priv(std::make_unique<FilePrivate>(decodeChar(name1)))
 {
 }
 #endif
@@ -107,27 +107,15 @@ File::File(const UniChar* name1)
 }
 #endif
 
-#if LOG4CXX_QSTRING_API
-static LogString decodeLS(const QString& src)
-{
-	LogString dst;
-	Transcoder::decode(src, dst);
-	return dst;
-}
-File::File(const QString& name)
+#if LOG4CXX_CFSTRING_API
+File::File(const CFStringRef& name)
 	: m_priv(std::make_unique<FilePrivate>(decodeLS(name)))
 {
 }
 #endif
 
-#if LOG4CXX_CFSTRING_API
-static LogString decodeLS(const CFStringRef& src)
-{
-	LogString dst;
-	Transcoder::decode(src, dst);
-	return dst;
-}
-File::File(const CFStringRef& name)
+#if LOG4CXX_QSTRING_API
+File::File(const QString& name)
 	: m_priv(std::make_unique<FilePrivate>(decodeLS(name)))
 {
 }
