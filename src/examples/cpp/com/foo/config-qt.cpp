@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "config.h"
+#include "config-qt.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx-qt/configuration.h>
 #include <log4cxx/helpers/loglog.h>
@@ -23,13 +23,16 @@
 #include <QFileInfo>
 #include <QDir>
 
-// Local functions
-namespace {
-using namespace log4cxx;
+namespace com { namespace foo {
 
 // Provide the name of the configuration file to Log4cxx.
 // Reload the configuration on a QFileSystemWatcher::fileChanged event.
-void SetConfigurationFile() {
+void ConfigureLogging() {
+	static struct log4cxx_finalizer {
+		~log4cxx_finalizer() {
+			log4cxx::LogManager::shutdown();
+		}
+	} finaliser;
 	QFileInfo app{QCoreApplication::applicationFilePath()};
 	QString basename{app.baseName()};
 	QVector<QString> paths =
@@ -46,29 +49,23 @@ void SetConfigurationFile() {
 		, QString("log4j.properties")
 	};
 #if defined(_DEBUG)
-	helpers::LogLog::setInternalDebugging(true);
+	log4cxx::helpers::LogLog::setInternalDebugging(true);
 #endif
-	qt::Configuration::configureFromFileAndWatch(paths, names);
+	log4cxx::qt::Configuration::configureFromFileAndWatch(paths, names);
 }
 
-} // namespace
-
-namespace com { namespace foo {
-
 // Retrieve the \c name logger pointer.
-// Configure Log4cxx on the first call.
-auto getLogger(const std::string& name) -> LoggerPtr {
-	static struct log4cxx_initializer {
-		log4cxx_initializer() {
-			SetConfigurationFile();
-		}
-		~log4cxx_initializer() {
-			log4cxx::LogManager::shutdown();
-		}
-	} initialiser;
-	return name.empty()
+auto getLogger(const QString& name) -> LoggerPtr {
+	return name.isEmpty()
 		? log4cxx::LogManager::getRootLogger()
 		: log4cxx::LogManager::getLogger(name);
+}
+
+// Retrieve the \c name logger pointer.
+auto getLogger(const char* name) -> LoggerPtr {
+	return name
+		? log4cxx::LogManager::getLogger(std::string(name))
+		: log4cxx::LogManager::getRootLogger();
 }
 
 } } // namespace com::foo
