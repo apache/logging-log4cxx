@@ -85,6 +85,16 @@ class LOG4CXX_EXPORT LogManager
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
 		the repository is configured.
 		*/
+		static LoggerPtr getLogger(const char* name);
+
+		/**
+		Retrieve the \c name Logger instance from the
+		{@link spi::LoggerRepository LoggerRepository}
+		using DefaultLoggerFactory to create it if required.
+
+		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
+		the repository is configured.
+		*/
 		static LoggerPtr getLogger(const std::string& name);
 
 		/**

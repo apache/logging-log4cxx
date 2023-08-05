@@ -108,6 +108,12 @@ LoggerPtr LogManager::getLoggerLS(const LogString& name,
 	return r->getLogger(name, factory);
 }
 
+LoggerPtr LogManager::getLogger(const char* name)
+{
+	LOG4CXX_DECODE_CHAR(n, name);
+	return getLoggerLS(n);
+}
+
 LoggerPtr LogManager::getLogger(const std::string& name)
 {
 	LOG4CXX_DECODE_CHAR(n, name);
