@@ -46,3 +46,7 @@ qInstallMessageHandler( log4cxx::qt::messageHandler );
 
 Note that by default, this message handler also calls `abort` upon a
 fatal message.
+
+To use the Qt event loop to monitor the configuration file
+do your Log4cxx configuration as follows:
+\include com/foo/config-qt.cpp
