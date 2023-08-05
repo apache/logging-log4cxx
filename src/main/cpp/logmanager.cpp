@@ -203,12 +203,6 @@ LoggerPtr LogManager::getLogger(const QString& name,
 	LOG4CXX_DECODE_QSTRING(n, name);
 	return getLoggerLS(n, factory);
 }
-
-LoggerPtr LogManager::exists(const QString& name)
-{
-	LOG4CXX_DECODE_QSTRING(n, name);
-	return existsLS(n);
-}
 #endif
 
 LoggerPtr LogManager::existsLS(const LogString& name)

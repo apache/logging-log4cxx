@@ -200,10 +200,6 @@ class LOG4CXX_EXPORT LogManager
 		*/
 		static LoggerPtr getLogger(const QString& name,
 			const spi::LoggerFactoryPtr& factory);
-		/**
-		 Does the logger \c name exist in the hierarchy?
-		 */
-		static LoggerPtr exists(const QString& name);
 #endif
 
 		/**
