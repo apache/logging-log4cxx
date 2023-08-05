@@ -73,6 +73,7 @@ endif()
 option(LOG4CXX_QT_SUPPORT "Qt support/integration" OFF)
 if(LOG4CXX_QT_SUPPORT)
     find_package(Qt5 COMPONENTS Core REQUIRED)
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 endif(LOG4CXX_QT_SUPPORT)
 
 option(LOG4CXX_ENABLE_ODBC "Support logging via ODBC" OFF)
