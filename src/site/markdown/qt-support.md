@@ -26,8 +26,11 @@ may use the `QDebug` classes.  By default, this will print to stderr,
 thus bypassing the logger entirely.  In order to have these messages
 routed to Log4cxx, a message handler for Qt must be installed.
 
-Log4cxx provides a separate library, log4cxx-qt, which contains useful
-utilities for working with Qt.
+Log4cxx provides a cmake build option `LOG4CXX_QT_SUPPORT=ON`
+which adds allows you to use QString values in a logging request.
+Building with LOG4CXX_QT_SUPPORT=ON also adds the log4cxx::qt namespace methods
+for directing Qt messages to Log4cxx and
+using the Qt event loop to process a configuration file change.
 
 To install a message handler that will route the Qt logging messages
 through Log4cxx, include the messagehandler.h and call
@@ -43,3 +46,7 @@ qInstallMessageHandler( log4cxx::qt::messageHandler );
 
 Note that by default, this message handler also calls `abort` upon a
 fatal message.
+
+To use the Qt event loop to monitor the configuration file
+do your Log4cxx configuration as follows:
+\include com/foo/config-qt.cpp
