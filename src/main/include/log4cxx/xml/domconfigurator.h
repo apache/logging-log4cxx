@@ -221,7 +221,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 #if LOG4CXX_WCHAR_T_API
 		static spi::ConfigurationStatus configure(const std::wstring& filename);
 #endif
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		static spi::ConfigurationStatus configure(const std::basic_string<UniChar>& filename);
 #endif
 #if LOG4CXX_CFSTRING_API
@@ -237,7 +237,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 #if LOG4CXX_WCHAR_T_API
 		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename);
 #endif
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename);
 #endif
 #if LOG4CXX_CFSTRING_API
@@ -260,7 +260,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename,
 			long delay);
 #endif
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename,
 			long delay);
 #endif

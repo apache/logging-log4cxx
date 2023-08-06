@@ -66,7 +66,7 @@ class LOG4CXX_EXPORT File
 		*/
 		File(const std::wstring& path);
 #endif
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		/**
 		*   Construct a new instance.  Use setPath to specify path using a LogString.
 		* @param path file path.

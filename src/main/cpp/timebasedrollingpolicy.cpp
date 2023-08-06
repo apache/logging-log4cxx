@@ -171,7 +171,11 @@ const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName
 
 	if (stat == APR_SUCCESS)
 	{
+#ifdef WIN32
+		snprintf(szUid, MAX_FILE_LEN, "%p", uid);
+#else
 		snprintf(szUid, MAX_FILE_LEN, "%u", uid);
+#endif
 	}
 
 	log4cxx::filesystem::path path(fileName);

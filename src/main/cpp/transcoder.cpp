@@ -576,7 +576,7 @@ void Transcoder::encode(unsigned int sv, std::wstring& dst)
 
 
 
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 void Transcoder::decode(const std::basic_string<UniChar>& src, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_UNICHAR

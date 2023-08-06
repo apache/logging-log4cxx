@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #include <log4cxx-qt/configuration.h>
+#include <log4cxx-qt/logger.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
@@ -107,16 +108,16 @@ Configuration::configureFromFileAndWatch(const QVector<QString>& directories,
 			QString canidate_str = dir + "/" + fname;
 			QFile candidate(canidate_str);
 
-			QString debugMsg = LOG4CXX_STR("Checking file ");
-			debugMsg.append(canidate_str);
-			LogLog::debug(debugMsg.toStdString());
+			LOG4CXX_DECODE_QSTRING(msg, "Checking file " + canidate_str);
+			LogLog::debug(msg);
 			if (candidate.exists())
 			{
 				log4cxx::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
 				if( configStatus == log4cxx::spi::ConfigurationStatus::Configured ){
 					return {configStatus, canidate_str};
 				}
-				LogLog::debug("Unable to load file: trying next");
+				LOG4CXX_DECODE_QSTRING(failmsg, "Unable to load  " + canidate_str + ": trying next");
+				LogLog::debug(failmsg);
 			}
 		}
 	}
