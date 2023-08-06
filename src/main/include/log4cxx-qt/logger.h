@@ -22,56 +22,71 @@
 
 #if LOG4CXX_LOGCHAR_IS_UTF8
 #define LOG4CXX_DECODE_QSTRING(var, src) \
-	log4cxx::LogString var;                      \
-	log4cxx::helpers::Transcoder::decode((src).toStdString(), var)
+	log4cxx::LogString var = (src).toStdString()
 
 #define LOG4CXX_ENCODE_QSTRING(var, src) \
-	QString var = QString::fromStdString(log4cxx::helpers::Transcoder::encode(src))
+	QString var = QString::fromStdString(src)
 #endif // LOG4CXX_LOGCHAR_IS_UTF8
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 #define LOG4CXX_DECODE_QSTRING(var, src) \
-	log4cxx::LogString var;                      \
-	log4cxx::helpers::Transcoder::decode((src).toStdWString(), var)
+	log4cxx::LogString var = (src).toStdWString()
 
 #define LOG4CXX_ENCODE_QSTRING(var, src) \
-	QString var = QString::fromStdWString(log4cxx::helpers::Transcoder::encode(src))
+	QString var = QString::fromStdWString(src)
 #endif // LOG4CXX_LOGCHAR_IS_WCHAR
 
 #if LOG4CXX_LOGCHAR_IS_UNICHAR
 #define LOG4CXX_DECODE_QSTRING(var, src) \
-	log4cxx::LogString var;                      \
-	log4cxx::helpers::Transcoder::decode((src).utf16(), var)
+	log4cxx::LogString var = (src).utf16()
 
 #define LOG4CXX_ENCODE_QSTRING(var, src) \
-	QString var = QString::fromUtf16(log4cxx::helpers::Transcoder::encode(src.c_str()))
+	QString var = QString::fromUtf16((char16_t*)src.c_str())
 #endif // LOG4CXX_LOGCHAR_IS_UNICHAR
 
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 log4cxx::helpers::UniCharMessageBuffer& operator<<(log4cxx::helpers::UniCharMessageBuffer& mb, const QString& msg)
 {
 	return mb << msg.utf16();
 }
 
+#if LOG4CXX_WCHAR_T_API
+log4cxx::helpers::WideMessageBuffer& operator<<(log4cxx::helpers::WideMessageBuffer& mb, const QString& msg)
+{
+	return mb << msg.toStdWString();
+}
+
+log4cxx::helpers::WideMessageBuffer& operator<<(log4cxx::helpers::MessageBuffer& mb, const QString& msg)
+{
+	return mb << msg.toStdWString();
+}
+#else // !LOG4CXX_WCHAR_T_API
 log4cxx::helpers::UniCharMessageBuffer& operator<<(log4cxx::helpers::MessageBuffer& mb, const QString& msg)
 {
-	return mb << msg;
+	return mb << msg.utf16();
 }
-#else // !LOG4CXX_UNICHAR_API
+#endif // !LOG4CXX_WCHAR_T_API
+
+#else // !(LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR)
+
+#if LOG4CXX_WCHAR_T_API
+log4cxx::helpers::WideMessageBuffer& operator<<(log4cxx::helpers::WideMessageBuffer& mb, const QString& msg)
+{
+	return mb << msg.toStdWString();
+}
+
+log4cxx::helpers::WideMessageBuffer& operator<<(log4cxx::helpers::MessageBuffer& mb, const QString& msg)
+{
+	return mb << msg.toStdWString();
+}
+#else // !LOG4CXX_WCHAR_T_API
 log4cxx::helpers::CharMessageBuffer& operator<<(log4cxx::helpers::CharMessageBuffer& mb, const QString& msg)
 {
 	LOG4CXX_DECODE_QSTRING(tmp, msg);
 	return mb << tmp;
 }
+#endif // !LOG4CXX_WCHAR_T_API
 
-#if LOG4CXX_WCHAR_T_API
-log4cxx::helpers::CharMessageBuffer& operator<<(log4cxx::helpers::MessageBuffer& mb, const QString& msg)
-{
-	LOG4CXX_DECODE_QSTRING(tmp, msg);
-	return mb << tmp;
-}
-#endif // LOG4CXX_WCHAR_T_API
-
-#endif // !LOG4CXX_UNICHAR_API
+#endif // !(LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR)
 
 #endif // _LOG4CXX_QT_LOGGER_H

@@ -7,5 +7,5 @@ using namespace com::foo;
 LoggerPtr Bar::m_logger(getLogger("com.foo.bar"));
 
 void Bar::doIt() {
-	LOG4CXX_DEBUG(m_logger, QString("Did it again!"));
+	LOG4CXX_DEBUG(m_logger, QString("Did it again!") << QString(" - again!"));
 }
