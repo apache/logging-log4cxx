@@ -28,7 +28,7 @@ To uniquely stamp each request to relate it to a particular source,
 you can push contextual information
 into the *Nested Diagnostic Context* (NDC) using the *log4cxx::NDC* class
 or the *Mapped Diagnostic Context* provided by *log4cxx::MDC* class.
-For an example using log4cxx::NDC refer to \ref trivial.cpp.
+For an example using log4cxx::NDC refer to \ref ndc-example.cpp.
 
 The NDC is managed per thread as a *stack* of contextual information.
 When the layout specifies that the NDC is to be included,
@@ -93,5 +93,5 @@ The following pages have information on specific filters:
 * @subpage map-filter
 * @subpage location-info-filter
 
-\example trivial.cpp
+\example ndc-example.cpp
 This example shows how to add a context string to each logging message using the NDC.

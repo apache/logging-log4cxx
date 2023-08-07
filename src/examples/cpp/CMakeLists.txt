@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream trivial custom-appender MyApp1 MyApp2)
+set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream ndc-example custom-appender MyApp1 MyApp2)
 if(LOG4CXX_QT_SUPPORT)
   list(APPEND ALL_LOG4CXX_EXAMPLES MyApp-qt)
 endif(LOG4CXX_QT_SUPPORT)
