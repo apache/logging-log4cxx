@@ -72,15 +72,14 @@ The *com::foo::Bar* class is defined in header file *com/foo/bar.h*.
 The *com::foo::Bar* class is implemented in the file *com/foo/bar.cpp*.
 \include com/foo/bar.cpp
 
-The header file *com/foo/config.h* defines the com::foo::getLogger() function
+The header file \ref com/foo/config.h defines the com::foo::getLogger() function
 and a *LoggerPtr* type for convenience.
-\include com/foo/config.h
 
-The file *com/foo/config.cpp* which implements the com::foo::getLogger() function
+
+The file \ref com/foo/config1.cpp implements the com::foo::getLogger() function
 defines *initAndShutdown* as a *static struct* so its constructor
 is invoked on the first call to the com::foo::getLogger() function
 and its destructor is automatically called during application exit.
-\include com/foo/config1.cpp
 
 The invocation of the
 [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure)
@@ -188,6 +187,12 @@ daemon, redirected all *com.foo* output to an NT Event logger, or
 forwarded logging events to a remote Log4cxx server, which would log
 according to local server policy, for example by forwarding the log
 event to a second Log4cxx server.
+
+\example com/foo/config.h
+This header file is for encapsulating Log4cxx configuration.
+
+\example com/foo/config1.cpp
+This file is a simplified example of encapsulated Log4cxx configuration.
 
 \example com/foo/config3.cpp
 This file is an example of how to use the current module name to select the Log4cxx configuration file.
