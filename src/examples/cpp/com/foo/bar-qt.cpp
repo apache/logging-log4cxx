@@ -1,6 +1,5 @@
-#include "com/foo/config-qt.h"
 #include "com/foo/bar.h"
-#include <log4cxx-qt/logger.h>
+#include "com/foo/config-qt.h"
 
 using namespace com::foo;
 
