@@ -1,7 +1,6 @@
 #ifndef COM_FOO_CONFIG_H_
 #define COM_FOO_CONFIG_H_
-#include <QString>
-#include <log4cxx/logger.h>
+#include <log4cxx-qt/logger.h>
 
 /// Methods specific to foo.com
 namespace com { namespace foo {
