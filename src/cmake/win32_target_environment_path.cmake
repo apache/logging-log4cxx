@@ -8,6 +8,9 @@ function(get_target_environment_path varName)
   set(EXPAT_DLL_DIR "${EXPAT_LIB_DIR}/../bin")
   set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>;")
   set(PATH_FOR_TESTS ${CMAKE_PROGRAM_PATH};${APR_DLL_DIR};${APR_UTIL_DLL_DIR};${LOG4CXX_DLL_DIR};${EXPAT_DLL_DIR}\;)
+  if(LOG4CXX_QT_SUPPORT)
+    list(APPEND PATH_FOR_TESTS "$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx-qt>>\;")
+  endif(LOG4CXX_QT_SUPPORT)
   list(REMOVE_DUPLICATES PATH_FOR_TESTS)
 
   # Note: we need to include the APR DLLs on our path so that the tests will run.
