@@ -30,18 +30,30 @@ jobs:
             os: ubuntu-20.04
             cxx: g++
             cc: gcc
+            fmt: OFF
+            qt: ON
+            odbc: OFF
           - name: ubuntu20-clang
             os: ubuntu-20.04
             cxx: clang++
             cc: clang
+            fmt: ON
+            qt: OFF
+            odbc: ON
           - name: ubuntu22-gcc
             os: ubuntu-22.04
             cxx: g++
             cc: gcc
+            fmt: OFF
+            qt: OFF
+            odbc: OFF
           - name: ubuntu22-clang
             os: ubuntu-22.04
             cxx: clang++
             cc: clang
+            fmt: ON
+            qt: OFF
+            odbc: OFF
 
     steps:
     - uses: actions/checkout@v3
@@ -51,14 +63,17 @@ jobs:
     - name: 'Configure Dependencies'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libapr1-dev libaprutil1-dev libfmt-dev unixodbc-dev
+        sudo apt-get install -y libapr1-dev libaprutil1-dev
+        if [ ${{ matrix.fmt }} == ON ]; then sudo apt-get install -y libfmt-dev; fi
+        if [ ${{ matrix.odbc }} == ON ]; then sudo apt-get install -y unixodbc-dev; fi
+        if [ ${{ matrix.qt }} == ON ]; then sudo apt-get install -y qt5base-dev; fi
 
     - name: 'run cmake - posix'
       run: |
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=ON ..
+        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} -DLOG4CXX_QT_SUPPORT=${{ matrix.qt }} ..
         cmake --build .
 
     - name: run unit tests
