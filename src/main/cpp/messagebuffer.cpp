@@ -17,7 +17,7 @@
 
 #include <log4cxx/log4cxx.h>
 /* Prevent error C2491: 'std::numpunct<_Elem>::id': definition of dllimport static data member not allowed */
-#if defined(_MSC_VER) && LOG4CXX_UNICHAR_API
+#if defined(_MSC_VER) && (LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR)
 #define __FORCE_INSTANCE
 #endif
 #include <log4cxx/helpers/messagebuffer.h>
@@ -587,7 +587,7 @@ const std::basic_string<log4cxx::UniChar>& MessageBuffer::str(std::basic_ostream
 
 #endif // LOG4CXX_WCHAR_T_API
 
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 struct UniCharMessageBuffer::UniCharMessageBufferPrivate : public StringOrStream<UniChar> {};
 
 UniCharMessageBuffer::UniCharMessageBuffer() :

@@ -26,8 +26,14 @@ may use the `QDebug` classes.  By default, this will print to stderr,
 thus bypassing the logger entirely.  In order to have these messages
 routed to Log4cxx, a message handler for Qt must be installed.
 
-Log4cxx provides a separate library, log4cxx-qt, which contains useful
-utilities for working with Qt.
+Log4cxx provides a cmake build option `LOG4CXX_QT_SUPPORT=ON`
+which adds the log4cxx::qt namespace methods
+for directing Qt messages to Log4cxx and
+using the Qt event loop to process a configuration file change.
+Use the target `log4cxx-qt` instead of `log4cxx`
+in your `target_link_libraries` cmake directive.
+Also, including `log4cxx-qt/logger.h` allows you to use QString values
+in the LOG4CXX_WARN, LOG4CXX_INFO, LOG4CXX_DEBUG etc. macros.
 
 To install a message handler that will route the Qt logging messages
 through Log4cxx, include the messagehandler.h and call
@@ -43,3 +49,20 @@ qInstallMessageHandler( log4cxx::qt::messageHandler );
 
 Note that by default, this message handler also calls `abort` upon a
 fatal message.
+
+For how to use the Qt event loop to monitor the configuration file,
+see the \ref com/foo/config-qt.h and \ref com/foo/config-qt.cpp example files.
+
+Note that when using the above technique
+you *must* configure Log4cxx after creating your QCoreApplication instance
+(see the \ref MyApp-qt.cpp file for an example of this).
+
+\example MyApp-qt.cpp
+This file is an example of how to configure Log4cxx in a Qt application.
+
+\example com/foo/config-qt.h
+This header file is for Log4cxx configuration in a Qt application.
+
+\example com/foo/config-qt.cpp
+This file is an example of how to use the Qt event loop to monitor the Log4cxx configuration file.
+

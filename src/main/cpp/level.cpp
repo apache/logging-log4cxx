@@ -173,7 +173,7 @@ void Level::toString(std::wstring& dst) const
 
 #endif
 
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 LevelPtr Level::toLevel(const std::basic_string<UniChar>& sArg)
 {
 	return toLevel(sArg, Level::getDebug());

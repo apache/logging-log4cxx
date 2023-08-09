@@ -14,17 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "com/foo/config.h"
 
-auto rootLogger = com::foo::getLogger();
-
-struct ExampleStaticData {
-	ExampleStaticData()	{
-		LOG4CXX_DEBUG(rootLogger, "static initializer message");
-	}
-} static_object;
-
-int main() {
-	LOG4CXX_INFO(rootLogger, "main function message");
-	return EXIT_SUCCESS;
-}
+#ifndef _LOG4CXX_QT_LOGGER_H
+#define _LOG4CXX_QT_LOGGER_H
+#include <log4cxx/logger.h>
+#include <log4cxx-qt/messagebuffer.h>
+#endif // _LOG4CXX_QT_LOGGER_H

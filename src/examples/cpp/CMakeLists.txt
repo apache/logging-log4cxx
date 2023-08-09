@@ -15,7 +15,10 @@
 # limitations under the License.
 #
 
-set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream trivial custom-appender MyApp1 MyApp2)
+set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream ndc-example custom-appender MyApp1 MyApp2)
+if(LOG4CXX_QT_SUPPORT)
+  list(APPEND ALL_LOG4CXX_EXAMPLES MyApp-qt)
+endif(LOG4CXX_QT_SUPPORT)
 if( WIN32 )
     include(win32_target_environment_path)
     get_target_environment_path(ESCAPED_PATH)
@@ -33,6 +36,10 @@ foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
     add_executable(${PROGRAM_NAME} ${exampleName}.cpp)
     if(${exampleName} STREQUAL MyApp2)
         target_sources(${PROGRAM_NAME} PRIVATE com/foo/config2.cpp com/foo/bar.cpp)
+    endif()
+    if(${exampleName} STREQUAL MyApp-qt)
+        target_sources(${PROGRAM_NAME} PRIVATE com/foo/config-qt.cpp com/foo/bar-qt.cpp)
+        target_link_libraries(${PROGRAM_NAME} PRIVATE log4cxx-qt)
     endif()
     if(${exampleName} STREQUAL auto-configured)
         target_sources(${PROGRAM_NAME} PRIVATE com/foo/config3.cpp )
