@@ -21,6 +21,7 @@
 #include <apr_xlate.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <algorithm>
 
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
