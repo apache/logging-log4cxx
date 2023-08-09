@@ -96,7 +96,7 @@ void OutputStreamWriter::write(const LogString& str, Pool& p)
 		// Ensure the logging event is a single write system call to keep events from each process separate
 		if (bufSize < str.length() * 2)
 		{
-			heapData.resize(bufSize = str.length() * 2)
+			heapData.resize(bufSize = str.length() * 2);
 			rawbuf = heapData.data();
 		}
 #endif

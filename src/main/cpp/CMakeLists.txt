@@ -48,6 +48,7 @@ if(LOG4CXX_NETWORKING_SUPPORT)
 endif()
 
 if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
+    target_compile_definitions(log4cxx PRIVATE LOG4CXX_MULTI_PROCESS)
     list(APPEND extra_classes
 	multiprocessrollingfileappender.cpp
 	)
