@@ -16,9 +16,9 @@
  */
 #include "com/foo/config.h"
 
-extern auto rootLogger = com::foo::getLogger();
+auto rootLogger = com::foo::getLogger();
 
-static struct ExampleStaticData {
+struct ExampleStaticData {
 	ExampleStaticData()	{
 		LOG4CXX_DEBUG(rootLogger, "static initializer message");
 	}
