@@ -648,15 +648,13 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 
 bool CharsetEncoder::isTriviallyCopyable(const LogString& src, const CharsetEncoderPtr& enc)
 {
-	bool result = false;
+	bool result;
 	if (dynamic_cast<LocaleCharsetEncoder*>(enc.get()))
 	{
 		result = src.end() == std::find_if(src.begin(), src.end()
 			, [](const logchar& ch) -> bool { return 0x80 <= (unsigned int)ch; });
 	}
-#if LOG4CXX_LOGCHAR_IS_UTF8
 	else
 		result = !!dynamic_cast<TrivialCharsetEncoder*>(enc.get());
-#endif
 	return result;
 }
