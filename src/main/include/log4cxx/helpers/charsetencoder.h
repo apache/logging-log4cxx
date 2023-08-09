@@ -120,7 +120,7 @@ class LOG4CXX_EXPORT CharsetEncoder : public Object
 		* Is the data of \c src unchanged by \c enc.
 		*
 		*/
-		static bool isTriviallyCopyable(const LogString& src, CharsetEncoderPtr& enc);
+		static bool isTriviallyCopyable(const LogString& src, const CharsetEncoderPtr& enc);
 
 
 	private:

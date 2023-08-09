@@ -646,7 +646,7 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 	}
 }
 
-bool CharsetEncoder::isTriviallyCopyable(const LogString& src, CharsetEncoderPtr& enc)
+bool CharsetEncoder::isTriviallyCopyable(const LogString& src, const CharsetEncoderPtr& enc)
 {
 	bool result = false;
 	if (dynamic_cast<LocaleCharsetEncoder*>(enc.get()))
