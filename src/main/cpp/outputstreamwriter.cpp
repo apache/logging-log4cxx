@@ -78,18 +78,29 @@ void OutputStreamWriter::flush(Pool& p)
 
 void OutputStreamWriter::write(const LogString& str, Pool& p)
 {
-	if (str.length() > 0)
+	if (str.empty())
+		return;
+	if (CharsetEncoder::isTriviallyCopyable(str, m_priv->enc))
 	{
-#ifdef LOG4CXX_MULTI_PROCESS
-		// Ensure the logging event is a single write system call to keep events from each process separate
-		size_t bufSize = str.length() * 2;
-		char* rawbuf = new char[bufSize];
-		ByteBuffer buf(rawbuf, (size_t) bufSize);
-#else
+		ByteBuffer buf((char*)str.data(), str.size() * sizeof (logchar));
+		m_priv->out->write(buf, p);
+	}
+	else
+	{
 		enum { BUFSIZE = 1024 };
-		char rawbuf[BUFSIZE];
-		ByteBuffer buf(rawbuf, (size_t) BUFSIZE);
+		char stackData[BUFSIZE];
+		char* rawbuf = stackData;
+		size_t bufSize = BUFSIZE;
+#ifdef LOG4CXX_MULTI_PROCESS
+		std::vector<char> heapData;
+		// Ensure the logging event is a single write system call to keep events from each process separate
+		if (bufSize < str.length() * 2)
+		{
+			heapData.resize(bufSize = str.length() * 2)
+			rawbuf = heapData.data();
+		}
 #endif
+		ByteBuffer buf(rawbuf, bufSize);
 		m_priv->enc->reset();
 		LogString::const_iterator iter = str.begin();
 
@@ -105,9 +116,6 @@ void OutputStreamWriter::write(const LogString& str, Pool& p)
 		m_priv->enc->flush(buf);
 		buf.flip();
 		m_priv->out->write(buf, p);
-#ifdef LOG4CXX_MULTI_PROCESS
-		delete []rawbuf;
-#endif
 	}
 }
 

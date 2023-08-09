@@ -644,3 +644,18 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 		dst.put(Transcoder::LOSSCHAR);
 	}
 }
+
+bool CharsetEncoder::isTriviallyCopyable(const LogString& src, CharsetEncoderPtr& enc)
+{
+	bool result = false;
+	if (dynamic_cast<LocaleCharsetEncoder*>(enc.get()))
+	{
+		result = src.end() == std::find_if(src.begin(), src.end()
+			, [](const logchar& ch) -> bool { return 0x80 <= (unsigned int)ch; });
+	}
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	else
+		result = !!dynamic_cast<TrivialCharsetEncoder*>(enc.get());
+#endif
+	return result;
+}
