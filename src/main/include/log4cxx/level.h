@@ -126,7 +126,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		 */
 		void toString(std::wstring& name) const;
 #endif
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns DEBUG.

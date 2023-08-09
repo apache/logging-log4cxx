@@ -81,7 +81,7 @@ void OutputStreamWriter::write(const LogString& str, Pool& p)
 	if (str.length() > 0)
 	{
 #ifdef LOG4CXX_MULTI_PROCESS
-		// Why does this need to happen for multiproces??  why??
+		// Ensure the logging event is a single write system call to keep events from each process separate
 		size_t bufSize = str.length() * 2;
 		char* rawbuf = new char[bufSize];
 		ByteBuffer buf(rawbuf, (size_t) bufSize);

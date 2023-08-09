@@ -64,7 +64,7 @@ auto getLogger(const QString& name) -> LoggerPtr {
 // Retrieve the \c name logger pointer.
 auto getLogger(const char* name) -> LoggerPtr {
 	return name
-		? log4cxx::LogManager::getLogger(std::string(name))
+		? log4cxx::LogManager::getLogger(name)
 		: log4cxx::LogManager::getRootLogger();
 }
 

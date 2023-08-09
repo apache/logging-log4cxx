@@ -14,6 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <log4cxx/log4cxx.h>
+/* Prevent error C2491: 'std::numpunct<_Elem>::id': definition of dllimport static data member not allowed */
+#if defined(_MSC_VER) && (LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR)
+#define __FORCE_INSTANCE
+#endif
 #include <log4cxx/hexdump.h>
 #include <log4cxx/log4cxx.h>
 #include <sstream>
@@ -32,8 +38,8 @@ LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 	const wchar_t fill_char = L'0';
 	const wchar_t space_fill_char = L' ';
 #else
-	const char fill_char = '0';
-	const char space_fill_char = ' ';
+	const logchar fill_char = '0';
+	const logchar space_fill_char = ' ';
 #endif
 
 	if(flags & HexdumpFlags::AddStartingNewline){

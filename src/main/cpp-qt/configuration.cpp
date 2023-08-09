@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #include <log4cxx-qt/configuration.h>
+#include <log4cxx-qt/transcoder.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>

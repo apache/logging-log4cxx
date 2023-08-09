@@ -869,7 +869,7 @@ spi::ConfigurationStatus DOMConfigurator::configure(const std::wstring& filename
 }
 #endif
 
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 spi::ConfigurationStatus DOMConfigurator::configure(const std::basic_string<UniChar>& filename)
 {
 	File file(filename);
@@ -899,7 +899,7 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& 
 }
 #endif
 
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename)
 {
 	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
@@ -954,7 +954,7 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& 
 }
 #endif
 
-#if LOG4CXX_UNICHAR_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename, long delay)
 {
 	return doConfigureAndWatch(xdog, File(filename), delay);

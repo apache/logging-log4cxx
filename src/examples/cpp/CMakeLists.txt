@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream trivial custom-appender MyApp1 MyApp2)
+set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream ndc-example custom-appender MyApp1 MyApp2)
 if(LOG4CXX_QT_SUPPORT)
   list(APPEND ALL_LOG4CXX_EXAMPLES MyApp-qt)
 endif(LOG4CXX_QT_SUPPORT)
@@ -39,6 +39,7 @@ foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
     endif()
     if(${exampleName} STREQUAL MyApp-qt)
         target_sources(${PROGRAM_NAME} PRIVATE com/foo/config-qt.cpp com/foo/bar-qt.cpp)
+        target_link_libraries(${PROGRAM_NAME} PRIVATE log4cxx-qt)
     endif()
     if(${exampleName} STREQUAL auto-configured)
         target_sources(${PROGRAM_NAME} PRIVATE com/foo/config3.cpp )

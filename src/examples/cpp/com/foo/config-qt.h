@@ -1,7 +1,6 @@
-#ifndef COM_FOO_CONFIG_H_
-#define COM_FOO_CONFIG_H_
-#include <QString>
-#include <log4cxx/logger.h>
+#ifndef COM_FOO_CONFIG_QT_H_
+#define COM_FOO_CONFIG_QT_H_
+#include <log4cxx-qt/logger.h>
 
 /// Methods specific to foo.com
 namespace com { namespace foo {
@@ -19,4 +18,4 @@ extern auto getLogger(const QString& name) -> LoggerPtr;
 extern auto getLogger(const char* name = NULL) -> LoggerPtr;
 
 } } // namespace com::foo
-#endif // COM_FOO_CONFIG_H_
+#endif // COM_FOO_CONFIG_QT_H_

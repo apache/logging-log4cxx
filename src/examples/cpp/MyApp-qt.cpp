@@ -8,10 +8,10 @@ int main(int argc, char **argv) {
 	com::foo::ConfigureLogging();
 	try {
 		auto logger = com::foo::getLogger("MyApp");
-		LOG4CXX_INFO(logger, "Entering application.");
+		LOG4CXX_INFO(logger, QString("Message %1").arg(1));
 		com::foo::Bar bar;
 		bar.doIt();
-		LOG4CXX_INFO(logger, "Exiting application.");
+		LOG4CXX_INFO(logger, QString("Message %1").arg(2));
 	}
 	catch(std::exception&) {
 		result = EXIT_FAILURE;
