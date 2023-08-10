@@ -649,12 +649,14 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 bool CharsetEncoder::isTriviallyCopyable(const LogString& src, const CharsetEncoderPtr& enc)
 {
 	bool result;
+#if !LOG4CXX_CHARSET_EBCDIC
 	if (dynamic_cast<LocaleCharsetEncoder*>(enc.get()))
 	{
 		result = src.end() == std::find_if(src.begin(), src.end()
 			, [](const logchar& ch) -> bool { return 0x80 <= (unsigned int)ch; });
 	}
 	else
+#endif
 		result = !!dynamic_cast<TrivialCharsetEncoder*>(enc.get());
 	return result;
 }
