@@ -116,6 +116,12 @@ class LOG4CXX_EXPORT CharsetEncoder : public Object
 			return (stat != 0);
 		}
 
+		/**
+		* Is the data of \c src unchanged by \c enc.
+		*
+		*/
+		static bool isTriviallyCopyable(const LogString& src, const CharsetEncoderPtr& enc);
+
 
 	private:
 		/**
