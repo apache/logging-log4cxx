@@ -494,8 +494,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 					else if (encoding != enc)
 					{
 						encoding = enc;
-						LogString ename;
-						Transcoder::decode(encoding, ename);
+						LOG4CXX_DECODE_CHAR(ename, encoding);
 
 						try
 						{
