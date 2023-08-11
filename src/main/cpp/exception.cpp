@@ -29,8 +29,7 @@ using namespace log4cxx::helpers;
 
 Exception::Exception(const LogString& msg1)
 {
-	std::string m;
-	Transcoder::encode(msg1, m);
+	LOG4CXX_ENCODE_CHAR(m, msg1);
 	size_t len = m.size();
 
 	if (len > MSG_SIZE)

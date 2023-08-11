@@ -466,8 +466,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 
 						try
 						{
-							LogString e;
-							Transcoder::decode(encoding, e);
+							LOG4CXX_DECODE_CHAR(e, encoding);
 							decoder = getDecoder(e);
 						}
 						catch (IllegalArgumentException&)
