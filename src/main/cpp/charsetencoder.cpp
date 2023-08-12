@@ -604,6 +604,10 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset)
 	{
 		return std::make_shared<UTF16LECharsetEncoder>();
 	}
+	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("LOCALE"), LOG4CXX_STR("locale")))
+	{
+		return std::make_shared<LocaleCharsetEncoder>();
+	}
 
 #if APR_HAS_XLATE
 	return std::make_shared<APRCharsetEncoder>(charset);

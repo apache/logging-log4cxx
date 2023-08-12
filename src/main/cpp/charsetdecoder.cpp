@@ -578,6 +578,10 @@ CharsetDecoderPtr CharsetDecoder::getDecoder(const LogString& charset)
 	{
 		return std::make_shared<ISOLatinCharsetDecoder>();
 	}
+	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("LOCALE"), LOG4CXX_STR("locale")))
+	{
+		return std::make_shared<LocaleCharsetDecoder>();
+	}
 
 #if APR_HAS_XLATE
 	return std::make_shared<APRCharsetDecoder>(charset);
