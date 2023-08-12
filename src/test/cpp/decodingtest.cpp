@@ -121,7 +121,8 @@ public:
 		}
 		catch (std::runtime_error& ex)
 		{
-			LOG4CXX_DECODE_CHAR(msg, ex.what());
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
 			msg.append(LOG4CXX_STR(": "));
 			msg.append(LOG4CXX_STR("utf-16"));
 			LogLog::warn(msg);
@@ -141,7 +142,8 @@ public:
 		}
 		catch (std::runtime_error& ex)
 		{
-			LOG4CXX_DECODE_CHAR(msg, ex.what());
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
 			msg.append(LOG4CXX_STR(": "));
 			msg.append(LOG4CXX_STR("UTF-16BE"));
 			LogLog::warn(msg);
@@ -161,7 +163,8 @@ public:
 		}
 		catch (std::exception& ex)
 		{
-			LOG4CXX_DECODE_CHAR(msg, ex.what());
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
 			msg.append(LOG4CXX_STR(": "));
 			msg.append(LOG4CXX_STR("UTF-16LE"));
 			LogLog::warn(msg);
