@@ -462,6 +462,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 			LogString::const_iterator& iter,
 			ByteBuffer& out)
 		{
+			log4cxx_status_t result = APR_SUCCESS;
 #if !LOG4CXX_CHARSET_EBCDIC
 			char* current = out.current();
 			size_t remain = out.remaining();
@@ -478,38 +479,23 @@ class LocaleCharsetEncoder : public CharsetEncoder
 
 			if (iter != in.end() && out.remaining() > 0)
 			{
-				Pool subpool;
-				const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
+				std::mbstate_t state = {};
+				while (iter != in.end() && MB_CUR_MAX <= remain)
 				{
-					std::unique_lock<std::mutex> lock(mutex);
-
-					if (enc == 0)
+					auto ch = Transcoder::decode(in, iter);
+					auto n = std::wcrtomb(current, ch, &state);
+					if (static_cast<std::size_t>(-1) == n)
 					{
-						if (encoder == 0)
-						{
-							encoding = "C";
-							encoder.reset( new USASCIICharsetEncoder() );
-						}
+						result = APR_BADARG;
+						break;
 					}
-					else if (encoding != enc)
-					{
-						encoding = enc;
-						LOG4CXX_DECODE_CHAR(ename, encoding);
-
-						try
-						{
-							encoder = CharsetEncoder::getEncoder(ename);
-						}
-						catch (IllegalArgumentException&)
-						{
-							encoder.reset( new USASCIICharsetEncoder() );
-						}
-					}
+					remain -= n;
+					current += n;
 				}
-				return encoder->encode(in, iter, out);
+				out.position(current - out.data());
 			}
 
-			return APR_SUCCESS;
+			return result;
 		}
 
 	private:
@@ -578,7 +564,8 @@ CharsetEncoderPtr CharsetEncoder::getUTF8Encoder()
 
 CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset)
 {
-	if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-8"), LOG4CXX_STR("utf-8")))
+	if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-8"), LOG4CXX_STR("utf-8"))
+		|| StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("CP65001"), LOG4CXX_STR("cp65001")))
 	{
 		return std::make_shared<UTF8CharsetEncoder>();
 	}
@@ -586,23 +573,30 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset)
 		charset == LOG4CXX_STR("646") ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("US-ASCII"), LOG4CXX_STR("us-ascii")) ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO646-US"), LOG4CXX_STR("iso646-US")) ||
-		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ANSI_X3.4-1968"), LOG4CXX_STR("ansi_x3.4-1968")))
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ANSI_X3.4-1968"), LOG4CXX_STR("ansi_x3.4-1968")) ||
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("CP20127"), LOG4CXX_STR("cp20127")))
 	{
 		return std::make_shared<USASCIICharsetEncoder>();
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-8859-1"), LOG4CXX_STR("iso-8859-1")) ||
-		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-LATIN-1"), LOG4CXX_STR("iso-latin-1")))
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-LATIN-1"), LOG4CXX_STR("iso-latin-1")) ||
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("CP1252"), LOG4CXX_STR("cp1252")))
 	{
 		return std::make_shared<ISOLatinCharsetEncoder>();
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16BE"), LOG4CXX_STR("utf-16be"))
-		|| StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16"), LOG4CXX_STR("utf-16")))
+		|| StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16"), LOG4CXX_STR("utf-16"))
+		|| StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("CP1200"), LOG4CXX_STR("cp1200")))
 	{
 		return std::make_shared<UTF16BECharsetEncoder>();
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16LE"), LOG4CXX_STR("utf-16le")))
 	{
 		return std::make_shared<UTF16LECharsetEncoder>();
+	}
+	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("LOCALE"), LOG4CXX_STR("locale")))
+	{
+		return std::make_shared<LocaleCharsetEncoder>();
 	}
 
 #if APR_HAS_XLATE

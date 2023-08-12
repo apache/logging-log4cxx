@@ -27,6 +27,10 @@
 #include <log4cxx/logstring.h>
 
 #include "logunit.h"
+
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx_private.h>
+
 //
 // If there is no support for wchar_t logging then
 // there is not a consistent way to get the test characters compared.
