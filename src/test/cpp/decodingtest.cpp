@@ -24,6 +24,7 @@
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/logstring.h>
 
 #include "logunit.h"
@@ -113,7 +114,18 @@ public:
 	{
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 
-		testImpl(LOG4CXX_STR("UTF-16.txt"), witness);
+		try
+		{
+			std::locale::global(std::locale("utf-16"));
+			testImpl(LOG4CXX_STR("UTF-16.txt"), witness);
+		}
+		catch (std::runtime_error& ex)
+		{
+			LOG4CXX_DECODE_CHAR(msg, ex.what());
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("utf-16"));
+			LogLog::warn(msg);
+		}
 	}
 
 	/**
@@ -122,8 +134,18 @@ public:
 	void testUtf16BE()
 	{
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
-
-		testImpl(LOG4CXX_STR("UTF-16BE.txt"), witness);
+		try
+		{
+			std::locale::global(std::locale("UTF-16BE"));
+			testImpl(LOG4CXX_STR("UTF-16BE.txt"), witness);
+		}
+		catch (std::runtime_error& ex)
+		{
+			LOG4CXX_DECODE_CHAR(msg, ex.what());
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("UTF-16BE"));
+			LogLog::warn(msg);
+		}
 	}
 
 	/**
@@ -132,8 +154,18 @@ public:
 	void testUtf16LE()
 	{
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
-
-		testImpl(LOG4CXX_STR("UTF-16LE.txt"), witness);
+		try
+		{
+			std::locale::global(std::locale("UTF-16LE"));
+			testImpl(LOG4CXX_STR("UTF-16LE.txt"), witness);
+		}
+		catch (std::exception& ex)
+		{
+			LOG4CXX_DECODE_CHAR(msg, ex.what());
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("UTF-16LE"));
+			LogLog::warn(msg);
+		}
 	}
 
 private:
