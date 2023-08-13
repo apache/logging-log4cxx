@@ -466,7 +466,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 #if !LOG4CXX_CHARSET_EBCDIC
 			char* current = out.current();
 			size_t remain = out.remaining();
-			if (std::mbsinit(&this->state))
+			if (std::mbsinit(&this->state)) // ByteBuffer not partially encoded?
 			{
 				// Copy single byte characters
 				for (;
@@ -477,7 +477,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 				}
 			}
 #endif
-			// Encode characters that may require multiple byts
+			// Encode characters that may require multiple bytes
 			while (iter != in.end() && MB_CUR_MAX <= remain)
 			{
 				auto ch = Transcoder::decode(in, iter);

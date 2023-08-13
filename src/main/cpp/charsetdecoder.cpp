@@ -438,7 +438,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 			size_t i = in.position();
 			size_t remain = in.limit() - i;
 #if !LOG4CXX_CHARSET_EBCDIC
-			if (std::mbsinit(&this->state))
+			if (std::mbsinit(&this->state)) // ByteBuffer not partially decoded?
 			{
 				// Copy single byte characters
 				for (; 0 < remain && ((unsigned int) *p) < 0x80; --remain, ++i, p++)
@@ -448,7 +448,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 			}
 #endif
 
-			// Decode characters that may be represented by multiple byts
+			// Decode characters that may be represented by multiple bytes
 			while (0 < remain)
 			{
 				wchar_t ch;
