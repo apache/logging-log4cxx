@@ -418,8 +418,7 @@ class USASCIICharsetDecoder : public CharsetDecoder
 };
 
 /**
- *    Charset decoder that uses an embedded CharsetDecoder consistent
- *     with current locale settings.
+ *    Charset decoder that uses current locale settings.
  */
 class LocaleCharsetDecoder : public CharsetDecoder
 {
@@ -427,11 +426,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 		LocaleCharsetDecoder() : state()
 		{
 		}
-		virtual ~LocaleCharsetDecoder()
-		{
-		}
-		virtual log4cxx_status_t decode(ByteBuffer& in,
-			LogString& out)
+		log4cxx_status_t decode(ByteBuffer& in, LogString& out) override
 		{
 			log4cxx_status_t result = APR_SUCCESS;
 			const char* p = in.current();
@@ -447,7 +442,6 @@ class LocaleCharsetDecoder : public CharsetDecoder
 				}
 			}
 #endif
-
 			// Decode characters that may be represented by multiple bytes
 			while (0 < remain)
 			{

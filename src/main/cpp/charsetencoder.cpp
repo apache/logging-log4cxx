@@ -446,8 +446,7 @@ class UTF16LECharsetEncoder : public CharsetEncoder
 };
 
 /**
- *    Charset encoder that uses an embedded CharsetEncoder consistent
- *     with current locale settings.
+ *    Charset encoder that uses current locale settings.
  */
 class LocaleCharsetEncoder : public CharsetEncoder
 {
@@ -455,12 +454,11 @@ class LocaleCharsetEncoder : public CharsetEncoder
 		LocaleCharsetEncoder() : state()
 		{
 		}
-		virtual ~LocaleCharsetEncoder()
-		{
-		}
-		virtual log4cxx_status_t encode(const LogString& in,
-			LogString::const_iterator& iter,
-			ByteBuffer& out)
+		log4cxx_status_t encode
+			( const LogString&           in
+			, LogString::const_iterator& iter
+			, ByteBuffer&                out
+			) override
 		{
 			log4cxx_status_t result = APR_SUCCESS;
 #if !LOG4CXX_CHARSET_EBCDIC
@@ -495,8 +493,6 @@ class LocaleCharsetEncoder : public CharsetEncoder
 		}
 
 	private:
-		LocaleCharsetEncoder(const LocaleCharsetEncoder&);
-		LocaleCharsetEncoder& operator=(const LocaleCharsetEncoder&);
 		std::mbstate_t state;
 };
 
