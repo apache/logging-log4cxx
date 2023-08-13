@@ -29,6 +29,17 @@ information.  If you have trouble building, either create an issue in
 [Jira](https://issues.apache.org/jira/projects/LOGCXX/issues) or send a
 message to the [users mailing list].
 
+## Covered by Github
+
+These Github provided environments are
+used in continuous integration and unit testing:
+
+* Windows - Visual Studio 2019 and 2022
+* Ubuntu 20.04 - GNU g++ 9.4.0, Clang 11.0.0
+* Ubuntu 22.04 - GNU g++ 11.4.0, Clang 14.0.0
+* MacOS 11 - AppleClang 13.0
+* MacOS 12 - AppleClang 14.0
+
 ## Covered by the team
 
 The following list provides an overview about the environments some of the
@@ -38,8 +49,9 @@ something about how good the support on each platform is, it's just a guide.
 
 The following platforms/compilers are expected to work correctly:
 
-* Windows 10(32 and 64-bit) - MSVC
+* Windows 10(32 and 64-bit) - MSVC 2017, 2019
 * Windows 10(32-bit) - Embarcadero C++ Builder XE 4
+* Windows 11(64-bit) - MSVC 2019, 2022
 * Debian 10(32 and 64-bit) - gcc 8.3.0, clang-7
 * Ubuntu 20.04(32 and 64-bit) - gcc, clang
 * Mac OSX - clang
