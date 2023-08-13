@@ -57,12 +57,12 @@ The following table lists CMake options that require additional dependencies.
 
 |CMake option   |Dependency Name|Version| Dependency Type | Homepage|
 |---------------|---------------| :---: |---------------|--------|
-|LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER |Boost | any   | Compile/runtime. Not required if your compiler supports C++17 | https://boost.org
-|ENABLE_FMT_LAYOUT | {fmt}    | 9+     | Compile/runtime | https://github.com/fmtlib/fmt
-|LOG4CXX_ENABLE_ODBC | unixodbc    | any     | Compile/runtime (not on Windows) | https://www.unixodbc.org/
-|LOG4CXX_ENABLE_ESMTP | libesmtp    | any     | Compile/runtime (not on Windows) |
+|LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER |Boost | any   | Compile/runtime. Not required if your compiler supports C++17 | https://boost.org |
+|ENABLE_FMT_LAYOUT | {fmt}    | 9+     | Compile/runtime | https://github.com/fmtlib/fmt |
+|LOG4CXX_ENABLE_ODBC | unixodbc    | any     | Compile/runtime (not on Windows) | https://www.unixodbc.org/ |
+|LOG4CXX_ENABLE_ESMTP | libesmtp    | any     | Compile/runtime (not on Windows) | |
 |LOG4CXX_QT_SUPPORT |Qt    | 5     | Compile/runtime | https://www.qt.io/download |
-|LOG4CXX_CFSTRING | Mac OS/X Core Foundation | any | Compile/runtime | https://developer.apple.com/documentation/corefoundation
+|LOG4CXX_CFSTRING | Mac OS/X Core Foundation | any | Compile/runtime | https://developer.apple.com/documentation/corefoundation |
 
 ## A note on C++ version and Boost
 
