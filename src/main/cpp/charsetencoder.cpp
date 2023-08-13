@@ -452,7 +452,7 @@ class UTF16LECharsetEncoder : public CharsetEncoder
 class LocaleCharsetEncoder : public CharsetEncoder
 {
 	public:
-		LocaleCharsetEncoder() : pool(), encoder(), encoding()
+		LocaleCharsetEncoder() : state()
 		{
 		}
 		virtual ~LocaleCharsetEncoder()
@@ -466,45 +466,38 @@ class LocaleCharsetEncoder : public CharsetEncoder
 #if !LOG4CXX_CHARSET_EBCDIC
 			char* current = out.current();
 			size_t remain = out.remaining();
-
-			for (;
-				iter != in.end() && ((unsigned int) *iter) < 0x80 && remain > 0;
-				iter++, remain--, current++)
+			if (std::mbsinit(&this->state))
 			{
-				*current = *iter;
-			}
-
-			out.position(current - out.data());
-#endif
-
-			if (iter != in.end() && out.remaining() > 0)
-			{
-				std::mbstate_t state = {};
-				while (iter != in.end() && MB_CUR_MAX <= remain)
+				// Copy single byte characters
+				for (;
+					iter != in.end() && ((unsigned int) *iter) < 0x80 && 0 < remain;
+					iter++, remain--, current++)
 				{
-					auto ch = Transcoder::decode(in, iter);
-					auto n = std::wcrtomb(current, ch, &state);
-					if (static_cast<std::size_t>(-1) == n)
-					{
-						result = APR_BADARG;
-						break;
-					}
-					remain -= n;
-					current += n;
+					*current = *iter;
 				}
-				out.position(current - out.data());
 			}
-
+#endif
+			// Encode characters that may require multiple byts
+			while (iter != in.end() && MB_CUR_MAX <= remain)
+			{
+				auto ch = Transcoder::decode(in, iter);
+				auto n = std::wcrtomb(current, ch, &this->state);
+				if (static_cast<std::size_t>(-1) == n) // not a valid wide character?
+				{
+					result = APR_BADARG;
+					break;
+				}
+				remain -= n;
+				current += n;
+			}
+			out.position(current - out.data());
 			return result;
 		}
 
 	private:
 		LocaleCharsetEncoder(const LocaleCharsetEncoder&);
 		LocaleCharsetEncoder& operator=(const LocaleCharsetEncoder&);
-		Pool pool;
-		std::mutex mutex;
-		CharsetEncoderPtr encoder;
-		std::string encoding;
+		std::mbstate_t state;
 };
 
 

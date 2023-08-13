@@ -424,7 +424,7 @@ class USASCIICharsetDecoder : public CharsetDecoder
 class LocaleCharsetDecoder : public CharsetDecoder
 {
 	public:
-		LocaleCharsetDecoder() : pool(), decoder(), encoding()
+		LocaleCharsetDecoder() : state()
 		{
 		}
 		virtual ~LocaleCharsetDecoder()
@@ -438,51 +438,46 @@ class LocaleCharsetDecoder : public CharsetDecoder
 			size_t i = in.position();
 			size_t remain = in.limit() - i;
 #if !LOG4CXX_CHARSET_EBCDIC
-
-			for (; 0 < remain && ((unsigned int) *p) < 0x80; --remain, ++i, p++)
+			if (std::mbsinit(&this->state))
 			{
-				out.append(1, *p);
+				// Copy single byte characters
+				for (; 0 < remain && ((unsigned int) *p) < 0x80; --remain, ++i, p++)
+				{
+					out.append(1, *p);
+				}
 			}
-
-			in.position(i);
 #endif
 
-			if (0 < remain)
+			// Decode characters that may be represented by multiple byts
+			while (0 < remain)
 			{
-				std::mbstate_t state = {};
-				while (0 < remain)
+				wchar_t ch;
+				size_t n = std::mbrtowc(&ch, p, remain, &this->state);
+				if (0 == n) // NULL encountered?
 				{
-					wchar_t ch;
-					size_t n = std::mbrtowc(&ch, p, remain, &state);
-					if (0 == n)
-					{
-						++i;
-						break;
-					}
-					if (static_cast<std::size_t>(-1) == n)
-					{
-						result = APR_BADARG;
-						break;
-					}
-					if (static_cast<std::size_t>(-2) == n)
-					{
-						break;
-					}
-					Transcoder::encode(static_cast<unsigned int>(ch), out);
-					remain -= n;
-					i += n;
-					p += n;
+					++i;
+					break;
 				}
-				in.position(i);
+				if (static_cast<std::size_t>(-1) == n) // decoding error?
+				{
+					result = APR_BADARG;
+					break;
+				}
+				if (static_cast<std::size_t>(-2) == n) // incomplete sequence?
+				{
+					break;
+				}
+				Transcoder::encode(static_cast<unsigned int>(ch), out);
+				remain -= n;
+				i += n;
+				p += n;
 			}
-
+			in.position(i);
 			return result;
 		}
+
 	private:
-		Pool pool;
-		std::mutex mutex;
-		CharsetDecoderPtr decoder;
-		std::string encoding;
+		std::mbstate_t state;
 };
 
 
