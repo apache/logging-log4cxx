@@ -1,4 +1,4 @@
-Build with CMake {#build-cmake}
+Building with CMake {#build-cmake}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -20,8 +20,7 @@ Build with CMake {#build-cmake}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-# Building Apache Log4cxx with CMake
+[TOC]
 
 ## Quick start:
 
@@ -43,22 +42,22 @@ $ sudo make install
 
 Windows Example:
 Building and testing Log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
-extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%/Libraries.
+extracted into apr-1.7.4, libexpat(from github) and apr-util-1.6.3 in %HOMEPATH%/Libraries.
 
 ~~~
 $ cd %HOMEPATH%/Libraries
 $ cmake -S libexpat/expat -B buildtrees/expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
 $ cmake --build buildtrees/expat --target install --config Release
-$ cmake -S apr-1.7.0 -B buildtrees/apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+$ cmake -S apr-1.7.4 -B buildtrees/apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
 $ cmake --build buildtrees/apr --target install --config Release
 $ set CMAKE_PREFIX_PATH=%HOMEPATH%/Libraries/installed
-$ cmake -S apr-util-1.6.1 -B buildtrees/apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+$ cmake -S apr-util-1.6.3 -B buildtrees/apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
 $ cmake --build buildtrees/apr-util --target install --config Release
 $ cmake -S apache-Log4cxx-x.x.x -B buildtrees/Log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
 $ cmake --build buildtrees/Log4cxx --target install --config Release
 ~~~
 
-## ccmake options
+## CMake options
 
 | Option                 | Usage |
 |------------------------|-------|
@@ -72,21 +71,6 @@ $ cmake --build buildtrees/Log4cxx --target install --config Release
 |-DLOG4CXX_TEST_PROGRAM_PATH=path| An extra path to prepend to the PATH for test programs.  Log4cxx requires zip, sed, and grep on the PATH in order for the tests to work properly.                          |
 | -DPREFER_BOOST=on      | Prefer the Boost version of dependent libraries over standard library |
 | -DLOG4CXX_QT_SUPPORT=ON | Enable QString API and log4cxx::qt namespace methods, requires QtCore, choice of ON, OFF (default).                   |
-
-## A note on C++ version and Boost
-
-By default, Log4cxx attempts to use at least C++17 to compile.  This is to
-avoid 3rd party dependencies as much as possible.  If C++17 is not
-available, a search for Boost will be taken and those libaries will be used
-instead.  If you would prefer to use Boost, there are two options you have:
-
-1. Pass `-DPREFER_BOOST=ON` to CMake when compiling.  This will ignore the
- results of the tests that check for the standard version of components that
- are required.  Note that this will switch all components, regardless of the
- C++ version in effect at compile time.
-2. Revert to an earlier standard using `-DCMAKE_CXX_STANDARD=11` for example.
- This will still to check for standard versions of required components, but
- it will fall back to using Boost for newer components added in C++17.
 
 # Platform specific notes:
 
@@ -107,9 +91,9 @@ $ sudo apt-get install libssl-dev libapr1-dev libaprutil1-dev gzip zip
 CMake can be built from source by typing:
 
 ~~~
-$ wget https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4.tar.gz
-$ tar xf cmake-3.16.4.tar.gz
-$ cd cmake-3.16.4
+$ wget https://github.com/Kitware/CMake/releases/download/v3.27.2/cmake-3.27.2.tar.gz
+$ tar xf cmake-3.27.2.tar.gz
+$ cd cmake-3.27.2
 $ ./bootstrap
 $ make
 $ sudo make install

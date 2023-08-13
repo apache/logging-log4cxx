@@ -1,4 +1,4 @@
-# Library Design Notes {#library-design}
+Library Design Notes {#library-design}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
