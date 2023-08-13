@@ -206,7 +206,6 @@ set_target_properties(log4cxx PROPERTIES
   VERSION ${LIBLOG4CXX_LIB_VERSION}
   SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
 )
-boostfallback_link(log4cxx)
 get_directory_property( FILESYSTEM_IMPL DIRECTORY "${LOG4CXX_SOURCE_DIR}/src/main/include" DEFINITION FILESYSTEM_IMPL )
 if("${FILESYSTEM_IMPL}" STREQUAL "std::filesystem" OR
    "${FILESYSTEM_IMPL}" STREQUAL "std::experimental::filesystem" )
