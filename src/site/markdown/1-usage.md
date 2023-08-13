@@ -1,4 +1,4 @@
-Usage {#usage-overview}
+Use {#usage-overview}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
