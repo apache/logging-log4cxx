@@ -253,7 +253,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 				&& !priv->closed
 				&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
 			{
-				priv->bufferNotFull.wait(lock);
+				priv->bufferNotFull.wait(lock, [this]()
+				{
+					return priv->buffer.empty();
+				});
 				discard = false;
 			}
 
