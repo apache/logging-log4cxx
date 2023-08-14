@@ -139,7 +139,7 @@ public:
 
 		try
 		{
-			std::locale::global(std::locale("utf-16"));
+			std::locale::global(std::locale("en_US.UTF-16"));
 			testImpl(LOG4CXX_STR("UTF-16.txt"), witness);
 		}
 		catch (std::runtime_error& ex)
@@ -147,7 +147,7 @@ public:
 			LogString msg;
 			Transcoder::decode(ex.what(), msg);
 			msg.append(LOG4CXX_STR(": "));
-			msg.append(LOG4CXX_STR("utf-16"));
+			msg.append(LOG4CXX_STR("en_US.UTF-16"));
 			LogLog::warn(msg);
 		}
 	}
@@ -160,7 +160,7 @@ public:
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 		try
 		{
-			std::locale::global(std::locale("UTF-16BE"));
+			std::locale::global(std::locale("en_US.UTF-16BE"));
 			testImpl(LOG4CXX_STR("UTF-16BE.txt"), witness);
 		}
 		catch (std::runtime_error& ex)
@@ -168,7 +168,7 @@ public:
 			LogString msg;
 			Transcoder::decode(ex.what(), msg);
 			msg.append(LOG4CXX_STR(": "));
-			msg.append(LOG4CXX_STR("UTF-16BE"));
+			msg.append(LOG4CXX_STR("en_US.UTF-16BE"));
 			LogLog::warn(msg);
 		}
 	}
@@ -181,7 +181,7 @@ public:
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 		try
 		{
-			std::locale::global(std::locale("UTF-16LE"));
+			std::locale::global(std::locale("en_US.UTF-16LE"));
 			testImpl(LOG4CXX_STR("UTF-16LE.txt"), witness);
 		}
 		catch (std::exception& ex)
@@ -189,7 +189,7 @@ public:
 			LogString msg;
 			Transcoder::decode(ex.what(), msg);
 			msg.append(LOG4CXX_STR(": "));
-			msg.append(LOG4CXX_STR("UTF-16LE"));
+			msg.append(LOG4CXX_STR("en_US.UTF-16LE"));
 			LogLog::warn(msg);
 		}
 	}
