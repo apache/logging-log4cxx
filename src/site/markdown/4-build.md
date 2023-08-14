@@ -1,4 +1,4 @@
-Use {#usage-overview}
+Build {#build}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,20 +21,9 @@ Use {#usage-overview}
  limitations under the License.
 -->
 
-See the following pages for usage information:
+See the following pages for information on building Log4cxx:
 
-* @subpage quick-start
-* @subpage concepts
-* @subpage configuration-samples
-* @subpage filters
-* @subpage qt-support
-* @subpage stacktrace-support
-* @subpage extending-log4cxx
-* @subpage threading
-* @subpage multiprocess-logging
-* @subpage environment-variables
-* @subpage macros-influencing-log4cxx
-* @subpage internal-debugging
-* @subpage performance
-* @subpage conclusions
-* @subpage faq
+* @subpage building
+* @subpage dependencies
+* @subpage build-cmake
+* @subpage build-vcpkg

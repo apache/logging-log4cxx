@@ -35,6 +35,7 @@ LOGUNIT_CLASS(CharsetEncoderTestCase)
 	LOGUNIT_TEST(encode2);
 	LOGUNIT_TEST(encode3);
 	LOGUNIT_TEST(encode4);
+	LOGUNIT_TEST(encode5);
 #if APR_HAS_THREADS
 	LOGUNIT_TEST(thread1);
 #endif
@@ -173,6 +174,51 @@ public:
 		for (size_t i = 0; i < out.limit(); i++)
 		{
 			LOGUNIT_ASSERT_EQUAL((int) utf8_greet[i], (int) out.data()[i]);
+		}
+
+		LOGUNIT_ASSERT(iter == greeting.end());
+	}
+
+	void encode5()
+	{
+		const char utf8_greet[] = { 'A',
+				(char) 0xD8, (char) 0x85,
+				(char) 0xD4, (char) 0xB0,
+				(char) 0xE0, (char) 0xA6, (char) 0x86,
+				(char) 0xE4, (char) 0xB8, (char) 0x83,
+				(char) 0xD0, (char) 0x80,
+				0
+			};
+#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+		//   arbitrary, hopefully meaningless, characters from
+		//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
+		const logchar greet[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
+#endif
+
+#if LOG4CXX_LOGCHAR_IS_UTF8
+		const logchar* greet = utf8_greet;
+#endif
+		LogString greeting(greet);
+
+		std::locale::global(std::locale("en_US.UTF-8"));
+		auto enc = CharsetEncoder::getEncoder(LOG4CXX_STR("locale"));
+
+		char buf[BUFSIZE];
+		ByteBuffer out(buf, BUFSIZE);
+		LogString::const_iterator iter = greeting.begin();
+		log4cxx_status_t stat = enc->encode(greeting, iter, out);
+		LOGUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
+		stat = enc->encode(greeting, iter, out);
+		LOGUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
+
+		out.flip();
+		LOGUNIT_ASSERT_EQUAL((size_t) 13, out.limit());
+
+		for (size_t i = 0; i < out.limit(); i++)
+		{
+			unsigned expected = (unsigned)utf8_greet[i];
+			unsigned actual = (unsigned)out.data()[i];
+			LOGUNIT_ASSERT_EQUAL(expected, actual);
 		}
 
 		LOGUNIT_ASSERT(iter == greeting.end());

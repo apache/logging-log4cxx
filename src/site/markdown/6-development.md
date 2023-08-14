@@ -1,4 +1,4 @@
-Development {#development-overview}
+Develop {#development-overview}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -24,8 +24,4 @@ Development {#development-overview}
 See the following pages for development information:
 
 * @subpage source-repository
-* @subpage dependencies
-* @subpage building
-* @subpage build-cmake
-* @subpage build-vcpkg
 * @subpage library-design
