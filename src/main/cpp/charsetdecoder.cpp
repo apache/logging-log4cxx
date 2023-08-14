@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#define NOMINMAX /* tell windows not to define min/max macros */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
@@ -166,21 +167,14 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 		{
 			log4cxx_status_t stat = APR_SUCCESS;
 			enum { BUFSIZE = 256 };
-			wchar_t buf[BUFSIZE];
+			wchar_t wbuf[BUFSIZE];
+			char cbuf[BUFSIZE*4];
 
 			mbstate_t mbstate;
 			memset(&mbstate, 0, sizeof(mbstate));
 
 			while (in.remaining() > 0)
 			{
-				size_t requested = in.remaining();
-
-				if (requested > BUFSIZE - 1)
-				{
-					requested = BUFSIZE - 1;
-				}
-
-				memset(buf, 0, BUFSIZE * sizeof(wchar_t));
 				const char* src = in.current();
 
 				if (*src == 0)
@@ -190,9 +184,13 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 				}
 				else
 				{
-					size_t converted = mbsrtowcs(buf,
+					auto charCount = std::min(sizeof (cbuf) - 1, in.remaining());
+					strncpy(cbuf, src, charCount);
+					cbuf[charCount] = 0;
+					src = cbuf;
+					size_t converted = mbsrtowcs(wbuf,
 							&src,
-							requested,
+							BUFSIZE - 1,
 							&mbstate);
 
 					if (converted == (size_t) -1) // Illegal byte sequence?
@@ -209,8 +207,9 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 					}
 					else
 					{
-						stat = append(out, buf);
-						in.position(in.position() + requested);
+						wbuf[converted] = 0;
+						stat = append(out, wbuf);
+						in.position(in.position() + charCount);
 					}
 				}
 			}
