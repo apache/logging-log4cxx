@@ -184,32 +184,31 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 				}
 				else
 				{
-					auto charCount = std::min(sizeof (cbuf) - 1, in.remaining());
-					strncpy(cbuf, src, charCount);
-					cbuf[charCount] = 0;
+					auto available = std::min(sizeof (cbuf) - 1, in.remaining());
+					strncpy(cbuf, src, available);
+					cbuf[available] = 0;
 					src = cbuf;
-					size_t converted = mbsrtowcs(wbuf,
+					size_t wCharCount = mbsrtowcs(wbuf,
 							&src,
 							BUFSIZE - 1,
 							&mbstate);
+					auto converted = src - cbuf;
+					in.position(in.position() + converted);
 
-					if (converted == (size_t) -1) // Illegal byte sequence?
+					if (wCharCount == (size_t) -1) // Illegal byte sequence?
 					{
-						Pool p;
 						LogString msg(LOG4CXX_STR("Illegal byte sequence at "));
-						StringHelper::toString(src - in.current(), p, msg);
+						msg.append(std::to_wstring(src - in.current()));
 						msg.append(LOG4CXX_STR(" of "));
-						StringHelper::toString(in.limit(), p, msg);
+						msg.append(std::to_wstring(in.limit()));
 						LogLog::warn(msg);
 						stat = APR_BADCH;
-						in.position(src - in.data());
 						break;
 					}
 					else
 					{
-						wbuf[converted] = 0;
+						wbuf[wCharCount] = 0;
 						stat = append(out, wbuf);
-						in.position(in.position() + charCount);
 					}
 				}
 			}
