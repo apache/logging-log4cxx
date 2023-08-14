@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/loglog.h>
 #include <apr_xlate.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
@@ -194,9 +195,16 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 							requested,
 							&mbstate);
 
-					if (converted == (size_t) -1)
+					if (converted == (size_t) -1) // Illegal byte sequence?
 					{
-						stat = APR_BADARG;
+						LogString msg(LOG4CXX_STR("Illegal byte sequence (["));
+						Transcoder::decode(src, msg);
+						msg.append(LOG4CXX_STR("]) at "));
+						StringHelper::toString(src - in.current(), msg);
+						msg.append(LOG4CXX_STR(" of "));
+						StringHelper::toString(in.limit(), msg);
+						LogLog::warn(msg);
+						stat = APR_BADCH;
 						in.position(src - in.data());
 						break;
 					}
