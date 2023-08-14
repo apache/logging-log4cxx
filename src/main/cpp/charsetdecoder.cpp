@@ -197,10 +197,11 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 
 					if (converted == (size_t) -1) // Illegal byte sequence?
 					{
+						Pool p;
 						LogString msg(LOG4CXX_STR("Illegal byte sequence at "));
-						StringHelper::toString(src - in.current(), msg);
+						StringHelper::toString(src - in.current(), p, msg);
 						msg.append(LOG4CXX_STR(" of "));
-						StringHelper::toString(in.limit(), msg);
+						StringHelper::toString(in.limit(), p, msg);
 						LogLog::warn(msg);
 						stat = APR_BADCH;
 						in.position(src - in.data());
