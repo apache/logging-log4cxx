@@ -56,7 +56,7 @@ FileAppenders support an `Encoding` property allowing character set encoding con
 For example, you can use `UTF-8` or `UTF-16` when writing XML or JSON layouts.
 Log4cxx also implements character set encodings for `US-ASCII` (`ISO646-US` or `ANSI_X3.4-1968`)
 and `ISO-8859-1` (`ISO-LATIN-1` or `CP1252`).
-You are highly encouraged to stick to `UTF-8` for the best support from tools, API and operating systems.
+You are highly encouraged to stick to `UTF-8` for the best support from tools and operating systems.
 
 The `locale` character set encoding provides support beyond the above internally implemented options.
 It allows you to use any multi-byte encoding provided by the standard library.
@@ -84,7 +84,9 @@ loggername - ?????????? ???? ??????????????
 ```
 
 The important thing to understand is that this is some always applied, backwards compatible default
-behaviour and even the case when the current environment sets a locale like `en_US.UTF-8`. One might
-need to explicitly tell the app at startup to use the locale of the environment and make things
-compatible with Unicode this way.
+behaviour and even the case when the current environment sets a locale like `en_US.UTF-8`.
+
+So when using the `locale` character set encoding you will, at startup,
+need to explicitly set the `std::locale` to a value able to encode your characters
+and which is supported on your operating environment.
 
