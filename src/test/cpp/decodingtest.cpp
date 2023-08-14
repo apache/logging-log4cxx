@@ -66,6 +66,7 @@ LOGUNIT_CLASS(DecodingTest)
 #elif LOG4CXX_CHARSET_UTF8
 	LOGUNIT_TEST(testUtf8);
 #elif LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_MBSRTOWCS
+	LOGUNIT_TEST(testUtf8_to_wchar);
 	LOGUNIT_TEST(testUtf16);
 	LOGUNIT_TEST(testUtf16LE);
 	LOGUNIT_TEST(testUtf16BE);
@@ -105,6 +106,28 @@ public:
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 
 		testImpl(LOG4CXX_STR("UTF-8.txt"), witness);
+	}
+
+	/**
+	 * Test utf-8 decoding.
+	 */
+	void testUtf8_to_wchar()
+	{
+		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
+
+		try
+		{
+			std::locale::global(std::locale("en_US.UTF-8"));
+			testImpl(LOG4CXX_STR("UTF-8.txt"), witness);
+		}
+		catch (std::runtime_error& ex)
+		{
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("en_US.UTF-8"));
+			LogLog::warn(msg);
+		}
 	}
 
 	/**
