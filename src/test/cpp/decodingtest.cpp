@@ -24,9 +24,14 @@
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/logstring.h>
 
 #include "logunit.h"
+
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx_private.h>
+
 //
 // If there is no support for wchar_t logging then
 // there is not a consistent way to get the test characters compared.
@@ -61,6 +66,7 @@ LOGUNIT_CLASS(DecodingTest)
 #elif LOG4CXX_CHARSET_UTF8
 	LOGUNIT_TEST(testUtf8);
 #elif LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_MBSRTOWCS
+	LOGUNIT_TEST(testUtf8_to_wchar);
 	LOGUNIT_TEST(testUtf16);
 	LOGUNIT_TEST(testUtf16LE);
 	LOGUNIT_TEST(testUtf16BE);
@@ -103,13 +109,47 @@ public:
 	}
 
 	/**
+	 * Test utf-8 decoding.
+	 */
+	void testUtf8_to_wchar()
+	{
+		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
+
+		try
+		{
+			std::locale::global(std::locale("en_US.UTF-8"));
+			testImpl(LOG4CXX_STR("UTF-8.txt"), witness);
+		}
+		catch (std::runtime_error& ex)
+		{
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("en_US.UTF-8"));
+			LogLog::warn(msg);
+		}
+	}
+
+	/**
 	 * Test utf-16 decoding.
 	 */
 	void testUtf16()
 	{
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 
-		testImpl(LOG4CXX_STR("UTF-16.txt"), witness);
+		try
+		{
+			std::locale::global(std::locale("en_US.UTF-16"));
+			testImpl(LOG4CXX_STR("UTF-16.txt"), witness);
+		}
+		catch (std::runtime_error& ex)
+		{
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("en_US.UTF-16"));
+			LogLog::warn(msg);
+		}
 	}
 
 	/**
@@ -118,8 +158,19 @@ public:
 	void testUtf16BE()
 	{
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
-
-		testImpl(LOG4CXX_STR("UTF-16BE.txt"), witness);
+		try
+		{
+			std::locale::global(std::locale("en_US.UTF-16BE"));
+			testImpl(LOG4CXX_STR("UTF-16BE.txt"), witness);
+		}
+		catch (std::runtime_error& ex)
+		{
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("en_US.UTF-16BE"));
+			LogLog::warn(msg);
+		}
 	}
 
 	/**
@@ -128,8 +179,19 @@ public:
 	void testUtf16LE()
 	{
 		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
-
-		testImpl(LOG4CXX_STR("UTF-16LE.txt"), witness);
+		try
+		{
+			std::locale::global(std::locale("en_US.UTF-16LE"));
+			testImpl(LOG4CXX_STR("UTF-16LE.txt"), witness);
+		}
+		catch (std::exception& ex)
+		{
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("en_US.UTF-16LE"));
+			LogLog::warn(msg);
+		}
 	}
 
 private:

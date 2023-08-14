@@ -172,7 +172,7 @@ IOException& IOException::operator=(const IOException& src)
 
 LogString IOException::formatMessage(log4cxx_status_t stat)
 {
-	char err_buff[32];
+	char err_buff[1024];
 	LogString s(LOG4CXX_STR("IO Exception : status code = "));
 	Pool p;
 	StringHelper::toString(stat, p, s);

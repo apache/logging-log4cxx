@@ -14,11 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#define NOMINMAX /* tell windows not to define min/max macros */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/loglog.h>
 #include <apr_xlate.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
@@ -165,21 +167,14 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 		{
 			log4cxx_status_t stat = APR_SUCCESS;
 			enum { BUFSIZE = 256 };
-			wchar_t buf[BUFSIZE];
+			wchar_t wbuf[BUFSIZE];
+			char cbuf[BUFSIZE*4];
 
 			mbstate_t mbstate;
 			memset(&mbstate, 0, sizeof(mbstate));
 
 			while (in.remaining() > 0)
 			{
-				size_t requested = in.remaining();
-
-				if (requested > BUFSIZE - 1)
-				{
-					requested = BUFSIZE - 1;
-				}
-
-				memset(buf, 0, BUFSIZE * sizeof(wchar_t));
 				const char* src = in.current();
 
 				if (*src == 0)
@@ -189,21 +184,31 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 				}
 				else
 				{
-					size_t converted = mbsrtowcs(buf,
+					auto available = std::min(sizeof (cbuf) - 1, in.remaining());
+					strncpy(cbuf, src, available);
+					cbuf[available] = 0;
+					src = cbuf;
+					size_t wCharCount = mbsrtowcs(wbuf,
 							&src,
-							requested,
+							BUFSIZE - 1,
 							&mbstate);
+					auto converted = src - cbuf;
+					in.position(in.position() + converted);
 
-					if (converted == (size_t) -1)
+					if (wCharCount == (size_t) -1) // Illegal byte sequence?
 					{
-						stat = APR_BADARG;
-						in.position(src - in.data());
+						LogString msg(LOG4CXX_STR("Illegal byte sequence at "));
+						msg.append(std::to_wstring(in.position()));
+						msg.append(LOG4CXX_STR(" of "));
+						msg.append(std::to_wstring(in.limit()));
+						LogLog::warn(msg);
+						stat = APR_BADCH;
 						break;
 					}
 					else
 					{
-						stat = append(out, buf);
-						in.position(in.position() + requested);
+						wbuf[wCharCount] = 0;
+						stat = append(out, wbuf);
 					}
 				}
 			}
@@ -418,73 +423,60 @@ class USASCIICharsetDecoder : public CharsetDecoder
 };
 
 /**
- *    Charset decoder that uses an embedded CharsetDecoder consistent
- *     with current locale settings.
+ *    Charset decoder that uses current locale settings.
  */
 class LocaleCharsetDecoder : public CharsetDecoder
 {
 	public:
-		LocaleCharsetDecoder() : pool(), decoder(), encoding()
+		LocaleCharsetDecoder() : state()
 		{
 		}
-		virtual ~LocaleCharsetDecoder()
+		log4cxx_status_t decode(ByteBuffer& in, LogString& out) override
 		{
-		}
-		virtual log4cxx_status_t decode(ByteBuffer& in,
-			LogString& out)
-		{
+			log4cxx_status_t result = APR_SUCCESS;
 			const char* p = in.current();
 			size_t i = in.position();
+			size_t remain = in.limit() - i;
 #if !LOG4CXX_CHARSET_EBCDIC
-
-			for (; i < in.limit() && ((unsigned int) *p) < 0x80; i++, p++)
+			if (std::mbsinit(&this->state)) // ByteBuffer not partially decoded?
 			{
-				out.append(1, *p);
-			}
-
-			in.position(i);
-#endif
-
-			if (i < in.limit())
-			{
-				Pool subpool;
-				const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
+				// Copy single byte characters
+				for (; 0 < remain && ((unsigned int) *p) < 0x80; --remain, ++i, p++)
 				{
-					std::unique_lock<std::mutex> lock(mutex);
-
-					if (enc == 0)
-					{
-						if (decoder == 0)
-						{
-							encoding = "C";
-							decoder.reset( new USASCIICharsetDecoder() );
-						}
-					}
-					else if (encoding != enc)
-					{
-						encoding = enc;
-
-						try
-						{
-							LOG4CXX_DECODE_CHAR(e, encoding);
-							decoder = getDecoder(e);
-						}
-						catch (IllegalArgumentException&)
-						{
-							decoder.reset( new USASCIICharsetDecoder() );
-						}
-					}
+					out.append(1, *p);
 				}
-				return decoder->decode(in, out);
 			}
-
-			return APR_SUCCESS;
+#endif
+			// Decode characters that may be represented by multiple bytes
+			while (0 < remain)
+			{
+				wchar_t ch;
+				size_t n = std::mbrtowc(&ch, p, remain, &this->state);
+				if (0 == n) // NULL encountered?
+				{
+					++i;
+					break;
+				}
+				if (static_cast<std::size_t>(-1) == n) // decoding error?
+				{
+					result = APR_BADARG;
+					break;
+				}
+				if (static_cast<std::size_t>(-2) == n) // incomplete sequence?
+				{
+					break;
+				}
+				Transcoder::encode(static_cast<unsigned int>(ch), out);
+				remain -= n;
+				i += n;
+				p += n;
+			}
+			in.position(i);
+			return result;
 		}
+
 	private:
-		Pool pool;
-		std::mutex mutex;
-		CharsetDecoderPtr decoder;
-		std::string encoding;
+		std::mbstate_t state;
 };
 
 
@@ -561,7 +553,8 @@ CharsetDecoderPtr CharsetDecoder::getISOLatinDecoder()
 CharsetDecoderPtr CharsetDecoder::getDecoder(const LogString& charset)
 {
 	if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-8"), LOG4CXX_STR("utf-8")) ||
-		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF8"), LOG4CXX_STR("utf8")))
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF8"), LOG4CXX_STR("utf8")) ||
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("CP65001"), LOG4CXX_STR("cp65001")))
 	{
 		return std::make_shared<UTF8CharsetDecoder>();
 	}
@@ -569,14 +562,20 @@ CharsetDecoderPtr CharsetDecoder::getDecoder(const LogString& charset)
 		charset == LOG4CXX_STR("646") ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("US-ASCII"), LOG4CXX_STR("us-ascii")) ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO646-US"), LOG4CXX_STR("iso646-US")) ||
-		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ANSI_X3.4-1968"), LOG4CXX_STR("ansi_x3.4-1968")))
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ANSI_X3.4-1968"), LOG4CXX_STR("ansi_x3.4-1968")) ||
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("CP20127"), LOG4CXX_STR("cp20127")))
 	{
 		return std::make_shared<USASCIICharsetDecoder>();
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-8859-1"), LOG4CXX_STR("iso-8859-1")) ||
-		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-LATIN-1"), LOG4CXX_STR("iso-latin-1")))
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-LATIN-1"), LOG4CXX_STR("iso-latin-1")) ||
+		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("CP1252"), LOG4CXX_STR("cp1252")))
 	{
 		return std::make_shared<ISOLatinCharsetDecoder>();
+	}
+	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("LOCALE"), LOG4CXX_STR("locale")))
+	{
+		return std::make_shared<LocaleCharsetDecoder>();
 	}
 
 #if APR_HAS_XLATE
