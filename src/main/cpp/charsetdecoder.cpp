@@ -198,7 +198,7 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 					if (wCharCount == (size_t) -1) // Illegal byte sequence?
 					{
 						LogString msg(LOG4CXX_STR("Illegal byte sequence at "));
-						msg.append(std::to_wstring(src - in.current()));
+						msg.append(std::to_wstring(in.position()));
 						msg.append(LOG4CXX_STR(" of "));
 						msg.append(std::to_wstring(in.limit()));
 						LogLog::warn(msg);
