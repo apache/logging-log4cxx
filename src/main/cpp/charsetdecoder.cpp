@@ -197,9 +197,7 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 
 					if (converted == (size_t) -1) // Illegal byte sequence?
 					{
-						LogString msg(LOG4CXX_STR("Illegal byte sequence (["));
-						Transcoder::decode(src, msg);
-						msg.append(LOG4CXX_STR("]) at "));
+						LogString msg(LOG4CXX_STR("Illegal byte sequence at "));
 						StringHelper::toString(src - in.current(), msg);
 						msg.append(LOG4CXX_STR(" of "));
 						StringHelper::toString(in.limit(), msg);
