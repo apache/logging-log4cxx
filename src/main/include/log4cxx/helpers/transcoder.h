@@ -192,7 +192,7 @@ class LOG4CXX_EXPORT Transcoder
 }
 }
 
-#if LOG4CXX_LOGCHAR_IS_UTF8
+#if LOG4CXX_CHARSET_UTF8 && LOG4CXX_LOGCHAR_IS_UTF8
 
 #define LOG4CXX_ENCODE_CHAR(var, src) \
 	const std::string& var = src
