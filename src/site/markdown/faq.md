@@ -54,7 +54,7 @@ to the current `LogString` type.
 The default external representation is controlled by the `LOG4CXX_CHARSET` cmake option.
 This default is used to encode a multi-byte characters
 unless an `Encoding` property is explicitly configured
-for the log4cxx::FileAppender specialization use use.
+for the log4cxx::FileAppender specialization you use.
 Note you should use `UTF-8` or `UTF-16` encoding when writing XML or JSON layouts.
 Log4cxx also implements character set encodings for `US-ASCII` (`ISO646-US` or `ANSI_X3.4-1968`)
 and `ISO-8859-1` (`ISO-LATIN-1` or `CP1252`).
@@ -66,8 +66,7 @@ If using the `locale` character set encoding or the log4cxx::ConsoleAppender
 you will need to explicitly configure the system locale at startup.
 
 ```
-std::setlocale( LC_ALL, "" ); /* Set user-preferred locale for the ConsoleAppender */
-std::locale::global(std::locale("")); /* Set user-preferred locale for FileAppenders */
+std::locale::global(std::locale("")); /* Set user-preferred locale for all appenders */
 ```
 
 This is necessary because, according to the [libc documentation](https://www.gnu.org/software/libc/manual/html_node/Setting-the-Locale.html),
