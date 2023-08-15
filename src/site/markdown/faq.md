@@ -63,10 +63,12 @@ You are highly encouraged to stick to `UTF-8` for the best support from tools an
 The `locale` character set encoding provides support beyond the above internally implemented options.
 It allows you to use any multi-byte encoding provided by the standard library.
 If using the `locale` character set encoding or the log4cxx::ConsoleAppender
-you will need to explicitly configure the system locale at startup.
+you will need to explicitly configure the system locale at startup,
+for example by using:
 
 ```
-std::locale::global(std::locale("")); /* Set user-preferred locale for all appenders */
+std::setlocale( LC_ALL, "" ); /* Set user-preferred locale for C functions */
+std::locale::global(std::locale("")); /* Set user-preferred locale for C++ functions */
 ```
 
 This is necessary because, according to the [libc documentation](https://www.gnu.org/software/libc/manual/html_node/Setting-the-Locale.html),
