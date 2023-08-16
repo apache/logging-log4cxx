@@ -450,7 +450,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 			// Decode characters that may be represented by multiple bytes
 			while (0 < remain)
 			{
-				wchar_t ch;
+				wchar_t ch = 0;
 				size_t n = std::mbrtowc(&ch, p, remain, &this->state);
 				if (0 == n) // NULL encountered?
 				{
