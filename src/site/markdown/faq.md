@@ -62,7 +62,8 @@ You are highly encouraged to stick to `UTF-8` for the best support from tools an
 
 The `locale` character set encoding provides support beyond the above internally implemented options.
 It allows you to use any multi-byte encoding provided by the standard library.
-If using the `locale` character set encoding or the log4cxx::ConsoleAppender
+If using the `locale` character set encoding or
+you use `fwide` to make `stdout` or `stderr` wide-oriented (log4cxx::ConsoleAppender then uses `fputws`)
 you will need to explicitly configure the system locale at startup,
 for example by using:
 
