@@ -87,7 +87,17 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 			return true;
 		}
 
+		/**
+		The current encoding value.
+
+		\sa setOption
+		 */
 		LogString getEncoding() const;
+		/**
+		Set the encoding to \c value.
+
+		\sa setOption
+		 */
 		void setEncoding(const LogString& value);
 
 
