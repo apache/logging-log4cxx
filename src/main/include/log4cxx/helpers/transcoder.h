@@ -193,45 +193,131 @@ class LOG4CXX_EXPORT Transcoder
 }
 
 #if LOG4CXX_CHARSET_UTF8 && LOG4CXX_LOGCHAR_IS_UTF8
+/** Create a std::string equivalent of \c src.
 
+	Defines a std::string variable \c var
+	initialized with characters
+	equivalent to the log4cxx::LogString \c src contents.
+
+	@param var The name of the new std::string variable.
+	@param src The log4cxx::LogString variable.
+*/
 #define LOG4CXX_ENCODE_CHAR(var, src) \
 	const std::string& var = src
 
+/** Create a log4cxx::LogString equivalent of \c src.
+
+	Defines a log4cxx::LogString variable \c var
+	initialized with characters
+	equivalent to the std::string \c src contents.
+
+	@param var The name of the new log4cxx::LogString variable.
+	@param src The std::string variable.
+*/
 #define LOG4CXX_DECODE_CHAR(var, src) \
 	const log4cxx::LogString& var = src
-#else
 
+#else
+/** Create a std::string equivalent of \c src.
+
+	Defines a std::string variable \c var
+	initialized with characters
+	equivalent to the log4cxx::LogString \c src contents.
+
+	@param var The name of the new std::string variable.
+	@param src The log4cxx::LogString variable.
+*/
 #define LOG4CXX_ENCODE_CHAR(var, src) \
 	std::string var;                      \
 	log4cxx::helpers::Transcoder::encode(src, var)
 
+/** Create a log4cxx::LogString equivalent of \c src.
+
+	Defines a log4cxx::LogString variable \c var
+	initialized with characters
+	equivalent to the std::string \c src contents.
+
+	@param var The name of the new log4cxx::LogString variable.
+	@param src The std::string variable.
+*/
 #define LOG4CXX_DECODE_CHAR(var, src) \
 	log4cxx::LogString var;                      \
 	log4cxx::helpers::Transcoder::decode(src, var)
 #endif
 
+/** Create a log4cxx::LogString equivalent of \c src.
+
+	Defines a log4cxx::LogString variable \c var
+	initialized with characters
+	equivalent to the CFStringRef \c src contents.
+
+	@param var The name of the new log4cxx::LogString variable.
+	@param src The CFStringRef variable.
+*/
 #define LOG4CXX_DECODE_CFSTRING(var, src) \
 	log4cxx::LogString var;                      \
 	log4cxx::helpers::Transcoder::decode(src, var)
 
+/** Create a CFStringRef equivalent of \c src.
+
+	Defines a CFStringRef variable \c var
+	initialized with characters
+	equivalent to the log4cxx::LogString \c src contents.
+
+	@param var The name of the new CFStringRef variable.
+	@param src The log4cxx::LogString variable.
+*/
 #define LOG4CXX_ENCODE_CFSTRING(var, src) \
 	CFStringRef var = log4cxx::helpers::Transcoder::encode(src)
 
-
 #if LOG4CXX_LOGCHAR_IS_WCHAR
+/** Create a std::wstring equivalent of \c src.
 
+	Defines a std::wstring variable \c var
+	initialized with characters
+	equivalent to the log4cxx::LogString \c src contents.
+
+	@param var The name of the new std::wstring variable.
+	@param src The log4cxx::LogString variable.
+*/
 #define LOG4CXX_ENCODE_WCHAR(var, src) \
 	const std::wstring& var = src
 
+/** Create a log4cxx::LogString equivalent of \c src.
+
+	Defines a log4cxx::LogString variable \c var
+	initialized with characters
+	equivalent to the std::wstring \c src contents.
+
+	@param var The name of the new log4cxx::LogString variable.
+	@param src The std::wstring variable.
+*/
 #define LOG4CXX_DECODE_WCHAR(var, src) \
 	const log4cxx::LogString& var = src
 
 #else
+/** Create a std::wstring equivalent of \c src.
 
+	Defines a std::wstring variable \c var
+	initialized with characters
+	equivalent to the log4cxx::LogString \c src contents.
+
+	@param var The name of the new std::wstring variable.
+	@param src The log4cxx::LogString variable.
+*/
 #define LOG4CXX_ENCODE_WCHAR(var, src) \
 	std::wstring var;                      \
 	log4cxx::helpers::Transcoder::encode(src, var)
 
+/** Create a log4cxx::LogString equivalent of \c src.
+
+	Defines a log4cxx::LogString variable \c var
+	initialized with characters
+	equivalent to the std::wstring \c src contents.
+
+	@param var The name of the new log4cxx::LogString variable.
+	@param src The std::wstring variable.
+*/
 #define LOG4CXX_DECODE_WCHAR(var, src) \
 	log4cxx::LogString var;                      \
 	log4cxx::helpers::Transcoder::decode(src, var)
@@ -240,18 +326,54 @@ class LOG4CXX_EXPORT Transcoder
 
 #if LOG4CXX_LOGCHAR_IS_UNICHAR
 
+/** Create a std::basic_string<UniChar> equivalent of \c src.
+
+	Defines a std::basic_string<UniChar> variable \c var
+	initialized with characters
+	equivalent to the log4cxx::LogString \c src contents.
+
+	@param var The name of the new std::basic_string<UniChar> variable.
+	@param src The log4cxx::LogString variable.
+*/
 #define LOG4CXX_ENCODE_UNICHAR(var, src) \
 	const std::basic_string<UniChar>& var = src
 
+/** Create a log4cxx::LogString equivalent of \c src.
+
+	Defines a log4cxx::LogString variable \c var
+	initialized with characters
+	equivalent to the std::basic_string<UniChar> \c src contents.
+
+	@param var The name of the new log4cxx::LogString variable.
+	@param src The std::basic_string<UniChar> variable.
+*/
 #define LOG4CXX_DECODE_UNICHAR(var, src) \
 	const log4cxx::LogString& var = src
 
 #else
 
+/** Create a std::basic_string<UniChar> equivalent of \c src.
+
+	Defines a std::basic_string<UniChar> variable \c var
+	initialized with characters
+	equivalent to the log4cxx::LogString \c src contents.
+
+	@param var The name of the new std::basic_string<UniChar> variable.
+	@param src The log4cxx::LogString variable.
+*/
 #define LOG4CXX_ENCODE_UNICHAR(var, src) \
 	std::basic_string<UniChar> var;          \
 	log4cxx::helpers::Transcoder::encode(src, var)
 
+/** Create a log4cxx::LogString equivalent of \c src.
+
+	Defines a log4cxx::LogString variable \c var
+	initialized with characters
+	equivalent to the std::basic_string<UniChar> \c src contents.
+
+	@param var The name of the new log4cxx::LogString variable.
+	@param src The std::basic_string<UniChar> variable.
+*/
 #define LOG4CXX_DECODE_UNICHAR(var, src) \
 	log4cxx::LogString var;                      \
 	log4cxx::helpers::Transcoder::decode(src, var)
