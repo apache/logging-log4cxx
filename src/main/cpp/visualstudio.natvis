@@ -7,17 +7,17 @@
 			</Item>
 		</Expand>
 	</Type>
-	<Type Name="log4cxx::DBAppender">
-		<Expand>
-			<Item Name="m_priv">
-				static_cast&lt;DBAppenderPriv*&gt;(m_priv._Mypair._Myval2)
-			</Item>
-		</Expand>
-	</Type>
 	<Type Name="log4cxx::ConsoleAppender">
 		<Expand>
 			<Item Name="m_priv">
 				static_cast&lt;ConsoleAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::WriterAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;WriterAppenderPriv*&gt;(m_priv._Mypair._Myval2)
 			</Item>
 		</Expand>
 	</Type>
@@ -46,6 +46,20 @@
 		<Expand>
 			<Item Name="m_priv">
 				static_cast&lt;SMTPPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::net::SyslogAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;SyslogAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::net::XMLSocketAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;XMLSocketAppenderPriv*&gt;(m_priv._Mypair._Myval2)
 			</Item>
 		</Expand>
 	</Type>
@@ -88,6 +102,13 @@
 		<Expand>
 			<Item Name="m_priv">
 				static_cast&lt;LiteralPatternConverterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::pattern::PropertiesPatternConverter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;PropertiesPatternConverterPrivate*&gt;(m_priv._Mypair._Myval2)
 			</Item>
 		</Expand>
 	</Type>
@@ -140,6 +161,20 @@
 			</Item>
 		</Expand>
 	</Type>
+	<Type Name="log4cxx::rolling::FileRenameAction">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;FileRenameActionPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::FixedWindowRollingPolicy">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;FixedWindowRollingPolicyPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
 	<Type Name="log4cxx::rolling::GZCompressAction">
 		<Expand>
 			<Item Name="m_priv">
@@ -150,7 +185,42 @@
 	<Type Name="log4cxx::rolling::RollingFileAppender">
 		<Expand>
 			<Item Name="m_priv">
-				static_cast&lt;RollingFileAppenderPrivate*&gt;(m_priv._Mypair._Myval2)
+				static_cast&lt;RollingFileAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::MultiprocessRollingFileAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;MultiprocessRollingFileAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::ZipCompressAction">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;ZipCompressActionPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::nt::NTEventLogAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;NTEventLogAppenderPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::db::DBAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;DBAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::db::ODBCAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;ODBCAppenderPriv*&gt;(m_priv._Mypair._Myval2)
 			</Item>
 		</Expand>
 	</Type>
