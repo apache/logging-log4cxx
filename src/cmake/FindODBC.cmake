@@ -7,8 +7,8 @@ include(FindPackageHandleStandardArgs)
 # ODBC_FOUND, set to 'yes' if found
 if(WIN32)
   set(ODBC_LIBRARIES odbc32.lib user32.lib)
-  try_compile(ODBC_FOUND "${CMAKE_BINARY_DIR}/find-odbc"
-    "${CMAKE_CURRENT_LIST_DIR}/SQLAllocHandleTest.cpp"
+  try_compile(ODBC_FOUND
+    SOURCES "${CMAKE_CURRENT_LIST_DIR}/SQLAllocHandleTest.cpp"
     LINK_LIBRARIES ${ODBC_LIBRARIES})
 else()
   option(ODBC_STATIC "Link to the odbc static library" OFF)
