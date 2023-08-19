@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="log4cxx::AsyncAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;AsyncAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::ConsoleAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;ConsoleAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::WriterAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;WriterAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::FileAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;FileAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::net::TelnetAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;TelnetAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::net::SocketAppenderSkeleton">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;SocketAppenderSkeletonPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::net::SMTPAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;SMTPPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::net::SyslogAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;SyslogAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::net::XMLSocketAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;XMLSocketAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::helpers::APRDatagramSocket">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;APRDatagramSocketPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::helpers::APRServerSocket">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;APRServerSocketPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::helpers::APRSocket">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;APRSocketPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::pattern::ColorStartPatternConverter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;ColorPatternConverterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::pattern::DatePatternConverter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;DatePatternConverterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::pattern::LiteralPatternConverter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;LiteralPatternConverterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::pattern::PropertiesPatternConverter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;PropertiesPatternConverterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::filter::AndFilter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;AndFilterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::filter::LocationInfoFilter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;LocationInfoFilterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::filter::LoggerMatchFilter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;LoggerMatchFilterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::filter::MapFilter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;MapFilterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::filter::LevelMatchFilter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;LevelMatchFilterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::filter::LevelRangeFilter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;LevelRangeFilterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::filter::StringMatchFilter">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;StringMatchFilterPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::FileRenameAction">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;FileRenameActionPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::FixedWindowRollingPolicy">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;FixedWindowRollingPolicyPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::GZCompressAction">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;GZCompressActionPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::RollingFileAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;RollingFileAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::MultiprocessRollingFileAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;MultiprocessRollingFileAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::rolling::ZipCompressAction">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;ZipCompressActionPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::nt::NTEventLogAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;NTEventLogAppenderPrivate*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::db::DBAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;DBAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+	<Type Name="log4cxx::db::ODBCAppender">
+		<Expand>
+			<Item Name="m_priv">
+				static_cast&lt;ODBCAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+			</Item>
+		</Expand>
+	</Type>
+</AutoVisualizer>

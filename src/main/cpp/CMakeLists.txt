@@ -202,6 +202,13 @@ target_sources(log4cxx
   zipcompressaction.cpp
   ${extra_classes}
 )
+
+if(WIN32)
+  target_sources(log4cxx
+    PRIVATE visualstudio.natvis
+  )
+endif(WIN32)
+
 set_target_properties(log4cxx PROPERTIES
   VERSION ${LIBLOG4CXX_LIB_VERSION}
   SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
