@@ -25,6 +25,7 @@ Changelog {#changelog}
 
 | Version                                                                                | Date       | Description          |
 | -------------------------------------------------------------------------------------- | ---------- | -------------------- |
+| [1.2.0](#rel_1_2_0) | 2023-XX-01 | Maintenance release  |
 | [1.1.0](#rel_1_1_0) | 2023-05-01 | General bugfix release  |
 | [1.0.0](#rel_1_0_0) | 2023-01-01 | Major release to standardize the library and make it ABI stable  |
 | [0.13.0](#rel_13_0) | 2022-04-15 | Maintenance release  |
@@ -43,6 +44,17 @@ Changelog {#changelog}
 | [0.1.1](#rel_1_1)   | 2003-07-09 |                      |
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
+
+## Release 1.2.0 - 2023-XX-01 {#rel_1_2_0}
+
+The following issues have been addressed:
+
+* The `locale` external character encoding option reverting to US-ASCII
+* Unnecessary string copying when sending a logging event to an appender
+* `Qt support/integration` not supporting a QString value in a LOG4CXX_XXXXX macro
+* A segfault during process exit when LogManager::shutdown is not called.
+
+Note: the `LOG4CXX_CHARSET` cmake option (external character encoding) default value has changed to `utf-8`
 
 ## Release 1.1.0 - 2023-05-01 {#rel_1_1_0}
 
