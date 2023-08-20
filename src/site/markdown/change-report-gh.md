@@ -49,10 +49,15 @@ Changelog {#changelog}
 
 The following issues have been addressed:
 
-* The `locale` external character encoding option reverting to US-ASCII
-* Unnecessary string copying when sending a logging event to an appender
-* `Qt support/integration` not supporting a QString value in a LOG4CXX_XXXXX macro
-* A segfault during process exit when LogManager::shutdown is not called.
+* The `locale` external character encoding option reverting to US-ASCII \[[LOGCXX-483](https://issues.apache.org/jira/browse/LOGCXX-483)\]
+* A segfault during process exit when log4cxx::LogManager::shutdown is not called
+
+Release 1.2.0 includes the following new features:
+
+* LOG4CXX_XXXX macros now support logging of QStrings directly
+* log4cxx::hexdump function that returns a string of hexadecimal byte values
+* Ability to remove a HierarchyEventListener \[[#233](https://github.com/apache/logging-log4cxx/issues/233)\]
+* Less string copying when sending a logging event to an appender
 
 Note: the `LOG4CXX_CHARSET` cmake option (external character encoding) default value has changed to `utf-8`
 
