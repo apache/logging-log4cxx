@@ -2,14 +2,14 @@
 #
 
 # Does the compiler support thread_local?
-try_compile(HAS_THREAD_LOCAL
-    SOURCES "${CMAKE_CURRENT_LIST_DIR}/test-thread-local.cpp"
-)
+try_compile(HAS_THREAD_LOCAL "${CMAKE_BINARY_DIR}/Testing/thread-local-test"
+    "${CMAKE_CURRENT_LIST_DIR}/test-thread-local.cpp"
+    CXX_STANDARD 11
+    )
 
 # Does the standard library support std::make_unique<T>>?
-try_compile(STD_MAKE_UNIQUE_FOUND
-    SOURCES "${CMAKE_CURRENT_LIST_DIR}/test-make-unique.cpp"
-)
+try_compile(STD_MAKE_UNIQUE_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
+    "${CMAKE_CURRENT_LIST_DIR}/test-make-unique.cpp")
 if( ${STD_MAKE_UNIQUE_FOUND} )
     set(STD_MAKE_UNIQUE_IMPL "std::make_unique")
     set(STD_MAKE_UNIQUE_FOUND 1)
@@ -20,7 +20,7 @@ endif()
 
 
 # Does the standard library support std::basic_string<UniChar> and std::basic_ostream<UniChar>?
-try_compile(STD_LIB_HAS_UNICODE_STRING
-    SOURCES "${CMAKE_CURRENT_LIST_DIR}/test-unicode.cpp"
-)
+try_compile(STD_LIB_HAS_UNICODE_STRING "${CMAKE_BINARY_DIR}/Testing/unicode-test"
+    "${CMAKE_CURRENT_LIST_DIR}/test-unicode.cpp"
+    )
 
