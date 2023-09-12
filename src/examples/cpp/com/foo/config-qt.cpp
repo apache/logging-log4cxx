@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #include "config-qt.h"
+#include <log4cxx/basicconfigurator.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx-qt/configuration.h>
 #include <log4cxx/helpers/loglog.h>
@@ -51,7 +52,8 @@ void ConfigureLogging() {
 #if defined(_DEBUG)
 	log4cxx::helpers::LogLog::setInternalDebugging(true);
 #endif
-	log4cxx::qt::Configuration::configureFromFileAndWatch(paths, names);
+	if (log4cxx::qt::Configuration::configureFromFileAndWatch(paths, names) == log4cxx::spi::ConfigurationStatus::NotConfigured)
+		log4cxx::BasicConfigurator::configure(); // Send events to the console
 }
 
 // Retrieve the \c name logger pointer.
