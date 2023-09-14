@@ -308,6 +308,10 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		argument. If a change or file creation is detected, then
 		<code>configFilename</code> is read to configure log4j.
 
+		The thread will be stopped by a LogManager::shutdown call.
+		Failure to call LogManager::shutdown may result in a fault
+		when the process exits.
+
 		@param configFilename A file in key=value format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
