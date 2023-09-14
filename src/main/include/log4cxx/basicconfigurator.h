@@ -29,10 +29,11 @@ class Appender;
 typedef std::shared_ptr<Appender> AppenderPtr;
 
 /**
-Use this class to quickly configure the package.
-<p>For file based configuration see
-PropertyConfigurator. For XML based configuration see
-DOMConfigurator.
+Use BasicConfigurator (static) methods to configure Log4cxx
+when not using a configuration file.
+
+For <code>key=value</code> format configuration see PropertyConfigurator.
+For XML format configuration see xml::DOMConfigurator.
 */
 class LOG4CXX_EXPORT BasicConfigurator
 {

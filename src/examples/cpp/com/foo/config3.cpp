@@ -17,6 +17,7 @@
 #include "config.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logstring.h>
+#include <log4cxx/basicconfigurator.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
@@ -136,8 +137,10 @@ void SelectConfigurationFile() {
 			}
 		}
 		if (extension[i]) // Found a configuration file?
-			break;
+			return;
 	}
+	// Configuration file not found - send events to the console
+	BasicConfigurator::configure();
 }
 
 } // namespace
