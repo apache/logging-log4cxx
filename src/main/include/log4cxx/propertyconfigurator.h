@@ -306,7 +306,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		check if <code>configFilename</code> has been created or
 		modified. The period is determined by the <code>delay</code>
 		argument. If a change or file creation is detected, then
-		<code>configFilename</code> is read to configure log4j.
+		<code>configFilename</code> is read to configure Log4cxx.
 
 		The thread will be stopped by a LogManager::shutdown call.
 		Failure to call LogManager::shutdown may result in a fault

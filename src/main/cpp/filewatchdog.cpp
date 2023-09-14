@@ -66,6 +66,12 @@ FileWatchdog::~FileWatchdog()
 		stop();
 }
 
+
+bool FileWatchdog::is_active()
+{
+	return m_priv->thread.joinable();
+}
+
 void FileWatchdog::stop()
 {
 	LogLog::debug(LOG4CXX_STR("Stopping file watchdog"));

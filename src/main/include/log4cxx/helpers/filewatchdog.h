@@ -62,9 +62,14 @@ class LOG4CXX_EXPORT FileWatchdog
 		void start();
 
 		/**
-		Stop the thread that periodically checks for a file change.
+		Stop the thread that periodically checks for a file change. Precondition: is_active()
 		*/
 		void stop();
+
+		/**
+		Is the thread that periodically checks for a file change running?
+		*/
+		bool is_active();
 
 	private:
 		void run();
