@@ -52,8 +52,8 @@ void ConfigureLogging() {
 #if defined(_DEBUG)
 	log4cxx::helpers::LogLog::setInternalDebugging(true);
 #endif
-	log4cxx::spi::ConfigurationStatus status = {};
-	QString selectedPath;
+	auto status       = log4cxx::spi::ConfigurationStatus::NotConfigured;
+	auto selectedPath = QString();
 	std::tie(status, selectedPath) = log4cxx::qt::Configuration::configureFromFileAndWatch(paths, names);
 	if (status == log4cxx::spi::ConfigurationStatus::NotConfigured)
 		log4cxx::BasicConfigurator::configure(); // Send events to the console
