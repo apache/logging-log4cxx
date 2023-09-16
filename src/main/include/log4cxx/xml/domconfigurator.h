@@ -219,28 +219,55 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		*/
 		static spi::ConfigurationStatus configure(const std::string& filename);
 #if LOG4CXX_WCHAR_T_API
+		/**
+		A static version of #doConfigure.
+		*/
 		static spi::ConfigurationStatus configure(const std::wstring& filename);
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+		/**
+		A static version of #doConfigure.
+		*/
 		static spi::ConfigurationStatus configure(const std::basic_string<UniChar>& filename);
 #endif
 #if LOG4CXX_CFSTRING_API
+		/**
+		A static version of #doConfigure.
+		*/
 		static spi::ConfigurationStatus configure(const CFStringRef& filename);
 #endif
 		/**
 		Like #configureAndWatch(const std::string& configFilename, long delay)
 		except that the default delay as defined by
 		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
-		@param configFilename A log4j configuration file in XML format.
+		@param configFilename A configuration file in XML format.
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename);
 #if LOG4CXX_WCHAR_T_API
+		/**
+		Like #configureAndWatch(const std::string& configFilename, long delay)
+		except that the default delay as defined by
+		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
+		@param configFilename A configuration file in XML format.
+		*/
 		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename);
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+		/**
+		Like #configureAndWatch(const std::string& configFilename, long delay)
+		except that the default delay as defined by
+		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
+		@param configFilename A configuration file in XML format.
+		*/
 		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename);
 #endif
 #if LOG4CXX_CFSTRING_API
+		/**
+		Like #configureAndWatch(const std::string& configFilename, long delay)
+		except that the default delay as defined by
+		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
+		@param configFilename A configuration file in XML format.
+		*/
 		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename);
 #endif
 		/**
@@ -251,20 +278,33 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		argument. If a change or file creation is detected, then
 		<code>configFilename</code> is read to configure log4cxx.
 
-		@param configFilename A log4j configuration file in XML format.
+		The thread will be stopped by a LogManager::shutdown call.
+		Failure to call LogManager::shutdown may result in a fault
+		when the process exits.
+
+		@param configFilename A configuration file in XML format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename,
 			long delay);
 #if LOG4CXX_WCHAR_T_API
+		/**
+		Refer #configureAndWatch(const std::string& configFilename, long delay)
+		*/
 		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename,
 			long delay);
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+		/**
+		Refer #configureAndWatch(const std::string& configFilename, long delay)
+		*/
 		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename,
 			long delay);
 #endif
 #if LOG4CXX_CFSTRING_API
+		/**
+		Refer #configureAndWatch(const std::string& configFilename, long delay)
+		*/
 		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename,
 			long delay);
 #endif

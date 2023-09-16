@@ -62,6 +62,19 @@ FileWatchdog::FileWatchdog(const File& file1)
 
 FileWatchdog::~FileWatchdog()
 {
+	if (m_priv->thread.joinable())
+		stop();
+}
+
+
+bool FileWatchdog::is_active()
+{
+	return m_priv->thread.joinable();
+}
+
+void FileWatchdog::stop()
+{
+	LogLog::debug(LOG4CXX_STR("Stopping file watchdog"));
 	m_priv->interrupted = 0xFFFF;
 
 	{
@@ -71,12 +84,17 @@ FileWatchdog::~FileWatchdog()
 	m_priv->thread.join();
 }
 
-const File& FileWatchdog::file(){
+const File& FileWatchdog::file()
+{
 	return m_priv->file;
 }
 
 void FileWatchdog::checkAndConfigure()
 {
+	LogString msg(LOG4CXX_STR("Checking ["));
+	msg += m_priv->file.getPath();
+	msg += LOG4CXX_STR("]");
+	LogLog::debug(msg);
 	Pool pool1;
 
 	if (!m_priv->file.exists(pool1))
@@ -111,13 +129,12 @@ void FileWatchdog::run()
 	msg += LOG4CXX_STR(" ms interval");
 	LogLog::debug(msg);
 
-	while (m_priv->interrupted != 0xFFFF)
+	while (!is_interrupted())
 	{
 		std::unique_lock<std::mutex> lock( m_priv->interrupt_mutex );
-		m_priv->interrupt.wait_for( lock, std::chrono::milliseconds( m_priv->delay ),
-			std::bind(&FileWatchdog::is_interrupted, this) );
-
-		checkAndConfigure();
+		if (!m_priv->interrupt.wait_for( lock, std::chrono::milliseconds( m_priv->delay ),
+			std::bind(&FileWatchdog::is_interrupted, this) ))
+			checkAndConfigure();
 	}
 
 	LogString msg2(LOG4CXX_STR("Stop checking ["));
@@ -129,8 +146,11 @@ void FileWatchdog::run()
 void FileWatchdog::start()
 {
 	checkAndConfigure();
-
-	m_priv->thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("FileWatchdog"), &FileWatchdog::run, this );
+	if (!m_priv->thread.joinable())
+	{
+		m_priv->interrupted = 0;
+		m_priv->thread = ThreadUtility::instance()->createThread(LOG4CXX_STR("FileWatchdog"), &FileWatchdog::run, this);
+	}
 }
 
 bool FileWatchdog::is_interrupted()

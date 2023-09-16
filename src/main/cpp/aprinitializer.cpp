@@ -105,6 +105,7 @@ void APRInitializer::stopWatchDogs()
 
 	while (!m_priv->watchdogs.empty())
 	{
+		m_priv->watchdogs.back()->stop();
 		delete m_priv->watchdogs.back();
 		m_priv->watchdogs.pop_back();
 	}

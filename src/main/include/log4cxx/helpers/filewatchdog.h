@@ -56,7 +56,20 @@ class LOG4CXX_EXPORT FileWatchdog
 		*/
 		void setDelay(long delay1);
 
+		/**
+		Create a thread that periodically checks for a file change after first calling doOnChange() on the current thread.
+		*/
 		void start();
+
+		/**
+		Stop the thread that periodically checks for a file change.
+		*/
+		void stop();
+
+		/**
+		Is the thread that periodically checks for a file change running?
+		*/
+		bool is_active();
 
 	private:
 		void run();
