@@ -538,10 +538,13 @@ void Logger::setParent(LoggerPtr parentLogger)
 
 void Logger::setLevel(const LevelPtr level1)
 {
-	m_priv->level = level1;
-	updateThreshold();
-	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
-		rep->updateChildren(this);
+	if (m_priv->level != level1)
+	{
+		m_priv->level = level1;
+		updateThreshold();
+		if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
+			rep->updateChildren(this);
+	}
 }
 
 void Logger::updateThreshold()
