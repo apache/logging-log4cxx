@@ -105,6 +105,11 @@ else()
     set(ENABLE_FMT_LAYOUT "OFF")
 endif()
 
+option(LOG4CXX_INFINITELIFETIME "Enlarge the logger state lifetime from static duration to infinite" OFF)
+if(LOG4CXX_INFINITELIFETIME)
+  set(LOG4CXX_COMPILE_DEFINITIONS ${LOG4CXX_COMPILE_DEFINITIONS} LOG4CXX_INFINITELIFETIME)
+endif()
+
 # Request C++20, if available
 # This *should* fallback to an older standard if it is not available
 if( NOT "${CMAKE_CXX_STANDARD}")
