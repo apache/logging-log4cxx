@@ -53,7 +53,7 @@ PatternConverterPtr LiteralPatternConverter::newInstance(
 {
 	if (literal.length() == 1 && literal[0] == 0x20 /* ' ' */)
 	{
-		static PatternConverterPtr blank = std::make_shared<LiteralPatternConverter>(literal);
+		static WideLife<PatternConverterPtr> blank = std::make_shared<LiteralPatternConverter>(literal);
 		return blank;
 	}
 

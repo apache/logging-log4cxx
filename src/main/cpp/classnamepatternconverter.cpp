@@ -39,7 +39,7 @@ PatternConverterPtr ClassNamePatternConverter::newInstance(
 {
 	if (options.size() == 0)
 	{
-		static PatternConverterPtr def = std::make_shared<ClassNamePatternConverter>(options);
+		static WideLife<PatternConverterPtr> def = std::make_shared<ClassNamePatternConverter>(options);
 		return def;
 	}
 

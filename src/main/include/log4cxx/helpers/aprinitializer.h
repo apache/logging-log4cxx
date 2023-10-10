@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/object.h>
 #include <list>
 #include <log4cxx/helpers/date.h>
+#include <log4cxx/helpers/widelife.h>
 
 extern "C" {
 	typedef struct apr_thread_mutex_t apr_thread_mutex_t;
@@ -74,6 +75,7 @@ class APRInitializer
 
 
 	private: // Constructors
+		friend helpers::WideLife<APRInitializer>;
 		APRInitializer();
 		APRInitializer(const APRInitializer&) = delete;
 		APRInitializer& operator=(const APRInitializer&) = delete;

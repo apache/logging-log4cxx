@@ -34,7 +34,7 @@ ShortFileLocationPatternConverter::ShortFileLocationPatternConverter() :
 
 PatternConverterPtr ShortFileLocationPatternConverter::newInstance(
     const std::vector<LogString> & /* options */ ) {
-  static PatternConverterPtr instance(new ShortFileLocationPatternConverter());
+  static WideLife<PatternConverterPtr> instance(new ShortFileLocationPatternConverter());
   return instance;
 }
 

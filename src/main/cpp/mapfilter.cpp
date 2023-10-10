@@ -112,10 +112,10 @@ void MapFilter::setKeyValue(const LogString& strKey, const LogString& strValue)
 
 const LogString& MapFilter::getValue(const LogString& strKey) const
 {
-	static  const LogString                 empty;
+	static const WideLife<LogString> empty;
 	const KeyVals::const_iterator   it(priv->keyVals.find(strKey));
 
-	return (it != priv->keyVals.end() ? it->second : empty);
+	return (it != priv->keyVals.end() ? it->second : empty.value());
 }
 
 void MapFilter::setAcceptOnMatch(bool acceptOnMatch1)

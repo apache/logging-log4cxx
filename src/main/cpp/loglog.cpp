@@ -56,7 +56,7 @@ LogLog::~LogLog(){}
 
 LogLog& LogLog::getInstance()
 {
-	static LogLog internalLogger;
+	static WideLife<LogLog> internalLogger;
 
 	return internalLogger;
 }

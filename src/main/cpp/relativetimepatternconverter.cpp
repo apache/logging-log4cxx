@@ -37,7 +37,7 @@ RelativeTimePatternConverter::RelativeTimePatternConverter() :
 PatternConverterPtr RelativeTimePatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static PatternConverterPtr def = std::make_shared<RelativeTimePatternConverter>();
+	static WideLife<PatternConverterPtr> def = std::make_shared<RelativeTimePatternConverter>();
 	return def;
 }
 

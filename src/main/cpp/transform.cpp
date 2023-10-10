@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/transform.h>
+#include <log4cxx/helpers/widelife.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -89,8 +90,8 @@ void Transform::appendEscapingTags(
 void Transform::appendEscapingCDATA(
 	LogString& buf, const LogString& input)
 {
-	static const LogString CDATA_END(LOG4CXX_STR("]]>"));
-	static const LogString CDATA_EMBEDED_END(LOG4CXX_STR("]]>]]&gt;<![CDATA["));
+	static const WideLife<LogString> CDATA_END(LOG4CXX_STR("]]>"));
+	static const WideLife<LogString> CDATA_EMBEDED_END(LOG4CXX_STR("]]>]]&gt;<![CDATA["));
 
 	const LogString::size_type CDATA_END_LEN = 3;
 

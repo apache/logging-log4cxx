@@ -361,7 +361,7 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern)
  */
 NameAbbreviatorPtr NameAbbreviator::getDefaultAbbreviator()
 {
-	static NameAbbreviatorPtr def = std::make_shared<NOPAbbreviator>();
+	static WideLife<NameAbbreviatorPtr> def = std::make_shared<NOPAbbreviator>();
 	return def;
 }
 

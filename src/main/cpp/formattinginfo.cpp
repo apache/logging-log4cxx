@@ -67,7 +67,7 @@ FormattingInfo::~FormattingInfo() {}
  */
 FormattingInfoPtr FormattingInfo::getDefault()
 {
-	static FormattingInfoPtr def= std::make_shared<FormattingInfo>(false, 0, INT_MAX);
+	static helpers::WideLife<FormattingInfoPtr> def= std::make_shared<FormattingInfo>(false, 0, INT_MAX);
 	return def;
 }
 

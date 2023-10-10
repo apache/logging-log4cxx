@@ -36,7 +36,7 @@ NDCPatternConverter::NDCPatternConverter() :
 PatternConverterPtr NDCPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static PatternConverterPtr def = std::make_shared<NDCPatternConverter>();
+	static WideLife<PatternConverterPtr> def = std::make_shared<NDCPatternConverter>();
 	return def;
 }
 

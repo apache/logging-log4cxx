@@ -39,7 +39,7 @@ PatternConverterPtr MDCPatternConverter::newInstance(
 {
 	if (options.empty())
 	{
-		static PatternConverterPtr def = std::make_shared<MDCPatternConverter>();
+		static helpers::WideLife<PatternConverterPtr> def = std::make_shared<MDCPatternConverter>();
 		return def;
 	}
 	return std::make_shared<MDCPatternConverter>(LogString(), options.front());

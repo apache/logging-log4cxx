@@ -617,7 +617,7 @@ UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const std::basic_string<l
 UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const log4cxx::UniChar* msg)
 {
 	const log4cxx::UniChar* actualMsg = msg;
-	static log4cxx::UniChar nullLiteral[] = { 0x6E, 0x75, 0x6C, 0x6C, 0};
+	static const log4cxx::UniChar nullLiteral[] = { 0x6E, 0x75, 0x6C, 0x6C, 0};
 
 	if (actualMsg == 0)
 	{

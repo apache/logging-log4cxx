@@ -3,6 +3,7 @@
 #include "CoreFoundation/CFString.h"
 #include <apr_pools.h>
 #include <exception>
+#include <log4cxx/helpers/widelife.h>
 
 namespace {
 int throw_out_of_mem(int status)
@@ -12,7 +13,7 @@ int throw_out_of_mem(int status)
 }
 apr_pool_t* getStringPool()
 {
-	static struct cfstring_pool
+	struct cfstring_pool
 	{
 		apr_pool_t* ptr = 0;
 		cfstring_pool()
@@ -23,7 +24,8 @@ apr_pool_t* getStringPool()
 		{
 			apr_pool_destroy(ptr);
 		}
-	} pool;
+	};
+	static log4cxx::helpers::WideLife<cfstring_pool> pool;
 	return pool.ptr;
 }
 } // namespace

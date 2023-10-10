@@ -19,6 +19,7 @@
 #define _LOG4CXX_HELPERS_LOG_LOG_H
 
 #include <log4cxx/logstring.h>
+#include <log4cxx/helpers/widelife.h>
 #include <exception>
 #include <mutex>
 
@@ -42,6 +43,7 @@ class LOG4CXX_EXPORT LogLog
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LogLogPrivate, m_priv)
 
+		friend WideLife<LogLog>;
 		LogLog();
 		LogLog(const LogLog&);
 		LogLog& operator=(const LogLog&);

@@ -46,7 +46,7 @@ class GMTTimeZone : public TimeZone
 		/** Class factory. */
 		static const TimeZonePtr& getInstance()
 		{
-			static TimeZonePtr tz = std::make_shared<GMTTimeZone>();
+			static WideLife<TimeZonePtr> tz = std::make_shared<GMTTimeZone>();
 			return tz;
 		}
 
@@ -85,7 +85,7 @@ class LocalTimeZone : public TimeZone
 		/** Class factory. */
 		static const TimeZonePtr& getInstance()
 		{
-			static TimeZonePtr tz = std::make_shared<LocalTimeZone>();
+			static WideLife<TimeZonePtr> tz = std::make_shared<LocalTimeZone>();
 			return tz;
 		}
 

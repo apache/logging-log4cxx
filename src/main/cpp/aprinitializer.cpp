@@ -118,18 +118,8 @@ void APRInitializer::unregisterAll()
 
 APRInitializer& APRInitializer::getInstance()
 {
-#if defined(LOG4CXX_INFINITELIFETIME)
-	alignas(apr_environment) static char envStorage[sizeof(apr_environment)];
-	alignas(APRInitializer) static char initStorage[sizeof(APRInitializer)];
-	static APRInitializer& init = [&]() -> APRInitializer&
-	{
-		new(&envStorage) apr_environment;
-		return * new(&initStorage) APRInitializer;
-	}();
-#else
-	static apr_environment env;
-	static APRInitializer init;
-#endif
+	static WideLife<apr_environment> env;
+	static WideLife<APRInitializer> init;
 	return init;
 }
 

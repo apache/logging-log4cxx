@@ -513,14 +513,14 @@ CharsetEncoder::~CharsetEncoder()
 
 CharsetEncoderPtr CharsetEncoder::getDefaultEncoder()
 {
-	static CharsetEncoderPtr encoder(createDefaultEncoder());
+	static WideLife<CharsetEncoderPtr> encoder(createDefaultEncoder());
 
 	//
 	//  if invoked after static variable destruction
 	//     (if logging is called in the destructor of a static object)
 	//     then create a new decoder.
 	//
-	if (encoder == 0)
+	if (encoder.value() == 0)
 	{
 		return CharsetEncoderPtr( createDefaultEncoder() );
 	}

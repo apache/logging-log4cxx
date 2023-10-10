@@ -56,11 +56,11 @@ PatternConverterPtr ThrowableInformationPatternConverter::newInstance(
 {
 	if (options.size() > 0 && options[0].compare(LOG4CXX_STR("short")) == 0)
 	{
-		static PatternConverterPtr shortConverter = std::make_shared<ThrowableInformationPatternConverter>(true);
+		static WideLife<PatternConverterPtr> shortConverter = std::make_shared<ThrowableInformationPatternConverter>(true);
 		return shortConverter;
 	}
 
-	static PatternConverterPtr converter = std::make_shared<ThrowableInformationPatternConverter>(false);
+	static WideLife<PatternConverterPtr> converter = std::make_shared<ThrowableInformationPatternConverter>(false);
 	return converter;
 }
 

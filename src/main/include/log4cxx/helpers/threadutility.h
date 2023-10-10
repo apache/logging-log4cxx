@@ -23,6 +23,7 @@
 #include <memory>
 
 #include "log4cxx/logstring.h"
+#include "widelife.h"
 
 namespace log4cxx
 {
@@ -69,6 +70,7 @@ LOG4CXX_PTR_DEF(ThreadUtility);
 class LOG4CXX_EXPORT ThreadUtility
 {
 	private:
+		friend log4cxx::helpers::WideLife<ThreadUtility>;
 		ThreadUtility();
 
 		log4cxx::helpers::ThreadStartPre preStartFunction();

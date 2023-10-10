@@ -80,6 +80,14 @@ else()
     set(MULTIPROCESS_RFA 0)
 endif()
 
+option(LOG4CXX_INFINITELIFETIME "Prolongate the runtime logger state lifetime from static duration to infinite" OFF)
+if(LOG4CXX_INFINITELIFETIME )
+    set(INFINITELIFETIME 1)
+else()
+    set(INFINITELIFETIME 0)
+endif()
+
+
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "utf-8" CACHE STRING "LogString characters, choice of utf-8 (default), ISO-8859-1, US-ASCII, EBCDIC, locale")
 set_property(CACHE LOG4CXX_CHARSET PROPERTY STRINGS "utf-8" "ISO-8859-1" "US-ASCII" "EBCDIC" "locale")
