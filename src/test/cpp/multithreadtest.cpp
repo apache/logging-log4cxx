@@ -19,33 +19,30 @@
 
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
-#include <log4cxx/simplelayout.h>
-#include <log4cxx/appenderskeleton.h>
+#include <log4cxx/jsonlayout.h>
+#include <log4cxx/writerappender.h>
 #include <thread>
 #include <vector>
 #include <random>
 #include <mutex>
 
-using log4cxx::Logger;
-using log4cxx::LoggerPtr;
-using log4cxx::LogManager;
+using namespace log4cxx;
 
-class NullWriterAppender : public log4cxx::AppenderSkeleton
+class NullWriter : public helpers::Writer
 {
-	public:
-		NullWriterAppender() {}
+public:
+	void close(helpers::Pool& p) override {}
+	void flush(helpers::Pool& p) override {}
+	void write(const LogString& str, helpers::Pool& p) override {}
+};
 
-		virtual void close() {}
-
-		virtual bool requiresLayout() const
-		{
-			return false;
-		}
-
-		virtual void append(const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
-		{
-			// Do nothing but discard the data
-		}
+class NullWriterAppender : public WriterAppender
+{
+public:
+	NullWriterAppender() : WriterAppender( std::make_shared<log4cxx::JSONLayout>())		
+	{
+		setWriter(std::make_shared<NullWriter>());
+	}
 };
 
 static void multithread_logger( int times )
