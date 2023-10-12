@@ -109,6 +109,7 @@ bool WriterAppender::checkEntryConditions() const
 {
 	static bool warnedClosed = false;
 	static bool warnedNoWriter = false;
+	static bool warnedNoLayout = false;
 
 	if (_priv->closed)
 	{
@@ -123,7 +124,7 @@ bool WriterAppender::checkEntryConditions() const
 
 	if (_priv->writer == 0)
 	{
-		if (warnedNoWriter)
+		if (!warnedNoWriter)
 		{
 			_priv->errorHandler->error(
 				LogString(LOG4CXX_STR("No output stream or file set for the appender named [")) +
@@ -136,9 +137,13 @@ bool WriterAppender::checkEntryConditions() const
 
 	if (_priv->layout == 0)
 	{
-		_priv->errorHandler->error(
-			LogString(LOG4CXX_STR("No layout set for the appender named [")) +
-			_priv->name + LOG4CXX_STR("]."));
+		if (!warnedNoLayout)
+		{
+			_priv->errorHandler->error(
+				LogString(LOG4CXX_STR("No layout set for the appender named [")) +
+				_priv->name + LOG4CXX_STR("]."));
+			warnedNoLayout = true;
+		}
 		return false;
 	}
 
