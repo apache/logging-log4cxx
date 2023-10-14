@@ -40,7 +40,8 @@ struct JSONLayout::JSONLayoutPrivate
 		dateFormat(),
 		ppIndentL1(LOG4CXX_STR("  ")),
 		ppIndentL2(LOG4CXX_STR("    ")),
-		expectedPatternLength(100) {}
+		expectedPatternLength(100),
+		thread(false) {}
 
 	// Print no location info by default
 	bool locationInfo; //= false
@@ -53,6 +54,9 @@ struct JSONLayout::JSONLayoutPrivate
 
 	// Expected length of a formatted event excluding the message text
 	size_t expectedPatternLength;
+
+	// Thread info is not included by default
+	bool thread; //= false
 };
 
 JSONLayout::JSONLayout() :
@@ -82,6 +86,16 @@ bool JSONLayout::getPrettyPrint() const
 	return m_priv->prettyPrint;
 }
 
+void JSONLayout::setThreadInfo(bool newValue)
+{
+	m_priv->thread = newValue;
+}
+
+bool JSONLayout::getThreadInfo() const
+{
+	return m_priv->thread;
+}
+
 LogString JSONLayout::getContentType() const
 {
 	return LOG4CXX_STR("application/json");
@@ -99,13 +113,18 @@ void JSONLayout::setOption(const LogString& option, const LogString& value)
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, false));
 	}
-
-	if (StringHelper::equalsIgnoreCase(option,
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("THREADINFO"), LOG4CXX_STR("threadinfo")))
+	{
+		setThreadInfo(OptionConverter::toBoolean(value, false));
+	}
+	else if (StringHelper::equalsIgnoreCase(option,
 			LOG4CXX_STR("PRETTYPRINT"), LOG4CXX_STR("prettyprint")))
 	{
 		setPrettyPrint(OptionConverter::toBoolean(value, false));
 	}
 }
+
 void JSONLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
@@ -126,6 +145,19 @@ void JSONLayout::format(LogString& output,
 	appendQuotedEscapedString(output, timestamp);
 	output.append(LOG4CXX_STR(","));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
+
+	if (m_priv->thread)
+	{
+		if (m_priv->prettyPrint)
+		{
+			output.append(m_priv->ppIndentL1);
+		}
+		appendQuotedEscapedString(output, LOG4CXX_STR("thread"));
+		output.append(LOG4CXX_STR(": "));
+		appendQuotedEscapedString(output, event->getThreadName());
+		output.append(LOG4CXX_STR(","));
+		output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
+	}
 
 	if (m_priv->prettyPrint)
 	{
