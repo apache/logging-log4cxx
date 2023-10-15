@@ -41,7 +41,7 @@ struct JSONLayout::JSONLayoutPrivate
 		ppIndentL1(LOG4CXX_STR("  ")),
 		ppIndentL2(LOG4CXX_STR("    ")),
 		expectedPatternLength(100),
-		thread(false) {}
+		threadInfo(false) {}
 
 	// Print no location info by default
 	bool locationInfo; //= false
@@ -56,7 +56,7 @@ struct JSONLayout::JSONLayoutPrivate
 	size_t expectedPatternLength;
 
 	// Thread info is not included by default
-	bool thread; //= false
+	bool threadInfo; //= false
 };
 
 JSONLayout::JSONLayout() :
@@ -88,12 +88,12 @@ bool JSONLayout::getPrettyPrint() const
 
 void JSONLayout::setThreadInfo(bool newValue)
 {
-	m_priv->thread = newValue;
+	m_priv->threadInfo = newValue;
 }
 
 bool JSONLayout::getThreadInfo() const
 {
-	return m_priv->thread;
+	return m_priv->threadInfo;
 }
 
 LogString JSONLayout::getContentType() const
@@ -146,7 +146,7 @@ void JSONLayout::format(LogString& output,
 	output.append(LOG4CXX_STR(","));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
-	if (m_priv->thread)
+	if (m_priv->threadInfo)
 	{
 		if (m_priv->prettyPrint)
 		{
