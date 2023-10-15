@@ -80,11 +80,11 @@ else()
     set(MULTIPROCESS_RFA 0)
 endif()
 
-option(LOG4CXX_INFINITELIFETIME "Prolongate the runtime logger state lifetime from static duration to infinite" OFF)
-if(LOG4CXX_INFINITELIFETIME )
-    set(INFINITELIFETIME 1)
+option(LOG4CXX_EVENTS_AT_EXIT "Prevent static data cleanup to allow event logging during application exit. Note: Appenders should not configure the \"BufferedIO\" option to true." OFF)
+if(LOG4CXX_EVENTS_AT_EXIT )
+    set(EVENTS_AT_EXIT 1)
 else()
-    set(INFINITELIFETIME 0)
+    set(EVENTS_AT_EXIT 0)
 endif()
 
 

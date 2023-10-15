@@ -41,7 +41,7 @@ public:
 	
 	~WideLife()
 	{
-#if LOG4CXX_INFINITELIFETIME
+#if LOG4CXX_EVENTS_AT_EXIT
 		// keep the holded value alive
 #else
 		value().~T();
