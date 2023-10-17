@@ -25,6 +25,7 @@
 #include <sstream>
 #include <ios>
 #include <iomanip>
+#include <cctype>
 
 using namespace log4cxx;
 
