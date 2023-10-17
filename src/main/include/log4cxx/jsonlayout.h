@@ -83,6 +83,17 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		*/
 		bool getPrettyPrint() const;
 
+		/**
+		Set thread info output mode to \c newValue.
+
+		@param newValue <code>true</code> to include a thread identifier.
+		*/
+		void setThreadInfo(bool newValue);
+
+		/**
+		Is a thread identifier included in the output?
+		*/
+		bool getThreadInfo() const;
 
 		/**
 		Returns the content type output by this layout, i.e "application/json".
@@ -102,6 +113,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		Supported options | Supported values | Default value
 		-------------- | ---------------- | ---------------
 		LocationInfo | True,False | false
+		ThreadInfo | True,False | false
 		PrettyPrint | True,False | false
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
