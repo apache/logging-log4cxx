@@ -90,7 +90,7 @@ loggername - ?????????? ???? ??????????????
 The important thing to understand is that this is some always applied, backwards compatible default
 behaviour and even the case when the current environment sets a locale like `en_US.UTF-8`.
 
-## Does Log4cxx support logging at process termination?
+## Does Log4cxx support logging at process termination?{#atexit_events}
 
 Log4cxx must be built with -DLOG4CXX_EVENTS_AT_EXIT=ON to use logging during the application
 termination (i.e. in static destuctors and other atexit() functions) . When this option is used,
