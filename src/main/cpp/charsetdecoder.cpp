@@ -512,14 +512,14 @@ CharsetDecoder* CharsetDecoder::createDefaultDecoder()
 
 CharsetDecoderPtr CharsetDecoder::getDefaultDecoder()
 {
-	static CharsetDecoderPtr decoder(createDefaultDecoder());
+	static WideLife<CharsetDecoderPtr> decoder(createDefaultDecoder());
 
 	//
 	//  if invoked after static variable destruction
 	//     (if logging is called in the destructor of a static object)
 	//     then create a new decoder.
 	//
-	if (decoder == 0)
+	if (decoder.value() == 0)
 	{
 		return CharsetDecoderPtr( createDefaultDecoder() );
 	}
@@ -529,14 +529,14 @@ CharsetDecoderPtr CharsetDecoder::getDefaultDecoder()
 
 CharsetDecoderPtr CharsetDecoder::getUTF8Decoder()
 {
-	static CharsetDecoderPtr decoder(new UTF8CharsetDecoder());
+	static WideLife<CharsetDecoderPtr> decoder(new UTF8CharsetDecoder());
 
 	//
 	//  if invoked after static variable destruction
 	//     (if logging is called in the destructor of a static object)
 	//     then create a new decoder.
 	//
-	if (decoder == 0)
+	if (decoder.value() == 0)
 	{
 		return std::make_shared<UTF8CharsetDecoder>();
 	}

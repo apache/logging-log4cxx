@@ -17,6 +17,7 @@
 
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/widelife.h>
 
 using namespace ::log4cxx::spi;
 using namespace log4cxx::helpers;
@@ -30,7 +31,7 @@ const char* const LocationInfo::NA_METHOD = "?::?";
 
 const LocationInfo& LocationInfo::getLocationUnavailable()
 {
-	static const LocationInfo unavailable;
+	static const WideLife<LocationInfo> unavailable;
 	return unavailable;
 }
 

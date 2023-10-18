@@ -21,6 +21,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/classregistration.h>
+#include <log4cxx/helpers/widelife.h>
 
 
 #define DECLARE_LOG4CXX_CLAZZ_OBJECT(object)\
@@ -65,11 +66,11 @@
 #define IMPLEMENT_LOG4CXX_OBJECT(object)\
 	const ::log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
 	const ::log4cxx::helpers::Class& object::getStaticClass() { \
-		static Clazz##object theClass;                         \
+		static ::log4cxx::helpers::WideLife<Clazz##object> theClass; \
 		return theClass;                                       \
 	}                                                                      \
 	const log4cxx::helpers::ClassRegistration& object::registerClass() {   \
-		static log4cxx::helpers::ClassRegistration classReg(object::getStaticClass); \
+		static ::log4cxx::helpers::WideLife<::log4cxx::helpers::ClassRegistration> classReg(object::getStaticClass); \
 		return classReg; \
 	}\
 	namespace log4cxx { namespace classes { \
@@ -80,11 +81,11 @@
 #define IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
 	const log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
 	const log4cxx::helpers::Class& object::getStaticClass() { \
-		static class theClass;                                 \
+		static log4cxx::helpers::WideLife<class> theClass; \
 		return theClass;                                       \
 	}                                                         \
 	const log4cxx::helpers::ClassRegistration& object::registerClass() {   \
-		static log4cxx::helpers::ClassRegistration classReg(object::getStaticClass); \
+		static log4cxx::helpers::WideLife<log4cxx::helpers::ClassRegistration> classReg(object::getStaticClass); \
 		return classReg; \
 	}\
 	namespace log4cxx { namespace classes { \

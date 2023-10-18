@@ -118,8 +118,8 @@ void APRInitializer::unregisterAll()
 
 APRInitializer& APRInitializer::getInstance()
 {
-	static apr_environment env;
-	static APRInitializer init;
+	static WideLife<apr_environment> env;
+	static WideLife<APRInitializer> init;
 	return init;
 }
 

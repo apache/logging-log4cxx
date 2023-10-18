@@ -154,7 +154,7 @@ ColorStartPatternConverter::ColorStartPatternConverter() :
 PatternConverterPtr ColorStartPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static PatternConverterPtr instance = std::make_shared<ColorStartPatternConverter>();
+	static WideLife<PatternConverterPtr> instance = std::make_shared<ColorStartPatternConverter>();
 	return instance;
 }
 

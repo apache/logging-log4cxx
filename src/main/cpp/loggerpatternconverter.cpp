@@ -39,7 +39,7 @@ PatternConverterPtr LoggerPatternConverter::newInstance(
 {
 	if (options.size() == 0)
 	{
-		static PatternConverterPtr def = std::make_shared<LoggerPatternConverter>(options);
+		static WideLife<PatternConverterPtr> def = std::make_shared<LoggerPatternConverter>(options);
 		return def;
 	}
 

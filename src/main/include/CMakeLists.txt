@@ -80,6 +80,14 @@ else()
     set(MULTIPROCESS_RFA 0)
 endif()
 
+option(LOG4CXX_EVENTS_AT_EXIT "Prevent static data cleanup to allow event logging during application exit. Note: Appenders should not configure the \"BufferedIO\" option to true." OFF)
+if(LOG4CXX_EVENTS_AT_EXIT )
+    set(EVENTS_AT_EXIT 1)
+else()
+    set(EVENTS_AT_EXIT 0)
+endif()
+
+
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "utf-8" CACHE STRING "LogString characters, choice of utf-8 (default), ISO-8859-1, US-ASCII, EBCDIC, locale")
 set_property(CACHE LOG4CXX_CHARSET PROPERTY STRINGS "utf-8" "ISO-8859-1" "US-ASCII" "EBCDIC" "locale")

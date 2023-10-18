@@ -68,8 +68,8 @@ ThreadUtility::~ThreadUtility() {}
 
 ThreadUtility* ThreadUtility::instance()
 {
-	static ThreadUtility instance;
-	return &instance;
+	static WideLife<ThreadUtility> instance;
+	return &instance.value();
 }
 
 void ThreadUtility::configure( ThreadConfigurationType type )

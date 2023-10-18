@@ -105,7 +105,7 @@ Object* Class::newInstance() const
 
 Class::ClassMap& Class::getRegistry()
 {
-	static ClassMap registry;
+	static WideLife<ClassMap> registry;
 	return registry;
 }
 

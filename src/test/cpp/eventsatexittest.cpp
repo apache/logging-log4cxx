@@ -15,38 +15,25 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
-#include <log4cxx/pattern/ndcpatternconverter.h>
-#include <log4cxx/spi/loggingevent.h>
-#include <log4cxx/spi/location/locationinfo.h>
+#include <log4cxx/logger.h>
 
 using namespace log4cxx;
-using namespace log4cxx::pattern;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(NDCPatternConverter)
-
-NDCPatternConverter::NDCPatternConverter() :
-	LoggingEventPatternConverter(LOG4CXX_STR("NDC"),
-		LOG4CXX_STR("ndc"))
+static struct Static
 {
-}
+    Static()
+    {
+        std::atexit([]
+        {
+            Logger::getRootLogger();// no crash is expected inside
+        });
 
-PatternConverterPtr NDCPatternConverter::newInstance(
-	const std::vector<LogString>& /* options */)
-{
-	static WideLife<PatternConverterPtr> def = std::make_shared<NDCPatternConverter>();
-	return def;
-}
+        // ensures logger state is initialized
+        Logger::getRootLogger();
+    }
 
-void NDCPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
-{
-	if (!event->getNDC(toAppendTo))
-	{
-		toAppendTo.append(LOG4CXX_STR("null"));
-	}
-}
+    ~Static()
+    {
+        Logger::getRootLogger();// no crash is expected inside
+    }
+} s_static;

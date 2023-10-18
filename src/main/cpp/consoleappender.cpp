@@ -70,13 +70,13 @@ ConsoleAppender::~ConsoleAppender()
 
 const LogString& ConsoleAppender::getSystemOut()
 {
-	static const LogString name(LOG4CXX_STR("System.out"));
+	static const WideLife<LogString> name(LOG4CXX_STR("System.out"));
 	return name;
 }
 
 const LogString& ConsoleAppender::getSystemErr()
 {
-	static const LogString name(LOG4CXX_STR("System.err"));
+	static const WideLife<LogString> name(LOG4CXX_STR("System.err"));
 	return name;
 }
 

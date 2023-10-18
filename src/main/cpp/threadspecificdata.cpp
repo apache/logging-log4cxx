@@ -54,7 +54,7 @@ log4cxx::MDC::Map& ThreadSpecificData::getMap()
 
 ThreadSpecificData& ThreadSpecificData::getDataNoThreads()
 {
-	static ThreadSpecificData noThreadData;
+	static WideLife<ThreadSpecificData> noThreadData;
 	return noThreadData;
 }
 

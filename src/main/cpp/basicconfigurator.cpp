@@ -20,6 +20,7 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/helpers/widelife.h>
 
 using namespace log4cxx;
 
@@ -29,7 +30,7 @@ void BasicConfigurator::configure(const LayoutPtr& layoutArg)
 	auto layout = layoutArg;
 	if (!layout)
 	{
-		static const LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%r [%t] %p %c %x - %m%n"));
+		static const helpers::WideLife<LogString> TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%r [%t] %p %c %x - %m%n"));
 		layout = std::make_shared<PatternLayout>(TTCC_CONVERSION_PATTERN);
 	}
 	auto appender = std::make_shared<ConsoleAppender>(layout);

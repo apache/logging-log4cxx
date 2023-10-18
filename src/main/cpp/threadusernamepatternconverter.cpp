@@ -36,7 +36,7 @@ ThreadUsernamePatternConverter::ThreadUsernamePatternConverter() :
 PatternConverterPtr ThreadUsernamePatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static PatternConverterPtr def = std::make_shared<ThreadUsernamePatternConverter>();
+	static WideLife<PatternConverterPtr> def = std::make_shared<ThreadUsernamePatternConverter>();
 	return def;
 }
 

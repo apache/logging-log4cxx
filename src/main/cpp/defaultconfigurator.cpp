@@ -136,8 +136,8 @@ const LogString DefaultConfigurator::getConfiguratorClass()
 
 const LogString DefaultConfigurator::getConfigurationFileName()
 {
-	static const LogString LOG4CXX_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
-	static const LogString LOG4J_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("log4j.configuration"));
+	static const WideLife<LogString> LOG4CXX_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
+	static const WideLife<LogString> LOG4J_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("log4j.configuration"));
 	const LogString log4jConfigurationFileName(
 		OptionConverter::getSystemProperty(LOG4J_DEFAULT_CONFIGURATION_KEY, LOG4CXX_STR("")));
 	const LogString configurationFileName(
@@ -149,7 +149,7 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 
 int DefaultConfigurator::getConfigurationWatchDelay()
 {
-	static const LogString LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
+	static const WideLife<LogString> LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
 	LogString optionStr = OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY, LogString());
 	int milliseconds = 0;
 	if (!optionStr.empty())

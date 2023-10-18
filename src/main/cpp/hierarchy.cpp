@@ -241,7 +241,7 @@ LevelPtr Hierarchy::getThreshold() const
 
 LoggerPtr Hierarchy::getLogger(const LogString& name)
 {
-	static spi::LoggerFactoryPtr defaultFactory = std::make_shared<DefaultLoggerFactory>();
+	static WideLife<spi::LoggerFactoryPtr> defaultFactory = std::make_shared<DefaultLoggerFactory>();
 	return getLogger(name, defaultFactory);
 }
 
