@@ -34,6 +34,9 @@ class WideLife
 {
 public:
 	template <class... Args>
+#if defined(__cpp_concepts) && __cpp_concepts >= 201500
+		requires !std::same_as<WideLife, Args>
+#endif
 	WideLife(Args&&... args)
 	{		
 		new(&storage) T(std::forward<Args>(args)...);
