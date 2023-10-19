@@ -19,6 +19,9 @@
 #define _LOG4CXX_HELPERS_WIDELIFE_H
 
 #include <log4cxx/log4cxx.h>
+#if defined(__cpp_concepts) && __cpp_concepts >= 201500
+#include <concepts>
+#endif
 
 namespace log4cxx
 {
