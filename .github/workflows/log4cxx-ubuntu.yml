@@ -33,6 +33,8 @@ jobs:
             fmt: OFF
             qt: ON
             odbc: OFF
+            multithread: OFF
+            exitevents: OFF
           - name: ubuntu20-clang
             os: ubuntu-20.04
             cxx: clang++
@@ -40,6 +42,8 @@ jobs:
             fmt: ON
             qt: OFF
             odbc: ON
+            multithread: OFF
+            exitevents: OFF
           - name: ubuntu22-gcc
             os: ubuntu-22.04
             cxx: g++
@@ -47,6 +51,8 @@ jobs:
             fmt: OFF
             qt: OFF
             odbc: OFF
+            multithread: ON
+            exitevents: ON
           - name: ubuntu22-clang
             os: ubuntu-22.04
             cxx: clang++
@@ -54,6 +60,8 @@ jobs:
             fmt: ON
             qt: OFF
             odbc: OFF
+            multithread: ON
+            exitevents: OFF
 
     steps:
     - uses: actions/checkout@v3
@@ -73,7 +81,7 @@ jobs:
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} -DLOG4CXX_QT_SUPPORT=${{ matrix.qt }} ..
+        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} -DLOG4CXX_QT_SUPPORT=${{ matrix.qt }}  -DENABLE_MULTITHREAD_TEST=${{ matrix.multithread }} -DLOG4CXX_EVENTS_AT_EXIT=${{ matrix.exitevents }} ..
         cmake --build .
 
     - name: run unit tests

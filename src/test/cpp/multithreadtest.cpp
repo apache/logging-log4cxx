@@ -19,8 +19,9 @@
 
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
-#include <log4cxx/jsonlayout.h>
-#include <log4cxx/writerappender.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/fileappender.h>
+#include <log4cxx/helpers/optionconverter.h>
 #include <thread>
 #include <vector>
 #include <random>
@@ -28,20 +29,22 @@
 
 using namespace log4cxx;
 
-class NullWriter : public helpers::Writer
+class MyAppender : public FileAppender
 {
 public:
-	void close(helpers::Pool& p) override {}
-	void flush(helpers::Pool& p) override {}
-	void write(const LogString& str, helpers::Pool& p) override {}
-};
-
-class NullWriterAppender : public WriterAppender
-{
-public:
-	NullWriterAppender() : WriterAppender( std::make_shared<log4cxx::JSONLayout>())		
+	MyAppender()
 	{
-		setWriter(std::make_shared<NullWriter>());
+		auto tempDir = helpers::OptionConverter::getSystemProperty("TEMP", "/tmp");
+		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multithread_test.log"));
+		setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%d [%t] %-5p %.16c - %m%n")));
+		setAppend(false);
+#if LOG4CXX_EVENTS_AT_EXIT
+		setBufferedIO(false);
+#else
+		setBufferedIO(true);
+#endif
+		helpers::Pool p;
+		activateOptions(p);
 	}
 };
 
@@ -66,10 +69,11 @@ static void multithread_logger( int times )
 
 	for ( int x = 0; x < times; x++ )
 	{
-		LOG4CXX_INFO( logger, "This is a test message that has some data" );
+		LOG4CXX_INFO( logger, "This is test message " << x );
 
 		if ( distribution(gen) == x )
 		{
+			LOG4CXX_INFO( logger, "Exiting");
 			std::call_once(exiting, std::exit, 0);
 		}
 	}
@@ -85,8 +89,7 @@ public:
 	void setUp()
 	{
 		Logger::getRootLogger()->removeAllAppenders();
-		std::shared_ptr<NullWriterAppender> nullWriter( new NullWriterAppender() );
-		Logger::getRootLogger()->addAppender( nullWriter );
+		Logger::getRootLogger()->addAppender( std::make_shared<MyAppender>() );
 	}
 
 	void tearDown()
