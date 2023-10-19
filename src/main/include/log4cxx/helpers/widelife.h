@@ -36,13 +36,17 @@ template <class T>
 class WideLife
 {
 public:
-	template <class... Args>
-#if defined(__cpp_concepts) && __cpp_concepts >= 201500
-		requires (!std::same_as<WideLife, Args...>)
-#endif
-	WideLife(Args&&... args)
+	WideLife()
 	{		
-		new(&storage) T(std::forward<Args>(args)...);
+		new(&storage) T();
+	}
+	template <class Arg0, class... Args>
+#if defined(__cpp_concepts) && __cpp_concepts >= 201500
+		requires (!std::same_as<WideLife, Arg0>)
+#endif
+	WideLife(Arg0 arg0, Args&&... args)
+	{		
+		new(&storage) T(arg0, std::forward<Args>(args)...);
 	}
 	
 	~WideLife()
