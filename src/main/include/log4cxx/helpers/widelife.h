@@ -70,6 +70,12 @@ public:
 
 private:
 	alignas(T) char storage[sizeof(T)];
+	// Non-copyable
+	WideLife(const WideLife& other) = delete;
+	WideLife(const WideLife&& other) = delete;
+	// Non-assignable
+	WideLife& operator=(const WideLife& other) = delete;
+	WideLife& operator=(const WideLife&& other) = delete;
 }; // class WideLife
 }  // namespace helpers
 } // namespace log4cx
