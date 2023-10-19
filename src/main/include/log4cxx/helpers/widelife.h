@@ -19,6 +19,9 @@
 #define _LOG4CXX_HELPERS_WIDELIFE_H
 
 #include <log4cxx/log4cxx.h>
+#if defined(__cpp_concepts) && __cpp_concepts >= 201500
+#include <concepts>
+#endif
 
 namespace log4cxx
 {
@@ -33,10 +36,17 @@ template <class T>
 class WideLife
 {
 public:
-	template <class... Args>
-	WideLife(Args&&... args)
+	WideLife()
 	{		
-		new(&storage) T(std::forward<Args>(args)...);
+		new(&storage) T();
+	}
+	template <class Arg0, class... Args>
+#if defined(__cpp_concepts) && __cpp_concepts >= 201500
+		requires (!std::same_as<WideLife, Arg0>)
+#endif
+	WideLife(Arg0&& arg0, Args&&... args)
+	{		
+		new(&storage) T(std::forward<Arg0>(arg0), std::forward<Args>(args)...);
 	}
 	
 	~WideLife()
