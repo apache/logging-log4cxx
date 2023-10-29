@@ -17,6 +17,7 @@
 
 # Options
 option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
+option(LOG4CXX_ABI_15_COMPATIBILITY "Compatibility for legacy 15 ABI, with some global symbols" ON)
 
 # Build the log4cxx library
 add_library(log4cxx)
@@ -52,6 +53,9 @@ if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
     list(APPEND extra_classes
         multiprocessrollingfileappender.cpp
     )
+endif()
+if(LOG4CXX_ABI_15_COMPATIBILITY)
+    target_compile_definitions(log4cxx PRIVATE LOG4CXX_ABI_15_COMPATIBILITY)
 endif()
 
 if(${ENABLE_FMT_LAYOUT})

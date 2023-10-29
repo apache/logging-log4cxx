@@ -34,7 +34,10 @@ using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
 
-namespace {
+#if !LOG4CXX_ABI_15_COMPATIBILITY
+namespace
+{
+#endif
 
 /**
  * The default buffer size is set to 128 events.
@@ -87,7 +90,9 @@ class DiscardSummary
 
 typedef std::map<LogString, DiscardSummary> DiscardMap;
 
+#if !LOG4CXX_ABI_15_COMPATIBILITY
 }
+#endif
 
 struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
