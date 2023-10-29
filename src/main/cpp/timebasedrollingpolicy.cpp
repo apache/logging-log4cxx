@@ -32,10 +32,10 @@
 #include <iostream>
 #include <apr_mmap.h>
 
-using namespace log4cxx;
-using namespace log4cxx::rolling;
-using namespace log4cxx::helpers;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
 
@@ -74,7 +74,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		/*
 		 * pool for mmap handler
 		 * */
-		log4cxx::helpers::Pool _mmapPool;
+		LOG4CXX_NS::helpers::Pool _mmapPool;
 
 		/**
 		 * mmap file descriptor
@@ -121,7 +121,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 #define MAX_FILE_LEN 2048
 
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
-bool TimeBasedRollingPolicy::isMapFileEmpty(log4cxx::helpers::Pool& pool)
+bool TimeBasedRollingPolicy::isMapFileEmpty(LOG4CXX_NS::helpers::Pool& pool)
 {
 	apr_finfo_t finfo;
 	apr_status_t st = apr_stat(&finfo, m_priv->_mapFileName.c_str(), APR_FINFO_SIZE, pool.getAPRPool());
@@ -139,7 +139,7 @@ bool TimeBasedRollingPolicy::isMapFileEmpty(log4cxx::helpers::Pool& pool)
 	return false;
 }
 
-void TimeBasedRollingPolicy::initMMapFile(const LogString& lastFileName, log4cxx::helpers::Pool& pool)
+void TimeBasedRollingPolicy::initMMapFile(const LogString& lastFileName, LOG4CXX_NS::helpers::Pool& pool)
 {
 	int iRet = 0;
 
@@ -157,7 +157,7 @@ void TimeBasedRollingPolicy::initMMapFile(const LogString& lastFileName, log4cxx
 	}
 }
 
-const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName, const std::string& suffix, log4cxx::helpers::Pool& pool)
+const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName, const std::string& suffix, LOG4CXX_NS::helpers::Pool& pool)
 {
 	char szUid[MAX_FILE_LEN] = {'\0'};
 	char szBaseName[MAX_FILE_LEN] = {'\0'};
@@ -178,13 +178,13 @@ const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName
 #endif
 	}
 
-	log4cxx::filesystem::path path(fileName);
+	LOG4CXX_NS::filesystem::path path(fileName);
 	std::string newFilename = path.filename().string() + szUid + suffix;
-	log4cxx::filesystem::path retval = path.parent_path() / newFilename;
+	LOG4CXX_NS::filesystem::path retval = path.parent_path() / newFilename;
 	return retval.string();
 }
 
-int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, log4cxx::helpers::Pool& pool)
+int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, LOG4CXX_NS::helpers::Pool& pool)
 {
 	m_priv->_mapFileName = createFile(fileName, MMAP_FILE_SUFFIX, pool);
 
@@ -245,15 +245,15 @@ int TimeBasedRollingPolicy::unLockMMapFile()
 	return stat;
 }
 #else
-int TimeBasedRollingPolicy::createMMapFile(const std::string&, log4cxx::helpers::Pool&) {
+int TimeBasedRollingPolicy::createMMapFile(const std::string&, LOG4CXX_NS::helpers::Pool&) {
 	return 0;
 }
 
-bool TimeBasedRollingPolicy::isMapFileEmpty(log4cxx::helpers::Pool&){
+bool TimeBasedRollingPolicy::isMapFileEmpty(LOG4CXX_NS::helpers::Pool&){
 	return true;
 }
 
-void TimeBasedRollingPolicy::initMMapFile(const LogString&, log4cxx::helpers::Pool&){}
+void TimeBasedRollingPolicy::initMMapFile(const LogString&, LOG4CXX_NS::helpers::Pool&){}
 
 int TimeBasedRollingPolicy::lockMMapFile(int){
 	return 0;
@@ -263,7 +263,7 @@ int TimeBasedRollingPolicy::unLockMMapFile(){
 	return 0;
 }
 
-const std::string TimeBasedRollingPolicy::createFile(const std::string&, const std::string&, log4cxx::helpers::Pool&){
+const std::string TimeBasedRollingPolicy::createFile(const std::string&, const std::string&, LOG4CXX_NS::helpers::Pool&){
 	return "";
 }
 #endif
@@ -275,7 +275,7 @@ TimeBasedRollingPolicy::TimeBasedRollingPolicy() :
 
 TimeBasedRollingPolicy::~TimeBasedRollingPolicy(){}
 
-void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
+void TimeBasedRollingPolicy::activateOptions(LOG4CXX_NS::helpers::Pool& pool)
 {
 	// find out period from the filename pattern
 	if (getFileNamePattern().length() > 0)
@@ -346,7 +346,7 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 #define RULES_PUT(spec, cls) \
 	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), (PatternConstructor) cls ::newInstance))
 
-log4cxx::pattern::PatternMap TimeBasedRollingPolicy::getFormatSpecifiers() const
+LOG4CXX_NS::pattern::PatternMap TimeBasedRollingPolicy::getFormatSpecifiers() const
 {
 	PatternMap specs;
 	RULES_PUT("d", FileDatePatternConverter);
@@ -496,7 +496,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 bool TimeBasedRollingPolicy::isTriggeringEvent(
 	Appender* appender,
-	const log4cxx::spi::LoggingEventPtr& /* event */,
+	const LOG4CXX_NS::spi::LoggingEventPtr& /* event */,
 	const LogString&  filename,
 	size_t /* fileLength */)
 {

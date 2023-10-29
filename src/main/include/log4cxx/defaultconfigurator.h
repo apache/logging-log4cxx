@@ -22,7 +22,7 @@
 #include <log4cxx/spi/loggerrepository.h>
 #include <tuple>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 /**
@@ -96,14 +96,14 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 * @param filenames The names of the files to look for
 		 * @return The status of the configuration, and the filename loaded(if a file was found).
 		 */
-		static std::tuple<log4cxx::spi::ConfigurationStatus,LogString> configureFromFile(const std::vector<LogString>& directories,
+		static std::tuple<LOG4CXX_NS::spi::ConfigurationStatus,LogString> configureFromFile(const std::vector<LogString>& directories,
 																						 const std::vector<LogString>& filenames);
 
 	private:
 		static const LogString getConfigurationFileName();
 		static const LogString getConfiguratorClass();
 		static int getConfigurationWatchDelay();
-		static log4cxx::spi::ConfigurationStatus tryLoadFile(const LogString& filename);
+		static LOG4CXX_NS::spi::ConfigurationStatus tryLoadFile(const LogString& filename);
 
 };	 // class DefaultConfigurator
 }  // namespace log4cxx

@@ -22,9 +22,9 @@
 
 #include "windows.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::nt;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::nt;
 
 IMPLEMENT_LOG4CXX_OBJECT(OutputDebugStringAppender)
 

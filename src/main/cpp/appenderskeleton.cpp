@@ -24,9 +24,9 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <mutex>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(AppenderSkeleton)
 

@@ -22,10 +22,10 @@
 #include <log4cxx/level.h>
 
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(LevelPatternConverter)
 
@@ -45,7 +45,7 @@ PatternConverterPtr LevelPatternConverter::newInstance(
 void LevelPatternConverter::format(
 	const LoggingEventPtr& event,
 	LogString& toAppendTo,
-	log4cxx::helpers::Pool& /* p */) const
+	LOG4CXX_NS::helpers::Pool& /* p */) const
 {
 	toAppendTo.append(event->getLevel()->toString());
 }
@@ -56,7 +56,7 @@ void LevelPatternConverter::format(
  */
 LogString LevelPatternConverter::getStyleClass(const ObjectPtr& obj) const
 {
-	LoggingEventPtr e = log4cxx::cast<LoggingEvent>(obj);
+	LoggingEventPtr e = LOG4CXX_NS::cast<LoggingEvent>(obj);
 
 	if (e != NULL)
 	{

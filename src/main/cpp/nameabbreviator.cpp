@@ -21,9 +21,9 @@
 #include <vector>
 #include <limits.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(NameAbbreviator)
 
@@ -35,7 +35,7 @@ NameAbbreviator::~NameAbbreviator()
 {
 }
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {

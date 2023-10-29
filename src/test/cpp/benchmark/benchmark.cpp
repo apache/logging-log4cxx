@@ -8,7 +8,7 @@
 #include <benchmark/benchmark.h>
 #include <thread>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 class NullWriterAppender : public AppenderSkeleton
 {
@@ -49,8 +49,8 @@ IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 LOG4CXX_PTR_DEF(NullWriterAppender);
 #else
 #define LOG4CXX_HAS_FMT 0
-template class log4cxx::helpers::ObjectPtrT<NullWriterAppender>;
-typedef log4cxx::helpers::ObjectPtrT<NullWriterAppender> NullWriterAppenderPtr;
+template class LOG4CXX_NS::helpers::ObjectPtrT<NullWriterAppender>;
+typedef LOG4CXX_NS::helpers::ObjectPtrT<NullWriterAppender> NullWriterAppenderPtr;
 #endif
 
 class benchmarker : public ::benchmark::Fixture

@@ -23,7 +23,7 @@
 #include <thread>
 #include <condition_variable>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace net
@@ -144,16 +144,16 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 	protected:
 		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);
 
-		virtual void setSocket(log4cxx::helpers::SocketPtr& socket, log4cxx::helpers::Pool& p) = 0;
+		virtual void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, LOG4CXX_NS::helpers::Pool& p) = 0;
 
-		virtual void cleanUp(log4cxx::helpers::Pool& p) = 0;
+		virtual void cleanUp(LOG4CXX_NS::helpers::Pool& p) = 0;
 
 		virtual int getDefaultDelay() const = 0;
 
 		virtual int getDefaultPort() const = 0;
 
 	private:
-		void connect(log4cxx::helpers::Pool& p);
+		void connect(LOG4CXX_NS::helpers::Pool& p);
 		/**
 		     The Connector will reconnect when the server becomes available
 		     again.  It does this by attempting to open a new connection every

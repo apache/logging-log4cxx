@@ -38,8 +38,8 @@
 //
 #if LOG4CXX_WCHAR_T_API
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 /**
  * Tests support for decoding specification.

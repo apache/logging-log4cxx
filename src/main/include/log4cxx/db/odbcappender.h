@@ -26,22 +26,22 @@
 #include <list>
 #include <memory>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace db
 {
-class LOG4CXX_EXPORT SQLException : public log4cxx::helpers::Exception
+class LOG4CXX_EXPORT SQLException : public LOG4CXX_NS::helpers::Exception
 {
 	public:
 		SQLException(short fHandleType,
 			void* hInput, const char* prolog,
-			log4cxx::helpers::Pool& p);
+			LOG4CXX_NS::helpers::Pool& p);
 		SQLException(const char* msg);
 		SQLException(const SQLException& src);
 	private:
 		const char* formatMessage(short fHandleType,
 			void* hInput, const char* prolog,
-			log4cxx::helpers::Pool& p);
+			LOG4CXX_NS::helpers::Pool& p);
 };
 
 /**
@@ -193,7 +193,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		* To be removed.
 		* */
 		virtual void execute(const LogString& sql,
-			log4cxx::helpers::Pool& p) /*throw(SQLException)*/;
+			LOG4CXX_NS::helpers::Pool& p) /*throw(SQLException)*/;
 
 		/**
 		* Override this to return the connection to a pool, or to clean up the
@@ -210,7 +210,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		* By default this creates a single connection which is held open
 		* until the object is garbage collected.
 		*/
-		virtual SQLHDBC getConnection(log4cxx::helpers::Pool& p) /*throw(SQLException)*/;
+		virtual SQLHDBC getConnection(LOG4CXX_NS::helpers::Pool& p) /*throw(SQLException)*/;
 
 		/**
 		* Closes the appender, flushing the buffer first then closing the default
@@ -226,7 +226,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		*
 		* If a statement fails the LoggingEvent stays in the buffer!
 		*/
-		virtual void flushBuffer(log4cxx::helpers::Pool& p);
+		virtual void flushBuffer(LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		* Does this appender require a layout?
@@ -264,10 +264,10 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		ODBCAppender& operator=(const ODBCAppender&);
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
 		static void encode(wchar_t** dest, const LogString& src,
-			log4cxx::helpers::Pool& p);
+			LOG4CXX_NS::helpers::Pool& p);
 #endif
 		static void encode(unsigned short** dest, const LogString& src,
-			log4cxx::helpers::Pool& p);
+			LOG4CXX_NS::helpers::Pool& p);
 
 	protected:
 		struct ODBCAppenderPriv;

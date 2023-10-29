@@ -21,8 +21,8 @@
 #include <apr_time.h>
 #include <log4cxx/helpers/transcoder.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 struct StrftimeDateFormat::StrftimeDateFormatPrivate{
 	StrftimeDateFormatPrivate() :
@@ -40,7 +40,7 @@ struct StrftimeDateFormat::StrftimeDateFormatPrivate{
 StrftimeDateFormat::StrftimeDateFormat(const LogString& fmt)
 	: m_priv(std::make_unique<StrftimeDateFormatPrivate>())
 {
-	log4cxx::helpers::Transcoder::encode(fmt, m_priv->pattern);
+	LOG4CXX_NS::helpers::Transcoder::encode(fmt, m_priv->pattern);
 }
 
 StrftimeDateFormat::~StrftimeDateFormat()
@@ -62,7 +62,7 @@ void StrftimeDateFormat::format(LogString& s, log4cxx_time_t time, Pool& /* p */
 
 		if (stat == APR_SUCCESS)
 		{
-			log4cxx::helpers::Transcoder::decode(std::string(buf, bufLen), s);
+			LOG4CXX_NS::helpers::Transcoder::decode(std::string(buf, bufLen), s);
 		}
 	}
 }

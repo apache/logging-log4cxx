@@ -22,10 +22,10 @@
 
 #include <fmt/format.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
-class NullWriterAppender : public log4cxx::AppenderSkeleton
+class NullWriterAppender : public LOG4CXX_NS::AppenderSkeleton
 {
 	public:
 		DECLARE_LOG4CXX_OBJECT(NullWriterAppender)
@@ -43,12 +43,12 @@ class NullWriterAppender : public log4cxx::AppenderSkeleton
 			return true;
 		}
 
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
+		void append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) override
 		{
 			// This gets called whenever there is a valid event for our appender.
 		}
 
-		void activateOptions(log4cxx::helpers::Pool& /* pool */) override
+		void activateOptions(LOG4CXX_NS::helpers::Pool& /* pool */) override
 		{
 			// Given all of our options, do something useful(e.g. open a file)
 		}
@@ -69,18 +69,18 @@ log4cxxbenchmarker::log4cxxbenchmarker()
 
 }
 
-log4cxx::LoggerPtr log4cxxbenchmarker::resetLogger()
+LOG4CXX_NS::LoggerPtr log4cxxbenchmarker::resetLogger()
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
+	LOG4CXX_NS::LoggerPtr logger = LOG4CXX_NS::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	logger->removeAllAppenders();
 	logger->setAdditivity( false );
-	logger->setLevel( log4cxx::Level::getInfo() );
+	logger->setLevel( LOG4CXX_NS::Level::getInfo() );
 
-	log4cxx::PatternLayoutPtr pattern = std::make_shared<log4cxx::PatternLayout>();
+	LOG4CXX_NS::PatternLayoutPtr pattern = std::make_shared<LOG4CXX_NS::PatternLayout>();
 	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
 
-	log4cxx::NullWriterAppenderPtr nullWriter = std::make_shared<log4cxx::NullWriterAppender>();
+	LOG4CXX_NS::NullWriterAppenderPtr nullWriter = std::make_shared<LOG4CXX_NS::NullWriterAppender>();
 	nullWriter->setLayout( pattern );
 
 	logger->addAppender( nullWriter );
@@ -88,18 +88,18 @@ log4cxx::LoggerPtr log4cxxbenchmarker::resetLogger()
 	return logger;
 }
 
-void log4cxxbenchmarker::logWithConversionPattern( const log4cxx::LogString& conversionPattern, int howmany )
+void log4cxxbenchmarker::logWithConversionPattern( const LOG4CXX_NS::LogString& conversionPattern, int howmany )
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
+	LOG4CXX_NS::LoggerPtr logger = LOG4CXX_NS::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	logger->removeAllAppenders();
 	logger->setAdditivity( false );
-	logger->setLevel( log4cxx::Level::getInfo() );
+	logger->setLevel( LOG4CXX_NS::Level::getInfo() );
 
-	log4cxx::PatternLayoutPtr pattern = std::make_shared<log4cxx::PatternLayout>();
+	LOG4CXX_NS::PatternLayoutPtr pattern = std::make_shared<LOG4CXX_NS::PatternLayout>();
 	pattern->setConversionPattern( conversionPattern );
 
-	log4cxx::NullWriterAppenderPtr nullWriter = std::make_shared<log4cxx::NullWriterAppender>();
+	LOG4CXX_NS::NullWriterAppenderPtr nullWriter = std::make_shared<LOG4CXX_NS::NullWriterAppender>();
 	nullWriter->setLayout( pattern );
 
 	logger->addAppender( nullWriter );
@@ -112,7 +112,7 @@ void log4cxxbenchmarker::logWithConversionPattern( const log4cxx::LogString& con
 
 void log4cxxbenchmarker::logWithFMT(int howmany)
 {
-	log4cxx::LoggerPtr logger = resetLogger();
+	LOG4CXX_NS::LoggerPtr logger = resetLogger();
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -120,18 +120,18 @@ void log4cxxbenchmarker::logWithFMT(int howmany)
 	}
 }
 
-log4cxx::LoggerPtr log4cxxbenchmarker::logSetupMultithreaded()
+LOG4CXX_NS::LoggerPtr log4cxxbenchmarker::logSetupMultithreaded()
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
+	LOG4CXX_NS::LoggerPtr logger = LOG4CXX_NS::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	logger->removeAllAppenders();
 	logger->setAdditivity( false );
-	logger->setLevel( log4cxx::Level::getInfo() );
+	logger->setLevel( LOG4CXX_NS::Level::getInfo() );
 
-	log4cxx::PatternLayoutPtr pattern = std::make_shared<log4cxx::PatternLayout>();
+	LOG4CXX_NS::PatternLayoutPtr pattern = std::make_shared<LOG4CXX_NS::PatternLayout>();
 	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
 
-	log4cxx::NullWriterAppenderPtr nullWriter = std::make_shared<log4cxx::NullWriterAppender>();
+	LOG4CXX_NS::NullWriterAppenderPtr nullWriter = std::make_shared<LOG4CXX_NS::NullWriterAppender>();
 	nullWriter->setLayout( pattern );
 
 	logger->addAppender( nullWriter );
@@ -140,7 +140,7 @@ log4cxx::LoggerPtr log4cxxbenchmarker::logSetupMultithreaded()
 
 void log4cxxbenchmarker::logWithFMTMultithreaded(int howmany)
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
+	LOG4CXX_NS::LoggerPtr logger = LOG4CXX_NS::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -150,7 +150,7 @@ void log4cxxbenchmarker::logWithFMTMultithreaded(int howmany)
 
 void log4cxxbenchmarker::logDisabledMultithreaded( int howmany )
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
+	LOG4CXX_NS::LoggerPtr logger = LOG4CXX_NS::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -160,7 +160,7 @@ void log4cxxbenchmarker::logDisabledMultithreaded( int howmany )
 
 void log4cxxbenchmarker::logStaticString( int howmany )
 {
-	log4cxx::LoggerPtr logger = resetLogger();
+	LOG4CXX_NS::LoggerPtr logger = resetLogger();
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -170,7 +170,7 @@ void log4cxxbenchmarker::logStaticString( int howmany )
 
 void log4cxxbenchmarker::logStaticStringFMT( int howmany )
 {
-	log4cxx::LoggerPtr logger = resetLogger();
+	LOG4CXX_NS::LoggerPtr logger = resetLogger();
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -180,7 +180,7 @@ void log4cxxbenchmarker::logStaticStringFMT( int howmany )
 
 void log4cxxbenchmarker::logDisabledDebug( int howmany )
 {
-	log4cxx::LoggerPtr logger = resetLogger();
+	LOG4CXX_NS::LoggerPtr logger = resetLogger();
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -190,7 +190,7 @@ void log4cxxbenchmarker::logDisabledDebug( int howmany )
 
 void log4cxxbenchmarker::logDisabledTrace( int howmany )
 {
-	log4cxx::LoggerPtr logger = resetLogger();
+	LOG4CXX_NS::LoggerPtr logger = resetLogger();
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -200,8 +200,8 @@ void log4cxxbenchmarker::logDisabledTrace( int howmany )
 
 void log4cxxbenchmarker::logEnabledDebug( int howmany )
 {
-	log4cxx::LoggerPtr logger = resetLogger();
-	logger->setLevel( log4cxx::Level::getDebug() );
+	LOG4CXX_NS::LoggerPtr logger = resetLogger();
+	logger->setLevel( LOG4CXX_NS::Level::getDebug() );
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -211,8 +211,8 @@ void log4cxxbenchmarker::logEnabledDebug( int howmany )
 
 void log4cxxbenchmarker::logEnabledTrace( int howmany )
 {
-	log4cxx::LoggerPtr logger = resetLogger();
-	logger->setLevel( log4cxx::Level::getTrace() );
+	LOG4CXX_NS::LoggerPtr logger = resetLogger();
+	logger->setLevel( LOG4CXX_NS::Level::getTrace() );
 
 	for ( int x = 0; x < howmany; x++ )
 	{

@@ -25,7 +25,7 @@
 
 #define DECLARE_LOG4CXX_PATTERN(cls) DECLARE_ABSTRACT_LOG4CXX_OBJECT(cls)
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {

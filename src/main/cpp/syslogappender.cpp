@@ -31,9 +31,9 @@
 
 #define LOG_UNDEF -1
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::net;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::net;
 
 IMPLEMENT_LOG4CXX_OBJECT(SyslogAppender)
 

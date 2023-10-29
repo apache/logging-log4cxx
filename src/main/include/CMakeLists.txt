@@ -18,8 +18,8 @@
 # Configure
 if(WIN32)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
-	           ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
-		   @ONLY
+        ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
+        @ONLY
     )
     set(LOG4CXX_CHAR "utf-8" CACHE STRING "Internal character representation, choice of utf-8, wchar_t(default), unichar")
     set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
@@ -87,6 +87,7 @@ else()
     set(EVENTS_AT_EXIT 0)
 endif()
 
+set(LOG4CXX_NS "log4cxx" CACHE STRING "Root namespace name")
 
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "utf-8" CACHE STRING "LogString characters, choice of utf-8 (default), ISO-8859-1, US-ASCII, EBCDIC, locale")
@@ -129,10 +130,10 @@ if(UNIX)
     # it anyway, we're only going to worry about linux.
     include(${LOG4CXX_SOURCE_DIR}/src/cmake/pthread/log4cxx-pthread.cmake)
     if(${PTHREAD_SETNAME_NP_FOUND})
-	set(HAS_PTHREAD_SETNAME 1)
+        set(HAS_PTHREAD_SETNAME 1)
     endif()
     if(${PTHREAD_GETNAME_NP_FOUND})
-	set(HAS_PTHREAD_GETNAME 1)
+        set(HAS_PTHREAD_GETNAME 1)
     endif()
 endif(UNIX)
 
@@ -162,7 +163,7 @@ endforeach()
 
 # Configure both our private header and our public header
 configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/compiler-features/makeunique.h.cmake
-                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/helpers/makeunique.h
+               ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/helpers/makeunique.h
 )
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
@@ -170,10 +171,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
 )
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
-	       @ONLY
+               @ONLY
 )
 configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
-                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
+               ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
 )
 # Provide the dependencies
 add_custom_target(configure_log4cxx

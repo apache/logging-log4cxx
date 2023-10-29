@@ -36,8 +36,8 @@
 	#include <CoreFoundation/CFString.h>
 #endif
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 
 void Transcoder::decodeUTF8(const std::string& src, LogString& dst)

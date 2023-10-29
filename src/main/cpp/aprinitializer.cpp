@@ -29,8 +29,8 @@
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
 
-using namespace log4cxx::helpers;
-using namespace log4cxx;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS;
 
 bool APRInitializer::isDestructed = false;
 
@@ -52,7 +52,7 @@ struct APRInitializer::APRInitializerPrivate{
 
 namespace
 {
-extern "C" void tlsDestruct(void* ptr)
+void tlsDestruct(void* ptr)
 {
 	delete ((ThreadSpecificData*) ptr);
 }

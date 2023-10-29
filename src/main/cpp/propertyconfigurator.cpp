@@ -43,15 +43,15 @@
 #include <apr.h>
 
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
-using namespace log4cxx::config;
-using namespace log4cxx::rolling;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::config;
+using namespace LOG4CXX_NS::rolling;
 
 #if APR_HAS_THREADS
 #include <log4cxx/helpers/filewatchdog.h>
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class PropertyWatchdog  : public FileWatchdog
 {
@@ -236,7 +236,7 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 		std::shared_ptr<Object> instance = std::shared_ptr<Object>(
 				Loader::loadClass(factoryClassName).newInstance() );
 
-		loggerFactory = log4cxx::cast<LoggerFactory>( instance );
+		loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
 		static const WideLife<LogString> FACTORY_PREFIX(LOG4CXX_STR("log4j.factory."));
 		Pool p;
 		PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX, p);
@@ -446,7 +446,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 	std::shared_ptr<Object> obj =
 		OptionConverter::instantiateByKey(
 			props, prefix, Appender::getStaticClass(), 0);
-	appender = log4cxx::cast<Appender>( obj );
+	appender = LOG4CXX_NS::cast<Appender>( obj );
 
 	// Map obsolete DailyRollingFileAppender property configuration
 	if (!appender &&
@@ -477,7 +477,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 			std::shared_ptr<Object> obj =
 				OptionConverter::instantiateByKey(
 					props, layoutPrefix, Layout::getStaticClass(), 0);
-			layout = log4cxx::cast<Layout>( obj );
+			layout = LOG4CXX_NS::cast<Layout>( obj );
 
 			if (layout != 0)
 			{
@@ -491,7 +491,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 			}
 		}
 
-		RollingFileAppenderPtr rolling = log4cxx::cast<rolling::RollingFileAppender>(appender);
+		RollingFileAppenderPtr rolling = LOG4CXX_NS::cast<rolling::RollingFileAppender>(appender);
 		if (rolling)
 		{
 			LogString rollingPolicyKey = prefix + LOG4CXX_STR(".rollingPolicy");
@@ -501,7 +501,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 				std::shared_ptr<Object> rolling_obj =
 					OptionConverter::instantiateByKey(
 						props, rollingPolicyKey, RollingPolicy::getStaticClass(), 0);
-				rollingPolicy = log4cxx::cast<RollingPolicy>( rolling_obj );
+				rollingPolicy = LOG4CXX_NS::cast<RollingPolicy>( rolling_obj );
 				if(rollingPolicy)
 				{
 					rolling->setRollingPolicy(rollingPolicy);
@@ -519,7 +519,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 				std::shared_ptr<Object> triggering_obj =
 					OptionConverter::instantiateByKey(
 						props, triggeringPolicyKey, TriggeringPolicy::getStaticClass(), 0);
-				triggeringPolicy = log4cxx::cast<TriggeringPolicy>( triggering_obj );
+				triggeringPolicy = LOG4CXX_NS::cast<TriggeringPolicy>( triggering_obj );
 				if(triggeringPolicy)
 				{
 					rolling->setTriggeringPolicy(triggeringPolicy);

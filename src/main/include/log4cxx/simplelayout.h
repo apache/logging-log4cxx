@@ -20,7 +20,7 @@
 
 #include <log4cxx/layout.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 /**
 SimpleLayout consists of the level of the log statement,

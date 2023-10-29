@@ -21,8 +21,8 @@
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <iostream>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
@@ -47,7 +47,7 @@ public:
 	{
 		OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
 
-		ByteArrayOutputStreamPtr byteOut = log4cxx::cast<ByteArrayOutputStream>(out);
+		ByteArrayOutputStreamPtr byteOut = LOG4CXX_NS::cast<ByteArrayOutputStream>(out);
 
 		LOGUNIT_ASSERT(byteOut);
 	}
@@ -56,7 +56,7 @@ public:
 	{
 		OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
 
-		FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>(out);
+		FileOutputStreamPtr fos = LOG4CXX_NS::cast<FileOutputStream>(out);
 
 		LOGUNIT_ASSERT(!fos);
 	}
@@ -65,7 +65,7 @@ public:
 	{
 		OutputStreamPtr out = nullptr;
 
-		FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>(out);
+		FileOutputStreamPtr fos = LOG4CXX_NS::cast<FileOutputStream>(out);
 
 		LOGUNIT_ASSERT(!fos);
 	}
@@ -74,7 +74,7 @@ public:
 	{
 		rolling::RollingFileAppenderPtr rolling = rolling::RollingFileAppenderPtr(new rolling::RollingFileAppender());
 
-		AppenderPtr appender = log4cxx::cast<Appender>(rolling);
+		AppenderPtr appender = LOG4CXX_NS::cast<Appender>(rolling);
 
 		LOGUNIT_ASSERT(appender);
 	}

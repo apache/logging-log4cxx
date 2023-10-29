@@ -25,8 +25,8 @@
 #include <apr_time.h>
 #include <sstream>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 using namespace std;
 
 #define LOCALE_US "C"

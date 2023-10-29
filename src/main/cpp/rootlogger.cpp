@@ -20,9 +20,9 @@
 #include <log4cxx/level.h>
 #include <log4cxx/appender.h>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 RootLogger::RootLogger(Pool& pool, const LevelPtr level1) :
 	Logger(pool, LOG4CXX_STR("root"))

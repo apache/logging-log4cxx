@@ -34,11 +34,11 @@
 #include <log4cxx/helpers/fileoutputstream.h>
 
 
-using namespace log4cxx;
-using namespace log4cxx::xml;
-using namespace log4cxx::filter;
-using namespace log4cxx::helpers;
-using namespace log4cxx::rolling;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::xml;
+using namespace LOG4CXX_NS::filter;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::rolling;
 
 /**
  *
@@ -216,7 +216,7 @@ public:
 	void testIsOptionHandler()
 	{
 		auto rfa = std::make_shared<RollingFileAppender>();
-		LOGUNIT_ASSERT_EQUAL(true, rfa->instanceof(log4cxx::spi::OptionHandler::getStaticClass()));
+		LOGUNIT_ASSERT_EQUAL(true, rfa->instanceof(LOG4CXX_NS::spi::OptionHandler::getStaticClass()));
 	}
 
 	void testRollingFromProperties(){

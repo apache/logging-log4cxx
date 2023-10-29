@@ -29,10 +29,10 @@
 #include <log4cxx/pattern/integerpatternconverter.h>
 #include <log4cxx/private/rollingpolicybase_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::rolling;
-using namespace log4cxx::helpers;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::pattern;
 
 #define priv static_cast<FixedWindowRollingPolicyPrivate*>(m_priv.get())
 
@@ -372,7 +372,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), (PatternConstructor) cls ::newInstance))
 
 
-log4cxx::pattern::PatternMap FixedWindowRollingPolicy::getFormatSpecifiers() const
+LOG4CXX_NS::pattern::PatternMap FixedWindowRollingPolicy::getFormatSpecifiers() const
 {
 	PatternMap specs;
 	RULES_PUT("i", IntegerPatternConverter);

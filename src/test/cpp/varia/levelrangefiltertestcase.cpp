@@ -30,9 +30,9 @@
 #include "../logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::filter;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::filter;
 
 
 

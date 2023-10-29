@@ -20,7 +20,7 @@
 
 #include <log4cxx/pattern/patternconverter.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {

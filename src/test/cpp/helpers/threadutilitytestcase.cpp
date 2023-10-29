@@ -23,8 +23,8 @@
 #include <log4cxx/fileappender.h>
 #include <log4cxx/logmanager.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 
 LOGUNIT_CLASS(ThreadUtilityTest)

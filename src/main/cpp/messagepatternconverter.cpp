@@ -21,11 +21,12 @@
 #include <log4cxx/spi/location/locationinfo.h>
 
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(MessagePatternConverter)
 
+namespace {
 /**
  * Formats the message of an logging event for a quoted context
   */
@@ -58,6 +59,7 @@ class QuotedMessagePatternConverter : public LoggingEventPatternConverter
 			toAppendTo.append(input.substr(startIndex));
 		}
 };
+}
 
 MessagePatternConverter::MessagePatternConverter()
 	: LoggingEventPatternConverter(LOG4CXX_STR("Message")

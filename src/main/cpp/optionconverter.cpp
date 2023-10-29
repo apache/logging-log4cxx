@@ -45,7 +45,7 @@
 
 #if APR_HAS_THREADS
 #include <log4cxx/helpers/filewatchdog.h>
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 class ConfiguratorWatchdog  : public helpers::FileWatchdog
@@ -72,9 +72,9 @@ class ConfiguratorWatchdog  : public helpers::FileWatchdog
 }
 #endif
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 
 LogString OptionConverter::convertSpecialChars(const LogString& s)
@@ -423,7 +423,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 			filename.substr(filename.length() - 4),
 			LOG4CXX_STR(".XML"), LOG4CXX_STR(".xml")))
 	{
-		clazz = log4cxx::xml::DOMConfigurator::getStaticClass().toString();
+		clazz = LOG4CXX_NS::xml::DOMConfigurator::getStaticClass().toString();
 	}
 
 	if (!clazz.empty())
@@ -431,7 +431,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 		LogLog::debug(LOG4CXX_STR("Preferred configurator class: ") + clazz);
 		const Class& clazzObj = Loader::loadClass(clazz);
 		ObjectPtr obj = ObjectPtr(clazzObj.newInstance());
-		configurator = log4cxx::cast<Configurator>(obj);
+		configurator = LOG4CXX_NS::cast<Configurator>(obj);
 
 		if (configurator == 0)
 		{

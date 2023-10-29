@@ -20,8 +20,8 @@
 #include "../appenderskeletontestcase.h"
 #include "apr.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 #if APR_HAS_THREADS
 /**
@@ -44,7 +44,7 @@ class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
-			return new log4cxx::net::XMLSocketAppender();
+			return new LOG4CXX_NS::net::XMLSocketAppender();
 		}
 
 		void test_fluent_bit()

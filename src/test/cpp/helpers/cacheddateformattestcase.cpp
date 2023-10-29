@@ -27,9 +27,9 @@
 #include <apr_time.h>
 #include "localechanger.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::pattern;
 
 #define LOCALE_US "C"
 #if defined(_WIN32)

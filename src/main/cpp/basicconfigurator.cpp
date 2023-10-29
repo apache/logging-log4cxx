@@ -22,7 +22,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/helpers/widelife.h>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 void BasicConfigurator::configure(const LayoutPtr& layoutArg)
 {

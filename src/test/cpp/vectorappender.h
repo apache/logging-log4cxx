@@ -20,7 +20,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 
@@ -43,7 +43,7 @@ class VectorAppender : public AppenderSkeleton
 		This method is called by the AppenderSkeleton#doAppend
 		method.
 		*/
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
+		void append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) override;
 
 		const std::vector<spi::LoggingEventPtr>& getVector() const
 		{

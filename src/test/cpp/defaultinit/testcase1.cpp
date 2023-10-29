@@ -20,7 +20,7 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 LOGUNIT_CLASS(TestCase1)
 {

@@ -21,7 +21,7 @@
 #include <log4cxx/pattern/patternconverter.h>
 #include <log4cxx/spi/loggingevent.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace pattern

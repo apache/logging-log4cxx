@@ -34,7 +34,7 @@
 #define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '/'
 #endif
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {
@@ -167,13 +167,13 @@ class LOG4CXX_EXPORT LocationInfo
 #endif
 
 
-#define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__,         \
-	::log4cxx::spi::LocationInfo::calcShortFileName(__FILE__), \
+#define LOG4CXX_LOCATION ::LOG4CXX_NS::spi::LocationInfo(__FILE__,         \
+	::LOG4CXX_NS::spi::LocationInfo::calcShortFileName(__FILE__), \
 	__LOG4CXX_FUNC__, \
 	__LINE__)
 
 #else
-#define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo::getLocationUnavailable()
+#define LOG4CXX_LOCATION ::LOG4CXX_NS::spi::LocationInfo::getLocationUnavailable()
 #endif // LOG4CXX_LOCATION
 
 #endif //_LOG4CXX_SPI_LOCATION_LOCATIONINFO_H

@@ -27,11 +27,11 @@
 #include <iomanip>
 #include <cctype>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 typedef std::basic_stringstream<logchar> LogStream;
 
-LogString log4cxx::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
+LogString LOG4CXX_NS::hexdump(const void* bytes, uint32_t len, HexdumpFlags flags){
 	LogString ret;
 	const uint8_t* bytes_u8 = static_cast<const uint8_t*>(bytes);
 	LogStream sstream;

@@ -17,9 +17,9 @@
 
 #include <log4cxx/spi/defaultrepositoryselector.h>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 struct DefaultRepositorySelector::DefaultRepositorySelectorPrivate
 {

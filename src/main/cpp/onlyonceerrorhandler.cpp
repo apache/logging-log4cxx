@@ -20,9 +20,9 @@
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <log4cxx/helpers/loglog.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
 
@@ -67,7 +67,7 @@ void OnlyOnceErrorHandler::error(const LogString& message, const std::exception&
 }
 
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
-	int errorCode, const log4cxx::spi::LoggingEventPtr&) const
+	int errorCode, const LOG4CXX_NS::spi::LoggingEventPtr&) const
 {
 	error(message, e, errorCode);
 }

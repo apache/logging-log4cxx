@@ -27,8 +27,8 @@ class FileAppenderAbstractTestCase : public WriterAppenderTestCase
 {
 
 	public:
-		log4cxx::WriterAppender* createWriterAppender() const;
+		LOG4CXX_NS::WriterAppender* createWriterAppender() const;
 
-		virtual log4cxx::FileAppender* createFileAppender() const = 0;
+		virtual LOG4CXX_NS::FileAppender* createFileAppender() const = 0;
 
 };

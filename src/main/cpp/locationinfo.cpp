@@ -19,8 +19,8 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/widelife.h>
 
-using namespace ::log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace ::LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 /**
   When location information is not available the constant

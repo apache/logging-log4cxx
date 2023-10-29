@@ -21,7 +21,7 @@
 #include <log4cxx/spi/filter.h>
 #include <memory>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace filter
 {
@@ -70,7 +70,7 @@ namespace filter
  *
  *
  */
-class LOG4CXX_EXPORT AndFilter: public log4cxx::spi::Filter
+class LOG4CXX_EXPORT AndFilter: public LOG4CXX_NS::spi::Filter
 {
 	private:
 		struct AndFilterPrivate;
@@ -81,7 +81,7 @@ class LOG4CXX_EXPORT AndFilter: public log4cxx::spi::Filter
 	public:
 		DECLARE_LOG4CXX_OBJECT(AndFilter)
 		BEGIN_LOG4CXX_CAST_MAP()
-		LOG4CXX_CAST_ENTRY(log4cxx::spi::Filter)
+		LOG4CXX_CAST_ENTRY(LOG4CXX_NS::spi::Filter)
 		END_LOG4CXX_CAST_MAP()
 
 		AndFilter();

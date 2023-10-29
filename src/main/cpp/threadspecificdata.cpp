@@ -24,12 +24,12 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 struct ThreadSpecificData::ThreadSpecificDataPrivate{
-	log4cxx::NDC::Stack ndcStack;
-	log4cxx::MDC::Map mdcMap;
+	LOG4CXX_NS::NDC::Stack ndcStack;
+	LOG4CXX_NS::MDC::Map mdcMap;
 };
 
 ThreadSpecificData::ThreadSpecificData()
@@ -42,12 +42,12 @@ ThreadSpecificData::~ThreadSpecificData()
 }
 
 
-log4cxx::NDC::Stack& ThreadSpecificData::getStack()
+LOG4CXX_NS::NDC::Stack& ThreadSpecificData::getStack()
 {
 	return m_priv->ndcStack;
 }
 
-log4cxx::MDC::Map& ThreadSpecificData::getMap()
+LOG4CXX_NS::MDC::Map& ThreadSpecificData::getMap()
 {
 	return m_priv->mdcMap;
 }

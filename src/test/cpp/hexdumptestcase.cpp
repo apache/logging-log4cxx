@@ -19,7 +19,7 @@
 #include <log4cxx/hexdump.h>
 #include <iostream>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 LOGUNIT_CLASS(HexdumpTestCase)
 {
@@ -48,7 +48,7 @@ public:
 		LogString expectedOutput =
 				LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|");
 
-		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str));
+		LogString dumped = LOG4CXX_NS::hexdump(test1_str, sizeof(test1_str));
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 
@@ -68,7 +68,7 @@ public:
 				LOG4CXX_STR("00000020  68 65 20 6c 61 7a 79 20  64 6f 67                 |he lazy dog|");
 
 		// Hexdump up until the NULL char
-		LogString dumped = log4cxx::hexdump(quick_brown_fox, sizeof(quick_brown_fox));
+		LogString dumped = LOG4CXX_NS::hexdump(quick_brown_fox, sizeof(quick_brown_fox));
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 
@@ -82,7 +82,7 @@ public:
 				LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|")
 				LOG4CXX_EOL;
 
-		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddNewline);
+		LogString dumped = LOG4CXX_NS::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddNewline);
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 
@@ -96,7 +96,7 @@ public:
 				LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|")
 				LOG4CXX_EOL;
 
-		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddStartingNewline | HexdumpFlags::AddEndingNewline);
+		LogString dumped = LOG4CXX_NS::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddStartingNewline | HexdumpFlags::AddEndingNewline);
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 

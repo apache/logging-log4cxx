@@ -25,9 +25,9 @@
 #include "../util/compare.h"
 #include <log4cxx/file.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::xml;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::xml;
 
 #define LOG4CXX_TEST_STR(x) L##x
 
@@ -77,7 +77,7 @@ public:
 		DOMConfigurator::configure(fn);
 
 		int i = 0;
-		LOG4CXX_LOG(logger, log4cxx::XLevel::getTrace(), "Message " << i);
+		LOG4CXX_LOG(logger, LOG4CXX_NS::XLevel::getTrace(), "Message " << i);
 
 		i++;
 		LOG4CXX_DEBUG(logger, "Message " << i);

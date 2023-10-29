@@ -20,9 +20,9 @@
 #include <mutex>
 #include <memory>
 
-using namespace log4cxx;
-using namespace log4cxx::rolling;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Action)
 
@@ -41,7 +41,7 @@ Action::~Action()
 /**
  * {@inheritDoc}
  */
-void Action::run(log4cxx::helpers::Pool& pool1)
+void Action::run(LOG4CXX_NS::helpers::Pool& pool1)
 {
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 

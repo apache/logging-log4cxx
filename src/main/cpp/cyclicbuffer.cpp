@@ -21,16 +21,16 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 struct CyclicBuffer::CyclicBufferPriv
 {
 	CyclicBufferPriv(int maxSize1) :
 		ea(maxSize1), first(0), last(0), numElems(0), maxSize(maxSize1) {}
 
-	log4cxx::spi::LoggingEventList ea;
+	LOG4CXX_NS::spi::LoggingEventList ea;
 	int first;
 	int last;
 	int numElems;

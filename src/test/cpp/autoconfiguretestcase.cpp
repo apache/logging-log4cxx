@@ -48,7 +48,7 @@
 			} \
 	} register ## testName ## ThreadTest
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 LOGUNIT_CLASS(AutoConfigureTestCase)
 {

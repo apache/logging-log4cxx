@@ -18,8 +18,8 @@
 #include "../logunit.h"
 #include <log4cxx/helpers/syslogwriter.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 
 LOGUNIT_CLASS(SyslogWriterTest)

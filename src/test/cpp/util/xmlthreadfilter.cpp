@@ -17,8 +17,8 @@
 
 #include "xmlthreadfilter.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 XMLThreadFilter::XMLThreadFilter()
 	: Filter("thread=\\\"[0-9A-Fa-fXx]*", "thread=\\\"main")

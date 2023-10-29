@@ -19,8 +19,8 @@
 #include "apr_thread_proc.h"
 #include "log4cxx/helpers/exception.h"
 
-using namespace log4cxx::helpers;
-using namespace log4cxx;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS;
 
 apr_threadkey_t* ThreadLocal::create(Pool& p)
 {

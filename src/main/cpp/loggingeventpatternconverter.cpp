@@ -20,10 +20,10 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/private/patternconverter_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEventPatternConverter)
 
@@ -42,9 +42,9 @@ LoggingEventPatternConverter::LoggingEventPatternConverter(std::unique_ptr<Patte
 
 void LoggingEventPatternConverter::format(const ObjectPtr& obj,
 	LogString& output,
-	log4cxx::helpers::Pool& p) const
+	LOG4CXX_NS::helpers::Pool& p) const
 {
-	LoggingEventPtr le = log4cxx::cast<LoggingEvent>(obj);
+	LoggingEventPtr le = LOG4CXX_NS::cast<LoggingEvent>(obj);
 
 	if (le != NULL)
 	{

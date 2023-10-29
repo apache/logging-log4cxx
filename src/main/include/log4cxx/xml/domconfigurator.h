@@ -37,7 +37,7 @@ extern "C" {
 	struct apr_xml_elem;
 }
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace xml
@@ -71,8 +71,8 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		Used internally to parse appenders by IDREF name.
 		*/
 		AppenderPtr findAppenderByName(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* elem,
 			apr_xml_doc* doc,
 			const LogString& appenderName,
@@ -82,8 +82,8 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		Used internally to parse appenders by IDREF element.
 		*/
 		AppenderPtr findAppenderByReference(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* appenderRef,
 			apr_xml_doc* doc,
 			AppenderMap& appenders);
@@ -92,8 +92,8 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		Used internally to parse an appender element.
 		*/
 		AppenderPtr parseAppender(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* appenderElement,
 			apr_xml_doc* doc,
 			AppenderMap& appenders);
@@ -102,8 +102,8 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		Used internally to parse an {@link spi::ErrorHandler ErrorHandler } element.
 		*/
 		void parseErrorHandler(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* element,
 			AppenderPtr& appender,
 			apr_xml_doc* doc,
@@ -113,17 +113,17 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		 Used internally to parse a filter element.
 		*/
 		void parseFilters(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* element,
-			std::vector<log4cxx::spi::FilterPtr>& filters);
+			std::vector<LOG4CXX_NS::spi::FilterPtr>& filters);
 
 		/**
 		Used internally to parse a logger element.
 		*/
 		void parseLogger(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* loggerElement,
 			apr_xml_doc* doc,
 			AppenderMap& appenders);
@@ -132,39 +132,39 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		 Used internally to parse the logger factory element.
 		*/
 		void parseLoggerFactory(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* factoryElement);
 
 		/**
 		 Used internally to parse the logger factory element.
 		*/
-		log4cxx::helpers::ObjectPtr parseTriggeringPolicy(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+		LOG4CXX_NS::helpers::ObjectPtr parseTriggeringPolicy(
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* factoryElement);
 
 		/**
 		 Used internally to parse the logger factory element.
 		*/
-		log4cxx::rolling::RollingPolicyPtr parseRollingPolicy(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+		LOG4CXX_NS::rolling::RollingPolicyPtr parseRollingPolicy(
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* factoryElement);
 
 		/**
 		 Used internally to parse the root logger element.
 		*/
-		void parseRoot(log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+		void parseRoot(LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* rootElement, apr_xml_doc* doc, AppenderMap& appenders);
 
 		/**
 		 Used internally to parse the children of a logger element.
 		*/
 		void parseChildrenOfLoggerElement(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* catElement,
 			LoggerPtr logger, bool isRoot,
 			apr_xml_doc* doc,
@@ -174,32 +174,32 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		 Used internally to parse a layout element.
 		*/
 		LayoutPtr parseLayout(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* layout_element);
 
 		/**
 		 Used internally to parse a level  element.
 		*/
 		void parseLevel(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* element,
 			LoggerPtr logger, bool isRoot);
 
 		void setParameter(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* elem,
-			log4cxx::config::PropertySetter& propSetter);
+			LOG4CXX_NS::config::PropertySetter& propSetter);
 
 		/**
 		 Used internally to configure the log4cxx framework from
 		 an in-memory representation of an XML document.
 		*/
 		void parse(
-			log4cxx::helpers::Pool& p,
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::Pool& p,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem* element,
 			apr_xml_doc* doc,
 			AppenderMap& appenders);
@@ -212,7 +212,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		LOG4CXX_CAST_ENTRY(spi::Configurator)
 		END_LOG4CXX_CAST_MAP()
 
-		DOMConfigurator(log4cxx::helpers::Pool& p);
+		DOMConfigurator(LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		A static version of #doConfigure.
@@ -321,7 +321,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 
 	protected:
 		static LogString getAttribute(
-			log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
 			apr_xml_elem*,
 			const std::string& attrName);
 

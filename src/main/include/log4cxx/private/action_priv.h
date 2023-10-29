@@ -19,7 +19,7 @@
 
 #include <log4cxx/rolling/action.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace rolling
 {
@@ -43,7 +43,7 @@ struct Action::ActionPrivate
 	 */
 	bool interrupted;
 
-	log4cxx::helpers::Pool pool;
+	LOG4CXX_NS::helpers::Pool pool;
 	std::mutex mutex;
 };
 

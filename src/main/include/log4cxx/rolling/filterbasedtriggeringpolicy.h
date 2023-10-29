@@ -21,7 +21,7 @@
 #include <log4cxx/rolling/triggeringpolicy.h>
 #include <log4cxx/spi/filter.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 class File;
@@ -36,7 +36,7 @@ namespace rolling
 {
 
 // Instantiate template pointer types passed as parameters
-LOG4CXX_INSTANTIATE_EXPORTED_PTR(log4cxx::spi::Filter);
+LOG4CXX_INSTANTIATE_EXPORTED_PTR(LOG4CXX_NS::spi::Filter);
 
 /**
  * FilterBasedTriggeringPolicy determines if rolling should be triggered

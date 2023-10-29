@@ -30,7 +30,7 @@
 #define ABSOLUTE_TIME_PAT "[0-2][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]"
 #define RELATIVE_TIME_PAT "^[0-9]+"
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class UnexpectedFormatException : public std::exception
 {

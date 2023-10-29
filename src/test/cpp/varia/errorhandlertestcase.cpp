@@ -28,9 +28,9 @@
 #include "../util/linenumberfilter.h"
 #include <iostream>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::xml;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::xml;
 
 LOGUNIT_CLASS(ErrorHandlerTestCase)
 {
@@ -72,10 +72,10 @@ public:
 	{
 		DOMConfigurator::configure("input/xml/fallback1.xml");
 		AppenderPtr appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
-		FileAppenderPtr primary = log4cxx::cast<FileAppender>(appender);
-		log4cxx::varia::FallbackErrorHandlerPtr eh;
-		log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
-		eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
+		FileAppenderPtr primary = LOG4CXX_NS::cast<FileAppender>(appender);
+		LOG4CXX_NS::varia::FallbackErrorHandlerPtr eh;
+		LOG4CXX_NS::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
+		eh = LOG4CXX_NS::cast<LOG4CXX_NS::varia::FallbackErrorHandler>(errHandle);
 		LOGUNIT_ASSERT(eh != 0);
 
 		common();
@@ -110,10 +110,10 @@ public:
 	{
 		DOMConfigurator::configure("input/xml/fallback2.xml");
 		AppenderPtr appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
-		FileAppenderPtr primary = log4cxx::cast<FileAppender>(appender);
-		log4cxx::varia::FallbackErrorHandlerPtr eh;
-		log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
-		eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
+		FileAppenderPtr primary = LOG4CXX_NS::cast<FileAppender>(appender);
+		LOG4CXX_NS::varia::FallbackErrorHandlerPtr eh;
+		LOG4CXX_NS::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
+		eh = LOG4CXX_NS::cast<LOG4CXX_NS::varia::FallbackErrorHandler>(errHandle);
 		LOGUNIT_ASSERT(eh != 0);
 		eh->setLogger(logger);
 		common();

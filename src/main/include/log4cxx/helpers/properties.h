@@ -25,7 +25,7 @@
 #include <vector>
 #include <istream>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

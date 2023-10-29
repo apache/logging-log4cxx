@@ -19,8 +19,8 @@
 #include <log4cxx/pattern/formattinginfo.h>
 #include <limits.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
 
 struct FormattingInfo::FormattingInfoPrivate
 {

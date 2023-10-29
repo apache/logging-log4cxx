@@ -22,7 +22,7 @@
 #include <log4cxx/spi/filter.h>
 #include <map>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace filter
 {
@@ -44,7 +44,7 @@ namespace filter
  *
  *
  */
-class LOG4CXX_EXPORT PropertyFilter : public log4cxx::spi::Filter
+class LOG4CXX_EXPORT PropertyFilter : public LOG4CXX_NS::spi::Filter
 {
 		typedef std::map < LogString, LogString > PropertyMap;
 		PropertyMap* properties;
@@ -54,7 +54,7 @@ class LOG4CXX_EXPORT PropertyFilter : public log4cxx::spi::Filter
 	public:
 		DECLARE_LOG4CXX_OBJECT(PropertyFilter)
 		BEGIN_LOG4CXX_CAST_MAP()
-		LOG4CXX_CAST_ENTRY(log4cxx::spi::Filter)
+		LOG4CXX_CAST_ENTRY(LOG4CXX_NS::spi::Filter)
 		END_LOG4CXX_CAST_MAP()
 
 		PropertyFilter();

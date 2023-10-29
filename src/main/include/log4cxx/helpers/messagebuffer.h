@@ -22,7 +22,7 @@
 #include <log4cxx/logstring.h>
 #include <sstream>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 

@@ -19,8 +19,8 @@
 #include "logunit.h"
 #include "writerappendertestcase.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 /**
    Unit tests of ConsoleAppender.
@@ -41,7 +41,7 @@ class ConsoleAppenderTestCase : public WriterAppenderTestCase
 
 		WriterAppender* createWriterAppender() const
 		{
-			return new log4cxx::ConsoleAppender();
+			return new LOG4CXX_NS::ConsoleAppender();
 		}
 
 		void testNoLayout()

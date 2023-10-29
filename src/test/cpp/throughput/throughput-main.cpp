@@ -29,9 +29,9 @@
 #include <fmt/ostream.h>
 
 #include "log4cxxbenchmarker.h"
-using log4cxx::LogString;
+using LOG4CXX_NS::LogString;
 
-static log4cxx::LoggerPtr console = log4cxx::Logger::getLogger( "console" );
+static LOG4CXX_NS::LoggerPtr console = LOG4CXX_NS::Logger::getLogger( "console" );
 static std::vector<uint64_t> results;
 static std::mutex results_mutex;
 
@@ -155,13 +155,13 @@ int main(int argc, char* argv[])
 	std::locale::global(std::locale("")); /* set locale for C++ functions */
 
 	console->setAdditivity( false );
-	log4cxx::PatternLayoutPtr pattern( new log4cxx::PatternLayout() );
+	LOG4CXX_NS::PatternLayoutPtr pattern( new LOG4CXX_NS::PatternLayout() );
 	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
 
-	log4cxx::ConsoleAppenderPtr consoleWriter( new log4cxx::ConsoleAppender );
+	LOG4CXX_NS::ConsoleAppenderPtr consoleWriter( new LOG4CXX_NS::ConsoleAppender );
 	consoleWriter->setLayout( pattern );
 	consoleWriter->setTarget( LOG4CXX_STR("System.out") );
-	log4cxx::helpers::Pool p;
+	LOG4CXX_NS::helpers::Pool p;
 	consoleWriter->activateOptions(p);
 
 	console->addAppender( consoleWriter );

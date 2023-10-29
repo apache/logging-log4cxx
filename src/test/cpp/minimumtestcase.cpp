@@ -35,8 +35,8 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <apr_strings.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 LOGUNIT_CLASS(MinimumTestCase)
 {

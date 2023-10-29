@@ -23,7 +23,7 @@
 #include <log4cxx/spi/loggingevent.h>
 
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 /**
 This layout outputs events in a JSON dictionary.
@@ -40,7 +40,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		void appendSerializedNDC(LogString& buf,
 			const spi::LoggingEventPtr& event) const;
 		void appendSerializedLocationInfo(LogString& buf,
-			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
+			const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) const;
 
 	public:
 		static void appendItem(const LogString& item, LogString& toAppendTo);

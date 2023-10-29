@@ -24,7 +24,7 @@
 #include <log4cxx/spi/hierarchyeventlistener.h>
 #include <functional>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {

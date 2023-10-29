@@ -23,7 +23,7 @@
 #include "testchar.h"
 #include <log4cxx/spi/loggerrepository.h>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 /**
 Test the configuration of the hierarchy-wide threshold.

@@ -27,7 +27,7 @@
 	#pragma warning (disable : 4275) // ::std::exception needs to have dll-interface
 #endif
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

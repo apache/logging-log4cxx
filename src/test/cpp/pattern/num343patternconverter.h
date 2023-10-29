@@ -18,7 +18,7 @@
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include <vector>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {
@@ -33,9 +33,9 @@ class Num343PatternConverter : public LoggingEventPatternConverter
 
 	protected:
 		void format(
-			const log4cxx::spi::LoggingEventPtr& event,
+			const LOG4CXX_NS::spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& pool) const override;
+			LOG4CXX_NS::helpers::Pool& pool) const override;
 };
 }
 }

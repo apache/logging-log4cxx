@@ -23,7 +23,7 @@
 
 
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 /**
 This layout outputs events in a HTML table.

@@ -21,7 +21,7 @@
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/level.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class Level;
 

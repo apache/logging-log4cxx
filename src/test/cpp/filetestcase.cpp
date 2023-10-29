@@ -33,8 +33,8 @@
 	#include <CoreFoundation/CFString.h>
 #endif
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 
 LOGUNIT_CLASS(FileTestCase)
@@ -119,7 +119,7 @@ public:
 #if LOG4CXX_UNICHAR_API
 	void unicharConstructor()
 	{
-		const log4cxx::UniChar filename[] = { 'i', 'n', 'p', 'u', 't', '/',
+		const LOG4CXX_NS::UniChar filename[] = { 'i', 'n', 'p', 'u', 't', '/',
 				'p', 'a', 't', 't', 'e', 'r', 'n', 'L', 'a', 'y', 'o', 'u', 't', '1', '.',
 				'p', 'r', 'o', 'p', 'e', 'r', 't', 'i', 'e', 's', 0
 			};

@@ -24,8 +24,8 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/private/writerappender_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 struct ConsoleAppender::ConsoleAppenderPriv : public WriterAppender::WriterAppenderPriv
 {

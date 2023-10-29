@@ -34,9 +34,9 @@
 #include <log4cxx/spi/loggerrepository.h>
 
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::xml;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::xml;
 
 #if defined(__LOG4CXX_FUNC__)
 	#undef __LOG4CXX_FUNC__

@@ -29,10 +29,10 @@
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/private/patternconverter_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 struct DatePatternConverter::DatePatternConverterPrivate : public PatternConverterPrivate
 {
@@ -42,7 +42,7 @@ struct DatePatternConverter::DatePatternConverterPrivate : public PatternConvert
 	/**
 	 * Date format.
 	 */
-	log4cxx::helpers::DateFormatPtr df;
+	LOG4CXX_NS::helpers::DateFormatPtr df;
 };
 
 #define priv static_cast<DatePatternConverterPrivate*>(m_priv.get())
@@ -152,7 +152,7 @@ void DatePatternConverter::format(
 	LogString& toAppendTo,
 	Pool& p) const
 {
-	DatePtr date = log4cxx::cast<Date>(obj);
+	DatePtr date = LOG4CXX_NS::cast<Date>(obj);
 
 	if (date != NULL)
 	{
@@ -160,7 +160,7 @@ void DatePatternConverter::format(
 	}
 	else
 	{
-		LoggingEventPtr event = log4cxx::cast<LoggingEvent>(obj);
+		LoggingEventPtr event = LOG4CXX_NS::cast<LoggingEvent>(obj);
 
 		if (event != NULL)
 		{

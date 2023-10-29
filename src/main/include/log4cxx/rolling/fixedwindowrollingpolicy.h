@@ -23,7 +23,7 @@
 
 
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace helpers
@@ -83,7 +83,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		 */
 		enum { MAX_WINDOW_SIZE = 12 };
 
-		bool purge(int purgeStart, int maxIndex, log4cxx::helpers::Pool& p) const;
+		bool purge(int purgeStart, int maxIndex, LOG4CXX_NS::helpers::Pool& p) const;
 
 	public:
 
@@ -143,7 +143,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		 *
 		 * \sa IntegerPatternConverter
 		 */
-		log4cxx::pattern::PatternMap getFormatSpecifiers() const override;
+		LOG4CXX_NS::pattern::PatternMap getFormatSpecifiers() const override;
 
 };
 

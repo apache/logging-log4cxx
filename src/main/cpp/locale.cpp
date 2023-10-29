@@ -17,8 +17,8 @@
 
 #include <log4cxx/helpers/locale.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 struct Locale::LocalePrivate
 {

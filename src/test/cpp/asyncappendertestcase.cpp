@@ -33,9 +33,9 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/file.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 class NullPointerAppender : public AppenderSkeleton
 {
@@ -48,7 +48,7 @@ class NullPointerAppender : public AppenderSkeleton
 		/**
 		 * @{inheritDoc}
 		 */
-		void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&) override
+		void append(const spi::LoggingEventPtr&, LOG4CXX_NS::helpers::Pool&) override
 		{
 			throw NullPointerException(LOG4CXX_STR("Intentional NullPointerException"));
 		}
@@ -81,7 +81,7 @@ class BlockableVectorAppender : public VectorAppender
 		/**
 		 * {@inheritDoc}
 		 */
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
+		void append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) override
 		{
 			std::unique_lock<std::mutex> lock( blocker );
 			VectorAppender::append(event, p);
@@ -285,14 +285,14 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LoggingEventPtr discardEvent = events[events.size() - 1];
 			LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
 			LOGUNIT_ASSERT(discardEvent->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "));
-			LOGUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(),
+			LOGUNIT_ASSERT_EQUAL(LOG4CXX_NS::spi::LocationInfo::getLocationUnavailable().getClassName(),
 				discardEvent->getLocationInformation().getClassName());
 		}
 
 		void testConfiguration()
 		{
-			log4cxx::xml::DOMConfigurator::configure("input/xml/asyncAppender1.xml");
-			AsyncAppenderPtr asyncAppender = log4cxx::cast<AsyncAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("ASYNC")));
+			LOG4CXX_NS::xml::DOMConfigurator::configure("input/xml/asyncAppender1.xml");
+			AsyncAppenderPtr asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("ASYNC")));
 			LOGUNIT_ASSERT(!(asyncAppender == 0));
 			LOGUNIT_ASSERT_EQUAL(100, asyncAppender->getBufferSize());
 			LOGUNIT_ASSERT_EQUAL(false, asyncAppender->getBlocking());

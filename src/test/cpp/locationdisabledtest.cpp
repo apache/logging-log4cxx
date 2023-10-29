@@ -22,8 +22,8 @@
 #include "logunit.h"
 #include "util/compare.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 LOGUNIT_CLASS(LocationDisabledTest)
 {

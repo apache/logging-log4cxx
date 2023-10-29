@@ -20,7 +20,7 @@
 #include <log4cxx/spi/loggerfactory.h>
 
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {
@@ -44,7 +44,7 @@ class XFactory :
 
 		XFactory();
 		LoggerPtr makeNewLoggerInstance(
-			log4cxx::helpers::Pool& pool,
+			LOG4CXX_NS::helpers::Pool& pool,
 			const LogString& name) const override;
 };
 
@@ -72,7 +72,7 @@ class XLogger : public Logger
 		/**
 		        Just calls the parent constuctor.
 		*/
-		XLogger(log4cxx::helpers::Pool& pool,
+		XLogger(LOG4CXX_NS::helpers::Pool& pool,
 			const LogString& name1) : Logger(pool, name1) {}
 
 		/**
@@ -84,7 +84,7 @@ class XLogger : public Logger
 		/**
 		        We introduce a new printing method in order to support {@link
 		        XLevel#LETHAL}.  */
-		void lethal(const LogString& message, const log4cxx::spi::LocationInfo& location);
+		void lethal(const LogString& message, const LOG4CXX_NS::spi::LocationInfo& location);
 
 		/**
 		        We introduce a new printing method in order to support {@link
@@ -108,7 +108,7 @@ class XLogger : public Logger
 		/**
 		        We introduce a new printing method that takes the TRACE level.
 		*/
-		void trace(const LogString& message, const log4cxx::spi::LocationInfo& location);
+		void trace(const LogString& message, const LOG4CXX_NS::spi::LocationInfo& location);
 
 		/**
 		        We introduce a new printing method that takes the TRACE level.

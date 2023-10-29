@@ -25,7 +25,7 @@
 
 #include <log4cxx/file.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class Logger;
 typedef std::shared_ptr<Logger> LoggerPtr;

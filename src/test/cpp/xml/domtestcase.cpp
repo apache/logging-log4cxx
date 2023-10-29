@@ -32,9 +32,9 @@
 #include "../testchar.h"
 #include "log4cxx/helpers/loglog.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::xml;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::xml;
 
 #define TEST1_1A_PAT \
 	"(DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message [0-9]"

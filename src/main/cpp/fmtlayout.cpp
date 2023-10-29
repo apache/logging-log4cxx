@@ -27,8 +27,8 @@
 #include <fmt/format.h>
 #include <fmt/chrono.h>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
 
 struct FMTLayout::FMTLayoutPrivate{
 	FMTLayoutPrivate()
@@ -87,7 +87,7 @@ void FMTLayout::activateOptions(helpers::Pool&)
 
 void FMTLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
-	log4cxx::helpers::Pool&) const
+	LOG4CXX_NS::helpers::Pool&) const
 {
 	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
 	auto locationFull = fmt::format("{}({})",

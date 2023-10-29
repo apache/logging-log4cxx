@@ -19,9 +19,9 @@
 #include <log4cxx/rolling/filerenameaction.h>
 #include <log4cxx/private/action_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::rolling;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::helpers;
 
 #define priv static_cast<FileRenameActionPrivate*>(m_priv.get())
 
@@ -46,7 +46,7 @@ FileRenameAction::FileRenameAction(const File& toRename,
 {
 }
 
-bool FileRenameAction::execute(log4cxx::helpers::Pool& pool1) const
+bool FileRenameAction::execute(LOG4CXX_NS::helpers::Pool& pool1) const
 {
 	return priv->source.renameTo(priv->destination, pool1);
 }

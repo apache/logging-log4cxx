@@ -23,9 +23,9 @@
 #include <log4cxx/private/action_priv.h>
 #include <log4cxx/helpers/loglog.h>
 
-using namespace log4cxx;
-using namespace log4cxx::rolling;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::helpers;
 
 #define priv static_cast<ZipCompressActionPrivate*>(m_priv.get())
 
@@ -52,7 +52,7 @@ ZipCompressAction::ZipCompressAction(const File& src,
 {
 }
 
-bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const
+bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 {
 	if (!priv->source.exists(p))
 	{

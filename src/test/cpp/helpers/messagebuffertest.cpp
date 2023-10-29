@@ -26,8 +26,8 @@
 	#include <CoreFoundation/CFString.h>
 #endif
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 /**
  *  Test MessageBuffer.
@@ -175,27 +175,27 @@ public:
 	void testInsertConstUStr()
 	{
 		MessageBuffer buf;
-		const log4cxx::UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
-		const log4cxx::UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
-		const log4cxx::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o',
+		const LOG4CXX_NS::UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
+		const LOG4CXX_NS::UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+		const LOG4CXX_NS::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o',
 				',', ' ', 'W', 'o', 'r', 'l', 'd', 0
 			};
 		UniCharMessageBuffer& retval = buf << hello << world;
-		LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval));
+		LOGUNIT_ASSERT_EQUAL(std::basic_string<LOG4CXX_NS::UniChar>(greeting), buf.str(retval));
 		LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
 	}
 
 	void testInsertUString()
 	{
 		MessageBuffer buf;
-		const log4cxx::UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
-		const log4cxx::UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
-		const log4cxx::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o',
+		const LOG4CXX_NS::UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
+		const LOG4CXX_NS::UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+		const LOG4CXX_NS::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o',
 				',', ' ', 'W', 'o', 'r', 'l', 'd', 0
 			};
-		UniCharMessageBuffer& retval = buf << std::basic_string<log4cxx::UniChar>(hello)
-			<< std::basic_string<log4cxx::UniChar>(world);
-		LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval));
+		UniCharMessageBuffer& retval = buf << std::basic_string<LOG4CXX_NS::UniChar>(hello)
+			<< std::basic_string<LOG4CXX_NS::UniChar>(world);
+		LOGUNIT_ASSERT_EQUAL(std::basic_string<LOG4CXX_NS::UniChar>(greeting), buf.str(retval));
 		LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
 	}
 
@@ -205,24 +205,24 @@ public:
 	void testInsertCFString()
 	{
 		MessageBuffer buf;
-		const log4cxx::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o',
+		const LOG4CXX_NS::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o',
 				',', ' ', 'W', 'o', 'r', 'l', 'd', 0
 			};
 		UniCharMessageBuffer& retval = buf << CFSTR("Hello")
 			<< CFSTR(", World");
-		LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval));
+		LOGUNIT_ASSERT_EQUAL(std::basic_string<LOG4CXX_NS::UniChar>(greeting), buf.str(retval));
 		LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
 	}
 #elif LOG4CXX_CFSTRING_API
 	void testInsertCFString()
 	{
 		MessageBuffer buf;
-		const log4cxx::logchar greeting[] = { 'H', 'e', 'l', 'l', 'o',
+		const LOG4CXX_NS::logchar greeting[] = { 'H', 'e', 'l', 'l', 'o',
 				',', ' ', 'W', 'o', 'r', 'l', 'd', 0
 			};
 		CharMessageBuffer& retval = buf << CFSTR("Hello")
 			<< CFSTR(", World");
-		LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::logchar>(greeting), buf.str(retval));
+		LOGUNIT_ASSERT_EQUAL(std::basic_string<LOG4CXX_NS::logchar>(greeting), buf.str(retval));
 		LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
 	}
 #endif

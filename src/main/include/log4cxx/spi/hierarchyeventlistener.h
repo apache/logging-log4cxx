@@ -21,7 +21,7 @@
 #include <log4cxx/helpers/object.h>
 #include <vector>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class Logger;
 class Appender;
@@ -32,7 +32,7 @@ namespace spi
 
 /** Listen to events occuring within a Hierarchy.*/
 class LOG4CXX_EXPORT HierarchyEventListener :
-	public virtual log4cxx::helpers::Object
+	public virtual LOG4CXX_NS::helpers::Object
 {
 	public:
 		virtual ~HierarchyEventListener() {}

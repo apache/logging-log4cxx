@@ -25,8 +25,8 @@
 #include <assert.h>
 #include <iostream>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 #if !defined(APR_FOPEN_READ)
 	#define APR_FOPEN_READ APR_READ
@@ -39,16 +39,16 @@ using namespace log4cxx::helpers;
 void Transformer::transform(const File& in, const File& out,
 	const std::vector<Filter*>& filters)
 {
-	log4cxx::Filter::PatternList patterns;
+	LOG4CXX_NS::Filter::PatternList patterns;
 
 	for (std::vector<Filter*>::const_iterator iter = filters.begin();
 		iter != filters.end();
 		iter++)
 	{
 
-		const log4cxx::Filter::PatternList& thesePatterns = (*iter)->getPatterns();
+		const LOG4CXX_NS::Filter::PatternList& thesePatterns = (*iter)->getPatterns();
 
-		for (log4cxx::Filter::PatternList::const_iterator pattern = thesePatterns.begin();
+		for (LOG4CXX_NS::Filter::PatternList::const_iterator pattern = thesePatterns.begin();
 			pattern != thesePatterns.end();
 			pattern++)
 		{
@@ -104,7 +104,7 @@ void Transformer::copyFile(const File& in, const File& out)
 }
 
 void Transformer::createSedCommandFile(const std::string& regexName,
-	const log4cxx::Filter::PatternList& patterns,
+	const LOG4CXX_NS::Filter::PatternList& patterns,
 	apr_pool_t* pool)
 {
 	apr_file_t* regexFile;
@@ -131,7 +131,7 @@ void Transformer::createSedCommandFile(const std::string& regexName,
 		return ret;
 	};
 
-	for (log4cxx::Filter::PatternList::const_iterator iter = patterns.begin();
+	for (LOG4CXX_NS::Filter::PatternList::const_iterator iter = patterns.begin();
 		iter != patterns.end();
 		iter++)
 	{
@@ -147,7 +147,7 @@ void Transformer::createSedCommandFile(const std::string& regexName,
 }
 
 void Transformer::transform(const File& in, const File& out,
-	const log4cxx::Filter::PatternList& patterns)
+	const LOG4CXX_NS::Filter::PatternList& patterns)
 {
 	//
 	//   if no patterns just copy the file

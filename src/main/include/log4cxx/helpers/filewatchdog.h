@@ -26,7 +26,7 @@
 #include <thread>
 #include <condition_variable>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

@@ -19,8 +19,8 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(SimpleLayout)
 
@@ -28,7 +28,7 @@ IMPLEMENT_LOG4CXX_OBJECT(SimpleLayout)
 
 void SimpleLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
-	log4cxx::helpers::Pool&) const
+	LOG4CXX_NS::helpers::Pool&) const
 {
 	output.append(event->getLevel()->toString());
 	output.append(LOG4CXX_STR(" - "));

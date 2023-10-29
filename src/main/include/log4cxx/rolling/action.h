@@ -23,7 +23,7 @@
 #include <mutex>
 #include <memory>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace rolling
 {
@@ -32,7 +32,7 @@ namespace rolling
 /**
  *  A file system action performed as part of a rollover event.
  */
-class Action : public virtual log4cxx::helpers::Object
+class Action : public virtual LOG4CXX_NS::helpers::Object
 {
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Action)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -55,9 +55,9 @@ class Action : public virtual log4cxx::helpers::Object
 		 *
 		 * @return true if successful.
 		 */
-		virtual bool execute(log4cxx::helpers::Pool& pool) const = 0;
+		virtual bool execute(LOG4CXX_NS::helpers::Pool& pool) const = 0;
 
-		void run(log4cxx::helpers::Pool& pool);
+		void run(LOG4CXX_NS::helpers::Pool& pool);
 
 		void close();
 

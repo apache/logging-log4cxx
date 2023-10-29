@@ -21,7 +21,7 @@
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/helpers/object.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class Logger;
 typedef std::shared_ptr<Logger> LoggerPtr;

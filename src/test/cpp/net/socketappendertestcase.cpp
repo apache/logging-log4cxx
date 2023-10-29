@@ -18,8 +18,8 @@
 #include "../appenderskeletontestcase.h"
 #include "apr.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 #if APR_HAS_THREADS
 /**
@@ -51,25 +51,25 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
-			return new log4cxx::net::SocketAppender();
+			return new LOG4CXX_NS::net::SocketAppender();
 		}
 
 		void testInvalidHost(){
-//			log4cxx::net::SocketAppenderPtr appender = std::make_shared<log4cxx::net::SocketAppender>();
-//			log4cxx::PatternLayoutPtr layout = std::make_shared<log4cxx::PatternLayout>(LOG4CXX_STR("%m%n"));
+//			LOG4CXX_NS::net::SocketAppenderPtr appender = std::make_shared<LOG4CXX_NS::net::SocketAppender>();
+//			LOG4CXX_NS::PatternLayoutPtr layout = std::make_shared<LOG4CXX_NS::PatternLayout>(LOG4CXX_STR("%m%n"));
 
-//			log4cxx::helpers::ServerSocket serverSocket(4445);
+//			LOG4CXX_NS::helpers::ServerSocket serverSocket(4445);
 
 //			appender->setLayout(layout);
 //			appender->setRemoteHost(LOG4CXX_STR("localhost"));
 //			appender->setReconnectionDelay(1);
 //			appender->setPort(4445);
-//			log4cxx::helpers::Pool pool;
+//			LOG4CXX_NS::helpers::Pool pool;
 //			appender->activateOptions(pool);
 
 //			BasicConfigurator::configure(appender);
 
-//			log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getAll());
+//			LOG4CXX_NS::Logger::getRootLogger()->setLevel(LOG4CXX_NS::Level::getAll());
 
 //			std::thread th1( [](){
 //				for( int x = 0; x < 3000; x++ ){

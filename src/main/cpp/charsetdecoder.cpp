@@ -32,13 +32,13 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <mutex>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(CharsetDecoder)
 
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -131,7 +131,7 @@ class APRCharsetDecoder : public CharsetDecoder
 	private:
 		APRCharsetDecoder(const APRCharsetDecoder&);
 		APRCharsetDecoder& operator=(const APRCharsetDecoder&);
-		log4cxx::helpers::Pool pool;
+		LOG4CXX_NS::helpers::Pool pool;
 		std::mutex mutex;
 		apr_xlate_t* convset;
 };

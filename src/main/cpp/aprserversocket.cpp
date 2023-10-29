@@ -22,7 +22,7 @@
 #include "apr_pools.h"
 #include "apr_poll.h"
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

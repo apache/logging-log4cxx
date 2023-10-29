@@ -57,8 +57,8 @@
 	REGEX_STR("Message [0-9]\\{1,2\\}")
 #define PAT_MDC_1 REGEX_STR("")
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 LOGUNIT_CLASS(PatternLayoutTest)
 {
@@ -473,7 +473,7 @@ public:
 		root->debug(LOG4CXX_TEST_STR("starting mdc pattern test"));
 
 		layout->setConversionPattern(mdcMsgPattern1);
-		log4cxx::helpers::Pool pool;
+		LOG4CXX_NS::helpers::Pool pool;
 		layout->activateOptions(pool);
 		root->debug(LOG4CXX_TEST_STR("empty mdc, no key specified in pattern"));
 

@@ -28,9 +28,9 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <mutex>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::net;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::net;
 
 IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 
@@ -47,7 +47,7 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 	int port;
 	ConnectionList connections;
 	LogString encoding;
-	log4cxx::helpers::CharsetEncoderPtr encoder;
+	LOG4CXX_NS::helpers::CharsetEncoderPtr encoder;
 	std::unique_ptr<helpers::ServerSocket> serverSocket;
 	std::thread sh;
 	size_t activeConnections;

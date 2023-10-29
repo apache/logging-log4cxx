@@ -21,7 +21,7 @@
 #include <log4cxx/ndc.h>
 #include <log4cxx/mdc.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -47,10 +47,10 @@ class LOG4CXX_EXPORT ThreadSpecificData
 
 		static void put(const LogString& key, const LogString& val);
 		static void push(const LogString& val);
-		static void inherit(const log4cxx::NDC::Stack& stack);
+		static void inherit(const LOG4CXX_NS::NDC::Stack& stack);
 
-		log4cxx::NDC::Stack& getStack();
-		log4cxx::MDC::Map& getMap();
+		LOG4CXX_NS::NDC::Stack& getStack();
+		LOG4CXX_NS::MDC::Map& getMap();
 
 
 	private:
