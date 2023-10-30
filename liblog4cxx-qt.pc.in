@@ -18,7 +18,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: @LOG4CXX_LIB_NAME@
-Description: log4cxx C++ logging framework with custom name `@LOG4CXX_LIB_NAME@' (Qt support)
+Description: @LOG4CXX_LIB_NAME@ C++ logging framework(Qt support)
 Version: @VERSION@
 Libs: -L${libdir} -l@LOG4CXX_LIB_NAME@-qt
 Cflags: -I${includedir}
