@@ -26,7 +26,7 @@ LOGUNIT_CLASS(AppenderSkeletonTestCase)
 {
 
 public:
-	virtual LOG4CXX_NS::AppenderSkeleton* createAppenderSkeleton() const = 0;
+	virtual log4cxx::AppenderSkeleton* createAppenderSkeleton() const = 0;
 
 	void testDefaultThreshold();
 

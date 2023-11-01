@@ -49,8 +49,8 @@
 	REGEX_STR("Message [0-9]\\{1,2\\}")
 #define PAT_MDC_1 REGEX_STR("")
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 LOGUNIT_CLASS(FMTTestCase)
 {
@@ -136,20 +136,20 @@ public:
 		auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 		uint64_t micros = std::chrono::duration_cast<std::chrono::microseconds>(tp.time_since_epoch()).count();
 
-		LOG4CXX_NS::helpers::Date::setGetCurrentTimeFunction([micros](){
+		log4cxx::helpers::Date::setGetCurrentTimeFunction([micros](){
 			return micros;
 		});
 
-		LOG4CXX_NS::spi::LoggingEventPtr logEvt = std::make_shared<LOG4CXX_NS::spi::LoggingEvent>(LOG4CXX_STR("foo"),
+		log4cxx::spi::LoggingEventPtr logEvt = std::make_shared<log4cxx::spi::LoggingEvent>(LOG4CXX_STR("foo"),
 																							 Level::getInfo(),
 																							 LOG4CXX_STR("A Message"),
-																							 LOG4CXX_NS::spi::LocationInfo::getLocationUnavailable());
+																							 log4cxx::spi::LocationInfo::getLocationUnavailable());
 		FMTLayout layout(LOG4CXX_STR("{d:%Y-%m-%d %H:%M:%S} {message}"));
 		LogString output;
-		LOG4CXX_NS::helpers::Pool pool;
+		log4cxx::helpers::Pool pool;
 		layout.format( output, logEvt, pool);
 
-		LOG4CXX_NS::helpers::Date::setGetCurrentTimeFunction(nullptr);
+		log4cxx::helpers::Date::setGetCurrentTimeFunction(nullptr);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("2013-04-11 09:35:34 A Message"), output);
 	}

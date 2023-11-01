@@ -42,12 +42,12 @@ class Transformer
 
 		static void transform(const File& in,
 			const File& out,
-			const std::vector< LOG4CXX_NS::Filter::PatternReplacement >& patterns);
+			const std::vector< log4cxx::Filter::PatternReplacement >& patterns);
 	private:
 		static void copyFile(const File& in,
 			const File& out);
 		static void createSedCommandFile(const std::string& regexName,
-			const LOG4CXX_NS::Filter::PatternList& patterns,
+			const log4cxx::Filter::PatternList& patterns,
 			apr_pool_t* pool);
 
 };

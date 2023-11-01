@@ -21,8 +21,8 @@
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 
 #define APR_SUCCESS ((log4cxx_status_t) 0)

@@ -26,7 +26,7 @@
 
 #ifdef LOG4CXX_HAVE_ODBC
 
-using namespace LOG4CXX_NS;
+using namespace log4cxx;
 
 /**
    Unit tests of log4cxx::SocketAppender

@@ -28,11 +28,11 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/logger.h>
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::rolling;
-using namespace LOG4CXX_NS::xml;
-using namespace LOG4CXX_NS::filter;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::rolling;
+using namespace log4cxx::xml;
+using namespace log4cxx::filter;
+using namespace log4cxx::helpers;
 
 /**
  *

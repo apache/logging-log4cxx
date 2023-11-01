@@ -25,7 +25,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <fstream>
 
-using namespace LOG4CXX_NS;
+using namespace log4cxx;
 
 LOGUNIT_CLASS(SocketServerStarter)
 {

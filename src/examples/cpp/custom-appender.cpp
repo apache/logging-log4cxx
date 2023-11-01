@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/xml/domconfigurator.h>
 
-namespace log4cxx {
+namespace LOG4CXX_NS {
 
 class NullWriterAppender : public log4cxx::AppenderSkeleton {
 public:

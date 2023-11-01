@@ -24,9 +24,9 @@
 #include <log4cxx/spi/location/locationinfo.h>
 #include "../testchar.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::spi;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
 
 #define MAX 1000
 
@@ -50,7 +50,7 @@ public:
 		for (int i = 0; i < MAX; i++)
 		{
 			event = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("x"), Level::getDebug(), LOG4CXX_STR("e"),
-						LOG4CXX_NS::spi::LocationInfo::getLocationUnavailable()));
+						log4cxx::spi::LocationInfo::getLocationUnavailable()));
 			e.push_back(event);
 		}
 	}

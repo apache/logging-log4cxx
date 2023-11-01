@@ -19,8 +19,8 @@
 #include "../logunit.h"
 #include "apr_time.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 
 /**

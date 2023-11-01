@@ -17,8 +17,8 @@
 
 #include "filenamefilter.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 FilenameFilter::FilenameFilter(const std::string& actual, const std::string& expected)
 {

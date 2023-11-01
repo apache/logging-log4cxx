@@ -25,9 +25,9 @@
 #include <log4cxx/helpers/stringhelper.h>
 
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::spi;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
 
 #if defined(__LOG4CXX_FUNC__)
 	#undef __LOG4CXX_FUNC__

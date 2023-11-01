@@ -35,7 +35,7 @@ class Compare
 		/// Prints file on the console.
 		static void outputFile(const File& file,
 			const LogString& contents,
-			LOG4CXX_NS::helpers::Pool& pool);
+			log4cxx::helpers::Pool& pool);
 
 		static void emit(const LogString& line);
 		static bool getline(LogString& buf, LogString& line);

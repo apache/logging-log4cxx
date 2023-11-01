@@ -32,9 +32,9 @@
 #include "xlevel.h"
 #include "../testchar.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::xml;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::xml;
 
 
 LOGUNIT_CLASS(CustomLevelTestCase)

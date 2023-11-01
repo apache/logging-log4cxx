@@ -17,8 +17,8 @@
 
 #include "absolutedateandtimefilter.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 AbsoluteDateAndTimeFilter::AbsoluteDateAndTimeFilter() :
 	Filter(ABSOLUTE_DATE_AND_TIME_PAT, "") {}

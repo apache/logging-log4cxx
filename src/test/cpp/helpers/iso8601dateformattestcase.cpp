@@ -28,8 +28,8 @@
 
 
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 /**
    Unit test {@link ISO8601DateFormat}.

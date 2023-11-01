@@ -17,7 +17,7 @@
 
 #include <log4cxx/logger.h>
 
-using namespace LOG4CXX_NS;
+using namespace log4cxx;
 
 static struct Static
 {

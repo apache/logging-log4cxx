@@ -26,7 +26,7 @@ class log4cxxbenchmarker
 	private:
 		log4cxxbenchmarker();
 
-		static LOG4CXX_NS::LoggerPtr resetLogger();
+		static log4cxx::LoggerPtr resetLogger();
 
 	public:
 		/**
@@ -36,7 +36,7 @@ class log4cxxbenchmarker
 		 *
 		 * @param conversionPattern The conversion pattern used, as passed to the PatternLayout
 		 */
-		static void logWithConversionPattern( const LOG4CXX_NS::LogString& conversionPattern, int howmany );
+		static void logWithConversionPattern( const log4cxx::LogString& conversionPattern, int howmany );
 
 		/**
 		 * Log with the LOG4CXX_INFO_FMT macro to see how long it takes.
@@ -49,7 +49,7 @@ class log4cxxbenchmarker
 		/**
 		 * Reset logger for multithreaded setup.
 		 */
-		static LOG4CXX_NS::LoggerPtr logSetupMultithreaded();
+		static log4cxx::LoggerPtr logSetupMultithreaded();
 
 		/**
 		 * Log with the LOG4CXX_INFO_FMT macro to see how long it takes(multithreaded).

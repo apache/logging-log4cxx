@@ -32,8 +32,8 @@
 
 typedef std::basic_ostringstream<testchar> StringBuffer;
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 LOGUNIT_CLASS(L7dTestCase)
 {
@@ -79,7 +79,7 @@ public:
 	{
 		PropertyConfigurator::configure(LOG4CXX_FILE("input/l7d1.properties"));
 
-		LOG4CXX_NS::helpers::Pool pool;
+		log4cxx::helpers::Pool pool;
 
 		for (int i = 0; i < 3; i++)
 		{

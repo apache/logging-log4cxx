@@ -27,7 +27,7 @@
 #include <random>
 #include <mutex>
 
-using namespace LOG4CXX_NS;
+using namespace log4cxx;
 
 class MyAppender : public FileAppender
 {

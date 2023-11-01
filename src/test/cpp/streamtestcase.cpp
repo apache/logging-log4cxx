@@ -36,8 +36,8 @@
 	#include <CoreFoundation/CFString.h>
 #endif
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 using namespace std;
 
 class ExceptionOnInsert
@@ -492,7 +492,7 @@ public:
 	void testUniChar()
 	{
 		LoggerPtr root(Logger::getRootLogger());
-		const LOG4CXX_NS::UniChar msg[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
+		const log4cxx::UniChar msg[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
 		LOG4CXX_INFO(root, msg);
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
@@ -500,8 +500,8 @@ public:
 	void testUniCharAppend()
 	{
 		LoggerPtr root(Logger::getRootLogger());
-		const LOG4CXX_NS::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
-		const LOG4CXX_NS::UniChar msg2[] = { ':', ' ', 'D', 'e', 't', 'a', 'i', 'l', 's', ' ', 't', 'o', ' ', 'f', 'o', 'l', 'l', 'o', 'w', 0 };
+		const log4cxx::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
+		const log4cxx::UniChar msg2[] = { ':', ' ', 'D', 'e', 't', 'a', 'i', 'l', 's', ' ', 't', 'o', ' ', 'f', 'o', 'l', 'l', 'o', 'w', 0 };
 		LOG4CXX_INFO(root, msg1 << msg2);
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
@@ -509,9 +509,9 @@ public:
 	void testUniCharWidth()
 	{
 		LoggerPtr root(Logger::getRootLogger());
-		const LOG4CXX_NS::UniChar openBracket[] = { '[', 0 };
-		const LOG4CXX_NS::UniChar closeBracket[] = { ']', 0 };
-		LOG4CXX_INFO(root, openBracket << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill((LOG4CXX_NS::UniChar)'_') << 10.0 << closeBracket);
+		const log4cxx::UniChar openBracket[] = { '[', 0 };
+		const log4cxx::UniChar closeBracket[] = { ']', 0 };
+		LOG4CXX_INFO(root, openBracket << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill((log4cxx::UniChar)'_') << 10.0 << closeBracket);
 		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
 		LogString msg(event->getMessage());
 		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
@@ -520,7 +520,7 @@ public:
 	void testULogStreamSimple()
 	{
 		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		const LOG4CXX_NS::UniChar msg[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
+		const log4cxx::UniChar msg[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
 		root << msg << LOG4CXX_ENDMSG;
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
@@ -528,8 +528,8 @@ public:
 	void testULogStreamMultiple()
 	{
 		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		const LOG4CXX_NS::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
-		const LOG4CXX_NS::UniChar msg2[] = { ':',  ' ', 'D', 'e', 't', 'a', 'i', 'l', 's', ' ', 't', 'o', ' ', 'f', 'o', 'l', 'l', 'o', 'w', 0 };
+		const log4cxx::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
+		const log4cxx::UniChar msg2[] = { ':',  ' ', 'D', 'e', 't', 'a', 'i', 'l', 's', ' ', 't', 'o', ' ', 'f', 'o', 'l', 'l', 'o', 'w', 0 };
 		root << msg1 << msg2 << LOG4CXX_ENDMSG;
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
@@ -580,21 +580,21 @@ public:
 	{
 		LoggerPtr root(Logger::getRootLogger());
 		ulogstream os(root, Level::getInfo());
-		const LOG4CXX_NS::UniChar openBracket[] = { '[', 0 };
-		const LOG4CXX_NS::UniChar closeBracket[] = { ']', 0 };
+		const log4cxx::UniChar openBracket[] = { '[', 0 };
+		const log4cxx::UniChar closeBracket[] = { ']', 0 };
 
 		os << openBracket << std::fixed << std::setprecision(2) << std::setw(7) << std::right
-			<< std::setfill((LOG4CXX_NS::UniChar) '_') << 10.0 << closeBracket << LOG4CXX_ENDMSG;
+			<< std::setfill((log4cxx::UniChar) '_') << 10.0 << closeBracket << LOG4CXX_ENDMSG;
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
 		LogString msg(event->getMessage());
 		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
 	}
 
-	void ureport(std::basic_ostream<LOG4CXX_NS::UniChar>& os)
+	void ureport(std::basic_ostream<log4cxx::UniChar>& os)
 	{
-		const LOG4CXX_NS::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'j', 'u', 's', 't', ' ', 'i', 'n', ':', ' ', '\n', 0 };
-		const LOG4CXX_NS::UniChar msg2[] = { 'U', 's', 'e', ' ', 'l', 'o', 'g', 's', 't', 'r', 'e', 'a', 'm', '\n', 0 };
+		const log4cxx::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'j', 'u', 's', 't', ' ', 'i', 'n', ':', ' ', '\n', 0 };
+		const log4cxx::UniChar msg2[] = { 'U', 's', 'e', ' ', 'l', 'o', 'g', 's', 't', 'r', 'e', 'a', 'm', '\n', 0 };
 		os << msg1;
 		os << msg2;
 	}
@@ -692,8 +692,8 @@ using namespace foo;
 
 namespace
 {
-LOG4CXX_NS::LoggerPtr logger(LOG4CXX_NS::Logger::getLogger("foo"));
-LOG4CXX_NS::logstream lout(logger, LOG4CXX_NS::Level::getDebug());
+log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("foo"));
+log4cxx::logstream lout(logger, log4cxx::Level::getDebug());
 }
 
 void Bar::fn()

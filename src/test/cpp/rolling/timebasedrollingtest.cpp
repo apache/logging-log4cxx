@@ -49,9 +49,9 @@
 #define DIR_PRE_OUTPUT	"output/rolling/tbr-"
 #define DIR_PRE_WITNESS	"witness/rolling/tbr-"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::rolling;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::rolling;
 
 /**
  * A rather exhaustive set of tests. Tests include leaving the ActiveFileName
@@ -185,7 +185,7 @@ private:
 		float		waitFactor	= 0.5)
 	{
 #undef  LOG4CXX_LOCATION
-#define LOG4CXX_LOCATION ::LOG4CXX_NS::spi::LocationInfo( \
+#define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo( \
 	__FILE__,			\
 	__FILE__,			\
 	srcFunc.c_str(),	\
@@ -201,7 +201,7 @@ private:
 		}
 
 #undef  LOG4CXX_LOCATION
-#define LOG4CXX_LOCATION ::LOG4CXX_NS::spi::LocationInfo( \
+#define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo( \
 	__FILE__,			\
 	__FILE__,			\
 	__LOG4CXX_FUNC__,	\
@@ -357,7 +357,7 @@ private:
 	 */
 	void setUpCurrTime()
 	{
-		//current_time = LOG4CXX_NS::helpers::Date::currentTime(); // Start at "about" now.
+		//current_time = log4cxx::helpers::Date::currentTime(); // Start at "about" now.
 		//current_time -= (current_time % APR_USEC_PER_SEC); // Go to the top of the second
 		//current_time++; // Need to not be at the top of a second for rollover logic to work correctly
 		current_time = 1; // Start at about unix epoch

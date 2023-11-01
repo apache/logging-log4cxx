@@ -27,9 +27,9 @@
 #include "../insertwide.h"
 #include <apr_time.h>
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::pattern;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::pattern;
 
 
 /**

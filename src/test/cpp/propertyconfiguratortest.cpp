@@ -21,8 +21,8 @@
 #include "vectorappender.h"
 #include "logunit.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 
 LOGUNIT_CLASS(PropertyConfiguratorTest)
@@ -76,7 +76,7 @@ public:
 		props.put(LOG4CXX_STR("log4j.appender.VECTOR1.threshold"), LOG4CXX_STR("WARN"));
 		PropertyConfigurator::configure(props);
 		LoggerPtr root(Logger::getRootLogger());
-		VectorAppenderPtr appender = LOG4CXX_NS::cast<VectorAppender>(root->getAppender(LOG4CXX_STR("VECTOR1")));
+		VectorAppenderPtr appender = log4cxx::cast<VectorAppender>(root->getAppender(LOG4CXX_STR("VECTOR1")));
 		LOGUNIT_ASSERT_EQUAL((int) Level::WARN_INT, appender->getThreshold()->toInt());
 		LOG4CXX_INFO(root, "Info message");
 		LOG4CXX_WARN(root, "Warn message");

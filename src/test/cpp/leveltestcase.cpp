@@ -25,7 +25,7 @@
 	#include <CoreFoundation/CFString.h>
 #endif
 
-using namespace LOG4CXX_NS;
+using namespace log4cxx;
 
 LOGUNIT_CLASS(LevelTestCase)
 {
@@ -116,7 +116,7 @@ public:
 	 */
 	void testUniCharStringToTrace()
 	{
-		const LOG4CXX_NS::UniChar name[] = { 'T', 'R', 'A', 'C', 'E', 0 };
+		const log4cxx::UniChar name[] = { 'T', 'R', 'A', 'C', 'E', 0 };
 		LevelPtr trace(Level::toLevel(name));
 		LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
 	}

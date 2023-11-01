@@ -33,9 +33,9 @@ class Num343PatternConverter : public LoggingEventPatternConverter
 
 	protected:
 		void format(
-			const LOG4CXX_NS::spi::LoggingEventPtr& event,
+			const log4cxx::spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
-			LOG4CXX_NS::helpers::Pool& pool) const override;
+			log4cxx::helpers::Pool& pool) const override;
 };
 }
 }

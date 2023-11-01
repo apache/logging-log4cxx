@@ -23,8 +23,8 @@
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/systemoutwriter.h>
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 bool Compare::compare(const File& file1, const File& file2)
 {
@@ -101,7 +101,7 @@ bool Compare::compare(const File& file1, const File& file2)
 
 void Compare::outputFile(const File& file,
 	const LogString& contents,
-	LOG4CXX_NS::helpers::Pool& pool)
+	log4cxx::helpers::Pool& pool)
 {
 	int lineCounter = 0;
 	emit(LOG4CXX_STR("--------------------------------"));

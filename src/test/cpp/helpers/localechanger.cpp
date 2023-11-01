@@ -23,7 +23,7 @@
 #include "localechanger.h"
 #include <stdexcept>
 
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx::helpers;
 
 /**
 *   Construction attemtps to change default locale.

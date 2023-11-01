@@ -19,8 +19,8 @@
 #include <log4cxx/net/syslogappender.h>
 #include "../appenderskeletontestcase.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 /**
    Unit tests of log4cxx::SyslogAppender
@@ -41,7 +41,7 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
-			return new LOG4CXX_NS::net::SyslogAppender();
+			return new log4cxx::net::SyslogAppender();
 		}
 };
 

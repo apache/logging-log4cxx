@@ -24,10 +24,10 @@
 #include <log4cxx/filter/stringmatchfilter.h>
 #include "../logunit.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::filter;
-using namespace LOG4CXX_NS::spi;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::filter;
+using namespace log4cxx::spi;
+using namespace log4cxx::helpers;
 
 
 /**

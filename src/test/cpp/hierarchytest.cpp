@@ -21,7 +21,7 @@
 #include "logunit.h"
 #include "insertwide.h"
 
-using namespace LOG4CXX_NS;
+using namespace log4cxx;
 
 /**
  * Tests hierarchy.

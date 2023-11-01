@@ -27,8 +27,8 @@ class WriterAppenderTestCase : public AppenderSkeletonTestCase
 {
 
 	public:
-		LOG4CXX_NS::AppenderSkeleton* createAppenderSkeleton() const;
+		log4cxx::AppenderSkeleton* createAppenderSkeleton() const;
 
-		virtual LOG4CXX_NS::WriterAppender* createWriterAppender() const = 0;
+		virtual log4cxx::WriterAppender* createWriterAppender() const = 0;
 
 };

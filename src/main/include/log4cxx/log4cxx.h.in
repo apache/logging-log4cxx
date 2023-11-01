@@ -119,4 +119,8 @@ LOG4CXX_EXPORT uint32_t libraryVersion();
 
 }
 
+#if @LOG4CXX_DECLARE_DEFAULT_NS_ALIAS@
+namespace log4cxx = LOG4CXX_NS;
+#endif
+
 #endif

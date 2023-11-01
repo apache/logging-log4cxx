@@ -21,9 +21,9 @@
 #include <apr_thread_proc.h>
 #include <apr_time.h>
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::net;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::net;
 
 #if APR_HAS_THREADS
 /**
@@ -56,7 +56,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
-			return new LOG4CXX_NS::net::TelnetAppender();
+			return new log4cxx::net::TelnetAppender();
 		}
 
 		void testActivateClose()

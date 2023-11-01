@@ -26,10 +26,10 @@
 #include "../logunit.h"
 #include <log4cxx/helpers/date.h>
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::nt;
-using namespace LOG4CXX_NS::spi;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::nt;
+using namespace log4cxx::spi;
 
 /**
    Unit tests of log4cxx::nt::NTEventLogAppender
@@ -51,7 +51,7 @@ class NTEventLogAppenderTestCase : public AppenderSkeletonTestCase
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
-			return new LOG4CXX_NS::nt::NTEventLogAppender();
+			return new log4cxx::nt::NTEventLogAppender();
 		}
 
 		void testHelloWorld()

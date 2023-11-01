@@ -19,8 +19,8 @@
 #include <log4cxx/fileappender.h>
 #include "insertwide.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 WriterAppender* FileAppenderAbstractTestCase::createWriterAppender() const
 {
@@ -53,7 +53,7 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 
 		FileAppender* createFileAppender() const
 		{
-			return new LOG4CXX_NS::FileAppender();
+			return new log4cxx::FileAppender();
 		}
 
 		void testSetDoubleBackslashes()

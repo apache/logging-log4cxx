@@ -18,9 +18,9 @@
 #include <log4cxx/logstring.h>
 #include "num343patternconverter.h"
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::pattern;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(Num343PatternConverter)
 

@@ -28,7 +28,7 @@ std::ostream& operator<<(std::ostream& os,
 
 #if LOG4CXX_LOGCHAR_IS_UNICHAR  || LOG4CXX_UNICHAR_API
 std::ostream& operator<<(std::ostream& os,
-	const std::basic_string<LOG4CXX_NS::UniChar>& str);
+	const std::basic_string<log4cxx::UniChar>& str);
 #endif
 
 #endif

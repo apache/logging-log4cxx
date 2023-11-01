@@ -26,9 +26,9 @@
 
 
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::spi;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 
 		formatter.format(actual, jan2, p);
 
-		log4cxx_time_t elapsed = LOG4CXX_NS::helpers::StringHelper::toInt64(actual);
+		log4cxx_time_t elapsed = log4cxx::helpers::StringHelper::toInt64(actual);
 
 
 		LOGUNIT_ASSERT(preStartTime + elapsed * 1000 > jan2 - 2000);

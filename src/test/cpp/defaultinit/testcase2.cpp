@@ -26,7 +26,7 @@
 #include "../insertwide.h"
 #include "../logunit.h"
 
-using namespace LOG4CXX_NS;
+using namespace log4cxx;
 
 LOGUNIT_CLASS(TestCase2)
 {

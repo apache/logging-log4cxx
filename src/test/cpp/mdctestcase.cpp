@@ -26,7 +26,7 @@
 
 
 
-using namespace LOG4CXX_NS;
+using namespace log4cxx;
 
 LOGUNIT_CLASS(MDCTestCase)
 {

@@ -37,11 +37,7 @@ endif()
 
 option(BUILD_EXAMPLES "Build log4cxx examples" ${BUILD_TESTING})
 if(BUILD_EXAMPLES)
-  if("log4cxx" STREQUAL "${LOG4CXX_NS}")
-    add_subdirectory(examples/cpp)
-  else()
-    message(FATAL_ERROR "Examples can only be build if LOG4CXX_NS=log4cxx, but LOG4CXX_NS=${LOG4CXX_NS}.")
-  endif()
+  add_subdirectory(examples/cpp)
 endif()
 
 add_subdirectory(site)

@@ -54,9 +54,9 @@ class MockTriggeringEventEvaluator :
 }
 }
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::net;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::net;
 
 IMPLEMENT_LOG4CXX_OBJECT(MockTriggeringEventEvaluator)
 
@@ -82,7 +82,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
-			return new LOG4CXX_NS::net::SMTPAppender();
+			return new log4cxx::net::SMTPAppender();
 		}
 
 		void setUp()
@@ -100,7 +100,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		void testTrigger()
 		{
 			xml::DOMConfigurator::configure("input/xml/smtpAppender1.xml");
-			auto appender = LOG4CXX_NS::cast<SMTPAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("A1")));
+			auto appender = log4cxx::cast<SMTPAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("A1")));
 			LOGUNIT_ASSERT(appender);
 			auto evaluator = appender->getEvaluator();
 			LOGUNIT_ASSERT(evaluator);

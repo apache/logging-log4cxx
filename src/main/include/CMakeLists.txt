@@ -88,6 +88,10 @@ else()
 endif()
 
 set(LOG4CXX_NS "log4cxx" CACHE STRING "Root namespace name")
+set(LOG4CXX_DECLARE_DEFAULT_NS_ALIAS 0)
+if(NOT "log4cxx" STREQUAL "${LOG4CXX_NS}")
+    set(LOG4CXX_DECLARE_DEFAULT_NS_ALIAS 1)
+endif()
 
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "utf-8" CACHE STRING "LogString characters, choice of utf-8 (default), ISO-8859-1, US-ASCII, EBCDIC, locale")

@@ -23,8 +23,8 @@
 	#include <CoreFoundation/CFString.h>
 #endif
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 
 LOGUNIT_CLASS(TranscoderTestCase)
@@ -193,7 +193,7 @@ public:
 		Transcoder::encode(greeting, encoded);
 
 		std::wstring expected;
-		expected.push_back( LOG4CXX_NS::helpers::Transcoder::LOSSCHAR );
+		expected.push_back( log4cxx::helpers::Transcoder::LOSSCHAR );
 		LOGUNIT_ASSERT_EQUAL(encoded, expected );
 	}
 #endif
