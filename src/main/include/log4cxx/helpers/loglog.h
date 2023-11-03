@@ -23,7 +23,7 @@
 #include <exception>
 #include <mutex>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -104,12 +104,12 @@ class LOG4CXX_EXPORT LogLog
 } // namespace log4cxx
 
 #define LOGLOG_DEBUG(log) { \
-		log4cxx::helpers::LogLog::debug(log) ; }
+		LOG4CXX_NS::helpers::LogLog::debug(log) ; }
 
 #define LOGLOG_WARN(log) { \
-		log4cxx::helpers::LogLog::warn(log) ; }
+		LOG4CXX_NS::helpers::LogLog::warn(log) ; }
 
 #define LOGLOG_ERROR(log) { \
-		log4cxx::helpers::LogLog::warn(log); }
+		LOG4CXX_NS::helpers::LogLog::warn(log); }
 
 #endif //_LOG4CXX_HELPERS_LOG_LOG_H

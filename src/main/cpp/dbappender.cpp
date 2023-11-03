@@ -37,11 +37,11 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <apr_dbd.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::db;
-using namespace log4cxx::spi;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::db;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(DBAppender)
 
@@ -193,7 +193,7 @@ void DBAppender::activateOptions(helpers::Pool& p){
             std::vector<LogString> options;
             if (LOG4CXX_STR("time") == pItem->first)
                 options.push_back(LOG4CXX_STR("yyyy-MM-ddTHH:mm:ss.SSS"));
-            pattern::LoggingEventPatternConverterPtr converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
+            pattern::LoggingEventPatternConverterPtr converter = LOG4CXX_NS::cast<LoggingEventPatternConverter>((pItem->second)(options));
             _priv->converters.push_back(converter);
         }
     }

@@ -20,7 +20,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 

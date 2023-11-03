@@ -20,13 +20,13 @@
 
 #include <log4cxx/rolling/action.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace rolling
 {
 
 
-class RolloverDescription : public log4cxx::helpers::Object
+class RolloverDescription : public LOG4CXX_NS::helpers::Object
 {
 		DECLARE_LOG4CXX_OBJECT(RolloverDescription)
 		BEGIN_LOG4CXX_CAST_MAP()

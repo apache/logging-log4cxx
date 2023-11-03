@@ -34,7 +34,7 @@ extern "C" {
 	struct apr_threadkey_t;
 }
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

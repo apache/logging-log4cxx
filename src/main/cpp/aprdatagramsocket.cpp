@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <apr_network_io.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

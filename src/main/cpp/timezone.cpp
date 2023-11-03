@@ -28,12 +28,12 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/logger.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT( TimeZone )
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -132,7 +132,7 @@ class LocalTimeZone : public TimeZone
 
 			tzName[tzLength] = 0;
 			LogString retval;
-			log4cxx::helpers::Transcoder::decode(tzName, retval);
+			LOG4CXX_NS::helpers::Transcoder::decode(tzName, retval);
 			return retval;
 		}
 
@@ -190,12 +190,12 @@ TimeZone::~TimeZone()
 
 const TimeZonePtr& TimeZone::getDefault()
 {
-	return log4cxx::helpers::TimeZoneImpl::LocalTimeZone::getInstance();
+	return LOG4CXX_NS::helpers::TimeZoneImpl::LocalTimeZone::getInstance();
 }
 
 const TimeZonePtr& TimeZone::getGMT()
 {
-	return log4cxx::helpers::TimeZoneImpl::GMTTimeZone::getInstance();
+	return LOG4CXX_NS::helpers::TimeZoneImpl::GMTTimeZone::getInstance();
 }
 
 const TimeZonePtr TimeZone::getTimeZone( const LogString& id )
@@ -204,7 +204,7 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString& id )
 
 	if ( id == gmt )
 	{
-		return log4cxx::helpers::TimeZoneImpl::GMTTimeZone::getInstance();
+		return LOG4CXX_NS::helpers::TimeZoneImpl::GMTTimeZone::getInstance();
 	}
 
 	if ( id.length() >= 5 && id.substr( 0, 3 ) == gmt )

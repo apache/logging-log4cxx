@@ -25,7 +25,7 @@
 #include <log4cxx/log4cxx.h>
 #include <mutex>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {
@@ -67,7 +67,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 Call the <code>doAppend</code> method on all attached appenders.
 		*/
 		int appendLoopOnAppenders(const spi::LoggingEventPtr& event,
-			log4cxx::helpers::Pool& p);
+			LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		 * Get all previously added appenders as an Enumeration.

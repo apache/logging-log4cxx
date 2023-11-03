@@ -34,17 +34,17 @@
 #include <apr_strings.h>
 #include <vector>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::net;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::net;
+using namespace LOG4CXX_NS::spi;
 
 #if LOG4CXX_HAVE_LIBESMTP
 	#include <auth-client.h>
 	#include <libesmtp.h>
 #endif
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace net
 {
@@ -788,12 +788,12 @@ LogString SMTPAppender::getEvaluatorClass()
 	return _priv->evaluator == 0 ? LogString() : _priv->evaluator->getClass().getName();
 }
 
-log4cxx::spi::TriggeringEventEvaluatorPtr SMTPAppender::getEvaluator() const
+LOG4CXX_NS::spi::TriggeringEventEvaluatorPtr SMTPAppender::getEvaluator() const
 {
 	return _priv->evaluator;
 }
 
-void SMTPAppender::setEvaluator(log4cxx::spi::TriggeringEventEvaluatorPtr& trigger)
+void SMTPAppender::setEvaluator(LOG4CXX_NS::spi::TriggeringEventEvaluatorPtr& trigger)
 {
 	_priv->evaluator = trigger;
 }
@@ -821,7 +821,7 @@ for the SMTPAppender.
 void SMTPAppender::setEvaluatorClass(const LogString& value)
 {
 	ObjectPtr obj = ObjectPtr(Loader::loadClass(value).newInstance());
-	_priv->evaluator = log4cxx::cast<TriggeringEventEvaluator>(obj);
+	_priv->evaluator = LOG4CXX_NS::cast<TriggeringEventEvaluator>(obj);
 }
 
 int SMTPAppender::getBufferSize() const

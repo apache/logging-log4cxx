@@ -25,7 +25,7 @@ apr_pool_t* getStringPool()
 			apr_pool_destroy(ptr);
 		}
 	};
-	static log4cxx::helpers::WideLife<cfstring_pool> pool;
+	static LOG4CXX_NS::helpers::WideLife<cfstring_pool> pool;
 	return pool.ptr;
 }
 } // namespace

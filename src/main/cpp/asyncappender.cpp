@@ -30,9 +30,14 @@
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
+
+#if !LOG4CXX_ABI_15_COMPATIBILITY
+namespace
+{
+#endif
 
 /**
  * The default buffer size is set to 128 events.
@@ -45,7 +50,7 @@ class DiscardSummary
 		/**
 		 * First event of the highest severity.
 		*/
-		::log4cxx::spi::LoggingEventPtr maxEvent;
+		::LOG4CXX_NS::spi::LoggingEventPtr maxEvent;
 
 		/**
 		* Total count of messages discarded.
@@ -58,7 +63,7 @@ class DiscardSummary
 		 *
 		 * @param event event, may not be null.
 		*/
-		DiscardSummary(const ::log4cxx::spi::LoggingEventPtr& event);
+		DiscardSummary(const ::LOG4CXX_NS::spi::LoggingEventPtr& event);
 		/** Copy constructor.  */
 		DiscardSummary(const DiscardSummary& src);
 		/** Assignment operator. */
@@ -69,21 +74,25 @@ class DiscardSummary
 		 *
 		 * @param event event, may not be null.
 		*/
-		void add(const ::log4cxx::spi::LoggingEventPtr& event);
+		void add(const ::LOG4CXX_NS::spi::LoggingEventPtr& event);
 
 		/**
 		 * Create event with summary information.
 		 *
 		 * @return new event.
 		 */
-		::log4cxx::spi::LoggingEventPtr createEvent(::log4cxx::helpers::Pool& p);
+		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p);
 
 		static
-		::log4cxx::spi::LoggingEventPtr createEvent(::log4cxx::helpers::Pool& p,
+		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
 			size_t discardedCount);
 };
 
 typedef std::map<LogString, DiscardSummary> DiscardMap;
+
+#if !LOG4CXX_ABI_15_COMPATIBILITY
+}
+#endif
 
 struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
@@ -100,7 +109,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 * Event buffer.
 	*/
 #if defined(NON_BLOCKING)
-	boost::lockfree::queue<log4cxx::spi::LoggingEvent* > buffer;
+	boost::lockfree::queue<LOG4CXX_NS::spi::LoggingEvent* > buffer;
 	std::atomic<size_t> discardedCount;
 #else
 	LoggingEventList buffer;
@@ -112,8 +121,8 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	std::mutex bufferMutex;
 
 #if defined(NON_BLOCKING)
-	::log4cxx::helpers::Semaphore bufferNotFull;
-	::log4cxx::helpers::Semaphore bufferNotEmpty;
+	::LOG4CXX_NS::helpers::Semaphore bufferNotFull;
+	::LOG4CXX_NS::helpers::Semaphore bufferNotEmpty;
 #else
 	std::condition_variable bufferNotFull;
 	std::condition_variable bufferNotEmpty;
@@ -427,8 +436,8 @@ LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 				LocationInfo::getLocationUnavailable() );
 }
 
-::log4cxx::spi::LoggingEventPtr
-DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
+::LOG4CXX_NS::spi::LoggingEventPtr
+DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 	size_t discardedCount)
 {
 	LogString msg(LOG4CXX_STR("Discarded "));
@@ -437,7 +446,7 @@ DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
 
 	return std::make_shared<LoggingEvent>(
 				LOG4CXX_STR(""),
-				log4cxx::Level::getError(),
+				LOG4CXX_NS::Level::getError(),
 				msg,
 				LocationInfo::getLocationUnavailable() );
 }

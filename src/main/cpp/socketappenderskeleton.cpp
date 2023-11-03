@@ -29,9 +29,9 @@
 #include <functional>
 #include <chrono>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::net;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::net;
 
 #define _priv static_cast<SocketAppenderSkeletonPriv*>(m_priv.get())
 
@@ -190,7 +190,7 @@ void SocketAppenderSkeleton::monitor()
 		catch (IOException& e)
 		{
 			LogString exmsg;
-			log4cxx::helpers::Transcoder::decode(e.what(), exmsg);
+			LOG4CXX_NS::helpers::Transcoder::decode(e.what(), exmsg);
 
 			LogLog::debug(((LogString) LOG4CXX_STR("Could not connect to "))
 				+ _priv->address->getHostName()

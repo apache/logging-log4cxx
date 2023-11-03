@@ -24,7 +24,7 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/simplelayout.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace net
 {

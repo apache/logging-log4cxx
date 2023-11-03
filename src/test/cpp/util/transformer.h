@@ -25,7 +25,7 @@ extern "C" {
 	struct apr_pool_t;
 }
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class File;
 

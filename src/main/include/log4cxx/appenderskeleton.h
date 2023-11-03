@@ -26,7 +26,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/level.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 /**
@@ -48,9 +48,9 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		method to perform actual logging. See also AppenderSkeleton::doAppend
 		method.
 		*/
-		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) = 0;
+		virtual void append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) = 0;
 
-		void doAppendImpl(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
+		void doAppendImpl(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& pool);
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderSkeleton)

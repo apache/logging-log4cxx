@@ -24,8 +24,8 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(SystemErrWriter)
 

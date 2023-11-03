@@ -25,9 +25,9 @@
 #include <limits>
 #include <log4cxx/helpers/exception.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::pattern;
 
 struct CachedDateFormat::CachedDateFormatPriv
 {
@@ -43,7 +43,7 @@ struct CachedDateFormat::CachedDateFormatPriv
 	/**
 	 *   Wrapped formatter.
 	 */
-	log4cxx::helpers::DateFormatPtr formatter;
+	LOG4CXX_NS::helpers::DateFormatPtr formatter;
 
 	/**
 	 *  Index of initial digit of millisecond pattern or

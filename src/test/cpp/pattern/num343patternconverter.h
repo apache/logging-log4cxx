@@ -18,7 +18,7 @@
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include <vector>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {

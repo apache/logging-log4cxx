@@ -20,9 +20,9 @@
 #include <log4cxx/helpers/integer.h>
 #include <log4cxx/helpers/stringhelper.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(IntegerPatternConverter)
 
@@ -44,7 +44,7 @@ void IntegerPatternConverter::format(
 	LogString& toAppendTo,
 	Pool& p) const
 {
-	IntegerPtr i = log4cxx::cast<Integer>(obj);
+	IntegerPtr i = LOG4CXX_NS::cast<Integer>(obj);
 
 	if (i != NULL)
 	{

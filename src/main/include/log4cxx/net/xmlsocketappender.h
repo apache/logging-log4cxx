@@ -21,7 +21,7 @@
 #include <log4cxx/net/socketappenderskeleton.h>
 #include <log4cxx/helpers/writer.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace net
 {
@@ -135,7 +135,7 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 
 
 	protected:
-		void setSocket(log4cxx::helpers::SocketPtr& socket, helpers::Pool& p) override;
+		void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, helpers::Pool& p) override;
 
 		void cleanUp(helpers::Pool& p) override;
 

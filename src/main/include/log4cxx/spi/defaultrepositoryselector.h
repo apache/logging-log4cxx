@@ -23,7 +23,7 @@
 #include <log4cxx/spi/loggerrepository.h>
 #include <memory>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {

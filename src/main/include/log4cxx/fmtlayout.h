@@ -26,7 +26,7 @@
 
 #include <log4cxx/layout.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 /**
  * The FMTLayout class uses libfmt to layout messages.  This is an alternative to the PatternLayout class.

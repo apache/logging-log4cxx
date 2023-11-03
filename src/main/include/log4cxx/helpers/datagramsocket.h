@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/datagrampacket.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

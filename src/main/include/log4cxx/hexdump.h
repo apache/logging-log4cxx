@@ -21,7 +21,7 @@
 #include <log4cxx/logstring.h>
 #include <stdint.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 enum class HexdumpFlags : uint32_t{

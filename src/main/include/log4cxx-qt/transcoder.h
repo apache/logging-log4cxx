@@ -31,7 +31,7 @@
 	@param src The QString variable.
 */
 #define LOG4CXX_DECODE_QSTRING(var, src) \
-	log4cxx::LogString var = (src).toStdString()
+	LOG4CXX_NS::LogString var = (src).toStdString()
 
 /** Create a QString equivalent of \c src.
 
@@ -57,7 +57,7 @@
 	@param src The QString variable.
 */
 #define LOG4CXX_DECODE_QSTRING(var, src) \
-	log4cxx::LogString var = (src).toStdWString()
+	LOG4CXX_NS::LogString var = (src).toStdWString()
 
 /** Create a QString equivalent of \c src.
 
@@ -83,7 +83,7 @@
 	@param src The QString variable.
 */
 #define LOG4CXX_DECODE_QSTRING(var, src) \
-	log4cxx::LogString var = (src).utf16()
+	LOG4CXX_NS::LogString var = (src).utf16()
 
 /** Create a QString equivalent of \c src.
 

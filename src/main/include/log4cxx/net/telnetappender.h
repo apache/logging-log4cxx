@@ -25,7 +25,7 @@
 #include <vector>
 #include <log4cxx/helpers/charsetencoder.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -33,7 +33,7 @@ class ByteBuffer;
 }
 namespace net
 {
-typedef log4cxx::helpers::SocketPtr Connection;
+typedef LOG4CXX_NS::helpers::SocketPtr Connection;
 LOG4CXX_LIST_DEF(ConnectionList, Connection);
 
 /**
@@ -148,8 +148,8 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		TelnetAppender(const TelnetAppender&);
 		TelnetAppender& operator=(const TelnetAppender&);
 
-		void write(log4cxx::helpers::ByteBuffer&);
-		void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
+		void write(LOG4CXX_NS::helpers::ByteBuffer&);
+		void writeStatus(const LOG4CXX_NS::helpers::SocketPtr& socket, const LogString& msg, LOG4CXX_NS::helpers::Pool& p);
 		void acceptConnections();
 
 		struct TelnetAppenderPriv;

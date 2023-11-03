@@ -24,12 +24,12 @@
 #include <log4cxx/helpers/stringhelper.h>
 
 
-log4cxx::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
-	: DateFormat(), startTime(log4cxx::spi::LoggingEvent::getStartTime())
+LOG4CXX_NS::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
+	: DateFormat(), startTime(LOG4CXX_NS::spi::LoggingEvent::getStartTime())
 {
 }
 
-void log4cxx::helpers::RelativeTimeDateFormat::format(
+void LOG4CXX_NS::helpers::RelativeTimeDateFormat::format(
 	LogString& s,
 	log4cxx_time_t date,
 	Pool& p) const

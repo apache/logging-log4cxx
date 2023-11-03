@@ -20,9 +20,9 @@
 #include <log4cxx/pattern/literalpatternconverter.h>
 #include <log4cxx/helpers/loglog.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
+using namespace LOG4CXX_NS::helpers;
 
 const logchar PatternParser::ESCAPE_CHAR = 0x25; // '%'
 

@@ -28,10 +28,10 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
-using namespace log4cxx::nt;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::nt;
 
 #define priv static_cast<NTEventLogAppenderPrivate*>(m_priv.get())
 

@@ -23,9 +23,9 @@
 #include <log4cxx/private/writerappender_priv.h>
 #include <mutex>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 #define _priv static_cast<WriterAppenderPriv*>(m_priv.get())
 
@@ -37,7 +37,7 @@ WriterAppender::WriterAppender() :
 }
 
 WriterAppender::WriterAppender(const LayoutPtr& layout1,
-	log4cxx::helpers::WriterPtr& writer1)
+	LOG4CXX_NS::helpers::WriterPtr& writer1)
 	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout1, writer1))
 {
 	Pool p;
@@ -327,6 +327,6 @@ bool WriterAppender::getImmediateFlush() const
 	return _priv->immediateFlush;
 }
 
-const log4cxx::helpers::WriterPtr WriterAppender::getWriter() const{
+const LOG4CXX_NS::helpers::WriterPtr WriterAppender::getWriter() const{
 	return _priv->writer;
 }

@@ -21,7 +21,7 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/helpers/inetaddress.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace net
 {

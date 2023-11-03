@@ -29,8 +29,8 @@
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
 
-using namespace log4cxx::helpers;
-using namespace log4cxx;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS;
 
 bool APRInitializer::isDestructed = false;
 
@@ -52,11 +52,21 @@ struct APRInitializer::APRInitializerPrivate{
 
 namespace
 {
-extern "C" void tlsDestruct(void* ptr)
+void tlsDestructImpl(void* ptr)
 {
 	delete ((ThreadSpecificData*) ptr);
 }
+}
 
+#if LOG4CXX_ABI_15_COMPATIBILITY
+extern "C" void tlsDestruct(void* ptr)
+{
+	return tlsDestructImpl(ptr);
+}
+#endif
+
+namespace
+{
 // The first object created and the last object destroyed
 struct apr_environment
 {
@@ -72,6 +82,7 @@ struct apr_environment
 
 }
 
+
 APRInitializer::APRInitializer() :
 	m_priv(std::make_unique<APRInitializerPrivate>())
 {
@@ -79,7 +90,7 @@ APRInitializer::APRInitializer() :
 	apr_atomic_init(m_priv->p);
 	m_priv->startTime = Date::currentTime();
 #if APR_HAS_THREADS
-	apr_status_t stat = apr_threadkey_private_create(&m_priv->tlsKey, tlsDestruct, m_priv->p);
+	apr_status_t stat = apr_threadkey_private_create(&m_priv->tlsKey, tlsDestructImpl, m_priv->p);
 	assert(stat == APR_SUCCESS);
 	assert(stat == APR_SUCCESS);
 #endif

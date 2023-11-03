@@ -22,7 +22,7 @@
 #include <log4cxx/rolling/rolloverdescription.h>
 #include <log4cxx/file.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace rolling
 {
@@ -59,7 +59,7 @@ class LOG4CXX_EXPORT RollingPolicy :
 		virtual RolloverDescriptionPtr initialize(
 			const   LogString&              currentActiveFile,
 			const   bool                    append,
-			log4cxx::helpers::Pool& pool) = 0;
+			LOG4CXX_NS::helpers::Pool& pool) = 0;
 
 		/**
 		 * Prepare for a rollover.  This method is called prior to
@@ -77,7 +77,7 @@ class LOG4CXX_EXPORT RollingPolicy :
 		virtual RolloverDescriptionPtr rollover(
 			const   LogString&              currentActiveFile,
 			const   bool                    append,
-			log4cxx::helpers::Pool& pool) = 0;
+			LOG4CXX_NS::helpers::Pool& pool) = 0;
 };
 
 LOG4CXX_PTR_DEF(RollingPolicy);

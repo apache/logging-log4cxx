@@ -68,17 +68,28 @@
 #include <apr.h>
 
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::net;
-using namespace log4cxx::filter;
-using namespace log4cxx::xml;
-using namespace log4cxx::rolling;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::net;
+using namespace LOG4CXX_NS::filter;
+using namespace LOG4CXX_NS::xml;
+using namespace LOG4CXX_NS::rolling;
 
-uint32_t libraryVersion(){
+namespace LOG4CXX_NS
+{
+uint32_t libraryVersion()
+{
 	// This function defined in log4cxx.h
 	return LOG4CXX_VERSION;
 }
+}
+
+#if LOG4CXX_ABI_15_COMPATIBILITY
+LOG4CXX_EXPORT uint32_t libraryVersion()
+{
+	return LOG4CXX_NS::libraryVersion();
+}
+#endif
 
 Class::Class()
 {
@@ -165,12 +176,12 @@ void Class::registerClasses()
 #endif
 	ConsoleAppender::registerClass();
 	FileAppender::registerClass();
-	log4cxx::db::ODBCAppender::registerClass();
+	LOG4CXX_NS::db::ODBCAppender::registerClass();
 #if (defined(WIN32) || defined(_WIN32))
 #if !defined(_WIN32_WCE)
-	log4cxx::nt::NTEventLogAppender::registerClass();
+	LOG4CXX_NS::nt::NTEventLogAppender::registerClass();
 #endif
-	log4cxx::nt::OutputDebugStringAppender::registerClass();
+	LOG4CXX_NS::nt::OutputDebugStringAppender::registerClass();
 #endif
 	SMTPAppender::registerClass();
 	JSONLayout::registerClass();
@@ -182,15 +193,15 @@ void Class::registerClasses()
 	LevelRangeFilter::registerClass();
 	StringMatchFilter::registerClass();
 	LocationInfoFilter::registerClass();
-	log4cxx::rolling::RollingFileAppender::registerClass();
-	log4cxx::rolling::SizeBasedTriggeringPolicy::registerClass();
-	log4cxx::rolling::TimeBasedRollingPolicy::registerClass();
-	log4cxx::rolling::ManualTriggeringPolicy::registerClass();
-	log4cxx::rolling::FixedWindowRollingPolicy::registerClass();
-	log4cxx::rolling::FilterBasedTriggeringPolicy::registerClass();
-	log4cxx::xml::DOMConfigurator::registerClass();
-	log4cxx::PropertyConfigurator::registerClass();
-	log4cxx::varia::FallbackErrorHandler::registerClass();
+	LOG4CXX_NS::rolling::RollingFileAppender::registerClass();
+	LOG4CXX_NS::rolling::SizeBasedTriggeringPolicy::registerClass();
+	LOG4CXX_NS::rolling::TimeBasedRollingPolicy::registerClass();
+	LOG4CXX_NS::rolling::ManualTriggeringPolicy::registerClass();
+	LOG4CXX_NS::rolling::FixedWindowRollingPolicy::registerClass();
+	LOG4CXX_NS::rolling::FilterBasedTriggeringPolicy::registerClass();
+	LOG4CXX_NS::xml::DOMConfigurator::registerClass();
+	LOG4CXX_NS::PropertyConfigurator::registerClass();
+	LOG4CXX_NS::varia::FallbackErrorHandler::registerClass();
 #if LOG4CXX_HAS_NETWORKING
 	TelnetAppender::registerClass();
 	XMLSocketAppender::registerClass();

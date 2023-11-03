@@ -22,7 +22,7 @@
 #include <log4cxx/log4cxx.h>
 #include <functional>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

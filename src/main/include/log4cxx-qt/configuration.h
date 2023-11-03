@@ -22,14 +22,14 @@
 #include <log4cxx/log4cxx.h>
 #include <log4cxx/defaultconfigurator.h>
 
-namespace log4cxx {
+namespace LOG4CXX_NS {
 namespace qt {
 
 class LOG4CXX_EXPORT Configuration {
 private:
 	Configuration();
 
-	static log4cxx::spi::ConfigurationStatus tryLoadFile(const QString& filename);
+	static LOG4CXX_NS::spi::ConfigurationStatus tryLoadFile(const QString& filename);
 
 public:
 	/**
@@ -39,7 +39,7 @@ public:
 	 * @param filenames
 	 * @return
 	 */
-	static std::tuple<log4cxx::spi::ConfigurationStatus,QString> configureFromFileAndWatch(const QVector<QString>& directories,
+	static std::tuple<LOG4CXX_NS::spi::ConfigurationStatus,QString> configureFromFileAndWatch(const QVector<QString>& directories,
 																						   const QVector<QString>& filenames);
 };
 

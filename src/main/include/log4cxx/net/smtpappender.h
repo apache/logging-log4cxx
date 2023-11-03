@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/cyclicbuffer.h>
 #include <log4cxx/spi/triggeringeventevaluator.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace net
 {
@@ -95,7 +95,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		The default constructor will instantiate the appender with a
 		spi::TriggeringEventEvaluator that will trigger on events with
 		level ERROR or higher.*/
-		SMTPAppender(log4cxx::helpers::Pool& p);
+		SMTPAppender(LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		Use <code>evaluator</code> passed as parameter as the
@@ -176,7 +176,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		/**
 		Send the contents of the cyclic buffer as an e-mail message.
 		*/
-		void sendBuffer(log4cxx::helpers::Pool& p);
+		void sendBuffer(LOG4CXX_NS::helpers::Pool& p);
 
 
 		/**
@@ -289,13 +289,13 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		 *   Gets the current triggering evaluator.
 		 *   @return triggering evaluator.
 		 */
-		log4cxx::spi::TriggeringEventEvaluatorPtr getEvaluator() const;
+		LOG4CXX_NS::spi::TriggeringEventEvaluatorPtr getEvaluator() const;
 
 		/**
 		 *   Sets the triggering evaluator.
 		 *   @param trigger triggering evaluator.
 		 */
-		void setEvaluator(log4cxx::spi::TriggeringEventEvaluatorPtr& trigger);
+		void setEvaluator(LOG4CXX_NS::spi::TriggeringEventEvaluatorPtr& trigger);
 
 		/**
 		The <b>EvaluatorClass</b> option takes a string value

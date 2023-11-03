@@ -24,7 +24,7 @@
 #include <log4cxx/helpers/object.h>
 #include <mutex>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 /**
  * LOG4CXX_PTR_DEF can't be used to get a smart pointer for Level because we need to override

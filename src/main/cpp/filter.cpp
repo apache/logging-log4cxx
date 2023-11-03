@@ -19,9 +19,9 @@
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/private/filter_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 Filter::Filter() : m_priv(std::make_unique<FilterPrivate>())
 {

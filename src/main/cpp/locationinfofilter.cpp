@@ -24,10 +24,10 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/transcoder.h>
 
-using namespace log4cxx;
-using namespace log4cxx::filter;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::filter;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 #define priv static_cast<LocationInfoFilterPrivate*>(m_priv.get())
 
@@ -78,7 +78,7 @@ void LocationInfoFilter::setOption(  const LogString& option,
 }
 
 Filter::FilterDecision LocationInfoFilter::decide(
-	const log4cxx::spi::LoggingEventPtr& event) const
+	const LOG4CXX_NS::spi::LoggingEventPtr& event) const
 {
 	if (priv->lineNumber == -1 &&
 			priv->methodName.empty())

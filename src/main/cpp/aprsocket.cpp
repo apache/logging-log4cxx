@@ -23,7 +23,7 @@
 #include "apr_network_io.h"
 #include "apr_signal.h"
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

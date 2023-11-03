@@ -20,7 +20,7 @@
 
 #include <log4cxx/rolling/triggeringpolicy.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 class File;

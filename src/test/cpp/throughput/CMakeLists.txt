@@ -18,14 +18,14 @@
 option(BUILD_THROUGHPUT_TESTS "Build throughput tests"  OFF)
 
 if( NOT BUILD_THROUGHPUT_TESTS )
-	return()
+  return()
 endif()
 
 find_package(fmt REQUIRED)
 
 add_executable(throughputtests
-	throughput-main.cpp
-	log4cxxbenchmarker.cpp)
+  throughput-main.cpp
+  log4cxxbenchmarker.cpp)
 
 # Note: we need to include the APR DLLs on our path so that the tests will run.
 # The way that CMake sets the environment is that it actually generates a secondary file,
@@ -48,7 +48,7 @@ if( WIN32 )
   set(NORMAL_PATH $ENV{PATH})
   set(ESCAPED_PATH "")
   foreach( ENTRY ${PATH_FOR_TESTS}${NORMAL_PATH} )
-	  set(ESCAPED_PATH "${ESCAPED_PATH}${ENTRY}\\\;")
+    set(ESCAPED_PATH "${ESCAPED_PATH}${ENTRY}\\\;")
   endforeach()
   set_target_properties(throughputtests PROPERTIES
     VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"

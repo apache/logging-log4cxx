@@ -21,7 +21,7 @@
 
 #include <log4cxx/pattern/namepatternconverter.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {

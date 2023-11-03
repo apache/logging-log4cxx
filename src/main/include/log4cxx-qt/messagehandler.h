@@ -21,7 +21,7 @@
 
 #include "log4cxx/log4cxx.h"
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace qt
 {

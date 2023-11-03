@@ -29,10 +29,10 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/private/socketappenderskeleton_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::net;
-using namespace log4cxx::xml;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::net;
+using namespace LOG4CXX_NS::xml;
 
 struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonPriv
 {
@@ -45,7 +45,7 @@ struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonP
 	XMLSocketAppenderPriv(const LogString& host, int port, int delay) :
 		SocketAppenderSkeletonPriv( host, port, delay ) {}
 
-	log4cxx::helpers::WriterPtr writer;
+	LOG4CXX_NS::helpers::WriterPtr writer;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
@@ -98,7 +98,7 @@ int XMLSocketAppender::getDefaultPort() const
 	return DEFAULT_PORT;
 }
 
-void XMLSocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
+void XMLSocketAppender::setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, Pool& p)
 {
 	OutputStreamPtr os = std::make_shared<SocketOutputStream>(socket);
 	CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
@@ -121,7 +121,7 @@ void XMLSocketAppender::cleanUp(Pool& p)
 	}
 }
 
-void XMLSocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
+void XMLSocketAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p)
 {
 	if (_priv->writer)
 	{

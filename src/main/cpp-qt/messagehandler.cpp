@@ -18,14 +18,14 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/spi/location/locationinfo.h>
 
-namespace log4cxx {
+namespace LOG4CXX_NS {
 namespace qt {
 
 void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message )
 {
-	log4cxx::LoggerPtr qtLogger = log4cxx::Logger::getLogger( context.category );
-	log4cxx::spi::LocationInfo location( context.file,
-										 log4cxx::spi::LocationInfo::calcShortFileName(context.file),
+	LOG4CXX_NS::LoggerPtr qtLogger = LOG4CXX_NS::Logger::getLogger( context.category );
+	LOG4CXX_NS::spi::LocationInfo location( context.file,
+										 LOG4CXX_NS::spi::LocationInfo::calcShortFileName(context.file),
 										 context.function,
 										 context.line );
 

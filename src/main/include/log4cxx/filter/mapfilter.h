@@ -19,7 +19,7 @@
 
 #include <log4cxx/spi/filter.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace filter
 {
@@ -38,7 +38,7 @@ namespace filter
  * &lt;/filter&gt;
  * </pre>
  */
-class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
+class LOG4CXX_EXPORT MapFilter: public LOG4CXX_NS::spi::Filter
 {
 		typedef std::map < LogString, LogString > KeyVals;
 
@@ -49,7 +49,7 @@ class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 		DECLARE_LOG4CXX_OBJECT(MapFilter)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(MapFilter)
-		LOG4CXX_CAST_ENTRY_CHAIN(log4cxx::spi::Filter)
+		LOG4CXX_CAST_ENTRY_CHAIN(LOG4CXX_NS::spi::Filter)
 		END_LOG4CXX_CAST_MAP()
 
 		MapFilter();

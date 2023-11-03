@@ -24,7 +24,7 @@
 #include <log4cxx/logger.h>
 #include <vector>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace varia
 {

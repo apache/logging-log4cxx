@@ -59,15 +59,15 @@
 #include <algorithm>
 
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::db;
-using namespace log4cxx::spi;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::db;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::pattern;
 
 SQLException::SQLException(short fHandleType,
 	void* hInput, const char* prolog,
-	log4cxx::helpers::Pool& p)
+	LOG4CXX_NS::helpers::Pool& p)
 	: Exception(formatMessage(fHandleType, hInput, prolog, p))
 {
 }
@@ -84,7 +84,7 @@ SQLException::SQLException(const SQLException& src)
 }
 
 const char* SQLException::formatMessage(short fHandleType,
-	void* hInput, const char* prolog, log4cxx::helpers::Pool& p)
+	void* hInput, const char* prolog, LOG4CXX_NS::helpers::Pool& p)
 {
 	std::string strReturn(prolog);
 	strReturn.append(" - ");
@@ -188,14 +188,14 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 	}
 }
 
-//* Does ODBCAppender require a layout?
+// Does ODBCAppender require a layout?
 
 bool ODBCAppender::requiresLayout() const
 {
 	return false;
 }
 
-void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
+void ODBCAppender::activateOptions(LOG4CXX_NS::helpers::Pool&)
 {
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
@@ -229,7 +229,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 			std::vector<LogString> options;
 			if (LOG4CXX_STR("time") == pItem->first)
 				options.push_back(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss.SSSSSS"));
-			paramData.converter = log4cxx::cast<LoggingEventPatternConverter>((pItem->second)(options));
+			paramData.converter = LOG4CXX_NS::cast<LoggingEventPatternConverter>((pItem->second)(options));
 			_priv->parameterValue.push_back(paramData);
 		}
 	}
@@ -237,7 +237,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 }
 
 
-void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
+void ODBCAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p)
 {
 #if LOG4CXX_HAVE_ODBC
 	_priv->buffer.push_back(event);
@@ -250,12 +250,12 @@ void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::P
 #endif
 }
 
-LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const
+LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) const
 {
     return LogString();
 }
 
-void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
+void ODBCAppender::execute(const LogString& sql, LOG4CXX_NS::helpers::Pool& p)
 {
 }
 
@@ -265,7 +265,7 @@ void ODBCAppender::closeConnection(ODBCAppender::SQLHDBC /* con */)
 {
 }
 
-ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
+ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 {
 #if LOG4CXX_HAVE_ODBC
 	SQLRETURN ret;

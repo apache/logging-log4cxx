@@ -19,8 +19,8 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 NDC::NDC(const std::string& message)
 {

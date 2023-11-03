@@ -19,9 +19,9 @@
 #include <log4cxx/rolling/filterbasedtriggeringpolicy.h>
 #include <log4cxx/spi/filter.h>
 
-using namespace log4cxx;
-using namespace log4cxx::rolling;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(FilterBasedTriggeringPolicy)
 
@@ -30,12 +30,12 @@ struct FilterBasedTriggeringPolicy::FilterBasedTriggeringPolicyPrivate{
 	/**
 	 * The first filter in the filter chain. Set to <code>null</code> initially.
 	 */
-	log4cxx::spi::FilterPtr headFilter;
+	LOG4CXX_NS::spi::FilterPtr headFilter;
 
 	/**
 	 * The last filter in the filter chain.
 	 */
-	log4cxx::spi::FilterPtr tailFilter;
+	LOG4CXX_NS::spi::FilterPtr tailFilter;
 };
 
 FilterBasedTriggeringPolicy::FilterBasedTriggeringPolicy() :
@@ -51,7 +51,7 @@ FilterBasedTriggeringPolicy::~FilterBasedTriggeringPolicy()
 
 bool FilterBasedTriggeringPolicy::isTriggeringEvent(
 	Appender* /* appender */,
-	const log4cxx::spi::LoggingEventPtr& event,
+	const LOG4CXX_NS::spi::LoggingEventPtr& event,
 	const LogString& /* filename */,
 	size_t /* fileLength */ )
 {
@@ -60,7 +60,7 @@ bool FilterBasedTriggeringPolicy::isTriggeringEvent(
 		return false;
 	}
 
-	for (log4cxx::spi::FilterPtr f = m_priv->headFilter; f != NULL; f = f->getNext())
+	for (LOG4CXX_NS::spi::FilterPtr f = m_priv->headFilter; f != NULL; f = f->getNext())
 	{
 		switch (f->decide(event))
 		{
@@ -82,7 +82,7 @@ bool FilterBasedTriggeringPolicy::isTriggeringEvent(
  * Add a filter to end of the filter list.
  * @param newFilter filter to add to end of list.
  */
-void FilterBasedTriggeringPolicy::addFilter(const log4cxx::spi::FilterPtr& newFilter)
+void FilterBasedTriggeringPolicy::addFilter(const LOG4CXX_NS::spi::FilterPtr& newFilter)
 {
 	if (m_priv->headFilter == NULL)
 	{
@@ -98,12 +98,12 @@ void FilterBasedTriggeringPolicy::addFilter(const log4cxx::spi::FilterPtr& newFi
 
 void FilterBasedTriggeringPolicy::clearFilters()
 {
-	log4cxx::spi::FilterPtr empty;
+	LOG4CXX_NS::spi::FilterPtr empty;
 	m_priv->headFilter = empty;
 	m_priv->tailFilter = empty;
 }
 
-log4cxx::spi::FilterPtr& FilterBasedTriggeringPolicy::getFilter()
+LOG4CXX_NS::spi::FilterPtr& FilterBasedTriggeringPolicy::getFilter()
 {
 	return m_priv->headFilter;
 }
@@ -111,9 +111,9 @@ log4cxx::spi::FilterPtr& FilterBasedTriggeringPolicy::getFilter()
 /**
  *  Prepares the instance for use.
  */
-void FilterBasedTriggeringPolicy::activateOptions(log4cxx::helpers::Pool& p)
+void FilterBasedTriggeringPolicy::activateOptions(LOG4CXX_NS::helpers::Pool& p)
 {
-	for (log4cxx::spi::FilterPtr f = m_priv->headFilter; f != NULL; f = f->getNext())
+	for (LOG4CXX_NS::spi::FilterPtr f = m_priv->headFilter; f != NULL; f = f->getNext())
 	{
 		f->activateOptions(p);
 	}

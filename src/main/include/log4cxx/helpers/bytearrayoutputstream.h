@@ -21,7 +21,7 @@
 #include <log4cxx/helpers/outputstream.h>
 #include <vector>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace helpers

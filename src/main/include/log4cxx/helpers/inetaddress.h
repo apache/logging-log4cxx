@@ -23,7 +23,7 @@
 #include <vector>
 #include <log4cxx/helpers/exception.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
