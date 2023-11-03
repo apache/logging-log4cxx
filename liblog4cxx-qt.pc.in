@@ -17,10 +17,10 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: log4cxx
-Description: log4cxx C++ logging framework(Qt support)
+Name: @LOG4CXX_LIB_NAME@
+Description: @LOG4CXX_LIB_NAME@ C++ logging framework(Qt support)
 Version: @VERSION@
-Libs: -L${libdir} -llog4cxx-qt
+Libs: -L${libdir} -l@LOG4CXX_LIB_NAME@-qt
 Cflags: -I${includedir}
-Requires: liblog4cxx
+Requires: lib@LOG4CXX_LIB_NAME@
 

@@ -136,7 +136,7 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/main/include/log4cxx
   PATTERN "Private" EXCLUDE
 )
 
-install(TARGETS log4cxx EXPORT log4cxxTargets
+install(TARGETS log4cxx EXPORT ${LOG4CXX_LIB_NAME}Targets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} 
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -148,7 +148,7 @@ if(LOG4CXX_QT_SUPPORT)
       DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
       FILES_MATCHING PATTERN "*.h"
     )
-    install(TARGETS log4cxx-qt EXPORT log4cxx-qtTargets
+    install(TARGETS log4cxx-qt EXPORT ${LOG4CXX_LIB_NAME}-qtTargets
       RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
       ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
       LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -171,10 +171,10 @@ if(UNIX)
   set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
   set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx.pc.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx.pc"
+    "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc"
   )
 
-  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx.pc" 
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc" 
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
   if(LOG4CXX_QT_SUPPORT)
@@ -184,44 +184,45 @@ if(UNIX)
       set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
       set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
       configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx-qt.pc.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
+        "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}-qt.pc"
       )
 
-      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}-qt.pc"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+      )
   endif(LOG4CXX_QT_SUPPORT)
 endif(UNIX)
 
 # Support for find_package(log4cxx) in consuming CMake projects using
 # target_include_directories(myApplication PRIVATE $<TARGET_PROPERTY:log4cxx,INTERFACE_INCLUDE_DIRECTORIES>)
 # target_link_libraries( myApplication PRIVATE log4cxx)
-install(EXPORT log4cxxTargets
-  FILE        log4cxxConfig.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
+install(EXPORT ${LOG4CXX_LIB_NAME}Targets
+  FILE        ${LOG4CXX_LIB_NAME}Config.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
 )
 # Support for find_package(log4cxx 0.11) in consuming CMake projects
 include(CMakePackageConfigHelpers)
-write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}ConfigVersion.cmake"
   VERSION       ${PROJECT_VERSION}
   COMPATIBILITY SameMinorVersion
 )
-install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
-  DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
+install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}ConfigVersion.cmake"
+  DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
 )
 
 if(LOG4CXX_QT_SUPPORT)
-    install(EXPORT log4cxx-qtTargets
-      FILE        log4cxx-qtConfig.cmake
-      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx-qt
+    install(EXPORT ${LOG4CXX_LIB_NAME}-qtTargets
+      FILE        ${LOG4CXX_LIB_NAME}-qtConfig.cmake
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}-qt
     )
     # Support for find_package(log4cxx 0.11) in consuming CMake projects
     include(CMakePackageConfigHelpers)
-    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
+    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}-qtConfigVersion.cmake"
       VERSION       ${PROJECT_VERSION}
       COMPATIBILITY SameMinorVersion
     )
-    install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
-      DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx-qt
+    install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}-qtConfigVersion.cmake"
+      DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}-qt
     )
 endif(LOG4CXX_QT_SUPPORT)
 
@@ -289,6 +290,7 @@ message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
 message(STATUS "  Build examples................... : ${BUILD_EXAMPLES}")
 message(STATUS "  Build site ...................... : ${BUILD_SITE}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "  log4cxx library name ............ : ${LOG4CXX_LIB_NAME}")
 message(STATUS "  log4cxx namespace ............... : ${LOG4CXX_NS}")
 message(STATUS "  log4cxx char API ................ : ON")
 message(STATUS "  log4cxx wchar API ............... : ${LOG4CXX_WCHAR_T}")
