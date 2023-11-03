@@ -49,7 +49,7 @@
 	#define   LOG_LOCAL7  (23<<3)  /* reserved for local use */
 #endif
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace net
 {

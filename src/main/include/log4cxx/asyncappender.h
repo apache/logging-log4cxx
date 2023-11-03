@@ -29,9 +29,9 @@
 	#include <boost/lockfree/queue.hpp>
 #endif
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
-LOG4CXX_LIST_DEF(LoggingEventList, log4cxx::spi::LoggingEventPtr);
+LOG4CXX_LIST_DEF(LoggingEventList, LOG4CXX_NS::spi::LoggingEventPtr);
 
 /**
 The AsyncAppender lets users log events asynchronously. It uses a

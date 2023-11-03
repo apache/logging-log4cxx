@@ -26,7 +26,7 @@
 
 using std::locale;
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -35,7 +35,7 @@ namespace SimpleDateFormatImpl
 class PatternToken;
 }
 
-LOG4CXX_LIST_DEF(PatternTokenList, log4cxx::helpers::SimpleDateFormatImpl::PatternToken*);
+LOG4CXX_LIST_DEF(PatternTokenList, LOG4CXX_NS::helpers::SimpleDateFormatImpl::PatternToken*);
 
 
 /**
@@ -86,7 +86,7 @@ class LOG4CXX_EXPORT SimpleDateFormat : public DateFormat
 
 		virtual void format(LogString& s,
 			log4cxx_time_t tm,
-			log4cxx::helpers::Pool& p) const;
+			LOG4CXX_NS::helpers::Pool& p) const;
 
 		/**
 		 * Set time zone.

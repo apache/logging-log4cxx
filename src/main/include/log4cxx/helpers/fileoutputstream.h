@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/pool.h>
 
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace helpers
@@ -58,7 +58,7 @@ class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 		FileOutputStream(const FileOutputStream&);
 		FileOutputStream& operator=(const FileOutputStream&);
 		static apr_file_t* open(const LogString& fn, bool append,
-			log4cxx::helpers::Pool& p);
+			LOG4CXX_NS::helpers::Pool& p);
 };
 
 LOG4CXX_PTR_DEF(FileOutputStream);

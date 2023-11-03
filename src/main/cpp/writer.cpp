@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <stdexcept>
 
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Writer)
 

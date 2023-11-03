@@ -184,11 +184,11 @@ if(UNIX)
       set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
       set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
       configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx-qt.pc.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
+        "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
       )
 
       install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
-	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif(LOG4CXX_QT_SUPPORT)
 endif(UNIX)
 
@@ -286,8 +286,10 @@ message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
 message(STATUS "  C++ features requested: ......... : ${CMAKE_CXX_STANDARD}")
 message(STATUS "  Build shared library ............ : ${BUILD_SHARED_LIBS}")
 message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
+message(STATUS "  Build examples................... : ${BUILD_EXAMPLES}")
 message(STATUS "  Build site ...................... : ${BUILD_SITE}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "  log4cxx namespace ............... : ${LOG4CXX_NS}")
 message(STATUS "  log4cxx char API ................ : ON")
 message(STATUS "  log4cxx wchar API ............... : ${LOG4CXX_WCHAR_T}")
 if(STD_LIB_HAS_UNICODE_STRING)

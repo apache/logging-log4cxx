@@ -20,8 +20,8 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/jsonlayout.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(MDCPatternConverter)
 

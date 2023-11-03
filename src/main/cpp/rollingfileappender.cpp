@@ -29,10 +29,10 @@
 #include <log4cxx/private/fileappender_priv.h>
 #include <mutex>
 
-using namespace log4cxx;
-using namespace log4cxx::rolling;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 struct RollingFileAppender::RollingFileAppenderPriv : public FileAppenderPriv
 {
@@ -104,14 +104,14 @@ void RollingFileAppender::setOption(const LogString& option, const LogString& va
 int RollingFileAppender::getMaxBackupIndex() const
 {
 	int result = 1;
-	if (auto fwrp = log4cxx::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy))
+	if (auto fwrp = LOG4CXX_NS::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy))
 		result = fwrp->getMaxIndex();
 	return result;
 }
 
 void RollingFileAppender::setMaxBackupIndex(int maxBackups)
 {
-	auto fwrp = log4cxx::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy);
+	auto fwrp = LOG4CXX_NS::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy);
 	if (!fwrp)
 	{
 		fwrp = std::make_shared<FixedWindowRollingPolicy>();
@@ -124,14 +124,14 @@ void RollingFileAppender::setMaxBackupIndex(int maxBackups)
 size_t RollingFileAppender::getMaximumFileSize() const
 {
 	size_t result = 10 * 1024 * 1024;
-	if (auto sbtp = log4cxx::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy))
+	if (auto sbtp = LOG4CXX_NS::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy))
 		result = sbtp->getMaxFileSize();
 	return result;
 }
 
 void RollingFileAppender::setMaximumFileSize(size_t maxFileSize)
 {
-	auto sbtp = log4cxx::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy);
+	auto sbtp = LOG4CXX_NS::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy);
 	if (!sbtp)
 	{
 		sbtp = std::make_shared<SizeBasedTriggeringPolicy>();
@@ -185,7 +185,7 @@ LogString RollingFileAppender::makeFileNamePattern(const LogString& datePattern)
 
 void RollingFileAppender::setDatePattern(const LogString& newPattern)
 {
-	auto tbrp = log4cxx::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy);
+	auto tbrp = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy);
 	if (!tbrp)
 	{
 		tbrp = std::make_shared<TimeBasedRollingPolicy>();
@@ -213,7 +213,7 @@ void RollingFileAppender::activateOptions(Pool& p)
 	//
 	if (!_priv->triggeringPolicy)
 	{
-		TriggeringPolicyPtr trig = log4cxx::cast<TriggeringPolicy>(_priv->rollingPolicy);
+		TriggeringPolicyPtr trig = LOG4CXX_NS::cast<TriggeringPolicy>(_priv->rollingPolicy);
 
 		if (trig != NULL)
 		{
@@ -521,7 +521,7 @@ void RollingFileAppender::close()
 	FileAppender::close();
 }
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace rolling
 {

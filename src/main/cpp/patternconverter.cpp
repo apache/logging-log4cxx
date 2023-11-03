@@ -20,8 +20,8 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/patternconverter_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(PatternConverter)
 
@@ -47,7 +47,7 @@ LogString PatternConverter::getName() const
 	return m_priv->name;
 }
 
-LogString PatternConverter::getStyleClass(const log4cxx::helpers::ObjectPtr& /* e */) const
+LogString PatternConverter::getStyleClass(const LOG4CXX_NS::helpers::ObjectPtr& /* e */) const
 {
 	return m_priv->style;
 }

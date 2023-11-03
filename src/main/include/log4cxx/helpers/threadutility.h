@@ -25,7 +25,7 @@
 #include "log4cxx/logstring.h"
 #include "widelife.h"
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -70,12 +70,12 @@ LOG4CXX_PTR_DEF(ThreadUtility);
 class LOG4CXX_EXPORT ThreadUtility
 {
 	private:
-		friend log4cxx::helpers::WideLife<ThreadUtility>;
+		friend class LOG4CXX_NS::helpers::WideLife<ThreadUtility>;
 		ThreadUtility();
 
-		log4cxx::helpers::ThreadStartPre preStartFunction();
-		log4cxx::helpers::ThreadStarted threadStartedFunction();
-		log4cxx::helpers::ThreadStartPost postStartFunction();
+		LOG4CXX_NS::helpers::ThreadStartPre preStartFunction();
+		LOG4CXX_NS::helpers::ThreadStarted threadStartedFunction();
+		LOG4CXX_NS::helpers::ThreadStartPost postStartFunction();
 
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)
 	public:
@@ -128,9 +128,9 @@ class LOG4CXX_EXPORT ThreadUtility
 			Function&& f,
 			Args&& ... args)
 		{
-			log4cxx::helpers::ThreadStartPre pre_start = preStartFunction();
-			log4cxx::helpers::ThreadStarted thread_start = threadStartedFunction();
-			log4cxx::helpers::ThreadStartPost post_start = postStartFunction();
+			LOG4CXX_NS::helpers::ThreadStartPre pre_start = preStartFunction();
+			LOG4CXX_NS::helpers::ThreadStarted thread_start = threadStartedFunction();
+			LOG4CXX_NS::helpers::ThreadStartPost post_start = postStartFunction();
 
 			if ( pre_start )
 			{

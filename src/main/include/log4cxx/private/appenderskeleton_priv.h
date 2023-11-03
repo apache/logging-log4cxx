@@ -22,20 +22,20 @@
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <memory>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 struct AppenderSkeleton::AppenderSkeletonPrivate
 {
 	AppenderSkeletonPrivate() :
 		threshold(Level::getAll()),
-		errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
+		errorHandler(std::make_shared<LOG4CXX_NS::helpers::OnlyOnceErrorHandler>()),
 		closed(false) {}
 
 	AppenderSkeletonPrivate( LayoutPtr lay ) :
 		layout( lay ),
 		threshold(Level::getAll()),
-		errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
+		errorHandler(std::make_shared<LOG4CXX_NS::helpers::OnlyOnceErrorHandler>()),
 		closed(false) {}
 
 	virtual ~AppenderSkeletonPrivate(){}
@@ -68,7 +68,7 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	*/
 	bool closed;
 
-	log4cxx::helpers::Pool pool;
+	LOG4CXX_NS::helpers::Pool pool;
 	mutable std::recursive_mutex mutex;
 };
 

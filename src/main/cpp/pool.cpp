@@ -26,8 +26,8 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 
-using namespace log4cxx::helpers;
-using namespace log4cxx;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS;
 
 
 Pool::Pool() : pool(0), release(true)

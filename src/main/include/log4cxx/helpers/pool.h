@@ -25,7 +25,7 @@ extern "C" {
 	struct apr_pool_t;
 }
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -50,7 +50,7 @@ class LOG4CXX_EXPORT Pool
 		const bool release;
 
 	private:
-		Pool(const log4cxx::helpers::Pool&);
+		Pool(const LOG4CXX_NS::helpers::Pool&);
 		Pool& operator=(const Pool&);
 };
 } // namespace helpers

@@ -29,9 +29,9 @@
 #include <apr_strings.h>
 #include <string.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 struct HTMLLayout::HTMLLayoutPrivate
 {

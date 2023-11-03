@@ -23,8 +23,8 @@
 #include <log4cxx/helpers/datagrampacket.h>
 #include <log4cxx/helpers/transcoder.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 struct SyslogWriter::SyslogWriterPrivate {
 	SyslogWriterPrivate(const LogString& syslogHost1, int syslogHostPort1)

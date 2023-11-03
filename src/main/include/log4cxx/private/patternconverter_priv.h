@@ -18,7 +18,7 @@
 #define LOG4CXX_PATTERNCONVERTER_PRIVATE_H
 #include <log4cxx/pattern/patternconverter.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {

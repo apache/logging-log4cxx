@@ -25,8 +25,8 @@
 #include <algorithm>
 #include <cctype>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 bool StringHelper::equalsIgnoreCase(const LogString& s1, const logchar* upper, const logchar* lower)
 {

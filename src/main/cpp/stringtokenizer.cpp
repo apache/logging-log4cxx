@@ -23,8 +23,8 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 struct StringTokenizer::StringTokenizerPrivate{
 	StringTokenizerPrivate(const LogString& str, const LogString& delim1) : src(str), delim(delim1), pos(0){}

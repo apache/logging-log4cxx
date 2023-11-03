@@ -21,7 +21,7 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/syslogwriter.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace net
 {

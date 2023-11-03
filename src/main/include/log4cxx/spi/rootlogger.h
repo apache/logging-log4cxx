@@ -20,7 +20,7 @@
 
 #include <log4cxx/logger.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {
@@ -40,7 +40,7 @@ class LOG4CXX_EXPORT RootLogger : public Logger
 		The root logger names itself as "root". However, the root
 		logger cannot be retrieved by name.
 		*/
-		RootLogger(log4cxx::helpers::Pool& pool, const LevelPtr level);
+		RootLogger(LOG4CXX_NS::helpers::Pool& pool, const LevelPtr level);
 
 		~RootLogger() {}
 

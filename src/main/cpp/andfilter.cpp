@@ -21,10 +21,10 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/private/filter_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::filter;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::filter;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 #define priv static_cast<AndFilterPrivate*>(m_priv.get())
 
@@ -35,8 +35,8 @@ struct AndFilter::AndFilterPrivate : public FilterPrivate
 		tailFilter(),
 		acceptOnMatch(true) {}
 
-	log4cxx::spi::FilterPtr headFilter;
-	log4cxx::spi::FilterPtr tailFilter;
+	LOG4CXX_NS::spi::FilterPtr headFilter;
+	LOG4CXX_NS::spi::FilterPtr tailFilter;
 	bool acceptOnMatch;
 };
 

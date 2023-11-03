@@ -17,6 +17,7 @@
 
 # Options
 option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
+option(LOG4CXX_ABI_15_COMPATIBILITY "Compatibility for legacy 15 ABI, with some global symbols" ON)
 
 # Build the log4cxx library
 add_library(log4cxx)
@@ -31,33 +32,36 @@ set(extra_classes "")
 
 if(LOG4CXX_NETWORKING_SUPPORT)
     list(APPEND extra_classes
-	datagrampacket.cpp
-	datagramsocket.cpp
-	aprdatagramsocket.cpp
-	serversocket.cpp
-	aprserversocket.cpp
-	socket.cpp
-	aprsocket.cpp
-	telnetappender.cpp
-	socketappenderskeleton.cpp
-	socketoutputstream.cpp
-	xmlsocketappender.cpp
-	syslogwriter.cpp
-	syslogappender.cpp
-	)
+        datagrampacket.cpp
+        datagramsocket.cpp
+        aprdatagramsocket.cpp
+        serversocket.cpp
+        aprserversocket.cpp
+        socket.cpp
+        aprsocket.cpp
+        telnetappender.cpp
+        socketappenderskeleton.cpp
+        socketoutputstream.cpp
+        xmlsocketappender.cpp
+        syslogwriter.cpp
+        syslogappender.cpp
+    )
 endif()
 
 if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
     target_compile_definitions(log4cxx PRIVATE LOG4CXX_MULTI_PROCESS)
     list(APPEND extra_classes
-	multiprocessrollingfileappender.cpp
-	)
+        multiprocessrollingfileappender.cpp
+    )
+endif()
+if(LOG4CXX_ABI_15_COMPATIBILITY)
+    target_compile_definitions(log4cxx PRIVATE LOG4CXX_ABI_15_COMPATIBILITY)
 endif()
 
 if(${ENABLE_FMT_LAYOUT})
     list(APPEND extra_classes
-	fmtlayout.cpp
-	)
+        fmtlayout.cpp
+    )
 endif()
 
 target_sources(log4cxx
@@ -224,6 +228,10 @@ if(${ENABLE_FMT_LAYOUT})
 endif()
 
 if(LOG4CXX_ABI_CHECK)
+    if(NOT "log4cxx" STREQUAL "${LOG4CXX_NS}")
+      message(FATAL_ERROR "ABI compatability can only be checked if LOG4CXX_NS=log4cxx, but LOG4CXX_NS=${LOG4CXX_NS}.")
+    endif()
+
     message("Getting dependencies for ABI compatability check...")
     # Get the latest version of abi-dumper and abi-compliance-checker
     include(FetchContent)
@@ -250,11 +258,11 @@ if(LOG4CXX_ABI_CHECK)
 
     add_custom_target(dump-abi ALL
         COMMAND perl ${abi-dumper-script} -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:log4cxx>
-	DEPENDS log4cxx
-	COMMENT "Dumping ABI symbols")
+        DEPENDS log4cxx
+        COMMENT "Dumping ABI symbols")
 
     add_custom_target(compare-abi ALL
-	COMMAND perl ${abi-compliance-script} -skip-internal-symbols "\\d\\(fmt\\)" -skip-internal-types "\\(fmt\\)::" -l log4cxx -old ${LOG4CXX_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump
-	DEPENDS dump-abi
-	COMMENT "Comparing ABI symbols")
+        COMMAND perl ${abi-compliance-script} -skip-internal-symbols "\\d\\(fmt\\)" -skip-internal-types "\\(fmt\\)::" -l log4cxx -old ${LOG4CXX_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump
+        DEPENDS dump-abi
+        COMMENT "Comparing ABI symbols")
 endif(LOG4CXX_ABI_CHECK)

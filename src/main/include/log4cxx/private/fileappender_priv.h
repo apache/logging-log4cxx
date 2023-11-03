@@ -21,7 +21,7 @@
 #include <log4cxx/private/writerappender_priv.h>
 #include <log4cxx/fileappender.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPriv

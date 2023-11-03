@@ -22,7 +22,7 @@
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/spi/loggingevent.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {
@@ -80,8 +80,8 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
 		END_LOG4CXX_CAST_MAP()
 
-		log4cxx::spi::FilterPtr getNext() const;
-		void setNext(const log4cxx::spi::FilterPtr& newNext);
+		LOG4CXX_NS::spi::FilterPtr getNext() const;
+		void setNext(const LOG4CXX_NS::spi::FilterPtr& newNext);
 
 		enum FilterDecision
 		{

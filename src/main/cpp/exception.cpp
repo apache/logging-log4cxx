@@ -24,8 +24,8 @@
 #include <log4cxx/helpers/pool.h>
 #include <apr_errno.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 Exception::Exception(const LogString& msg1)
 {

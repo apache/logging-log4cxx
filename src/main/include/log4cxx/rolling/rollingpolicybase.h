@@ -26,12 +26,12 @@
 #include <log4cxx/pattern/formattinginfo.h>
 #include <log4cxx/pattern/patternparser.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace rolling
 {
-LOG4CXX_LIST_DEF(PatternConverterList, log4cxx::pattern::PatternConverterPtr);
-LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
+LOG4CXX_LIST_DEF(PatternConverterList, LOG4CXX_NS::pattern::PatternConverterPtr);
+LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
 
 /**
  * Implements methods common to most, it not all, rolling
@@ -120,8 +120,8 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		void formatFileName(const helpers::ObjectPtr& obj,
 			LogString& buf, helpers::Pool& p) const;
 
-		log4cxx::pattern::PatternConverterPtr getIntegerPatternConverter() const;
-		log4cxx::pattern::PatternConverterPtr getDatePatternConverter() const;
+		LOG4CXX_NS::pattern::PatternConverterPtr getIntegerPatternConverter() const;
+		LOG4CXX_NS::pattern::PatternConverterPtr getDatePatternConverter() const;
 };
 
 LOG4CXX_PTR_DEF(RollingPolicyBase);

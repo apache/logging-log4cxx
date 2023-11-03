@@ -21,7 +21,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <memory>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {

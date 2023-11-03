@@ -23,10 +23,10 @@
 #include <log4cxx/pattern/formattinginfo.h>
 #include <log4cxx/pattern/patternparser.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
-LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, log4cxx::pattern::LoggingEventPatternConverterPtr);
-LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
+LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, LOG4CXX_NS::pattern::LoggingEventPatternConverterPtr);
+LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
 
 /**
  * A flexible layout configurable with pattern string.
@@ -530,7 +530,7 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 			helpers::Pool& pool) const override;
 
 	protected:
-		virtual log4cxx::pattern::PatternMap getFormatSpecifiers();
+		virtual LOG4CXX_NS::pattern::PatternMap getFormatSpecifiers();
 
 	private:
 		pattern::PatternConverterPtr createColorStartPatternConverter(const std::vector<LogString>& options);

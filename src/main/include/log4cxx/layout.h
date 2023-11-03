@@ -23,7 +23,7 @@
 #include <log4cxx/spi/loggingevent.h>
 
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 /**
 Extend this abstract class to create your own log layout format.
@@ -45,7 +45,7 @@ class LOG4CXX_EXPORT Layout :
 		Implement this method to create your own layout format.
 		*/
 		virtual void format(LogString& output,
-			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const = 0;
+			const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& pool) const = 0;
 
 		/**
 		Returns the content type output by this layout. The base class
@@ -57,13 +57,13 @@ class LOG4CXX_EXPORT Layout :
 		Append the header for the layout format. The base class does
 		nothing.
 		*/
-		virtual void appendHeader(LogString& output, log4cxx::helpers::Pool& p);
+		virtual void appendHeader(LogString& output, LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		Append the footer for the layout format. The base class does
 		nothing.
 		*/
-		virtual void appendFooter(LogString& output, log4cxx::helpers::Pool& p);
+		virtual void appendFooter(LogString& output, LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		If the layout handles the throwable object contained within

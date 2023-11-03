@@ -21,7 +21,7 @@
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include <log4cxx/spi/loggingevent.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace pattern
@@ -44,7 +44,7 @@ class LOG4CXX_EXPORT ThreadUsernamePatternConverter : public LoggingEventPattern
 
 	    void format(const spi::LoggingEventPtr& event,
 	            LogString& toAppendTo,
-	            log4cxx::helpers::Pool& p) const override;
+	            LOG4CXX_NS::helpers::Pool& p) const override;
 };
 
 }

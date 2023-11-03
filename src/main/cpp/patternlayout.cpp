@@ -50,10 +50,10 @@
 #include <log4cxx/pattern/threadusernamepatternconverter.h>
 
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::pattern;
 
 struct PatternLayout::PatternLayoutPrivate
 {
@@ -200,7 +200,7 @@ void PatternLayout::activateOptions(Pool&)
 		converterIter++)
 	{
 		LoggingEventPatternConverterPtr eventConverter =
-			log4cxx::cast<LoggingEventPatternConverter>(*converterIter);
+			LOG4CXX_NS::cast<LoggingEventPatternConverter>(*converterIter);
 
 		if (eventConverter != NULL)
 		{
@@ -214,7 +214,7 @@ void PatternLayout::activateOptions(Pool&)
 	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), cls ::newInstance))
 
 
-log4cxx::pattern::PatternMap PatternLayout::getFormatSpecifiers()
+LOG4CXX_NS::pattern::PatternMap PatternLayout::getFormatSpecifiers()
 {
 	PatternMap specs;
 	RULES_PUT("c", LoggerPatternConverter);

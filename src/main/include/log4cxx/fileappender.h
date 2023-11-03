@@ -24,7 +24,7 @@
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/pool.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -193,7 +193,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		static LogString stripDuplicateBackslashes(const LogString& name);
 
 	protected:
-		void activateOptionsInternal(log4cxx::helpers::Pool& p);
+		void activateOptionsInternal(LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		Sets and <i>opens</i> the file where the log output will
@@ -217,7 +217,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		*/
 		void setFileInternal(const LogString& file, bool append,
 			bool bufferedIO, size_t bufferSize,
-			log4cxx::helpers::Pool& p);
+			LOG4CXX_NS::helpers::Pool& p);
 
 		void setFileInternal(const LogString& file);
 

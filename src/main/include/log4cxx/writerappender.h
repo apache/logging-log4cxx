@@ -22,7 +22,7 @@
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <atomic>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace helpers
@@ -49,7 +49,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		WriterAppender();
 	protected:
 		WriterAppender(const LayoutPtr& layout,
-			log4cxx::helpers::WriterPtr& writer);
+			LOG4CXX_NS::helpers::WriterPtr& writer);
 		WriterAppender(const LayoutPtr& layout);
 		WriterAppender(std::unique_ptr<WriterAppenderPriv> priv);
 
@@ -165,9 +165,9 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		  @param writer An already opened Writer.
 		*/
-		void setWriter(const log4cxx::helpers::WriterPtr& writer);
+		void setWriter(const LOG4CXX_NS::helpers::WriterPtr& writer);
 
-		const log4cxx::helpers::WriterPtr getWriter() const;
+		const LOG4CXX_NS::helpers::WriterPtr getWriter() const;
 
 		bool requiresLayout() const override;
 
@@ -175,23 +175,23 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		 Actual writing occurs here.
 		*/
-		virtual void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		virtual void subAppend(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p);
 
 
 		/**
 		Write a footer as produced by the embedded layout's
 		Layout#appendFooter method.  */
-		virtual void writeFooter(log4cxx::helpers::Pool& p);
+		virtual void writeFooter(LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		Write a header as produced by the embedded layout's
 		Layout#appendHeader method.  */
-		virtual void writeHeader(log4cxx::helpers::Pool& p);
+		virtual void writeHeader(LOG4CXX_NS::helpers::Pool& p);
 
 		/**
 		 * Set the writer.  Mutex must already be held.
 		 */
-		void setWriterInternal(const log4cxx::helpers::WriterPtr& writer);
+		void setWriterInternal(const LOG4CXX_NS::helpers::WriterPtr& writer);
 
 	private:
 		//

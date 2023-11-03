@@ -20,11 +20,11 @@
 
 #include <log4cxx/helpers/dateformat.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {
-class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
+class LOG4CXX_EXPORT CachedDateFormat : public LOG4CXX_NS::helpers::DateFormat
 {
 	public:
 		enum
@@ -93,7 +93,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
 		 *      caching algorithm, use a value of 0 to totally disable
 		 *      caching or 1 to only use cache for duplicate requests.
 		 */
-		CachedDateFormat(const log4cxx::helpers::DateFormatPtr& dateFormat, int expiration);
+		CachedDateFormat(const LOG4CXX_NS::helpers::DateFormatPtr& dateFormat, int expiration);
 		~CachedDateFormat();
 
 		/**
@@ -108,8 +108,8 @@ class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
 		 */
 		static int findMillisecondStart(
 			log4cxx_time_t time, const LogString& formatted,
-			const log4cxx::helpers::DateFormatPtr& formatter,
-			log4cxx::helpers::Pool& pool);
+			const LOG4CXX_NS::helpers::DateFormatPtr& formatter,
+			LOG4CXX_NS::helpers::Pool& pool);
 
 		/**
 		 * Formats a Date into a date/time string.
@@ -120,7 +120,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
 		 */
 		virtual void format(LogString& sbuf,
 			log4cxx_time_t date,
-			log4cxx::helpers::Pool& p) const;
+			LOG4CXX_NS::helpers::Pool& p) const;
 
 	private:
 		/**
@@ -143,7 +143,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
 		 * will likely cause caching to misbehave.
 		 * @param zone TimeZone new timezone
 		 */
-		virtual void setTimeZone(const log4cxx::helpers::TimeZonePtr& zone);
+		virtual void setTimeZone(const LOG4CXX_NS::helpers::TimeZonePtr& zone);
 
 		/**
 		* Format an integer consistent with the format method.
@@ -153,7 +153,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
 		*/
 		virtual void numberFormat(LogString& s,
 			int n,
-			log4cxx::helpers::Pool& p) const;
+			LOG4CXX_NS::helpers::Pool& p) const;
 
 		/**
 		 * Gets maximum cache validity for the specified SimpleDateTime

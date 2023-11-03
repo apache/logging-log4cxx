@@ -22,8 +22,8 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/locale.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(ResourceBundle)
 
@@ -71,7 +71,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 		{
 			const Class& classObj = Loader::loadClass(bundleName);
 			ObjectPtr obj = ObjectPtr(classObj.newInstance());
-			current = log4cxx::cast<PropertyResourceBundle>(obj);
+			current = LOG4CXX_NS::cast<PropertyResourceBundle>(obj);
 		}
 		catch (ClassNotFoundException&)
 		{

@@ -21,7 +21,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {

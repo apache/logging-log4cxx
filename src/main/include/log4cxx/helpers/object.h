@@ -31,10 +31,10 @@
 		public:\
 			Clazz##object() : helpers::Class() {}\
 			virtual ~Clazz##object() {}\
-			virtual log4cxx::LogString getName() const { return LOG4CXX_STR(#object); } \
+			virtual LOG4CXX_NS::LogString getName() const { return LOG4CXX_STR(#object); } \
 	};\
 	static const helpers::Class& getStaticClass(); \
-	static const log4cxx::helpers::ClassRegistration& registerClass();
+	static const LOG4CXX_NS::helpers::ClassRegistration& registerClass();
 
 #define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
 	DECLARE_LOG4CXX_CLAZZ_OBJECT(object)\
@@ -47,7 +47,7 @@
 		public:\
 			Clazz##object() : helpers::Class() {}\
 			virtual ~Clazz##object() {}\
-			virtual log4cxx::LogString getName() const { return LOG4CXX_STR(#object); } \
+			virtual LOG4CXX_NS::LogString getName() const { return LOG4CXX_STR(#object); } \
 			virtual object* newInstance() const\
 			{\
 				return new object();\
@@ -55,44 +55,44 @@
 	};\
 	const helpers::Class& getClass() const override;\
 	static const helpers::Class& getStaticClass(); \
-	static const log4cxx::helpers::ClassRegistration& registerClass();
+	static const LOG4CXX_NS::helpers::ClassRegistration& registerClass();
 
 #define DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
 	public:\
 	const helpers::Class& getClass() const override;\
 	static const helpers::Class& getStaticClass();\
-	static const log4cxx::helpers::ClassRegistration&  registerClass();
+	static const LOG4CXX_NS::helpers::ClassRegistration&  registerClass();
 
 #define IMPLEMENT_LOG4CXX_OBJECT(object)\
-	const ::log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
-	const ::log4cxx::helpers::Class& object::getStaticClass() { \
-		static ::log4cxx::helpers::WideLife<Clazz##object> theClass; \
+	const ::LOG4CXX_NS::helpers::Class& object::getClass() const { return getStaticClass(); }\
+	const ::LOG4CXX_NS::helpers::Class& object::getStaticClass() { \
+		static ::LOG4CXX_NS::helpers::WideLife<Clazz##object> theClass; \
 		return theClass;                                       \
 	}                                                                      \
-	const log4cxx::helpers::ClassRegistration& object::registerClass() {   \
-		static ::log4cxx::helpers::WideLife<::log4cxx::helpers::ClassRegistration> classReg(object::getStaticClass); \
+	const LOG4CXX_NS::helpers::ClassRegistration& object::registerClass() {   \
+		static ::LOG4CXX_NS::helpers::WideLife<::LOG4CXX_NS::helpers::ClassRegistration> classReg(object::getStaticClass); \
 		return classReg; \
 	}\
-	namespace log4cxx { namespace classes { \
-	const ::log4cxx::helpers::ClassRegistration& object##Registration = object::registerClass(); \
+	namespace LOG4CXX_NS { namespace classes { \
+	const ::LOG4CXX_NS::helpers::ClassRegistration& object##Registration = object::registerClass(); \
 	} }
 
 
 #define IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
-	const log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
-	const log4cxx::helpers::Class& object::getStaticClass() { \
-		static log4cxx::helpers::WideLife<class> theClass; \
+	const LOG4CXX_NS::helpers::Class& object::getClass() const { return getStaticClass(); }\
+	const LOG4CXX_NS::helpers::Class& object::getStaticClass() { \
+		static LOG4CXX_NS::helpers::WideLife<class> theClass; \
 		return theClass;                                       \
 	}                                                         \
-	const log4cxx::helpers::ClassRegistration& object::registerClass() {   \
-		static log4cxx::helpers::WideLife<log4cxx::helpers::ClassRegistration> classReg(object::getStaticClass); \
+	const LOG4CXX_NS::helpers::ClassRegistration& object::registerClass() {   \
+		static LOG4CXX_NS::helpers::WideLife<LOG4CXX_NS::helpers::ClassRegistration> classReg(object::getStaticClass); \
 		return classReg; \
 	}\
-	namespace log4cxx { namespace classes { \
-	const log4cxx::helpers::ClassRegistration& object##Registration = object::registerClass(); \
+	namespace LOG4CXX_NS { namespace classes { \
+	const LOG4CXX_NS::helpers::ClassRegistration& object##Registration = object::registerClass(); \
 	} }
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class AppenderSkeleton;
 class Logger;

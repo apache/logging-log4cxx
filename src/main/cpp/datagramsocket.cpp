@@ -25,7 +25,7 @@
 #include "apr_network_io.h"
 #include "apr_lib.h"
 
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(DatagramSocket)
 

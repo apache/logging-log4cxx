@@ -22,7 +22,7 @@
 #include <log4cxx/helpers/inputstream.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 namespace helpers

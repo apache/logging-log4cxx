@@ -38,9 +38,9 @@
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/date.h>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 struct LoggingEvent::LoggingEventPrivate
 {
@@ -147,7 +147,7 @@ struct LoggingEvent::LoggingEventPrivate
 	log4cxx_time_t timeStamp;
 
 	/** The is the location where this log statement was written. */
-	const log4cxx::spi::LocationInfo locationInfo;
+	const LOG4CXX_NS::spi::LocationInfo locationInfo;
 
 
 	/** The identifier of thread in which this logging event
@@ -173,7 +173,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 //
 log4cxx_time_t LoggingEvent::getStartTime()
 {
-	return log4cxx::helpers::APRInitializer::initialize();
+	return LOG4CXX_NS::helpers::APRInitializer::initialize();
 }
 
 LoggingEvent::LoggingEvent() :
@@ -379,7 +379,7 @@ const LogString& LoggingEvent::getCurrentThreadName()
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif /* _WIN32 */
 
-	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
+	LOG4CXX_NS::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
 
 #else
     thread_id_string = LOG4CXX_STR("0x00000000");
@@ -405,7 +405,7 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 		thread_name = LOG4CXX_STR("(noname)");
 	}
 
-	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
+	LOG4CXX_NS::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
 #elif WIN32
 	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
 	static struct initialiser
@@ -480,7 +480,7 @@ log4cxx_time_t LoggingEvent::getTimeStamp() const
 	return m_priv->timeStamp;
 }
 
-const log4cxx::spi::LocationInfo& LoggingEvent::getLocationInformation() const
+const LOG4CXX_NS::spi::LocationInfo& LoggingEvent::getLocationInformation() const
 {
 	return m_priv->locationInfo;
 }

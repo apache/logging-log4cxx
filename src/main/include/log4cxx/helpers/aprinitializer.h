@@ -36,7 +36,7 @@ extern "C" {
 #include <mutex>
 #include <functional>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -75,7 +75,7 @@ class APRInitializer
 
 
 	private: // Constructors
-		friend helpers::WideLife<APRInitializer>;
+		friend class helpers::WideLife<APRInitializer>;
 		APRInitializer();
 		APRInitializer(const APRInitializer&) = delete;
 		APRInitializer& operator=(const APRInitializer&) = delete;

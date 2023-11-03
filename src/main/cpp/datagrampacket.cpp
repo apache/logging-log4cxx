@@ -18,7 +18,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/datagrampacket.h>
 
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS::helpers;
 
 struct DatagramPacket::DatagramPacketPriv
 {

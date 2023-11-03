@@ -29,8 +29,8 @@
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/pool.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 using namespace std;
 
@@ -53,7 +53,7 @@ using namespace std;
 	#define PUT_FACET(facet, os, time, spec) facet.put(os, os, os.fill(), time, spec)
 #endif
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -92,7 +92,7 @@ class PatternToken
 		 */
 		virtual void format(LogString& s,
 			const apr_time_exp_t& date,
-			log4cxx::helpers::Pool& p) const = 0;
+			LOG4CXX_NS::helpers::Pool& p) const = 0;
 
 	protected:
 
@@ -643,7 +643,7 @@ class RFC822TimeZoneToken : public PatternToken
 }
 
 
-using namespace log4cxx::helpers::SimpleDateFormatImpl;
+using namespace LOG4CXX_NS::helpers::SimpleDateFormatImpl;
 
 void SimpleDateFormat::addToken(const logchar spec, const int repeat, const std::locale* locale,
 	std::vector < PatternToken* >& pattern )

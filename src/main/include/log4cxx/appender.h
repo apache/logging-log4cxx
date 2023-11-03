@@ -23,7 +23,7 @@
 #include <vector>
 
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 // Forward declarations
 namespace spi
@@ -85,7 +85,7 @@ class LOG4CXX_EXPORT Appender :
 		 implementations in order to log.
 		*/
 		virtual void doAppend(const spi::LoggingEventPtr& event,
-			log4cxx::helpers::Pool& pool) = 0;
+			LOG4CXX_NS::helpers::Pool& pool) = 0;
 
 
 		/**

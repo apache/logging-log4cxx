@@ -27,10 +27,10 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/private/rollingpolicybase_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::rolling;
-using namespace log4cxx::helpers;
-using namespace log4cxx::pattern;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(RollingPolicyBase)
 
@@ -47,7 +47,7 @@ RollingPolicyBase::~RollingPolicyBase()
 {
 }
 
-void RollingPolicyBase::activateOptions(log4cxx::helpers::Pool& /* pool */)
+void RollingPolicyBase::activateOptions(LOG4CXX_NS::helpers::Pool& /* pool */)
 {
 	if (m_priv->fileNamePatternStr.length() > 0)
 	{
@@ -138,7 +138,7 @@ PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const
 	{
 		IntegerPatternConverterPtr intPattern;
 		PatternConverterPtr patternptr = (*converterIter);
-		intPattern = log4cxx::cast<IntegerPatternConverter>(patternptr);
+		intPattern = LOG4CXX_NS::cast<IntegerPatternConverter>(patternptr);
 
 		if (intPattern != NULL)
 		{
@@ -159,7 +159,7 @@ PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const
 	{
 		DatePatternConverterPtr datePattern;
 		PatternConverterPtr patternptr = (*converterIter);
-		datePattern = log4cxx::cast<DatePatternConverter>(patternptr);
+		datePattern = LOG4CXX_NS::cast<DatePatternConverter>(patternptr);
 
 		if (datePattern != NULL)
 		{

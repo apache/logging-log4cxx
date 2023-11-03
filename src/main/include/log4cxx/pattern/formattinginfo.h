@@ -22,7 +22,7 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/logstring.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {
@@ -40,7 +40,7 @@ typedef std::shared_ptr<FormattingInfo> FormattingInfoPtr;
  *
  *
  */
-class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::Object
+class LOG4CXX_EXPORT FormattingInfo : public virtual LOG4CXX_NS::helpers::Object
 {
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FormattingInfoPrivate, m_priv)
 

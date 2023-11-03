@@ -28,7 +28,7 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags initval,
 	int initsize)
@@ -113,7 +113,7 @@ void logstream_base::end_message()
 
 
 
-int log4cxx::logstream_base::precision(int p)
+int LOG4CXX_NS::logstream_base::precision(int p)
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
 	initset.precision(p);
@@ -122,13 +122,13 @@ int log4cxx::logstream_base::precision(int p)
 	return oldVal;
 }
 
-int log4cxx::logstream_base::precision()
+int LOG4CXX_NS::logstream_base::precision()
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
 	return (int)initclear.precision();
 }
 
-int log4cxx::logstream_base::width(int w)
+int LOG4CXX_NS::logstream_base::width(int w)
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
 	initset.width(w);
@@ -137,13 +137,13 @@ int log4cxx::logstream_base::width(int w)
 	return oldVal;
 }
 
-int log4cxx::logstream_base::width()
+int LOG4CXX_NS::logstream_base::width()
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
 	return (int)initclear.width();
 }
 
-int log4cxx::logstream_base::fill(int newfill)
+int LOG4CXX_NS::logstream_base::fill(int newfill)
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
 	int oldfill = fillchar;
@@ -188,7 +188,7 @@ std::ios_base::fmtflags logstream_base::setf(std::ios_base::fmtflags newflags)
 
 
 
-void logstream_base::setLevel(const ::log4cxx::LevelPtr& newlevel)
+void logstream_base::setLevel(const ::LOG4CXX_NS::LevelPtr& newlevel)
 {
 	level = newlevel;
 	bool oldLevel = enabled;
@@ -200,13 +200,13 @@ void logstream_base::setLevel(const ::log4cxx::LevelPtr& newlevel)
 	}
 }
 
-bool logstream_base::isEnabledFor(const ::log4cxx::LevelPtr& l) const
+bool logstream_base::isEnabledFor(const ::LOG4CXX_NS::LevelPtr& l) const
 {
 	return logger->isEnabledFor(l);
 }
 
 
-void logstream_base::setLocation(const log4cxx::spi::LocationInfo& newlocation)
+void logstream_base::setLocation(const LOG4CXX_NS::spi::LocationInfo& newlocation)
 {
 	if (LOG4CXX_UNLIKELY(enabled))
 	{
@@ -215,20 +215,20 @@ void logstream_base::setLocation(const log4cxx::spi::LocationInfo& newlocation)
 }
 
 
-logstream::logstream(const log4cxx::LoggerPtr& logger,
-	const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0)
+logstream::logstream(const LOG4CXX_NS::LoggerPtr& logger,
+	const LOG4CXX_NS::LevelPtr& level) : logstream_base(logger, level), stream(0)
 {
 }
 
 logstream::logstream(const Ch* loggerName,
-	const log4cxx::LevelPtr& level)
-	: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+	const LOG4CXX_NS::LevelPtr& level)
+	: logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
 {
 }
 
 
 logstream::logstream(const std::basic_string<Ch>& loggerName,
-	const log4cxx::LevelPtr& level) : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+	const LOG4CXX_NS::LevelPtr& level) : logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
 {
 }
 
@@ -249,13 +249,13 @@ logstream& logstream::operator<<(const LevelPtr& l)
 	return *this;
 }
 
-logstream& logstream::operator<<(const log4cxx::spi::LocationInfo& newlocation)
+logstream& logstream::operator<<(const LOG4CXX_NS::spi::LocationInfo& newlocation)
 {
 	setLocation(newlocation);
 	return *this;
 }
 
-logstream& logstream::operator>>(const log4cxx::spi::LocationInfo& newlocation)
+logstream& logstream::operator>>(const LOG4CXX_NS::spi::LocationInfo& newlocation)
 {
 	setLocation(newlocation);
 	return *this;
@@ -280,7 +280,7 @@ logstream::operator std::basic_ostream<char>& ()
 
 void logstream::log(LoggerPtr& log,
 	const LevelPtr& lev,
-	const log4cxx::spi::LocationInfo& loc)
+	const LOG4CXX_NS::spi::LocationInfo& loc)
 {
 	if (stream != 0)
 	{
@@ -341,20 +341,20 @@ void logstream::refresh_stream_state()
 
 #if LOG4CXX_WCHAR_T_API
 
-wlogstream::wlogstream(const log4cxx::LoggerPtr& logger,
-	const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0)
+wlogstream::wlogstream(const LOG4CXX_NS::LoggerPtr& logger,
+	const LOG4CXX_NS::LevelPtr& level) : logstream_base(logger, level), stream(0)
 {
 }
 
 wlogstream::wlogstream(const Ch* loggerName,
-	const log4cxx::LevelPtr& level)
-	: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+	const LOG4CXX_NS::LevelPtr& level)
+	: logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
 {
 }
 
 
 wlogstream::wlogstream(const std::basic_string<Ch>& loggerName,
-	const log4cxx::LevelPtr& level) : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+	const LOG4CXX_NS::LevelPtr& level) : logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
 {
 }
 
@@ -375,13 +375,13 @@ wlogstream& wlogstream::operator<<(const LevelPtr& l)
 	return *this;
 }
 
-wlogstream& wlogstream::operator<<(const log4cxx::spi::LocationInfo& newlocation)
+wlogstream& wlogstream::operator<<(const LOG4CXX_NS::spi::LocationInfo& newlocation)
 {
 	setLocation(newlocation);
 	return *this;
 }
 
-wlogstream& wlogstream::operator>>(const log4cxx::spi::LocationInfo& newlocation)
+wlogstream& wlogstream::operator>>(const LOG4CXX_NS::spi::LocationInfo& newlocation)
 {
 	setLocation(newlocation);
 	return *this;
@@ -409,7 +409,7 @@ wlogstream::operator std::basic_ostream<wchar_t>& ()
 
 void wlogstream::log(LoggerPtr& log,
 	const LevelPtr& lev,
-	const log4cxx::spi::LocationInfo& loc)
+	const LOG4CXX_NS::spi::LocationInfo& loc)
 {
 	if (stream != 0)
 	{
@@ -470,22 +470,22 @@ void wlogstream::refresh_stream_state()
 
 #if LOG4CXX_UNICHAR_API
 ulogstream::ulogstream(const Ch* loggerName,
-	const log4cxx::LevelPtr& level)
-	: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+	const LOG4CXX_NS::LevelPtr& level)
+	: logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
 {
 }
 
 
 ulogstream::ulogstream(const std::basic_string<Ch>& loggerName,
-	const log4cxx::LevelPtr& level) : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+	const LOG4CXX_NS::LevelPtr& level) : logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
 {
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
 ulogstream::ulogstream(const CFStringRef& loggerName,
-	const log4cxx::LevelPtr& level)
-	: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0)
+	const LOG4CXX_NS::LevelPtr& level)
+	: logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
 {
 }
 
@@ -494,8 +494,8 @@ ulogstream::ulogstream(const CFStringRef& loggerName,
 
 #if LOG4CXX_UNICHAR_API
 
-ulogstream::ulogstream(const log4cxx::LoggerPtr& logger,
-	const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0)
+ulogstream::ulogstream(const LOG4CXX_NS::LoggerPtr& logger,
+	const LOG4CXX_NS::LevelPtr& level) : logstream_base(logger, level), stream(0)
 {
 }
 
@@ -518,13 +518,13 @@ ulogstream& ulogstream::operator<<(const LevelPtr& level)
 	return *this;
 }
 
-ulogstream& ulogstream::operator<<(const log4cxx::spi::LocationInfo& newlocation)
+ulogstream& ulogstream::operator<<(const LOG4CXX_NS::spi::LocationInfo& newlocation)
 {
 	setLocation(newlocation);
 	return *this;
 }
 
-ulogstream& ulogstream::operator>>(const log4cxx::spi::LocationInfo& newlocation)
+ulogstream& ulogstream::operator>>(const LOG4CXX_NS::spi::LocationInfo& newlocation)
 {
 	setLocation(newlocation);
 	return *this;
@@ -552,7 +552,7 @@ ulogstream::operator std::basic_ostream<UniChar>& ()
 
 void ulogstream::log(LoggerPtr& logger,
 	const LevelPtr& level,
-	const log4cxx::spi::LocationInfo& location)
+	const LOG4CXX_NS::spi::LocationInfo& location)
 {
 	if (stream != 0)
 	{

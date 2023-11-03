@@ -23,7 +23,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 class Appender;
 typedef std::shared_ptr<Appender> AppenderPtr;

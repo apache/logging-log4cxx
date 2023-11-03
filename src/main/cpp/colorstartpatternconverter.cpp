@@ -22,10 +22,10 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/private/patternconverter_priv.h>
 
-using namespace log4cxx;
-using namespace log4cxx::pattern;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::pattern;
+using namespace LOG4CXX_NS::spi;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(ColorStartPatternConverter)
 
@@ -164,31 +164,31 @@ void ColorStartPatternConverter::format(
 	Pool& p) const
 {
 
-	log4cxx::LevelPtr lvl = event->getLevel();
+	LOG4CXX_NS::LevelPtr lvl = event->getLevel();
 
 	switch (lvl->toInt())
 	{
-		case log4cxx::Level::FATAL_INT:
+		case LOG4CXX_NS::Level::FATAL_INT:
 			toAppendTo.append(priv->m_fatalColor);
 			break;
 
-		case log4cxx::Level::ERROR_INT:
+		case LOG4CXX_NS::Level::ERROR_INT:
 			toAppendTo.append(priv->m_errorColor);
 			break;
 
-		case log4cxx::Level::WARN_INT:
+		case LOG4CXX_NS::Level::WARN_INT:
 			toAppendTo.append(priv->m_warnColor);
 			break;
 
-		case log4cxx::Level::INFO_INT:
+		case LOG4CXX_NS::Level::INFO_INT:
 			toAppendTo.append(priv->m_infoColor);
 			break;
 
-		case log4cxx::Level::DEBUG_INT:
+		case LOG4CXX_NS::Level::DEBUG_INT:
 			toAppendTo.append(priv->m_debugColor);
 			break;
 
-		case log4cxx::Level::TRACE_INT:
+		case LOG4CXX_NS::Level::TRACE_INT:
 			toAppendTo.append(priv->m_traceColor);
 			break;
 

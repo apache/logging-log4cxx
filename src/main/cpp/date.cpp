@@ -23,8 +23,8 @@
 	#define INT64_C(x) x ## LL
 #endif
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Date)
 

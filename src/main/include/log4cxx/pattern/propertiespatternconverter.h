@@ -20,7 +20,7 @@
 
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace pattern
 {
@@ -68,7 +68,7 @@ class LOG4CXX_EXPORT PropertiesPatternConverter
 
 		void format(const spi::LoggingEventPtr& event,
 			LogString& toAppendTo,
-			log4cxx::helpers::Pool& p) const override;
+			LOG4CXX_NS::helpers::Pool& p) const override;
 };
 }
 }

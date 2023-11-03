@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/appender.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace spi
 {

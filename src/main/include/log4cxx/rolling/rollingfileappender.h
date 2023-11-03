@@ -25,7 +25,7 @@
 #include <log4cxx/rolling/rollingpolicy.h>
 #include <log4cxx/rolling/action.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace rolling
 {
@@ -170,7 +170,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		   <code>File</code> is truncated with no backup files created.
 
 		 */
-		bool rollover(log4cxx::helpers::Pool& p);
+		bool rollover(LOG4CXX_NS::helpers::Pool& p);
 
 	protected:
 
@@ -179,7 +179,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		*/
 		void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
-		bool rolloverInternal(log4cxx::helpers::Pool& p);
+		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p);
 
 	public:
 		/**

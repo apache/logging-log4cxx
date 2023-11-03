@@ -20,7 +20,7 @@
 
 #include <log4cxx/helpers/dateformat.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 namespace helpers
 {
@@ -44,7 +44,7 @@ class LOG4CXX_EXPORT StrftimeDateFormat : public DateFormat
 
 		virtual void format(LogString& s,
 			log4cxx_time_t tm,
-			log4cxx::helpers::Pool& p) const;
+			LOG4CXX_NS::helpers::Pool& p) const;
 
 		/**
 		*    Set time zone.
