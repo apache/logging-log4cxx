@@ -22,7 +22,7 @@
 
 #include <fmt/format.h>
 
-namespace log4cxx
+namespace LOG4CXX_NS
 {
 
 class NullWriterAppender : public log4cxx::AppenderSkeleton
