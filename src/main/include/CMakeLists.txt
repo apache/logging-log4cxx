@@ -189,15 +189,19 @@ configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configur
 list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h)
 
 # A target for the convenience of working with headers in the IDE
+file(GENERATE
+     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/empty-lib-stub.cpp
+     CONTENT "namespace {int someUnused{};}\n"
+)
 file(GLOB_RECURSE HEADERS log4cxx/*)
-add_library(log4cxx-include STATIC ${HEADERS} ${GENERATED_HEADERS})
+add_library(log4cxx-include STATIC ${HEADERS} ${GENERATED_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/empty-lib-stub.cpp)
 set_target_properties(log4cxx-include PROPERTIES LINKER_LANGUAGE CXX)
 
 # And the same for Qt
 option(LOG4CXX_QT_SUPPORT "Qt support/integration" OFF)
 if(LOG4CXX_QT_SUPPORT)
 	file(GLOB_RECURSE HEADERS_QT log4cxx-qt/*)
-	add_library(log4cxx-qt-include STATIC ${HEADERS_QT})
+	add_library(log4cxx-qt-include STATIC ${HEADERS_QT} ${CMAKE_CURRENT_BINARY_DIR}/empty-lib-stub.cpp)
 	set_target_properties(log4cxx-qt-include PROPERTIES LINKER_LANGUAGE CXX)
 	add_dependencies(log4cxx-qt-include log4cxx-include)
 endif()
