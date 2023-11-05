@@ -38,11 +38,7 @@ public:
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multithread_test.log"));
 		setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%d [%t] %-5p %.16c - %m%n")));
 		setAppend(false);
-#if LOG4CXX_EVENTS_AT_EXIT
-		setBufferedIO(false);
-#else
 		setBufferedIO(true);
-#endif
 		helpers::Pool p;
 		activateOptions(p);
 	}

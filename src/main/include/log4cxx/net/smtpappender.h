@@ -174,6 +174,11 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		bool requiresLayout() const override;
 
 		/**
+		Flush all buffered data if present.
+		*/
+		void flushBuffers() override;
+
+		/**
 		Send the contents of the cyclic buffer as an e-mail message.
 		*/
 		void sendBuffer(LOG4CXX_NS::helpers::Pool& p);

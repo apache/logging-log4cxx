@@ -341,6 +341,14 @@ bool AsyncAppender::requiresLayout() const
 	return false;
 }
 
+void AsyncAppender::flushBuffers()
+{
+	std::unique_lock<std::mutex> lock(priv->bufferMutex);
+	priv->bufferNotFull.wait(lock, [this]() -> bool
+		{ return priv->buffer.empty() || priv->closed; }
+	);
+}
+
 void AsyncAppender::removeAllAppenders()
 {
 	priv->appenders->removeAllAppenders();

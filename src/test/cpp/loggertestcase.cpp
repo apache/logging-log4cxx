@@ -58,6 +58,10 @@ class CountingAppender : public AppenderSkeleton
 		{
 			return true;
 		}
+
+		void flushBuffers() override
+		{
+		}
 };
 
 LOGUNIT_CLASS(LoggerTestCase)

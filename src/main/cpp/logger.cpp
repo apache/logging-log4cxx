@@ -515,6 +515,11 @@ void Logger::removeAppender(const LogString& name1)
 	m_priv->aai.removeAppender(name1);
 }
 
+void Logger::flushBuffers()
+{
+	m_priv->aai.flushBuffers();
+}
+
 void Logger::removeHierarchy()
 {
 	m_priv->repositoryRaw = 0;

@@ -95,5 +95,5 @@ behaviour and even the case when the current environment sets a locale like `en_
 Log4cxx must be built with -DLOG4CXX_EVENTS_AT_EXIT=ON to use logging during the application
 termination (i.e. in static destuctors and other atexit() functions) . When this option is used,
 the dynamic memory deallocation, buffer flushing and file handle closing normally done in destructors
-is not performed. Do not set the "BufferedIO" option of any log4cxx::FileAppender to true when using
-this option.
+is not performed. Setting the "BufferedIO" option of any log4cxx::FileAppender to true is possible when using
+this option due to the forced buffers flushing during the static deinitialization phase.

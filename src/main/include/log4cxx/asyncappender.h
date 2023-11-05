@@ -122,6 +122,11 @@ class LOG4CXX_EXPORT AsyncAppender :
 		bool requiresLayout() const override;
 
 		/**
+		* Flush all buffered data if present.
+		*/
+		void flushBuffers() override;
+
+		/**
 		 * Removes and closes all attached appenders.
 		*/
 		void removeAllAppenders() override;

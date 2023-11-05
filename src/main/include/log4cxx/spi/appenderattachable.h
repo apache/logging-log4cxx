@@ -73,6 +73,11 @@ class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
 		 */
 		virtual void removeAppender(const LogString& name) = 0;
 
+		/**
+		 * Flush all buffered data in all downstream appenders if present.
+		 */
+		virtual void flushBuffers() = 0;
+
 		// Dtor
 		virtual ~AppenderAttachable() {}
 };

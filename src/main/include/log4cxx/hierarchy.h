@@ -220,6 +220,11 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		virtual void setConfigured(bool configured) override;
 
 		/**
+		Flush all buffered data in all appenders if present.
+		*/
+		void flushBuffers() override;
+
+		/**
 		Refresh the threshold in children of parent
 		*/
 		void updateChildren(const Logger* parent);

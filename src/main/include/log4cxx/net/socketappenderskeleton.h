@@ -72,6 +72,13 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		}
 
 		/**
+		* There are no bufferred data here, no action required
+		* */
+		void flushBuffers() override
+		{
+		}
+
+		/**
 		* The <b>RemoteHost</b> option takes a string value which should be
 		* the host name of the server where a
 		* Apache Chainsaw or compatible is running.

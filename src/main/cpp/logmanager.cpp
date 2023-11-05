@@ -200,10 +200,28 @@ LoggerList LogManager::getCurrentLoggers()
 	return getLoggerRepository()->getCurrentLoggers();
 }
 
+void LogManager::flushBuffers()
+{
+	getLoggerRepository()->flushBuffers();
+}
+
+#if LOG4CXX_EVENTS_AT_EXIT
+// initiate buffers flush at static deinitialization phase
+namespace
+{
+	struct FlushBuffersAtExit
+	{
+		~FlushBuffersAtExit()
+		{
+			LogManager::flushBuffers();
+		}
+	} s_flushBuffersAtExit;
+}
+#endif
+
 void LogManager::shutdown()
 {
 	APRInitializer::unregisterAll();
-	LoggerRepositoryPtr repPtr = getLoggerRepository();
 	getLoggerRepository()->shutdown();
 }
 

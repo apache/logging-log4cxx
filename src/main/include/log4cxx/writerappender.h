@@ -171,6 +171,8 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		bool requiresLayout() const override;
 
+		void flushBuffers() override;
+
 	protected:
 		/**
 		 Actual writing occurs here.

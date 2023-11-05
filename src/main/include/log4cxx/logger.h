@@ -1653,6 +1653,11 @@ class LOG4CXX_EXPORT Logger :
 		void removeAppender(const LogString& name) override;
 
 		/**
+		Flush all buffered data in all downstream appenders if present.
+		*/
+		void flushBuffers() override;
+
+		/**
 		 Set the additivity flag for this logger.
 		  */
 		void setAdditivity(bool additive);

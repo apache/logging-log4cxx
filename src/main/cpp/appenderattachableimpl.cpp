@@ -183,4 +183,10 @@ void AppenderAttachableImpl::removeAppender(const LogString& name)
 	}
 }
 
+void AppenderAttachableImpl::flushBuffers()
+{
+	std::lock_guard<std::recursive_mutex> lock( m_priv->m_mutex );
+	for(const AppenderPtr& appender : m_priv->appenderList)
+		appender->flushBuffers();
+}
 

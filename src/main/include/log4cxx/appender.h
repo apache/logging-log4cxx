@@ -127,6 +127,11 @@ class LOG4CXX_EXPORT Appender :
 		 the appender should return <code>true</code>.
 		*/
 		virtual bool requiresLayout() const = 0;
+
+		/**
+		 Flush all buffered data if present.
+		*/
+		virtual void flushBuffers() = 0;
 };
 
 LOG4CXX_PTR_DEF(Appender);

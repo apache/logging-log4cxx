@@ -61,6 +61,10 @@ class VectorAppender : public AppenderSkeleton
 		{
 			return false;
 		}
+
+		void flushBuffers() override
+		{
+		}
 };
 typedef std::shared_ptr<VectorAppender> VectorAppenderPtr;
 }

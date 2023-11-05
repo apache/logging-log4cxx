@@ -304,6 +304,12 @@ bool WriterAppender::requiresLayout() const
 	return true;
 }
 
+void WriterAppender::flushBuffers()
+{
+	if (_priv->layout != NULL)
+		_priv->writer->flush(_priv->pool);
+}
+
 void WriterAppender::setOption(const LogString& option, const LogString& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ENCODING"), LOG4CXX_STR("encoding")))

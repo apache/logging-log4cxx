@@ -88,6 +88,13 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		}
 
 		/**
+		* There are no bufferred data here, no action required
+		* */
+		void flushBuffers() override
+		{
+		}
+
+		/**
 		The current encoding value.
 
 		\sa setOption

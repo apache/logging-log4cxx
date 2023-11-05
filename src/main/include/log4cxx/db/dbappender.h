@@ -159,6 +159,11 @@ class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
                 }
 
                 /**
+                * There are no bufferred data here, no action required
+                * */
+                void flushBuffers() override {}
+
+                /**
                 * Set pre-formated statement eg: insert into LogTable (msg) values (?)
                 */
                 void setSql(const LogString& s);

@@ -101,6 +101,11 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		void removeAppender(const LogString& name) override;
 
+		/**
+		* Flush all buffered data if present.
+		*/
+		void flushBuffers() override;
+
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)
 

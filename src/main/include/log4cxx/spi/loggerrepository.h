@@ -106,6 +106,7 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		virtual bool isConfigured() = 0;
 		virtual void setConfigured(bool configured) = 0;
 
+		virtual void flushBuffers() = 0;
 }; // class LoggerRepository
 
 }  // namespace spi
