@@ -38,8 +38,6 @@ public:
 		return false;
 	}
 
-	void flushBuffers() override{}
-
 	void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override {
 		// This gets called whenever there is a valid event for our appender.
 	}

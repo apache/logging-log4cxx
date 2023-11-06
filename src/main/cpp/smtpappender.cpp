@@ -447,11 +447,6 @@ bool SMTPAppender::requiresLayout() const
 	return true;
 }
 
-void SMTPAppender::flushBuffers()
-{
-	sendBuffer(_priv->pool);
-}
-
 LogString SMTPAppender::getFrom() const
 {
 	return _priv->from;

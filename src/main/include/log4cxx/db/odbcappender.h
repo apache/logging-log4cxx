@@ -234,13 +234,6 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		bool requiresLayout() const override;
 
 		/**
-		* There are no bufferred data here, no action required
-		* */
-		void flushBuffers() override
-		{
-		}
-
-		/**
 		* Set pre-formated statement eg: insert into LogTable (msg) values ("%m")
 		*/
 		void setSql(const LogString& s);

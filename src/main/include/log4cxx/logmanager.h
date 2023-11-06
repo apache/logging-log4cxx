@@ -212,11 +212,6 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerList getCurrentLoggers();
 
 		/**
-		 Flush all buffered data in all loggers/appenders if present.
-		*/
-		static void flushBuffers();
-
-		/**
 		Safely close and remove all appenders in all loggers including
 		the root logger.
 		*/

@@ -77,11 +77,6 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 			return true;
 		}
 
-		/**
-		* There are no bufferred data here, no action required
-		* */
-		void flushBuffers() override {}
-
 		void setSource(const LogString& source);
 
 		const LogString& getSource() const;

@@ -474,16 +474,6 @@ bool Hierarchy::isConfigured()
 	return m_priv->configured;
 }
 
-void Hierarchy::flushBuffers()
-{
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
-	for (auto& item : m_priv->loggers)
-		if (auto& pLogger = item.second)
-			pLogger->flushBuffers();
-	if (m_priv->root)
-		m_priv->root->flushBuffers();
-}
-
 HierarchyPtr Hierarchy::create()
 {
 	HierarchyPtr ret(new Hierarchy);

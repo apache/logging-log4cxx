@@ -109,13 +109,6 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		}
 
 		/**
-		* There are no bufferred data here, no action required
-		* */
-		void flushBuffers() override
-		{
-		}
-
-		/**
 		The <b>SyslogHost</b> option is the name of the the syslog host
 		where log output should go.
 		<b>WARNING</b> If the SyslogHost is not set, then this appender

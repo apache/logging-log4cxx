@@ -43,8 +43,6 @@ class LOG4CXX_EXPORT OutputDebugStringAppender : public AppenderSkeleton
 		void close() override {}
 
 		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
-
-		void flushBuffers() override {}
 };
 }
 }

@@ -61,10 +61,6 @@ class NullPointerAppender : public AppenderSkeleton
 		{
 			return false;
 		}
-
-		void flushBuffers() override
-		{
-		}
 };
 
 /**

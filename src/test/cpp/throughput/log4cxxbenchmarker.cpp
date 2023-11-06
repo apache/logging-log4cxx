@@ -56,10 +56,6 @@ class NullWriterAppender : public log4cxx::AppenderSkeleton
 		void setOption(const LogString& option, const LogString& value) override
 		{
 		}
-
-		void flushBuffers() override
-		{
-		}
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
