@@ -29,6 +29,10 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/private/socketappenderskeleton_priv.h>
 
+#if LOG4CXX_EVENTS_AT_EXIT
+#include <log4cxx/private/atexitregistry.h>
+#endif
+
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::net;
@@ -36,16 +40,41 @@ using namespace LOG4CXX_NS::xml;
 
 struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonPriv
 {
-	XMLSocketAppenderPriv(int defaultPort, int reconnectionDelay) :
-		SocketAppenderSkeletonPriv(defaultPort, reconnectionDelay) {}
+	XMLSocketAppenderPriv(int defaultPort, int reconnectionDelay)
+		: SocketAppenderSkeletonPriv(defaultPort, reconnectionDelay)
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{atExitActivated();})
+#endif
+	{}
 
-	XMLSocketAppenderPriv(InetAddressPtr address, int defaultPort, int reconnectionDelay) :
-		SocketAppenderSkeletonPriv( address, defaultPort, reconnectionDelay ) {}
+	XMLSocketAppenderPriv(InetAddressPtr address, int defaultPort, int reconnectionDelay)
+		: SocketAppenderSkeletonPriv( address, defaultPort, reconnectionDelay )
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{atExitActivated();})
+#endif
+	{}
 
-	XMLSocketAppenderPriv(const LogString& host, int port, int delay) :
-		SocketAppenderSkeletonPriv( host, port, delay ) {}
+	XMLSocketAppenderPriv(const LogString& host, int port, int delay)
+		: SocketAppenderSkeletonPriv( host, port, delay )
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{atExitActivated();})
+#endif
+	{}
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	void atExitActivated()
+	{
+		std::lock_guard<std::recursive_mutex> lock(mutex);
+		if (writer)
+			writer->flush(pool);
+	}
+#endif
 
 	LOG4CXX_NS::helpers::WriterPtr writer;
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	helpers::AtExitRegistry::Raii atExitRegistryRaii;
+#endif
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
