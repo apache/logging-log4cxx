@@ -26,7 +26,7 @@ if(BUILD_SHARED_LIBS)
 else()
     target_compile_definitions(log4cxx PUBLIC LOG4CXX_STATIC)
 endif()
-add_dependencies(log4cxx configure_log4cxx)
+add_dependencies(log4cxx log4cxx-include)
 
 set(extra_classes "")
 
