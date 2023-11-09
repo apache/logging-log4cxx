@@ -71,7 +71,7 @@ $ cmake --build buildtrees/Log4cxx --target install --config Release
 |-DLOG4CXX_TEST_PROGRAM_PATH=path| An extra path to prepend to the PATH for test programs.  Log4cxx requires zip, sed, and grep on the PATH in order for the tests to work properly.                          |
 | -DPREFER_BOOST=on      | Prefer the Boost version of dependent libraries over standard library |
 | -DLOG4CXX_QT_SUPPORT=ON | Enable QString API and log4cxx::qt namespace methods, requires QtCore, choice of ON, OFF (default).                   |
-| -DLOG4CXX_EVENTS_AT_EXIT=ON | Prevent static data cleanup to allow event logging during application exit. Note: Appenders should not configure the "BufferedIO" option to true. |
+| -DLOG4CXX_EVENTS_AT_EXIT=ON | Prevent static data cleanup to allow event logging during application exit. |
 
 # Platform specific notes:
 

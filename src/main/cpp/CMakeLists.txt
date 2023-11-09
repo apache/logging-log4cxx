@@ -26,7 +26,7 @@ if(BUILD_SHARED_LIBS)
 else()
     target_compile_definitions(log4cxx PUBLIC LOG4CXX_STATIC)
 endif()
-add_dependencies(log4cxx configure_log4cxx)
+add_dependencies(log4cxx log4cxx-include)
 
 set(extra_classes "")
 
@@ -206,6 +206,12 @@ target_sources(log4cxx
   zipcompressaction.cpp
   ${extra_classes}
 )
+
+if(LOG4CXX_EVENTS_AT_EXIT)
+  target_sources(log4cxx
+    PRIVATE atexitregistry.cpp
+  )
+endif(WIN32)
 
 if(WIN32)
   target_sources(log4cxx

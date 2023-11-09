@@ -15,12 +15,15 @@
 # limitations under the License.
 #
 
+set(GENERATED_HEADERS)
+
 # Configure
 if(WIN32)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
         ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
         @ONLY
     )
+    list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h)
     set(LOG4CXX_CHAR "utf-8" CACHE STRING "Internal character representation, choice of utf-8, wchar_t(default), unichar")
     set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
     set(LOGCHAR_IS_UNICHAR 0)
@@ -169,18 +172,36 @@ endforeach()
 configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/compiler-features/makeunique.h.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/helpers/makeunique.h
 )
+list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/helpers/makeunique.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
                @ONLY
 )
+list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
                @ONLY
 )
+list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h)
 configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
 )
-# Provide the dependencies
-add_custom_target(configure_log4cxx
-  COMMAND "${CMAKE_COMMAND}" -E echo "Checking configuration"
+list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h)
+
+# A target for the convenience of working with headers in the IDE
+file(GENERATE
+     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/empty-lib-stub.cpp
+     CONTENT "namespace {int someUnused{};}\n"
 )
+file(GLOB_RECURSE HEADERS log4cxx/*)
+add_library(log4cxx-include STATIC ${HEADERS} ${GENERATED_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/empty-lib-stub.cpp)
+target_include_directories(log4cxx-include PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
+
+# And the same for Qt
+option(LOG4CXX_QT_SUPPORT "Qt support/integration" OFF)
+if(LOG4CXX_QT_SUPPORT)
+	file(GLOB_RECURSE HEADERS_QT log4cxx-qt/*)
+	add_library(log4cxx-qt-include STATIC ${HEADERS_QT} ${CMAKE_CURRENT_BINARY_DIR}/empty-lib-stub.cpp)
+	target_include_directories(log4cxx-qt-include PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
+	add_dependencies(log4cxx-qt-include log4cxx-include)
+endif()

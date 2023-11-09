@@ -30,6 +30,10 @@
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 
+#if LOG4CXX_EVENTS_AT_EXIT
+#include <log4cxx/private/atexitregistry.h>
+#endif
+
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
@@ -103,7 +107,22 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		appenders(std::make_shared<AppenderAttachableImpl>(pool)),
 		dispatcher(),
 		locationInfo(false),
-		blocking(true) {}
+		blocking(true)
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{atExitActivated();})
+#endif
+	{
+	}
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	void atExitActivated()
+	{
+		std::unique_lock<std::mutex> lock(bufferMutex);
+		bufferNotFull.wait(lock, [this]() -> bool
+			{ return buffer.empty() || closed; }
+		);
+	}
+#endif
 
 	/**
 	 * Event buffer.
@@ -157,6 +176,10 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 * Does appender block when buffer is full.
 	*/
 	bool blocking;
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	helpers::AtExitRegistry::Raii atExitRegistryRaii;
+#endif
 };
 
 
