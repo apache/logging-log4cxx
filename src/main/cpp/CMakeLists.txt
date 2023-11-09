@@ -207,6 +207,12 @@ target_sources(log4cxx
   ${extra_classes}
 )
 
+if(LOG4CXX_EVENTS_AT_EXIT)
+  target_sources(log4cxx
+    PRIVATE atexitregistry.cpp
+  )
+endif(WIN32)
+
 if(WIN32)
   target_sources(log4cxx
     PRIVATE visualstudio.natvis

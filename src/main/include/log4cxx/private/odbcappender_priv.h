@@ -40,6 +40,10 @@
 	typedef short SQLSMALLINT;
 #endif
 
+#if LOG4CXX_EVENTS_AT_EXIT
+#include <log4cxx/private/atexitregistry.h>
+#endif
+
 namespace LOG4CXX_NS
 {
 namespace db
@@ -47,13 +51,20 @@ namespace db
 
 struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
-	ODBCAppenderPriv()
+	ODBCAppenderPriv(
+#if LOG4CXX_EVENTS_AT_EXIT
+		std::function<void()> atExitActivated
+#endif
+			)
 		: AppenderSkeletonPrivate()
 		, connection(0)
 		, env(0)
 		, preparedStatement(0)
 		, bufferSize(1)
 		, timeZone(helpers::TimeZone::getDefault())
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii(std::move(atExitActivated))
+#endif
 		{}
 
 	/**
@@ -119,6 +130,10 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 #if LOG4CXX_HAVE_ODBC
 	void setPreparedStatement(SQLHDBC con, helpers::Pool& p);
 	void setParameterValues(const spi::LoggingEventPtr& event, helpers::Pool& p);
+#endif
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	helpers::AtExitRegistry::Raii atExitRegistryRaii;
 #endif
 };
 

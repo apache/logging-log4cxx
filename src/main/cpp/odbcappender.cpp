@@ -119,7 +119,24 @@ IMPLEMENT_LOG4CXX_OBJECT(ODBCAppender)
 #define _priv static_cast<ODBCAppenderPriv*>(m_priv.get())
 
 ODBCAppender::ODBCAppender()
-	: AppenderSkeleton (std::make_unique<ODBCAppenderPriv>())
+	: AppenderSkeleton (std::make_unique<ODBCAppenderPriv>(
+#if LOG4CXX_EVENTS_AT_EXIT
+		[this] {
+			std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+			if(_priv->closed)
+				return;
+			try
+			{
+				flushBuffer(_priv->pool);
+			}
+			catch (SQLException& e)
+			{
+				_priv->errorHandler->error(LOG4CXX_STR("Error flushing connection"),
+					e, ErrorCode::GENERIC_FAILURE);
+			}
+		}
+#endif
+								))
 {
 }
 

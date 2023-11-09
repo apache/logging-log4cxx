@@ -23,6 +23,11 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/spi/loggingevent.h>
+
+#if LOG4CXX_EVENTS_AT_EXIT
+#include <log4cxx/private/atexitregistry.h>
+#endif
+
 #include <list>
 #include <memory>
 
