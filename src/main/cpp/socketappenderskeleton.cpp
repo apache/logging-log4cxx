@@ -102,6 +102,11 @@ void SocketAppenderSkeleton::connect(Pool& p)
 
 		try
 		{
+			LogString msg(LOG4CXX_STR("Connecting to [")
+				+ _priv->address->toString() + LOG4CXX_STR(":"));
+			StringHelper::toString(_priv->port, p, msg);
+			msg += LOG4CXX_STR("].");
+			LogLog::debug(msg);
 			SocketPtr socket = Socket::create(_priv->address, _priv->port);
 			setSocket(socket, p);
 		}
@@ -111,13 +116,6 @@ void SocketAppenderSkeleton::connect(Pool& p)
 				+ _priv->address->toString() + LOG4CXX_STR(":");
 			StringHelper::toString(_priv->port, p, msg);
 			msg += LOG4CXX_STR("].");
-
-			if (_priv->reconnectionDelay > 0)
-			{
-				msg += LOG4CXX_STR(" We will try again in ");
-				StringHelper::toString(_priv->reconnectionDelay, p, msg);
-				msg += LOG4CXX_STR(" ms");
-			}
 
 			fireConnector(); // fire the connector thread
 			LogLog::error(msg, e);
@@ -203,7 +201,10 @@ void SocketAppenderSkeleton::monitor()
 		{
 			LogString msg(LOG4CXX_STR("Waiting "));
 			StringHelper::toString(_priv->reconnectionDelay, p, msg);
-			msg += LOG4CXX_STR(" ms");
+			msg += LOG4CXX_STR(" ms before retrying [")
+				+ _priv->address->toString() + LOG4CXX_STR(":");
+			StringHelper::toString(_priv->port, p, msg);
+			msg += LOG4CXX_STR("].");
 			LogLog::debug(msg);
 
 			std::unique_lock<std::mutex> lock( _priv->interrupt_mutex );
