@@ -193,7 +193,7 @@ void SocketAppenderSkeleton::monitor()
 			LogString msg(LOG4CXX_STR("Could not connect to [")
 				+ _priv->address->toString() + LOG4CXX_STR(":"));
 			StringHelper::toString(_priv->port, p, msg);
-			msg += LOG4CXX_STR("].\n");
+			msg += LOG4CXX_STR("].");
 			LogLog::error(msg, e);
 		}
 
