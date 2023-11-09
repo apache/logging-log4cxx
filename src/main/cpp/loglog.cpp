@@ -158,12 +158,6 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 
 void LogLog::emit(const LogString& msg)
 {
-	auto p = getInstance().m_priv.get();
-	if (p->quietMode)
-	{
-		return;
-	}
-
 	LogString out(LOG4CXX_STR("log4cxx: "));
 
 	out.append(msg);
@@ -174,12 +168,6 @@ void LogLog::emit(const LogString& msg)
 
 void LogLog::emit(const std::exception& ex)
 {
-	auto p = getInstance().m_priv.get();
-	if (p->quietMode)
-	{
-		return;
-	}
-
 	LogString out(LOG4CXX_STR("log4cxx: "));
 	const char* raw = ex.what();
 
