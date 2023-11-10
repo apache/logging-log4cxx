@@ -29,12 +29,27 @@
 
 using namespace log4cxx;
 
+//#define TEST_WITH_FLUENT_BIT
+#ifdef TEST_WITH_FLUENT_BIT
+#include <log4cxx/net/xmlsocketappender.h>
+#include <log4cxx/jsonlayout.h>
+class MyAppender : public net::XMLSocketAppender
+{
+public:
+	MyAppender() : net::XMLSocketAppender(LOG4CXX_STR("127.0.0.1"), 5170)
+	{
+		auto layout = std::make_shared<JSONLayout>();
+		layout->setThreadInfo(true);
+		setLayout(layout);
+	}
+};
+#else
 class MyAppender : public FileAppender
 {
 public:
 	MyAppender()
 	{
-		auto tempDir = helpers::OptionConverter::getSystemProperty("TEMP", "/tmp");
+		auto tempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multithread_test.log"));
 		setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%d [%t] %-5p %.16c - %m%n")));
 		setAppend(false);
@@ -43,6 +58,7 @@ public:
 		activateOptions(p);
 	}
 };
+#endif
 
 static void multithread_logger( int times )
 {

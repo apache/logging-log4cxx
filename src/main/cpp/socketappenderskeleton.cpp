@@ -102,22 +102,20 @@ void SocketAppenderSkeleton::connect(Pool& p)
 
 		try
 		{
+			LogString msg(LOG4CXX_STR("Connecting to [")
+				+ _priv->address->toString() + LOG4CXX_STR(":"));
+			StringHelper::toString(_priv->port, p, msg);
+			msg += LOG4CXX_STR("].");
+			LogLog::debug(msg);
 			SocketPtr socket = Socket::create(_priv->address, _priv->port);
 			setSocket(socket, p);
 		}
 		catch (SocketException& e)
 		{
 			LogString msg = LOG4CXX_STR("Could not connect to [")
-				+ _priv->address->getHostName() + LOG4CXX_STR(":");
+				+ _priv->address->toString() + LOG4CXX_STR(":");
 			StringHelper::toString(_priv->port, p, msg);
 			msg += LOG4CXX_STR("].");
-
-			if (_priv->reconnectionDelay > 0)
-			{
-				msg += LOG4CXX_STR(" We will try again in ");
-				StringHelper::toString(_priv->reconnectionDelay, p, msg);
-				msg += LOG4CXX_STR(" ms");
-			}
 
 			fireConnector(); // fire the connector thread
 			LogLog::error(msg, e);
@@ -163,6 +161,7 @@ void SocketAppenderSkeleton::fireConnector()
 
 void SocketAppenderSkeleton::monitor()
 {
+	Pool p;
 	SocketPtr socket;
 	bool isClosed = _priv->closed;
 
@@ -172,35 +171,46 @@ void SocketAppenderSkeleton::monitor()
 		{
 			if (!_priv->closed)
 			{
-				LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
-					+ _priv->address->getHostName());
+				LogString msg(LOG4CXX_STR("Attempting connection to [")
+					+ _priv->address->toString() + LOG4CXX_STR(":"));
+				StringHelper::toString(_priv->port, p, msg);
+				msg += LOG4CXX_STR("].");
+				LogLog::debug(msg);
 				socket = Socket::create(_priv->address, _priv->port);
-				Pool p;
 				setSocket(socket, p);
 				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
 				return;
 			}
 		}
-		catch (ConnectException&)
+		catch (ConnectException& e)
 		{
-			LogLog::debug(LOG4CXX_STR("Remote host ")
-				+ _priv->address->getHostName()
-				+ LOG4CXX_STR(" refused connection."));
+			LogLog::error(LOG4CXX_STR("Remote host ")
+				+ _priv->address->toString()
+				+ LOG4CXX_STR(" refused connection."), e);
 		}
 		catch (IOException& e)
 		{
-			LogString exmsg;
-			LOG4CXX_NS::helpers::Transcoder::decode(e.what(), exmsg);
-
-			LogLog::debug(((LogString) LOG4CXX_STR("Could not connect to "))
-				+ _priv->address->getHostName()
-				+ LOG4CXX_STR(". Exception is ")
-				+ exmsg);
+			LogString msg(LOG4CXX_STR("Could not connect to [")
+				+ _priv->address->toString() + LOG4CXX_STR(":"));
+			StringHelper::toString(_priv->port, p, msg);
+			msg += LOG4CXX_STR("].");
+			LogLog::error(msg, e);
 		}
 
-		std::unique_lock<std::mutex> lock( _priv->interrupt_mutex );
-		_priv->interrupt.wait_for( lock, std::chrono::milliseconds( _priv->reconnectionDelay ),
-			std::bind(&SocketAppenderSkeleton::is_closed, this) );
+		if (_priv->reconnectionDelay > 0)
+		{
+			LogString msg(LOG4CXX_STR("Waiting "));
+			StringHelper::toString(_priv->reconnectionDelay, p, msg);
+			msg += LOG4CXX_STR(" ms before retrying [")
+				+ _priv->address->toString() + LOG4CXX_STR(":");
+			StringHelper::toString(_priv->port, p, msg);
+			msg += LOG4CXX_STR("].");
+			LogLog::debug(msg);
+
+			std::unique_lock<std::mutex> lock( _priv->interrupt_mutex );
+			_priv->interrupt.wait_for( lock, std::chrono::milliseconds( _priv->reconnectionDelay ),
+				std::bind(&SocketAppenderSkeleton::is_closed, this) );
+		}
 
 		isClosed = _priv->closed;
 	}
