@@ -65,7 +65,8 @@ struct StringOrStream
 
 			this->stream = &streamWithInitialState.sStream;
 			this->stream->clear();
-			this->stream->imbue(streamWithInitialState.locale);
+			if(streamWithInitialState.locale != this->stream->getloc())
+				this->stream->imbue(streamWithInitialState.locale);
 			this->stream->precision(streamWithInitialState.precision);
 			this->stream->setf(streamWithInitialState.flags, ~streamWithInitialState.flags);
 			this->stream->fill(streamWithInitialState.fill);
