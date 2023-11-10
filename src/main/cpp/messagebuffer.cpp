@@ -57,19 +57,12 @@ struct StringOrStream
 			thread_local static struct
 			{
 				std::basic_ostringstream<T> sStream;
-				std::locale locale = sStream.getloc();
-				std::streamsize precision = sStream.precision();
-				std::ios_base::fmtflags flags = sStream.flags();
-				T fill = sStream.fill();
-			} streamWithInitialState;
+				const std::basic_ostringstream<T> sPrototype;
+			} streamWithPrototype;
 
-			this->stream = &streamWithInitialState.sStream;
+			this->stream = &streamWithPrototype.sStream;
 			this->stream->clear();
-			if(streamWithInitialState.locale != this->stream->getloc())
-				this->stream->imbue(streamWithInitialState.locale);
-			this->stream->precision(streamWithInitialState.precision);
-			this->stream->setf(streamWithInitialState.flags, ~streamWithInitialState.flags);
-			this->stream->fill(streamWithInitialState.fill);
+			this->stream->copyfmt(streamWithPrototype.sPrototype);
 #else
 			this->stream = new std::basic_ostringstream<T>();
 #endif
