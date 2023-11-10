@@ -38,7 +38,7 @@ struct LogLog::LogLogPrivate {
 
 	~LogLogPrivate()
 	{
-		quietMode = true;
+		quietMode = true; // Prevent output after deletion by onexit processing chain.
 	}
 
 	bool debugEnabled;
