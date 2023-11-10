@@ -36,6 +36,11 @@ struct LogLog::LogLogPrivate {
 		debugEnabled(false),
 		quietMode(false){}
 
+	~LogLogPrivate()
+	{
+		quietMode = true; // Prevent output after deletion by onexit processing chain.
+	}
+
 	bool debugEnabled;
 
 	/**
@@ -63,14 +68,16 @@ LogLog& LogLog::getInstance()
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
-	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
+	auto p = getInstance().m_priv.get();
+	std::unique_lock<std::mutex> lock(p->mutex);
 
-	getInstance().m_priv->debugEnabled = debugEnabled1;
+	p->debugEnabled = debugEnabled1;
 }
 
 void LogLog::debug(const LogString& msg)
 {
-	if (auto p = getInstance().m_priv.get()) // Not deleted by onexit processing?
+	auto p = getInstance().m_priv.get();
+	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		if (!p->debugEnabled)
 		{
@@ -85,7 +92,8 @@ void LogLog::debug(const LogString& msg)
 
 void LogLog::debug(const LogString& msg, const std::exception& e)
 {
-	if (auto p = getInstance().m_priv.get()) // Not deleted by onexit processing?
+	auto p = getInstance().m_priv.get();
+	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		if (!p->debugEnabled)
 			return;
@@ -99,7 +107,8 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 
 void LogLog::error(const LogString& msg)
 {
-	if (auto p = getInstance().m_priv.get()) // Not deleted by onexit processing?
+	auto p = getInstance().m_priv.get();
+	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::unique_lock<std::mutex> lock(p->mutex);
 
@@ -109,7 +118,8 @@ void LogLog::error(const LogString& msg)
 
 void LogLog::error(const LogString& msg, const std::exception& e)
 {
-	if (auto p = getInstance().m_priv.get()) // Not deleted by onexit processing?
+	auto p = getInstance().m_priv.get();
+	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::unique_lock<std::mutex> lock(p->mutex);
 		emit(msg);
@@ -119,14 +129,16 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 
 void LogLog::setQuietMode(bool quietMode1)
 {
-	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
+	auto p = getInstance().m_priv.get();
+	std::unique_lock<std::mutex> lock(p->mutex);
 
-	getInstance().m_priv->quietMode = quietMode1;
+	p->quietMode = quietMode1;
 }
 
 void LogLog::warn(const LogString& msg)
 {
-	if (auto p = getInstance().m_priv.get()) // Not deleted by onexit processing?
+	auto p = getInstance().m_priv.get();
+	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::unique_lock<std::mutex> lock(p->mutex);
 		emit(msg);
@@ -135,7 +147,8 @@ void LogLog::warn(const LogString& msg)
 
 void LogLog::warn(const LogString& msg, const std::exception& e)
 {
-	if (auto p = getInstance().m_priv.get()) // Not deleted by onexit processing?
+	auto p = getInstance().m_priv.get();
+	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::unique_lock<std::mutex> lock(p->mutex);
 		emit(msg);
@@ -145,11 +158,6 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 
 void LogLog::emit(const LogString& msg)
 {
-	if (getInstance().m_priv->quietMode)
-	{
-		return;
-	}
-
 	LogString out(LOG4CXX_STR("log4cxx: "));
 
 	out.append(msg);
@@ -160,11 +168,6 @@ void LogLog::emit(const LogString& msg)
 
 void LogLog::emit(const std::exception& ex)
 {
-	if (getInstance().m_priv->quietMode)
-	{
-		return;
-	}
-
 	LogString out(LOG4CXX_STR("log4cxx: "));
 	const char* raw = ex.what();
 
