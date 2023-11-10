@@ -54,9 +54,21 @@ struct StringOrStream
 		if (!this->stream)
 		{
 #if LOG4CXX_HAS_THREAD_LOCAL
-			thread_local static std::basic_ostringstream<T> sStream;
-			this->stream = &sStream;
+			thread_local static struct
+			{
+				std::basic_ostringstream<T> sStream;
+				std::locale locale = sStream.getloc();
+				std::streamsize precision = sStream.precision();
+				std::ios_base::fmtflags flags = sStream.flags();
+				T fill = sStream.fill();
+			} streamWithInitialState;
+
+			this->stream = &streamWithInitialState.sStream;
 			this->stream->clear();
+			this->stream->imbue(streamWithInitialState.locale);
+			this->stream->precision(streamWithInitialState.precision);
+			this->stream->setf(streamWithInitialState.flags, ~streamWithInitialState.flags);
+			this->stream->fill(streamWithInitialState.fill);
 #else
 			this->stream = new std::basic_ostringstream<T>();
 #endif
