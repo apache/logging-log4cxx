@@ -211,7 +211,7 @@ if(LOG4CXX_EVENTS_AT_EXIT)
   target_sources(log4cxx
     PRIVATE atexitregistry.cpp
   )
-endif(WIN32)
+endif(LOG4CXX_EVENTS_AT_EXIT)
 
 if(WIN32)
   target_sources(log4cxx
