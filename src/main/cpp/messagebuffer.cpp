@@ -54,15 +54,14 @@ struct StringOrStream
 		if (!this->stream)
 		{
 #if LOG4CXX_HAS_THREAD_LOCAL
-			thread_local static struct
-			{
-				std::basic_ostringstream<T> sStream;
-				const std::basic_ostringstream<T> sPrototype;
-			} streamWithPrototype;
-
-			this->stream = &streamWithPrototype.sStream;
+			const static std::basic_ostringstream<T> initialState;
+			thread_local static std::basic_ostringstream<T> sStream;
+			this->stream = &sStream;
 			this->stream->clear();
-			this->stream->copyfmt(streamWithPrototype.sPrototype);
+			this->stream->precision(initialState.precision());
+			this->stream->width(initialState.width());
+			this->stream->setf(initialState.flags(), ~initialState.flags());
+			this->stream->fill(initialState.fill());
 #else
 			this->stream = new std::basic_ostringstream<T>();
 #endif
