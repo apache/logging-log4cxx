@@ -21,6 +21,9 @@
 #include "../logunit.h"
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/logger.h>
+#include <log4cxx/propertyconfigurator.h>
+#include "util/compare.h"
 
 #if LOG4CXX_CFSTRING_API
 	#include <CoreFoundation/CFString.h>
@@ -42,6 +45,7 @@ LOGUNIT_CLASS(MessageBufferTest)
 	LOGUNIT_TEST(testInsertNull);
 	LOGUNIT_TEST(testInsertInt);
 	LOGUNIT_TEST(testInsertManipulator);
+	LOGUNIT_TEST(testBaseChange);
 #if LOG4CXX_WCHAR_T_API
 	LOGUNIT_TEST(testInsertConstWStr);
 	LOGUNIT_TEST(testInsertWString);
@@ -134,6 +138,30 @@ public:
 		std::ostream& retval = buf << "pi=" << std::setprecision(4) << 3.1415926;
 		LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval));
 		LOGUNIT_ASSERT_EQUAL(true, buf.hasStream());
+	}
+
+	void testBaseChange()
+	{
+		LoggerPtr root;
+		LoggerPtr logger;
+
+		root = Logger::getRootLogger();
+		logger = Logger::getLogger(LOG4CXX_STR("java.org.apache.log4j.PatternLayoutTest"));
+
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/messagebuffer1.properties"));
+
+		int num = 220;
+		LOG4CXX_INFO(logger, "number in hex: " << std::hex << num);
+		LOG4CXX_INFO(logger, "number in dec: " << num);
+
+		LOGUNIT_ASSERT(Compare::compare(LOG4CXX_STR("output/messagebuffer"), LOG4CXX_FILE("witness/messagebuffer.1")));
+
+		auto rep = root->getLoggerRepository();
+
+		if (rep)
+		{
+			rep->resetConfiguration();
+		}
 	}
 
 #if LOG4CXX_WCHAR_T_API
