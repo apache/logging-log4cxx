@@ -7,6 +7,7 @@
 #include <fmt/format.h>
 #include <benchmark/benchmark.h>
 #include <thread>
+#include <cstdlib>
 
 using namespace log4cxx;
 
@@ -116,18 +117,8 @@ BENCHMARK_DEFINE_F(benchmarker, logDisabledTrace)(benchmark::State& state)
 		LOG4CXX_TRACE( m_logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Logging disabled trace")->MinWarmUpTime(benchmarker::warmUpSeconds());
-BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Logging disabled trace")->Threads(benchmarker::threadCount());
-
-BENCHMARK_DEFINE_F(benchmarker, logDisabledDebug)(benchmark::State& state)
-{
-	m_logger->setLevel(Level::getInfo());
-	for (auto _ : state)
-	{
-		LOG4CXX_DEBUG(m_logger, LOG4CXX_STR("This is a static string to see what happens"));
-	}
-}
-BENCHMARK_REGISTER_F(benchmarker, logDisabledDebug)->Name("Logging disabled debug");
+BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Testing disabled logging request")->MinWarmUpTime(benchmarker::warmUpSeconds());
+BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Testing disabled logging request")->Threads(benchmarker::threadCount());
 
 BENCHMARK_DEFINE_F(benchmarker, logStaticString)(benchmark::State& state)
 {
@@ -137,27 +128,7 @@ BENCHMARK_DEFINE_F(benchmarker, logStaticString)(benchmark::State& state)
 		LOG4CXX_INFO( m_logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logStaticString)->Name("Logging info static string");
-
-BENCHMARK_DEFINE_F(benchmarker, logEnabledDebug)(benchmark::State& state)
-{
-	m_logger->setLevel( Level::getDebug() );
-	for (auto _ : state)
-	{
-		LOG4CXX_DEBUG( m_logger, LOG4CXX_STR("This is a static string to see what happens"));
-	}
-}
-BENCHMARK_REGISTER_F(benchmarker, logEnabledDebug)->Name("Logging enabled debug static string");
-
-BENCHMARK_DEFINE_F(benchmarker, logEnabledTrace)(benchmark::State& state)
-{
-	m_logger->setLevel( Level::getTrace() );
-	for (auto _ : state)
-	{
-		LOG4CXX_DEBUG( m_logger, LOG4CXX_STR("This is a static string to see what happens"));
-	}
-}
-BENCHMARK_REGISTER_F(benchmarker, logEnabledTrace)->Name("Logging enabled trace static string");
+BENCHMARK_REGISTER_F(benchmarker, logStaticString)->Name("Logging static string");
 
 #if LOG4CXX_HAS_FMT
 BENCHMARK_DEFINE_F(benchmarker, logStaticStringFMT)(benchmark::State& state)
@@ -174,11 +145,23 @@ BENCHMARK_DEFINE_F(benchmarker, logIntValueFMT)(benchmark::State& state)
 	int x = 0;
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO_FMT( m_logger, "Hello m_logger: msg number {}", ++x);
+		LOG4CXX_INFO_FMT( m_logger, "Hello: msg number {}", ++x);
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Logging int value with FMT");
 BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Logging int value with FMT")->Threads(benchmarker::threadCount());
+
+BENCHMARK_DEFINE_F(benchmarker, logIntPlusFloatValueFMT)(benchmark::State& state)
+{
+	int x = 0;
+	for (auto _ : state)
+	{
+		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		LOG4CXX_INFO_FMT( m_logger, "Hello: msg number {} pseudo-random float {:.3f}", ++x, f);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatValueFMT)->Name("Logging int+float with FMT");
+BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatValueFMT)->Name("Logging int+float with FMT")->Threads(benchmarker::threadCount());
 #endif
 
 BENCHMARK_DEFINE_F(benchmarker, logIntValueStream)(benchmark::State& state)
@@ -186,11 +169,24 @@ BENCHMARK_DEFINE_F(benchmarker, logIntValueStream)(benchmark::State& state)
 	int x = 0;
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO( m_logger, "Hello m_logger: msg number " << ++x);
+		LOG4CXX_INFO( m_logger, "Hello: msg number " << ++x);
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream");
 BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream")->Threads(benchmarker::threadCount());
+
+BENCHMARK_DEFINE_F(benchmarker, logIntPlusFloatStream)(benchmark::State& state)
+{
+	int x = 0;
+	for (auto _ : state)
+	{
+		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		LOG4CXX_INFO( m_logger, "Hello: msg number " << ++x
+			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatStream)->Name("Logging int+float with std::ostream");
+BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatStream)->Name("Logging int+float with std::ostream")->Threads(benchmarker::threadCount());
 
 template <class ...Args>
 void logWithConversionPattern(benchmark::State& state, Args&&... args)
