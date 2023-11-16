@@ -8,6 +8,7 @@
 #include <benchmark/benchmark.h>
 #include <thread>
 #include <cstdlib>
+#include <iomanip>
 
 using namespace log4cxx;
 
