@@ -18,9 +18,13 @@
 #include <stdlib.h>
 #include <log4cxx/basicconfigurator.h>
 #include <locale.h>
+#if LOG4CXX_USING_STD_FORMAT
+#include <format>
+#else
 #include <fmt/core.h>
 #include <fmt/color.h>
 #include <fmt/ostream.h>
+#endif
 #include <iomanip>
 
 using namespace log4cxx;
@@ -34,7 +38,22 @@ std::ostream& operator<<( std::ostream& stream, const MyStruct& mystruct ){
 		stream << "[MyStruct x:" << mystruct.x << "]";
 		return stream;
 }
-#if FMT_VERSION >= (9 * 10000)
+
+#if LOG4CXX_USING_STD_FORMAT
+template <typename Char>
+struct basic_ostream_formatter
+	: std::formatter<std::basic_string_view<Char>, Char>
+{
+	template <typename T, typename OutputIt>
+	auto format(const T& value, std::basic_format_context<OutputIt, Char>& ctx) const -> OutputIt
+	{
+		std::basic_stringstream<Char> ss;
+		ss << value;
+		return std::formatter<std::basic_string_view<Char>, Char>::format(ss.view(), ctx);
+	}
+};
+template <> struct std::formatter<MyStruct> : basic_ostream_formatter<char> {};
+#elif FMT_VERSION >= (9 * 10000)
 template <> struct fmt::formatter<MyStruct> : ostream_formatter {};
 #endif
 
@@ -46,10 +65,12 @@ int main()
 	LoggerPtr rootLogger = Logger::getRootLogger();
 
 	LOG4CXX_INFO_FMT( rootLogger, "This is a {} mesage", "test" );
+#if !LOG4CXX_USING_STD_FORMAT
 	LOG4CXX_INFO_FMT( rootLogger, fmt::fg(fmt::color::red), "Messages can be colored" );
+#endif
 	LOG4CXX_INFO_FMT( rootLogger, "We can also align text to the {:<10} or {:>10}", "left", "right" );
 
-	MyStruct mine;
+	MyStruct mine{ 42 };
 	LOG4CXX_INFO_FMT( rootLogger, "This custom type {} can also be logged, since it implements operator<<", mine );
 
 	LOG4CXX_INFO( rootLogger, "Numbers can be formatted with excessive operator<<: "

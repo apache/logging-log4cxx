@@ -20,8 +20,11 @@
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/appenderskeleton.h>
 
+#if LOG4CXX_USING_STD_FORMAT
+#include <format>
+#else
 #include <fmt/format.h>
-
+#endif
 namespace LOG4CXX_NS
 {
 

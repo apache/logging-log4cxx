@@ -24,9 +24,13 @@
 #include <string>
 #include <thread>
 
+#if LOG4CXX_USING_STD_FORMAT
+#include <format>
+#else
 #include <fmt/core.h>
 #include <fmt/chrono.h>
 #include <fmt/ostream.h>
+#endif
 
 #include "log4cxxbenchmarker.h"
 using log4cxx::LogString;

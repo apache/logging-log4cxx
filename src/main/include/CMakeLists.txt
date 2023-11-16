@@ -96,6 +96,13 @@ if(NOT "log4cxx" STREQUAL "${LOG4CXX_NS}")
     set(LOG4CXX_DECLARE_DEFAULT_NS_ALIAS 1)
 endif()
 
+set(LOG4CXX_FORMAT_NAMESPACE "fmt" CACHE STRING "format() function namespace, choice of fmt (default), std")
+set_property(CACHE LOG4CXX_FORMAT_NAMESPACE PROPERTY STRINGS "fmt" "std")
+set(LOG4CXX_USE_STANDARD_FORMAT 0)
+if("std" STREQUAL "${LOG4CXX_FORMAT_NAMESPACE}")
+    set(LOG4CXX_USE_STANDARD_FORMAT 1)
+endif()
+
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "utf-8" CACHE STRING "LogString characters, choice of utf-8 (default), ISO-8859-1, US-ASCII, EBCDIC, locale")
 set_property(CACHE LOG4CXX_CHARSET PROPERTY STRINGS "utf-8" "ISO-8859-1" "US-ASCII" "EBCDIC" "locale")

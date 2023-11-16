@@ -4,7 +4,11 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/asyncappender.h>
+#if LOG4CXX_USING_STD_FORMAT
+#include <format>
+#else
 #include <fmt/format.h>
+#endif
 #include <benchmark/benchmark.h>
 #include <thread>
 

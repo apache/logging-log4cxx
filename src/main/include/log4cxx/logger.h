@@ -2037,7 +2037,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_LOG_FMT(logger, level, ...) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->addEvent(level, fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(level, ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
@@ -2083,7 +2083,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_DEBUG_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isDebugEnabledFor(logger))) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getDebug(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getDebug(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
 #define LOG4CXX_DEBUG_FMT(logger, ...)
@@ -2115,7 +2115,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_TRACE_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isTraceEnabledFor(logger))) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getTrace(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getTrace(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
 #define LOG4CXX_TRACE_FMT(logger, ...)
@@ -2151,7 +2151,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_INFO_FMT(logger, ...) do { \
 		if (::LOG4CXX_NS::Logger::isInfoEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getInfo(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getInfo(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
 #define LOG4CXX_INFO_FMT(logger, ...)
@@ -2185,7 +2185,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_WARN_FMT(logger, ...) do { \
 		if (::LOG4CXX_NS::Logger::isWarnEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
 #define LOG4CXX_WARN_FMT(logger, ...)
@@ -2219,7 +2219,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_ERROR_FMT(logger, ...) do { \
 		if (::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
 If \c condition is not true, add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
@@ -2244,7 +2244,7 @@ If \c condition is not true, add a new logging event containing libfmt formatted
 #define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
 		if (!(condition) && ::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
 			LOG4CXX_STACKTRACE \
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 #else
 #define LOG4CXX_ERROR(logger, message)
@@ -2278,7 +2278,7 @@ Add a new logging event containing libfmt formatted <code>...</code> to attached
 */
 #define LOG4CXX_FATAL_FMT(logger, ...) do { \
 		if (::LOG4CXX_NS::Logger::isFatalEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
 #define LOG4CXX_FATAL_FMT(logger, ...)

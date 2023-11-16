@@ -123,4 +123,11 @@ LOG4CXX_EXPORT uint32_t libraryVersion();
 namespace log4cxx = LOG4CXX_NS;
 #endif
 
+#define LOG4CXX_USING_STD_FORMAT @LOG4CXX_USE_STANDARD_FORMAT@
+#if LOG4CXX_USING_STD_FORMAT
+#define LOG4CXX_FORMAT_NS std
+#elif !defined(LOG4CXX_FORMAT_NS)
+#define LOG4CXX_FORMAT_NS fmt
+#endif
+
 #endif
