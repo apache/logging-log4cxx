@@ -177,7 +177,7 @@ void log4cxxbenchmarker::logStaticStringFMT( int howmany )
 
 	for ( int x = 0; x < howmany; x++ )
 	{
-		LOG4CXX_INFO_FMT( logger, "This is a static string to see what happens");
+		LOG4CXX_INFO_FMT( logger, "This is a static string to see what happens", 0);
 	}
 }
 
