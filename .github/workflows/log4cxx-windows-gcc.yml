@@ -18,7 +18,7 @@ on: [push, pull_request]
 
 jobs:
   job:
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
+    name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test-gcc
     runs-on: ${{ matrix.os }}
     timeout-minutes: 38
     strategy:
@@ -41,7 +41,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vcpkg
-        key: ${{ runner.os }}-${{ matrix.name }}-cache-x64
+        key: ${{ runner.os }}-${{ matrix.name }}-cache-x64-gcc
 
     - name: 'Checkout VCPKG'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
@@ -58,7 +58,7 @@ jobs:
       run: |
         cd vcpkg
         ./bootstrap-vcpkg.bat
-        ./vcpkg install apr apr-util fmt --triplet=x64-windows
+        ./vcpkg install apr apr-util fmt --triplet=x64-mingw-dynamic
 
     - name: 'Install zip'
       id: install-zip
@@ -83,4 +83,5 @@ jobs:
         cd main
         cd build
         ctest -C Debug --output-on-failure -V
+
 
