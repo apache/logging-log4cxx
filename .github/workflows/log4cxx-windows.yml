@@ -67,7 +67,7 @@ jobs:
         $Env:PATH += ";C:\msys64\usr\bin"
         pacman --noconfirm -S zip
 
-    - name: 'run cmake'
+    - name: 'run cmake - msvc'
       shell: pwsh
       run: |
         $THISDIR=Get-Location
@@ -75,6 +75,16 @@ jobs:
         mkdir build
         cd build
         cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DLOG4CXX_CHAR=wchar_t -DLOG4CXX_ENABLE_ODBC=on  "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
+        cmake --build .
+
+    - name: 'run cmake - gcc'
+      shell: pwsh
+      run: |
+        $THISDIR=Get-Location
+        cd main
+        mkdir build-gcc
+        cd build-gcc
+        cmake -DCMAKE_C_COMPILER=C:\msys64\usr\bin\gcc -DDCMAKE_CXX_COMPILER=C:\msys64\usr\bin\g++ -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DLOG4CXX_CHAR=wchar_t -DLOG4CXX_ENABLE_ODBC=on  "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
         cmake --build .
 
     - name: run unit tests
