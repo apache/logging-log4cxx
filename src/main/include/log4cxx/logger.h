@@ -2261,14 +2261,16 @@ If \c condition is not true, add a new logging event containing \c message to at
 			logger->addEvent(::LOG4CXX_NS::Level::getError(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-If \c condition is not true, add a new logging event containing libfmt formatted \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
+If \c condition is not true, add a new logging event containing
+a message defined by \c fmt and <code>...</code> to attached appender(s)
+if \c logger is enabled for <code>ERROR</code> events.
 
 @param logger the logger to be used.
 @param condition condition
 @param fmt the layout of the message.
 @param ... the variable parts of the message.
 */
-#define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
+#define LOG4CXX_ASSERT_FMT(logger, condition, fmt, ...) do { \
 		if (!(condition) && ::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
 			LOG4CXX_STACKTRACE \
 			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
@@ -2277,7 +2279,7 @@ If \c condition is not true, add a new logging event containing libfmt formatted
 #define LOG4CXX_ERROR(logger, message)
 #define LOG4CXX_ERROR_FMT(logger, fmt, ...)
 #define LOG4CXX_ASSERT(logger, condition, message)
-#define LOG4CXX_ASSERT_FMT(logger, condition, ...)
+#define LOG4CXX_ASSERT_FMT(logger, condition, fmt, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 50000
