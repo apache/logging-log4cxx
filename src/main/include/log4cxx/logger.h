@@ -2029,15 +2029,16 @@ Add a new logging event containing \c message to attached appender(s) if this lo
 			logger->addEvent(level, oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if this logger is enabled for \c events.
+Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if this logger is enabled for \c events.
 
 @param logger the logger to be used.
 @param level The logging event level.
-@param ... The format string and parameters that define the log message.
+@param fmt the layout of the message.
+@param ... the variable parts of the message.
 */
-#define LOG4CXX_LOG_FMT(logger, level, ...) do { \
+#define LOG4CXX_LOG_FMT(logger, level, fmt, ...) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->addEvent(level, ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(level, ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
@@ -2058,7 +2059,6 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param logger the logger that has the enabled status.
 @param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
-<p>Example:
 ~~~{.cpp}
 LOG4CXX_DEBUG(m_log, "AddMesh:"
 	<< " name " << meshName
@@ -2076,17 +2076,18 @@ LOG4CXX_DEBUG(m_log, "AddMesh:"
 			logger->addEvent(::LOG4CXX_NS::Level::getDebug(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>DEBUG</code> events.
+Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>DEBUG</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and parameters that define the log message.
+@param fmt the layout of the message.
+@param ... the variable parts of the message.
 */
-#define LOG4CXX_DEBUG_FMT(logger, ...) do { \
+#define LOG4CXX_DEBUG_FMT(logger, fmt, ...) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isDebugEnabledFor(logger))) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getDebug(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getDebug(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
-#define LOG4CXX_DEBUG_FMT(logger, ...)
+#define LOG4CXX_DEBUG_FMT(logger, fmt, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 5000
@@ -2096,11 +2097,9 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param logger the logger that has the enabled status.
 @param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
-<p>Example:
 ~~~{.cpp}
-    LOG4CXX_TRACE(m_log, "AddVertex:" << " p " << p[j] << " n " << n << ' ' << color);
+    LOG4CXX_TRACE(m_log, "AddVertex:" << " at " << p << " n " << n << ' ' << color);
 ~~~
-
 */
 #define LOG4CXX_TRACE(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isTraceEnabledFor(logger))) {\
@@ -2108,17 +2107,22 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 			logger->addEvent(::LOG4CXX_NS::Level::getTrace(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>TRACE</code> events.
+Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>TRACE</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and parameters that define the log message.
+@param fmt the layout of the message.
+@param ... the variable parts of the message.
+
+~~~{.cpp}
+    LOG4CXX_TRACE_FMT(m_log, "AddVertex: at {} n {} {}", p, n, color);
+~~~
 */
-#define LOG4CXX_TRACE_FMT(logger, ...) do { \
+#define LOG4CXX_TRACE_FMT(logger, fmt, ...) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isTraceEnabledFor(logger))) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getTrace(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getTrace(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
-#define LOG4CXX_TRACE_FMT(logger, ...)
+#define LOG4CXX_TRACE_FMT(logger, fmt, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 20000
@@ -2128,7 +2132,6 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param logger the logger that has the enabled status.
 @param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
-<p>Example:
 ~~~{.cpp}
 LOG4CXX_INFO(m_log, surface->GetName()
 	<< " successfully planned " << std::fixed << std::setprecision(1) << ((plannedArea  / (plannedArea + unplannedArea)) * 100.0) << "%"
@@ -2144,17 +2147,26 @@ LOG4CXX_INFO(m_log, surface->GetName()
 			logger->addEvent(::LOG4CXX_NS::Level::getInfo(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>INFO</code> events.
+Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>INFO</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and parameters that define the log message.
+@param fmt the layout of the message.
+@param ... the variable parts of the message.
+
+~~~{.cpp}
+LOG4CXX_INFO_FMT(m_log, "{} successfully planned {:.1f}% planned area {:.4f}m^2 unplanned area {:.4f}m^2 planned segments {:d} of {:d}"
+    , surface->GetName(), (plannedArea  / (plannedArea + unplannedArea)) * 100.0
+	, plannedArea, unplannedArea
+	, surface->GetSegmentPlanCount(), surface->GetSegmentCount()
+	);
+~~~
 */
-#define LOG4CXX_INFO_FMT(logger, ...) do { \
+#define LOG4CXX_INFO_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isInfoEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getInfo(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getInfo(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
-#define LOG4CXX_INFO_FMT(logger, ...)
+#define LOG4CXX_INFO_FMT(logger, fmt, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 30000
@@ -2164,7 +2176,6 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param logger the logger to be used.
 @param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
-<p>Example:
 ~~~{.cpp}
 catch (const std::exception& ex)
 {
@@ -2178,17 +2189,25 @@ catch (const std::exception& ex)
 			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>WARN</code> events.
+Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>WARN</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and parameters that define the log message.
+@param fmt the layout of the message.
+@param ... the variable parts of the message.
+
+~~~{.cpp}
+catch (const std::exception& ex)
+{
+    LOG4CXX_WARN_FMT(m_log, "{}: in {}", ex.what(), m_task->GetParamFilePath());
+}
+~~~
 */
-#define LOG4CXX_WARN_FMT(logger, ...) do { \
+#define LOG4CXX_WARN_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isWarnEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
-#define LOG4CXX_WARN_FMT(logger, ...)
+#define LOG4CXX_WARN_FMT(logger, fmt, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 40000
@@ -2198,7 +2217,6 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param logger the logger to be used.
 @param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
-<p>Example:
 ~~~{.cpp}
 catch (std::exception& ex)
 {
@@ -2212,14 +2230,22 @@ catch (std::exception& ex)
 			logger->addEvent(::LOG4CXX_NS::Level::getError(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
+Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and parameters that define the log message.
+@param fmt the layout of the message.
+@param ... the variable parts of the message.
+
+~~~{.cpp}
+catch (std::exception& ex)
+{
+	LOG4CXX_ERROR_FMT(m_log, "{} in AddScanData", ex.what());
+}
+~~~
 */
-#define LOG4CXX_ERROR_FMT(logger, ...) do { \
+#define LOG4CXX_ERROR_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 /**
 If \c condition is not true, add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
@@ -2239,16 +2265,17 @@ If \c condition is not true, add a new logging event containing libfmt formatted
 
 @param logger the logger to be used.
 @param condition condition
-@param ... The format string and parameters that define the log message.
+@param fmt the layout of the message.
+@param ... the variable parts of the message.
 */
 #define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
 		if (!(condition) && ::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
 			LOG4CXX_STACKTRACE \
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 
 #else
 #define LOG4CXX_ERROR(logger, message)
-#define LOG4CXX_ERROR_FMT(logger, ...)
+#define LOG4CXX_ERROR_FMT(logger, fmt, ...)
 #define LOG4CXX_ASSERT(logger, condition, message)
 #define LOG4CXX_ASSERT_FMT(logger, condition, ...)
 #endif
@@ -2260,7 +2287,6 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 @param logger the logger to be used.
 @param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 
-<p>Example:
 ~~~{.cpp}
 LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
 ~~~
@@ -2271,17 +2297,22 @@ LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
 			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
-Add a new logging event containing libfmt formatted <code>...</code> to attached appender(s) if \c logger is enabled for <code>FATAL</code> events.
+Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>FATAL</code> events.
 
 @param logger the logger to be used.
-@param ... The format string and parameters that define the log message.
+@param fmt the layout of the message.
+@param ... the variable parts of the message.
+
+~~~{.cpp}
+LOG4CXX_FATAL_FMT(m_log, "{} is not supported", m_renderSystem->getName());
+~~~
 */
-#define LOG4CXX_FATAL_FMT(logger, ...) do { \
+#define LOG4CXX_FATAL_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isFatalEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), ::LOG4CXX_FORMAT_NS::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
-#define LOG4CXX_FATAL_FMT(logger, ...)
+#define LOG4CXX_FATAL_FMT(logger, fmt, ...)
 #endif
 
 /**
