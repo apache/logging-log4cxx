@@ -199,18 +199,20 @@ LOG4CXX_INFO( rootLogger, "Numbers can be formatted with excessive operator<<: "
 This leads to very awkward code to read and write, especially as iostreams don't
 support positional arguments at all.
 
-In order to get around this, one popular library(that has been standardized as
-part of C++20) is [{fmt}](https://fmt.dev/latest/index.html).  Supporting
-positional arguments and printf-like formatting, it makes for much clearer
-code like the following:
+In order to get around this, Log4cxx provides a family of macros that
+support positional arguments and printf-like formatting, which makes for much clearer
+(and more efficient) code like the following:
 
 ~~~{.cpp}
 LOG4CXX_INFO_FMT( rootLogger, "Numbers can be formatted with a format string {:.1f} and as hex: {:x}", 22.456, 123 );
 ~~~
 
+The `LOG4CXX_[level]_FMT` macros use the [{fmt}](https://fmt.dev/latest/index.html) library by default.
 Note that Log4cxx does not include a copy of {fmt}, so you must include the
 correct headers and linker flags in order to use the `LOG4CXX_[level]_FMT`
 family of macros.
+Provide `LOG4CXX_FORMAT_NS=std` to the preprocessor to have
+the `LOG4CXX_[level]_FMT` macros use the standard library version of [format](https://en.cppreference.com/w/cpp/utility/format/format).
 
 As with the standard logger macros, these macros will also be compiled out
 if the `LOG4CXX_THRESHOLD` macro is set to a level that will compile out

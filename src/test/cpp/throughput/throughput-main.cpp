@@ -24,9 +24,13 @@
 #include <string>
 #include <thread>
 
+#if LOG4CXX_USING_STD_FORMAT
+#include <format>
+#else
 #include <fmt/core.h>
 #include <fmt/chrono.h>
 #include <fmt/ostream.h>
+#endif
 
 #include "log4cxxbenchmarker.h"
 using log4cxx::LogString;
@@ -182,12 +186,12 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	LOG4CXX_INFO_FMT(console, "Benchmarking library only(no writing out):");
+	LOG4CXX_INFO_FMT(console, "Benchmarking library only(no writing out):", 0);
 	bench_log4cxx_single_threaded(iters);
 	bench_log4cxx_multi_threaded(threads, iters);
 	bench_log4cxx_multi_threaded_disabled(threads, iters);
 
-	LOG4CXX_INFO_FMT(console, "Results for use in spreadsheet:");
+	LOG4CXX_INFO_FMT(console, "Results for use in spreadsheet:", 0);
 
 	for ( uint64_t result : results )
 	{
