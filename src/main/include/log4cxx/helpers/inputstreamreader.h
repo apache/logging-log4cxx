@@ -22,15 +22,15 @@
 #include <log4cxx/helpers/inputstream.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 
+// Instantiate template pointer types passed as parameters
+LOG4CXX_INSTANTIATE_EXPORTED_PTR(LOG4CXX_NS::helpers::InputStream);
+LOG4CXX_INSTANTIATE_EXPORTED_PTR(LOG4CXX_NS::helpers::CharsetDecoder);
+
 namespace LOG4CXX_NS
 {
 
 namespace helpers
 {
-
-// Instantiate template pointer types passed as parameters
-LOG4CXX_INSTANTIATE_EXPORTED_PTR(InputStream);
-LOG4CXX_INSTANTIATE_EXPORTED_PTR(CharsetDecoder);
 
 /**
  * Class for reading from character streams.
