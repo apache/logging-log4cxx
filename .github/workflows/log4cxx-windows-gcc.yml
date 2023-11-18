@@ -54,8 +54,9 @@ jobs:
     - name: 'Configure Dependencies'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
       id: runvcpkg
-      shell: pwsh
+      shell: msys2bash
       run: |
+        gcc --version
         cd vcpkg
         ./bootstrap-vcpkg.bat
         ./vcpkg install apr apr-util fmt --triplet=x64-mingw-dynamic
