@@ -54,7 +54,7 @@ jobs:
     - name: 'Configure Dependencies'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
       id: runvcpkg
-      shell: msys2bash
+      shell: pwsh
       run: |
         gcc --version
         cd vcpkg
