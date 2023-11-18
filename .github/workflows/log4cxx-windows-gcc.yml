@@ -58,7 +58,7 @@ jobs:
       run: |
         cd vcpkg
         ./bootstrap-vcpkg.bat
-        ./vcpkg install apr apr-util fmt --triplet=x64-mingw-dynamic
+        ./vcpkg install apr apr-util fmt --triplet=x64-windows
 
     - name: 'Install zip'
       id: install-zip
