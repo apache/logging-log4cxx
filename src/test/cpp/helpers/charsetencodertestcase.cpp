@@ -19,6 +19,7 @@
 #include "../logunit.h"
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/loglog.h>
 #include <apr.h>
 #include <apr_atomic.h>
