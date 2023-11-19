@@ -21,7 +21,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-#if APR_HAS_THREADS
 /**
    Unit tests of log4cxx::SocketAppender
  */
@@ -92,4 +91,3 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(SocketAppenderTestCase);
-#endif

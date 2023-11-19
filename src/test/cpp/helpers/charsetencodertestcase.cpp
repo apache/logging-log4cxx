@@ -37,9 +37,7 @@ LOGUNIT_CLASS(CharsetEncoderTestCase)
 	LOGUNIT_TEST(encode3);
 	LOGUNIT_TEST(encode4);
 	LOGUNIT_TEST(encode5);
-#if APR_HAS_THREADS
 	LOGUNIT_TEST(thread1);
-#endif
 	LOGUNIT_TEST_SUITE_END();
 
 	enum { BUFSIZE = 256 };
@@ -236,7 +234,6 @@ public:
 		}
 	}
 
-#if APR_HAS_THREADS
 	class ThreadPackage
 	{
 		public:
@@ -391,7 +388,6 @@ public:
 		LOGUNIT_ASSERT_EQUAL((apr_uint32_t) THREAD_COUNT * THREAD_REPS, package->getPass());
 		delete package;
 	}
-#endif
 
 };
 
