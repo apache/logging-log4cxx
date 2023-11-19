@@ -506,8 +506,10 @@ void Logger::removeAllAppenders()
 	m_priv->aai.removeAllAppenders();
 
 	auto rep = getHierarchy();
-	for(AppenderPtr appender : currentAppenders){
-		rep->fireRemoveAppenderEvent(this, appender.get());
+	if(rep){
+		for(AppenderPtr appender : currentAppenders){
+			rep->fireRemoveAppenderEvent(this, appender.get());
+		}
 	}
 }
 
