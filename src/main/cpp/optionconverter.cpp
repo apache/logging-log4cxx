@@ -42,9 +42,8 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
-
-#if APR_HAS_THREADS
 #include <log4cxx/helpers/filewatchdog.h>
+
 namespace LOG4CXX_NS
 {
 
@@ -70,7 +69,6 @@ class ConfiguratorWatchdog  : public helpers::FileWatchdog
 };
 
 }
-#endif
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -445,7 +443,6 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 		configurator = std::make_shared<PropertyConfigurator>();
 	}
 
-#if APR_HAS_THREADS
 	if (0 < delay)
 	{
 		auto dog = new ConfiguratorWatchdog(configurator, configFileName);
@@ -454,6 +451,5 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 		dog->start();
 	}
 	else
-#endif
 		configurator->doConfigure(configFileName, hierarchy);
 }
