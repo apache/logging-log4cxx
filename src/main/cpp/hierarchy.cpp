@@ -56,7 +56,7 @@ struct Hierarchy::HierarchyPrivate
 	}
 
 	helpers::Pool pool;
-	mutable std::mutex mutex;
+	mutable std::recursive_mutex mutex;
 	mutable std::mutex configuredMutex;
 	bool configured;
 	bool emittedNoAppenderWarning;
@@ -81,7 +81,7 @@ Hierarchy::Hierarchy() :
 
 Hierarchy::~Hierarchy()
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	for (auto& item : m_priv->loggers)
 	{
 		if (auto& pLogger = item.second)
@@ -99,7 +99,7 @@ Hierarchy::~Hierarchy()
 
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	if (std::find(m_priv->listeners.begin(), m_priv->listeners.end(), listener) != m_priv->listeners.end())
 	{
@@ -113,7 +113,7 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 
 void Hierarchy::removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
-    std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
     auto found = std::find(m_priv->listeners.begin(), m_priv->listeners.end(), listener);
     if(found != m_priv->listeners.end()){
@@ -123,7 +123,7 @@ void Hierarchy::removeHierarchyEventListener(const spi::HierarchyEventListenerPt
 
 void Hierarchy::clear()
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	m_priv->loggers.clear();
 }
 
@@ -131,7 +131,7 @@ void Hierarchy::emitNoAppenderWarning(const Logger* logger)
 {
 	bool emitWarning = false;
 	{
-		std::unique_lock<std::mutex> lock(m_priv->mutex);
+		std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 		emitWarning = !m_priv->emittedNoAppenderWarning;
 		m_priv->emittedNoAppenderWarning = true;
 	}
@@ -148,7 +148,7 @@ void Hierarchy::emitNoAppenderWarning(const Logger* logger)
 
 LoggerPtr Hierarchy::exists(const LogString& name)
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	LoggerPtr logger;
 	LoggerMap::iterator it = m_priv->loggers.find(name);
@@ -166,7 +166,7 @@ void Hierarchy::setThreshold(const LevelPtr& l)
 {
 	if (l != 0)
 	{
-		std::unique_lock<std::mutex> lock(m_priv->mutex);
+		std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 		setThresholdInternal(l);
 	}
 }
@@ -202,7 +202,7 @@ void Hierarchy::fireAddAppenderEvent(const Logger* logger, const Appender* appen
 	setConfigured(true);
 	HierarchyEventListenerList clonedList;
 	{
-		std::unique_lock<std::mutex> lock(m_priv->mutex);
+		std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 		clonedList = m_priv->listeners;
 	}
 
@@ -221,7 +221,7 @@ void Hierarchy::fireRemoveAppenderEvent(const Logger* logger, const Appender* ap
 {
 	HierarchyEventListenerList clonedList;
 	{
-		std::unique_lock<std::mutex> lock(m_priv->mutex);
+		std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 		clonedList = m_priv->listeners;
 	}
 	HierarchyEventListenerList::iterator it, itEnd = clonedList.end();
@@ -249,7 +249,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	const spi::LoggerFactoryPtr& factory)
 {
 	auto root = getRootLogger();
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	LoggerMap::iterator it = m_priv->loggers.find(name);
 	LoggerPtr result;
@@ -281,7 +281,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 
 LoggerList Hierarchy::getCurrentLoggers() const
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	LoggerList v;
 	for (auto& item : m_priv->loggers)
@@ -294,7 +294,7 @@ LoggerList Hierarchy::getCurrentLoggers() const
 
 LoggerPtr Hierarchy::getRootLogger() const
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	if (!m_priv->root)
 	{
 		m_priv->root = std::make_shared<RootLogger>(m_priv->pool, Level::getDebug());
@@ -321,7 +321,7 @@ void Hierarchy::ensureIsConfigured(std::function<void()> configurator)
 
 void Hierarchy::resetConfiguration()
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	if (m_priv->root)
 	{
@@ -349,7 +349,7 @@ void Hierarchy::resetConfiguration()
 
 void Hierarchy::shutdown()
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	shutdownInternal();
 }
