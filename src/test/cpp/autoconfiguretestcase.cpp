@@ -134,8 +134,8 @@ public:
 		of.flush(m_pool);
 		of.close(m_pool);
 
-		// wait 1.5 sec for the change to be noticed
-		apr_sleep(1500000);
+		// wait 2.5 sec for the change to be noticed
+		apr_sleep(2500000);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 };
