@@ -19,6 +19,7 @@
 #include "../logunit.h"
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/loglog.h>
 #include <apr.h>
 #include <apr_atomic.h>
 #include <condition_variable>
@@ -200,28 +201,39 @@ public:
 #endif
 		LogString greeting(greet);
 
-		std::locale::global(std::locale("en_US.UTF-8"));
-		auto enc = CharsetEncoder::getEncoder(LOG4CXX_STR("locale"));
-
-		char buf[BUFSIZE];
-		ByteBuffer out(buf, BUFSIZE);
-		LogString::const_iterator iter = greeting.begin();
-		log4cxx_status_t stat = enc->encode(greeting, iter, out);
-		LOGUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
-		stat = enc->encode(greeting, iter, out);
-		LOGUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
-
-		out.flip();
-		LOGUNIT_ASSERT_EQUAL((size_t) 13, out.limit());
-
-		for (size_t i = 0; i < out.limit(); i++)
+		try
 		{
-			unsigned expected = (unsigned)utf8_greet[i];
-			unsigned actual = (unsigned)out.data()[i];
-			LOGUNIT_ASSERT_EQUAL(expected, actual);
-		}
+			std::locale::global(std::locale("en_US.UTF-8"));
+			auto enc = CharsetEncoder::getEncoder(LOG4CXX_STR("locale"));
 
-		LOGUNIT_ASSERT(iter == greeting.end());
+			char buf[BUFSIZE];
+			ByteBuffer out(buf, BUFSIZE);
+			LogString::const_iterator iter = greeting.begin();
+			log4cxx_status_t stat = enc->encode(greeting, iter, out);
+			LOGUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
+			stat = enc->encode(greeting, iter, out);
+			LOGUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
+
+			out.flip();
+			LOGUNIT_ASSERT_EQUAL((size_t) 13, out.limit());
+
+			for (size_t i = 0; i < out.limit(); i++)
+			{
+				unsigned expected = (unsigned)utf8_greet[i];
+				unsigned actual = (unsigned)out.data()[i];
+				LOGUNIT_ASSERT_EQUAL(expected, actual);
+			}
+
+			LOGUNIT_ASSERT(iter == greeting.end());
+		}
+		catch (std::runtime_error& ex)
+		{
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("en_US.UTF-8"));
+			LogLog::warn(msg);
+		}
 	}
 
 #if APR_HAS_THREADS

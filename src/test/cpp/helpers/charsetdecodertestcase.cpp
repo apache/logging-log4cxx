@@ -20,6 +20,7 @@
 #include "../logunit.h"
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/loglog.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -122,16 +123,27 @@ public:
 		const logchar* greet = utf8_greet;
 #endif
 
-		std::locale::global(std::locale("en_US.UTF-8"));
-		auto dec = CharsetDecoder::getDecoder(LOG4CXX_STR("locale"));
+		try
+		{
+			std::locale::global(std::locale("en_US.UTF-8"));
+			auto dec = CharsetDecoder::getDecoder(LOG4CXX_STR("locale"));
 
-		ByteBuffer in(utf8_greet, sizeof (utf8_greet));
-		LogString out;
-		log4cxx_status_t stat = dec->decode(in, out);
-		LOGUNIT_ASSERT_EQUAL(false, CharsetDecoder::isError(stat));
-		stat = dec->decode(in, out);
-		LOGUNIT_ASSERT_EQUAL(false, CharsetDecoder::isError(stat));
-		LOGUNIT_ASSERT(out == greet);
+			ByteBuffer in(utf8_greet, sizeof (utf8_greet));
+			LogString out;
+			log4cxx_status_t stat = dec->decode(in, out);
+			LOGUNIT_ASSERT_EQUAL(false, CharsetDecoder::isError(stat));
+			stat = dec->decode(in, out);
+			LOGUNIT_ASSERT_EQUAL(false, CharsetDecoder::isError(stat));
+			LOGUNIT_ASSERT(out == greet);
+		}
+		catch (std::runtime_error& ex)
+		{
+			LogString msg;
+			Transcoder::decode(ex.what(), msg);
+			msg.append(LOG4CXX_STR(": "));
+			msg.append(LOG4CXX_STR("en_US.UTF-8"));
+			LogLog::warn(msg);
+		}
 	}
 
 
