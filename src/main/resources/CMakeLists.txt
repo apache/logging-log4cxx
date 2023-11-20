@@ -16,7 +16,7 @@
 #
 
 # Configure
-if(WIN32)
+if(MSVC)
 target_sources(log4cxx
   PRIVATE
   ../resources/log4cxx.rc

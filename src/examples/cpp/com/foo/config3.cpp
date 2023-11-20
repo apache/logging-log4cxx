@@ -28,8 +28,10 @@
 #include <Windows.h>
 #elif __APPLE__
 #include <mach-o/dyld.h>
+#elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
+#include <unistd.h> // getpid
 #else
-#include <unistd.h>     /* getpid */
+#include <cstring> // strncpy
 #endif
 
 
@@ -51,12 +53,14 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 	pathSepar = '\\';
 #elif defined(__APPLE__)
 	_NSGetExecutablePath(buf, &bufCount);
-#else
+#elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
 	std::ostringstream exeLink;
 	exeLink << "/proc/" << getpid() << "/exe";
 	bufCount = readlink(exeLink.str().c_str(), buf, bufSize);
 	if (0 < bufCount)
 		buf[bufCount] = 0;
+#else
+	strncpy(buf, "auto-configured", bufSize);
 #endif
 	std::string programFileName(buf);
 	auto slashIndex = programFileName.rfind(pathSepar);
