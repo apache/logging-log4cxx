@@ -136,6 +136,7 @@ CHECK_SYMBOL_EXISTS(syslog "syslog.h" HAS_SYSLOG)
 if(UNIX)
     set(CMAKE_REQUIRED_LIBRARIES "pthread")
     CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
+    CHECK_SYMBOL_EXISTS(pthread_self "pthread.h" HAS_PTHREAD_SELF)
 
     # Check for the (linux) pthread_setname_np.
     # OSX and BSD are special apparently.  OSX only lets you name
@@ -160,6 +161,7 @@ foreach(varName
   HAS_FWIDE
   HAS_LIBESMTP
   HAS_SYSLOG
+  HAS_PTHREAD_SELF
   HAS_PTHREAD_SIGMASK
   HAS_PTHREAD_SETNAME
   HAS_PTHREAD_GETNAME

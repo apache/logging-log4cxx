@@ -92,7 +92,6 @@ APRInitializer::APRInitializer() :
 #if APR_HAS_THREADS
 	apr_status_t stat = apr_threadkey_private_create(&m_priv->tlsKey, tlsDestructImpl, m_priv->p);
 	assert(stat == APR_SUCCESS);
-	assert(stat == APR_SUCCESS);
 #endif
     apr_status_t stat2 = apr_dbd_init(m_priv->p);
     assert(stat2 == APR_SUCCESS);
