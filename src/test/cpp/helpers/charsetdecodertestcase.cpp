@@ -17,7 +17,6 @@
 
 #include <log4cxx/private/string_c11.h>
 #include <log4cxx/helpers/charsetdecoder.h>
-#include <log4cxx/helpers/transcoder.h>
 #include "../logunit.h"
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
