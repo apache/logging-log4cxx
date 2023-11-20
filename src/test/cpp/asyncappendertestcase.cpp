@@ -108,6 +108,7 @@ class BlockableVectorAppender : public VectorAppender
 
 LOG4CXX_PTR_DEF(BlockableVectorAppender);
 
+#if APR_HAS_THREADS
 /**
  * Tests of AsyncAppender.
  */
@@ -323,3 +324,4 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);
+#endif
