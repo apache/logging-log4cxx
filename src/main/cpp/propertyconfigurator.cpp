@@ -49,6 +49,7 @@ using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::config;
 using namespace LOG4CXX_NS::rolling;
 
+#if APR_HAS_THREADS
 #include <log4cxx/helpers/filewatchdog.h>
 namespace LOG4CXX_NS
 {
@@ -73,6 +74,8 @@ class PropertyWatchdog  : public FileWatchdog
 }
 
 PropertyWatchdog* PropertyConfigurator::pdog = NULL;
+
+#endif
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 

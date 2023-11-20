@@ -68,11 +68,19 @@ public:
                 if(configFile.length() > 4 &&
                      configFile.substr(configFile.length() - 4) == ".xml")
                 {
-                        xml::DOMConfigurator::configureAndWatch(configFile, 3000);
+#if APR_HAS_THREADS
+               xml::DOMConfigurator::configureAndWatch(configFile, 3000);
+#else
+               xml::DOMConfigurator::configure(configFile);
+#endif
                 }
                 else
                 {
+#if APR_HAS_THREADS
                         PropertyConfigurator::configureAndWatch(configFile, 3000);
+#else
+                        PropertyConfigurator::configure(configFile);
+#endif
                 }
         }
 
