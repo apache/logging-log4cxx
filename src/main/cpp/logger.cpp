@@ -502,17 +502,32 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
+	AppenderList currentAppenders = m_priv->aai.getAllAppenders();
 	m_priv->aai.removeAllAppenders();
+
+	auto rep = getHierarchy();
+	if(rep){
+		for(AppenderPtr appender : currentAppenders){
+			rep->fireRemoveAppenderEvent(this, appender.get());
+		}
+	}
 }
 
 void Logger::removeAppender(const AppenderPtr appender)
 {
 	m_priv->aai.removeAppender(appender);
+	if (auto rep = getHierarchy())
+	{
+		rep->fireRemoveAppenderEvent(this, appender.get());
+	}
 }
 
 void Logger::removeAppender(const LogString& name1)
 {
-	m_priv->aai.removeAppender(name1);
+	AppenderPtr appender = m_priv->aai.getAppender(name1);
+	if(appender){
+		removeAppender(appender);
+	}
 }
 
 void Logger::removeHierarchy()
