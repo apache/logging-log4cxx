@@ -65,6 +65,7 @@ struct DOMConfigurator::DOMConfiguratorPrivate
 	spi::LoggerFactoryPtr loggerFactory;
 };
 
+#if APR_HAS_THREADS
 namespace LOG4CXX_NS
 {
 namespace xml
@@ -89,6 +90,7 @@ class XMLWatchdog  : public FileWatchdog
 }
 }
 XMLWatchdog* DOMConfigurator::xdog = NULL;
+#endif
 
 
 IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
@@ -909,6 +911,8 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& f
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 {
 	File file(filename);
+#if APR_HAS_THREADS
+
 	if ( xdog )
 	{
 		APRInitializer::unregisterCleanup(xdog);
@@ -923,12 +927,17 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& f
 	xdog->start();
 
 	return status;
+#else
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+#endif
 }
 
 #if LOG4CXX_WCHAR_T_API
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
 {
 	File file(filename);
+#if APR_HAS_THREADS
+
 	if ( xdog )
 	{
 		APRInitializer::unregisterCleanup(xdog);
@@ -943,6 +952,9 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& 
 	xdog->start();
 
 	return status;
+#else
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+#endif
 }
 #endif
 
@@ -950,6 +962,8 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& 
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename, long delay)
 {
 	File file(filename);
+#if APR_HAS_THREADS
+
 	if ( xdog )
 	{
 		APRInitializer::unregisterCleanup(xdog);
@@ -964,6 +978,9 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_str
 	xdog->start();
 
 	return status;
+#else
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+#endif
 }
 #endif
 
@@ -971,6 +988,8 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_str
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
 {
 	File file(filename);
+#if APR_HAS_THREADS
+
 	if ( xdog )
 	{
 		APRInitializer::unregisterCleanup(xdog);
@@ -985,6 +1004,9 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& f
 	xdog->start();
 
 	return status;
+#else
+	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+#endif
 }
 #endif
 

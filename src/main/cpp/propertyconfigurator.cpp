@@ -135,6 +135,7 @@ spi::ConfigurationStatus PropertyConfigurator::configure(helpers::Properties& pr
 	return PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
 }
 
+#if APR_HAS_THREADS
 spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(const File& configFilename)
 {
 	return configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
@@ -160,6 +161,7 @@ spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 
 	return stat;
 }
+#endif
 
 spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	spi::LoggerRepositoryPtr hierarchy)
