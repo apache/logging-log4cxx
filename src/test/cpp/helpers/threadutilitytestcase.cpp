@@ -63,6 +63,7 @@ public:
 		auto thrUtil = ThreadUtility::instance();
 		int num_pre = 0;
 		int num_started = 0;
+		int num_run = 0;
 		int num_post = 0;
 
 		thrUtil->configureFuncs(
@@ -82,12 +83,16 @@ public:
 		}
 		);
 
-		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), []() {} );
+		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [&num_run]()
+		{
+			num_run++;
+		} );
 
 		t.join();
 
 		LOGUNIT_ASSERT_EQUAL( num_pre, 1 );
 		LOGUNIT_ASSERT_EQUAL( num_started, 1 );
+		LOGUNIT_ASSERT_EQUAL( num_run, 1 );
 		LOGUNIT_ASSERT_EQUAL( num_post, 1 );
 	}
 
