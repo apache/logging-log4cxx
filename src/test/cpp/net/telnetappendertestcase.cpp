@@ -25,7 +25,6 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
-#if APR_HAS_THREADS
 /**
    Unit tests of log4cxx::TelnetAppender
  */
@@ -101,4 +100,3 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(TelnetAppenderTestCase);
-#endif

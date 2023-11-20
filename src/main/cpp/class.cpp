@@ -171,9 +171,7 @@ bool Class::registerClass(const Class& newClass)
 
 void Class::registerClasses()
 {
-#if APR_HAS_THREADS
 	AsyncAppender::registerClass();
-#endif
 	ConsoleAppender::registerClass();
 	FileAppender::registerClass();
 	LOG4CXX_NS::db::ODBCAppender::registerClass();

@@ -49,7 +49,6 @@ using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::config;
 using namespace LOG4CXX_NS::rolling;
 
-#if APR_HAS_THREADS
 #include <log4cxx/helpers/filewatchdog.h>
 namespace LOG4CXX_NS
 {
@@ -74,8 +73,6 @@ class PropertyWatchdog  : public FileWatchdog
 }
 
 PropertyWatchdog* PropertyConfigurator::pdog = NULL;
-
-#endif
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
@@ -135,7 +132,6 @@ spi::ConfigurationStatus PropertyConfigurator::configure(helpers::Properties& pr
 	return PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
 }
 
-#if APR_HAS_THREADS
 spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(const File& configFilename)
 {
 	return configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
@@ -161,7 +157,6 @@ spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 
 	return stat;
 }
-#endif
 
 spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	spi::LoggerRepositoryPtr hierarchy)

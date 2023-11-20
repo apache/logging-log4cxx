@@ -342,9 +342,9 @@ const LogString& LoggingEvent::getCurrentThreadName()
 #if defined(_WIN32)
 	using ThreadIdType = DWORD;
 	ThreadIdType threadId = GetCurrentThreadId();
-#elif APR_HAS_THREADS
-	using ThreadIdType = apr_os_thread_t;
-	ThreadIdType threadId = apr_os_thread_current();
+#elif LOG4CXX_HAS_PTHREAD_SELF
+	using ThreadIdType = pthread_t;
+	ThreadIdType threadId = pthread_self();
 #else
 	using ThreadIdType = int;
 	ThreadIdType threadId = 0;
@@ -368,22 +368,19 @@ const LogString& LoggingEvent::getCurrentThreadName()
 		return thread_id_string;
 	}
 
-#if APR_HAS_THREADS
 #if defined(_WIN32)
 	char result[20];
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
-#else
-	// apr_os_thread_t encoded in HEX takes needs as many characters
+	Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
+#elif LOG4CXX_HAS_PTHREAD_SELF
+	// pthread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
-	char result[sizeof(apr_os_thread_t) * 3 + 10];
+	char result[sizeof(pthread_t) * 3 + 10];
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
-#endif /* _WIN32 */
-
-	LOG4CXX_NS::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
-
+	Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
 #else
-    thread_id_string = LOG4CXX_STR("0x00000000");
-#endif /* APR_HAS_THREADS */
+	thread_id_string = LOG4CXX_STR("0x00000000");
+#endif
 	return thread_id_string;
 }
 
