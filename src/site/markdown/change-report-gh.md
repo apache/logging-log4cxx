@@ -59,7 +59,7 @@ Release 1.2.0 includes the following new features:
 
 * LOG4CXX_XXXX macros now support logging of QStrings directly
 * log4cxx::hexdump function that returns a string of hexadecimal byte values
-* Ability to remove a HierarchyEventListener \[[#233](https://github.com/apache/logging-log4cxx/pull/233)\]
+* Ability to remove a HierarchyEventListener \[[#233](https://github.com/apache/logging-log4cxx/issues/233)\]
 * Less string copying when sending a logging event to an appender
 * Allow thread information to be included in JSON formatted output
 * Optional support for logging during process termination \[[#271](https://github.com/apache/logging-log4cxx/pull/271)\]
