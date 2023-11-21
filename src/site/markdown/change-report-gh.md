@@ -52,7 +52,7 @@ The following issues have been addressed:
 * The `locale` external character encoding option reverting to US-ASCII \[[LOGCXX-483](https://issues.apache.org/jira/browse/LOGCXX-483)\]
 * A segfault during process exit when log4cxx::LogManager::shutdown is not called
 * The cmake option to include a MultiprocessRollingFileAppender did not work
-* Build failure in a MSYS2 environment \[[#293](https://github.com/apache/logging-log4cxx/pull/293)\]
+* Build failure in a MSYS2 environment
 * The AsyncAppender and dynamically loading configuration changes disabled when the APR library was built without support for threads
 
 Release 1.2.0 includes the following new features:
