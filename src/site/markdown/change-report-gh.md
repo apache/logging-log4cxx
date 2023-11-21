@@ -51,6 +51,8 @@ The following issues have been addressed:
 
 * The `locale` external character encoding option reverting to US-ASCII \[[LOGCXX-483](https://issues.apache.org/jira/browse/LOGCXX-483)\]
 * A segfault during process exit when log4cxx::LogManager::shutdown is not called
+* Build failure in a MSYS2 environment \[[#293](https://github.com/apache/logging-log4cxx/issues/293)\]
+* The AsyncAppender and dynamically loading configuration changes disabled when the APR library was built without support for threads
 
 Release 1.2.0 includes the following new features:
 
@@ -58,6 +60,11 @@ Release 1.2.0 includes the following new features:
 * log4cxx::hexdump function that returns a string of hexadecimal byte values
 * Ability to remove a HierarchyEventListener \[[#233](https://github.com/apache/logging-log4cxx/issues/233)\]
 * Less string copying when sending a logging event to an appender
+* Allow thread information to be included in JSON formatted output
+* Optional support for logging during process termination \[[#271](https://github.com/apache/logging-log4cxx/issues/271)\]
+* Optionally include a MultiprocessRollingFileAppender (a cmake option)
+* A cmake option to place Log4cxx functions in a different namespace \[[#277](https://github.com/apache/logging-log4cxx/issues/277)\]
+* Optionally use std::format in LOG4CXX_XXXX_FMT macros instead of fmt::format \[[#291](https://github.com/apache/logging-log4cxx/issues/291)\]
 
 Note: the `LOG4CXX_CHARSET` cmake option (external character encoding) default value has changed to `utf-8`
 
