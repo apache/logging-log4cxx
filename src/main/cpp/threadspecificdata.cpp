@@ -64,6 +64,9 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 	void* pData = NULL;
 	apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
 	return (ThreadSpecificData*) pData;
+#elif LOG4CXX_HAS_THREAD_LOCAL
+	thread_local ThreadSpecificData data;
+	return &data;
 #else
 	return &getDataNoThreads();
 #endif
@@ -167,6 +170,8 @@ ThreadSpecificData* ThreadSpecificData::createCurrentData()
 	}
 
 	return newData;
+#elif LOG4CXX_HAS_THREAD_LOCAL
+	return getCurrentData();
 #else
 	return 0;
 #endif
