@@ -53,7 +53,8 @@ The following issues have been addressed:
 * A segfault during process exit when log4cxx::LogManager::shutdown is not called
 * The cmake option to include a MultiprocessRollingFileAppender did not work
 * Build failure in a MSYS2 environment
-* The AsyncAppender and dynamically loading configuration changes disabled when the APR library was built without support for threads
+* When the APR library was built without support for threads, the AsyncAppender, NDC, MDC and dynamically loading configuration changes were not available
+* Format settings (e.g. std::hex) were retained across LOG4CXX_XXXXX macro logging requests
 
 Release 1.2.0 includes the following new features:
 
