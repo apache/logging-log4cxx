@@ -38,3 +38,4 @@ See the following pages for usage information:
 * @subpage performance
 * @subpage conclusions
 * @subpage faq
+* @subpage buildsystems
