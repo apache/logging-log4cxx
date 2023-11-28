@@ -23,6 +23,7 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/level.h>
 #include <log4cxx/hierarchy.h>
+#include <log4cxx/loggerinstance.h>
 #include <log4cxx/spi/rootlogger.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
 #include "insertwide.h"
@@ -99,6 +100,7 @@ LOGUNIT_CLASS(LoggerTestCase)
 	//    LOGUNIT_TEST(testRB3);
 	LOGUNIT_TEST(testExists);
 	LOGUNIT_TEST(testHierarchy1);
+	LOGUNIT_TEST(testLoggerInstance);
 	LOGUNIT_TEST(testTrace);
 	LOGUNIT_TEST(testIsTraceEnabled);
 	LOGUNIT_TEST(testAddingListeners);
@@ -447,6 +449,25 @@ public:
 		LOGUNIT_ASSERT_EQUAL(true, Logger::isTraceEnabledFor(a0));
 		LOGUNIT_ASSERT_EQUAL(true, abc->isTraceEnabled());
 		LOGUNIT_ASSERT_EQUAL(true, Logger::isTraceEnabledFor(abc));
+	}
+
+	void testLoggerInstance()
+	{
+		std::vector<LogString> instanceNames =
+		{ LOG4CXX_TEST_STR("xxx.zzz")
+		, LOG4CXX_TEST_STR("xxx.aaaa")
+		, LOG4CXX_TEST_STR("xxx.bbb")
+		, LOG4CXX_TEST_STR("xxx.ccc")
+		, LOG4CXX_TEST_STR("xxx.ddd")
+		};
+		auto initialCount = LogManager::getCurrentLoggers().size();
+		for (auto loggerName : instanceNames)
+		{
+			LoggerInstancePtr instanceLogger(loggerName);
+			instanceLogger->info("Hello, World.");
+		}
+		auto finalCount = LogManager::getCurrentLoggers().size();
+		LOGUNIT_ASSERT_EQUAL(initialCount, finalCount);
 	}
 
 	void compileTestForLOGCXX202() const

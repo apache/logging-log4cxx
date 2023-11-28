@@ -210,3 +210,11 @@ void LogManager::resetConfiguration()
 {
 	getLoggerRepository()->resetConfiguration();
 }
+
+bool LogManager::removeLogger(const LogString& name, bool ifNotUsed)
+{
+	bool result = false;
+	if (auto r = dynamic_cast<Hierarchy*>(getLoggerRepository().get()))
+		result = r->removeLogger(name, ifNotUsed);
+	return result;
+}
