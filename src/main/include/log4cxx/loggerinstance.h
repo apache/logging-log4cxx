@@ -27,8 +27,9 @@ namespace LOG4CXX_NS
 /**
  * Conditionally removes a Logger at the end of the instance variable's lifetime.
 
-  * If the configuration process loaded settings for the logger,
- *  the LoggerInstancePtr destructor will not remove it from the LoggerRepository.
+ * If the configuration process loaded settings for the logger,
+ * or the logger is referenced elsewhere,
+ * the LoggerInstancePtr destructor will not remove it from the LoggerRepository.
 
  * Use a LoggerInstancePtr to prevent unbounded growth of the LoggerRepository
  * when using runtime generated logger names.

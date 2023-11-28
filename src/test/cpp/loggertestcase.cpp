@@ -453,6 +453,10 @@ public:
 
 	void testLoggerInstance()
 	{
+		auto ca = std::make_shared<CountingAppender>();
+		Logger::getRootLogger()->addAppender(ca);
+
+		// Check instance loggers are removed from the LoggerRepository
 		std::vector<LogString> instanceNames =
 		{ LOG4CXX_STR("xxx.zzz")
 		, LOG4CXX_STR("xxx.aaaa")
@@ -461,13 +465,26 @@ public:
 		, LOG4CXX_STR("xxx.ddd")
 		};
 		auto initialCount = LogManager::getCurrentLoggers().size();
+		int expectedCount = 0;
 		for (auto loggerName : instanceNames)
 		{
 			LoggerInstancePtr instanceLogger(loggerName);
 			instanceLogger->info("Hello, World.");
+			++expectedCount;
 		}
 		auto finalCount = LogManager::getCurrentLoggers().size();
 		LOGUNIT_ASSERT_EQUAL(initialCount, finalCount);
+		LOGUNIT_ASSERT_EQUAL(ca->counter, expectedCount);
+
+		// Check the logger is not removed when referenced elsewhere
+		auto a = Logger::getLogger(LOG4CXX_TEST_STR("xxx.aaaa"));
+		{
+			LoggerInstancePtr instanceLogger(LOG4CXX_TEST_STR("xxx.aaaa"));
+			instanceLogger->info("Hello, World.");
+			++expectedCount;
+		}
+		LOGUNIT_ASSERT(LogManager::exists(LOG4CXX_TEST_STR("xxx.aaaa")));
+		LOGUNIT_ASSERT_EQUAL(ca->counter, expectedCount);
 	}
 
 	void compileTestForLOGCXX202() const
