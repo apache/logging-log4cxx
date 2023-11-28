@@ -454,11 +454,11 @@ public:
 	void testLoggerInstance()
 	{
 		std::vector<LogString> instanceNames =
-		{ LOG4CXX_TEST_STR("xxx.zzz")
-		, LOG4CXX_TEST_STR("xxx.aaaa")
-		, LOG4CXX_TEST_STR("xxx.bbb")
-		, LOG4CXX_TEST_STR("xxx.ccc")
-		, LOG4CXX_TEST_STR("xxx.ddd")
+		{ LOG4CXX_STR("xxx.zzz")
+		, LOG4CXX_STR("xxx.aaaa")
+		, LOG4CXX_STR("xxx.bbb")
+		, LOG4CXX_STR("xxx.ccc")
+		, LOG4CXX_STR("xxx.ddd")
 		};
 		auto initialCount = LogManager::getCurrentLoggers().size();
 		for (auto loggerName : instanceNames)
