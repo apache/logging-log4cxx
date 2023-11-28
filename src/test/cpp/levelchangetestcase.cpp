@@ -53,17 +53,14 @@ class CountingAppender : public AppenderSkeleton
 		}
 };
 
-LoggerPtr getLogger(const std::string& name)
+LoggerPtr getLogger(const std::string& name = std::string())
 {
-	static struct initializer {
-		initializer() {
-			// Prevent default configuration
-			LogManager::getLoggerRepository()->ensureIsConfigured([](){});
-			// Install my appender
-			LogManager::getRootLogger()->addAppender( std::make_shared<CountingAppender>() );
-		}
-	} init;
-	return LogManager::getLogger(name);
+	auto r = LogManager::getLoggerRepository();
+	r->ensureIsConfigured([r]()
+		{
+			r->getRootLogger()->addAppender(std::make_shared<CountingAppender>());
+		});
+	return name.empty() ? r->getRootLogger() : r->getLogger(name);
 }
 
 } // anonymous namespace
@@ -112,7 +109,7 @@ public:
 
 	void testLevelChange()
 	{
-		auto appender = dynamic_cast<CountingAppender*>(LogManager::getRootLogger()->getAppender(LOG4CXX_STR("counter")).get());
+		auto appender = dynamic_cast<CountingAppender*>(getLogger()->getAppender(LOG4CXX_STR("counter")).get());
 		LOGUNIT_ASSERT(appender);
 
 		auto myLogger = getLogger("Controller");
