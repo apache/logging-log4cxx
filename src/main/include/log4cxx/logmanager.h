@@ -228,7 +228,7 @@ class LOG4CXX_EXPORT LogManager
 		Remove the \c name Logger from the hierarchy.
 
 		Note: The \c name Logger must be retrieved from the hierarchy
-		*after* any subsequent configuration file change
+		\b after any subsequent configuration file change
 		for the newly loaded settings to be used.
 
 		@param name The logger to remove.

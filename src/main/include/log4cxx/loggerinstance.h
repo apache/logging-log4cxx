@@ -26,6 +26,15 @@ namespace LOG4CXX_NS
 
 /**
  * Conditionally removes a Logger at the end of the instance variable's lifetime.
+
+ * Use a LoggerInstancePtr to prevent unbounded growth of the LoggerRepository
+ * when using runtime generated logger names.
+
+ * A runtime generated logger name is a technique for marking logging messages
+ * that allows control of the logger level at a class instance level (i.e. a per object logger).
+
+ * A per object logger is useful when the object instance has a identifiable name
+ * (e.g. when it is instantiated from configuration data).
  */
  class LoggerInstancePtr
 {
