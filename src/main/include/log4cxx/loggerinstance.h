@@ -29,9 +29,10 @@ namespace LOG4CXX_NS
 
  * If the configuration process loaded settings for the logger,
  * or the logger is referenced elsewhere,
- * the LoggerInstancePtr destructor will not remove it from the LoggerRepository.
+ * the LoggerInstancePtr destructor will not remove it from the spi::LoggerRepository.
 
- * Use a LoggerInstancePtr to prevent unbounded growth of the LoggerRepository
+ * Use a LoggerInstancePtr to prevent unbounded growth
+ * of data in the spi::LoggerRepository
  * when using runtime generated logger names.
 
  * A runtime generated logger name is a technique for marking logging messages
@@ -42,7 +43,7 @@ namespace LOG4CXX_NS
  */
  class LoggerInstancePtr
 {
-	bool m_hadConfiguration; //!< Did the logger repository hold the m_logger before creation of this instance?
+	bool m_hadConfiguration; //!< Did the logger repository hold a \c m_logger before creation of this instance?
 	LoggerPtr m_logger;
 public: // ...structors
 	/// A null LoggerPtr
