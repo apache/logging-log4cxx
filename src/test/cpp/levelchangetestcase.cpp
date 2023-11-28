@@ -53,7 +53,7 @@ class CountingAppender : public AppenderSkeleton
 		}
 };
 
-LoggerPtr getLogger(const std::string& name = std::string())
+LoggerPtr getLogger(const LogString& name = LogString())
 {
 	auto r = LogManager::getLoggerRepository();
 	r->ensureIsConfigured([r]()
@@ -69,7 +69,7 @@ LoggerPtr getLogger(const std::string& name = std::string())
 class ComplexProcessing
 {
 public:
-	LoggerPtr logger = getLogger("ComplexProcessing");
+	LoggerPtr logger = getLogger(LOG4CXX_STR("ComplexProcessing"));
 	void DoStep1()
 	{
 		LOG4CXX_DEBUG(logger, "Step 1 message");
@@ -112,7 +112,7 @@ public:
 		auto appender = dynamic_cast<CountingAppender*>(getLogger()->getAppender(LOG4CXX_STR("counter")).get());
 		LOGUNIT_ASSERT(appender);
 
-		auto myLogger = getLogger("Controller");
+		auto myLogger = getLogger(LOG4CXX_STR("Controller"));
 		myLogger->setLevel(Level::getDebug());
 
 		// Check this debug request is sent to the appender
