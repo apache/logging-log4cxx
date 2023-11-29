@@ -58,7 +58,7 @@ public: // ...structors
 		, m_logger(LogManager::getLogger(instanceName))
 	{
 	}
-	/// Conditionally remove the logger from the single global map
+	/// Conditionally remove the logger from the the spi::LoggerRepository
 	~LoggerInstancePtr()
 	{
 		reset();
