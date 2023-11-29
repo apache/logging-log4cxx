@@ -63,10 +63,16 @@ public: // ...structors
 	{
 		reset();
 	}
+
 	const LoggerPtr& operator->() const noexcept
 	{
-        return m_logger;
-    }
+		return m_logger;
+	}
+
+	explicit operator bool() const noexcept
+	{
+		return !!m_logger;
+	}
 
 	operator LoggerPtr&() noexcept
 	{

@@ -489,6 +489,7 @@ public:
 
 		// Check reset
 		initiallyNull.reset("InitiallyNullLoggerPtr");
+		LOGUNIT_ASSERT(initiallyNull);
 		LOG4CXX_INFO(initiallyNull, "Hello, World.");
 	}
 
