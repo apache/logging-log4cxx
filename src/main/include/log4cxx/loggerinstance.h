@@ -84,14 +84,14 @@ public: // ...structors
 		return m_logger;
 	}
 
-	LoggerPtr& value() noexcept
+	Logger* get() noexcept
 	{
-		return m_logger;
+		return m_logger.get();
 	}
 
-	const LoggerPtr& value() const noexcept
+	const Logger* get() const noexcept
 	{
-		return m_logger;
+		return m_logger.get();
 	}
 
 	/// Conditionally remove the Logger from the spi::LoggerRepository
