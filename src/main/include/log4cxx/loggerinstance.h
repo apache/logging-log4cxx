@@ -61,12 +61,7 @@ public: // ...structors
 	/// Conditionally remove the logger from the single global map
 	~LoggerInstancePtr()
 	{
-		if (m_logger && !m_hadConfiguration)
-		{
-			auto name = m_logger->getName();
-			m_logger.reset(); // Decrease reference count
-			LogManager::removeLogger(name);
-		}
+		reset();
 	}
 	const LoggerPtr& operator->() const noexcept
 	{
@@ -93,10 +88,27 @@ public: // ...structors
 		return m_logger;
 	}
 
+	/// Conditionally remove the Logger from the spi::LoggerRepository
+	void reset()
+	{
+		if (m_logger && !m_hadConfiguration)
+		{
+			auto name = m_logger->getName();
+			m_logger.reset(); // Decrease reference count
+			LogManager::removeLogger(name);
+		}
+		else
+		{
+			m_hadConfiguration = false;
+			m_logger.reset();
+		}
+	}
+
 	/// Change this to a logger named \c instanceName
 	template <class StringType>
 	void reset(const StringType& instanceName)
 	{
+		reset();
 		m_hadConfiguration = !!LogManager::exists(instanceName);
 		m_logger = LogManager::getLogger(instanceName);
 	}
