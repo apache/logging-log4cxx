@@ -453,6 +453,7 @@ public:
 
 	void testLoggerInstance()
 	{
+		LoggerInstancePtr initiallyNull;
 		auto ca = std::make_shared<CountingAppender>();
 		Logger::getRootLogger()->addAppender(ca);
 
@@ -485,6 +486,10 @@ public:
 		}
 		LOGUNIT_ASSERT(LogManager::exists(LOG4CXX_TEST_STR("xxx.aaaa")));
 		LOGUNIT_ASSERT_EQUAL(ca->counter, expectedCount);
+
+		// Check reset
+		initiallyNull.reset("InitiallyNullLoggerPtr");
+		LOG4CXX_INFO(initiallyNull, "Hello, World.");
 	}
 
 	void compileTestForLOGCXX202() const

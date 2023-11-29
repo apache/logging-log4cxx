@@ -25,7 +25,9 @@ namespace LOG4CXX_NS
 {
 
 /**
- * Conditionally removes a Logger at the end of the instance variable's lifetime.
+ * A smart pointer (implicity convertable to LoggerPtr)
+ * that conditionally removes a Logger from the spi::LoggerRepository
+ * at the end of the instance variable's lifetime.
 
  * If the configuration process loaded settings for the logger,
  * or the logger is referenced elsewhere,
@@ -89,6 +91,14 @@ public: // ...structors
 	const LoggerPtr& value() const noexcept
 	{
 		return m_logger;
+	}
+
+	/// Change this to a logger named \c instanceName
+	template <class StringType>
+	void reset(const StringType& instanceName)
+	{
+		m_hadConfiguration = !!LogManager::exists(instanceName);
+		m_logger = LogManager::getLogger(instanceName);
 	}
 private: // Prevent copies and assignment
 	LoggerInstancePtr(const LoggerInstancePtr&) = delete;
