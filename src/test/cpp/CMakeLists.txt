@@ -50,6 +50,7 @@ set(ALL_LOG4CXX_TESTS
     jsonlayouttest
     l7dtestcase
     leveltestcase
+    levelchangetestcase
     loggertestcase
     mdctestcase
     minimumtestcase
