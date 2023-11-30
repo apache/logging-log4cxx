@@ -258,7 +258,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	{
 		result = it->second;
 	}
-	if (!result)
+	if (!result && factory)
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
 		logger->setHierarchy(this);
@@ -488,4 +488,39 @@ void Hierarchy::clearAppenders()
 void Hierarchy::addAppender(AppenderPtr appender)
 {
 	m_priv->allAppenders.push_back(appender);
+}
+
+bool Hierarchy::removeLogger(const LogString& name, bool ifNotUsed)
+{
+	auto parentRefCount = [this](const LoggerPtr& child) -> int
+	{
+		int result = 0;
+		for (auto& node : m_priv->provisionNodes)
+		{
+			if (node.second.end() != std::find(node.second.begin(), node.second.end(), child))
+				++result;
+		}
+		return result;
+	};
+	bool result = false;
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+	auto it = m_priv->loggers.find(name);
+	if (it == m_priv->loggers.end())
+		;
+	else if (ifNotUsed && 1 + parentRefCount(it->second) < it->second.use_count())
+		;
+	else
+	{
+		for (auto& node : m_priv->provisionNodes)
+		{
+			for (size_t i = node.second.size(); 0 < i; )
+			{
+				if (node.second[--i] == it->second)
+					node.second.erase(node.second.begin() + i);
+			}
+		}
+		m_priv->loggers.erase(it);
+		result = true;
+	}
+	return result;
 }

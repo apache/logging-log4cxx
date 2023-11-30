@@ -44,6 +44,8 @@ but any category naming scheme may be used.
 Logging category names (or equivalently logger name)
 are case-sensitive.
 
+## Naming {#naming}
+
 Log4cxx makes it easy to name loggers by *software component*. This can
 be accomplished by statically instantiating a logger in each class, with
 the logger name equal to the fully qualified name of the class. This is
@@ -67,6 +69,16 @@ For example, the logger named `com.foo` is a parent of the logger
 named `com.foo.Bar`. Similarly, `java` is a parent of `java.util`
 and an ancestor of `java.util.Vector`. This naming scheme should be
 familiar to most developers.
+
+Sometimes a per object logger is useful.
+When each class instance has a identifiable name
+(e.g. when it is instantiated from configuration data)
+add a member variable to hold a log4cxx::LoggerInstancePtr
+and initialize it with a name that makes it a *descendant* of the class.
+This allows activation of DEBUG logging for a single object
+or all objects of that class.
+
+## Instantiation {#getLogger}
 
 The root logger resides at the top of the hierarchy. It is
 exceptional in two ways:

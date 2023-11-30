@@ -228,6 +228,19 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 
 		void addAppender(AppenderPtr appender);
 
+		/**
+		Remove the \c name Logger from the hierarchy.
+
+		Note: The \c name Logger must be retrieved from the hierarchy
+		\b after any subsequent configuration file change
+		for the newly loaded settings to be used.
+
+		@param name The logger to remove.
+		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
+		@returns true if \c name Logger was removed from the hierarchy.
+		*/
+		bool removeLogger(const LogString& name, bool ifNotUsed = true);
+
 	private:
 
 		/**

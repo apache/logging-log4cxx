@@ -223,6 +223,19 @@ class LOG4CXX_EXPORT LogManager
 		to their default.
 		*/
 		static void resetConfiguration();
+
+		/**
+		Remove the \c name Logger from the hierarchy.
+
+		Note: The \c name Logger must be retrieved from the hierarchy
+		\b after any subsequent configuration file change
+		for the newly loaded settings to be used.
+
+		@param name The logger to remove.
+		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
+		@returns true if \c name Logger was removed from the hierarchy.
+		*/
+		static bool removeLogger(const LogString& name, bool ifNotUsed = true);
 }; // class LogManager
 }  // namespace log4cxx
 
