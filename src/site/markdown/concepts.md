@@ -74,7 +74,7 @@ Sometimes a per object logger is useful.
 When each class instance has a identifiable name
 (e.g. when it is instantiated from configuration data)
 add a member variable to hold a log4cxx::LoggerInstancePtr
-and name it so it a *descendant* of the class.
+and initialize it with a name that makes it a *descendant* of the class.
 This allows activation of DEBUG logging for a single object
 or all objects of that class.
 
