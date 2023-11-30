@@ -118,11 +118,6 @@ public: // ...structors
 		m_hadConfiguration = !!LogManager::exists(instanceName);
 		m_logger = LogManager::getLogger(instanceName);
 	}
-private: // Prevent copies and assignment
-	LoggerInstancePtr(const LoggerInstancePtr&) = delete;
-	LoggerInstancePtr(LoggerInstancePtr&&) = delete;
-	LoggerInstancePtr& operator=(const LoggerInstancePtr&) = delete;
-	LoggerInstancePtr& operator=(LoggerInstancePtr&&) = delete;
 };
 
 } // namespace LOG4CXX_NS
