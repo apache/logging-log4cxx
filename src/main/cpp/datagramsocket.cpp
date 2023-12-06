@@ -22,9 +22,6 @@
 #include <log4cxx/private/datagramsocket_priv.h>
 #include <log4cxx/private/aprdatagramsocket.h>
 
-#include "apr_network_io.h"
-#include "apr_lib.h"
-
 using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(DatagramSocket)

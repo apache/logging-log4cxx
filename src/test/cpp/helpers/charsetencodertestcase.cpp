@@ -22,7 +22,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/loglog.h>
 #include <apr.h>
-#include <apr_atomic.h>
+#include <apr_errno.h>
 #include <condition_variable>
 #include <thread>
 
@@ -257,22 +257,26 @@ public:
 
 			void fail()
 			{
-				apr_atomic_inc32(&failCount);
+				std::unique_lock<std::mutex> sync(lock);
+				++failCount;
 			}
 
 			void pass()
 			{
-				apr_atomic_inc32(&passCount);
+				std::unique_lock<std::mutex> sync(lock);
+				++passCount;
 			}
 
 			apr_uint32_t getFail()
 			{
-				return apr_atomic_read32(&failCount);
+				std::unique_lock<std::mutex> sync(lock);
+				return failCount;
 			}
 
 			apr_uint32_t getPass()
 			{
-				return apr_atomic_read32(&passCount);
+				std::unique_lock<std::mutex> sync(lock);
+				return passCount;
 			}
 
 			int getRepetitions()

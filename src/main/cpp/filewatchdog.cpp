@@ -18,8 +18,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/loglog.h>
-#include <apr_thread_proc.h>
-#include <apr_atomic.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/threadutility.h>
@@ -109,7 +107,7 @@ void FileWatchdog::checkAndConfigure()
 	}
 	else
 	{
-		apr_time_t thisMod = m_priv->file.lastModified(pool1);
+		auto thisMod = m_priv->file.lastModified(pool1);
 
 		if (thisMod > m_priv->lastModif)
 		{
