@@ -257,25 +257,25 @@ public:
 
 			void fail()
 			{
-				std::unique_lock<std::mutex> sync(lock);
+				std::lock_guard<std::mutex> sync(lock);
 				++failCount;
 			}
 
 			void pass()
 			{
-				std::unique_lock<std::mutex> sync(lock);
+				std::lock_guard<std::mutex> sync(lock);
 				++passCount;
 			}
 
 			apr_uint32_t getFail()
 			{
-				std::unique_lock<std::mutex> sync(lock);
+				std::lock_guard<std::mutex> sync(lock);
 				return failCount;
 			}
 
 			apr_uint32_t getPass()
 			{
-				std::unique_lock<std::mutex> sync(lock);
+				std::lock_guard<std::mutex> sync(lock);
 				return passCount;
 			}
 
