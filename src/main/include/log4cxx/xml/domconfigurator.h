@@ -32,6 +32,8 @@
 #include <log4cxx/file.h>
 #include <log4cxx/config/propertysetter.h>
 
+#if LOG4CXX_HAS_DOMCONFIGURATOR
+
 extern "C" {
 	struct apr_xml_doc;
 	struct apr_xml_elem;
@@ -338,5 +340,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 LOG4CXX_PTR_DEF(DOMConfigurator);
 }  // namespace xml
 } // namespace log4cxx
+
+#endif /* LOG4CXX_HAS_DOMCONFIGURATOR */
 
 #endif // _LOG4CXX_XML_DOM_CONFIGURATOR_H

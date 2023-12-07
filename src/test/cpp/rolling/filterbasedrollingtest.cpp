@@ -30,7 +30,6 @@
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
-using namespace log4cxx::xml;
 using namespace log4cxx::filter;
 using namespace log4cxx::helpers;
 
@@ -60,10 +59,12 @@ public:
 	 */
 	void test1()
 	{
-		DOMConfigurator::configure(
+#if LOG4CXX_HAS_DOMCONFIGURATOR
+		log4cxx::xml::DOMConfigurator::configure(
 			"./input/rolling/filter1.xml" /*, LogManager::getLoggerRepository() */);
 
 		common(LOG4CXX_STR("output/filterBased-test1"));
+#endif
 	}
 
 	/**

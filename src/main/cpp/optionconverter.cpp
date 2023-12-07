@@ -415,6 +415,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 
 	LogString filename(configFileName.getPath());
 
+#if LOG4CXX_HAS_DOMCONFIGURATOR
 	if (clazz.empty()
 		&& filename.length() > 4
 		&& StringHelper::equalsIgnoreCase(
@@ -423,6 +424,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	{
 		clazz = LOG4CXX_NS::xml::DOMConfigurator::getStaticClass().toString();
 	}
+#endif
 
 	if (!clazz.empty())
 	{

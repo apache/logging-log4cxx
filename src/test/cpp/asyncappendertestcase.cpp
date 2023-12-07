@@ -125,7 +125,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(test3);
 		LOGUNIT_TEST(testBadAppender);
 		LOGUNIT_TEST(testLocationInfoTrue);
+#if LOG4CXX_HAS_DOMCONFIGURATOR
 		LOGUNIT_TEST(testConfiguration);
+#endif
 		LOGUNIT_TEST_SUITE_END();
 
 #ifdef _DEBUG
@@ -288,6 +290,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				discardEvent->getLocationInformation().getClassName());
 		}
 
+#if LOG4CXX_HAS_DOMCONFIGURATOR
 		void testConfiguration()
 		{
 			log4cxx::xml::DOMConfigurator::configure("input/xml/asyncAppender1.xml");
@@ -318,6 +321,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			// LOGUNIT_ASSERT_EQUAL(LEN, v.size());
 			// LOGUNIT_ASSERT_EQUAL(true, vectorAppender->isClosed());
 		}
+#endif
 
 
 };

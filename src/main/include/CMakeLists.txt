@@ -76,6 +76,13 @@ else()
     set(NETWORKING_SUPPORT 0)
 endif()
 
+option(LOG4CXX_DOMCONFIGURATOR_SUPPORT "Support XML as a configuration method" ON)
+if(LOG4CXX_DOMCONFIGURATOR_SUPPORT)
+    set(DOMCONFIGURATOR_SUPPORT 1)
+else()
+    set(DOMCONFIGURATOR_SUPPORT 0)
+endif()
+
 option(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER "Support multiple processes logging to the same file" OFF)
 if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
     set(MULTIPROCESS_RFA 1)
@@ -203,6 +210,9 @@ file(GENERATE
      CONTENT "namespace {int someUnused{};}\n"
 )
 file(GLOB_RECURSE HEADERS log4cxx/*)
+if(NOT LOG4CXX_DOMCONFIGURATOR_SUPPORT)
+    list(REMOVE_ITEM HEADERS "xml/domconfigurator.h")
+endif()
 add_library(log4cxx-include STATIC ${HEADERS} ${GENERATED_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/empty-lib-stub.cpp)
 target_include_directories(log4cxx-include PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
 

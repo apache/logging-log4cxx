@@ -22,6 +22,10 @@ set(VARIA_TESTS
     levelrangefiltertestcase
 )
 
+if(NOT LOG4CXX_DOMCONFIGURATOR_SUPPORT)
+    list(REMOVE_ITEM VARIA_TESTS errorhandlertestcase)
+endif()
+
 foreach(fileName  IN LISTS VARIA_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
 endforeach()
