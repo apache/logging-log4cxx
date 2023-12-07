@@ -30,10 +30,8 @@
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
-#include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/spi/rootlogger.h>
 #include <mutex>
-#include <apr.h>
 #include "assert.h"
 
 

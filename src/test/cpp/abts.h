@@ -20,8 +20,6 @@
 #include <vector>
 #include <string>
 
-#include <apr.h>
-
 #ifdef WIN32
 	#include <io.h>
 #else

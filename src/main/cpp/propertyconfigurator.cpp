@@ -40,8 +40,6 @@
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>
-#include <apr.h>
-
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;

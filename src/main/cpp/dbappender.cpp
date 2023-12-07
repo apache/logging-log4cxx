@@ -36,6 +36,7 @@
 #include <log4cxx/pattern/ndcpatternconverter.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <apr_dbd.h>
+#include <assert.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -51,7 +52,15 @@ struct DBAppender::DBAppenderPriv : public AppenderSkeleton::AppenderSkeletonPri
 {
     DBAppenderPriv() :
         AppenderSkeletonPrivate()
-        {}
+	{
+		static bool initialized = false;
+		if (!initialized)
+		{
+			initialized = true;
+			apr_status_t stat = apr_dbd_init(m_pool.getAPRPool());
+			assert(stat == APR_SUCCESS);
+		}
+	}
 
     apr_dbd_driver_t* m_driver = nullptr;
     apr_dbd_t* m_databaseHandle = nullptr;
@@ -229,7 +238,7 @@ void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
                           _priv->m_databaseHandle,
                           &num_rows,
                           _priv->preparedStmt,
-                          args.size(),
+                          int(args.size()),
                           args.data());
     if(stat != APR_SUCCESS){
         LogString error = LOG4CXX_STR("Unable to insert: ");

@@ -267,13 +267,13 @@ public:
 				++passCount;
 			}
 
-			apr_uint32_t getFail()
+			uint32_t getFail()
 			{
 				std::lock_guard<std::mutex> sync(lock);
 				return failCount;
 			}
 
-			apr_uint32_t getPass()
+			uint32_t getPass()
 			{
 				std::lock_guard<std::mutex> sync(lock);
 				return passCount;
@@ -359,8 +359,8 @@ public:
 			ThreadPackage& operator=(ThreadPackage&);
 			std::mutex lock;
 			std::condition_variable condition;
-			apr_uint32_t passCount;
-			apr_uint32_t failCount;
+			uint32_t passCount;
+			uint32_t failCount;
 			CharsetEncoderPtr enc;
 			int repetitions;
 	};

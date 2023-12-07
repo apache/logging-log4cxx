@@ -56,7 +56,9 @@
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
 #include <thread>
-
+#if WIN32
+#include <Windows.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -178,7 +180,7 @@ public:
 			converterIter != converters.end();
 			converterIter++, fieldIter++)
 		{
-			int fieldStart = actual.length();
+			auto fieldStart = static_cast<int>(actual.length());
 			(*converterIter)->format(event, actual, p);
 			(*fieldIter)->format(fieldStart, actual);
 		}

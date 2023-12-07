@@ -23,7 +23,6 @@
 #include <assert.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <apr_thread_proc.h>
-#include <apr_dbd.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
 
@@ -90,8 +89,6 @@ APRInitializer::APRInitializer() :
 	apr_status_t stat = apr_threadkey_private_create(&m_priv->tlsKey, tlsDestructImpl, m_priv->p);
 	assert(stat == APR_SUCCESS);
 #endif
-    apr_status_t stat2 = apr_dbd_init(m_priv->p);
-    assert(stat2 == APR_SUCCESS);
 }
 
 APRInitializer::~APRInitializer()
