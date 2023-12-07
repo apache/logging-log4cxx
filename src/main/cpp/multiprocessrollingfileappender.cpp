@@ -17,7 +17,6 @@
 
 #include <apr_portable.h>
 #include <apr_file_io.h>
-#include <apr_atomic.h>
 #include <apr_mmap.h>
 #ifndef MAX_FILE_LEN
 	#define MAX_FILE_LEN 2048

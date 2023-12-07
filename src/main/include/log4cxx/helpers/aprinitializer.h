@@ -28,8 +28,7 @@
 #include <log4cxx/helpers/widelife.h>
 
 extern "C" {
-	typedef struct apr_thread_mutex_t apr_thread_mutex_t;
-	typedef struct apr_threadkey_t apr_threadkey_t;
+	struct apr_threadkey_t;
 	struct apr_pool_t;
 }
 

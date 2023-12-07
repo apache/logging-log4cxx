@@ -65,7 +65,6 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
-#include <apr.h>
 
 
 using namespace LOG4CXX_NS;

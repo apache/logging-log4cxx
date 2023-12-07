@@ -20,12 +20,9 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <apr_pools.h>
-#include <apr_atomic.h>
 #include <assert.h>
 #include <log4cxx/helpers/threadspecificdata.h>
-#include <apr_thread_mutex.h>
 #include <apr_thread_proc.h>
-#include <apr_dbd.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
 
@@ -87,14 +84,11 @@ APRInitializer::APRInitializer() :
 	m_priv(std::make_unique<APRInitializerPrivate>())
 {
 	apr_pool_create(&m_priv->p, NULL);
-	apr_atomic_init(m_priv->p);
 	m_priv->startTime = Date::currentTime();
 #if APR_HAS_THREADS
 	apr_status_t stat = apr_threadkey_private_create(&m_priv->tlsKey, tlsDestructImpl, m_priv->p);
 	assert(stat == APR_SUCCESS);
 #endif
-    apr_status_t stat2 = apr_dbd_init(m_priv->p);
-    assert(stat2 == APR_SUCCESS);
 }
 
 APRInitializer::~APRInitializer()

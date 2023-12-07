@@ -26,9 +26,6 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/date.h>
 
-#include <apr_strings.h>
-#include <string.h>
-
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;

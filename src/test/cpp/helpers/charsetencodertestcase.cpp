@@ -22,7 +22,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/loglog.h>
 #include <apr.h>
-#include <apr_atomic.h>
+#include <apr_errno.h>
 #include <condition_variable>
 #include <thread>
 
@@ -238,8 +238,8 @@ public:
 	class ThreadPackage
 	{
 		public:
-			ThreadPackage(CharsetEncoderPtr& enc, int repetitions) :
-				p(), passCount(0), failCount(0), enc(enc), repetitions(repetitions)
+			ThreadPackage(CharsetEncoderPtr& enc, int repetitions)
+				: passCount(0), failCount(0), enc(enc), repetitions(repetitions)
 			{
 			}
 
@@ -257,22 +257,26 @@ public:
 
 			void fail()
 			{
-				apr_atomic_inc32(&failCount);
+				std::lock_guard<std::mutex> sync(lock);
+				++failCount;
 			}
 
 			void pass()
 			{
-				apr_atomic_inc32(&passCount);
+				std::lock_guard<std::mutex> sync(lock);
+				++passCount;
 			}
 
-			apr_uint32_t getFail()
+			uint32_t getFail()
 			{
-				return apr_atomic_read32(&failCount);
+				std::lock_guard<std::mutex> sync(lock);
+				return failCount;
 			}
 
-			apr_uint32_t getPass()
+			uint32_t getPass()
 			{
-				return apr_atomic_read32(&passCount);
+				std::lock_guard<std::mutex> sync(lock);
+				return passCount;
 			}
 
 			int getRepetitions()
@@ -353,11 +357,10 @@ public:
 		private:
 			ThreadPackage(const ThreadPackage&);
 			ThreadPackage& operator=(ThreadPackage&);
-			Pool p;
 			std::mutex lock;
 			std::condition_variable condition;
-			volatile apr_uint32_t passCount;
-			volatile apr_uint32_t failCount;
+			uint32_t passCount;
+			uint32_t failCount;
 			CharsetEncoderPtr enc;
 			int repetitions;
 	};
@@ -367,12 +370,10 @@ public:
 		enum { THREAD_COUNT = 10, THREAD_REPS = 10000 };
 		std::thread threads[THREAD_COUNT];
 		CharsetEncoderPtr enc(CharsetEncoder::getEncoder(LOG4CXX_STR("ISO-8859-1")));
-		ThreadPackage* package = new ThreadPackage(enc, THREAD_REPS);
+		auto package = std::make_unique<ThreadPackage>(enc, THREAD_REPS);
+		for (int i = 0; i < THREAD_COUNT; i++)
 		{
-			for (int i = 0; i < THREAD_COUNT; i++)
-			{
-				threads[i] = std::thread(&ThreadPackage::run, package);
-			}
+			threads[i] = std::thread(&ThreadPackage::run, package.get());
 		}
 		//
 		//   give time for all threads to be launched so
@@ -387,7 +388,6 @@ public:
 
 		LOGUNIT_ASSERT_EQUAL((apr_uint32_t) 0, package->getFail());
 		LOGUNIT_ASSERT_EQUAL((apr_uint32_t) THREAD_COUNT * THREAD_REPS, package->getPass());
-		delete package;
 	}
 
 };

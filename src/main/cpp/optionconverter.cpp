@@ -37,7 +37,6 @@
 #include <log4cxx/file.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/logmanager.h>
-#include <apr_general.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
