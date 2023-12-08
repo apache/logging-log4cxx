@@ -39,3 +39,4 @@ See the following pages for usage information:
 * @subpage conclusions
 * @subpage faq
 * @subpage buildsystems
+* @subpage log-flow
