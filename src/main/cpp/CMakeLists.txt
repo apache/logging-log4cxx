@@ -48,6 +48,12 @@ if(LOG4CXX_NETWORKING_SUPPORT)
     )
 endif()
 
+if(LOG4CXX_DOMCONFIGURATOR_SUPPORT)
+    list(APPEND extra_classes
+	domconfigurator.cpp
+	)
+endif()
+
 if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
     target_compile_definitions(log4cxx PRIVATE LOG4CXX_MULTI_PROCESS)
     list(APPEND extra_classes
@@ -95,7 +101,6 @@ target_sources(log4cxx
   defaultconfigurator.cpp
   defaultloggerfactory.cpp
   defaultrepositoryselector.cpp
-  domconfigurator.cpp
   exception.cpp
   fallbackerrorhandler.cpp
   file.cpp

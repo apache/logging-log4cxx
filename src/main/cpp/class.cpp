@@ -196,7 +196,9 @@ void Class::registerClasses()
 	LOG4CXX_NS::rolling::ManualTriggeringPolicy::registerClass();
 	LOG4CXX_NS::rolling::FixedWindowRollingPolicy::registerClass();
 	LOG4CXX_NS::rolling::FilterBasedTriggeringPolicy::registerClass();
+#if LOG4CXX_HAS_DOMCONFIGURATOR
 	LOG4CXX_NS::xml::DOMConfigurator::registerClass();
+#endif
 	LOG4CXX_NS::PropertyConfigurator::registerClass();
 	LOG4CXX_NS::varia::FallbackErrorHandler::registerClass();
 #if LOG4CXX_HAS_NETWORKING

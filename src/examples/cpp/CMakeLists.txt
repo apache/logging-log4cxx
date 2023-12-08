@@ -16,6 +16,10 @@
 #
 
 set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream ndc-example custom-appender MyApp1 MyApp2)
+if(NOT LOG4CXX_DOMCONFIGURATOR_SUPPORT)
+    list(REMOVE_ITEM ALL_LOG4CXX_EXAMPLES delayedloop custom-appender)
+endif()
+
 if(LOG4CXX_QT_SUPPORT)
   list(APPEND ALL_LOG4CXX_EXAMPLES MyApp-qt)
 endif(LOG4CXX_QT_SUPPORT)

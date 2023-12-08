@@ -15,5 +15,10 @@
 # limitations under the License.
 #
 
-add_executable(defaultinittestcase testcase1.cpp testcase2.cpp testcase3.cpp testcase4.cpp)
+if(NOT LOG4CXX_DOMCONFIGURATOR_SUPPORT)
+    add_executable(defaultinittestcase testcase1.cpp testcase3.cpp)
+else()
+    add_executable(defaultinittestcase testcase1.cpp testcase2.cpp testcase3.cpp testcase4.cpp)
+endif()
+
 set(ALL_LOG4CXX_TESTS ${ALL_LOG4CXX_TESTS} defaultinittestcase PARENT_SCOPE)

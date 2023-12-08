@@ -26,6 +26,10 @@ else()
     set(NET_TESTS "")
 endif()
 
+if(NOT LOG4CXX_DOMCONFIGURATOR_SUPPORT)
+    list(REMOVE_ITEM NET_TESTS xmlsocketappendertestcase)
+endif()
+
 if(HAS_LIBESMTP)
     list(APPEND NET_TESTS smtpappendertestcase)
 endif(HAS_LIBESMTP)

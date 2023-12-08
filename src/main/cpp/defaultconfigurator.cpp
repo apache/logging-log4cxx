@@ -158,9 +158,12 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 }
 
 LOG4CXX_NS::spi::ConfigurationStatus DefaultConfigurator::tryLoadFile(const LogString& filename){
+#if LOG4CXX_HAS_DOMCONFIGURATOR
 	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".xml"))){
 		return LOG4CXX_NS::xml::DOMConfigurator::configure(filename);
-	}else if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".properties"))){
+	}
+#endif
+	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".properties"))){
 		return LOG4CXX_NS::PropertyConfigurator::configure(filename);
 	}
 
