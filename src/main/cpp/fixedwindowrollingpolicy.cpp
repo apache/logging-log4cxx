@@ -199,8 +199,8 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	{
 		renameTo.resize(renameTo.size() - 3);
 		GZCompressActionPtr comp = std::make_shared<GZCompressAction>(
-					File().setPath(renameTo),
-					File().setPath(compressedName),
+					File(renameTo),
+					File(compressedName),
 					true);
 		comp->setThrowIOExceptionOnForkFailure(priv->throwIOExceptionOnForkFailure);
 		compressAction = comp;
@@ -209,16 +209,16 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	{
 		renameTo.resize(renameTo.size() - 4);
 		ZipCompressActionPtr comp = std::make_shared<ZipCompressAction>(
-					File().setPath(renameTo),
-					File().setPath(compressedName),
+					File(renameTo),
+					File(compressedName),
 					true);
 		comp->setThrowIOExceptionOnForkFailure(priv->throwIOExceptionOnForkFailure);
 		compressAction = comp;
 	}
 
 	auto renameAction = std::make_shared<FileRenameAction>(
-				File().setPath(currentActiveFile),
-				File().setPath(renameTo),
+				File(currentActiveFile),
+				File(renameTo),
 				false);
 
 	desc = std::make_shared<RolloverDescription>(
@@ -333,7 +333,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 					highFilename.substr(0, highFilename.length() - suffixLength);
 			}
 
-			renames.push_back(std::make_shared<FileRenameAction>(*toRename, File().setPath(renameTo), true));
+			renames.push_back(std::make_shared<FileRenameAction>(*toRename, File(renameTo), true));
 			lowFilename = highFilename;
 		}
 		else

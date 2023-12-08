@@ -18,7 +18,6 @@
 #ifndef _LOG4CXX_FILE_H
 #define _LOG4CXX_FILE_H
 
-#include <log4cxx/logger.h>
 #include <log4cxx/logstring.h>
 
 extern "C" {
@@ -28,11 +27,6 @@ extern "C" {
 
 namespace LOG4CXX_NS
 {
-namespace helpers
-{
-class Transcoder;
-class Pool;
-}
 
 /**
 * An abstract representation of file and directory path names.
@@ -54,7 +48,7 @@ class LOG4CXX_EXPORT File
 		* @param path file path in current encoding.
 		*/
 		File(const std::string& path);
-#if LOG4CXX_WCHAR_T_API
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T
 		/**
 		*   Construct a new instance.  Use setPath to specify path using a LogString.
 		* @param path file path.
@@ -103,19 +97,19 @@ class LOG4CXX_EXPORT File
 		 *  @param p pool.
 		 *  @return true if file exists.
 		 */
-		bool exists(LOG4CXX_NS::helpers::Pool& p) const;
+		bool exists(helpers::Pool& p) const;
 		/**
 		 *  Determines length of file.  May not be accurate if file is current open.
 		 *  @param p pool.
 		 *  @return length of file.
 		 */
-		size_t length(LOG4CXX_NS::helpers::Pool& p) const;
+		size_t length(helpers::Pool& p) const;
 		/**
 		 *  Determines last modification date.
 		 *  @param p pool.
 		 *  @return length of file.
 		 */
-		log4cxx_time_t lastModified(LOG4CXX_NS::helpers::Pool& p) const;
+		log4cxx_time_t lastModified(helpers::Pool& p) const;
 		/**
 		 *  Get final portion of file path.
 		 *  @return file name.
@@ -140,41 +134,41 @@ class LOG4CXX_EXPORT File
 		 *  @return APR_SUCCESS if successful.
 		 */
 		log4cxx_status_t open(apr_file_t** file, int flags,
-			int perm, LOG4CXX_NS::helpers::Pool& p) const;
+			int perm, helpers::Pool& p) const;
 
 		/**
 		 *   List files if current file is a directory.
 		 *   @param p pool.
 		 *   @return list of files in this directory, operation of non-directory returns empty list.
 		 */
-		std::vector<LogString> list(LOG4CXX_NS::helpers::Pool& p) const;
+		std::vector<LogString> list(helpers::Pool& p) const;
 
 		/**
 		 *   Delete file.
 		 *   @param p pool.
 		 *   @return true if file successfully deleted.
 		 */
-		bool deleteFile(LOG4CXX_NS::helpers::Pool& p) const;
+		bool deleteFile(helpers::Pool& p) const;
 		/**
 		 *   Rename file.
 		 *   @param dest new path for file.
 		 *   @param p pool.
 		 *   @return true if file successfully renamed.
 		 */
-		bool renameTo(const File& dest, LOG4CXX_NS::helpers::Pool& p) const;
+		bool renameTo(const File& dest, helpers::Pool& p) const;
 
 		/**
 		 *   Get path of parent directory.
 		 *   @param p pool.
 		 *   @return path of parent directory.
 		 */
-		LogString getParent(LOG4CXX_NS::helpers::Pool& p) const;
+		LogString getParent(helpers::Pool& p) const;
 		/**
 		 *  Make directories recursively.
 		 *  @param p pool.
 		 *  @return true if all requested directories existed or have been created.
 		 */
-		bool mkdirs(LOG4CXX_NS::helpers::Pool& p) const;
+		bool mkdirs(helpers::Pool& p) const;
 
 		/**
 		 * Set the file to be deleted when this object is destroyed.
@@ -193,7 +187,7 @@ class LOG4CXX_EXPORT File
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilePrivate, m_priv)
 		static char* convertBackSlashes(char*);
-		char* getPath(LOG4CXX_NS::helpers::Pool& p) const;
+		char* getPath(helpers::Pool& p) const;
 };
 } // namespace log4cxx
 

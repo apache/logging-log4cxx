@@ -305,7 +305,7 @@ void FileAppender::setFileInternal(
 	}
 	catch (IOException&)
 	{
-		LogString parentName = File().setPath(filename).getParent(p);
+		LogString parentName = File(filename).getParent(p);
 
 		if (!parentName.empty())
 		{

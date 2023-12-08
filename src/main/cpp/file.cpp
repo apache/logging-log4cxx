@@ -73,24 +73,40 @@ static LogString decodeLS(const std::basic_string<S>& src)
 }
 
 
-File::File(const std::string& name1)
-	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
+File::File(const std::string& name)
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	: m_priv(std::make_unique<FilePrivate>(name))
+#else
+	: m_priv(std::make_unique<FilePrivate>(decodeLS(name)))
+#endif
 {
 }
 
-File::File(const char* name1)
-	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
+File::File(const char* name)
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	: m_priv(std::make_unique<FilePrivate>(name))
+#else
+	: m_priv(std::make_unique<FilePrivate>(decodeLS(name)))
+#endif
 {
 }
 
-#if LOG4CXX_WCHAR_T_API
-File::File(const std::wstring& name1)
-	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T
+File::File(const std::wstring& name)
+#if LOG4CXX_LOGCHAR_IS_WCHAR_T
+	: m_priv(std::make_unique<FilePrivate>(name))
+#else
+	: m_priv(std::make_unique<FilePrivate>(decodeLS(name)))
+#endif
 {
 }
 
 File::File(const wchar_t* name1)
+#if LOG4CXX_LOGCHAR_IS_WCHAR_T
+	: m_priv(std::make_unique<FilePrivate>(name))
+#else
 	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
+#endif
 {
 }
 #endif

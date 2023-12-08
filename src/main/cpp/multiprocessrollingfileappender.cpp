@@ -347,7 +347,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 							{
 								if (rollover1->getAppend())
 								{
-									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
+									_priv->fileLength = File(rollover1->getActiveFileName()).length(p);
 								}
 								else
 								{
@@ -408,7 +408,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 							{
 								if (rollover1->getAppend())
 								{
-									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
+									_priv->fileLength = File(rollover1->getActiveFileName()).length(p);
 								}
 								else
 								{
@@ -464,7 +464,7 @@ void MultiprocessRollingFileAppender::reopenLatestFile(Pool& p)
 	WriterPtr newWriter(createWriter(os));
 	setFile(getFile());
 	setWriter(newWriter);
-	_priv->fileLength = File().setPath(getFile()).length(p);
+	_priv->fileLength = File(getFile()).length(p);
 	writeHeader(p);
 }
 
@@ -644,7 +644,7 @@ class CountingOutputStream : public OutputStream
 
 			if (rfa != 0)
 			{
-				rfa->setFileLength(File().setPath(rfa->getFile()).length(p));
+				rfa->setFileLength(File(rfa->getFile()).length(p));
 			}
 		}
 

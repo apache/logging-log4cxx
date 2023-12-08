@@ -452,14 +452,14 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	if (currentActiveFile != lastBaseName)
 	{
 		renameAction = std::make_shared<FileRenameAction>(
-					File().setPath(currentActiveFile), File().setPath(lastBaseName), true);
+					File(currentActiveFile), File(lastBaseName), true);
 		nextActiveFile = currentActiveFile;
 	}
 
 	if (m_priv->suffixLength == 3)
 	{
 		GZCompressActionPtr comp = std::make_shared<GZCompressAction>(
-					File().setPath(lastBaseName), File().setPath(m_priv->lastFileName), true);
+					File(lastBaseName), File(m_priv->lastFileName), true);
 		comp->setThrowIOExceptionOnForkFailure(m_priv->throwIOExceptionOnForkFailure);
 		compressAction = comp;
 	}
@@ -467,7 +467,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	if (m_priv->suffixLength == 4)
 	{
 		ZipCompressActionPtr comp = std::make_shared<ZipCompressAction>(
-					File().setPath(lastBaseName), File().setPath(m_priv->lastFileName), true);
+					File(lastBaseName), File(m_priv->lastFileName), true);
 		comp->setThrowIOExceptionOnForkFailure(m_priv->throwIOExceptionOnForkFailure);
 		compressAction = comp;
 	}

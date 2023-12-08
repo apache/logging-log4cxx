@@ -348,7 +348,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 							{
 								if (rollover1->getAppend())
 								{
-									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
+									_priv->fileLength = File(rollover1->getActiveFileName()).length(p);
 								}
 								else
 								{
@@ -410,7 +410,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 							{
 								if (rollover1->getAppend())
 								{
-									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
+									_priv->fileLength = File(rollover1->getActiveFileName()).length(p);
 								}
 								else
 								{
