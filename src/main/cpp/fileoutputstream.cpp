@@ -66,10 +66,9 @@ apr_file_t* FileOutputStream::open(const LogString& filename,
 		flags |= APR_TRUNCATE;
 	}
 
-	File fn;
-	fn.setPath(filename);
+	File fn(filename);
 	apr_file_t* fileptr = 0;
-	apr_status_t stat = fn.open(&fileptr, flags, perm, pool);
+	apr_status_t stat = openFile(fn, &fileptr, flags, perm, pool);
 
 	if (stat != APR_SUCCESS)
 	{

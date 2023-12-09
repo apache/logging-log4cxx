@@ -27,8 +27,6 @@
 
 namespace LOG4CXX_NS
 {
-class File;
-
 namespace rolling
 {
 

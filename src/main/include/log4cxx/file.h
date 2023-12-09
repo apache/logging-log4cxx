@@ -19,11 +19,38 @@
 #define _LOG4CXX_FILE_H
 
 #include <log4cxx/logstring.h>
+#include <log4cxx/helpers/pool.h>
+#include <vector>
 
 extern "C" {
 	struct apr_file_t;
 	struct apr_finfo_t;
 }
+
+#if LOG4CXX_FILE_IS_FILESYSTEM_PATH
+#include <log4cxx/helpers/filesystem.h>
+
+namespace LOG4CXX_NS
+{
+LOG4CXX_EXPORT bool deleteFile(helpers::Pool& p, const File& f);
+
+LOG4CXX_EXPORT LogString getPath(const File& f);
+
+LOG4CXX_EXPORT LogString getParent(helpers::Pool& p, const File& f);
+
+inline bool exists(helpers::Pool&, const File& f) { return exists(f); }
+
+LOG4CXX_EXPORT log4cxx_time_t lastModified(helpers::Pool& p, const File& f);
+
+LOG4CXX_EXPORT size_t length(helpers::Pool& pool, const File& f);
+
+LOG4CXX_EXPORT std::vector<LogString> getFileList(helpers::Pool& p, const File& dir);
+
+LOG4CXX_EXPORT bool mkdirs(helpers::Pool& p, const File& f);
+
+LOG4CXX_EXPORT log4cxx_status_t openFile(const File& f, apr_file_t** file, int flags, int perm, helpers::Pool& p);
+}
+#else // !LOG4CXX_FILE_IS_FILESYSTEM_PATH
 
 namespace LOG4CXX_NS
 {
@@ -87,6 +114,10 @@ class LOG4CXX_EXPORT File
 		 *  Assignment operator.
 		 */
 		File& operator=(const File& src);
+		/**
+		 *  Change the path to \c newName.
+		 */
+		File& operator=(const LogString& newName);
 		/**
 		 *  Destructor.
 		 */
@@ -189,7 +220,28 @@ class LOG4CXX_EXPORT File
 		static char* convertBackSlashes(char*);
 		char* getPath(helpers::Pool& p) const;
 };
+
+inline bool deleteFile(helpers::Pool& p, const File& f) { return f.deleteFile(p); }
+
+inline LogString getPath(const File& f) { return f.getPath(); }
+
+inline LogString getParent(helpers::Pool& p, const File& f) { return f.getParent(p); }
+
+inline bool exists(helpers::Pool& p, const File& f) { return f.exists(p); }
+
+inline log4cxx_time_t lastModified(helpers::Pool& p, const File& f) { return f.lastModified(p); }
+
+inline size_t length(helpers::Pool& p, const File& f) { return f.length(p); }
+
+LOG4CXX_EXPORT std::vector<LogString> getFileList(helpers::Pool& p, const File& dir);
+
+inline bool mkdirs(helpers::Pool& p, const File& f) { return f.mkdirs(p); }
+
+inline log4cxx_status_t openFile(const File& f, apr_file_t** file, int flags, int perm, helpers::Pool& p)
+{ return f.open(file, flags, perm, p); }
+
 } // namespace log4cxx
+#endif // LOG4CXX_FILE_IS_FILESYSTEM_PATH
 
 #define LOG4CXX_FILE(name) LOG4CXX_NS::File(name)
 

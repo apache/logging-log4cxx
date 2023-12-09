@@ -103,6 +103,8 @@ if("std" STREQUAL "${LOG4CXX_FORMAT_NAMESPACE}")
     set(LOG4CXX_USE_STANDARD_FORMAT 1)
 endif()
 
+option(LOG4CXX_FILE_IS_FILESYSTEM_PATH "Change log4cxx::File interface to match std::filesystem::path" OFF)
+
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "utf-8" CACHE STRING "LogString characters, choice of utf-8 (default), ISO-8859-1, US-ASCII, EBCDIC, locale")
 set_property(CACHE LOG4CXX_CHARSET PROPERTY STRINGS "utf-8" "ISO-8859-1" "US-ASCII" "EBCDIC" "locale")
@@ -192,10 +194,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
                @ONLY
 )
 list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h)
-configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
-               ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
-)
-list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h)
 
 # A target for the convenience of working with headers in the IDE
 file(GENERATE

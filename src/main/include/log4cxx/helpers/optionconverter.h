@@ -18,13 +18,11 @@
 #ifndef _LOG4CXX_HELPER_OPTION_CONVERTER_H
 #define _LOG4CXX_HELPER_OPTION_CONVERTER_H
 
-#include <log4cxx/logstring.h>
-#include <log4cxx/helpers/object.h>
+#include <log4cxx/file.h>
 
 namespace LOG4CXX_NS
 {
 class Level;
-class File;
 typedef std::shared_ptr<Level> LevelPtr;
 
 namespace spi

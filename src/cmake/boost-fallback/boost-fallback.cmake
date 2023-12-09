@@ -12,7 +12,6 @@ try_compile(STD_EXPERIMENTAL_FILESYSTEM_FOUND "${CMAKE_BINARY_DIR}/boost-fallbac
     "${CMAKE_CURRENT_LIST_DIR}/test-stdexpfilesystem.cpp")
 
 # Check for standard headers that we need, fall back to boost if they're not found
-set(NAMESPACE_ALIAS ${LOG4CXX_NS})
 option(PREFER_BOOST "Prefer Boost over std:: equivalents" OFF)
 
 if( ${PREFER_BOOST} OR NOT ( ${STD_FILESYSTEM_FOUND} OR ${STD_EXPERIMENTAL_FILESYSTEM_FOUND} ) )

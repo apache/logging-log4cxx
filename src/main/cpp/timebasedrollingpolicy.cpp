@@ -28,7 +28,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/fileappender.h>
-#include <log4cxx/private/boost-std-configuration.h>
+#include <log4cxx/helpers/filesystem.h>
 #include <iostream>
 #include <apr_mmap.h>
 
@@ -369,7 +369,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 	File currentFile(currentActiveFile);
 
 	LogString buf;
-	ObjectPtr obj = std::make_shared<Date>(currentFile.exists(pool) ? currentFile.lastModified(pool) : n);
+	ObjectPtr obj = std::make_shared<Date>(exists(pool, currentFile) ? lastModified(pool, currentFile) : n);
 	formatFileName(obj, buf, pool);
 	m_priv->lastFileName = buf;
 
@@ -441,8 +441,8 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 	if(getCreateIntermediateDirectories()){
 		File compressedFile(m_priv->lastFileName);
-		File compressedParent (compressedFile.getParent(pool));
-		compressedParent.mkdirs(pool);
+		File compressedParent (getParent(pool, compressedFile));
+		mkdirs(pool, compressedParent);
 	}
 
 	//

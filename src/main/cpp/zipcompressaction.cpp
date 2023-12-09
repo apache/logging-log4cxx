@@ -54,7 +54,7 @@ ZipCompressAction::ZipCompressAction(const File& src,
 
 bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 {
-	if (!priv->source.exists(p))
+	if (!exists(p, priv->source))
 	{
 		return false;
 	}
@@ -104,13 +104,13 @@ bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 
 	args[i++] = "zip";
 	args[i++] = "-q";
-	args[i++] = Transcoder::encode(priv->destination.getPath(), p);
-	args[i++] = Transcoder::encode(priv->source.getPath(), p);
+	args[i++] = Transcoder::encode(getPath(priv->destination), p);
+	args[i++] = Transcoder::encode(getPath(priv->source), p);
 	args[i++] = NULL;
 
-	if (priv->destination.exists(p))
+	if (exists(p, priv->destination))
 	{
-		priv->destination.deleteFile(p);
+		deleteFile(p, priv->destination);
 	}
 
 	apr_proc_t pid;
@@ -143,7 +143,7 @@ bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 
 	if (priv->deleteSource)
 	{
-		priv->source.deleteFile(p);
+		deleteFile(p, priv->source);
 	}
 
 	return true;

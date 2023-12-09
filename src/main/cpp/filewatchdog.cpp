@@ -90,24 +90,24 @@ const File& FileWatchdog::file()
 void FileWatchdog::checkAndConfigure()
 {
 	LogString msg(LOG4CXX_STR("Checking ["));
-	msg += m_priv->file.getPath();
+	msg += getPath(m_priv->file);
 	msg += LOG4CXX_STR("]");
 	LogLog::debug(msg);
 	Pool pool1;
 
-	if (!m_priv->file.exists(pool1))
+	if (!exists(pool1, m_priv->file))
 	{
 		if (!m_priv->warnedAlready)
 		{
 			LogLog::debug(((LogString) LOG4CXX_STR("["))
-				+ m_priv->file.getPath()
+				+ getPath(m_priv->file)
 				+ LOG4CXX_STR("] does not exist."));
 			m_priv->warnedAlready = true;
 		}
 	}
 	else
 	{
-		auto thisMod = m_priv->file.lastModified(pool1);
+		auto thisMod = lastModified(pool1, m_priv->file);
 
 		if (thisMod > m_priv->lastModif)
 		{
@@ -121,7 +121,7 @@ void FileWatchdog::checkAndConfigure()
 void FileWatchdog::run()
 {
 	LogString msg(LOG4CXX_STR("Checking ["));
-	msg += m_priv->file.getPath();
+	msg += getPath(m_priv->file);
 	msg += LOG4CXX_STR("] at ");
 	StringHelper::toString((int)m_priv->delay, m_priv->pool, msg);
 	msg += LOG4CXX_STR(" ms interval");
@@ -136,7 +136,7 @@ void FileWatchdog::run()
 	}
 
 	LogString msg2(LOG4CXX_STR("Stop checking ["));
-	msg2 += m_priv->file.getPath();
+	msg2 += getPath(m_priv->file);
 	msg2 += LOG4CXX_STR("]");
 	LogLog::debug(msg2);
 }

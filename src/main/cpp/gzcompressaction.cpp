@@ -56,7 +56,7 @@ GZCompressAction::~GZCompressAction() {}
 
 bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 {
-	if (priv->source.exists(p))
+	if (exists(p, priv->source))
 	{
 		apr_pool_t* aprpool = p.getAPRPool();
 		apr_procattr_t* attr;
@@ -87,7 +87,7 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 		apr_file_t* child_out;
 		apr_int32_t flags = APR_FOPEN_READ | APR_FOPEN_WRITE |
 			APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-		stat = priv->destination.open(&child_out, flags, APR_OS_DEFAULT, p);
+		stat = openFile(priv->destination, &child_out, flags, APR_OS_DEFAULT, p);
 
 		if (stat != APR_SUCCESS)
 		{
@@ -117,14 +117,12 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 			}
 		}
 
-		priv->destination.setAutoDelete(true);
-
 		const char** args = (const char**)
 			apr_palloc(aprpool, 4 * sizeof(*args));
 		int i = 0;
 		args[i++] = "gzip";
 		args[i++] = "-c";
-		args[i++] = Transcoder::encode(priv->source.getPath(), p);
+		args[i++] = Transcoder::encode(getPath(priv->source), p);
 		args[i++] = NULL;
 
 		apr_proc_t pid;
@@ -132,8 +130,10 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 
 		if (stat != APR_SUCCESS && priv->throwIOExceptionOnForkFailure)
 		{
+			deleteFile(p, priv->destination);
 			throw IOException(stat);
-		}else if(stat != APR_SUCCESS && !priv->throwIOExceptionOnForkFailure)
+		}
+		else if(stat != APR_SUCCESS && !priv->throwIOExceptionOnForkFailure)
 		{
 			/* If we fail here (to create the gzip child process),
 			 * skip the compression and consider the rotation to be
@@ -149,6 +149,7 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 			{
 				LogLog::warn(LOG4CXX_STR("Failed to close abandoned .gz file; ignoring"));
 			}
+			deleteFile(p, priv->destination);
 			return true;
 		}
 
@@ -160,11 +161,9 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 			throw IOException(stat);
 		}
 
-		priv->destination.setAutoDelete(false);
-
 		if (priv->deleteSource)
 		{
-			priv->source.deleteFile(p);
+			deleteFile(p, priv->source);
 		}
 
 		return true;

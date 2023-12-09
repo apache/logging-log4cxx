@@ -19,12 +19,11 @@
 #define _LOG4CXX_HELPERS_XML_H
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/object.h>
+#include <log4cxx/file.h>
 #include <log4cxx/helpers/exception.h>
 
 namespace LOG4CXX_NS
 {
-class File;
 namespace helpers
 {
 class XMLDOMNode;

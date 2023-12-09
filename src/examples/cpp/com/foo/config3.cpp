@@ -126,15 +126,15 @@ void SelectConfigurationFile() {
 		int i = 0;
 		for (; extension[i]; ++i) {
 			File current_working_dir_candidate(baseName + extension[i]);
-			if (current_working_dir_candidate.exists(pool)) {
-				DefaultConfigurator::setConfigurationFileName(current_working_dir_candidate.getPath());
+			if (exists(pool, current_working_dir_candidate)) {
+				DefaultConfigurator::setConfigurationFileName(getPath(current_working_dir_candidate));
 				DefaultConfigurator::setConfigurationWatchSeconds(5);
 				break;
 			}
 			if (!altPrefix.empty()) {
 				File alt_dir_candidate(altPrefix + baseName + extension[i]);
-				if (alt_dir_candidate.exists(pool)) {
-					DefaultConfigurator::setConfigurationFileName(alt_dir_candidate.getPath());
+				if (exists(pool, alt_dir_candidate)) {
+					DefaultConfigurator::setConfigurationFileName(getPath(alt_dir_candidate));
 					DefaultConfigurator::setConfigurationWatchSeconds(5);
 					break;
 				}

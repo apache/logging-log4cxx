@@ -103,8 +103,8 @@ public:
 		}
 
 		Pool p;
-		LOGUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test1.log").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test1.log.1").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, exists(p, File("output/obsoleteRFA-test1.log")));
+		LOGUNIT_ASSERT_EQUAL(true, exists(p, File("output/obsoleteRFA-test1.log.1")));
 	}
 
 	/**
@@ -145,8 +145,8 @@ public:
 			}
 		}
 
-		LOGUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log.1").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, exists(p, File("output/obsoleteRFA-test2.log")));
+		LOGUNIT_ASSERT_EQUAL(true, exists(p, File("output/obsoleteRFA-test2.log.1")));
 	}
 
 	/**
@@ -244,7 +244,7 @@ private:
 	static int getFileCount(const char* dir, const LogString & initial)
 	{
 		Pool p;
-		std::vector<LogString> files(File(dir).list(p));
+		std::vector<LogString> files = getFileList(p, File(dir));
 		int count = 0;
 
 		for (size_t i = 0; i < files.size(); i++)

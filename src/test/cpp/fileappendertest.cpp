@@ -44,17 +44,17 @@ public:
 	{
 		File newFile(LOG4CXX_STR("output/newdir/temp.log"));
 		Pool p;
-		newFile.deleteFile(p);
+		deleteFile(p, newFile);
 
 		File newDir(LOG4CXX_STR("output/newdir"));
-		newDir.deleteFile(p);
+		deleteFile(p, newDir);
 
 		FileAppenderPtr wa(new FileAppender());
 		wa->setFile(LOG4CXX_STR("output/newdir/temp.log"));
 		wa->setLayout(PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m%n"))));
 		wa->activateOptions(p);
 
-		LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists(p));
+		LOGUNIT_ASSERT(exists(p, File(LOG4CXX_STR("output/newdir/temp.log"))));
 	}
 
 	/**

@@ -15,12 +15,180 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
 #include <log4cxx/file.h>
 #include <apr_file_io.h>
 #include <apr_file_info.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
+
+namespace LOG4CXX_NS
+{
+
+template<class S>
+static LogString decodeLS(const S* src)
+{
+	LogString dst;
+
+	if (src != 0)
+	{
+		helpers::Transcoder::decode(src, dst);
+	}
+
+	return dst;
+}
+
+template<class S>
+static LogString decodeLS(const std::basic_string<S>& src)
+{
+	LogString dst;
+	helpers::Transcoder::decode(src, dst);
+	return dst;
+}
+
+char* getPath(helpers::Pool& p, const File& f)
+{
+	int style = APR_FILEPATH_ENCODING_UNKNOWN;
+	apr_filepath_encoding(&style, p.getAPRPool());
+	char* retval = NULL;
+
+	if (style == APR_FILEPATH_ENCODING_UTF8)
+	{
+		retval = helpers::Transcoder::encodeUTF8(getPath(f), p);
+	}
+	else
+	{
+		retval = helpers::Transcoder::encode(getPath(f), p);
+	}
+
+	return retval;
+}
+
+char* convertBackSlashes(char* src)
+{
+	for (char* c = src; *c != 0; c++)
+	{
+		if (*c == '\\')
+		{
+			*c = '/';
+		}
+	}
+
+	return src;
+}
+
+std::vector<LogString> getFileList(helpers::Pool& p, const File& dir)
+{
+	apr_dir_t* dir;
+	apr_finfo_t entry;
+	std::vector<LogString> filenames;
+
+	apr_status_t stat = apr_dir_open(&dir,
+			convertBackSlashes(getPath(p, dir)),
+			p.getAPRPool());
+
+	if (stat == APR_SUCCESS)
+	{
+		int style = APR_FILEPATH_ENCODING_UNKNOWN;
+		apr_filepath_encoding(&style, p.getAPRPool());
+		stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
+
+		while (stat == APR_SUCCESS)
+		{
+			if (entry.name != NULL)
+			{
+				LogString filename;
+
+				if (style == APR_FILEPATH_ENCODING_UTF8)
+				{
+					helpers::Transcoder::decodeUTF8(entry.name, filename);
+				}
+				else
+				{
+					helpers::Transcoder::decode(entry.name, filename);
+				}
+
+				filenames.push_back(filename);
+			}
+
+			stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
+		}
+
+		stat = apr_dir_close(dir);
+	}
+
+	return filenames;
+}
+
+} // namespace LOG4CXX_NS
+
+#if LOG4CXX_FILE_IS_FILESYSTEM_PATH
+
+namespace LOG4CXX_NS
+{
+
+bool deleteFile(helpers::Pool&, const File& f)
+{
+	FileErrorCode ec;
+	return remove(f, ec);
+}
+
+LogString getPath(const File& f)
+{
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	return f.string();
+#elif LOG4CXX_LOGCHAR_IS_WCHAR_T
+	return f.wstring();
+#else
+	return decodeLS(f.wstring());
+#endif
+}
+
+LogString getParent(helpers::Pool&, const File& f)
+{
+	LogString result;
+	if (f.has_parent_path())
+		result = getPath(f.parent_path());
+	return result;
+}
+
+log4cxx_time_t lastModified(helpers::Pool&, const File& f)
+{
+	log4cxx_time_t result = 0;
+	FileErrorCode ec;
+	auto ftime = last_write_time(f, ec);
+	if (!ec)
+	{
+		result = std::chrono::system_clock::to_time_t(clock_cast<std::chrono::system_clock>(ftime));
+	}
+	return result;
+}
+
+size_t length(helpers::Pool&, const File& f)
+{
+	size_t result = 0;
+	FileErrorCode ec;
+	auto fsize = file_size(f, ec);
+	if (!ec)
+	{
+		result = static_cast<size_t>(fsize);
+	}
+	return result;
+}
+
+bool mkdirs(helpers::Pool&, const File& f)
+{
+	FileErrorCode ec;
+	return create_directories(f, ec);
+}
+
+log4cxx_status_t openFile(const File& f, apr_file_t** file, int flags, int perm, helpers::Pool& p)
+{
+	return apr_file_open(file, getPath(p, f), flags, perm, p.getAPRPool());
+}
+
+} // namespace LOG4CXX_NS
+
+#else // !LOG4CXX_FILE_IS_FILESYSTEM_PATH
 #include <assert.h>
 #include <log4cxx/helpers/exception.h>
 
@@ -50,28 +218,6 @@ File::File() :
 	m_priv(std::make_unique<FilePrivate>())
 {
 }
-
-template<class S>
-static LogString decodeLS(const S* src)
-{
-	LogString dst;
-
-	if (src != 0)
-	{
-		Transcoder::decode(src, dst);
-	}
-
-	return dst;
-}
-
-template<class S>
-static LogString decodeLS(const std::basic_string<S>& src)
-{
-	LogString dst;
-	Transcoder::decode(src, dst);
-	return dst;
-}
-
 
 File::File(const std::string& name)
 #if LOG4CXX_LOGCHAR_IS_UTF8
@@ -148,6 +294,12 @@ File& File::operator=(const File& src)
 	return *this;
 }
 
+File& File::operator=(const LogString& newName)
+{
+	m_priv->path.assign(newName);
+	return *this;
+}
+
 
 File::~File()
 {
@@ -184,20 +336,7 @@ LogString File::getName() const
 
 char* File::getPath(Pool& p) const
 {
-	int style = APR_FILEPATH_ENCODING_UNKNOWN;
-	apr_filepath_encoding(&style, p.getAPRPool());
-	char* retval = NULL;
-
-	if (style == APR_FILEPATH_ENCODING_UTF8)
-	{
-		retval = Transcoder::encodeUTF8(m_priv->path, p);
-	}
-	else
-	{
-		retval = Transcoder::encode(m_priv->path, p);
-	}
-
-	return retval;
+	return ::getPath(p, *this);
 }
 
 log4cxx_status_t File::open(apr_file_t** file, int flags,
@@ -277,47 +416,8 @@ log4cxx_time_t File::lastModified(Pool& pool) const
 
 std::vector<LogString> File::list(Pool& p) const
 {
-	apr_dir_t* dir;
-	apr_finfo_t entry;
-	std::vector<LogString> filenames;
-
-	apr_status_t stat = apr_dir_open(&dir,
-			convertBackSlashes(getPath(p)),
-			p.getAPRPool());
-
-	if (stat == APR_SUCCESS)
-	{
-		int style = APR_FILEPATH_ENCODING_UNKNOWN;
-		apr_filepath_encoding(&style, p.getAPRPool());
-		stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
-
-		while (stat == APR_SUCCESS)
-		{
-			if (entry.name != NULL)
-			{
-				LogString filename;
-
-				if (style == APR_FILEPATH_ENCODING_UTF8)
-				{
-					Transcoder::decodeUTF8(entry.name, filename);
-				}
-				else
-				{
-					Transcoder::decode(entry.name, filename);
-				}
-
-				filenames.push_back(filename);
-			}
-
-			stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
-		}
-
-		stat = apr_dir_close(dir);
-	}
-
-	return filenames;
+	return getFileList(p, *this);
 }
-
 LogString File::getParent(Pool&) const
 {
 	LogString::size_type slashPos = m_priv->path.rfind(LOG4CXX_STR('/'));
@@ -359,3 +459,5 @@ void File::setAutoDelete(bool autoDelete){
 bool File::getAutoDelete() const{
 	return m_priv->autoDelete;
 }
+
+#endif // !LOG4CXX_FILE_IS_FILESYSTEM_PATH

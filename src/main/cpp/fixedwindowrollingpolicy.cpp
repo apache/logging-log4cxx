@@ -191,8 +191,8 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 
 	if(getCreateIntermediateDirectories()){
 		File compressedFile(compressedName);
-		File compressedParent (compressedFile.getParent(pool));
-		compressedParent.mkdirs(pool);
+		File compressedParent(getParent(pool, compressedFile));
+		mkdirs(pool, compressedParent);
 	}
 
 	if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz")))
@@ -276,32 +276,29 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 
 	for (int i = lowIndex; i <= highIndex; i++)
 	{
-		File toRenameCompressed;
-		toRenameCompressed.setPath(lowFilename);
-		File toRenameBase;
-		toRenameBase.setPath(lowFilename.substr(0, lowFilename.length() - suffixLength));
+		File toRenameCompressed(lowFilename);
+		File toRenameBase(lowFilename.substr(0, lowFilename.length() - suffixLength));
 		File* toRename = &toRenameCompressed;
 		bool isBase = false;
-		bool exists = toRenameCompressed.exists(p);
+		bool found = exists(p, toRenameCompressed);
 
 		if (suffixLength > 0)
 		{
-			if (exists)
+			if (found)
 			{
-				if (toRenameBase.exists(p))
+				if (exists(p, toRenameBase))
 				{
-					toRenameBase.deleteFile(p);
+					deleteFile(p, toRenameBase);
 				}
 			}
 			else
 			{
-				toRename = &toRenameBase;
-				exists = toRenameBase.exists(p);
+				found = exists(p, toRenameBase);
 				isBase = true;
 			}
 		}
 
-		if (exists)
+		if (found)
 		{
 			//
 			//    if at upper index then
@@ -309,7 +306,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 			//        if that fails then abandon purge
 			if (i == highIndex)
 			{
-				if (!toRename->deleteFile(p))
+				if (!deleteFile(p, *toRename))
 				{
 					return false;
 				}

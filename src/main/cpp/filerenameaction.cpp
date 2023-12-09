@@ -48,5 +48,11 @@ FileRenameAction::FileRenameAction(const File& toRename,
 
 bool FileRenameAction::execute(LOG4CXX_NS::helpers::Pool& pool1) const
 {
+#if LOG4CXX_FILE_IS_FILESYSTEM_PATH
+	FileErrorCode ec;
+	rename(priv->source, priv->destination, ec);
+	return !ec;
+#else
 	return priv->source.renameTo(priv->destination, pool1);
+#endif // LOG4CXX_FILE_IS_FILESYSTEM_PATH
 }

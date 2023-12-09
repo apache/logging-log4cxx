@@ -57,7 +57,7 @@ void FileInputStream::open(const LogString& filename)
 {
 	apr_fileperms_t perm = APR_OS_DEFAULT;
 	apr_int32_t flags = APR_READ;
-	apr_status_t stat = File(filename).open(&m_priv->fileptr, flags, perm, m_priv->pool);
+	apr_status_t stat = openFile(File(filename) , &m_priv->fileptr, flags, perm, m_priv->pool);
 
 	if (stat != APR_SUCCESS)
 	{
@@ -71,7 +71,7 @@ FileInputStream::FileInputStream(const File& aFile) :
 {
 	apr_fileperms_t perm = APR_OS_DEFAULT;
 	apr_int32_t flags = APR_READ;
-	apr_status_t stat = aFile.open(&m_priv->fileptr, flags, perm, m_priv->pool);
+	apr_status_t stat = openFile(aFile, &m_priv->fileptr, flags, perm, m_priv->pool);
 
 	if (stat != APR_SUCCESS)
 	{

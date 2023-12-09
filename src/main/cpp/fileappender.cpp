@@ -287,9 +287,8 @@ void FileAppender::setFileInternal(
 		//
 		if (append1)
 		{
-			File outFile;
-			outFile.setPath(filename);
-			writeBOM = !outFile.exists(p);
+			File outFile(filename);
+			writeBOM = !exists(p, outFile);
 		}
 		else
 		{
@@ -305,14 +304,11 @@ void FileAppender::setFileInternal(
 	}
 	catch (IOException&)
 	{
-		LogString parentName = File(filename).getParent(p);
-
+		auto parentName = getParent(p, File(filename));
 		if (!parentName.empty())
 		{
-			File parentDir;
-			parentDir.setPath(parentName);
-
-			if (!parentDir.exists(p) && parentDir.mkdirs(p))
+			File parentDir(parentName);
+			if (!exists(p, parentDir) && mkdirs(p, parentDir))
 			{
 				outStream = OutputStreamPtr(new FileOutputStream(filename, append1));
 			}

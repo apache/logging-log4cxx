@@ -61,7 +61,7 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 			FileAppender appender;
 			appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
 			const File& file = appender.getFile();
-			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getPath());
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), getPath(file));
 		}
 
 		/**
@@ -75,7 +75,7 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 			FileAppender appender;
 			appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
 			const File& file = appender.getFile();
-			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getPath());
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), getPath(file));
 		}
 
 		/**

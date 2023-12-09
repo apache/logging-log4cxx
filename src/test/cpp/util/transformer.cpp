@@ -18,6 +18,7 @@
 #include "transformer.h"
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_thread_proc.h>
 #include <apr_pools.h>
 #include <apr_file_io.h>
@@ -68,7 +69,7 @@ void Transformer::transform(const File& in, const File& out,
 
 void Transformer::copyFile(const File& in, const File& out)
 {
-	Pool p;
+	helpers::Pool p;
 	apr_pool_t* pool = p.getAPRPool();
 
 
@@ -78,11 +79,11 @@ void Transformer::copyFile(const File& in, const File& out)
 	//
 	apr_file_t* child_out;
 	apr_int32_t flags = APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-	apr_status_t stat = out.open(&child_out, flags, APR_OS_DEFAULT, p);
+	apr_status_t stat = openFile(out, &child_out, flags, APR_OS_DEFAULT, p);
 	assert(stat == APR_SUCCESS);
 
 	apr_file_t* in_file;
-	stat = in.open(&in_file, APR_FOPEN_READ, APR_OS_DEFAULT, p);
+	stat = openFile(in, &in_file, APR_FOPEN_READ, APR_OS_DEFAULT, p);
 	assert(stat == APR_SUCCESS);
 	apr_size_t bufsize = 32000;
 	void* buf = apr_palloc(pool, bufsize);
@@ -158,7 +159,7 @@ void Transformer::transform(const File& in, const File& out,
 	}
 	else
 	{
-		Pool p;
+		helpers::Pool p;
 		apr_pool_t* pool = p.getAPRPool();
 
 		//
@@ -166,7 +167,7 @@ void Transformer::transform(const File& in, const File& out,
 		//      may get mangled if passed as parameters
 		//
 		std::string regexName;
-		Transcoder::encode(in.getPath(), regexName);
+		Transcoder::encode(getPath(in), regexName);
 		regexName.append(".sed");
 		createSedCommandFile(regexName, patterns, pool);
 
@@ -210,7 +211,7 @@ void Transformer::transform(const File& in, const File& out,
 
 		//
 		//    specify the input file
-		args[i++] = Transcoder::encode(in.getPath(), p);
+		args[i++] = Transcoder::encode(getPath(in), p);
 		args[i] = NULL;
 
 
@@ -221,7 +222,7 @@ void Transformer::transform(const File& in, const File& out,
 		apr_file_t* child_out;
 		apr_int32_t flags = APR_FOPEN_READ | APR_FOPEN_WRITE |
 			APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-		stat = out.open(&child_out, flags, APR_OS_DEFAULT, p);
+		stat = openFile(out, &child_out, flags, APR_OS_DEFAULT, p);
 		assert(stat == APR_SUCCESS);
 
 		stat =  apr_procattr_child_out_set(attr, child_out, NULL);

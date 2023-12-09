@@ -200,11 +200,10 @@ public:
 #else
 		const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, static_cast<logchar>(0xB3), 0 };
 #endif
-		File file;
-		file.setPath(fname);
+		File file(fname);
 		Pool p;
-		bool exists = file.exists(p);
-		LOGUNIT_ASSERT(exists);
+		bool found = exists(p, file);
+		LOGUNIT_ASSERT(found);
 	}
 
 	/**
@@ -220,11 +219,10 @@ public:
 #else
 		const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, static_cast<logchar>(0x3195), 0 };
 #endif
-		File file;
-		file.setPath(fname);
+		File file(fname);
 		Pool p;
-		bool exists = file.exists(p);
-		LOGUNIT_ASSERT(exists);
+		bool found = exists(p, file);
+		LOGUNIT_ASSERT(found);
 	}
 };
 

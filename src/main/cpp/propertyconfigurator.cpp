@@ -100,21 +100,21 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(const File& configFil
 	{
 		LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 		LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
-			+ configFileName.getPath() + LOG4CXX_STR("]: ") + lsMsg);
+			+ getPath(configFileName) + LOG4CXX_STR("]: ") + lsMsg);
 		return spi::ConfigurationStatus::NotConfigured;
 	}
 
 	try
 	{
 		LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
-				+ configFileName.getPath() + LOG4CXX_STR("].");
+				+ getPath(configFileName) + LOG4CXX_STR("].");
 		LogLog::debug(debugMsg);
 		return doConfigure(props, hierarchy);
 	}
 	catch (const std::exception& ex)
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Could not parse configuration file ["))
-			+ configFileName.getPath() + LOG4CXX_STR("]: "), ex);
+			+ getPath(configFileName) + LOG4CXX_STR("]: "), ex);
 	}
 
 	return spi::ConfigurationStatus::NotConfigured;

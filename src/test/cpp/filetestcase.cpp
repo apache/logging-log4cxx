@@ -73,7 +73,7 @@ public:
 	void defaultConstructor()
 	{
 		File defFile;
-		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), defFile.getPath());
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), getPath(defFile));
 	}
 
 
@@ -82,8 +82,8 @@ public:
 	{
 		File defFile;
 		Pool pool;
-		bool exists = defFile.exists(pool);
-		LOGUNIT_ASSERT_EQUAL(false, exists);
+		bool found = exists(pool, defFile);
+		LOGUNIT_ASSERT_EQUAL(false, found);
 	}
 
 	// check default constructor. read() throws an exception
@@ -111,8 +111,8 @@ public:
 	{
 		File propFile(L"input/patternLayout1.properties");
 		Pool pool;
-		bool exists = propFile.exists(pool);
-		LOGUNIT_ASSERT_EQUAL(true, exists);
+		bool found = exists(pool, propFile);
+		LOGUNIT_ASSERT_EQUAL(true, found);
 	}
 #endif
 
@@ -125,8 +125,8 @@ public:
 			};
 		File propFile(filename);
 		Pool pool;
-		bool exists = propFile.exists(pool);
-		LOGUNIT_ASSERT_EQUAL(true, exists);
+		bool found = exists(pool, propFile);
+		LOGUNIT_ASSERT_EQUAL(true, found);
 	}
 #endif
 
@@ -135,8 +135,8 @@ public:
 	{
 		File propFile(CFSTR("input/patternLayout1.properties"));
 		Pool pool;
-		bool exists = propFile.exists(pool);
-		LOGUNIT_ASSERT_EQUAL(true, exists);
+		bool found = exists(pool, propFile);
+		LOGUNIT_ASSERT_EQUAL(true, found);
 	}
 #endif
 
@@ -145,8 +145,8 @@ public:
 		File propFile("input/patternLayout1.properties");
 		File copy(propFile);
 		Pool pool;
-		bool exists = copy.exists(pool);
-		LOGUNIT_ASSERT_EQUAL(true, exists);
+		bool found = exists(pool, copy);
+		LOGUNIT_ASSERT_EQUAL(true, found);
 	}
 
 	void assignment()
@@ -154,8 +154,8 @@ public:
 		File propFile("input/patternLayout1.properties");
 		File copy = propFile;
 		Pool pool;
-		bool exists = copy.exists(pool);
-		LOGUNIT_ASSERT_EQUAL(true, exists);
+		bool found = exists(pool, copy);
+		LOGUNIT_ASSERT_EQUAL(true, found);
 	}
 
 	void propertyRead()
@@ -173,8 +173,8 @@ public:
 	{
 		File propFile("input/patternLayout1.properties");
 		Pool pool;
-		bool exists = propFile.exists(pool);
-		LOGUNIT_ASSERT_EQUAL(true, exists);
+		bool found = exists(pool, propFile);
+		LOGUNIT_ASSERT_EQUAL(true, found);
 	}
 
 	void fileWrite1()
@@ -204,7 +204,7 @@ public:
 	{
 		File file("output\\bogus.txt");
 		Pool pool;
-		/*bool deleted = */file.deleteFile(pool);
+		deleteFile(pool, file);
 	}
 };
 

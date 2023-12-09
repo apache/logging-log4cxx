@@ -75,7 +75,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 			LogString debugMsg = LOG4CXX_STR("Checking file ");
 			debugMsg.append(names[i]);
 			LogLog::debug(debugMsg);
-			if (candidate.exists(pool))
+			if (exists(pool, candidate))
 			{
 				configuration = candidate;
 				break;
@@ -84,13 +84,13 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 	}
 	else
 	{
-		configuration.setPath(configurationFileName);
+		configuration = configurationFileName;
 	}
 
-	if (configuration.exists(pool))
+	if (exists(pool, configuration))
 	{
 		LogString msg(LOG4CXX_STR("Using configuration file ["));
-		msg += configuration.getPath();
+		msg += getPath(configuration);
 		msg += LOG4CXX_STR("] for automatic log4cxx configuration");
 		LogLog::debug(msg);
 
@@ -180,7 +180,7 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 			LogString debugMsg = LOG4CXX_STR("Checking file ");
 			debugMsg.append(canidate_str);
 			LogLog::debug(debugMsg);
-			if (candidate.exists(pool))
+			if (exists(pool, candidate))
 			{
 				LOG4CXX_NS::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
 				if( configStatus == LOG4CXX_NS::spi::ConfigurationStatus::Configured ){

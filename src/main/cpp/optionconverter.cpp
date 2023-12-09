@@ -412,7 +412,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	ConfiguratorPtr configurator;
 	LogString clazz = _clazz;
 
-	LogString filename(configFileName.getPath());
+	LogString filename(getPath(configFileName));
 
 	if (clazz.empty()
 		&& filename.length() > 4

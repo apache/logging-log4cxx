@@ -782,7 +782,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 	repository1->setConfigured(true);
 	m_priv->repository = repository1;
 	LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
-	msg.append(filename.getPath());
+	msg.append(getPath(filename));
 	msg.append(LOG4CXX_STR("..."));
 	LogLog::debug(msg);
 
@@ -791,7 +791,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 	Pool p;
 	apr_file_t* fd;
 
-	log4cxx_status_t rv = filename.open(&fd, APR_READ, APR_OS_DEFAULT, p);
+	log4cxx_status_t rv = openFile(filename , &fd, APR_READ, APR_OS_DEFAULT, p);
 
 	if (rv != APR_SUCCESS)
 	{
@@ -799,7 +799,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 		// what the PropertyConfigurator does
 		IOException io(rv);
 		LogString msg2(LOG4CXX_STR("Could not read configuration file ["));
-		msg2.append(filename.getPath());
+		msg2.append(getPath(filename));
 		msg2.append(LOG4CXX_STR("]. "));
 		LOG4CXX_DECODE_CHAR(msg, io.what());
 		msg2.append(msg);
@@ -812,7 +812,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 		apr_xml_doc* doc = NULL;
 
 		LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
-				+ filename.getPath() + LOG4CXX_STR("].");
+				+ getPath(filename) + LOG4CXX_STR("].");
 		LogLog::debug(debugMsg);
 
 		rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
@@ -822,7 +822,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 			char errbuf[2000];
 			char errbufXML[2000];
 			LogString msg2(LOG4CXX_STR("Error parsing file ["));
-			msg2.append(filename.getPath());
+			msg2.append(getPath(filename));
 			msg2.append(LOG4CXX_STR("], "));
 			apr_strerror(rv, errbuf, sizeof(errbuf));
 			LOG4CXX_DECODE_CHAR(lerrbuf, std::string(errbuf));

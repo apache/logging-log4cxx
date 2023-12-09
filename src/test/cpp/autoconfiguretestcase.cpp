@@ -75,7 +75,7 @@ public:
 
 	void copyPropertyFile()
 	{
-		LOGUNIT_ASSERT(File(LOG4CXX_STR("input/autoConfigureTest.properties")).exists(m_pool));
+		LOGUNIT_ASSERT(exists(m_pool, File(LOG4CXX_STR("input/autoConfigureTest.properties"))));
 		LOGUNIT_ASSERT(apr_file_copy
 			( "input/autoConfigureTest.properties"
 			, "autoconfiguretestcase.properties"
@@ -85,7 +85,7 @@ public:
 
 		DefaultConfigurator::setConfigurationFileName(m_configFile);
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
-		LOGUNIT_ASSERT(File(m_configFile).exists(m_pool));
+		LOGUNIT_ASSERT(exists(m_pool, File(m_configFile)));
 	}
 
 	void shutdown()

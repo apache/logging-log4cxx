@@ -22,6 +22,7 @@
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/pool.h>
 
+extern "C" { struct apr_file_t; }
 
 namespace LOG4CXX_NS
 {

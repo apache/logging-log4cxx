@@ -19,11 +19,10 @@
 #define _LOG4CXX_ROLLING_MANUAL_TRIGGERING_POLICY_H
 
 #include <log4cxx/rolling/triggeringpolicy.h>
+#include <log4cxx/file.h>
 
 namespace LOG4CXX_NS
 {
-
-class File;
 
 namespace helpers
 {

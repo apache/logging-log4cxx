@@ -19,10 +19,10 @@
 #define _LOG4CXX_SPI_CONFIGURATOR_H
 
 #include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/file.h>
 
 namespace LOG4CXX_NS
 {
-class File;
 
 namespace spi
 {

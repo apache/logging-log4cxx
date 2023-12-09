@@ -20,6 +20,7 @@
 
 #include "filter.h"
 #include <vector>
+#include <log4cxx/file.h>
 
 extern "C" {
 	struct apr_pool_t;
@@ -27,7 +28,6 @@ extern "C" {
 
 namespace LOG4CXX_NS
 {
-class File;
 
 class Transformer
 {

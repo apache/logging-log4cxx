@@ -130,4 +130,9 @@ namespace log4cxx = LOG4CXX_NS;
 #define LOG4CXX_FORMAT_NS fmt
 #endif
 
-#endif
+#cmakedefine01 STD_FILESYSTEM_FOUND
+#cmakedefine01 Boost_FILESYSTEM_FOUND
+#cmakedefine01 STD_EXPERIMENTAL_FILESYSTEM_FOUND
+#cmakedefine01 LOG4CXX_FILE_IS_FILESYSTEM_PATH
+
+#endif // LOG4CXX_LOG4CXX_H

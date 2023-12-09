@@ -34,7 +34,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/fileappender_priv.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
-#include <log4cxx/private/boost-std-configuration.h>
+#include <log4cxx/helpers/filesystem.h>
 #include <mutex>
 
 using namespace LOG4CXX_NS;
@@ -150,7 +150,7 @@ void MultiprocessRollingFileAppender::activateOptions(Pool& p)
 
 			if (getAppend())
 			{
-				_priv->fileLength = activeFile.length(p);
+				_priv->fileLength = length(p, activeFile);
 			}
 			else
 			{
@@ -347,7 +347,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 							{
 								if (rollover1->getAppend())
 								{
-									_priv->fileLength = File(rollover1->getActiveFileName()).length(p);
+									_priv->fileLength = length(p, File(rollover1->getActiveFileName()));
 								}
 								else
 								{
@@ -408,7 +408,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 							{
 								if (rollover1->getAppend())
 								{
-									_priv->fileLength = File(rollover1->getActiveFileName()).length(p);
+									_priv->fileLength = length(p, File(rollover1->getActiveFileName()));
 								}
 								else
 								{
@@ -464,7 +464,7 @@ void MultiprocessRollingFileAppender::reopenLatestFile(Pool& p)
 	WriterPtr newWriter(createWriter(os));
 	setFile(getFile());
 	setWriter(newWriter);
-	_priv->fileLength = File(getFile()).length(p);
+	_priv->fileLength = length(p, File(getFile()));
 	writeHeader(p);
 }
 
@@ -644,7 +644,7 @@ class CountingOutputStream : public OutputStream
 
 			if (rfa != 0)
 			{
-				rfa->setFileLength(File(rfa->getFile()).length(p));
+				rfa->setFileLength(length(p, File(rfa->getFile())));
 			}
 		}
 
