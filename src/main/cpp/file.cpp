@@ -78,11 +78,11 @@ char* convertBackSlashes(char* src)
 
 std::vector<LogString> getFileList(helpers::Pool& p, const File& dir)
 {
-	apr_dir_t* dir;
+	apr_dir_t* pDir;
 	apr_finfo_t entry;
 	std::vector<LogString> filenames;
 
-	apr_status_t stat = apr_dir_open(&dir,
+	apr_status_t stat = apr_dir_open(&pDir,
 			convertBackSlashes(getPath(p, dir)),
 			p.getAPRPool());
 
@@ -90,7 +90,7 @@ std::vector<LogString> getFileList(helpers::Pool& p, const File& dir)
 	{
 		int style = APR_FILEPATH_ENCODING_UNKNOWN;
 		apr_filepath_encoding(&style, p.getAPRPool());
-		stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
+		stat = apr_dir_read(&entry, APR_FINFO_DIRENT, pDir);
 
 		while (stat == APR_SUCCESS)
 		{
@@ -110,10 +110,10 @@ std::vector<LogString> getFileList(helpers::Pool& p, const File& dir)
 				filenames.push_back(filename);
 			}
 
-			stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
+			stat = apr_dir_read(&entry, APR_FINFO_DIRENT, pDir);
 		}
 
-		stat = apr_dir_close(dir);
+		stat = apr_dir_close(pDir);
 	}
 
 	return filenames;
