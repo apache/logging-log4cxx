@@ -62,6 +62,7 @@ void ConfigureLogging() {
 
 // Retrieve the \c name logger pointer.
 auto getLogger(const QString& name) -> LoggerPtr {
+	using namespace log4cxx;
 	return name.isEmpty()
 		? LogManager::getRootLogger()
 		: LogManager::getLogger(name.toStdString());
@@ -69,6 +70,7 @@ auto getLogger(const QString& name) -> LoggerPtr {
 
 // Retrieve the \c name logger pointer.
 auto getLogger(const char* name) -> LoggerPtr {
+	using namespace log4cxx;
 	return name
 		? LogManager::getLogger(name)
 		: LogManager::getRootLogger();
