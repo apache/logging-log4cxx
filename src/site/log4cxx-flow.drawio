@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-12-11T03:31:59.821Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="6sBe09IVZAISnLcNwvGY" version="22.1.7" type="device">
+<mxfile host="app.diagrams.net" modified="2023-12-11T03:47:23.769Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="tySYe_oGCXP_Q_6PRUdm" version="22.1.7" type="device">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1194" dy="742" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -110,20 +110,22 @@
             <mxPoint x="16" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ph8_yWvhTQ9_spNeMV8O-2" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Ph8_yWvhTQ9_spNeMV8O-0" target="Ph8_yWvhTQ9_spNeMV8O-1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="Ph8_yWvhTQ9_spNeMV8O-1" value="Message not logged" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+        <object label="" id="Ph8_yWvhTQ9_spNeMV8O-2">
+          <mxCell value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Ph8_yWvhTQ9_spNeMV8O-0" target="Ph8_yWvhTQ9_spNeMV8O-1" edge="1">
+            <mxGeometry relative="1" as="geometry" />
+          </mxCell>
+        </object>
+        <mxCell id="Ph8_yWvhTQ9_spNeMV8O-1" value="Message not logged" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;glass=0;strokeWidth=1;shadow=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
           <mxGeometry x="510" y="675" width="130" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="Ph8_yWvhTQ9_spNeMV8O-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="oChkvwbR2C9QrrlvOqCN-6" target="Ph8_yWvhTQ9_spNeMV8O-0">
+        <mxCell id="Ph8_yWvhTQ9_spNeMV8O-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="oChkvwbR2C9QrrlvOqCN-6" target="Ph8_yWvhTQ9_spNeMV8O-0" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="220" y="620" as="sourcePoint" />
             <mxPoint x="220" y="790" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Ph8_yWvhTQ9_spNeMV8O-0" value="Logging event&#39;s level greater or equal appender&#39;s threshold" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="102.5" y="650" width="235" height="110" as="geometry" />
+        <mxCell id="Ph8_yWvhTQ9_spNeMV8O-0" value="Logging event&#39;s level less than appender&#39;s threshold" style="rhombus;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="115.61999999999999" y="650" width="208.75" height="110" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
