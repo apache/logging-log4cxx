@@ -41,7 +41,8 @@ consulting any remaining filters
 3. Neutral: This filter neither rejects nor accepts the message, it will
 be passed on to the next filter in the chain
 
-If no filter rejects or accepts the message, the message will be logged.
+If a filter accepts the message, the message will be logged.
+If no filter rejects the message, the message will be logged.
 
 The following flow diagram shows how messages flow through the system:
 
