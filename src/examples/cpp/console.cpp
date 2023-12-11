@@ -30,23 +30,26 @@
 #include <stdint.h>
 #endif
 
-using namespace log4cxx;
-
 /**
  *   Configures console appender.
  *   @param err if true, use stderr, otherwise stdout.
  */
-static void configure(bool err) {
-    ConsoleAppenderPtr appender(new ConsoleAppender());
-    if (err) {
-        appender->setTarget(LOG4CXX_STR("System.err"));
+static void configure(bool err)
+{
+    using namespace log4cxx;
+    auto r = LogManager::getLoggerRepository();
+    r->ensureIsConfigured([r]() {
+        auto appender = std::make_shared<ConsoleAppender>(std::make_shared<SimpleLayout>());
+        appender->setName(LOG4CXX_STR("console"));
+        helpers::Pool pool;
+        appender->activateOptions(pool);
+        r->getRootLogger()->addAppender(appender);
+    });
+    if (err)
+    {
+        if (auto appender = log4cxx::cast<ConsoleAppender>(r->getRootLogger()->getAppender(LOG4CXX_STR("console"))))
+            appender->setTarget(LOG4CXX_STR("System.err"));
     }
-    LayoutPtr layout(new SimpleLayout());
-    appender->setLayout(layout);
-    helpers::Pool pool;
-    appender->activateOptions(pool);
-    Logger::getRootLogger()->addAppender(appender);
-    LogManager::getLoggerRepository()->setConfigured(true);
 }
 
 /**
@@ -102,7 +105,7 @@ int main(int argc, char** argv)
                 configure(err);
                 configured = true;
             }
-            Logger::getRootLogger()->info("Hello, log4cxx");
+            log4cxx::Logger::getRootLogger()->info("Hello, log4cxx");
 #if LOG4CXX_WCHAR_T_API
         } else if (strcmp("wide", argv[i]) == 0) {
             fwide(err ? stderr : stdout, 1);
