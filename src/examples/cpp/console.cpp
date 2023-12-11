@@ -31,22 +31,21 @@
 #endif
 
 using namespace log4cxx;
-using namespace log4cxx::helpers;
 
 /**
  *   Configures console appender.
  *   @param err if true, use stderr, otherwise stdout.
  */
 static void configure(bool err) {
-    log4cxx::ConsoleAppenderPtr appender(new log4cxx::ConsoleAppender());
+    ConsoleAppenderPtr appender(new ConsoleAppender());
     if (err) {
         appender->setTarget(LOG4CXX_STR("System.err"));
     }
-    log4cxx::LayoutPtr layout(new log4cxx::SimpleLayout());
+    LayoutPtr layout(new SimpleLayout());
     appender->setLayout(layout);
-    log4cxx::helpers::Pool pool;
+    helpers::Pool pool;
     appender->activateOptions(pool);
-    log4cxx::Logger::getRootLogger()->addAppender(appender);
+    Logger::getRootLogger()->addAppender(appender);
     LogManager::getLoggerRepository()->setConfigured(true);
 }
 
@@ -103,7 +102,7 @@ int main(int argc, char** argv)
                 configure(err);
                 configured = true;
             }
-            log4cxx::Logger::getRootLogger()->info("Hello, log4cxx");
+            Logger::getRootLogger()->info("Hello, log4cxx");
 #if LOG4CXX_WCHAR_T_API
         } else if (strcmp("wide", argv[i]) == 0) {
             fwide(err ? stderr : stdout, 1);

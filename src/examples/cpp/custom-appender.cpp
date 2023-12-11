@@ -22,7 +22,7 @@
 
 namespace LOG4CXX_NS {
 
-class NullWriterAppender : public log4cxx::AppenderSkeleton {
+class NullWriterAppender : public AppenderSkeleton {
 public:
 	DECLARE_LOG4CXX_OBJECT(NullWriterAppender)
 	BEGIN_LOG4CXX_CAST_MAP()
@@ -38,11 +38,11 @@ public:
 		return false;
 	}
 
-	void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override {
+	void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override {
 		// This gets called whenever there is a valid event for our appender.
 	}
 
-	void activateOptions(log4cxx::helpers::Pool& /* pool */) override {
+	void activateOptions(helpers::Pool& /* pool */) override {
 		// Given all of our options, do something useful(e.g. open a file)
 	}
 
