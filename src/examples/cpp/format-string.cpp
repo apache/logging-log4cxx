@@ -16,6 +16,7 @@
  */
 
 #include <stdlib.h>
+#include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
 #include <locale.h>
 #if LOG4CXX_USING_STD_FORMAT
@@ -26,9 +27,6 @@
 #include <fmt/ostream.h>
 #endif
 #include <iomanip>
-
-using namespace log4cxx;
-using namespace log4cxx::helpers;
 
 struct MyStruct {
 		int x;
@@ -61,8 +59,9 @@ int main()
 {
 	setlocale(LC_ALL, "");
 
+	using namespace log4cxx;
 	BasicConfigurator::configure();
-	LoggerPtr rootLogger = Logger::getRootLogger();
+	auto rootLogger = Logger::getRootLogger();
 
 	LOG4CXX_INFO_FMT( rootLogger, "This is a {} mesage", "test" );
 #if !LOG4CXX_USING_STD_FORMAT
