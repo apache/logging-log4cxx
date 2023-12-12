@@ -27,10 +27,11 @@ Messages are logged as follows:
 enabled.  If the macro is not enabled(for example by setting the `LOG4CXX_THRESHOLD`
 macro), then the log message is not compiled in and the line of code becomes
 a no-op.
-2. The logger level is checked to see if the current level is enabled.  If
+2. The logger level is checked to see if the request level is enabled.  If
 it is, the message is then sent to the logger.
 3. The logger creates a new message and gives it to all of its appenders.
-4. Each appender checks its filters to see if the message should be logged.
+4. Each appender checks the logging event's level is greater or equal to the appender's threshold level.
+5. Each appender checks its filters to see if the message should be logged.
 
 Filters can perform the following actions:
 
@@ -41,7 +42,8 @@ consulting any remaining filters
 3. Neutral: This filter neither rejects nor accepts the message, it will
 be passed on to the next filter in the chain
 
-If no filter rejects or accepts the message, the message will be logged.
+If a filter accepts the message, the message will be logged.
+If no filter rejects the message, the message will be logged.
 
 The following flow diagram shows how messages flow through the system:
 
