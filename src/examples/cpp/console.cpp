@@ -38,18 +38,16 @@ static void configure(bool err)
 {
     using namespace log4cxx;
     auto r = LogManager::getLoggerRepository();
-    r->ensureIsConfigured([r]() {
-        auto appender = std::make_shared<ConsoleAppender>(std::make_shared<SimpleLayout>());
+    r->ensureIsConfigured([r,err]() {
+        auto appender = std::make_shared<ConsoleAppender>
+            ( std::make_shared<SimpleLayout>()
+            , err ? ConsoleAppender::getSystemErr() : ConsoleAppender::getSystemOut()
+            );
         appender->setName(LOG4CXX_STR("console"));
         helpers::Pool pool;
         appender->activateOptions(pool);
         r->getRootLogger()->addAppender(appender);
     });
-    if (err)
-    {
-        if (auto appender = log4cxx::cast<ConsoleAppender>(r->getRootLogger()->getAppender(LOG4CXX_STR("console"))))
-            appender->setTarget(LOG4CXX_STR("System.err"));
-    }
 }
 
 /**
