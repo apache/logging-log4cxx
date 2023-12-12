@@ -29,9 +29,10 @@ namespace com { namespace foo {
 // Provide the name of the configuration file to Log4cxx.
 // Reload the configuration on a QFileSystemWatcher::fileChanged event.
 void ConfigureLogging() {
+	using namespace log4cxx;
 	static struct log4cxx_finalizer {
 		~log4cxx_finalizer() {
-			log4cxx::LogManager::shutdown();
+			LogManager::shutdown();
 		}
 	} finaliser;
 	QFileInfo app{QCoreApplication::applicationFilePath()};
@@ -50,27 +51,29 @@ void ConfigureLogging() {
 		, QString("log4j.properties")
 	};
 #if defined(_DEBUG)
-	log4cxx::helpers::LogLog::setInternalDebugging(true);
+	helpers::LogLog::setInternalDebugging(true);
 #endif
-	auto status       = log4cxx::spi::ConfigurationStatus::NotConfigured;
+	auto status       = spi::ConfigurationStatus::NotConfigured;
 	auto selectedPath = QString();
-	std::tie(status, selectedPath) = log4cxx::qt::Configuration::configureFromFileAndWatch(paths, names);
-	if (status == log4cxx::spi::ConfigurationStatus::NotConfigured)
-		log4cxx::BasicConfigurator::configure(); // Send events to the console
+	std::tie(status, selectedPath) = qt::Configuration::configureFromFileAndWatch(paths, names);
+	if (status == spi::ConfigurationStatus::NotConfigured)
+		BasicConfigurator::configure(); // Send events to the console
 }
 
 // Retrieve the \c name logger pointer.
 auto getLogger(const QString& name) -> LoggerPtr {
+	using namespace log4cxx;
 	return name.isEmpty()
-		? log4cxx::LogManager::getRootLogger()
-		: log4cxx::LogManager::getLogger(name.toStdString());
+		? LogManager::getRootLogger()
+		: LogManager::getLogger(name.toStdString());
 }
 
 // Retrieve the \c name logger pointer.
 auto getLogger(const char* name) -> LoggerPtr {
+	using namespace log4cxx;
 	return name
-		? log4cxx::LogManager::getLogger(name)
-		: log4cxx::LogManager::getRootLogger();
+		? LogManager::getLogger(name)
+		: LogManager::getRootLogger();
 }
 
 } } // namespace com::foo
