@@ -15,20 +15,14 @@
  * limitations under the License.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/logmanager.h>
-#include <iostream>
-#include <locale.h>
-#include <cstring>
+#include <locale>
 #include <cstdio>
-#ifndef WIN32
-#include <stdint.h>
-#endif
+#include <cstring>
+#include <iostream>
 
 /**
  *   Configures console appender.
@@ -43,9 +37,6 @@ static void configure(bool err)
             ( std::make_shared<SimpleLayout>()
             , err ? ConsoleAppender::getSystemErr() : ConsoleAppender::getSystemOut()
             );
-        appender->setName(LOG4CXX_STR("console"));
-        helpers::Pool pool;
-        appender->activateOptions(pool);
         r->getRootLogger()->addAppender(appender);
     });
 }
