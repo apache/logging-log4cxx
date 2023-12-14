@@ -30,6 +30,16 @@ find_package(PkgConfig)
 pkg_check_modules(APR apr-1)
 endif()
 
+if(BUILD_APR_EXPAT)
+  set(APR_INCLUDE_DIRS ${apr_SOURCE_DIR})
+  set(APR_FOUND 1)
+  find_path(APR_INCLUDE_DIR
+            NAMES apr.h
+            HINTS ${APR_INCLUDE_DIRS}
+            PATH_SUFFIXES apr-1)
+  return()
+endif()
+
 if(APR_FOUND)
   find_path(APR_INCLUDE_DIR
             NAMES apr.h

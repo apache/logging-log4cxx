@@ -32,6 +32,16 @@ find_package(PkgConfig)
 pkg_check_modules(APR_UTIL apr-util-1)
 endif()
 
+if(BUILD_APR_EXPAT)
+  set(APR_UTIL_INCLUDE_DIRS ${apr-util_SOURCE_DIR})
+  set(APR_UTIL_FOUND 1)
+  find_path(APR_UTIL_INCLUDE_DIR
+            NAMES apu.h
+            HINTS ${APR_UTIL_INCLUDE_DIRS}
+            PATH_SUFFIXES apr-1)
+  return()
+endif()
+
 if(APR_UTIL_FOUND)
   find_path(APR_UTIL_INCLUDE_DIR
             NAMES apu.h

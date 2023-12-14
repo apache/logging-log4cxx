@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.14)
 include(src/cmake/projectVersionDetails.cmake)
 project(log4cxx VERSION ${log4cxx_VER} LANGUAGES CXX)
 include(CTest)
@@ -49,6 +49,30 @@ if(ENABLE_COVERAGE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
 endif()
 
+# If requested, build APR and Expat as part of this build
+option(BUILD_APR_EXPAT "Build APR and Expat as part of the Log4cxx build" OFF)
+if(BUILD_APR_EXPAT)
+    include(FetchContent)
+    FetchContent_Declare(EXPAT
+	GIT_REPOSITORY https://github.com/libexpat/libexpat.git
+	GIT_TAG R_2_5_0
+	SOURCE_SUBDIR expat
+	OVERRIDE_FIND_PACKAGE
+	)
+    FetchContent_Declare(APR
+	URL https://dlcdn.apache.org/apr/apr-1.7.4.tar.gz
+	URL_HASH SHA1=a4479912636820988278621f459cfdacdc76058d
+	OVERRIDE_FIND_PACKAGE
+	)
+    FetchContent_Declare(APR-Util
+	URL https://dlcdn.apache.org/apr/apr-util-1.6.3.tar.gz
+	URL_HASH SHA1=b787bbace523a1595d66b4bd45c8946de634f268
+	CMAKE_ARGS -DAPR_INCLUDE_DIR=${APR_SOURCE_DIR}
+	OVERRIDE_FIND_PACKAGE
+	)
+    FetchContent_MakeAvailable(expat APR APR-Util)
+endif()
+
 # Find Apache Runtime
 option(APR_STATIC "Link to the APR static library" OFF)
 find_package(APR REQUIRED)
@@ -57,8 +81,6 @@ find_package(APR REQUIRED)
 option(APU_STATIC "Link to the APR-Util static library" OFF)
 find_package(APR-Util REQUIRED)
 
-find_package( Threads REQUIRED )
-
 # Find expat for XML parsing
 find_package(EXPAT REQUIRED)
 if(TARGET EXPAT::EXPAT)
@@ -66,6 +88,8 @@ if(TARGET EXPAT::EXPAT)
 elseif(TARGET expat::expat)
   set(EXPAT_LIBRARIES expat::expat)
 endif()
+
+find_package( Threads REQUIRED )
 
 option(LOG4CXX_ENABLE_ODBC "Support logging via ODBC" OFF)
 if(LOG4CXX_ENABLE_ODBC)
