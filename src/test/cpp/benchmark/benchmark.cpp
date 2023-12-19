@@ -6,7 +6,7 @@
 #include <log4cxx/asyncappender.h>
 #if LOG4CXX_USING_STD_FORMAT
 #include <format>
-#else
+#elif LOG4CXX_HAS_FMT
 #include <fmt/format.h>
 #endif
 #include <benchmark/benchmark.h>
@@ -135,7 +135,7 @@ BENCHMARK_DEFINE_F(benchmarker, logStaticString)(benchmark::State& state)
 }
 BENCHMARK_REGISTER_F(benchmarker, logStaticString)->Name("Logging static string");
 
-#if LOG4CXX_HAS_FMT
+#if LOG4CXX_USING_STD_FORMAT || LOG4CXX_HAS_FMT
 BENCHMARK_DEFINE_F(benchmarker, logStaticStringFMT)(benchmark::State& state)
 {
 	for (auto _ : state)
