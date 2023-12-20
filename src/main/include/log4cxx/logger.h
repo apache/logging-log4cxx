@@ -2082,7 +2082,7 @@ Add a new logging event containing a message defined by \c fmt and <code>...</co
 
 \usage
 ~~~{.cpp}
-LOG4CXX_DEBUG(m_log, "AddMesh: name {} type 0x{x} materialName {} visible? {d} at {} +/- {}"
+LOG4CXX_DEBUG_FMT(m_log, "AddMesh: name {} type 0x{x} materialName {} visible? {d} at {} +/- {}"
 	, meshName
 	, traits.Type
 	, meshObject.GetMaterialName()
