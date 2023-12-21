@@ -117,15 +117,27 @@ BENCHMARK_DEFINE_F(benchmarker, logDisabledTrace)(benchmark::State& state)
 BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Testing disabled logging request")->MinWarmUpTime(benchmarker::warmUpSeconds());
 BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Testing disabled logging request")->Threads(benchmarker::threadCount());
 
-BENCHMARK_DEFINE_F(benchmarker, logStaticString)(benchmark::State& state)
+BENCHMARK_DEFINE_F(benchmarker, logShortString)(benchmark::State& state)
 {
 	m_logger->setLevel(Level::getInfo());
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO( m_logger, LOG4CXX_STR("Hello: static string message"));
+		LOG4CXX_INFO(m_logger, LOG4CXX_STR("Hello"));
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logStaticString)->Name("Logging string using MessageBuffer, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, logShortString)->Name("Logging 5 char string using MessageBuffer, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, logShortString)->Name("Logging 5 char string using MessageBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
+
+BENCHMARK_DEFINE_F(benchmarker, logLongString)(benchmark::State& state)
+{
+	m_logger->setLevel(Level::getInfo());
+	for (auto _ : state)
+	{
+		LOG4CXX_INFO( m_logger, LOG4CXX_STR("Hello: this is a long static string message"));
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, logLongString)->Name("Logging 49 char string using MessageBuffer, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, logLongString)->Name("Logging 49 char string using MessageBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
 
 BENCHMARK_DEFINE_F(benchmarker, logIntValueMessageBuffer)(benchmark::State& state)
 {
@@ -171,14 +183,15 @@ BENCHMARK_CAPTURE(logWithConversionPattern, DateMessage, LOG4CXX_STR("[%d] %m%n"
 BENCHMARK_CAPTURE(logWithConversionPattern, DateClassLevelMessage, LOG4CXX_STR("[%d] [%c] [%p] %m%n"))->Name("Logging int value using MessageBuffer, pattern: [%d] [%c] [%p] %m%n");
 
 #if  LOG4CXX_USING_STD_FORMAT || LOG4CXX_HAS_FMT
-BENCHMARK_DEFINE_F(benchmarker, logStaticStringFMT)(benchmark::State& state)
+BENCHMARK_DEFINE_F(benchmarker, logLongStringFMT)(benchmark::State& state)
 {
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO_FMT(m_logger, "This is a static string to see what happens", 0);
+		LOG4CXX_INFO_FMT(m_logger, "Hello: this is a long static string message", 0);
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logStaticStringFMT)->Name("Logging static string using FMT, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, logLongStringFMT)->Name("Logging 49 char string using FMT, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, logLongStringFMT)->Name("Logging 49 char string using FMT, pattern: %m%n")->Threads(benchmarker::threadCount());
 
 BENCHMARK_DEFINE_F(benchmarker, logIntValueFMT)(benchmark::State& state)
 {
