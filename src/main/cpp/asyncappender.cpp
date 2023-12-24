@@ -96,6 +96,15 @@ typedef std::map<LogString, DiscardSummary> DiscardMap;
 }
 #endif
 
+#ifndef __has_include
+	#define LOG4CXX_HAS_CONCURRENT_QUEUE 0
+#elif __has_include(<concurrentqueue/concurrentqueue.h>)
+	#include <concurrentqueue/concurrentqueue.h>
+	#define LOG4CXX_HAS_CONCURRENT_QUEUE 1
+#else
+	#define LOG4CXX_HAS_CONCURRENT_QUEUE 0
+#endif
+
 struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
 	AsyncAppenderPriv() :
@@ -168,6 +177,10 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 #if LOG4CXX_EVENTS_AT_EXIT
 	helpers::AtExitRegistry::Raii atExitRegistryRaii;
 #endif
+
+#if LOG4CXX_HAS_CONCURRENT_QUEUE
+	moodycamel::ConcurrentQueue<spi::LoggingEventPtr> queue;
+#endif
 };
 
 
@@ -234,6 +247,14 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	// Get a copy of this thread's MDC.
 	event->getMDCCopy();
 
+#if LOG4CXX_HAS_CONCURRENT_QUEUE
+	while (!priv->queue.enqueue(event))
+		;
+	if (!priv->dispatcher.joinable())
+	{
+		priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
+	}
+#else
 	std::unique_lock<std::mutex> lock(priv->bufferMutex);
 	if (!priv->dispatcher.joinable())
 	{
@@ -297,6 +318,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			break;
 		}
 	}
+#endif
 }
 
 void AsyncAppender::close()
@@ -473,18 +495,19 @@ void AsyncAppender::dispatch()
 			);
 			isActive = !priv->closed;
 
-			for (LoggingEventList::iterator eventIter = priv->buffer.begin();
-				eventIter != priv->buffer.end();
-				eventIter++)
+#if LOG4CXX_HAS_CONCURRENT_QUEUE
+			LoggingEventPtr event;
+			while (priv->queue.try_dequeue(event))
+#else
+			for (auto event : priv->buffer)
+#endif
 			{
-				events.push_back(*eventIter);
+				events.push_back(event);
 			}
 
-			for (DiscardMap::iterator discardIter = priv->discardMap.begin();
-				discardIter != priv->discardMap.end();
-				discardIter++)
+			for (auto discardItem : priv->discardMap)
 			{
-				events.push_back(discardIter->second.createEvent(p));
+				events.push_back(discardItem.second.createEvent(p));
 			}
 
 			priv->buffer.clear();
@@ -492,17 +515,15 @@ void AsyncAppender::dispatch()
 			priv->bufferNotFull.notify_all();
 		}
 
-		for (LoggingEventList::iterator iter = events.begin();
-			iter != events.end();
-			iter++)
+		for (auto item : events)
 		{
 			try
 			{
-				priv->appenders->appendLoopOnAppenders(*iter, p);
+				priv->appenders->appendLoopOnAppenders(item, p);
 			}
 			catch (std::exception& ex)
 			{
-				priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, *iter);
+				priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, item);
 				isActive = false;
 			}
 			catch (...)
