@@ -20,18 +20,11 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
-#include <deque>
 #include <log4cxx/spi/loggingevent.h>
-#include <thread>
-#include <condition_variable>
-
-#if defined(NON_BLOCKING)
-	#include <boost/lockfree/queue.hpp>
-#endif
 
 namespace LOG4CXX_NS
 {
-LOG4CXX_LIST_DEF(LoggingEventList, LOG4CXX_NS::spi::LoggingEventPtr);
+LOG4CXX_LIST_DEF(LoggingEventList, spi::LoggingEventPtr);
 
 /**
 The AsyncAppender lets users log events asynchronously. It uses a
