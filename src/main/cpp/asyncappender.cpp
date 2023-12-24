@@ -180,9 +180,6 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 #if LOG4CXX_HAS_CONCURRENT_QUEUE
 	moodycamel::ConcurrentQueue<spi::LoggingEventPtr> queue;
-	bool stop_waiting() const { return 0 < this->queue.size_approx() || this->closed; }
-#else
-	bool stop_waiting() const { return 0 < this->buffer.size() || this->closed; }
 #endif
 };
 
@@ -257,7 +254,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	{
 		priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 	}
-	priv->bufferNotEmpty.notify_all();
 #else
 	std::unique_lock<std::mutex> lock(priv->bufferMutex);
 	if (!priv->dispatcher.joinable())
@@ -494,7 +490,9 @@ void AsyncAppender::dispatch()
 		LoggingEventList events;
 		{
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
-			priv->bufferNotEmpty.wait(lock, std::bind(&AsyncAppenderPriv::stop_waiting, priv));
+			priv->bufferNotEmpty.wait(lock, [this]() -> bool
+				{ return 0 < priv->buffer.size() || priv->closed; }
+			);
 			isActive = !priv->closed;
 
 #if LOG4CXX_HAS_CONCURRENT_QUEUE
