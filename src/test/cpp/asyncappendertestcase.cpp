@@ -32,6 +32,7 @@
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/file.h>
+#include <thread>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
