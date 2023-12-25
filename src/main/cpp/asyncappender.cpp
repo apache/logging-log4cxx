@@ -25,6 +25,8 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
+#include <thread>
+#include <condition_variable>
 
 #if LOG4CXX_EVENTS_AT_EXIT
 #include <log4cxx/private/atexitregistry.h>
@@ -123,25 +125,15 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	/**
 	 * Event buffer.
 	*/
-#if defined(NON_BLOCKING)
-	boost::lockfree::queue<LOG4CXX_NS::spi::LoggingEvent* > buffer;
-	std::atomic<size_t> discardedCount;
-#else
 	LoggingEventList buffer;
-#endif
 
 	/**
 	 *  Mutex used to guard access to buffer and discardMap.
 	 */
 	std::mutex bufferMutex;
 
-#if defined(NON_BLOCKING)
-	::LOG4CXX_NS::helpers::Semaphore bufferNotFull;
-	::LOG4CXX_NS::helpers::Semaphore bufferNotEmpty;
-#else
 	std::condition_variable bufferNotFull;
 	std::condition_variable bufferNotEmpty;
-#endif
 
 	/**
 	  * Map of DiscardSummary objects keyed by logger name.
@@ -225,8 +217,6 @@ void AsyncAppender::setOption(const LogString& option,
 
 void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	std::lock_guard<std::recursive_mutex> lock(priv->mutex);
-
 	doAppendImpl(event, pool1);
 }
 
@@ -236,10 +226,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	{
 		priv->appenders->appendLoopOnAppenders(event, p);
 	}
-	if (!priv->dispatcher.joinable())
-	{
-		priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
-	}
 
 	// Set the NDC and MDC for the calling thread as these
 	// LoggingEvent fields were not set at event creation time.
@@ -248,71 +234,70 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	// Get a copy of this thread's MDC.
 	event->getMDCCopy();
 
-
+	std::unique_lock<std::mutex> lock(priv->bufferMutex);
+	if (!priv->dispatcher.joinable())
 	{
-		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
+	}
+	while (true)
+	{
+		size_t previousSize = priv->buffer.size();
 
-		while (true)
+		if (previousSize < (size_t)priv->bufferSize)
 		{
-			size_t previousSize = priv->buffer.size();
+			priv->buffer.push_back(event);
 
-			if (previousSize < (size_t)priv->bufferSize)
+			if (previousSize == 0)
 			{
-				priv->buffer.push_back(event);
-
-				if (previousSize == 0)
-				{
-					priv->bufferNotEmpty.notify_all();
-				}
-
-				break;
+				priv->bufferNotEmpty.notify_all();
 			}
 
-			//
-			//   Following code is only reachable if buffer is full
-			//
-			//
-			//   if blocking and thread is not already interrupted
-			//      and not the dispatcher then
-			//      wait for a buffer notification
-			bool discard = true;
+			break;
+		}
 
-			if (priv->blocking
-				&& !priv->closed
-				&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
+		//
+		//   Following code is only reachable if buffer is full
+		//
+		//
+		//   if blocking and thread is not already interrupted
+		//      and not the dispatcher then
+		//      wait for a buffer notification
+		bool discard = true;
+
+		if (priv->blocking
+			&& !priv->closed
+			&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
+		{
+			priv->bufferNotFull.wait(lock, [this]()
 			{
-				priv->bufferNotFull.wait(lock, [this]()
-				{
-					return priv->buffer.empty();
-				});
-				discard = false;
+				return priv->buffer.empty();
+			});
+			discard = false;
+		}
+
+		//
+		//   if blocking is false or thread has been interrupted
+		//   add event to discard map.
+		//
+		if (discard)
+		{
+			LogString loggerName = event->getLoggerName();
+			DiscardMap::iterator iter = priv->discardMap.find(loggerName);
+
+			if (iter == priv->discardMap.end())
+			{
+				DiscardSummary summary(event);
+				priv->discardMap.insert(DiscardMap::value_type(loggerName, summary));
+			}
+			else
+			{
+				(*iter).second.add(event);
 			}
 
-			//
-			//   if blocking is false or thread has been interrupted
-			//   add event to discard map.
-			//
-			if (discard)
-			{
-				LogString loggerName = event->getLoggerName();
-				DiscardMap::iterator iter = priv->discardMap.find(loggerName);
-
-				if (iter == priv->discardMap.end())
-				{
-					DiscardSummary summary(event);
-					priv->discardMap.insert(DiscardMap::value_type(loggerName, summary));
-				}
-				else
-				{
-					(*iter).second.add(event);
-				}
-
-				break;
-			}
+			break;
 		}
 	}
 }
-
 
 void AsyncAppender::close()
 {
