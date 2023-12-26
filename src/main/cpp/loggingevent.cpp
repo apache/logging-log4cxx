@@ -354,8 +354,8 @@ const LogString& LoggingEvent::getCurrentThreadName()
 	thread_local LogString thread_id_string;
 #else
 	using ListItem = std::pair<ThreadIdType, LogString>;
-	static WideLife<std::list<ListItem>> thread_id_map;
-	static WideLife<std::mutex> mutex;
+	static std::list<ListItem> thread_id_map;
+	static std::mutex mutex;
 	std::lock_guard<std::mutex> lock(mutex);
 	auto pThreadId = std::find_if(thread_id_map.begin(), thread_id_map.end()
 		, [threadId](const ListItem& item) { return threadId == item.first; });
