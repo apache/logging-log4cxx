@@ -371,13 +371,13 @@ const LogString& LoggingEvent::getCurrentThreadName()
 #if defined(_WIN32)
 	char result[20];
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
-	Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
+	thread_id_string = Transcoder::decode(result);
 #elif LOG4CXX_HAS_PTHREAD_SELF
 	// pthread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	char result[sizeof(pthread_t) * 3 + 10];
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
-	Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
+	thread_id_string = Transcoder::decode(result);
 #else
 	thread_id_string = LOG4CXX_STR("0x00000000");
 #endif
@@ -398,11 +398,10 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 #if LOG4CXX_HAS_PTHREAD_GETNAME
 	char result[16];
 	pthread_t current_thread = pthread_self();
-	if( pthread_getname_np( current_thread, result, sizeof(result) ) < 0 ){
+	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
 		thread_name = LOG4CXX_STR("(noname)");
-	}
-
-	LOG4CXX_NS::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
+	else
+		thread_name = Transcoder::decode(result);
 #elif WIN32
 	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
 	static struct initialiser
@@ -421,16 +420,16 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 	{
 		PWSTR result = 0;
 		HRESULT hr = win32func.GetThreadDescription(GetCurrentThread(), &result);
-		if (SUCCEEDED(hr))
+		if (SUCCEEDED(hr) && result && *result)
 		{
 			std::wstring wresult = result;
 			LOG4CXX_DECODE_WCHAR(decoded, wresult);
 			LocalFree(result);
 			thread_name = decoded;
 		}
-	}else{
-		thread_name = LOG4CXX_STR("(noname)");
 	}
+	if (thread_name.empty())
+		thread_name = LOG4CXX_STR("(noname)");
 #else
 	thread_name = LOG4CXX_STR("(noname)");
 #endif
