@@ -502,13 +502,19 @@ void AsyncAppender::dispatch()
 			}
 			catch (std::exception& ex)
 			{
-				priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, *iter);
-				isActive = false;
+				if (isActive)
+				{
+					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, *iter);
+					isActive = false;
+				}
 			}
 			catch (...)
 			{
-				priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
-				isActive = false;
+				if (isActive)
+				{
+					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
+					isActive = false;
+				}
 			}
 		}
 	}
