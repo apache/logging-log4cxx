@@ -420,7 +420,7 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 	{
 		PWSTR result = 0;
 		HRESULT hr = win32func.GetThreadDescription(GetCurrentThread(), &result);
-		if (SUCCEEDED(hr) && result && *result)
+		if (SUCCEEDED(hr) && result)
 		{
 			std::wstring wresult = result;
 			LOG4CXX_DECODE_WCHAR(decoded, wresult);
