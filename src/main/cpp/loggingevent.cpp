@@ -399,7 +399,7 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 	char result[16];
 	pthread_t current_thread = pthread_self();
 	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
-		thread_name = LOG4CXX_STR("(noname)");
+		thread_name = getCurrentThreadName();
 	else
 		thread_name = Transcoder::decode(result);
 #elif WIN32
@@ -429,9 +429,9 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 		}
 	}
 	if (thread_name.empty())
-		thread_name = LOG4CXX_STR("(noname)");
+		thread_name = getCurrentThreadName();
 #else
-	thread_name = LOG4CXX_STR("(noname)");
+	thread_name = getCurrentThreadName();
 #endif
 	return thread_name;
 }
