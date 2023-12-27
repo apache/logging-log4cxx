@@ -33,16 +33,16 @@ this throughput much lower.  Delays in writing messages to disk can also
 greatly decrease performance, depending on how much data is being logged.
 
 If the logging of a particular level is disabled, performance can also be
-a lot better.  While Log4cxx can handle 2,000,000 log messages/second, when
-the log statement is disabled(not logged), this can go to over 20,000,000
-messages/second, thus not unduly slowing down an application when logging
-is disabled.
+a lot better.  While Log4cxx can generate 2,000,000 log messages/second,
+skipping a disabled logging request requires only a few nano-seconds,
+so application performance is not affected when
+logging requests are not removed from the release build.
 
-For the best performance, the `LOG4CXX_[level]_FMT` series of macros should
-be utilized, as they use the [{fmt}](https://fmt.dev/latest/index.html)
-library(note that you must include the headers from {fmt} manually).
-Using {fmt} over `operator<<` for log messages is both cleaner from a code
-standpoint, and is also significantly faster(approximately 2x as fast).
+For the best performance, use the `LOG4CXX_[level]_FMT` series of macros,
+as the [{fmt}](https://fmt.dev/latest/index.html) library
+they use is significantly faster
+(up to twice as fast as `operator<<`).
+Note that you must include the headers from {fmt} manually.
 
 These two pieces of logging code are logically equivalent(printing out the same
 values), however the one utilizing fmt is close to 2x as fast on some systems.
