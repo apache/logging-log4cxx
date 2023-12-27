@@ -54,7 +54,7 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 
 #if 15 < LOG4CXX_ABI_VERSION
 		/**
-		 * Remove a previously added HierarchyEventListener.
+		 * Remove a previously added HierarchyEventListener from the repository.
 		 *
 		 */
 		virtual void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) = 0;
@@ -112,15 +112,15 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 
 #if 15 < LOG4CXX_ABI_VERSION
 		/**
-		Remove the \c name Logger from the hierarchy.
+		Remove the \c name Logger from the repository.
 
-		Note: The \c name Logger must be retrieved from the hierarchy
+		Note: The \c name Logger must be retrieved from the repository
 		\b after any subsequent configuration file change
 		for the newly loaded settings to be used.
 
 		@param name The logger to remove.
 		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
-		@returns true if \c name Logger was removed from the hierarchy.
+		@returns true if \c name Logger was removed from the repository.
 		*/
 		virtual bool removeLogger(const LogString& name, bool ifNotUsed = true) = 0;
 #endif
