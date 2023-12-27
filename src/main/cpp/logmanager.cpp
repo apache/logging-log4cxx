@@ -213,8 +213,12 @@ void LogManager::resetConfiguration()
 
 bool LogManager::removeLogger(const LogString& name, bool ifNotUsed)
 {
+#if LOG4CXX_ABI_VERSION <= 15
 	bool result = false;
 	if (auto r = dynamic_cast<Hierarchy*>(getLoggerRepository().get()))
 		result = r->removeLogger(name, ifNotUsed);
 	return result;
+#else
+	return getLoggerRepository()->removeLogger(name, ifNotUsed);
+#endif
 }

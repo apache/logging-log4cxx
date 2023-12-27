@@ -76,19 +76,16 @@ using namespace LOG4CXX_NS::rolling;
 
 namespace LOG4CXX_NS
 {
+// This function defined in log4cxx.h
+#if LOG4CXX_ABI_VERSION <= 15
+LOG4CXX_EXPORT uint32_t libraryVersion()
+#else
 uint32_t libraryVersion()
+#endif
 {
-	// This function defined in log4cxx.h
 	return LOG4CXX_VERSION;
 }
 }
-
-#if LOG4CXX_ABI_15_COMPATIBILITY
-LOG4CXX_EXPORT uint32_t libraryVersion()
-{
-	return LOG4CXX_NS::libraryVersion();
-}
-#endif
 
 Class::Class()
 {

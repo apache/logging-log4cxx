@@ -55,7 +55,7 @@ void tlsDestructImpl(void* ptr)
 }
 }
 
-#if LOG4CXX_ABI_15_COMPATIBILITY
+#if LOG4CXX_ABI_VERSION <= 15
 extern "C" void tlsDestruct(void* ptr)
 {
 	return tlsDestructImpl(ptr);

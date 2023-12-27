@@ -36,7 +36,7 @@ using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
 
-#if !LOG4CXX_ABI_15_COMPATIBILITY
+#if 15 < LOG4CXX_ABI_VERSION
 namespace
 {
 #endif
@@ -92,7 +92,7 @@ class DiscardSummary
 
 typedef std::map<LogString, DiscardSummary> DiscardMap;
 
-#if !LOG4CXX_ABI_15_COMPATIBILITY
+#if 15 < LOG4CXX_ABI_VERSION
 }
 #endif
 
