@@ -50,7 +50,7 @@ Changelog {#changelog}
 The following issues have been addressed:
 
 * The `locale` external character encoding option reverting to US-ASCII \[[LOGCXX-483](https://issues.apache.org/jira/browse/LOGCXX-483)\]
-* A segfault during process exit when log4cxx::LogManager::shutdown is not called
+* A segfault during process exit when log4cxx::LogManager::shutdown is not called \[[#268](https://github.com/apache/logging-log4cxx/pull/268)\] \[[#219](https://github.com/apache/logging-log4cxx/pull/219)\]
 * The cmake option to include a MultiprocessRollingFileAppender did not work
 * Build failure in a MSYS2 environment
 * Format settings (e.g. std::hex) were retained across LOG4CXX_XXXXX macro logging requests
