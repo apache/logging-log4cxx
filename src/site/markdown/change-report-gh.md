@@ -65,7 +65,7 @@ Release 1.2.0 includes the following new features:
 * log4cxx::hexdump function that returns a string of hexadecimal byte values
 * Ability to remove a HierarchyEventListener \[[#233](https://github.com/apache/logging-log4cxx/issues/233)\]
 * Less string copying when sending a logging event to an appender
-* Less frequent mutex contention when logging from multiple threads concurrently \[[#320](https://github.com/apache/logging-log4cxx/issues/320)\]
+* Less frequent mutex contention when logging from multiple threads concurrently \[[#320](https://github.com/apache/logging-log4cxx/pull/320)\]
 * Allow thread information to be included in JSON formatted output
 * Optional support for logging during process termination \[[#271](https://github.com/apache/logging-log4cxx/pull/271)\]
 * A cmake option to place Log4cxx functions in a different namespace \[[#277](https://github.com/apache/logging-log4cxx/pull/277)\]
