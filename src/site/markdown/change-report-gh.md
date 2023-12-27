@@ -70,6 +70,7 @@ Release 1.2.0 includes the following new features:
 * Optional support for logging during process termination \[[#271](https://github.com/apache/logging-log4cxx/pull/271)\]
 * A cmake option to place Log4cxx functions in a different namespace \[[#277](https://github.com/apache/logging-log4cxx/pull/277)\]
 * Optionally use std::format in LOG4CXX_XXXX_FMT macros instead of fmt::format \[[#291](https://github.com/apache/logging-log4cxx/pull/291)\]
+* Support for per object enabling/disabling of logging requests (see log4cxx::LoggerInstancePtr)
 
 Note: the `LOG4CXX_CHARSET` cmake option (external character encoding) default value has changed to `utf-8`
 
