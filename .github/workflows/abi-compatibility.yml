@@ -55,9 +55,12 @@ jobs:
       if: always()
       run: |
         cp $(find . -name compat_report.html) .
+        cp $(find . -name new-abi.dump) .
 
     - uses: actions/upload-artifact@v2
       if: always()
       with:
         name: compat_report.html
         path: compat_report.html
+        name: new-abi.dump
+        path: new-abi.dump
