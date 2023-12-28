@@ -50,13 +50,14 @@ Changelog {#changelog}
 The following issues have been addressed:
 
 * The `locale` external character encoding option reverting to US-ASCII \[[LOGCXX-483](https://issues.apache.org/jira/browse/LOGCXX-483)\]
-* A segfault during process exit when log4cxx::LogManager::shutdown is not called
+* A segfault during process exit when log4cxx::LogManager::shutdown is not called \[[#268](https://github.com/apache/logging-log4cxx/pull/268)\] \[[#219](https://github.com/apache/logging-log4cxx/pull/219)\]
 * The cmake option to include a MultiprocessRollingFileAppender did not work
 * Build failure in a MSYS2 environment
 * Format settings (e.g. std::hex) were retained across LOG4CXX_XXXXX macro logging requests
 * When the APR library was built without support for threads (APR_HAS_THREADS=0):
     * the AsyncAppender and dynamically loaded configuration changes were not available
     * a single nested/mapped diagnostic context (NDC/MDC) would be used and updated (without synchronization)
+* On Windows, GetThreadDescription() called for each logging event when the thread name was empty \[[#321](https://github.com/apache/logging-log4cxx/pull/321)\]
 
 Release 1.2.0 includes the following new features:
 
@@ -64,10 +65,12 @@ Release 1.2.0 includes the following new features:
 * log4cxx::hexdump function that returns a string of hexadecimal byte values
 * Ability to remove a HierarchyEventListener \[[#233](https://github.com/apache/logging-log4cxx/issues/233)\]
 * Less string copying when sending a logging event to an appender
+* Less frequent mutex contention when logging from multiple threads concurrently \[[#320](https://github.com/apache/logging-log4cxx/pull/320)\]
 * Allow thread information to be included in JSON formatted output
 * Optional support for logging during process termination \[[#271](https://github.com/apache/logging-log4cxx/pull/271)\]
 * A cmake option to place Log4cxx functions in a different namespace \[[#277](https://github.com/apache/logging-log4cxx/pull/277)\]
 * Optionally use std::format in LOG4CXX_XXXX_FMT macros instead of fmt::format \[[#291](https://github.com/apache/logging-log4cxx/pull/291)\]
+* Support for per object enabling/disabling of logging requests (see log4cxx::LoggerInstancePtr)
 
 Note: the `LOG4CXX_CHARSET` cmake option (external character encoding) default value has changed to `utf-8`
 
