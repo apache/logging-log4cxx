@@ -47,10 +47,18 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 
 		/**
 		Add a {@link spi::HierarchyEventListener HierarchyEventListener}
-		            event to the repository.
+		        event to the repository.
 		*/
 		virtual void addHierarchyEventListener(const HierarchyEventListenerPtr&
 			listener) = 0;
+
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		 * Remove a previously added HierarchyEventListener from the repository.
+		 *
+		 */
+		virtual void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) = 0;
+#endif
 
 		/**
 		 * Call \c configurator if not yet configured.
@@ -84,10 +92,38 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		*/
 		virtual LevelPtr getThreshold() const = 0;
 
+		/**
+		Retrieve the \c name Logger instance
+		*/
 		virtual LoggerPtr getLogger(const LogString& name) = 0;
 
+		/**
+		Retrieve the \c name Logger instance
+
+		If a logger of that name already exists, then it will be
+		returned.  Otherwise, a new logger will be instantiated by the
+		provided <code>factory</code>.
+
+		@param name The name of the logger to retrieve.
+		@param factory The factory that will make the new logger instance.
+		*/
 		virtual LoggerPtr getLogger(const LogString& name,
 			const spi::LoggerFactoryPtr& factory) = 0;
+
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		Remove the \c name Logger from the repository.
+
+		Note: The \c name Logger must be retrieved from the repository
+		\b after any subsequent configuration file change
+		for the newly loaded settings to be used.
+
+		@param name The logger to remove.
+		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
+		@returns true if \c name Logger was removed from the repository.
+		*/
+		virtual bool removeLogger(const LogString& name, bool ifNotUsed = true) = 0;
+#endif
 
 		virtual LoggerPtr getRootLogger() const = 0;
 

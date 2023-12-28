@@ -83,10 +83,10 @@ uint32_t libraryVersion()
 }
 }
 
-#if LOG4CXX_ABI_15_COMPATIBILITY
+#if LOG4CXX_ABI_VERSION <= 15
 LOG4CXX_EXPORT uint32_t libraryVersion()
 {
-	return LOG4CXX_NS::libraryVersion();
+	return  LOG4CXX_NS::libraryVersion();
 }
 #endif
 

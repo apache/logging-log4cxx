@@ -76,13 +76,15 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
-        /**
-         * Remove a previously added HierarchyEventListener.
-         *
-         * ABI TODO: Make virtual and add to LoggerRepository.
-         */
-        void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
-
+		/**
+		 * Remove a previously added HierarchyEventListener.
+		 *
+		 */
+#if LOG4CXX_ABI_VERSION <= 15
+		void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
+#else
+		void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
+#endif
 		/**
 		 * Call \c configurator if not yet configured.
 		 */
@@ -115,12 +117,12 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		void setThreshold(const LogString& levelStr) override;
 
 		/**
-		Enable logging for logging requests with level <code>l</code> or
+		Enable logging for logging requests with level <code>newLevel</code> or
 		higher. By default all levels are enabled.
 
-		        @param l The minimum level for which logging requests are sent to
-		their appenders.  */
-		void setThreshold(const LevelPtr& l) override;
+		@param newLevel The minimum level of logging requests that are sent to appenders.
+		*/
+		void setThreshold(const LevelPtr& newLevel) override;
 
 		void fireAddAppenderEvent(const Logger* logger, const Appender* appender) override;
 
@@ -239,7 +241,11 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
 		@returns true if \c name Logger was removed from the hierarchy.
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
 		bool removeLogger(const LogString& name, bool ifNotUsed = true);
+#else
+		bool removeLogger(const LogString& name, bool ifNotUsed = true) override;
+#endif
 
 	private:
 
