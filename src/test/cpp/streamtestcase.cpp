@@ -188,8 +188,9 @@ public:
 	{
 		LoggerPtr root(Logger::getRootLogger());
 		LOG4CXX_INFO(root, std::scientific << 0.000001115);
-		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-		LogString msg(event->getMessage());
+		auto events = vectorAppender->getVector();
+		LOGUNIT_ASSERT_EQUAL((size_t) 1, events.size());
+		LogString msg(events.front()->getMessage());
 		LOGUNIT_ASSERT(msg.find(LOG4CXX_STR("e-")) != LogString::npos ||
 			msg.find(LOG4CXX_STR("E-")) != LogString::npos);
 	}
