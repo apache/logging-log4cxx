@@ -258,6 +258,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void testLocationInfoTrue()
 		{
 			BlockableVectorAppenderPtr blockableAppender = BlockableVectorAppenderPtr(new BlockableVectorAppender());
+			blockableAppender->setMillisecondDelay(100);
 			blockableAppender->setName(LOG4CXX_STR("async-blockableVector"));
 			AsyncAppenderPtr async = AsyncAppenderPtr(new AsyncAppender());
 			async->setName(LOG4CXX_STR("async-testLocationInfoTrue"));
