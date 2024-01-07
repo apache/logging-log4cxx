@@ -37,7 +37,7 @@ class VectorAppender : public AppenderSkeleton
 		END_LOG4CXX_CAST_MAP()
 
 		std::vector<spi::LoggingEventPtr> vector;
-
+		int appendMillisecondDelay = 0;
 
 		/**
 		This method is called by the AppenderSkeleton#doAppend
@@ -47,7 +47,7 @@ class VectorAppender : public AppenderSkeleton
 
 		const std::vector<spi::LoggingEventPtr>& getVector() const
 		{
-			return vector;
+			return this->vector;
 		}
 
 		void close() override;
@@ -60,6 +60,11 @@ class VectorAppender : public AppenderSkeleton
 		bool requiresLayout() const override
 		{
 			return false;
+		}
+
+		void setMillisecondDelay(int milliseconds)
+		{
+			this->appendMillisecondDelay = milliseconds;
 		}
 };
 typedef std::shared_ptr<VectorAppender> VectorAppenderPtr;

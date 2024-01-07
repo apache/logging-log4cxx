@@ -25,9 +25,9 @@ IMPLEMENT_LOG4CXX_OBJECT(VectorAppender)
 
 void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& /*p*/)
 {
-	std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
-
-	vector.push_back(event);
+	if (0 < this->appendMillisecondDelay)
+		std::this_thread::sleep_for( std::chrono::milliseconds( this->appendMillisecondDelay ) );
+	this->vector.push_back(event);
 }
 
 void VectorAppender::close()
