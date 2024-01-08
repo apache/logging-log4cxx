@@ -124,12 +124,8 @@ class SMTPSession
 			char* buf = p.pstralloc(str.length() + 1);
 			char* current = buf;
 
-			for (LogString::const_iterator iter = str.begin();
-				iter != str.end();
-				iter++)
+			for (unsigned int c : str)
 			{
-				unsigned int c = *iter;
-
 				if (c > 0x7F)
 				{
 					c = '?';
@@ -268,12 +264,8 @@ class SMTPMessage
 			//
 			//    iterator through message
 			//
-			for (LogString::const_iterator iter = str.begin();
-				iter != str.end();
-				iter++)
+			for (unsigned int c : str)
 			{
-				unsigned int c = *iter;
-
 				//
 				//   replace non-ASCII characters with '?'
 				//
@@ -578,11 +570,9 @@ void SMTPAppender::setOption(const LogString& option,
 
 bool SMTPAppender::asciiCheck(const LogString& value, const LogString& field)
 {
-	for (LogString::const_iterator iter = value.begin();
-		iter != value.end();
-		iter++)
+	for (unsigned int item : value)
 	{
-		if (0x7F < (unsigned int) *iter)
+		if (0x7F < item)
 		{
 			LogLog::warn(field + LOG4CXX_STR(" contains non-ASCII character"));
 			return false;

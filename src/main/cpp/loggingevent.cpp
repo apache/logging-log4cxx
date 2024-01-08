@@ -254,13 +254,11 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 {
 	LoggingEvent::KeySet set;
 
-	if (m_priv->mdcCopy != 0 && !m_priv->mdcCopy->empty())
+	if (m_priv->mdcCopy && !m_priv->mdcCopy->empty())
 	{
-		MDC::Map::const_iterator it;
-
-		for (it = m_priv->mdcCopy->begin(); it != m_priv->mdcCopy->end(); it++)
+		for (auto const& item : *m_priv->mdcCopy)
 		{
-			set.push_back(it->first);
+			set.push_back(item.first);
 
 		}
 	}
@@ -268,13 +266,11 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 	{
 		ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
 
-		if (data != 0)
+		if (data)
 		{
-			MDC::Map& m = data->getMap();
-
-			for (MDC::Map::const_iterator it = m.begin(); it != m.end(); it++)
+			for (auto const& item : data->getMap())
 			{
-				set.push_back(it->first);
+				set.push_back(item.first);
 			}
 		}
 	}
@@ -323,13 +319,11 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 {
 	LoggingEvent::KeySet set;
 
-	if (m_priv->properties != 0)
+	if (m_priv->properties)
 	{
-		std::map<LogString, LogString>::const_iterator it;
-
-		for (it = m_priv->properties->begin(); it != m_priv->properties->end(); it++)
+		for (auto item : *m_priv->properties)
 		{
-			set.push_back(it->first);
+			set.push_back(item.first);
 		}
 	}
 

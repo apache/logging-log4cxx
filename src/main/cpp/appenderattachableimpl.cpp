@@ -97,13 +97,8 @@ AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
 	}
 
 	std::lock_guard<std::mutex> lock( m_priv->m_mutex );
-	AppenderList::const_iterator it, itEnd = m_priv->appenderList.end();
-	AppenderPtr appender;
-
-	for (it = m_priv->appenderList.begin(); it != itEnd; it++)
+	for (auto appender : m_priv->appenderList)
 	{
-		appender = *it;
-
 		if (name == appender->getName())
 		{
 			return appender;
@@ -129,30 +124,19 @@ bool AppenderAttachableImpl::isAttached(const AppenderPtr appender) const
 
 void AppenderAttachableImpl::removeAllAppenders()
 {
-	std::lock_guard<std::mutex> lock( m_priv->m_mutex );
-	AppenderList::iterator it, itEnd = m_priv->appenderList.end();
-	AppenderPtr a;
-
-	for (it = m_priv->appenderList.begin(); it != itEnd; it++)
-	{
-		a = *it;
+	for (auto a : getAllAppenders())
 		a->close();
-	}
-
+	std::lock_guard<std::mutex> lock( m_priv->m_mutex );
 	m_priv->appenderList.clear();
 }
 
 void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
 {
-	if (appender == 0)
-	{
+	if (!appender)
 		return;
-	}
 
 	std::lock_guard<std::mutex> lock( m_priv->m_mutex );
-	AppenderList::iterator it = std::find(
-			m_priv->appenderList.begin(), m_priv->appenderList.end(), appender);
-
+	auto it = std::find(m_priv->appenderList.begin(), m_priv->appenderList.end(), appender);
 	if (it != m_priv->appenderList.end())
 	{
 		m_priv->appenderList.erase(it);
@@ -162,24 +146,16 @@ void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
 void AppenderAttachableImpl::removeAppender(const LogString& name)
 {
 	if (name.empty())
-	{
 		return;
-	}
 
 	std::lock_guard<std::mutex> lock( m_priv->m_mutex );
-	AppenderList::iterator it, itEnd = m_priv->appenderList.end();
-	AppenderPtr appender;
-
-	for (it = m_priv->appenderList.begin(); it != itEnd; it++)
-	{
-		appender = *it;
-
-		if (name == appender->getName())
+	auto it = std::find_if(m_priv->appenderList.begin(), m_priv->appenderList.end()
+		, [&name](const AppenderPtr& appender) -> bool
 		{
-			m_priv->appenderList.erase(it);
-			return;
-		}
-	}
+			return name == appender->getName();
+		});
+	if (it != m_priv->appenderList.end())
+		m_priv->appenderList.erase(it);
 }
 
 

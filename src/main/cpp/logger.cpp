@@ -150,11 +150,9 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 
 void Logger::closeNestedAppenders()
 {
-	AppenderList appenders = getAllAppenders();
-
-	for (AppenderList::iterator it = appenders.begin(); it != appenders.end(); ++it)
+	for (auto item : getAllAppenders())
 	{
-		(*it)->close();
+		item->close();
 	}
 }
 

@@ -58,12 +58,8 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 
 	bundlesNames.push_back(baseName);
 
-	for (std::vector<LogString>::iterator it = bundlesNames.begin();
-		it != bundlesNames.end(); it++)
+	for (auto bundleName : bundlesNames)
 	{
-
-		bundleName = *it;
-
 		PropertyResourceBundlePtr current;
 
 		// Try loading a class which implements ResourceBundle
@@ -75,17 +71,17 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 		}
 		catch (ClassNotFoundException&)
 		{
-			current = 0;
+			current.reset();
 		}
 
 		// No class found, then try to create a PropertyResourceBundle from a file
-		if (current == 0)
+		if (!current)
 		{
 			InputStreamPtr bundleStream =
 				Loader::getResourceAsStream(
 					bundleName + LOG4CXX_STR(".properties"));
 
-			if (bundleStream == 0)
+			if (!bundleStream)
 			{
 				continue;
 			}
