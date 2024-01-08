@@ -123,9 +123,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 		LOGUNIT_TEST(closeTest);
 		LOGUNIT_TEST(test2);
-		LOGUNIT_TEST(test3);
+		LOGUNIT_TEST(testEventFlush);
 		LOGUNIT_TEST(testBadAppender);
-		LOGUNIT_TEST(testLocationInfoTrue);
+		LOGUNIT_TEST(testBufferOverflowBehavior);
 #if LOG4CXX_HAS_DOMCONFIGURATOR
 		LOGUNIT_TEST(testConfiguration);
 #endif
@@ -197,15 +197,15 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
 
-		// this test checks whether appenders embedded within an AsyncAppender are also
-		// closed
-		void test3()
+		// this test checks all messages are delivered when an AsyncAppender is closed
+		void testEventFlush()
 		{
-			size_t LEN = 200;
+			size_t LEN = 200; // Larger than default buffer size (128)
 			LoggerPtr root = Logger::getRootLogger();
 			VectorAppenderPtr vectorAppender = VectorAppenderPtr(new VectorAppender());
+			vectorAppender->setMillisecondDelay(1);
 			AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
-			asyncAppender->setName(LOG4CXX_STR("async-test3"));
+			asyncAppender->setName(LOG4CXX_STR("async-testEventFlush"));
 			asyncAppender->addAppender(vectorAppender);
 			root->addAppender(asyncAppender);
 
@@ -253,15 +253,14 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		}
 
 		/**
-		 * Tests non-blocking behavior.
+		 * Tests behavior when the the async buffer overflows.
 		 */
-		void testLocationInfoTrue()
+		void testBufferOverflowBehavior()
 		{
 			BlockableVectorAppenderPtr blockableAppender = BlockableVectorAppenderPtr(new BlockableVectorAppender());
-			blockableAppender->setMillisecondDelay(100);
 			blockableAppender->setName(LOG4CXX_STR("async-blockableVector"));
 			AsyncAppenderPtr async = AsyncAppenderPtr(new AsyncAppender());
-			async->setName(LOG4CXX_STR("async-testLocationInfoTrue"));
+			async->setName(LOG4CXX_STR("async-testBufferOverflowBehavior"));
 			async->addAppender(blockableAppender);
 			async->setBufferSize(5);
 			async->setLocationInfo(true);
@@ -276,16 +275,15 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				for (int i = 0; i < 140; i++)
 				{
 					LOG4CXX_INFO(rootLogger, "Hello, World");
-					std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 				}
 
 				LOG4CXX_ERROR(rootLogger, "That's all folks.");
 			}
 			async->close();
 			const std::vector<spi::LoggingEventPtr>& events = blockableAppender->getVector();
-			LOGUNIT_ASSERT(events.size() > 0);
-			LoggingEventPtr initialEvent = events[0];
-			LoggingEventPtr discardEvent = events[events.size() - 1];
+			LOGUNIT_ASSERT(!events.empty());
+			LoggingEventPtr initialEvent = events.front();
+			LoggingEventPtr discardEvent = events.back();
 			LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
 			LOGUNIT_ASSERT(discardEvent->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "));
 			LOGUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(),
