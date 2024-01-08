@@ -26,6 +26,7 @@
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
 #include <list>
+#include <algorithm>
 
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS;
