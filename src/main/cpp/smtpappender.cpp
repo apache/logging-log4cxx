@@ -260,6 +260,7 @@ class SMTPMessage
 			char* retval = p.pstralloc(str.length() + feedCount + 1);
 			char* current = retval;
 			char* startOfLine = current;
+			bool ignoreCRLF = false;
 
 			//
 			//    iterator through message
@@ -278,15 +279,15 @@ class SMTPMessage
 					//
 					//   replace any stray CR or LF with CRLF
 					//      reset start of line
-					*current++ = 0x0D;
-					*current++ = 0x0A;
-					startOfLine = current;
-					LogString::const_iterator next = iter + 1;
-
-					if (next != str.end() && (*next == 0x0A || *next == 0x0D))
+					if (!ignoreCRLF || startOfLine < current)
 					{
-						iter++;
+						*current++ = 0x0D;
+						*current++ = 0x0A;
+						startOfLine = current;
+						ignoreCRLF = true;
 					}
+					else
+						ignoreCRLF = false;
 				}
 				else
 				{
