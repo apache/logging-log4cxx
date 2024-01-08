@@ -25,6 +25,7 @@
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
+#include <list>
 
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS;
