@@ -17,28 +17,10 @@
 
 set(GENERATED_HEADERS)
 
-# Configure
-if(WIN32)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
-        ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
-        @ONLY
-    )
-    list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h)
-    set(LOG4CXX_CHAR "utf-8" CACHE STRING "Internal character representation, choice of utf-8, wchar_t(default), unichar")
-    set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
-    set(LOGCHAR_IS_UNICHAR 0)
-    set(LOGCHAR_IS_WCHAR 1)
-    set(LOGCHAR_IS_UTF8 0)
-else()
-    set(LOG4CXX_CHAR "utf-8" CACHE STRING "Internal character representation, choice of utf-8 (default), wchar_t, unichar")
-    set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
-    set(LOGCHAR_IS_UNICHAR 0)
-    set(LOGCHAR_IS_WCHAR 0)
-    set(LOGCHAR_IS_UTF8 1)
-endif()
-
 # Configure log4cxx.h
 
+set(LOG4CXX_CHAR "utf-8" CACHE STRING "Internal character representation, choice of utf-8, wchar_t, unichar")
+set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
 if(${LOG4CXX_CHAR} STREQUAL "unichar")
   set(LOGCHAR_IS_UNICHAR 1)
   set(LOGCHAR_IS_WCHAR 0)
@@ -47,7 +29,7 @@ elseif(${LOG4CXX_CHAR} STREQUAL "wchar_t")
   set(LOGCHAR_IS_WCHAR 1)
   set(LOGCHAR_IS_UNICHAR 0)
   set(LOGCHAR_IS_UTF8 0)
-elseif(${LOG4CXX_CHAR} STREQUAL "utf-8")
+else()
     set(LOGCHAR_IS_UNICHAR 0)
     set(LOGCHAR_IS_WCHAR 0)
     set(LOGCHAR_IS_UTF8 1)
@@ -203,6 +185,14 @@ configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configur
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
 )
 list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h)
+
+if(WIN32)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
+        ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
+        @ONLY
+    )
+    list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h)
+endif()
 
 # A target for the convenience of working with headers in the IDE
 file(GENERATE
