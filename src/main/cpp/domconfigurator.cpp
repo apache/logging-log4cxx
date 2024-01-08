@@ -244,11 +244,9 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 				std::vector<LOG4CXX_NS::spi::FilterPtr> filters;
 				parseFilters(p, utf8Decoder, currentElement, filters);
 
-				for (std::vector<LOG4CXX_NS::spi::FilterPtr>::iterator iter = filters.begin();
-					iter != filters.end();
-					iter++)
+				for (auto& item : filters)
 				{
-					appender->addFilter(*iter);
+					appender->addFilter(item);
 				}
 			}
 			else if (tagName == ERROR_HANDLER_TAG)
@@ -631,11 +629,9 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 
 				if (fbtp != NULL)
 				{
-					for (std::vector<LOG4CXX_NS::spi::FilterPtr>::iterator iter = filters.begin();
-						iter != filters.end();
-						iter++)
+					for (auto& item : filters)
 					{
-						fbtp->addFilter(*iter);
+						fbtp->addFilter(item);
 					}
 				}
 			}

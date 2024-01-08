@@ -195,14 +195,9 @@ void PatternLayout::activateOptions(Pool&)
 	//   strip out any pattern converters that don't handle LoggingEvents
 	//
 	//
-	for (std::vector<PatternConverterPtr>::const_iterator converterIter = converters.begin();
-		converterIter != converters.end();
-		converterIter++)
+	for (auto const& converterItem : converters)
 	{
-		LoggingEventPatternConverterPtr eventConverter =
-			LOG4CXX_NS::cast<LoggingEventPatternConverter>(*converterIter);
-
-		if (eventConverter != NULL)
+		if (auto eventConverter = LOG4CXX_NS::cast<LoggingEventPatternConverter>(converterItem))
 		{
 			m_priv->patternConverters.push_back(eventConverter);
 		}
