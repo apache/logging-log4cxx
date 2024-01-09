@@ -30,9 +30,6 @@ IMPLEMENT_LOG4CXX_OBJECT(ResourceBundle)
 ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 	const Locale& locale)
 {
-	LogString bundleName;
-	PropertyResourceBundlePtr resourceBundle, previous;
-
 	std::vector<LogString> bundlesNames;
 
 	if (!locale.getVariant().empty())
@@ -58,6 +55,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 
 	bundlesNames.push_back(baseName);
 
+	PropertyResourceBundlePtr resourceBundle, previous;
 	for (auto bundleName : bundlesNames)
 	{
 		PropertyResourceBundlePtr current;
@@ -97,7 +95,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 		}
 
 		// Add the new resource bundle to the hierarchy
-		if (resourceBundle == 0)
+		if (!resourceBundle)
 		{
 			resourceBundle = current;
 			previous = current;
@@ -110,7 +108,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 	}
 
 	// no resource bundle found at all, then throw exception
-	if (resourceBundle == 0)
+	if (!resourceBundle)
 	{
 		throw MissingResourceException(
 			((LogString) LOG4CXX_STR("Missing resource bundle ")) + baseName);

@@ -690,7 +690,7 @@ std::string Transcoder::encodeCharsetName(const LogString& val)
 		};
 	std::string out;
 
-	for (auto item : val)
+	for (auto& item : val)
 	{
 		if (item >= 0x20 && item < 0x7F)
 		{

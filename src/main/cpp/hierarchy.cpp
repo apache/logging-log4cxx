@@ -204,7 +204,7 @@ void Hierarchy::fireAddAppenderEvent(const Logger* logger, const Appender* appen
 		clonedList = m_priv->listeners;
 	}
 
-	for (auto item : clonedList)
+	for (auto& item : clonedList)
 		item->addAppenderEvent(logger, appender);
 }
 
@@ -216,7 +216,7 @@ void Hierarchy::fireRemoveAppenderEvent(const Logger* logger, const Appender* ap
 		std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 		clonedList = m_priv->listeners;
 	}
-	for (auto item : clonedList)
+	for (auto& item : clonedList)
 		item->removeAppenderEvent(logger, appender);
 }
 
@@ -318,7 +318,7 @@ void Hierarchy::resetConfiguration()
 
 	shutdownInternal();
 
-	for (auto item : m_priv->loggers)
+	for (auto& item : m_priv->loggers)
 	{
 		if (auto pLogger = item.second)
 		{
@@ -344,7 +344,7 @@ void Hierarchy::shutdownInternal()
 	if (m_priv->root)
 		m_priv->root->closeNestedAppenders();
 
-	for (auto item : m_priv->loggers)
+	for (auto& item : m_priv->loggers)
 	{
 		if (auto pLogger = item.second)
 			pLogger->closeNestedAppenders();
@@ -354,7 +354,7 @@ void Hierarchy::shutdownInternal()
 	if (m_priv->root)
 		m_priv->root->removeAllAppenders();
 
-	for (auto item : m_priv->loggers)
+	for (auto& item : m_priv->loggers)
 	{
 		if (auto pLogger = item.second)
 			pLogger->removeAllAppenders();
@@ -409,7 +409,7 @@ void Hierarchy::updateParents(const LoggerPtr& logger, const LoggerPtr& root)
 
 void Hierarchy::updateChildren(ProvisionNode& pn, const LoggerPtr& logger)
 {
-	for (auto l : pn)
+	for (auto& l : pn)
 	{
 		// Unless this child already points to a correct (lower) parent,
 		// make logger.parent point to l.parent and l.parent to logger.
