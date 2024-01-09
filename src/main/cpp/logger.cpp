@@ -111,15 +111,13 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
 
 	m_priv->aai.removeAllAppenders();
 
-	for ( std::vector<AppenderPtr>::const_iterator it = appenders.cbegin();
-		it != appenders.cend();
-		it++ )
+	for (auto const& item : appenders)
 	{
-		m_priv->aai.addAppender( *it );
+		m_priv->aai.addAppender(item);
 
 		if (auto rep = getHierarchy())
 		{
-			rep->fireAddAppenderEvent(this, it->get());
+			rep->fireAddAppenderEvent(this, item.get());
 		}
 	}
 }
@@ -150,11 +148,9 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 
 void Logger::closeNestedAppenders()
 {
-	AppenderList appenders = getAllAppenders();
-
-	for (AppenderList::iterator it = appenders.begin(); it != appenders.end(); ++it)
+	for (auto& item : getAllAppenders())
 	{
-		(*it)->close();
+		item->close();
 	}
 }
 

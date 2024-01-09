@@ -821,9 +821,9 @@ SimpleDateFormat::SimpleDateFormat( const LogString& fmt ) : m_priv(std::make_un
 	parsePattern( fmt, NULL, m_priv->pattern );
 #endif
 
-	for ( PatternTokenList::iterator iter = m_priv->pattern.begin(); iter != m_priv->pattern.end(); iter++ )
+	for (auto const& item : m_priv->pattern)
 	{
-		( * iter )->setTimeZone( m_priv->timeZone );
+		item->setTimeZone( m_priv->timeZone );
 	}
 }
 
@@ -831,18 +831,18 @@ SimpleDateFormat::SimpleDateFormat( const LogString& fmt, const std::locale* loc
 {
 	parsePattern( fmt, locale, m_priv->pattern );
 
-	for ( PatternTokenList::iterator iter = m_priv->pattern.begin(); iter != m_priv->pattern.end(); iter++ )
+	for (auto const& item : m_priv->pattern)
 	{
-		( * iter )->setTimeZone( m_priv->timeZone );
+		item->setTimeZone( m_priv->timeZone );
 	}
 }
 
 
 SimpleDateFormat::~SimpleDateFormat()
 {
-	for ( PatternTokenList::iterator iter = m_priv->pattern.begin(); iter != m_priv->pattern.end(); iter++ )
+	for (auto item : m_priv->pattern)
 	{
-		delete * iter;
+		delete item;
 	}
 }
 

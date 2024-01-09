@@ -272,15 +272,8 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 	static const WideLife<LogString> CATEGORY_PREFIX(LOG4CXX_STR("log4j.category."));
 	static const WideLife<LogString> LOGGER_PREFIX(LOG4CXX_STR("log4j.logger."));
 
-	std::vector<LogString> names = props.propertyNames();
-
-	std::vector<LogString>::iterator it = names.begin();
-	std::vector<LogString>::iterator itEnd = names.end();
-
-	while (it != itEnd)
+	for (auto key : props.propertyNames())
 	{
-		LogString key = *it++;
-
 		if (key.find(CATEGORY_PREFIX) == 0 || key.find(LOGGER_PREFIX) == 0)
 		{
 			LogString loggerName;

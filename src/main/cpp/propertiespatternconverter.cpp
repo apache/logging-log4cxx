@@ -76,16 +76,12 @@ void PropertiesPatternConverter::format(
 	{
 		toAppendTo.append(1, (logchar) 0x7B /* '{' */);
 
-		LoggingEvent::KeySet keySet(event->getMDCKeySet());
-
-		for (LoggingEvent::KeySet::const_iterator iter = keySet.begin();
-			iter != keySet.end();
-			iter++)
+		for (auto const& item : event->getMDCKeySet())
 		{
 			toAppendTo.append(1, (logchar) 0x7B /* '{' */);
-			toAppendTo.append(*iter);
+			toAppendTo.append(item);
 			toAppendTo.append(1, (logchar) 0x2C /* ',' */);
-			event->getMDC(*iter, toAppendTo);
+			event->getMDC(item, toAppendTo);
 			toAppendTo.append(1, (logchar) 0x7D /* '}' */);
 		}
 

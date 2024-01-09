@@ -442,11 +442,9 @@ std::vector<LogString> Properties::propertyNames() const
 	std::vector<LogString> names;
 	names.reserve(properties->size());
 
-	PropertyMap::const_iterator it;
-
-	for (it = properties->begin(); it != properties->end(); it++)
+	for (auto const& item : *properties)
 	{
-		const LogString& key = it->first;
+		const LogString& key = item.first;
 		names.push_back(key);
 	}
 

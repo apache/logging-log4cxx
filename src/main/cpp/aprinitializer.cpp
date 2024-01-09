@@ -25,6 +25,8 @@
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
+#include <list>
+#include <algorithm>
 
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS;
@@ -153,16 +155,9 @@ void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
 	APRInitializer& instance(getInstance());
 	std::unique_lock<std::mutex> lock(instance.m_priv->mutex);
 
-	for (std::list<FileWatchdog*>::iterator iter = instance.m_priv->watchdogs.begin();
-		iter != instance.m_priv->watchdogs.end();
-		iter++)
-	{
-		if (*iter == watchdog)
-		{
-			instance.m_priv->watchdogs.erase(iter);
-			return;
-		}
-	}
+	auto iter = std::find(instance.m_priv->watchdogs.begin(), instance.m_priv->watchdogs.end(), watchdog);
+	if (iter != instance.m_priv->watchdogs.end())
+		instance.m_priv->watchdogs.erase(iter);
 }
 
 void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)

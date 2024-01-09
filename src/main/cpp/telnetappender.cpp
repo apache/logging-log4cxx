@@ -123,14 +123,12 @@ void TelnetAppender::close()
 
 	SocketPtr nullSocket;
 
-	for (ConnectionList::iterator iter = _priv->connections.begin();
-		iter != _priv->connections.end();
-		iter++)
+	for (auto& item : _priv->connections)
 	{
-		if (*iter != 0)
+		if (item)
 		{
-			(*iter)->close();
-			*iter = nullSocket;
+			item->close();
+			item = nullSocket;
 		}
 	}
 
@@ -156,21 +154,19 @@ void TelnetAppender::close()
 
 void TelnetAppender::write(ByteBuffer& buf)
 {
-	for (ConnectionList::iterator iter = _priv->connections.begin();
-		iter != _priv->connections.end();
-		iter++)
+	for (auto& item :_priv->connections)
 	{
-		if (*iter != 0)
+		if (item)
 		{
 			try
 			{
 				ByteBuffer b(buf.current(), buf.remaining());
-				(*iter)->write(b);
+				item->write(b);
 			}
 			catch (Exception&)
 			{
 				// The client has closed the connection, remove it from our list:
-				*iter = 0;
+				item.reset();
 				_priv->activeConnections--;
 			}
 		}
@@ -267,13 +263,11 @@ void TelnetAppender::acceptConnections()
 				//
 				std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 
-				for (ConnectionList::iterator iter = _priv->connections.begin();
-					iter != _priv->connections.end();
-					iter++)
+				for (auto& item : _priv->connections)
 				{
-					if (*iter == NULL)
+					if (!item)
 					{
-						*iter = newClient;
+						item = newClient;
 						_priv->activeConnections++;
 
 						break;

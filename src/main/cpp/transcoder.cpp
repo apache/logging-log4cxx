@@ -690,13 +690,11 @@ std::string Transcoder::encodeCharsetName(const LogString& val)
 		};
 	std::string out;
 
-	for (LogString::const_iterator iter = val.begin();
-		iter != val.end();
-		iter++)
+	for (auto& item : val)
 	{
-		if (*iter >= 0x20 && *iter < 0x7F)
+		if (item >= 0x20 && item < 0x7F)
 		{
-			out.append(1, asciiTable[*iter - 0x20]);
+			out.append(1, asciiTable[item - 0x20]);
 		}
 		else
 		{

@@ -313,15 +313,9 @@ void AsyncAppender::close()
 		priv->dispatcher.join();
 	}
 
+	for (auto item : priv->appenders->getAllAppenders())
 	{
-		AppenderList appenderList = priv->appenders->getAllAppenders();
-
-		for (AppenderList::iterator iter = appenderList.begin();
-			iter != appenderList.end();
-			iter++)
-		{
-			(*iter)->close();
-		}
+		item->close();
 	}
 }
 
@@ -473,18 +467,14 @@ void AsyncAppender::dispatch()
 			);
 			isActive = !priv->closed;
 
-			for (LoggingEventList::iterator eventIter = priv->buffer.begin();
-				eventIter != priv->buffer.end();
-				eventIter++)
+			for (auto eventItem : priv->buffer)
 			{
-				events.push_back(*eventIter);
+				events.push_back(eventItem);
 			}
 
-			for (DiscardMap::iterator discardIter = priv->discardMap.begin();
-				discardIter != priv->discardMap.end();
-				discardIter++)
+			for (auto discardItem : priv->discardMap)
 			{
-				events.push_back(discardIter->second.createEvent(p));
+				events.push_back(discardItem.second.createEvent(p));
 			}
 
 			priv->buffer.clear();
@@ -492,19 +482,17 @@ void AsyncAppender::dispatch()
 			priv->bufferNotFull.notify_all();
 		}
 
-		for (LoggingEventList::iterator iter = events.begin();
-			iter != events.end();
-			iter++)
+		for (auto item : events)
 		{
 			try
 			{
-				priv->appenders->appendLoopOnAppenders(*iter, p);
+				priv->appenders->appendLoopOnAppenders(item, p);
 			}
 			catch (std::exception& ex)
 			{
 				if (isActive)
 				{
-					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, *iter);
+					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, item);
 					isActive = false;
 				}
 			}

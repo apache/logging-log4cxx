@@ -75,12 +75,12 @@ Filter::FilterDecision MapFilter::decide(
 
 	bool matched = true;
 
-	for (KeyVals::const_iterator it = priv->keyVals.begin(); it != priv->keyVals.end(); ++it)
+	for (auto const& item : priv->keyVals)
 	{
 		LogString curval;
-		event->getMDC(it->first, curval);
+		event->getMDC(item.first, curval);
 
-		if (curval.empty() || curval != it->second)
+		if (curval.empty() || curval != item.second)
 		{
 			matched = false;
 		}

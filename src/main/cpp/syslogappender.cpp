@@ -311,14 +311,13 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 		int current = 1;
 
-		for ( std::vector<LogString>::iterator it = packets.begin();
-			it != packets.end();
-			it++, current++ )
+		for (auto& item : packets)
 		{
 			char buf[12];
 			apr_snprintf( buf, sizeof(buf), "(%d/%d)", current, (int)packets.size() );
 			LOG4CXX_DECODE_CHAR(str, buf);
-			it->append( str );
+			item.append( str );
+			++current;
 		}
 	}
 	else
@@ -332,13 +331,11 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if (_priv->sw == 0)
 	{
-		for ( std::vector<LogString>::iterator it = packets.begin();
-			it != packets.end();
-			it++ )
+		for (auto const& item : packets)
 		{
 			// use of "%s" to avoid a security hole
 			::syslog(_priv->syslogFacility | event->getLevel()->getSyslogEquivalent(),
-				"%s", it->c_str());
+				"%s", item.c_str());
 		}
 
 		return;
@@ -354,9 +351,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		return;
 	}
 
-	for ( std::vector<LogString>::iterator it = packets.begin();
-		it != packets.end();
-		it++ )
+	for (auto const& item : packets)
 	{
 		LogString sbuf(1, 0x3C /* '<' */);
 		StringHelper::toString((_priv->syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
@@ -367,7 +362,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			sbuf.append(_priv->facilityStr);
 		}
 
-		sbuf.append(*it);
+		sbuf.append(item);
 		_priv->sw->write(sbuf);
 	}
 }

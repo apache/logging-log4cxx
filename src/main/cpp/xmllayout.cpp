@@ -135,11 +135,8 @@ void XMLLayout::format(LogString& output,
 			output.append(LOG4CXX_STR("<log4j:properties>"));
 			output.append(LOG4CXX_EOL);
 
-			for (LoggingEvent::KeySet::const_iterator i = keySet.begin();
-				i != keySet.end();
-				i++)
+			for (auto key : keySet)
 			{
-				LogString key(*i);
 				LogString value;
 
 				if (event->getMDC(key, value))
@@ -153,11 +150,8 @@ void XMLLayout::format(LogString& output,
 				}
 			}
 
-			for (LoggingEvent::KeySet::const_iterator i2 = propertySet.begin();
-				i2 != propertySet.end();
-				i2++)
+			for (auto key : propertySet)
 			{
-				LogString key(*i2);
 				LogString value;
 
 				if (event->getProperty(key, value))

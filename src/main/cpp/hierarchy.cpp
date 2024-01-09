@@ -204,14 +204,8 @@ void Hierarchy::fireAddAppenderEvent(const Logger* logger, const Appender* appen
 		clonedList = m_priv->listeners;
 	}
 
-	HierarchyEventListenerList::iterator it, itEnd = clonedList.end();
-	HierarchyEventListenerPtr listener;
-
-	for (it = clonedList.begin(); it != itEnd; it++)
-	{
-		listener = *it;
-		listener->addAppenderEvent(logger, appender);
-	}
+	for (auto& item : clonedList)
+		item->addAppenderEvent(logger, appender);
 }
 
 void Hierarchy::fireRemoveAppenderEvent(const Logger* logger, const Appender* appender)
@@ -222,14 +216,8 @@ void Hierarchy::fireRemoveAppenderEvent(const Logger* logger, const Appender* ap
 		std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 		clonedList = m_priv->listeners;
 	}
-	HierarchyEventListenerList::iterator it, itEnd = clonedList.end();
-	HierarchyEventListenerPtr listener;
-
-	for (it = clonedList.begin(); it != itEnd; it++)
-	{
-		listener = *it;
-		listener->removeAppenderEvent(logger, appender);
-	}
+	for (auto& item : clonedList)
+		item->removeAppenderEvent(logger, appender);
 }
 
 LevelPtr Hierarchy::getThreshold() const
@@ -330,19 +318,15 @@ void Hierarchy::resetConfiguration()
 
 	shutdownInternal();
 
-	LoggerMap::const_iterator it, itEnd = m_priv->loggers.end();
-
-	for (it = m_priv->loggers.begin(); it != itEnd; it++)
+	for (auto& item : m_priv->loggers)
 	{
-		if (auto pLogger = it->second)
+		if (auto pLogger = item.second)
 		{
 			pLogger->setLevel(0);
 			pLogger->setAdditivity(true);
 			pLogger->setResourceBundle(0);
 		}
 	}
-
-	//rendererMap.clear();
 }
 
 void Hierarchy::shutdown()
@@ -360,11 +344,9 @@ void Hierarchy::shutdownInternal()
 	if (m_priv->root)
 		m_priv->root->closeNestedAppenders();
 
-	LoggerMap::iterator it, itEnd = m_priv->loggers.end();
-
-	for (it = m_priv->loggers.begin(); it != itEnd; it++)
+	for (auto& item : m_priv->loggers)
 	{
-		if (auto pLogger = it->second)
+		if (auto pLogger = item.second)
 			pLogger->closeNestedAppenders();
 	}
 
@@ -372,9 +354,9 @@ void Hierarchy::shutdownInternal()
 	if (m_priv->root)
 		m_priv->root->removeAllAppenders();
 
-	for (it = m_priv->loggers.begin(); it != itEnd; it++)
+	for (auto& item : m_priv->loggers)
 	{
-		if (auto pLogger = it->second)
+		if (auto pLogger = item.second)
 			pLogger->removeAllAppenders();
 	}
 }
@@ -427,12 +409,8 @@ void Hierarchy::updateParents(const LoggerPtr& logger, const LoggerPtr& root)
 
 void Hierarchy::updateChildren(ProvisionNode& pn, const LoggerPtr& logger)
 {
-	ProvisionNode::iterator it, itEnd = pn.end();
-
-	for (it = pn.begin(); it != itEnd; it++)
+	for (auto& l : pn)
 	{
-		LoggerPtr& l = *it;
-
 		// Unless this child already points to a correct (lower) parent,
 		// make logger.parent point to l.parent and l.parent to logger.
 		if (!StringHelper::startsWith(l->getParent()->getName(), logger->getName()))

@@ -50,13 +50,8 @@ void PropertySetter::setProperties(helpers::Properties& properties,
 {
 	size_t len = prefix.length();
 
-	std::vector<LogString> names = properties.propertyNames();
-	std::vector<LogString>::iterator it;
-
-	for (it = names.begin(); it != names.end(); it++)
+	for (auto key : properties.propertyNames())
 	{
-		LogString key = *it;
-
 		// handle only properties that start with the desired frefix.
 		if (key.find(prefix) == 0)
 		{
