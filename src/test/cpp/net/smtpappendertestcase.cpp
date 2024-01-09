@@ -26,6 +26,37 @@
 
 namespace LOG4CXX_NS
 {
+
+class ErrorCounter : public spi::ErrorHandler
+{
+	private:
+		mutable int m_errorCount = 0;
+
+	public:
+		ErrorCounter () {}
+
+		void setLogger(const LoggerPtr& logger) override {}
+
+		void activateOptions(helpers::Pool& p) override {}
+
+		void setOption(const LogString& option, const LogString& value) override {}
+
+		void error(const LogString& message, const std::exception& e, int errorCode) const override
+		{ ++m_errorCount; }
+
+		void error(const LogString& message, const std::exception& e, int errorCode, const spi::LoggingEventPtr& event) const override
+		{ ++m_errorCount; }
+
+		void error(const LogString& message) const override
+		{ ++m_errorCount; }
+
+		void setAppender(const AppenderPtr& appender) override {}
+
+		void setBackupAppender(const AppenderPtr& appender) override {}
+
+		int getErrorCount() const { return m_errorCount; }
+};
+
 namespace net
 {
 
@@ -109,26 +140,33 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 
 		void testInvalid()
 		{
+			auto eh = std::make_shared<ErrorCounter>();
 			auto appender = std::make_shared<SMTPAppender>();
 			appender->setSMTPHost(LOG4CXX_STR("smtp.invalid"));
 			appender->setTo(LOG4CXX_STR("you@example.invalid"));
 			appender->setFrom(LOG4CXX_STR("me@example.invalid"));
 			appender->setLayout(std::make_shared<SimpleLayout>());
+			auto trigger = LOG4CXX_NS::cast<spi::TriggeringEventEvaluator>(std::make_shared<MockTriggeringEventEvaluator>());
+			appender->setEvaluator(trigger);
+			appender->setErrorHandler(eh);
 			Pool p;
 			appender->activateOptions(p);
 			auto root = Logger::getRootLogger();
 			root->addAppender(appender);
 			LOG4CXX_INFO(root, "Hello, World.");
-			LOG4CXX_ERROR(root, "Sending Message");
+			LOGUNIT_ASSERT(0 < eh->getErrorCount());
 		}
 
 
 		void testValid()
 		{
+			auto eh = std::make_shared<ErrorCounter>();
 			xml::DOMConfigurator::configure("input/xml/smtpAppenderValid.xml");
 			auto root = Logger::getRootLogger();
-			LOG4CXX_INFO(root, "Hello, World.");
-			LOG4CXX_ERROR(root, "Sending Message");
+			auto appender = log4cxx::cast<SMTPAppender>(root->getAppender(LOG4CXX_STR("A1")));
+			appender->setErrorHandler(eh);
+			LOG4CXX_INFO(root, "Hello, World.\n\nThis paragraph should be preceeded by a blank line.");
+			LOGUNIT_ASSERT_EQUAL(0, eh->getErrorCount());
 		}
 };
 
