@@ -23,6 +23,7 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/simplelayout.h>
+#include <log4cxx/helpers/onlyonceerrorhandler.h>
 
 namespace LOG4CXX_NS
 {
@@ -74,7 +75,13 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testSetOptionThreshold);
 		LOGUNIT_TEST(testTrigger);
 		LOGUNIT_TEST(testInvalid);
-		//LOGUNIT_TEST(testValid);
+//#define LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
+#ifdef LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
+		// This test requires the following environment variables:
+		// LOG4CXX_TEST_EMAIL_RECIPIENT - where the email is sent
+		// LOG4CXX_TEST_SMTP_HOST_NAME - the email server
+		LOGUNIT_TEST(testValid);
+#endif
 		LOGUNIT_TEST_SUITE_END();
 
 
@@ -119,7 +126,10 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			auto root = Logger::getRootLogger();
 			root->addAppender(appender);
 			LOG4CXX_INFO(root, "Hello, World.");
-			LOG4CXX_ERROR(root, "Sending Message");
+			LOG4CXX_ERROR(root, "Sending Message"); // The DefaultEvaluator should trigger e-mail generation
+			auto eh = dynamic_cast<helpers::OnlyOnceErrorHandler*>(appender->getErrorHandler().get());
+			LOGUNIT_ASSERT(eh);
+			LOGUNIT_ASSERT(eh->errorReported());
 		}
 
 
@@ -127,8 +137,13 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		{
 			xml::DOMConfigurator::configure("input/xml/smtpAppenderValid.xml");
 			auto root = Logger::getRootLogger();
-			LOG4CXX_INFO(root, "Hello, World.");
-			LOG4CXX_ERROR(root, "Sending Message");
+			LOG4CXX_INFO(root, "Hello, World.\n\nThis paragraph should be preceeded by a blank line.");
+
+			auto appender = log4cxx::cast<SMTPAppender>(root->getAppender(LOG4CXX_STR("A1")));
+			LOGUNIT_ASSERT(appender);
+			auto eh = dynamic_cast<helpers::OnlyOnceErrorHandler*>(appender->getErrorHandler().get());
+			LOGUNIT_ASSERT(eh);
+			LOGUNIT_ASSERT(!eh->errorReported());
 		}
 };
 

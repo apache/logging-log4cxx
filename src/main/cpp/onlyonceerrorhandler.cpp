@@ -91,3 +91,9 @@ void OnlyOnceErrorHandler::setAppender(const AppenderPtr&)
 void OnlyOnceErrorHandler::setBackupAppender(const AppenderPtr&)
 {
 }
+
+bool OnlyOnceErrorHandler::errorReported() const
+{
+	return !m_priv->firstTime;
+}
+

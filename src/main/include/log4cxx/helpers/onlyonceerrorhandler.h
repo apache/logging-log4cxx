@@ -103,6 +103,11 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		Does not do anything.
 		*/
 		void setBackupAppender(const AppenderPtr& appender) override;
+
+		/**
+		Has an error been reported?
+		*/
+		bool errorReported() const;
 };
 }  // namespace helpers
 } // namespace log4cxx

@@ -260,7 +260,7 @@ class SMTPMessage
 			char* retval = p.pstralloc(str.length() + feedCount + 1);
 			char* current = retval;
 			char* startOfLine = current;
-			bool ignoreCRLF = false;
+			unsigned int ignoreChar = 0;
 
 			//
 			//    iterator through message
@@ -279,15 +279,15 @@ class SMTPMessage
 					//
 					//   replace any stray CR or LF with CRLF
 					//      reset start of line
-					if (!ignoreCRLF || startOfLine < current)
+					if (c == ignoreChar && current == startOfLine)
+						ignoreChar = 0;
+					else
 					{
 						*current++ = 0x0D;
 						*current++ = 0x0A;
 						startOfLine = current;
-						ignoreCRLF = true;
+						ignoreChar = (c == 0x0A ? 0x0D : 0x0A);
 					}
-					else
-						ignoreCRLF = false;
 				}
 				else
 				{
@@ -764,7 +764,7 @@ void SMTPAppender::sendBuffer(Pool& p)
 	}
 	catch (std::exception& e)
 	{
-		LogLog::error(LOG4CXX_STR("Error occured while sending e-mail notification."), e);
+		_priv->errorHandler->error(LOG4CXX_STR("Error occured while sending e-mail to [") + _priv->smtpHost + LOG4CXX_STR("]."), e, 0);
 	}
 
 #endif
