@@ -146,14 +146,13 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setTo(LOG4CXX_STR("you@example.invalid"));
 			appender->setFrom(LOG4CXX_STR("me@example.invalid"));
 			appender->setLayout(std::make_shared<SimpleLayout>());
-			auto trigger = LOG4CXX_NS::cast<spi::TriggeringEventEvaluator>(std::make_shared<MockTriggeringEventEvaluator>());
-			appender->setEvaluator(trigger);
 			appender->setErrorHandler(eh);
 			Pool p;
 			appender->activateOptions(p);
 			auto root = Logger::getRootLogger();
 			root->addAppender(appender);
 			LOG4CXX_INFO(root, "Hello, World.");
+			LOG4CXX_ERROR(root, "Sending Message"); // The DefaultEvaluator should trigger e-mail generation
 			LOGUNIT_ASSERT(0 < eh->getErrorCount());
 		}
 
