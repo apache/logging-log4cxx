@@ -279,15 +279,15 @@ class SMTPMessage
 					//
 					//   replace any stray CR or LF with CRLF
 					//      reset start of line
-					if (c != ignoreChar || startOfLine < current)
+					if (c == ignoreChar && current == startOfLine)
+						ignoreChar = 0;
+					else
 					{
 						*current++ = 0x0D;
 						*current++ = 0x0A;
 						startOfLine = current;
 						ignoreChar = (c == 0x0A ? 0x0D : 0x0A);
 					}
-					else
-						ignoreChar = 0;
 				}
 				else
 				{
