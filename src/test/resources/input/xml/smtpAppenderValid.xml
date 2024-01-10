@@ -20,9 +20,9 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="A1" class="org.apache.log4j.net.SMTPAppender">
     <param name="from" value="log4cxx@apache.org" />
-    <param name="to" value="your-local-internet-service-provider-account@your-local-internet-service-provider-address" />
+    <param name="to" value="${LOG4CXX_TEST_EMAIL_RECIPIENT}" />
     <param name="subject" value="Test message" />
-    <param name="SMTPHost" value="smtp.your-local-internet-service-provider-address"/>
+    <param name="SMTPHost" value="${LOG4CXX_TEST_SMTP_HOST_NAME}"/>
     <param name="SMTPPort" value="587"/>
     <triggeringPolicy class="org.apache.log4j.net.SMTPAppenderTest$MockTriggeringEventEvaluator"/>
 

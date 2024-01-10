@@ -104,8 +104,13 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
 		LOGUNIT_TEST(testTrigger);
+#ifdef LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
+		// This test requires the following environment variables:
+		// LOG4CXX_TEST_EMAIL_RECIPIENT - where the email is sent
+		// LOG4CXX_TEST_SMTP_HOST_NAME - the email server
 		LOGUNIT_TEST(testInvalid);
-		//LOGUNIT_TEST(testValid);
+#endif
+		LOGUNIT_TEST(testValid);
 		LOGUNIT_TEST_SUITE_END();
 
 
