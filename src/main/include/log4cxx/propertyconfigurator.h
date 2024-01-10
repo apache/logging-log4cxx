@@ -101,7 +101,12 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 	public:
 		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
 		BEGIN_LOG4CXX_CAST_MAP()
+#if 15 < LOG4CXX_ABI_VERSION
+		LOG4CXX_CAST_ENTRY(PropertyConfigurator)
+		LOG4CXX_CAST_ENTRY_CHAIN(spi::Configurator)
+#else
 		LOG4CXX_CAST_ENTRY(spi::Configurator)
+#endif
 		END_LOG4CXX_CAST_MAP()
 
 		PropertyConfigurator();

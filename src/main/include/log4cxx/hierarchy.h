@@ -60,7 +60,12 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)
 		BEGIN_LOG4CXX_CAST_MAP()
+#if 15 < LOG4CXX_ABI_VERSION
+		LOG4CXX_CAST_ENTRY(Hierarchy)
+		LOG4CXX_CAST_ENTRY_CHAIN(spi::LoggerRepository)
+#else
 		LOG4CXX_CAST_ENTRY(spi::LoggerRepository)
+#endif
 		END_LOG4CXX_CAST_MAP()
 
 	private:
