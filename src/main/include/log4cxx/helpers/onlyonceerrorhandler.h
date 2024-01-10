@@ -45,8 +45,13 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 	public:
 		DECLARE_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
 		BEGIN_LOG4CXX_CAST_MAP()
+#if 15 < LOG4CXX_ABI_VERSION
+		LOG4CXX_CAST_ENTRY(OnlyOnceErrorHandler)
+		LOG4CXX_CAST_ENTRY_CHAIN(spi::ErrorHandler)
+#else
 		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
 		LOG4CXX_CAST_ENTRY(spi::ErrorHandler)
+#endif
 		END_LOG4CXX_CAST_MAP()
 
 		OnlyOnceErrorHandler();
