@@ -30,6 +30,10 @@ set(LOG4CXX_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 # Note that the lib version is different from the SOVERSION
 # The lib version is the version of log4cxx, the SOVERSION is the ABI version
 # See also: https://cmake.org/pipermail/cmake/2012-September/051904.html
+set(log4cxx_ABI_VER 15)
+set(next_log4cxx_ABI_VER 16)
+set(log4cxx_ABI_VER "${log4cxx_ABI_VER}" CACHE STRING "The DSO library version")
+set_property(CACHE log4cxx_ABI_VER PROPERTY STRINGS "${log4cxx_ABI_VER}" "${next_log4cxx_ABI_VER}")
 set(LIBLOG4CXX_LIB_VERSION ${log4cxx_ABI_VER}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
 set(LIBLOG4CXX_LIB_SOVERSION ${log4cxx_ABI_VER})
 # Set the 'release' version.  This is the human-readable version
