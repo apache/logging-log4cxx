@@ -137,8 +137,10 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		{
 			xml::DOMConfigurator::configure("input/xml/smtpAppenderValid.xml");
 			auto root = Logger::getRootLogger();
-			auto appender = log4cxx::cast<SMTPAppender>(root->getAppender(LOG4CXX_STR("A1")));
 			LOG4CXX_INFO(root, "Hello, World.\n\nThis paragraph should be preceeded by a blank line.");
+
+			auto appender = log4cxx::cast<SMTPAppender>(root->getAppender(LOG4CXX_STR("A1")));
+			LOGUNIT_ASSERT(appender);
 			auto eh = dynamic_cast<helpers::OnlyOnceErrorHandler*>(appender->getErrorHandler().get());
 			LOGUNIT_ASSERT(eh);
 			LOGUNIT_ASSERT(!eh->errorReported());
