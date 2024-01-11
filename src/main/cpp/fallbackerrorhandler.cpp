@@ -37,6 +37,7 @@ struct FallbackErrorHandler::FallbackErrorHandlerPrivate
 	AppenderWeakPtr backup;
 	AppenderWeakPtr primary;
 	std::vector<LoggerPtr> loggers;
+	bool errorReported = false;
 };
 
 FallbackErrorHandler::FallbackErrorHandler()
@@ -91,6 +92,7 @@ void FallbackErrorHandler::error(const LogString& message,
 			+ l->getName());
 		l->addAppender(backupLocked);
 	}
+	m_priv->errorReported = true;
 }
 
 void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)
@@ -124,3 +126,7 @@ void FallbackErrorHandler::setOption(const LogString&, const LogString&)
 {
 }
 
+bool FallbackErrorHandler::errorReported() const
+{
+	return m_priv->errorReported;
+}

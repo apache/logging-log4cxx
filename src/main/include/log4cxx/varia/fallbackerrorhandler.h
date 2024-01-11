@@ -102,6 +102,15 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		Set the backup appender.
 		*/
 		void setBackupAppender(const AppenderPtr& backup) override;
+
+		/**
+		Has an error been reported?
+		*/
+#if 15 < LOG4CXX_ABI_VERSION
+		bool errorReported() const override;
+#else
+		bool errorReported() const;
+#endif
 };
 LOG4CXX_PTR_DEF(FallbackErrorHandler);
 
