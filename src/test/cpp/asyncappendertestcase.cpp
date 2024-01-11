@@ -247,7 +247,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 			LOG4CXX_INFO(root, "Message");
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-            LOG4CXX_INFO(root, "Message");
+			LOGUNIT_ASSERT(errorHandler->errorReported());
+			LOG4CXX_INFO(root, "Message");
 			auto& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT(0 < v.size());
 		}

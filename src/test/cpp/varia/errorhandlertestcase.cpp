@@ -79,6 +79,7 @@ public:
 		LOGUNIT_ASSERT(eh != 0);
 
 		common();
+		LOGUNIT_ASSERT(eh->errorReported());
 
 		std::string TEST1_PAT =
 			"FALLBACK - (root|test) - Message {0-9}";
@@ -117,6 +118,7 @@ public:
 		LOGUNIT_ASSERT(eh != 0);
 		eh->setLogger(logger);
 		common();
+		LOGUNIT_ASSERT(eh->errorReported());
 
 		std::string TEST1_PAT =
 			"FALLBACK - (root|test) - Message {0-9}";

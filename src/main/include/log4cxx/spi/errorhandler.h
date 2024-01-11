@@ -113,6 +113,13 @@ class LOG4CXX_EXPORT ErrorHandler : public virtual OptionHandler
 		Set the appender to fallback upon in case of failure.
 		*/
 		virtual void setBackupAppender(const AppenderPtr& appender) = 0;
+
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		Has an error been reported?
+		*/
+		virtual bool errorReported() const = 0;
+#endif
 };
 
 LOG4CXX_PTR_DEF(ErrorHandler);
