@@ -96,6 +96,59 @@ typedef std::map<LogString, DiscardSummary> DiscardMap;
 }
 #endif
 
+#define USE_ATOMIC_QUEUE 1
+#if USE_ATOMIC_QUEUE
+#include <atomic>
+namespace
+{
+static const int CACHE_LINE_SIZE = 128;
+class AtomicQueue
+{
+public:
+	struct alignas(CACHE_LINE_SIZE) Node
+	{
+		LoggingEventPtr data;
+		Node* next;
+		Node(const LoggingEventPtr& event, Node* n)
+			: data(event)
+			, next(n)
+		{ }
+	};
+
+	AtomicQueue() : m_head(0) {}
+
+	void push(const LoggingEventPtr& event)
+	{
+		auto n = new Node(event, m_head.load(std::memory_order_relaxed));
+		while (!m_head.compare_exchange_weak(n->next, n, std::memory_order_release))
+		{
+		}
+	}
+
+	Node* pop_all(void)
+	{
+		return m_head.exchange(0, std::memory_order_consume);
+	}
+
+	Node* pop_all_reverse(void)
+	{
+		Node* first = 0;
+		auto last = pop_all();
+		while (last)
+		{
+			auto tmp = last;
+			last = last->next;
+			tmp->next = first;
+			first = tmp;
+		}
+		return first;
+	}
+private:
+	std::atomic<Node*> m_head;
+};
+} // namespace
+#endif
+
 struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
 	AsyncAppenderPriv() :
@@ -122,10 +175,12 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	}
 #endif
 
+#if LOG4CXX_ABI_VERSION <= 15 || !(USE_ATOMIC_QUEUE)
 	/**
 	 * Event buffer.
 	*/
 	LoggingEventList buffer;
+#endif
 
 	/**
 	 *  Mutex used to guard access to buffer and discardMap.
@@ -167,6 +222,18 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 #if LOG4CXX_EVENTS_AT_EXIT
 	helpers::AtExitRegistry::Raii atExitRegistryRaii;
+#endif
+
+#if USE_ATOMIC_QUEUE
+	/**
+	 * Pending events
+	*/
+	alignas(CACHE_LINE_SIZE) AtomicQueue eventList;
+
+	/**
+	 * The number of pending events.
+	*/
+	alignas(CACHE_LINE_SIZE) std::atomic<int> approxListSize;
 #endif
 };
 
@@ -234,13 +301,27 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	// Get a copy of this thread's MDC.
 	event->getMDCCopy();
 
-	std::unique_lock<std::mutex> lock(priv->bufferMutex);
 	if (!priv->dispatcher.joinable())
 	{
-		priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
+		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		if (!priv->dispatcher.joinable())
+			priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 	}
 	while (true)
 	{
+#if USE_ATOMIC_QUEUE
+		auto newSize = ++priv->approxListSize;
+		if (newSize <= priv->bufferSize)
+		{
+			priv->eventList.push(event);
+			if (1 == newSize)
+				priv->bufferNotEmpty.notify_all();
+			break;
+		}
+		else
+			--priv->approxListSize;
+#else
+		std::unique_lock<std::mutex> lock(priv->bufferMutex);
 		size_t previousSize = priv->buffer.size();
 
 		if (previousSize < (size_t)priv->bufferSize)
@@ -254,7 +335,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 			break;
 		}
-
+#endif
 		//
 		//   Following code is only reachable if buffer is full
 		//
@@ -268,6 +349,9 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			&& !priv->closed
 			&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
 		{
+#if USE_ATOMIC_QUEUE
+			std::unique_lock<std::mutex> lock(priv->bufferMutex);
+#endif
 			priv->bufferNotFull.wait(lock, [this]()
 			{
 				return priv->buffer.empty();
@@ -281,6 +365,9 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		//
 		if (discard)
 		{
+#if USE_ATOMIC_QUEUE
+			std::unique_lock<std::mutex> lock(priv->bufferMutex);
+#endif
 			LogString loggerName = event->getLoggerName();
 			DiscardMap::iterator iter = priv->discardMap.find(loggerName);
 
@@ -451,14 +538,87 @@ DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 
 void AsyncAppender::dispatch()
 {
+	Pool p;
 	bool isActive = true;
 
 	while (isActive)
 	{
+#if USE_ATOMIC_QUEUE
+		auto eventList = priv->eventList.pop_all_reverse();
+		if (!eventList)
+		{
+			std::unique_lock<std::mutex> lock(priv->bufferMutex);
+			priv->bufferNotEmpty.wait(lock, [this, &eventList]() -> bool
+				{
+					eventList = priv->eventList.pop_all_reverse();
+					return !eventList || priv->closed;
+				}
+			);
+			isActive = !priv->closed;
+		}
+		priv->approxListSize = 0;
+		priv->bufferNotFull.notify_all();
+		isActive = !priv->closed;
+		while (eventList)
+		{
+			auto item = eventList->data;
+			auto next = eventList->next;
+			delete eventList;
+			eventList = next;
+			try
+			{
+				priv->appenders->appendLoopOnAppenders(item, p);
+			}
+			catch (std::exception& ex)
+			{
+				if (isActive)
+				{
+					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, item);
+					isActive = false;
+				}
+			}
+			catch (...)
+			{
+				if (isActive)
+				{
+					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
+					isActive = false;
+				}
+			}
+		}
+		if (isActive)
+		{
+			std::unique_lock<std::mutex> lock(priv->bufferMutex);
+			for (auto item : priv->discardMap)
+			{
+				auto event = item.second.createEvent(p);
+				try
+				{
+					priv->appenders->appendLoopOnAppenders(event, p);
+				}
+				catch (std::exception& ex)
+				{
+					if (isActive)
+					{
+						priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, event);
+						isActive = false;
+					}
+				}
+				catch (...)
+				{
+					if (isActive)
+					{
+						priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
+						isActive = false;
+					}
+				}
+			}
+			priv->discardMap.clear();
+		}
+#else
 		//
 		//   process events after lock on buffer is released.
 		//
-		Pool p;
 		LoggingEventList events;
 		{
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
@@ -505,6 +665,7 @@ void AsyncAppender::dispatch()
 				}
 			}
 		}
+#endif
 	}
 
 }
