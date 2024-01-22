@@ -543,6 +543,7 @@ void AsyncAppender::dispatch()
 
 	while (isActive)
 	{
+		LoggingEventList events;
 #if USE_ATOMIC_QUEUE
 		auto eventList = priv->eventList.pop_all_reverse();
 		if (!eventList)
@@ -558,68 +559,24 @@ void AsyncAppender::dispatch()
 		}
 		priv->approxListSize = 0;
 		priv->bufferNotFull.notify_all();
-		isActive = !priv->closed;
 		while (eventList)
 		{
-			auto item = eventList->data;
+			events.push_back(eventList->data);
 			auto next = eventList->next;
 			delete eventList;
 			eventList = next;
-			try
-			{
-				priv->appenders->appendLoopOnAppenders(item, p);
-			}
-			catch (std::exception& ex)
-			{
-				if (isActive)
-				{
-					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, item);
-					isActive = false;
-				}
-			}
-			catch (...)
-			{
-				if (isActive)
-				{
-					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
-					isActive = false;
-				}
-			}
 		}
-		if (isActive)
 		{
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
 			for (auto item : priv->discardMap)
-			{
-				auto event = item.second.createEvent(p);
-				try
-				{
-					priv->appenders->appendLoopOnAppenders(event, p);
-				}
-				catch (std::exception& ex)
-				{
-					if (isActive)
-					{
-						priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, event);
-						isActive = false;
-					}
-				}
-				catch (...)
-				{
-					if (isActive)
-					{
-						priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
-						isActive = false;
-					}
-				}
-			}
+				events.push_back(item.second.createEvent(p));
 			priv->discardMap.clear();
+			isActive = !priv->closed;
 		}
 #else
 		//
 		//   process events after lock on buffer is released.
 		//
-		LoggingEventList events;
 		{
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
 			priv->bufferNotEmpty.wait(lock, [this]() -> bool
@@ -641,6 +598,7 @@ void AsyncAppender::dispatch()
 			priv->discardMap.clear();
 			priv->bufferNotFull.notify_all();
 		}
+#endif
 
 		for (auto item : events)
 		{
@@ -665,7 +623,6 @@ void AsyncAppender::dispatch()
 				}
 			}
 		}
-#endif
 	}
 
 }
