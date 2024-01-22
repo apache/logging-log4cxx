@@ -551,7 +551,7 @@ void AsyncAppender::dispatch()
 			priv->bufferNotEmpty.wait(lock, [this, &eventList]() -> bool
 				{
 					eventList = priv->eventList.pop_all_reverse();
-					return !eventList || priv->closed;
+					return eventList || priv->closed;
 				}
 			);
 			isActive = !priv->closed;
