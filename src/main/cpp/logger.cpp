@@ -169,7 +169,8 @@ void Logger::addEvent(const LevelPtr& level, std::string&& message, const Locati
 	LOG4CXX_DECODE_CHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
 #endif
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level, const std::string& message,
@@ -183,7 +184,8 @@ void Logger::forcedLog(const LevelPtr& level, const std::string& message,
 	LOG4CXX_DECODE_CHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
 #endif
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level1, const std::string& message) const
@@ -196,7 +198,8 @@ void Logger::addEventLS(const LevelPtr& level, LogString&& message, const Locati
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(message));
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::forcedLogLS(const LevelPtr& level1, const LogString& message,
@@ -205,7 +208,8 @@ void Logger::forcedLogLS(const LevelPtr& level1, const LogString& message,
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, message, location);
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 
@@ -746,7 +750,8 @@ void Logger::addEvent(const LevelPtr& level, std::wstring&& message, const Locat
 	LOG4CXX_DECODE_WCHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
 #endif
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level, const std::wstring& message,
@@ -760,7 +765,8 @@ void Logger::forcedLog(const LevelPtr& level, const std::wstring& message,
 	LOG4CXX_DECODE_WCHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
 #endif
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message) const
@@ -907,7 +913,8 @@ void Logger::addEvent(const LevelPtr& level1, std::basic_string<UniChar>&& messa
 		return;
 	LOG4CXX_DECODE_UNICHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, location, std::move(msg));
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>& message,
@@ -917,7 +924,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 		return;
 	LOG4CXX_DECODE_UNICHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, location, std::move(msg));
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>& message) const
@@ -927,7 +935,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 	LOG4CXX_DECODE_UNICHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, msg,
 			LocationInfo::getLocationUnavailable());
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::getName(std::basic_string<UniChar>& rv) const
@@ -1065,7 +1074,8 @@ void Logger::forcedLog(const LevelPtr& level, const CFStringRef& message,
 		return;
 	LOG4CXX_DECODE_CFSTRING(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(msg));
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level, const CFStringRef& message) const
@@ -1075,7 +1085,8 @@ void Logger::forcedLog(const LevelPtr& level, const CFStringRef& message) const
 	LOG4CXX_DECODE_CFSTRING(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, msg,
 			LocationInfo::getLocationUnavailable());
-	callAppenders(event, m_priv->pool);
+	Pool p(m_priv->pool.create(), true);
+	callAppenders(event, p);
 }
 
 void Logger::getName(CFStringRef& rv) const
