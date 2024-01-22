@@ -555,7 +555,6 @@ void AsyncAppender::dispatch()
 					return eventList || priv->closed;
 				}
 			);
-			isActive = !priv->closed;
 		}
 		priv->approxListSize = 0;
 		priv->bufferNotFull.notify_all();
