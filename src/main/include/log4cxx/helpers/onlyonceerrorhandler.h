@@ -112,7 +112,11 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		/**
 		Has an error been reported?
 		*/
+#if 15 < LOG4CXX_ABI_VERSION
+		bool errorReported() const override;
+#else
 		bool errorReported() const;
+#endif
 };
 }  // namespace helpers
 } // namespace log4cxx
