@@ -390,7 +390,10 @@ void AsyncAppender::close()
 	// Queue a special event that will terminate the dispatch thread
 	priv->eventList.push(LoggingEventPtr());
 #endif
-	priv->closed = true;
+	{
+		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		priv->closed = true;
+	}
 	priv->bufferNotEmpty.notify_all();
 	priv->bufferNotFull.notify_all();
 
