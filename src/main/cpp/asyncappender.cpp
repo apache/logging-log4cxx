@@ -391,6 +391,9 @@ void AsyncAppender::close()
 	{
 		std::lock_guard<std::mutex> lock(priv->bufferMutex);
 		priv->closed = true;
+#if USE_ATOMIC_QUEUE
+		priv->eventList.push(LoggingEventPtr());
+#endif
 		priv->bufferNotEmpty.notify_all();
 		priv->bufferNotFull.notify_all();
 	}
@@ -560,7 +563,10 @@ void AsyncAppender::dispatch()
 		priv->bufferNotFull.notify_all();
 		while (eventList)
 		{
-			events.push_back(eventList->data);
+			if (eventList->data)
+				events.push_back(eventList->data);
+			else
+				isActive = false;
 			auto next = eventList->next;
 			delete eventList;
 			eventList = next;
@@ -570,7 +576,6 @@ void AsyncAppender::dispatch()
 			for (auto item : priv->discardMap)
 				events.push_back(item.second.createEvent(p));
 			priv->discardMap.clear();
-			isActive = !priv->closed;
 		}
 #else
 		//
