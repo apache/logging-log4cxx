@@ -32,12 +32,6 @@ using namespace LOG4CXX_NS;
 
 Pool::Pool() : pool(0), release(true)
 {
-	apr_status_t stat = apr_pool_create(&pool, APRInitializer::getRootPool());
-
-	if (stat != APR_SUCCESS)
-	{
-		throw PoolException(stat);
-	}
 }
 
 Pool::Pool(apr_pool_t* p, bool release1) : pool(p), release(release1)
@@ -47,20 +41,33 @@ Pool::Pool(apr_pool_t* p, bool release1) : pool(p), release(release1)
 
 Pool::~Pool()
 {
-	if (release)
+	if (pool && release)
 	{
 		apr_pool_destroy(pool);
 	}
 }
 
+void Pool::setPool()
+{
+	apr_status_t stat = apr_pool_create(&pool, APRInitializer::getRootPool());
+
+	if (stat != APR_SUCCESS)
+	{
+		throw PoolException(stat);
+	}
+}
 
 apr_pool_t* Pool::getAPRPool()
 {
+	if (!pool)
+		setPool();
 	return pool;
 }
 
 apr_pool_t* Pool::create()
 {
+	if (!pool)
+		setPool();
 	apr_pool_t* child;
 	apr_status_t stat = apr_pool_create(&child, pool);
 
@@ -74,6 +81,8 @@ apr_pool_t* Pool::create()
 
 void* Pool::palloc(size_t size)
 {
+	if (!pool)
+		setPool();
 	return apr_palloc(pool, size);
 }
 
@@ -84,20 +93,28 @@ char* Pool::pstralloc(size_t size)
 
 char* Pool::itoa(int n)
 {
+	if (!pool)
+		setPool();
 	return apr_itoa(pool, n);
 }
 
 char* Pool::pstrndup(const char* s, size_t len)
 {
+	if (!pool)
+		setPool();
 	return apr_pstrndup(pool, s, len);
 }
 
 char* Pool::pstrdup(const char* s)
 {
+	if (!pool)
+		setPool();
 	return apr_pstrdup(pool, s);
 }
 
 char* Pool::pstrdup(const std::string& s)
 {
+	if (!pool)
+		setPool();
 	return apr_pstrndup(pool, s.data(), s.length());
 }
