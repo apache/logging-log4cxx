@@ -391,11 +391,11 @@ void AsyncAppender::close()
 	priv->eventList.push(LoggingEventPtr());
 #endif
 	{
-		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		std::lock_guard<std::mutex> lock(priv->bufferMutex);
 		priv->closed = true;
+		priv->bufferNotEmpty.notify_all();
+		priv->bufferNotFull.notify_all();
 	}
-	priv->bufferNotEmpty.notify_all();
-	priv->bufferNotFull.notify_all();
 
 	if ( priv->dispatcher.joinable() )
 	{
