@@ -320,6 +320,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		}
 		else
 			--priv->approxListSize;
+		//
+		//   Following code is only reachable if buffer is full
+		//
+		std::unique_lock<std::mutex> lock(priv->bufferMutex);
 #else
 		std::unique_lock<std::mutex> lock(priv->bufferMutex);
 		size_t previousSize = priv->buffer.size();
@@ -335,10 +339,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 			break;
 		}
-#endif
 		//
 		//   Following code is only reachable if buffer is full
 		//
+#endif
 		//
 		//   if blocking and thread is not already interrupted
 		//      and not the dispatcher then
@@ -349,9 +353,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			&& !priv->closed
 			&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
 		{
-#if USE_ATOMIC_QUEUE
-			std::unique_lock<std::mutex> lock(priv->bufferMutex);
-#endif
 			priv->bufferNotFull.wait(lock, [this]()
 			{
 				return priv->buffer.empty();
@@ -365,9 +366,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		//
 		if (discard)
 		{
-#if USE_ATOMIC_QUEUE
-			std::unique_lock<std::mutex> lock(priv->bufferMutex);
-#endif
 			LogString loggerName = event->getLoggerName();
 			DiscardMap::iterator iter = priv->discardMap.find(loggerName);
 
