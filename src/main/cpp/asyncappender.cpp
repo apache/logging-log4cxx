@@ -386,15 +386,13 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void AsyncAppender::close()
 {
-	{
-		std::lock_guard<std::mutex> lock(priv->bufferMutex);
-		priv->closed = true;
 #if USE_ATOMIC_QUEUE
-		priv->eventList.push(LoggingEventPtr());
+	// Queue a special event that will terminate the dispatch thread
+	priv->eventList.push(LoggingEventPtr());
 #endif
-		priv->bufferNotEmpty.notify_all();
-		priv->bufferNotFull.notify_all();
-	}
+	priv->closed = true;
+	priv->bufferNotEmpty.notify_all();
+	priv->bufferNotFull.notify_all();
 
 	if ( priv->dispatcher.joinable() )
 	{
