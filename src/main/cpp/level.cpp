@@ -105,6 +105,22 @@ LevelPtr Level::toLevel(int val)
 	return toLevel(val, Level::getDebug());
 }
 
+const Level::Data& Level::getData()
+{
+	static Data data =
+		{ getOff()
+		, getFatal()
+		, getError()
+		, getWarn()
+		, getInfo()
+		, getDebug()
+		, getTrace()
+		, getAll()
+		};
+	return data;
+}
+
+
 LevelPtr Level::toLevel(int val, const LevelPtr& defaultLevel)
 {
 	switch (val)
