@@ -400,10 +400,6 @@ void AsyncAppender::close()
 		priv->eventList.push(LoggingEventPtr());
 #endif
 		priv->dispatcher.join();
-#if USE_ATOMIC_QUEUE
-		// Ensure a new dispatch thread is not immediately terminated
-		priv->eventList.pop_all();
-#endif
 	}
 
 	for (auto item : priv->appenders->getAllAppenders())
