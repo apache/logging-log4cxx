@@ -52,6 +52,7 @@ class LOG4CXX_EXPORT Pool
 	private:
 		Pool(const LOG4CXX_NS::helpers::Pool&);
 		Pool& operator=(const Pool&);
+		void setPool();
 };
 } // namespace helpers
 } // namespace log4cxx
