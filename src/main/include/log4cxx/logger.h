@@ -507,6 +507,30 @@ class LOG4CXX_EXPORT Logger :
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
+		Add a new info level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addInfoEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new debug level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addDebugEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new trace level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addTraceEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
 		@param level The logging event level.
@@ -535,6 +559,30 @@ class LOG4CXX_EXPORT Logger :
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
+		Add a new info level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addInfoEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new debug level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addDebugEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new trace level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addTraceEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
 		@param level The logging event level.
@@ -561,6 +609,28 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void addEvent(const LevelPtr& level, std::basic_string<UniChar>&& message,
 			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+		/**
+		Add a new info level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addInfoEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+		/**
+		Add a new debug level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addDebugEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+		/**
+		Add a new trace level logging event containing \c message and \c location to attached appender(s).
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addTraceEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s).
 		without further checks.
@@ -1030,7 +1100,7 @@ class LOG4CXX_EXPORT Logger :
 		 *  <p>By writing
 		 *  ~~~{.cpp}
 		 *    if(log4cxx::Logger::isDebugEnabledFor(logger)) {
-		 *      logger->addEvent(log4cxx::Level::getDebug(), "Component: " + std::to_string(componentNumber));
+		 *      logger->addDebugEvent("Component: " + std::to_string(componentNumber));
 		 *    }
 		 *  ~~~
 		 *  you minimise the computational cost
@@ -2075,7 +2145,7 @@ LOG4CXX_DEBUG(m_log, "AddMesh:"
 #define LOG4CXX_DEBUG(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isDebugEnabledFor(logger))) {\
 			::LOG4CXX_NS::helpers::MessageBuffer oss_; \
-			logger->addEvent(::LOG4CXX_NS::Level::getDebug(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addDebugEvent(oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>DEBUG</code> events.
@@ -2098,7 +2168,7 @@ LOG4CXX_DEBUG_FMT(m_log, "AddMesh: name {} type 0x{x} materialName {} visible? {
 */
 #define LOG4CXX_DEBUG_FMT(logger, fmt, ...) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isDebugEnabledFor(logger))) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getDebug(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addDebugEvent(::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
 #define LOG4CXX_DEBUG_FMT(logger, fmt, ...)
@@ -2119,7 +2189,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 #define LOG4CXX_TRACE(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isTraceEnabledFor(logger))) {\
 			::LOG4CXX_NS::helpers::MessageBuffer oss_; \
-			logger->addEvent(::LOG4CXX_NS::Level::getTrace(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addTraceEvent(oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>TRACE</code> events.
@@ -2135,7 +2205,7 @@ Add a new logging event containing a message defined by \c fmt and <code>...</co
 */
 #define LOG4CXX_TRACE_FMT(logger, fmt, ...) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isTraceEnabledFor(logger))) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getTrace(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addTraceEvent(::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
 #define LOG4CXX_TRACE_FMT(logger, fmt, ...)
@@ -2161,7 +2231,7 @@ LOG4CXX_INFO(m_log, surface->GetName()
 #define LOG4CXX_INFO(logger, message) do { \
 		if (::LOG4CXX_NS::Logger::isInfoEnabledFor(logger)) {\
 			::LOG4CXX_NS::helpers::MessageBuffer oss_; \
-			logger->addEvent(::LOG4CXX_NS::Level::getInfo(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addInfoEvent(oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>INFO</code> events.
@@ -2181,7 +2251,7 @@ LOG4CXX_INFO_FMT(m_log, "{} successfully planned {:.1f}% planned area {:.4f}m^2 
 */
 #define LOG4CXX_INFO_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isInfoEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getInfo(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addInfoEvent(::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
 #define LOG4CXX_INFO_FMT(logger, fmt, ...)

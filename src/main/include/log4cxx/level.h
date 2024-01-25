@@ -218,7 +218,19 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 			ALL_INT = INT_MIN
 		};
 
+		struct Data
+		{
+			LevelPtr Off;
+			LevelPtr Fatal;
+			LevelPtr Error;
+			LevelPtr Warn;
+			LevelPtr Info;
+			LevelPtr Debug;
+			LevelPtr Trace;
+			LevelPtr All;
+		};
 
+		static const Data& getData();
 		static LevelPtr getAll();
 		static LevelPtr getFatal();
 		static LevelPtr getError();
