@@ -43,6 +43,11 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerRepository)
+#if 15 < LOG4CXX_ABI_VERSION
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(LoggerRepository)
+		END_LOG4CXX_CAST_MAP()
+#endif
 		virtual ~LoggerRepository() {}
 
 		/**
