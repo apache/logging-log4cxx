@@ -22,7 +22,7 @@ option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
 add_library(log4cxx)
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(log4cxx PRIVATE LOG4CXX)
-    if(NOT WIN32)
+    if(UNIX AND NOT APPLE)
         # Make defined symbols non-preemptible, which can optimize relocation processing
         target_link_options(log4cxx PRIVATE "LINKER:-Bsymbolic")
     endif()
