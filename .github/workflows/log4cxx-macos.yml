@@ -30,10 +30,12 @@ jobs:
             os: macos-11
             cxx: clang++
             cc: clang
+            odbc: OFF
           - name: osx-12
             os: macos-12
             cxx: clang++
             cc: clang
+            odbc: ON
 
     steps:
     - uses: actions/checkout@v3
@@ -45,7 +47,7 @@ jobs:
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC=ON -DLOG4CXX_CFSTRING=ON -DCMAKE_BUILD_TYPE=Debug ..
+        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} -DLOG4CXX_ENABLE_ODBC={{ matrix.odbc }} -DLOG4CXX_CFSTRING=ON -DCMAKE_BUILD_TYPE=Debug ..
         cmake --build .
 
     - name: run unit tests
