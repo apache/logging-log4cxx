@@ -95,9 +95,11 @@ __pragma( warning( pop ) )
 #else                          // Linking against a DLL?
 #define LOG4CXX_EXPORT __declspec(dllimport)
 #endif // !LOG4CXX_STATIC
-#else // !defined(_WIN32) || !defined(_MSC_VER)
-#define LOG4CXX_EXPORT
-#endif // !defined(_WIN32) || !defined(_MSC_VER)
+#elif defined(__GNUC__) && 4 <= __GNUC__ && 15 < LOG4CXX_ABI_VERSION
+  #define LOG4CXX_EXPORT __attribute__ ((visibility ("default")))
+#else // !(defined(_WIN32) && defined(_MSC_VER)) || LOG4CXX_ABI_VERSION <= 15 || __GNUC__ < 4
+  #define LOG4CXX_EXPORT
+#endif
 
 #define LOG4CXX_NS @LOG4CXX_NS@
 
