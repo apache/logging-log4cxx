@@ -2085,6 +2085,12 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 #define LOG4CXX_STACKTRACE
 #endif
 
+#if __cplusplus >= 202002L
+	#define LOG4CXX_FMT_VA_ARG(...) __VA_OPT__(,) __VA_ARGS__
+#else
+	#define LOG4CXX_FMT_VA_ARG(...) , __VA_ARGS__
+#endif
+
 
 /**
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
@@ -2108,7 +2114,7 @@ Add a new logging event containing a message defined by \c fmt and <code>...</co
 */
 #define LOG4CXX_LOG_FMT(logger, level, fmt, ...) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->addEvent(level, ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(level, ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__) ), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
@@ -2168,7 +2174,7 @@ LOG4CXX_DEBUG_FMT(m_log, "AddMesh: name {} type 0x{x} materialName {} visible? {
 */
 #define LOG4CXX_DEBUG_FMT(logger, fmt, ...) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isDebugEnabledFor(logger))) {\
-			logger->addDebugEvent(::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addDebugEvent(::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__) ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
 #define LOG4CXX_DEBUG_FMT(logger, fmt, ...)
@@ -2205,7 +2211,7 @@ Add a new logging event containing a message defined by \c fmt and <code>...</co
 */
 #define LOG4CXX_TRACE_FMT(logger, fmt, ...) do { \
 		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isTraceEnabledFor(logger))) {\
-			logger->addTraceEvent(::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addTraceEvent(::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
 #define LOG4CXX_TRACE_FMT(logger, fmt, ...)
@@ -2251,7 +2257,7 @@ LOG4CXX_INFO_FMT(m_log, "{} successfully planned {:.1f}% planned area {:.4f}m^2 
 */
 #define LOG4CXX_INFO_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isInfoEnabledFor(logger)) {\
-			logger->addInfoEvent(::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addInfoEvent(::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
 #define LOG4CXX_INFO_FMT(logger, fmt, ...)
@@ -2294,7 +2300,7 @@ catch (const std::exception& ex)
 */
 #define LOG4CXX_WARN_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isWarnEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
 #define LOG4CXX_WARN_FMT(logger, fmt, ...)
@@ -2337,7 +2343,7 @@ catch (std::exception& ex)
 */
 #define LOG4CXX_ERROR_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 
 /**
 If \c condition is not true, add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
@@ -2365,7 +2371,7 @@ if \c logger is enabled for <code>ERROR</code> events.
 #define LOG4CXX_ASSERT_FMT(logger, condition, fmt, ...) do { \
 		if (!(condition) && ::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
 			LOG4CXX_STACKTRACE \
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 
 #else
 #define LOG4CXX_ERROR(logger, message)
@@ -2405,7 +2411,7 @@ LOG4CXX_FATAL_FMT(m_log, "{} is not supported", m_renderSystem->getName());
 */
 #define LOG4CXX_FATAL_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isFatalEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), ::LOG4CXX_FORMAT_NS::format(fmt, __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
 #define LOG4CXX_FATAL_FMT(logger, fmt, ...)
