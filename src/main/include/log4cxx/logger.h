@@ -2085,10 +2085,12 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 #define LOG4CXX_STACKTRACE
 #endif
 
+#ifndef LOG4CXX_FMT_VA_ARG
 #if __cplusplus >= 202002L
 	#define LOG4CXX_FMT_VA_ARG(...) __VA_OPT__(,) __VA_ARGS__
 #else
 	#define LOG4CXX_FMT_VA_ARG(...) , __VA_ARGS__
+#endif
 #endif
 
 
