@@ -75,8 +75,8 @@ public:
 
 	void SetUp(const ::benchmark::State& state)
 	{
-		std::setlocale( LC_ALL, "" ); /* Set locale for C functions */
-		std::locale::global(std::locale("")); /* set locale for C++ functions */
+		std::setlocale( LC_ALL, "C" ); /* Set locale for C functions */
+		std::locale::global(std::locale("C")); /* set locale for C++ functions */
 		SetupLogger();
 	}
 
