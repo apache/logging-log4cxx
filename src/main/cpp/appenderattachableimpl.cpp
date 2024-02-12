@@ -137,7 +137,6 @@ void AppenderAttachableImpl::removeAllAppenders()
 		std::lock_guard<std::mutex> lock( m_priv->m_mutex );
 		m_priv->appenderList.clear();
 	}
-	m_priv.reset();
 }
 
 void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
