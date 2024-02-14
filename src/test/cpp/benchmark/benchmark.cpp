@@ -1,4 +1,5 @@
 #include <log4cxx/logger.h>
+#include <log4cxx/logmanager.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/optionconverter.h>
@@ -53,37 +54,21 @@ public:
 	}
 };
 
+void disableThousandSeparatorsInJSON()
+{
+	std::setlocale(LC_ALL, "C"); /* Set locale for C functions */
+	std::locale::global(std::locale("C")); /* set locale for C++ functions */
+}
+
 IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 
 class benchmarker : public ::benchmark::Fixture
 {
-public:
-	LoggerPtr m_logger;
-	void SetupLogger()
-	{
-		m_logger = Logger::getLogger(LOG4CXX_STR("bench_logger"));
+public: // Attributes
+	LoggerPtr m_logger = getLogger();
+	LoggerPtr m_asyncLogger = getAsyncLogger();
 
-		m_logger->removeAllAppenders();
-		m_logger->setAdditivity(false);
-		m_logger->setLevel(Level::getInfo());
-
-		auto nullWriter = std::make_shared<NullWriterAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
-		nullWriter->setName(LOG4CXX_STR("NullWriterAppender"));
-
-		m_logger->addAppender(nullWriter);
-	}
-
-	void SetUp(const ::benchmark::State& state)
-	{
-		std::setlocale( LC_ALL, "C" ); /* Set locale for C functions */
-		std::locale::global(std::locale("C")); /* set locale for C++ functions */
-		SetupLogger();
-	}
-
-	void TearDown(const ::benchmark::State& state)
-	{
-	}
-
+public: // Class methods
 	static int threadCount()
 	{
 		auto threadCount = helpers::StringHelper::toInt
@@ -104,6 +89,60 @@ public:
 		return milliseconds / 1000;
 	}
 
+	static void setDefaultAppender()
+	{
+		auto r = LogManager::getLoggerRepository();
+		r->ensureIsConfigured([r]()
+			{
+			disableThousandSeparatorsInJSON();
+			auto nullWriter = std::make_shared<NullWriterAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
+			nullWriter->setName(LOG4CXX_STR("NullWriterAppender"));
+			r->getRootLogger()->addAppender(nullWriter);
+			});
+	}
+
+	static LoggerPtr getLogger(const LogString& pattern = LogString())
+	{
+		LoggerPtr result;
+		setDefaultAppender();
+		auto r = LogManager::getLoggerRepository();
+		if (pattern.empty())
+			result = r->getLogger(LOG4CXX_STR("benchmark.fixture"));
+		else if (r->exists(LOG4CXX_STR("benchmark.fixture.") + pattern))
+			result = r->getLogger(LOG4CXX_STR("benchmark.fixture.") + pattern);
+		else
+		{
+			result = r->getLogger(LOG4CXX_STR("benchmark.fixture.") + pattern);
+			result->setAdditivity(false);
+			result->setLevel(Level::getInfo());
+			auto nullWriter = std::make_shared<NullWriterAppender>(std::make_shared<PatternLayout>(pattern));
+			nullWriter->setName(LOG4CXX_STR("NullWriterAppender.") + pattern);
+			result->addAppender(nullWriter);
+		}
+		return result;
+	}
+
+	static LoggerPtr getAsyncLogger()
+	{
+		LoggerPtr result;
+		setDefaultAppender();
+		auto r = LogManager::getLoggerRepository();
+		LogString name = LOG4CXX_STR("benchmark.fixture.async");
+		if (r->exists(name))
+			result = r->getLogger(name);
+		else
+		{
+			auto nullWriter = r->getRootLogger()->getAppender(LOG4CXX_STR("NullWriterAppender"));
+			auto asyncAppender = std::make_shared<AsyncAppender>();
+			asyncAppender->addAppender(nullWriter);
+			asyncAppender->setBufferSize(5);
+			result = r->getLogger(name);
+			result->setAdditivity(false);
+			result->setLevel(Level::getInfo());
+			result->addAppender(asyncAppender);
+		}
+		return result;
+	}
 };
 
 BENCHMARK_DEFINE_F(benchmarker, logDisabledTrace)(benchmark::State& state)
@@ -168,11 +207,7 @@ void logWithConversionPattern(benchmark::State& state, Args&&... args)
 {
     auto args_tuple = std::make_tuple(std::move(args)...);
 	LogString conversionPattern = std::get<0>(args_tuple);
-
-	auto pattern = std::make_shared<PatternLayout>( conversionPattern );
-	auto logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-	logger->getAppender(LOG4CXX_STR("NullWriterAppender"))->setLayout(pattern);
-
+	auto logger = benchmarker::getLogger(conversionPattern);
 	int x = 0;
 	for (auto _ : state)
 	{
@@ -217,21 +252,16 @@ BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatValueFMT)->Name("Logging int+fl
 BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatValueFMT)->Name("Logging int+float using FMT, pattern: %m%n")->Threads(benchmarker::threadCount());
 #endif
 
-static void SetAsyncAppender(const benchmark::State& state)
+BENCHMARK_DEFINE_F(benchmarker, asyncIntValueMessageBuffer)(benchmark::State& state)
 {
-	auto logger = Logger::getLogger(LOG4CXX_STR("bench_logger"));
-	logger->removeAllAppenders();
-	logger->setAdditivity(false);
-	logger->setLevel(Level::getInfo());
-
-	auto nullWriter = std::make_shared<NullWriterAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
-	auto asyncAppender = std::make_shared<AsyncAppender>();
-	asyncAppender->addAppender(nullWriter);
-	asyncAppender->setBufferSize(5);
-	logger->addAppender(asyncAppender);
+	int x = 0;
+	for (auto _ : state)
+	{
+		LOG4CXX_INFO( m_asyncLogger, "Hello: message number " << ++x);
+	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logIntValueMessageBuffer)->Name("Async, int value using MessageBuffer, pattern: %m%n")->Setup(SetAsyncAppender);
-BENCHMARK_REGISTER_F(benchmarker, logIntValueMessageBuffer)->Name("Async, int value using MessageBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
+BENCHMARK_REGISTER_F(benchmarker, asyncIntValueMessageBuffer)->Name("Async, int value using MessageBuffer, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, asyncIntValueMessageBuffer)->Name("Async, int value using MessageBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
 
 BENCHMARK_MAIN();
 
