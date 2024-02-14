@@ -103,16 +103,15 @@ public: // Class methods
 
 	static LoggerPtr getLogger(const LogString& pattern = LogString())
 	{
+		LogString name = LOG4CXX_STR("benchmark.fixture");
 		LoggerPtr result;
 		setDefaultAppender();
 		auto r = LogManager::getLoggerRepository();
 		if (pattern.empty())
-			result = r->getLogger(LOG4CXX_STR("benchmark.fixture"));
-		else if (r->exists(LOG4CXX_STR("benchmark.fixture.") + pattern))
-			result = r->getLogger(LOG4CXX_STR("benchmark.fixture.") + pattern);
-		else
+			result = r->getLogger(name);
+		else if (!(result = r->exists(name += LOG4CXX_STR(".") + pattern)))
 		{
-			result = r->getLogger(LOG4CXX_STR("benchmark.fixture.") + pattern);
+			result = r->getLogger(name);
 			result->setAdditivity(false);
 			result->setLevel(Level::getInfo());
 			auto nullWriter = std::make_shared<NullWriterAppender>(std::make_shared<PatternLayout>(pattern));
@@ -124,13 +123,11 @@ public: // Class methods
 
 	static LoggerPtr getAsyncLogger()
 	{
-		LoggerPtr result;
+		LogString name = LOG4CXX_STR("benchmark.fixture.async");
 		setDefaultAppender();
 		auto r = LogManager::getLoggerRepository();
-		LogString name = LOG4CXX_STR("benchmark.fixture.async");
-		if (r->exists(name))
-			result = r->getLogger(name);
-		else
+		LoggerPtr result = r->exists(name);
+		if (!result)
 		{
 			auto nullWriter = r->getRootLogger()->getAppender(LOG4CXX_STR("NullWriterAppender"));
 			auto asyncAppender = std::make_shared<AsyncAppender>();
