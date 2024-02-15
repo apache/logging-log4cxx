@@ -270,6 +270,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->activateOptions(p);
 			LoggerPtr rootLogger = Logger::getRootLogger();
 			rootLogger->addAppender(async);
+			LOG4CXX_INFO(rootLogger, "Hello, World"); // This causes the dispatch thread creation
+			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
 			{
 				std::unique_lock<std::mutex> sync(blockableAppender->getBlocker());
 

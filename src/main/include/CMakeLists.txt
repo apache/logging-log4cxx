@@ -79,7 +79,6 @@ else()
     set(EVENTS_AT_EXIT 0)
 endif()
 
-set(LOG4CXX_NS "log4cxx" CACHE STRING "Root namespace name")
 set(LOG4CXX_DECLARE_DEFAULT_NS_ALIAS 0)
 if(NOT "log4cxx" STREQUAL "${LOG4CXX_NS}")
     set(LOG4CXX_DECLARE_DEFAULT_NS_ALIAS 1)
