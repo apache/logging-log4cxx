@@ -132,7 +132,6 @@ public: // Class methods
 			auto nullWriter = r->getRootLogger()->getAppender(LOG4CXX_STR("NullWriterAppender"));
 			auto asyncAppender = std::make_shared<AsyncAppender>();
 			asyncAppender->addAppender(nullWriter);
-			asyncAppender->setBufferSize(5);
 			result = r->getLogger(name);
 			result->setAdditivity(false);
 			result->setLevel(Level::getInfo());
