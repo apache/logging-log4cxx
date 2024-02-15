@@ -473,6 +473,7 @@ void AsyncAppender::dispatch()
 				events.push_back(discardItem.second.createEvent(p));
 			}
 
+			priv->buffer.clear();
 			priv->buffer.reserve(priv->bufferSize);
 			priv->discardMap.clear();
 			priv->bufferNotFull.notify_all();
