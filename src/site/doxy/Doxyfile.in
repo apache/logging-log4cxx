@@ -2349,7 +2349,8 @@ PREDEFINED             = LOG4CXX_NS=log4cxx \
                          LOG4CXX_WCHAR_T_API \
                          LOG4CXX_UNICHAR_API \
                          LOG4CXX_CFSTRING_API \
-                         LOG4CXX_ABI_VERSION=@log4cxx_ABI_VER@
+                         LOG4CXX_ABI_VERSION=@log4cxx_ABI_VER@ \
+                         LOG4CXX_HAS_DOMCONFIGURATOR=1
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this
 # tag can be used to specify a list of macro names that should be expanded. The

@@ -24,16 +24,19 @@ include(CTest)
 # in relation to the log4cxx source root, set a variable that contains the log4cxx root.
 set(LOG4CXX_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
+# The namespace in which all log4cxx entities will be placed, default value is "log4cxx"
+set(LOG4CXX_NS "log4cxx" CACHE STRING "Root namespace name")
+
 # define the SO Version of the library. Version of the log4cxx project is subtly different than the version of the library
 # (at least in the past it was project vesion: 0.a.b.c and the library so vesion a.b.c.0
 # See also: https://mail.kde.org/pipermail/kde-buildsystem/2008-April/004543.html
 # Note that the lib version is different from the SOVERSION
 # The lib version is the version of log4cxx, the SOVERSION is the ABI version
 # See also: https://cmake.org/pipermail/cmake/2012-September/051904.html
-set(log4cxx_ABI_VER 15)
+set(current_log4cxx_ABI_VER 15)
 set(next_log4cxx_ABI_VER 16)
-set(log4cxx_ABI_VER "${log4cxx_ABI_VER}" CACHE STRING "The DSO library version")
-set_property(CACHE log4cxx_ABI_VER PROPERTY STRINGS "${log4cxx_ABI_VER}" "${next_log4cxx_ABI_VER}")
+set(log4cxx_ABI_VER "${current_log4cxx_ABI_VER}" CACHE STRING "The DSO library version")
+set_property(CACHE log4cxx_ABI_VER PROPERTY STRINGS "${current_log4cxx_ABI_VER}" "${next_log4cxx_ABI_VER}")
 set(LIBLOG4CXX_LIB_VERSION ${log4cxx_ABI_VER}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
 set(LIBLOG4CXX_LIB_SOVERSION ${log4cxx_ABI_VER})
 # Set the 'release' version.  This is the human-readable version

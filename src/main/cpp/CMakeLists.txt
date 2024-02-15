@@ -20,8 +20,15 @@ option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
 
 # Build the log4cxx library
 add_library(log4cxx)
+if(${log4cxx_ABI_VER} GREATER 15)
+  set_target_properties(log4cxx PROPERTIES CXX_VISIBILITY_PRESET hidden)
+endif()
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(log4cxx PRIVATE LOG4CXX)
+    if(UNIX AND NOT APPLE)
+        # Make defined symbols non-preemptible, which can optimize relocation processing
+        target_link_options(log4cxx PRIVATE "LINKER:-Bsymbolic")
+    endif()
 else()
     target_compile_definitions(log4cxx PUBLIC LOG4CXX_STATIC)
 endif()
