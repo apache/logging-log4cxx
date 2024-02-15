@@ -153,7 +153,6 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 {
 	AsyncAppenderPriv() :
 		AppenderSkeletonPrivate(),
-		buffer(),
 		bufferSize(DEFAULT_BUFFER_SIZE),
 		appenders(pool),
 		dispatcher(),
@@ -314,8 +313,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		if (newSize <= priv->bufferSize)
 		{
 			priv->eventList.push(event);
-			if (1 == newSize)
-				priv->bufferNotEmpty.notify_all();
+			priv->bufferNotEmpty.notify_all();
 			break;
 		}
 		else
@@ -355,7 +353,11 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		{
 			priv->bufferNotFull.wait(lock, [this]()
 			{
-				return priv->buffer.empty();
+#if USE_ATOMIC_QUEUE
+				return priv->approxListSize < priv->bufferSize;
+#else
+				return priv->buffer.size() < priv->bufferSize;
+#endif
 			});
 			discard = false;
 		}
