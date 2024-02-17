@@ -552,17 +552,18 @@ void AsyncAppender::dispatch()
 		LoggingEventList events;
 #if USE_ATOMIC_QUEUE
 		auto eventList = priv->eventList.pop_all_reverse();
+		priv->approxListSize = 0;
 		if (!eventList)
 		{
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
 			priv->bufferNotEmpty.wait(lock, [this, &eventList]() -> bool
 				{
 					eventList = priv->eventList.pop_all_reverse();
+					priv->approxListSize = 0;
 					return eventList || priv->closed;
 				}
 			);
 		}
-		priv->approxListSize = 0;
 		priv->bufferNotFull.notify_all();
 		while (eventList)
 		{
