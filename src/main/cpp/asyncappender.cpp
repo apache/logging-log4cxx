@@ -153,9 +153,8 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 {
 	AsyncAppenderPriv() :
 		AppenderSkeletonPrivate(),
-		buffer(),
 		bufferSize(DEFAULT_BUFFER_SIZE),
-		appenders(std::make_shared<AppenderAttachableImpl>(pool)),
+		appenders(pool),
 		dispatcher(),
 		locationInfo(false),
 		blocking(true)
@@ -203,7 +202,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	/**
 	 * Nested appenders.
 	*/
-	helpers::AppenderAttachableImplPtr appenders;
+	helpers::AppenderAttachableImpl appenders;
 
 	/**
 	 *  Dispatcher.
@@ -254,7 +253,7 @@ AsyncAppender::~AsyncAppender()
 
 void AsyncAppender::addAppender(const AppenderPtr newAppender)
 {
-	priv->appenders->addAppender(newAppender);
+	priv->appenders.addAppender(newAppender);
 }
 
 
@@ -291,7 +290,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
 	if (priv->bufferSize <= 0)
 	{
-		priv->appenders->appendLoopOnAppenders(event, p);
+		priv->appenders.appendLoopOnAppenders(event, p);
 	}
 
 	// Set the NDC and MDC for the calling thread as these
@@ -314,8 +313,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		if (newSize <= priv->bufferSize)
 		{
 			priv->eventList.push(event);
-			if (1 == newSize)
-				priv->bufferNotEmpty.notify_all();
+			priv->bufferNotEmpty.notify_all();
 			break;
 		}
 		else
@@ -355,7 +353,11 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		{
 			priv->bufferNotFull.wait(lock, [this]()
 			{
-				return priv->buffer.empty();
+#if USE_ATOMIC_QUEUE
+				return priv->approxListSize < priv->bufferSize;
+#else
+				return priv->buffer.size() < priv->bufferSize;
+#endif
 			});
 			discard = false;
 		}
@@ -400,13 +402,9 @@ void AsyncAppender::close()
 		priv->eventList.push(LoggingEventPtr());
 #endif
 		priv->dispatcher.join();
-#if USE_ATOMIC_QUEUE
-		// Ensure a new dispatch thread is not immediately terminated
-		priv->eventList.pop_all();
-#endif
 	}
 
-	for (auto item : priv->appenders->getAllAppenders())
+	for (auto item : priv->appenders.getAllAppenders())
 	{
 		item->close();
 	}
@@ -414,17 +412,17 @@ void AsyncAppender::close()
 
 AppenderList AsyncAppender::getAllAppenders() const
 {
-	return priv->appenders->getAllAppenders();
+	return priv->appenders.getAllAppenders();
 }
 
 AppenderPtr AsyncAppender::getAppender(const LogString& n) const
 {
-	return priv->appenders->getAppender(n);
+	return priv->appenders.getAppender(n);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr appender) const
 {
-	return priv->appenders->isAttached(appender);
+	return priv->appenders.isAttached(appender);
 }
 
 bool AsyncAppender::requiresLayout() const
@@ -434,17 +432,17 @@ bool AsyncAppender::requiresLayout() const
 
 void AsyncAppender::removeAllAppenders()
 {
-	priv->appenders->removeAllAppenders();
+	priv->appenders.removeAllAppenders();
 }
 
 void AsyncAppender::removeAppender(const AppenderPtr appender)
 {
-	priv->appenders->removeAppender(appender);
+	priv->appenders.removeAppender(appender);
 }
 
 void AsyncAppender::removeAppender(const LogString& n)
 {
-	priv->appenders->removeAppender(n);
+	priv->appenders.removeAppender(n);
 }
 
 bool AsyncAppender::getLocationInfo() const
@@ -612,7 +610,7 @@ void AsyncAppender::dispatch()
 		{
 			try
 			{
-				priv->appenders->appendLoopOnAppenders(item, p);
+				priv->appenders.appendLoopOnAppenders(item, p);
 			}
 			catch (std::exception& ex)
 			{
