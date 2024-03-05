@@ -297,7 +297,7 @@ BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBuffer)(benchmark::S
 	for (auto _ : state)
 	{
 		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		LOG4CXX_INFO( m_logger, "Hello: message number " << ++x
+		LOG4CXX_INFO( m_fileLogger, "Hello: message number " << ++x
 			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
 	}
 }
