@@ -134,11 +134,11 @@ public: // Class methods
 	static LoggerPtr getAsyncLogger()
 	{
 		LogString name = LOG4CXX_STR("benchmark.fixture.async");
-		setDefaultAppender();
 		auto r = LogManager::getLoggerRepository();
 		LoggerPtr result = r->exists(name);
 		if (!result)
 		{
+			setDefaultAppender();
 			auto writer = std::make_shared<net::SMTPAppender>();
 			writer->setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
 			auto asyncAppender = std::make_shared<AsyncAppender>();
@@ -155,7 +155,6 @@ public: // Class methods
 	static LoggerPtr getFileLogger()
 	{
 		LogString name = LOG4CXX_STR("benchmark.fixture.file");
-		setDefaultAppender();
 		auto r = LogManager::getLoggerRepository();
 		LoggerPtr result;
 		if (!(result = r->exists(name)))
@@ -165,6 +164,9 @@ public: // Class methods
 			result->setLevel(Level::getInfo());
 			auto writer = std::make_shared<BenchmarkFileAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
 			writer->setName(LOG4CXX_STR("FileAppender"));
+			writer->setBufferedIO(true);
+			helpers::Pool p;
+			writer->activateOptions(p);
 			result->addAppender(writer);
 		}
 		return result;
