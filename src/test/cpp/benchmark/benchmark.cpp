@@ -162,7 +162,7 @@ public: // Class methods
 			result = r->getLogger(name);
 			result->setAdditivity(false);
 			result->setLevel(Level::getInfo());
-			auto writer = std::make_shared<BenchmarkFileAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
+			auto writer = std::make_shared<BenchmarkFileAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n")));
 			writer->setName(LOG4CXX_STR("FileAppender"));
 			writer->setBufferedIO(true);
 			helpers::Pool p;
@@ -303,8 +303,8 @@ BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBuffer)(benchmark::S
 			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBuffer)->Name("Logging int+float using MessageBuffer, pattern: %m%n");
-BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBuffer)->Name("Logging int+float using MessageBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
+BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBuffer)->Name("Logging int+float using MessageBuffer, pattern: %d %m%n");
+BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBuffer)->Name("Logging int+float using MessageBuffer, pattern: %d %m%n")->Threads(benchmarker::threadCount());
 
 BENCHMARK_MAIN();
 
