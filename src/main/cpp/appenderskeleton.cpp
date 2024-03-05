@@ -42,8 +42,8 @@ AppenderSkeleton::AppenderSkeleton()
 
 }
 
-AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
-	:   m_priv(std::make_unique<AppenderSkeletonPrivate>())
+AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout)
+	:   m_priv(std::make_unique<AppenderSkeletonPrivate>(layout))
 {
 
 }
