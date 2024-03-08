@@ -99,6 +99,7 @@ typedef std::map<LogString, DiscardSummary> DiscardMap;
 #define USE_ATOMIC_QUEUE 1
 #if USE_ATOMIC_QUEUE
 #include <atomic>
+#include <bit>
 namespace
 {
 static const int CACHE_LINE_SIZE = 128;
@@ -109,17 +110,24 @@ public:
 	{
 		LoggingEventPtr data;
 		Node* next;
+		Node() : next(0) {}
 		Node(const LoggingEventPtr& event, Node* n)
 			: data(event)
 			, next(n)
 		{ }
 	};
 
-	AtomicQueue() : m_head(0) {}
+	AtomicQueue(size_t bufferSize)
+		: m_head(0)
+		, m_nextNode(0)
+		, m_nodeStore(std::bit_ceil(bufferSize + 2))
+	{}
 
 	void push(const LoggingEventPtr& event)
 	{
-		auto n = new Node(event, m_head.load(std::memory_order_relaxed));
+		auto index = m_nextNode++;
+		auto n = &m_nodeStore[index % m_nodeStore.size()];
+		*n = Node(event, m_head.load(std::memory_order_relaxed));
 		while (!m_head.compare_exchange_weak(n->next, n, std::memory_order_release))
 		{
 		}
@@ -143,8 +151,15 @@ public:
 		}
 		return first;
 	}
+
+	void setBufferSize(size_t bufferSize)
+	{
+		m_nodeStore.resize(std::bit_ceil(bufferSize + 2));
+	}
 private:
-	std::atomic<Node*> m_head;
+	alignas(CACHE_LINE_SIZE) std::atomic<Node*> m_head;
+	alignas(CACHE_LINE_SIZE) std::atomic<size_t> m_nextNode;
+	alignas(CACHE_LINE_SIZE) std::vector<Node> m_nodeStore;
 };
 } // namespace
 #endif
@@ -160,6 +175,9 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		blocking(true)
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{atExitActivated();})
+#endif
+#if USE_ATOMIC_QUEUE
+		, eventList(DEFAULT_BUFFER_SIZE)
 #endif
 	{
 	}
@@ -321,6 +339,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		}
 		else
 			--priv->approxListSize;
+		break;
 		//
 		//   Following code is only reachable if buffer is full
 		//
@@ -468,6 +487,9 @@ void AsyncAppender::setBufferSize(int size)
 
 	std::lock_guard<std::mutex> lock(priv->bufferMutex);
 	priv->bufferSize = (size < 1) ? 1 : size;
+#if USE_ATOMIC_QUEUE
+	priv->eventList.setBufferSize(priv->bufferSize);
+#endif
 	priv->bufferNotFull.notify_all();
 }
 
@@ -573,7 +595,7 @@ void AsyncAppender::dispatch()
 			else
 				isActive = false;
 			auto next = eventList->next;
-			delete eventList;
+			*eventList = AtomicQueue::Node();
 			eventList = next;
 		}
 		{
