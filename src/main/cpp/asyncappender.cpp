@@ -595,7 +595,6 @@ void AsyncAppender::dispatch()
 			else
 				isActive = false;
 			auto next = eventList->next;
-			*eventList = AtomicQueue::Node();
 			eventList = next;
 		}
 		{
