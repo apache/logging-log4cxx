@@ -59,6 +59,7 @@ class LOG4CXX_EXPORT LocationInfo
 
 #ifdef LOG4CXX_HAS_STRING_VIEW
 		static constexpr const char* calcShortFileName(const char* fileName){
+			if(fileName == nullptr) return NA;
 			std::string_view view(fileName);
 			// If the separator is not found, rfind will return -1.  Adding 1 to
 			// that will have it pointing at fileName, which is a good fallback.

@@ -27,17 +27,35 @@ namespace LOG4CXX_NS
 LOG4CXX_LIST_DEF(LoggingEventList, spi::LoggingEventPtr);
 
 /**
-The AsyncAppender lets users log events asynchronously. It uses a
-bounded buffer to store logging events.
+The AsyncAppender decouples logging event creation from output
+by processing log events asynchronously.
 
-<p>The AsyncAppender will collect the events sent to it and then
-dispatch them to all the appenders that are attached to it. You can
-attach multiple appenders to an AsyncAppender.
+The AsyncAppender stores the logging event in a bounded buffer
+and then returns control to the application.
+A separate thread forwards events to the attached appender(s).
+You can attach multiple appenders to an AsyncAppender.
 
-<p>The AsyncAppender uses a separate thread to serve the events in
-its bounded buffer.
+The AsyncAppender is useful when outputing to a slow event sink,
+for example, a remote SMTP server or a database.
+Attaching a FileAppender to AsyncAppender is not recommended
+as the inter-thread communication overhead
+can exceed the time to write directly to a file.
 
-<p><b>Important note:</b> The <code>AsyncAppender</code> can only
+When the application produces logging events faster
+than the backgound thread is able to process,
+the bounded buffer can become full.
+In this situation AsyncAppender will either
+block until the bounded buffer is emptied or
+discard the event.
+The <b>Blocking</b> property controls which behaviour is used.
+When events are discarded,
+the logged output will indicate this
+with a log message prefixed with <i>Discarded</i>.
+The output may contain one <i>Discarded</i> message per logger name,
+the logging event of the highest level for each logger
+whose events have been discarded.
+
+<b>Important note:</b> The <code>AsyncAppender</code> can only
 be script configured using the {@link xml::DOMConfigurator DOMConfigurator}.
 */
 class LOG4CXX_EXPORT AsyncAppender :

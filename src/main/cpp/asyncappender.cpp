@@ -305,6 +305,9 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		std::unique_lock<std::mutex> lock(priv->bufferMutex);
 		if (!priv->dispatcher.joinable())
 			priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
+#if !USE_ATOMIC_QUEUE
+		priv->buffer.reserve(priv->bufferSize);
+#endif
 	}
 	while (true)
 	{
@@ -590,17 +593,14 @@ void AsyncAppender::dispatch()
 			);
 			isActive = !priv->closed;
 
-			for (auto eventItem : priv->buffer)
-			{
-				events.push_back(eventItem);
-			}
-
+			events = std::move(priv->buffer);
 			for (auto discardItem : priv->discardMap)
 			{
 				events.push_back(discardItem.second.createEvent(p));
 			}
 
 			priv->buffer.clear();
+			priv->buffer.reserve(priv->bufferSize);
 			priv->discardMap.clear();
 			priv->bufferNotFull.notify_all();
 		}
