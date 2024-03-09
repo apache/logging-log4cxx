@@ -272,7 +272,11 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			// Write to the ring buffer
 			priv->buffer[index] = event;
 			// Notify the dispatch thread that an event has been added
-			priv->commitCount.compare_exchange_strong(oldEventCount, oldEventCount + 1);
+			auto tmp = oldEventCount;
+			while (!priv->commitCount.compare_exchange_strong(tmp, oldEventCount + 1))
+			{
+				 tmp = oldEventCount;
+			}
 			priv->bufferNotEmpty.notify_all();
 			break;
 		}
