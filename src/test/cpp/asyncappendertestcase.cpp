@@ -219,6 +219,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			Pool p;
+			for (size_t i = 0; i < LEN; i++)
+			{
+				LogString m("message");
+				StringHelper::toString(i, p, m);
+				LOGUNIT_ASSERT(v[i]->getMessage() == m);
+			}
 			LOGUNIT_ASSERT_EQUAL(true, vectorAppender->isClosed());
 		}
 
