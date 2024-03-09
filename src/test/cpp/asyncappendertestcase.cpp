@@ -216,14 +216,14 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			}
 
 			asyncAppender->close();
-			root->debug(LOG4CXX_TEST_STR("m2"));
+			root->debug(LOG4CXX_STR("m2"));
 
 			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
 			Pool p;
 			for (size_t i = 0; i < LEN; i++)
 			{
-				LogString m("message");
+				LogString m(LOG4CXX_STR("message"));
 				StringHelper::toString(i, p, m);
 				LOGUNIT_ASSERT(v[i]->getMessage() == m);
 			}
