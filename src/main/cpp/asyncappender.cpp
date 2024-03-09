@@ -26,6 +26,7 @@
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <thread>
+#include <atomic>
 #include <condition_variable>
 
 #if LOG4CXX_EVENTS_AT_EXIT
