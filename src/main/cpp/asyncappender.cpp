@@ -272,10 +272,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			// Write to the ring buffer
 			priv->buffer[index] = event;
 			// Notify the dispatch thread that an event has been added
-			auto tmp = oldEventCount;
-			while (!priv->commitCount.compare_exchange_strong(tmp, oldEventCount + 1))
+			auto savedEventCount = oldEventCount;
+			while (!priv->commitCount.compare_exchange_strong(oldEventCount, oldEventCount + 1))
 			{
-				 tmp = oldEventCount;
+				 oldEventCount = savedEventCount;
 			}
 			priv->bufferNotEmpty.notify_all();
 			break;
@@ -480,12 +480,13 @@ DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 
 void AsyncAppender::dispatch()
 {
-	Pool p;
 	bool isActive = true;
 
 	while (isActive)
 	{
+		Pool p;
 		LoggingEventList events;
+		events.reserve(priv->bufferSize);
 		//
 		//   process events after lock on buffer is released.
 		//
@@ -496,7 +497,7 @@ void AsyncAppender::dispatch()
 			);
 			isActive = !priv->closed;
 
-			while (priv->dispatchedCount != priv->commitCount)
+			while (events.size() < priv->bufferSize && priv->dispatchedCount != priv->commitCount)
 			{
 				auto index = priv->dispatchedCount % priv->buffer.size();
 				events.push_back(priv->buffer[index]);
