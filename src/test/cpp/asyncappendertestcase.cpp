@@ -269,8 +269,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT_EQUAL(LEN*threadCount, v.size());
 			std::vector<int> count(LEN, 0);
 			for (auto m : v)
-                        {
-                                auto i = StringHelper::toInt(m->getMessage().substr(7));
+			{
+				auto i = StringHelper::toInt(m->getMessage().substr(7));
 				LOGUNIT_ASSERT(0 <= i);
 				LOGUNIT_ASSERT(i < LEN);
 				++count[i];
