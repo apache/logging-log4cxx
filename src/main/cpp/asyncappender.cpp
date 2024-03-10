@@ -263,12 +263,15 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	}
 	while (true)
 	{
-		// Claim a slot in the ring buffer
-		auto oldEventCount = priv->eventCount++;
-		auto pendingCount = oldEventCount - priv->dispatchedCount;
+		auto pendingCount = priv->eventCount - priv->dispatchedCount;
 		if (0 <= pendingCount && pendingCount < priv->bufferSize)
 		{
+			// Claim a slot in the ring buffer
+			auto oldEventCount = priv->eventCount++;
 			auto index = oldEventCount % priv->buffer.size();
+			// Wait for a free slot
+			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount)
+				;
 			// Write to the ring buffer
 			priv->buffer[index] = event;
 			// Notify the dispatch thread that an event has been added
@@ -280,8 +283,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			priv->bufferNotEmpty.notify_all();
 			break;
 		}
-		else
-			--priv->eventCount;
 		//
 		//   Following code is only reachable if buffer is full or eventCount has overflowed
 		//
