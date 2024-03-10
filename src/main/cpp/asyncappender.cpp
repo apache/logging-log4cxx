@@ -276,7 +276,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			priv->buffer[index] = event;
 			// Notify the dispatch thread that an event has been added
 			auto savedEventCount = oldEventCount;
-			while (!priv->commitCount.compare_exchange_strong(oldEventCount, oldEventCount + 1))
+			while (!priv->commitCount.compare_exchange_weak(oldEventCount, oldEventCount + 1, std::memory_order_release))
 			{
 				 oldEventCount = savedEventCount;
 			}
