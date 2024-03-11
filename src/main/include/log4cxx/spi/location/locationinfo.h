@@ -49,9 +49,15 @@ class LOG4CXX_EXPORT LocationInfo
 
 		static const LocationInfo& getLocationUnavailable();
 
+		/**
+		 *   The part of \c fileName after the path.
+		 *
+		 *  Implemented to be optimes away when called with a literal string
+		 */
 		static const char* calcShortFileName(const char* fileName){
 			if (fileName == nullptr) return nullptr;
 #if defined(_MSC_VER)
+			// As at 2024, the MSVC optimizer does not inline a function that calls another function
 			const char* location = nullptr;
 			for (auto p = fileName; *p; ++p)
 				if (*p == LOG4CXX_SHORT_FILENAME_SPLIT_CHAR)
