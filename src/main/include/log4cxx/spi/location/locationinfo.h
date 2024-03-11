@@ -20,6 +20,7 @@
 
 #include <log4cxx/log4cxx.h>
 #include <string>
+#include <string.h>
 
 #if defined(_WIN32)
 #define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
