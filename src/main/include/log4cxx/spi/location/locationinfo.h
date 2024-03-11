@@ -20,7 +20,6 @@
 
 #include <log4cxx/log4cxx.h>
 #include <string>
-#include <string.h>
 
 #if defined(_WIN32)
 #define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
@@ -51,7 +50,14 @@ class LOG4CXX_EXPORT LocationInfo
 
 		static const char* calcShortFileName(const char* fileName){
 			if (fileName == nullptr) return nullptr;
+#if defined(_MSC_VER)
+			const char* location = nullptr;
+			for (auto p = fileName; *p; ++p)
+				if (*p == LOG4CXX_SHORT_FILENAME_SPLIT_CHAR)
+					location = p;
+#else
 			const char* location = strrchr(fileName, LOG4CXX_SHORT_FILENAME_SPLIT_CHAR);
+#endif
 			return location == nullptr ? fileName : location + 1;
 		}
 
