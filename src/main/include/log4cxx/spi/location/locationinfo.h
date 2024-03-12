@@ -52,9 +52,9 @@ class LOG4CXX_EXPORT LocationInfo
 		/**
 		 *   The part of \c fileName after the path.
 		 *
-		 *  Implemented to be optimes away when called with a literal string
+		 *  Implemented to allow compile-time evaluation when called with a literal string
 		 */
-		static const char* calcShortFileName(const char* fileName){
+		static constexpr const char* calcShortFileName(const char* fileName){
 			if (fileName == nullptr) return nullptr;
 #if defined(_MSC_VER)
 			// As at 2024, the MSVC optimizer does not inline a function that calls another function
