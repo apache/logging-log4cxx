@@ -20,13 +20,7 @@
 
 #include <log4cxx/log4cxx.h>
 #include <string>
-
-#if __cpp_lib_string_view || (_MSVC_LANG >= 201703L)
-#include <string_view>
-#define LOG4CXX_HAS_STRING_VIEW
-#else
 #include <string.h>
-#endif
 
 #if defined(_WIN32)
 #define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
@@ -46,8 +40,6 @@ class LOG4CXX_EXPORT LocationInfo
 {
 	public:
 
-
-
 		/**
 		  *   When location information is not available the constant
 		  * <code>NA</code> is returned. Current value of this string constant is <b>?</b>.
@@ -57,20 +49,28 @@ class LOG4CXX_EXPORT LocationInfo
 
 		static const LocationInfo& getLocationUnavailable();
 
-#ifdef LOG4CXX_HAS_STRING_VIEW
+		/**
+		 *   The part of \c fileName after the path.
+		 *
+		 *  Implemented to allow compile-time evaluation when called with a literal string
+		 */
+#if 201304L <= __cpp_constexpr
 		static constexpr const char* calcShortFileName(const char* fileName){
-			if(fileName == nullptr) return NA;
-			std::string_view view(fileName);
-			// If the separator is not found, rfind will return -1.  Adding 1 to
-			// that will have it pointing at fileName, which is a good fallback.
-			return fileName + view.rfind(LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;
-		}
 #else
 		static const char* calcShortFileName(const char* fileName){
+#endif
+			if (fileName == nullptr) return nullptr;
+#if defined(_MSC_VER)
+			// As at 2024, the MSVC optimizer does not inline a function that calls another function
+			const char* location = nullptr;
+			for (auto p = fileName; *p; ++p)
+				if (*p == LOG4CXX_SHORT_FILENAME_SPLIT_CHAR)
+					location = p;
+#else
 			const char* location = strrchr(fileName, LOG4CXX_SHORT_FILENAME_SPLIT_CHAR);
+#endif
 			return location == nullptr ? fileName : location + 1;
 		}
-#endif
 
 		/**
 		 *   Constructor.
@@ -164,7 +164,7 @@ class LOG4CXX_EXPORT LocationInfo
 	#endif
 #endif
 #if !defined(__LOG4CXX_FUNC__)
-	#define __LOG4CXX_FUNC__ ""
+	#define __LOG4CXX_FUNC__ nullptr
 #endif
 
 
