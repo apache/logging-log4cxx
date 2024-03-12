@@ -54,7 +54,11 @@ class LOG4CXX_EXPORT LocationInfo
 		 *
 		 *  Implemented to allow compile-time evaluation when called with a literal string
 		 */
+#if 201304L <= __cpp_constexpr
 		static constexpr const char* calcShortFileName(const char* fileName){
+#else
+		static const char* calcShortFileName(const char* fileName){
+#endif
 			if (fileName == nullptr) return nullptr;
 #if defined(_MSC_VER)
 			// As at 2024, the MSVC optimizer does not inline a function that calls another function
