@@ -40,7 +40,8 @@ jobs:
         cd clean-checkout
         VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
         tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," INSTALL  LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in  KEYS
-        gpg --print-md SHA512 "../apache-log4cxx-$VERSION.tar.gz" | sed -e "s/apache-log4cxx-$VERSION.tar.gz: //" -e 's/ //g' > "../apache-log4cxx-$VERSION.tar.gz.asc"
+        cd ..
+        gpg --print-md SHA512 "apache-log4cxx-$VERSION.tar.gz" | sed -e "s/apache-log4cxx-$VERSION.tar.gz: //" -e 's/ //g' > "apache-log4cxx-$VERSION.tar.gz.asc"
 
     - uses: actions/upload-artifact@v2
       if: always()
