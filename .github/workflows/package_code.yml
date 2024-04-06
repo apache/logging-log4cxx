@@ -1,0 +1,51 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+name: Generate release files
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  job1:
+    name: package-for_release
+    runs-on: ubuntu-20.04
+    timeout-minutes: 38
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: clean-checkout
+
+    - name: 'Create release file'
+      run: |
+        cd clean-checkout
+        VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
+        tar -zcf "apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," INSTALL  LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in  KEYS
+        gpg --print-md SHA512 "apache-log4cxx-$VERSION.tar.gz" | sed -e "s/apache-log4cxx-$VERSION.tar.gz: //" -e 's/ //g' > "apache-log4cxx-$VERSION.tar.gz.asc"
+
+    - uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: 'Upload release files'
+        path: |
+          apache-log4cxx-*.tar.gz
+          apache-log4cxx-*.tar.gz.asc
