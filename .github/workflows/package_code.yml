@@ -24,7 +24,7 @@ on:
 
 jobs:
   job1:
-    name: package-for_release
+    name: 'Package code for release'
     runs-on: ubuntu-20.04
     timeout-minutes: 38
     strategy:
@@ -35,13 +35,16 @@ jobs:
       with:
         path: clean-checkout
 
-    - name: 'Create release file'
+    - name: 'Create release files'
       run: |
         cd clean-checkout
         VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
         tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," INSTALL  LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in  KEYS
         cd ..
         gpg --print-md SHA512 "apache-log4cxx-$VERSION.tar.gz" | sed -e "s/apache-log4cxx-$VERSION.tar.gz: //" -e 's/ //g' > "apache-log4cxx-$VERSION.tar.gz.asc"
+        tar xf "apache-log4cxx-$VERSION.tar.gz"
+        zip -rm "apache-log4cxx-$VERSION.zip" apache-log4cxx-$VERSION
+        gpg --print-md SHA512 "apache-log4cxx-$VERSION.zip" | sed -e "s/apache-log4cxx-$VERSION.zip: //" -e 's/ //g' > "apache-log4cxx-$VERSION.zip.asc"
 
     - uses: actions/upload-artifact@v2
       if: always()
@@ -50,3 +53,5 @@ jobs:
         path: |
           apache-log4cxx-*.tar.gz
           apache-log4cxx-*.tar.gz.asc
+          apache-log4cxx-*.zip
+          apache-log4cxx-*.zip.asc
