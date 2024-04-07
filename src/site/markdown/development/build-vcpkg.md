@@ -21,8 +21,6 @@ Building with vcpkg {#build-vcpkg}
  limitations under the License.
 -->
 
-# Building Apache Log4cxx with vcpkg
-
 Log4cxx is included with Microsoft vcpkg, and can thus be easily installed.
 This is a quick guide to show you how to do that.
 
