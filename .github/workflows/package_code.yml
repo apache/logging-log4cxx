@@ -37,22 +37,12 @@ jobs:
 
     - name: 'Create release files'
       run: |
-        cd clean-checkout
-        rm -r src/main/abi-symbols
-        VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
-        tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," INSTALL  LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in  KEYS
-        cd ..
-        sha512sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha512"
-        tar xf "apache-log4cxx-$VERSION.tar.gz"
-        zip -rm "apache-log4cxx-$VERSION.zip" apache-log4cxx-$VERSION
-        sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
+        cmake -B package -S clean-checkout -DAPACHE_MAINTAINER=yes -DCPACK_PACKAGE_DIRECTORY=`pwd`
+        cmake --build package --target dist
 
     - uses: actions/upload-artifact@v2
       if: always()
       with:
         name: 'Upload release files'
         path: |
-          apache-log4cxx-*.tar.gz
-          apache-log4cxx-*.tar.gz.sha512
-          apache-log4cxx-*.zip
-          apache-log4cxx-*.zip.sha512
+          apache-log4cxx-*
