@@ -50,7 +50,7 @@ Changelog {#changelog}
 
 Release 1.3.0 includes the following new features:
 
-* Overhead reduction of 30% to 60% in sending a logging events to an appender
+* Overhead reduction of upto 60% in sending a logging events to an appender
 
 ## Release 1.2.0 - 2024-01-01 {#rel_1_2_0}
 
