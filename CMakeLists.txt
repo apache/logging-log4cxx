@@ -265,15 +265,20 @@ option(APACHE_MAINTAINER "Apache maintainer" OFF)
 if(APACHE_MAINTAINER)
     set(CPACK_SOURCE_PACKAGE_FILE_NAME "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}")
     set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
-    set(CPACK_SOURCE_IGNORE_FILES ".git/;build/;.vs/;out/;CMakeLists.txt.user;src/main/abi-symbols/*;src/test/resources/output/")
+    set(CPACK_SOURCE_IGNORE_FILES ".git/;.github/;.gitattributes;.gitignore;.vs/;out/;build/;sonar-project.properties;doap_log4cxx.rdf;CMakeLists.txt.user;src/main/abi-symbols/;src/test/resources/output/")
     include(CPack)
+    if(CPACK_PACKAGE_DIRECTORY)
+      set(LOG4CXX_PACKAGE_FILEPATH_PREFIX "${CPACK_PACKAGE_DIRECTORY}/${CPACK_SOURCE_PACKAGE_FILE_NAME}")
+    else()
+      set(LOG4CXX_PACKAGE_FILEPATH_PREFIX "${CMAKE_BINARY_DIR}/${CPACK_SOURCE_PACKAGE_FILE_NAME}")
+    endif()
 
     add_custom_target( dist
 	COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -- package_source
-	COMMAND ${CMAKE_COMMAND} -E sha512sum "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512"
-	COMMAND ${CMAKE_COMMAND} -E sha512sum "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512"
-	COMMAND gpg -ab --yes "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc"
-	COMMAND gpg -ab --yes "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc"
+	COMMAND ${CMAKE_COMMAND} -E sha512sum "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.tar.gz" > "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.tar.gz.sha512"
+	COMMAND ${CMAKE_COMMAND} -E sha512sum "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.zip" > "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.zip.sha512"
+	COMMAND gpg --armor --detach-sign --yes --pinentry-mode error "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.tar.gz" > "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.tar.gz.asc"
+	COMMAND gpg --armor --detach-sign --yes --pinentry-mode error "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.zip" > "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.zip.asc"
 	)
 endif()
 
