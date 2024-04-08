@@ -21,9 +21,18 @@ Build {#build}
  limitations under the License.
 -->
 
+As of version 0.11.0, the only supported build system for Log4cxx is CMake.
+Have a look at the [Building with CMake] page for more information.
+If you have trouble building, either [create an issue]
+or send a message to the [users mailing list].
+
 See the following pages for information on building Log4cxx:
 
-* @subpage building
 * @subpage dependencies
 * @subpage build-cmake
 * @subpage build-vcpkg
+* @subpage supported-systems
+
+[Building with CMake]:@ref build-cmake
+[create an issue]: https://github.com/apache/logging-log4cxx/issues
+[users mailing list]:@ref mailing-lists

@@ -1,4 +1,4 @@
-Building {#building}
+Testing coverage {#supported-systems}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -20,14 +20,6 @@ Building {#building}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-# Building Apache Log4cxx
-
-As of version 0.11.0, the only supported build system for Log4cxx is CMake.
-Have a look at the [build with CMake](build-cmake.html) page for more
-information.  If you have trouble building, either create an issue in
-[Jira](https://issues.apache.org/jira/projects/LOGCXX/issues) or send a
-message to the [users mailing list].
 
 ## Covered by Github
 
