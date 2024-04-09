@@ -23,8 +23,9 @@ Changelog {#changelog}
 
 # Release History
 
-| Version                                                                                | Date       | Description          |
-| -------------------------------------------------------------------------------------- | ---------- | -------------------- |
+| Version             | Date       | Description          |
+| ------------------- | ---------- | -------------------- |
+| [1.3.0](#rel_1_3_0) | 2024-XX-XX | Maintenance release  |
 | [1.2.0](#rel_1_2_0) | 2024-01-01 | Maintenance release  |
 | [1.1.0](#rel_1_1_0) | 2023-05-01 | General bugfix release  |
 | [1.0.0](#rel_1_0_0) | 2023-01-01 | Major release to standardize the library and make it ABI stable  |
@@ -44,6 +45,12 @@ Changelog {#changelog}
 | [0.1.1](#rel_1_1)   | 2003-07-09 |                      |
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
+
+## Release 1.3.0 - 2024-XX-XX {#rel_1_3_0}
+
+Release 1.3.0 includes the following new features:
+
+* Overhead reduction of upto 60% sending logging events to an appender
 
 ## Release 1.2.0 - 2024-01-01 {#rel_1_2_0}
 
