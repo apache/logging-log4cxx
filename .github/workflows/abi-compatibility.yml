@@ -34,8 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        #persist-credentials: false # do not persist auth token in the local git config
-        persist-credentials: true
+        persist-credentials: false # do not persist auth token in the local git config
         path: main
 
     - name: 'Configure Dependencies - Ubuntu'
@@ -47,7 +46,6 @@ jobs:
 
     - name: 'run CMake'
       run: |
-        git config --list
         cd main
         mkdir build
         cd build
