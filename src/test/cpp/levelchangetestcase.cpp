@@ -129,6 +129,10 @@ public:
 			// Check the ComplexProcessing debug request was sent to the appender
 			LOGUNIT_ASSERT_EQUAL(appender->count, initialCount + 1);
 		}
+
+		// Check the ComplexProcessing debug request is not sent to the appender
+		processor.DoStep1();
+		LOGUNIT_ASSERT_EQUAL(appender->count, initialCount + 1);
 		{
 			LevelChange ctx(LOG4CXX_STR("ComplexProcessing"), myLogger);
 			processor.DoStep2();
