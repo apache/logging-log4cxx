@@ -52,7 +52,7 @@ public: // ...structors
 	}
 	/// Set \c otherCategory to the level of \c thisCategory
 	LevelChange(const LoggerPtr& otherCategory, const LoggerPtr& thisCategory)
-		: LevelChange(otherCategory, m_otherCategory->getLevel())
+		: LevelChange(otherCategory, thisCategory->getLevel())
 	{
 	}
 	/// Set the logger named \c otherCategory to \c level
