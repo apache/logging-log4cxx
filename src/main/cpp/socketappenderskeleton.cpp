@@ -77,12 +77,7 @@ void SocketAppenderSkeleton::close()
 
 	_priv->closed = true;
 	cleanUp(_priv->pool);
-
-	{
-		std::unique_lock<std::mutex> lock2(_priv->interrupt_mutex);
-		_priv->interrupt.notify_all();
-	}
-
+	_priv->interrupt.notify_all();
 	if ( _priv->thread.joinable() )
 	{
 		_priv->thread.join();

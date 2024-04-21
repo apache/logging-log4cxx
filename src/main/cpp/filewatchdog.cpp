@@ -74,11 +74,7 @@ void FileWatchdog::stop()
 {
 	LogLog::debug(LOG4CXX_STR("Stopping file watchdog"));
 	m_priv->interrupted = 0xFFFF;
-
-	{
-		std::unique_lock<std::mutex> lock(m_priv->interrupt_mutex);
-		m_priv->interrupt.notify_all();
-	}
+	m_priv->interrupt.notify_all();
 	m_priv->thread.join();
 }
 

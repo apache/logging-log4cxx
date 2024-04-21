@@ -98,7 +98,7 @@ class APRCharsetDecoder : public CharsetDecoder
 			{
 				size_t outbytes_left = initial_outbytes_left;
 				{
-					std::unique_lock<std::mutex> lock(mutex);
+					std::lock_guard<std::mutex> lock(mutex);
 					stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
 							NULL, NULL, (char*) buf, &outbytes_left);
 				}
@@ -113,7 +113,7 @@ class APRCharsetDecoder : public CharsetDecoder
 					size_t pos = in.position();
 					apr_size_t outbytes_left = initial_outbytes_left;
 					{
-						std::unique_lock<std::mutex> lock(mutex);
+						std::lock_guard<std::mutex> lock(mutex);
 						stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
 								in.data() + pos,
 								&inbytes_left,

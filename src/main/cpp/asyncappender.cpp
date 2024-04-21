@@ -257,7 +257,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if (!priv->dispatcher.joinable())
 	{
-		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		std::lock_guard<std::mutex> lock(priv->bufferMutex);
 		if (!priv->dispatcher.joinable())
 			priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 	}

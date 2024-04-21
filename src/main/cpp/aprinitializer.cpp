@@ -98,14 +98,14 @@ APRInitializer::~APRInitializer()
 	stopWatchDogs();
 	isDestructed = true;
 #if APR_HAS_THREADS
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::mutex> lock(m_priv->mutex);
 	apr_threadkey_private_delete(m_priv->tlsKey);
 #endif
 }
 
 void APRInitializer::stopWatchDogs()
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::mutex> lock(m_priv->mutex);
 
 	while (!m_priv->watchdogs.empty())
 	{
@@ -146,14 +146,14 @@ apr_threadkey_t* APRInitializer::getTlsKey()
 void APRInitializer::registerCleanup(FileWatchdog* watchdog)
 {
 	APRInitializer& instance(getInstance());
-	std::unique_lock<std::mutex> lock(instance.m_priv->mutex);
+	std::lock_guard<std::mutex> lock(instance.m_priv->mutex);
 	instance.m_priv->watchdogs.push_back(watchdog);
 }
 
 void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
 {
 	APRInitializer& instance(getInstance());
-	std::unique_lock<std::mutex> lock(instance.m_priv->mutex);
+	std::lock_guard<std::mutex> lock(instance.m_priv->mutex);
 
 	auto iter = std::find(instance.m_priv->watchdogs.begin(), instance.m_priv->watchdogs.end(), watchdog);
 	if (iter != instance.m_priv->watchdogs.end())
@@ -162,13 +162,13 @@ void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
 
 void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::mutex> lock(m_priv->mutex);
 	m_priv->objects[key] = pObject;
 }
 
 const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<ObjectPtr()> creator)
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::mutex> lock(m_priv->mutex);
 	auto pItem = m_priv->objects.find(key);
 	if (m_priv->objects.end() == pItem)
 		pItem = m_priv->objects.emplace(key, creator()).first;

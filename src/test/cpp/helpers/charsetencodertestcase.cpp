@@ -251,7 +251,6 @@ public:
 
 			void signalAll()
 			{
-				std::unique_lock<std::mutex> sync(lock);
 				condition.notify_all();
 			}
 

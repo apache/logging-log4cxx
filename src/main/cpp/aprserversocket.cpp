@@ -82,7 +82,7 @@ APRServerSocket::APRServerSocket(int port) :
 }
 
 void APRServerSocket::close(){
-	std::unique_lock<std::mutex> lock(_priv->mutex);
+	std::lock_guard<std::mutex> lock(_priv->mutex);
 
 	if (_priv->socket != 0)
 	{
@@ -103,7 +103,7 @@ accepts it
 */
 SocketPtr APRServerSocket::accept()
 {
-	std::unique_lock<std::mutex> lock(_priv->mutex);
+	std::lock_guard<std::mutex> lock(_priv->mutex);
 
 	if (_priv->socket == 0)
 	{
