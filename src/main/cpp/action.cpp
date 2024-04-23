@@ -43,7 +43,7 @@ Action::~Action()
  */
 void Action::run(LOG4CXX_NS::helpers::Pool& pool1)
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::mutex> lock(m_priv->mutex);
 
 	if (!m_priv->interrupted)
 	{
@@ -66,7 +66,7 @@ void Action::run(LOG4CXX_NS::helpers::Pool& pool1)
  */
 void Action::close()
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	std::lock_guard<std::mutex> lock(m_priv->mutex);
 	m_priv->interrupted = true;
 }
 

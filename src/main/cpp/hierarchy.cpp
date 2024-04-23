@@ -297,7 +297,7 @@ bool Hierarchy::isDisabled(int level) const
 
 void Hierarchy::ensureIsConfigured(std::function<void()> configurator)
 {
-	std::unique_lock<std::mutex> lock(m_priv->configuredMutex);
+	std::lock_guard<std::mutex> lock(m_priv->configuredMutex);
 	if (!m_priv->configured)
 	{
 		configurator();
@@ -446,7 +446,7 @@ void Hierarchy::setConfigured(bool newValue)
 
 bool Hierarchy::isConfigured()
 {
-	std::unique_lock<std::mutex> lock(m_priv->configuredMutex); // Blocks while auto-configuration is active
+	std::lock_guard<std::mutex> lock(m_priv->configuredMutex); // Blocks while auto-configuration is active
 	return m_priv->configured;
 }
 

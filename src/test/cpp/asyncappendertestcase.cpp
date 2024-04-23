@@ -84,7 +84,7 @@ class BlockableVectorAppender : public VectorAppender
 		 */
 		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
 		{
-			std::unique_lock<std::mutex> lock( blocker );
+			std::lock_guard<std::mutex> lock( blocker );
 			VectorAppender::append(event, p);
 
 			//
@@ -332,7 +332,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOG4CXX_INFO(rootLogger, "Hello, World"); // This causes the dispatch thread creation
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
 			{
-				std::unique_lock<std::mutex> sync(blockableAppender->getBlocker());
+				std::lock_guard<std::mutex> sync(blockableAppender->getBlocker());
 
 				for (int i = 0; i < 140; i++)
 				{

@@ -69,7 +69,7 @@ LogLog& LogLog::getInstance()
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
 	auto p = getInstance().m_priv.get();
-	std::unique_lock<std::mutex> lock(p->mutex);
+	std::lock_guard<std::mutex> lock(p->mutex);
 
 	p->debugEnabled = debugEnabled1;
 }
@@ -84,7 +84,7 @@ void LogLog::debug(const LogString& msg)
 			return;
 		}
 
-		std::unique_lock<std::mutex> lock(p->mutex);
+		std::lock_guard<std::mutex> lock(p->mutex);
 
 		emit(msg);
 	}
@@ -98,7 +98,7 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 		if (!p->debugEnabled)
 			return;
 
-		std::unique_lock<std::mutex> lock(p->mutex);
+		std::lock_guard<std::mutex> lock(p->mutex);
 		emit(msg);
 		emit(e);
 	}
@@ -110,7 +110,7 @@ void LogLog::error(const LogString& msg)
 	auto p = getInstance().m_priv.get();
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
-		std::unique_lock<std::mutex> lock(p->mutex);
+		std::lock_guard<std::mutex> lock(p->mutex);
 
 		emit(msg);
 	}
@@ -121,7 +121,7 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 	auto p = getInstance().m_priv.get();
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
-		std::unique_lock<std::mutex> lock(p->mutex);
+		std::lock_guard<std::mutex> lock(p->mutex);
 		emit(msg);
 		emit(e);
 	}
@@ -130,7 +130,7 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 void LogLog::setQuietMode(bool quietMode1)
 {
 	auto p = getInstance().m_priv.get();
-	std::unique_lock<std::mutex> lock(p->mutex);
+	std::lock_guard<std::mutex> lock(p->mutex);
 
 	p->quietMode = quietMode1;
 }
@@ -140,7 +140,7 @@ void LogLog::warn(const LogString& msg)
 	auto p = getInstance().m_priv.get();
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
-		std::unique_lock<std::mutex> lock(p->mutex);
+		std::lock_guard<std::mutex> lock(p->mutex);
 		emit(msg);
 	}
 }
@@ -150,7 +150,7 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 	auto p = getInstance().m_priv.get();
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
-		std::unique_lock<std::mutex> lock(p->mutex);
+		std::lock_guard<std::mutex> lock(p->mutex);
 		emit(msg);
 		emit(e);
 	}

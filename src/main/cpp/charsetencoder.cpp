@@ -91,7 +91,7 @@ class APRCharsetEncoder : public CharsetEncoder
 
 			if (iter == in.end())
 			{
-				std::unique_lock<std::mutex> lock(mutex);
+				std::lock_guard<std::mutex> lock(mutex);
 				stat = apr_xlate_conv_buffer(convset, NULL, NULL,
 						out.data() + position, &outbytes_left);
 			}
@@ -102,7 +102,7 @@ class APRCharsetEncoder : public CharsetEncoder
 					(in.size() - inOffset) * sizeof(LogString::value_type);
 				apr_size_t initial_inbytes_left = inbytes_left;
 				{
-					std::unique_lock<std::mutex> lock(mutex);
+					std::lock_guard<std::mutex> lock(mutex);
 					stat = apr_xlate_conv_buffer(convset,
 							(const char*) (in.data() + inOffset),
 							&inbytes_left,
