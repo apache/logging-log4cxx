@@ -1,4 +1,4 @@
-Changelog {#changelog}
+Change Log {#changelog}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate

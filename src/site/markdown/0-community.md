@@ -21,7 +21,36 @@ Community {#community}
  limitations under the License.
 -->
 
-See the following pages for community information:
+# Getting help
 
-* @subpage issue-tracking
-* @subpage mailing-lists
+If you are using an older version, search the [change log], [JIRA] and [older mailing lists]
+to determine whether your problem has been fixed some time ago.
+
+If you already digged through the code and found a problem in the Log4cxx implementation
+or the Log4cxx build scripts, feel free to directly raise an issue in [Github Issues].
+*Please don't just open bugs only because things don't work for you*,
+some issues simply aren't bugs in the code base of the project or it's build tools,
+but may have a lot of different other reasons.
+
+If things really only don't work and you don't have any clue why,
+please use the [official support channels],
+i.e., [usage mailing list](mailto:log4cxx-user@logging.apache.org),
+[developer mailing lists](mailto:log4cxx-dev@logging.apache.org)
+or [GitHub Discussions] instead.
+
+# Reporting a security issue
+
+Refer to the [official security page] for how to get support on security issues.
+
+# Official releases
+
+See [artifact locations] for where you can get offical release artifacts and how to verify them.
+
+[change log]:@ref changelog
+[JIRA]: https://issues.apache.org/jira/browse/LOGCXX
+[older mailing lists]: http://markmail.org/search/list:org.apache.logging.dev
+[Github Issues]: https://github.com/apache/logging-log4cxx/issues
+[GitHub Discussions]: https://github.com/apache/logging-log4cxx/discussions
+[official support channels]: https://logging.apache.org/support.html
+[official security page]: https://logging.apache.org/security.html
+[artifact locations]: https://logging.apache.org/download.html
