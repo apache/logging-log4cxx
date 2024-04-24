@@ -23,7 +23,7 @@ Community {#community}
 
 # Getting help
 
-If you are using an older version, search the [change log], [JIRA] and [older mailing lists]
+If you are using an older version, search the [change log], [JIRA] and [mailing list archives]
 to determine whether your problem has been fixed some time ago.
 
 If you already digged through the code and found a problem in the Log4cxx implementation
@@ -48,7 +48,7 @@ See [artifact locations] for where you can get offical release artifacts and how
 
 [change log]:@ref changelog
 [JIRA]: https://issues.apache.org/jira/browse/LOGCXX
-[older mailing lists]: http://mail-archives.apache.org/mod_mbox/logging-log4cxx-user
+[mailing list archives]: http://mail-archives.apache.org/mod_mbox/logging-log4cxx-user
 [Github Issues]: https://github.com/apache/logging-log4cxx/issues
 [GitHub Discussions]: https://github.com/apache/logging-log4cxx/discussions
 [official support channels]: https://logging.apache.org/support.html
