@@ -68,15 +68,17 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-
-	if (_priv->closed)
 	{
-		return;
-	}
+		std::lock_guard<std::mutex> lock(_priv->interrupt_mutex);
 
-	_priv->closed = true;
-	cleanUp(_priv->pool);
+		if (_priv->closed)
+		{
+			return;
+		}
+
+		_priv->closed = true;
+		cleanUp(_priv->pool);
+	}
 	_priv->interrupt.notify_all();
 	if ( _priv->thread.joinable() )
 	{
