@@ -21,7 +21,7 @@ Change Log {#changelog}
  limitations under the License.
 -->
 
-# Release History
+## Release History {#history}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
@@ -110,8 +110,9 @@ make them ABI stable
 * Multiprocess support is available, but Log4cxx must be explicitly compiled with this option
 
 Full release notes are below:
-Bug
----
+
+### Bug {#rel_1_0_0_bugs}
+
 
 -   \[[LOGCXX-432](https://issues.apache.org/jira/browse/LOGCXX-432)\] -
     AsyncAppender automatically switches to sync mode when e.g. there is
@@ -124,8 +125,7 @@ Bug
 -   \[[LOGCXX-563](https://issues.apache.org/jira/browse/LOGCXX-563)\] -
     Fix memory leaks
 
-New Feature
------------
+### New Feature {#rel_1_0_0_features}
 
 -   \[[LOGCXX-514](https://issues.apache.org/jira/browse/LOGCXX-514)\] -
     Create a libfmt layout
@@ -134,8 +134,7 @@ New Feature
 -   \[[LOGCXX-559](https://issues.apache.org/jira/browse/LOGCXX-559)\] -
     Implement LocationInfoFilter
 
-Improvement
------------
+### Improvement {#rel_1_0_0_improvements}
 
 -   \[[LOGCXX-516](https://issues.apache.org/jira/browse/LOGCXX-516)\] -
     Make classes ABI-stable
@@ -178,8 +177,7 @@ ability to block signals from threads that the library creates, automatic
 creation of log directories, new color patterns, and the ability to determine
 the library version at compile and run-time.
 
-Bug
----
+### Bug {#rel_13_0_bugs}
 
 -   \[[LOGCXX-102](https://issues.apache.org/jira/browse/LOGCXX-102)\] -
     PropertyConfigurator does not process the RollingFileAppender
@@ -207,14 +205,12 @@ Bug
 -   \[[LOGCXX-546](https://issues.apache.org/jira/browse/LOGCXX-546)\] -
     Multi threaded applications run at single threaded speed
 
-New Feature
------------
+### New Feature {#rel_13_0_features}
 
 -   \[[LOGCXX-529](https://issues.apache.org/jira/browse/LOGCXX-529)\] -
     Support color and highlight conversion patterns
 
-Improvement
------------
+### Improvement {#rel_13_0_improvements}
 
 -   \[[LOGCXX-337](https://issues.apache.org/jira/browse/LOGCXX-337)\] -
     Suggested fix for socketappender not reconnecting multiple times
@@ -229,8 +225,7 @@ Improvement
 -   \[[LOGCXX-550](https://issues.apache.org/jira/browse/LOGCXX-550)\] -
     Add ability to get thread name not just ID
 
-Wish
-----
+### Wish {#rel_13_0_wish_list}
 
 -   \[[LOGCXX-544](https://issues.apache.org/jira/browse/LOGCXX-544)\] -
     Please embedd library version in a header
@@ -244,8 +239,7 @@ Wish
 This is a minor bugfix release to fix issues found with 0.12.0.  Notably, this version fixes a bug
 where a multithreaded application would crash when using a rolling file.
 
-Bug
----
+### Bug {#rel_12_1_bugs}
 
 -   \[[LOGCXX-534](https://issues.apache.org/jira/browse/LOGCXX-534)\] -
     Crashed in log->forcedLog function when running with multi-thread
@@ -281,8 +275,7 @@ AppenderPtr appender = log4cxx::cast<Appender>(instance);
 // both point at the same object.
 ```
 
-Bug
----
+### Bug {#rel_12_0_bugs}
 
 -   \[[LOGCXX-322](https://issues.apache.org/jira/browse/LOGCXX-322)\] -
     Crashes on exit from multithreaded program using log4cxx
@@ -303,15 +296,10 @@ Bug
 -   \[[LOGCXX-526](https://issues.apache.org/jira/browse/LOGCXX-526)\] -
     GCC-11.1.0 Support
 
-New Feature
------------
+### New Feature {#rel_12_0_features}
 
 -   \[[LOGCXX-515](https://issues.apache.org/jira/browse/LOGCXX-515)\] -
     Add macros to utilize libfmt formatting for messages
-
-Improvement
------------
-
 -   \[[LOGCXX-523](https://issues.apache.org/jira/browse/LOGCXX-523)\] -
     Add in error handling for rollover errors
 

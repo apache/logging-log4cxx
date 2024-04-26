@@ -21,7 +21,7 @@ Community {#community}
  limitations under the License.
 -->
 
-# Getting help
+# Getting help {#support}
 
 If you are using an older version, search the [change log], [JIRA] and [mailing list archives]
 to determine whether your problem has been fixed some time ago.
@@ -38,11 +38,11 @@ i.e., [usage mailing list](mailto:log4cxx-user@logging.apache.org),
 [developer mailing lists](mailto:log4cxx-dev@logging.apache.org)
 or [GitHub Discussions] instead.
 
-# Reporting a security issue
+# Reporting a security issue {#security}
 
 Refer to the [official security page] for how to get support on security issues.
 
-# Official releases
+# Official releases {#artifacts}
 
 See [artifact locations] for where you can get offical release artifacts and how to verify them.
 
