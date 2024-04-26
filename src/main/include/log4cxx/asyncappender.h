@@ -35,17 +35,14 @@ and then returns control to the application.
 A separate thread forwards events to the attached appender(s).
 You can attach multiple appenders to an AsyncAppender.
 
-The AsyncAppender is useful when outputing to a slow event sink,
+The AsyncAppender is especially useful when outputting to a slow event sink,
 for example, a remote SMTP server or a database.
-Attaching a FileAppender to AsyncAppender is not recommended
-as the inter-thread communication overhead
-can exceed the time to write directly to a file.
 
 When the application produces logging events faster
-than the backgound thread is able to process,
+than the background thread is able to process,
 the bounded buffer can become full.
 In this situation AsyncAppender will either
-block until the bounded buffer is emptied or
+block until the bounded buffer has a free slot or
 discard the event.
 The <b>Blocking</b> property controls which behaviour is used.
 When events are discarded,
@@ -54,6 +51,10 @@ with a log message prefixed with <i>Discarded</i>.
 The output may contain one <i>Discarded</i> message per logger name,
 the logging event of the highest level for each logger
 whose events have been discarded.
+
+To determine whether the application produces logging events faster
+than the background thread is able to process, enable [Log4cxx internal debugging](internal-debugging.html).
+The AsyncAppender will output a histogram of queue length frequencies when closed.
 
 <b>Important note:</b> The <code>AsyncAppender</code> can only
 be script configured using the {@link xml::DOMConfigurator DOMConfigurator}.
