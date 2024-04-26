@@ -89,7 +89,7 @@ class DiscardSummary
 #if LOG4CXX_ABI_VERSION <= 15
 		static
 		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
-			size_t discardedCount) {}
+			size_t discardedCount);
 #endif
 };
 
@@ -477,6 +477,24 @@ LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 				msg,
 				LocationInfo::getLocationUnavailable() );
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+::LOG4CXX_NS::spi::LoggingEventPtr
+DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
+	size_t discardedCount)
+{
+	LogString msg(LOG4CXX_STR("Discarded "));
+	StringHelper::toString(discardedCount, p, msg);
+	msg.append(LOG4CXX_STR(" messages due to a full event buffer"));
+
+	return std::make_shared<LoggingEvent>(
+				LOG4CXX_STR(""),
+				LOG4CXX_NS::Level::getError(),
+				msg,
+				LocationInfo::getLocationUnavailable() );
+}
+#endif
+
 
 void AsyncAppender::dispatch()
 {
