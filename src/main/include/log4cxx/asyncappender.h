@@ -35,7 +35,7 @@ and then returns control to the application.
 A separate thread forwards events to the attached appender(s).
 You can attach multiple appenders to an AsyncAppender.
 
-The AsyncAppender is especially useful when outputting to a slow event sink,
+The AsyncAppender is useful when outputting to a slow event sink,
 for example, a remote SMTP server or a database.
 Attaching a FileAppender to AsyncAppender is not recommended
 as the inter-thread communication overhead
