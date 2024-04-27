@@ -24,7 +24,7 @@ Build {#build}
 As of version 0.11.0, the only supported build system for Log4cxx is CMake.
 Have a look at the [Building with CMake] page for more information.
 If you have trouble building, either [create an issue]
-or send a message to the [users mailing list].
+or send a message to the [users mailing list](mailto:log4cxx-user@logging.apache.org).
 
 See the following pages for information on building Log4cxx:
 
@@ -35,4 +35,3 @@ See the following pages for information on building Log4cxx:
 
 [Building with CMake]:@ref build-cmake
 [create an issue]: https://github.com/apache/logging-log4cxx/issues
-[users mailing list]:@ref mailing-lists
