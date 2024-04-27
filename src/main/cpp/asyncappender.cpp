@@ -140,7 +140,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	/**
 	 * Event buffer.
 	*/
-	struct alignas(hardware_constructive_interference_size) EventData
+	struct EventData
 	{
 		LoggingEventPtr event;
 		size_t pendingCount;
