@@ -53,7 +53,7 @@ class DiscardSummary
 		/**
 		 * First event of the highest severity.
 		*/
-		::LOG4CXX_NS::spi::LoggingEventPtr maxEvent;
+		LoggingEventPtr maxEvent;
 
 		/**
 		* Total count of messages discarded.
@@ -66,7 +66,7 @@ class DiscardSummary
 		 *
 		 * @param event event, may not be null.
 		*/
-		DiscardSummary(const ::LOG4CXX_NS::spi::LoggingEventPtr& event);
+		DiscardSummary(const LoggingEventPtr& event);
 		/** Copy constructor.  */
 		DiscardSummary(const DiscardSummary& src);
 		/** Assignment operator. */
@@ -77,18 +77,20 @@ class DiscardSummary
 		 *
 		 * @param event event, may not be null.
 		*/
-		void add(const ::LOG4CXX_NS::spi::LoggingEventPtr& event);
+		void add(const LoggingEventPtr& event);
 
 		/**
-		 * Create event with summary information.
+		 * Create an event with a discard count and the message from \c maxEvent.
 		 *
-		 * @return new event.
+		 * @return the new event.
 		 */
-		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p);
+		LoggingEventPtr createEvent(Pool& p);
 
+#if LOG4CXX_ABI_VERSION <= 15
 		static
 		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
 			size_t discardedCount);
+#endif
 };
 
 typedef std::map<LogString, DiscardSummary> DiscardMap;
@@ -97,7 +99,14 @@ typedef std::map<LogString, DiscardSummary> DiscardMap;
 }
 #endif
 
-static const int CACHE_LINE_SIZE = 128;
+#ifdef __cpp_lib_hardware_interference_size
+    using std::hardware_constructive_interference_size;
+    using std::hardware_destructive_interference_size;
+#else
+    // 64 bytes on x86-64 │ L1_CACHE_BYTES │ L1_CACHE_SHIFT │ __cacheline_aligned │ ...
+    constexpr std::size_t hardware_constructive_interference_size = 64;
+    constexpr std::size_t hardware_destructive_interference_size = 64;
+#endif
 
 struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
@@ -131,7 +140,12 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	/**
 	 * Event buffer.
 	*/
-	LoggingEventList buffer;
+	struct EventData
+	{
+		LoggingEventPtr event;
+		size_t pendingCount;
+	};
+	std::vector<EventData> buffer;
 
 	/**
 	 *  Mutex used to guard access to buffer and discardMap.
@@ -178,17 +192,17 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	/**
 	 * Used to calculate the buffer position at which to store the next event.
 	*/
-	alignas(CACHE_LINE_SIZE) std::atomic<size_t> eventCount;
+	alignas(hardware_constructive_interference_size) std::atomic<size_t> eventCount;
 
 	/**
 	 * Used to calculate the buffer position from which to extract the next event.
 	*/
-	alignas(CACHE_LINE_SIZE) std::atomic<size_t> dispatchedCount;
+	alignas(hardware_constructive_interference_size) std::atomic<size_t> dispatchedCount;
 
 	/**
 	 * Used to communicate to the dispatch thread when an event is committed in buffer.
 	*/
-	alignas(CACHE_LINE_SIZE) std::atomic<size_t> commitCount;
+	alignas(hardware_constructive_interference_size) std::atomic<size_t> commitCount;
 };
 
 
@@ -273,7 +287,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount)
 				;
 			// Write to the ring buffer
-			priv->buffer[index] = event;
+			priv->buffer[index] = AsyncAppenderPriv::EventData{event, pendingCount};
 			// Notify the dispatch thread that an event has been added
 			auto savedEventCount = oldEventCount;
 			while (!priv->commitCount.compare_exchange_weak(oldEventCount, oldEventCount + 1, std::memory_order_release))
@@ -452,7 +466,7 @@ void DiscardSummary::add(const LoggingEventPtr& event)
 }
 
 LoggingEventPtr DiscardSummary::createEvent(Pool& p)
-{
+ {
 	LogString msg(LOG4CXX_STR("Discarded "));
 	StringHelper::toString(count, p, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer including: "));
@@ -464,6 +478,7 @@ LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 				LocationInfo::getLocationUnavailable() );
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 ::LOG4CXX_NS::spi::LoggingEventPtr
 DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 	size_t discardedCount)
@@ -478,9 +493,12 @@ DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 				msg,
 				LocationInfo::getLocationUnavailable() );
 }
+#endif
+
 
 void AsyncAppender::dispatch()
 {
+	std::vector<size_t> pendingCountHistogram(priv->bufferSize, 0);
 	bool isActive = true;
 
 	while (isActive)
@@ -501,7 +519,10 @@ void AsyncAppender::dispatch()
 			while (events.size() < priv->bufferSize && priv->dispatchedCount != priv->commitCount)
 			{
 				auto index = priv->dispatchedCount % priv->buffer.size();
-				events.push_back(priv->buffer[index]);
+				const auto& data = priv->buffer[index];
+				events.push_back(data.event);
+				if (data.pendingCount < pendingCountHistogram.size())
+					++pendingCountHistogram[data.pendingCount];
 				++priv->dispatchedCount;
 			}
 			for (auto discardItem : priv->discardMap)
@@ -535,6 +556,16 @@ void AsyncAppender::dispatch()
 					isActive = false;
 				}
 			}
+		}
+		if (!isActive)
+		{
+			LogString msg(LOG4CXX_STR("AsyncAppender pendingCountHistogram"));
+			for (auto item : pendingCountHistogram)
+			{
+				msg += logchar(' ');
+				StringHelper::toString(item, p, msg);
+			}
+			LogLog::debug(msg);
 		}
 	}
 
