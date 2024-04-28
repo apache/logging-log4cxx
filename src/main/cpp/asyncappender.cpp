@@ -297,6 +297,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			priv->bufferNotEmpty.notify_all();
 			break;
 		}
+		priv->bufferNotEmpty.notify_all();
 		//
 		//   Following code is only reachable if buffer is full or eventCount has overflowed
 		//
@@ -506,32 +507,35 @@ void AsyncAppender::dispatch()
 		Pool p;
 		LoggingEventList events;
 		events.reserve(priv->bufferSize);
-		//
-		//   process events after lock on buffer is released.
-		//
+		for (int count = 0; count < 2 && priv->dispatchedCount == priv->commitCount; ++count)
+			std::this_thread::yield(); // Wait a bit
+		if (priv->dispatchedCount == priv->commitCount)
 		{
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
 			priv->bufferNotEmpty.wait(lock, [this]() -> bool
 				{ return priv->dispatchedCount != priv->commitCount || priv->closed; }
 			);
-			isActive = !priv->closed;
+		}
+		isActive = !priv->closed;
 
-			while (events.size() < priv->bufferSize && priv->dispatchedCount != priv->commitCount)
-			{
-				auto index = priv->dispatchedCount % priv->buffer.size();
-				const auto& data = priv->buffer[index];
-				events.push_back(data.event);
-				if (data.pendingCount < pendingCountHistogram.size())
-					++pendingCountHistogram[data.pendingCount];
-				++priv->dispatchedCount;
-			}
+		while (events.size() < priv->bufferSize && priv->dispatchedCount != priv->commitCount)
+		{
+			auto index = priv->dispatchedCount % priv->buffer.size();
+			const auto& data = priv->buffer[index];
+			events.push_back(data.event);
+			if (data.pendingCount < pendingCountHistogram.size())
+				++pendingCountHistogram[data.pendingCount];
+			++priv->dispatchedCount;
+		}
+		priv->bufferNotFull.notify_all();
+		{
+			std::unique_lock<std::mutex> lock(priv->bufferMutex);
 			for (auto discardItem : priv->discardMap)
 			{
 				events.push_back(discardItem.second.createEvent(p));
 			}
 
 			priv->discardMap.clear();
-			priv->bufferNotFull.notify_all();
 		}
 
 		for (auto item : events)
