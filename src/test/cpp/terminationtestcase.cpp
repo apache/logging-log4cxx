@@ -54,7 +54,7 @@ public:
 			~initializer() { LogManager::shutdown(); }
 		} x;
 		auto r = LogManager::getLoggerRepository();
-		return r->getLogger(name);
+		return name.empty() ? r->getLogger(name) : r->getRootLogger();
 	}
 
 	void logOnce()
