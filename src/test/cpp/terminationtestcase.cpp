@@ -20,6 +20,7 @@
 #include <log4cxx/logmanager.h>
 #include "vectorappender.h"
 #include <log4cxx/asyncappender.h>
+#include <thread>
 
 using namespace log4cxx;
 
