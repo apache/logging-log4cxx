@@ -529,12 +529,11 @@ void AsyncAppender::dispatch()
 		}
 		priv->bufferNotFull.notify_all();
 		{
-			std::unique_lock<std::mutex> lock(priv->bufferMutex);
+			std::lock_guard<std::mutex> lock(priv->bufferMutex);
 			for (auto discardItem : priv->discardMap)
 			{
 				events.push_back(discardItem.second.createEvent(p));
 			}
-
 			priv->discardMap.clear();
 		}
 
