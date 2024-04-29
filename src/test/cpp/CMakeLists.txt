@@ -61,6 +61,7 @@ set(ALL_LOG4CXX_TESTS
     streamtestcase
     locationtest
     locationdisabledtest
+    terminationtestcase
 )
 if(${ENABLE_FMT_LAYOUT})
     set(ALL_LOG4CXX_TESTS ${ALL_LOG4CXX_TESTS} fmttest)

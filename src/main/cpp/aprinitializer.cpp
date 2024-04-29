@@ -25,6 +25,7 @@
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
+#include <log4cxx/helpers/loglog.h>
 #include <list>
 #include <algorithm>
 
@@ -169,6 +170,11 @@ void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)
 const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<ObjectPtr()> creator)
 {
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
+	if (m_priv->objects.empty())
+	{
+		// Ensure the internal logger has a longer life than other Log4cxx static data
+		LogLog::debug(LOG4CXX_STR("Log4cxx starting"));
+	}
 	auto pItem = m_priv->objects.find(key);
 	if (m_priv->objects.end() == pItem)
 		pItem = m_priv->objects.emplace(key, creator()).first;

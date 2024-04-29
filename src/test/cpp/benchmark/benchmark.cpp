@@ -113,9 +113,13 @@ public: // Class methods
 
 	static LoggerPtr getLogger(const LogString& pattern = LogString())
 	{
+		static struct initializer
+		{
+			initializer() { setDefaultAppender(); }
+			~initializer() { LogManager::shutdown(); }
+		} x;
 		LogString name = LOG4CXX_STR("benchmark.fixture");
 		LoggerPtr result;
-		setDefaultAppender();
 		auto r = LogManager::getLoggerRepository();
 		if (pattern.empty())
 			result = r->getLogger(name);
