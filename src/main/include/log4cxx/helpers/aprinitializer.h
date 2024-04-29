@@ -44,7 +44,11 @@ class FileWatchdog;
 class APRInitializer
 {
 	public:
+#if LOG4CXX_ABI_VERSION <= 15
 		static log4cxx_time_t initialize();
+#else
+		static log4cxx_time_t getStartTime();
+#endif
 		static apr_pool_t* getRootPool();
 		static apr_threadkey_t* getTlsKey();
 		static bool isDestructed;

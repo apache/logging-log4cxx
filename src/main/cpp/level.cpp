@@ -85,7 +85,6 @@ Level::Level(int level1,
 	const LogString& name1, int syslogEquivalent1)
 	: level(level1), name(name1), syslogEquivalent(syslogEquivalent1)
 {
-	APRInitializer::initialize();
 }
 
 
