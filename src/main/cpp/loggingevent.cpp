@@ -173,11 +173,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 //
 log4cxx_time_t LoggingEvent::getStartTime()
 {
-#if LOG4CXX_ABI_VERSION <= 15
-	return LOG4CXX_NS::helpers::APRInitializer::initialize();
-#else
 	return APRInitializer::getStartTime();
-#endif
 }
 
 LoggingEvent::LoggingEvent() :

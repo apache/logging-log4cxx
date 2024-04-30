@@ -131,9 +131,10 @@ APRInitializer& APRInitializer::getInstance()
 
 #if LOG4CXX_ABI_VERSION <= 15
 log4cxx_time_t APRInitializer::initialize()
-#else
-log4cxx_time_t APRInitializer::getStartTime()
+{}
 #endif
+
+log4cxx_time_t APRInitializer::getStartTime()
 {
 	return getInstance().m_priv->startTime;
 }
