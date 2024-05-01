@@ -15,6 +15,12 @@
  limitations under the License.
 -->
 
+[![Linux](https://github.com/apache/logging-log4cxx/actions/workflows/blog4cxx-ubuntu.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/blog4cxx-ubuntu.yml)
+[![MacOS](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-macos.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-macos.yml)
+<br/>
+[![Windows (dll)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows.yml)
+[![Windows (static)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows-static.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows-static.yml)
+
 Apache Log4cxx is a logging framework for C++.
 
 For answers to such questions as "What is logging?",
