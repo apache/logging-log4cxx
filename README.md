@@ -15,7 +15,8 @@
  limitations under the License.
 -->
 
-[![Linux](https://github.com/apache/logging-log4cxx/actions/workflows/blog4cxx-ubuntu.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/blog4cxx-ubuntu.yml)
+<br/>
+[![Linux](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-ubuntu.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-ubuntu.yml)
 [![MacOS](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-macos.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-macos.yml)
 <br/>
 [![Windows (dll)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows.yml)
