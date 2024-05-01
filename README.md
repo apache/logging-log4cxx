@@ -18,7 +18,7 @@
 Apache Log4cxx is a logging framework for C++.
 
 For answers to such questions as "What is logging?",
-"What should a logging framework do?' and
+"What should a logging framework do?" and
 "How to do logging properly?"
 refer to the [logging overview page](https://logging.apache.org/what-is-logging.html).
 
@@ -27,6 +27,7 @@ shows what code you write to use Log4cxx in your project.
 
 For other information about Log4cxx
 (e.g. [getting help](https://logging.apache.org/log4cxx/latest_stable/community.html),
+[official release downloads](https://logging.apache.org/log4cxx/latest_stable/download.html),
 [building Log4cxx](https://logging.apache.org/log4cxx/latest_stable/build.html)) use
 [the Log4cxx project website](https://logging.apache.org/log4cxx/latest_stable).
 
