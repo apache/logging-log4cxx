@@ -91,6 +91,11 @@ class DiscardSummary
 		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
 			size_t discardedCount);
 #endif
+
+		/**
+		* The number of messages discarded.
+		*/
+		int getCount() const { return count; }
 };
 
 typedef std::map<LogString, DiscardSummary> DiscardMap;
@@ -499,6 +504,7 @@ DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 
 void AsyncAppender::dispatch()
 {
+	size_t discardCount = 0;
 	std::vector<size_t> pendingCountHistogram(priv->bufferSize, 0);
 	bool isActive = true;
 
@@ -533,6 +539,7 @@ void AsyncAppender::dispatch()
 			for (auto discardItem : priv->discardMap)
 			{
 				events.push_back(discardItem.second.createEvent(p));
+				discardCount += discardItem.second.getCount();
 			}
 			priv->discardMap.clear();
 		}
@@ -562,7 +569,10 @@ void AsyncAppender::dispatch()
 		}
 		if (!isActive)
 		{
-			LogString msg(LOG4CXX_STR("AsyncAppender pendingCountHistogram"));
+			LogString msg(LOG4CXX_STR("AsyncAppender")); 
+			msg += LOG4CXX_STR(" discardCount ");
+			StringHelper::toString(discardCount, p, msg);
+			msg += LOG4CXX_STR(" pendingCountHistogram");
 			for (auto item : pendingCountHistogram)
 			{
 				msg += logchar(' ');
