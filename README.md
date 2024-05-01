@@ -20,6 +20,9 @@
 <br/>
 [![Windows (dll)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows.yml)
 [![Windows (static)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows-static.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows-static.yml)
+<br/>
+[![ABI stability](https://github.com/apache/logging-log4cxx/actions/workflows/abi-compatibility.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/abi-compatibility.yml)
+[![Quality gate](https://github.com/apache/logging-log4cxx/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/sonarcloud.yml)
 
 Apache Log4cxx is a logging framework for C++.
 
