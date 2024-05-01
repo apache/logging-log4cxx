@@ -15,7 +15,6 @@
  limitations under the License.
 -->
 
-<br/>
 [![Linux](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-ubuntu.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-ubuntu.yml)
 [![MacOS](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-macos.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-macos.yml)
 <br/>
