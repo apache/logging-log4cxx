@@ -173,7 +173,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 //
 log4cxx_time_t LoggingEvent::getStartTime()
 {
-	return LOG4CXX_NS::helpers::APRInitializer::initialize();
+	return APRInitializer::getStartTime();
 }
 
 LoggingEvent::LoggingEvent() :

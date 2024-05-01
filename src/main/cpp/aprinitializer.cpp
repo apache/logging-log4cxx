@@ -129,7 +129,14 @@ APRInitializer& APRInitializer::getInstance()
 }
 
 
+#if LOG4CXX_ABI_VERSION <= 15
 log4cxx_time_t APRInitializer::initialize()
+{
+	return getInstance().m_priv->startTime;
+}
+#endif
+
+log4cxx_time_t APRInitializer::getStartTime()
 {
 	return getInstance().m_priv->startTime;
 }
@@ -173,7 +180,7 @@ const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<Objec
 	if (m_priv->objects.empty())
 	{
 		// Ensure the internal logger has a longer life than other Log4cxx static data
-		LogLog::debug(LOG4CXX_STR("Log4cxx starting"));
+		LogLog::debug(LOG4CXX_STR("Started"));
 	}
 	auto pItem = m_priv->objects.find(key);
 	if (m_priv->objects.end() == pItem)
