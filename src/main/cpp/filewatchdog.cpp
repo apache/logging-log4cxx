@@ -39,7 +39,7 @@ struct FileWatchdog::FileWatchdogPrivate{
 		file(file1), delay(DEFAULT_DELAY), lastModif(0),
 		warnedAlready(false), interrupted(0), thread()
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{atExitActivated();})
+		, atExitRegistryRaii([this]{stopWatcher();})
 #endif
         {}
 	/**
@@ -63,8 +63,7 @@ struct FileWatchdog::FileWatchdogPrivate{
 	helpers::AtExitRegistry::Raii atExitRegistryRaii;
 #endif
 
-#if LOG4CXX_EVENTS_AT_EXIT
-	void atExitActivated()
+	void stopWatcher()
 	{
         {
             std::lock_guard<std::mutex> lock(interrupt_mutex);
@@ -74,7 +73,6 @@ struct FileWatchdog::FileWatchdogPrivate{
         if (thread.joinable())
             thread.join();
 	}
-#endif
 };
 
 FileWatchdog::FileWatchdog(const File& file1)
@@ -97,12 +95,7 @@ bool FileWatchdog::is_active()
 void FileWatchdog::stop()
 {
 	LogLog::debug(LOG4CXX_STR("Stopping file watchdog"));
-	{
-		std::lock_guard<std::mutex> lock(m_priv->interrupt_mutex);
-		m_priv->interrupted = 0xFFFF;
-	}
-	m_priv->interrupt.notify_all();
-	m_priv->thread.join();
+	m_priv->stopWatcher();
 }
 
 const File& FileWatchdog::file()
