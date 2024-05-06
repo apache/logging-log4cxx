@@ -135,10 +135,22 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 #if LOG4CXX_EVENTS_AT_EXIT
 	void atExitActivated()
 	{
-		std::unique_lock<std::mutex> lock(bufferMutex);
-		bufferNotFull.wait(lock, [this]() -> bool
-			{ return buffer.empty() || closed; }
-		);
+		{
+			std::lock_guard<std::mutex> lock(bufferMutex);
+			closed = true;
+		}
+		bufferNotEmpty.notify_all();
+		bufferNotFull.notify_all();
+
+		if (dispatcher.joinable())
+		{
+			dispatcher.join();
+		}
+
+		for (auto item : appenders.getAllAppenders())
+		{
+			item->close();
+		}
 	}
 #endif
 
