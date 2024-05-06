@@ -25,6 +25,10 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <mutex>
 
+#if LOG4CXX_EVENTS_AT_EXIT
+#include <log4cxx/private/atexitregistry.h>
+#endif
+
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::net;
@@ -38,8 +42,11 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 		connections(maxConnections),
 		encoding(LOG4CXX_STR("UTF-8")),
 		encoder(CharsetEncoder::getUTF8Encoder()),
-		sh(),
-		activeConnections(0) {}
+		activeConnections(0)
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{stopAcceptingConnections();})
+#endif
+        {}
 
 	int port;
 	ConnectionList connections;
@@ -48,6 +55,42 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 	std::unique_ptr<helpers::ServerSocket> serverSocket;
 	std::thread sh;
 	size_t activeConnections;
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	helpers::AtExitRegistry::Raii atExitRegistryRaii;
+#endif
+
+	void stopAcceptingConnections()
+	{
+		{
+			std::lock_guard<std::recursive_mutex> lock(this->mutex);
+			if (this->closed)
+				return;
+			this->closed = true;
+			SocketPtr nullSocket;
+			for (auto& item : this->connections)
+			{
+				if (item)
+				{
+					item->close();
+					item = nullSocket;
+				}
+			}
+
+			if (this->serverSocket != NULL)
+			{
+				try
+				{
+					this->serverSocket->close();
+				}
+				catch (Exception&)
+				{
+				}
+			}
+		}
+		if (this->sh.joinable())
+			this->sh.join();
+	}
 };
 
 #define _priv static_cast<TelnetAppenderPriv*>(m_priv.get())
@@ -112,42 +155,7 @@ void TelnetAppender::setEncoding(const LogString& value)
 
 void TelnetAppender::close()
 {
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-
-	if (_priv->closed)
-	{
-		return;
-	}
-
-	_priv->closed = true;
-
-	SocketPtr nullSocket;
-
-	for (auto& item : _priv->connections)
-	{
-		if (item)
-		{
-			item->close();
-			item = nullSocket;
-		}
-	}
-
-	if (_priv->serverSocket != NULL)
-	{
-		try
-		{
-			_priv->serverSocket->close();
-		}
-		catch (Exception&)
-		{
-		}
-	}
-
-	if ( _priv->sh.joinable() )
-	{
-		_priv->sh.join();
-	}
-
+	_priv->stopAcceptingConnections();
 	_priv->activeConnections = 0;
 }
 

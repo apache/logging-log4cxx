@@ -68,22 +68,8 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-	{
-		std::lock_guard<std::mutex> lock(_priv->interrupt_mutex);
-
-		if (_priv->closed)
-		{
-			return;
-		}
-
-		_priv->closed = true;
-		cleanUp(_priv->pool);
-	}
-	_priv->interrupt.notify_all();
-	if ( _priv->thread.joinable() )
-	{
-		_priv->thread.join();
-	}
+    _priv->stopMonitor();
+    cleanUp(_priv->pool);
 }
 
 void SocketAppenderSkeleton::connect(Pool& p)
