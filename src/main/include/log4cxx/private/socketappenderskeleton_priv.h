@@ -89,18 +89,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	helpers::AtExitRegistry::Raii atExitRegistryRaii;
 #endif
 
-	void stopMonitor()
-	{
-		{
-			std::lock_guard<std::mutex> lock(this->interrupt_mutex);
-			if (this->closed)
-				return;
-			this->closed = true;
-		}
-		this->interrupt.notify_all();
-		if (this->thread.joinable())
-			this->thread.join();
-	}
+	void stopMonitor();
 };
 
 } // namespace net

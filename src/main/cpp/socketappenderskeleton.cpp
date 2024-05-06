@@ -194,6 +194,19 @@ void SocketAppenderSkeleton::monitor()
 	}
 }
 
+void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::stopMonitor()
+{
+	{
+		std::lock_guard<std::mutex> lock(this->interrupt_mutex);
+		if (this->closed)
+			return;
+		this->closed = true;
+	}
+	this->interrupt.notify_all();
+	if (this->thread.joinable())
+		this->thread.join();
+}
+
 bool SocketAppenderSkeleton::is_closed()
 {
 	return _priv->closed;
