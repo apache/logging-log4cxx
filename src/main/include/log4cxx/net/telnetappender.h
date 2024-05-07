@@ -115,6 +115,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		Supported options | Supported values | Default value
 		-------------- | ---------------- | ---------------
 		Port | {int} | 23
+		MaxConnections | {int} | 20
 		Encoding | C,UTF-8,UTF-16,UTF-16BE,UTF-16LE,646,US-ASCII,ISO646-US,ANSI_X3.4-1968,ISO-8859-1,ISO-LATIN-1 | UTF-8
 
 		\sa AppenderSkeleton::setOption()
@@ -131,6 +132,20 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		the port where the server is waiting for connections.
 		*/
 		void setPort(int port1);
+
+		/**
+		The number of allowed concurrent conections.
+
+		\sa setOption
+		 */
+		int getMaxConnections() const;
+
+		/**
+		Set the number of allowed concurrent conections to \c newValue.
+
+		\sa setOption
+		 */
+		void setMaxConnections(int newValue);
 
 
 		/** shuts down the appender. */

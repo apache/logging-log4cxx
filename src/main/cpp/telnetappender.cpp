@@ -117,6 +117,10 @@ void TelnetAppender::setOption(const LogString& option,
 	{
 		setPort(OptionConverter::toInt(value, DEFAULT_PORT));
 	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("MAXCONNECTIONS"), LOG4CXX_STR("maxconnections")))
+	{
+		setMaxConnections(OptionConverter::toInt(value, MAX_CONNECTIONS));
+	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ENCODING"), LOG4CXX_STR("encoding")))
 	{
 		setEncoding(value);
@@ -203,7 +207,10 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	if (count > 0)
 	{
 		LogString msg;
-		_priv->layout->format(msg, event, _priv->pool);
+		if (_priv->layout)
+			_priv->layout->format(msg, event, p);
+		else
+			msg = event->getMessage();
 		msg.append(LOG4CXX_STR("\r\n"));
 		size_t bytesSize = msg.size() * 2;
 		char* bytes = p.pstralloc(bytesSize);
@@ -317,4 +324,14 @@ int TelnetAppender::getPort() const
 void TelnetAppender::setPort(int port1)
 {
 	_priv->port = port1;
+}
+
+int TelnetAppender::getMaxConnections() const
+{
+	return static_cast<int>(_priv->connections.size());
+}
+
+void TelnetAppender::setMaxConnections(int newValue)
+{
+	_priv->connections.resize(newValue);
 }
