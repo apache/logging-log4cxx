@@ -21,6 +21,10 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/helpers/inetaddress.h>
 
+#if LOG4CXX_EVENTS_AT_EXIT
+#include <log4cxx/private/atexitregistry.h>
+#endif
+
 namespace LOG4CXX_NS
 {
 namespace net
@@ -34,8 +38,11 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 		address(),
 		port(defaultPort),
 		reconnectionDelay(reconnectionDelay),
-		locationInfo(false),
-		thread() {}
+		locationInfo(false)
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{stopMonitor();})
+#endif
+        {}
 
 	SocketAppenderSkeletonPriv(helpers::InetAddressPtr address, int defaultPort, int reconnectionDelay) :
 		AppenderSkeletonPrivate(),
@@ -43,8 +50,11 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 		address(address),
 		port(defaultPort),
 		reconnectionDelay(reconnectionDelay),
-		locationInfo(false),
-		thread() {}
+		locationInfo(false)
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{stopMonitor();})
+#endif
+        {}
 
 	SocketAppenderSkeletonPriv(const LogString& host, int port, int delay) :
 		AppenderSkeletonPrivate(),
@@ -52,8 +62,11 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 		address(helpers::InetAddress::getByName(host)),
 		port(port),
 		reconnectionDelay(delay),
-		locationInfo(false),
-		thread() {}
+		locationInfo(false)
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{stopMonitor();})
+#endif
+        {}
 
 	/**
 	host name
@@ -71,6 +84,12 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	std::thread thread;
 	std::condition_variable interrupt;
 	std::mutex interrupt_mutex;
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	helpers::AtExitRegistry::Raii atExitRegistryRaii;
+#endif
+
+	void stopMonitor();
 };
 
 } // namespace net

@@ -51,7 +51,9 @@ public:
 		static struct initializer
 		{
 			initializer() { setDefaultAppender(); }
+#if !LOG4CXX_EVENTS_AT_EXIT
 			~initializer() { LogManager::shutdown(); }
+#endif
 		} x;
 		auto r = LogManager::getLoggerRepository();
 		return name.empty() ? r->getLogger(name) : r->getRootLogger();

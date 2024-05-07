@@ -39,6 +39,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testActivateClose);
 		LOGUNIT_TEST(testActivateSleepClose);
 		LOGUNIT_TEST(testActivateWriteClose);
+		LOGUNIT_TEST(testActivateWriteNoClose);
 
 		LOGUNIT_TEST_SUITE_END();
 
@@ -75,7 +76,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setPort(TEST_PORT);
 			Pool p;
 			appender->activateOptions(p);
-			std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+			std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 			appender->close();
 		}
 
@@ -95,6 +96,23 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			}
 
 			appender->close();
+			root->removeAppender(appender);
+		}
+
+		void testActivateWriteNoClose()
+		{
+			TelnetAppenderPtr appender(new TelnetAppender());
+			appender->setLayout(createLayout());
+			appender->setPort(TEST_PORT);
+			Pool p;
+			appender->activateOptions(p);
+			LoggerPtr root(Logger::getRootLogger());
+			root->addAppender(appender);
+
+			for (int i = 0; i < 50; i++)
+			{
+				LOG4CXX_INFO(root, "Hello, World " << i);
+			}
 		}
 
 };

@@ -124,23 +124,13 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		locationInfo(false),
 		blocking(true)
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{atExitActivated();})
+		, atExitRegistryRaii([this]{stopDispatcher();})
 #endif
 		, eventCount(0)
 		, dispatchedCount(0)
 		, commitCount(0)
 	{
 	}
-
-#if LOG4CXX_EVENTS_AT_EXIT
-	void atExitActivated()
-	{
-		std::unique_lock<std::mutex> lock(bufferMutex);
-		bufferNotFull.wait(lock, [this]() -> bool
-			{ return buffer.empty() || closed; }
-		);
-	}
-#endif
 
 	/**
 	 * Event buffer.
@@ -179,6 +169,21 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 *  Dispatcher.
 	 */
 	std::thread dispatcher;
+
+	void stopDispatcher()
+	{
+		{
+			std::lock_guard<std::mutex> lock(bufferMutex);
+			closed = true;
+		}
+		bufferNotEmpty.notify_all();
+		bufferNotFull.notify_all();
+
+		if (dispatcher.joinable())
+		{
+			dispatcher.join();
+		}
+	}
 
 	/**
 	 * Should location info be included in dispatched messages.
@@ -350,18 +355,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void AsyncAppender::close()
 {
-	{
-		std::lock_guard<std::mutex> lock(priv->bufferMutex);
-		priv->closed = true;
-		priv->bufferNotEmpty.notify_all();
-		priv->bufferNotFull.notify_all();
-	}
-
-	if ( priv->dispatcher.joinable() )
-	{
-		priv->dispatcher.join();
-	}
-
+	priv->stopDispatcher();
 	for (auto item : priv->appenders.getAllAppenders())
 	{
 		item->close();

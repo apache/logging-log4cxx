@@ -25,6 +25,10 @@
 #include <functional>
 #include <chrono>
 
+#if LOG4CXX_EVENTS_AT_EXIT
+#include <log4cxx/private/atexitregistry.h>
+#endif
+
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
@@ -33,8 +37,11 @@ long FileWatchdog::DEFAULT_DELAY = 60000;
 struct FileWatchdog::FileWatchdogPrivate{
 	FileWatchdogPrivate(const File& file1) :
 		file(file1), delay(DEFAULT_DELAY), lastModif(0),
-		warnedAlready(false), interrupted(0), thread(){}
-
+		warnedAlready(false), interrupted(0), thread()
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{stopWatcher();})
+#endif
+        {}
 	/**
 	The name of the file to observe  for changes.
 	*/
@@ -51,6 +58,21 @@ struct FileWatchdog::FileWatchdogPrivate{
 	std::thread thread;
 	std::condition_variable interrupt;
 	std::mutex interrupt_mutex;
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	helpers::AtExitRegistry::Raii atExitRegistryRaii;
+#endif
+
+	void stopWatcher()
+	{
+        {
+            std::lock_guard<std::mutex> lock(interrupt_mutex);
+            interrupted = 0xFFFF;
+        }
+        interrupt.notify_all();
+        if (thread.joinable())
+            thread.join();
+	}
 };
 
 FileWatchdog::FileWatchdog(const File& file1)
@@ -73,12 +95,7 @@ bool FileWatchdog::is_active()
 void FileWatchdog::stop()
 {
 	LogLog::debug(LOG4CXX_STR("Stopping file watchdog"));
-	{
-		std::lock_guard<std::mutex> lock(m_priv->interrupt_mutex);
-		m_priv->interrupted = 0xFFFF;
-	}
-	m_priv->interrupt.notify_all();
-	m_priv->thread.join();
+	m_priv->stopWatcher();
 }
 
 const File& FileWatchdog::file()
