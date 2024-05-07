@@ -64,28 +64,16 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 	{
 		{
 			std::lock_guard<std::recursive_mutex> lock(this->mutex);
-			if (this->closed)
+			if (!this->serverSocket || this->closed)
 				return;
 			this->closed = true;
-			SocketPtr nullSocket;
-			for (auto& item : this->connections)
+			// Interrupt accept()
+			try
 			{
-				if (item)
-				{
-					item->close();
-					item = nullSocket;
-				}
+				this->serverSocket->close();
 			}
-
-			if (this->serverSocket != NULL)
+			catch (Exception&)
 			{
-				try
-				{
-					this->serverSocket->close();
-				}
-				catch (Exception&)
-				{
-				}
 			}
 		}
 		if (this->sh.joinable())
@@ -156,6 +144,16 @@ void TelnetAppender::setEncoding(const LogString& value)
 void TelnetAppender::close()
 {
 	_priv->stopAcceptingConnections();
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+	SocketPtr nullSocket;
+	for (auto& item : _priv->connections)
+	{
+		if (item)
+		{
+			item->close();
+			item = nullSocket;
+		}
+	}
 	_priv->activeConnections = 0;
 }
 
