@@ -1,3 +1,9 @@
+Introduction {#introduction}
+===
+<!--
+ Note: License header cannot be first, as doxygen does not generate
+ cleanly if it before the '==='
+-->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -14,8 +20,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-
-# Short introduction to Apache Log4cxx
 
 Apache Log4cxx is a logging framework for C++ patterned after [Apache log4j],
 which uses [Apache Portable Runtime] for most platform-specific code and should
