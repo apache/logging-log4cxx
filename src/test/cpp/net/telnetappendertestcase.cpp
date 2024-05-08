@@ -20,6 +20,7 @@
 #include "../appenderskeletontestcase.h"
 #include <apr_thread_proc.h>
 #include <apr_time.h>
+#include <thread>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
