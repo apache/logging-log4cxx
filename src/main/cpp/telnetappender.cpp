@@ -335,3 +335,8 @@ void TelnetAppender::setMaxConnections(int newValue)
 {
 	_priv->connections.resize(newValue);
 }
+
+bool TelnetAppender::requiresLayout() const
+{
+	return false;
+}

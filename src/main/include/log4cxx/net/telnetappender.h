@@ -37,29 +37,18 @@ typedef LOG4CXX_NS::helpers::SocketPtr Connection;
 LOG4CXX_LIST_DEF(ConnectionList, Connection);
 
 /**
-<p>The TelnetAppender is a log4cxx appender that specializes in
-writing to a read-only socket.  The output is provided in a
-telnet-friendly way so that a log can be monitored over TCP/IP.
-Clients using telnet connect to the socket and receive log data.
+The TelnetAppender writes log messages to
+clients that connect to the TCP port.
+
+This allows logging output to be monitored using TCP/IP.
+To receive log data, use telnet to connect to the configured port number.
 This is handy for remote monitoring, especially when monitoring a
 servlet.
 
-<p>Here is a list of the available configuration options:
+If no layout is provided, the log message only is sent to attached client(s).
 
-<table border=1>
-<tr>
-<td align=center><b>Name</b></td>
-<td align=center><b>Requirement</b></td>
-<td align=center><b>Description</b></td>
-<td align=center><b>Sample Value</b></td>
-</tr>
+See TelnetAppender::setOption() for the available options.
 
-<tr>
-<td>Port</td>
-<td>optional</td>
-<td>This parameter determines the port to use for announcing log events.  The default port is 23 (telnet).</td>
-<td>5875</td>
-</table>
 */
 class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 {
@@ -80,12 +69,9 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		~TelnetAppender();
 
 		/**
-		This appender requires a layout to format the text to the
-		attached client(s). */
-		bool requiresLayout() const override
-		{
-			return true;
-		}
+		If no layout is provided, sends only the log message to attached client(s).
+		*/
+		bool requiresLayout() const override;
 
 		/**
 		The current encoding value.
