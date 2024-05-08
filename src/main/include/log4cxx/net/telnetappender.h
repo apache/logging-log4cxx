@@ -120,26 +120,26 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		void setPort(int port1);
 
 		/**
-		The number of allowed concurrent conections.
+		The number of allowed concurrent connections.
 
 		\sa setOption
 		 */
 		int getMaxConnections() const;
 
 		/**
-		Set the number of allowed concurrent conections to \c newValue.
+		Set the number of allowed concurrent connections to \c newValue.
 
 		\sa setOption
 		 */
 		void setMaxConnections(int newValue);
 
 
-		/** shuts down the appender. */
+		/** Shutdown this appender. */
 		void close() override;
 
 	protected:
-		/** Handles a log event.  For this appender, that means writing the
-		message to each connected client.  */
+		/** Send \c event to each connected client.
+		*/
 		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 		//---------------------------------------------------------- SocketHandler:
