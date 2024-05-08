@@ -109,15 +109,14 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
-		Returns value of the <b>Port</b> option.
+		The TCP <b>Port</b> number on which to accept connections.
 		*/
 		int getPort() const;
 
 		/**
-		The <b>Port</b> option takes a positive integer representing
-		the port where the server is waiting for connections.
+		Use \c newValue as the TCP port number on which to accept connections.
 		*/
-		void setPort(int port1);
+		void setPort(int newValue);
 
 		/**
 		The number of allowed concurrent connections.
