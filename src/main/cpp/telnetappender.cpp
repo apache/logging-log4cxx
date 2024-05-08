@@ -107,7 +107,8 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 		_priv->serverSocket->setSoTimeout(1000);
 	}
 
-	_priv->sh = ThreadUtility::instance()->createThread( LOG4CXX_STR("TelnetAppender"), &TelnetAppender::acceptConnections, this );
+	if (!_priv->sh.joinable())
+		_priv->sh = ThreadUtility::instance()->createThread( LOG4CXX_STR("TelnetAppender"), &TelnetAppender::acceptConnections, this );
 }
 
 void TelnetAppender::setOption(const LogString& option,
