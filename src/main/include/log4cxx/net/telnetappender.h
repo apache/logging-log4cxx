@@ -20,10 +20,6 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
-#include <log4cxx/helpers/serversocket.h>
-#include <thread>
-#include <vector>
-#include <log4cxx/helpers/charsetencoder.h>
 
 namespace LOG4CXX_NS
 {

@@ -19,11 +19,14 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/helpers/charsetencoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <mutex>
+#include <thread>
+#include <vector>
 
 #if LOG4CXX_EVENTS_AT_EXIT
 #include <log4cxx/private/atexitregistry.h>
