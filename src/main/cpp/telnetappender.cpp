@@ -33,6 +33,9 @@ using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::net;
 
+typedef helpers::SocketPtr Connection;
+LOG4CXX_LIST_DEF(ConnectionList, Connection);
+
 IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 
 struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate

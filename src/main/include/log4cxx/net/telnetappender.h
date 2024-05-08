@@ -33,8 +33,6 @@ class ByteBuffer;
 }
 namespace net
 {
-typedef LOG4CXX_NS::helpers::SocketPtr Connection;
-LOG4CXX_LIST_DEF(ConnectionList, Connection);
 
 /**
 The TelnetAppender writes log messages to
@@ -52,8 +50,6 @@ See TelnetAppender::setOption() for the available options.
 */
 class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 {
-		class SocketHandler;
-		friend class SocketHandler;
 	private:
 		static const int DEFAULT_PORT;
 		static const int MAX_CONNECTIONS;
@@ -141,15 +137,13 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		*/
 		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
-		//---------------------------------------------------------- SocketHandler:
-
 	private:
 		//   prevent copy and assignment statements
 		TelnetAppender(const TelnetAppender&);
 		TelnetAppender& operator=(const TelnetAppender&);
 
-		void write(LOG4CXX_NS::helpers::ByteBuffer&);
-		void writeStatus(const LOG4CXX_NS::helpers::SocketPtr& socket, const LogString& msg, LOG4CXX_NS::helpers::Pool& p);
+		void write(helpers::ByteBuffer&);
+		void writeStatus(const helpers::SocketPtr& socket, const LogString& msg, helpers::Pool& p);
 		void acceptConnections();
 
 		struct TelnetAppenderPriv;
