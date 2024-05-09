@@ -346,7 +346,7 @@ void TelnetAppender::setMaxConnections(int newValue)
 	else while (newValue < _priv->connections.size())
 	{
 		auto item = _priv->connections.back();
-		_priv->connections.pop_back()
+		_priv->connections.pop_back();
 		if (item)
 		{
 			item->close();
