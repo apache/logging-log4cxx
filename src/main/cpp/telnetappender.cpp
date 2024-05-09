@@ -340,7 +340,19 @@ int TelnetAppender::getMaxConnections() const
 
 void TelnetAppender::setMaxConnections(int newValue)
 {
-	_priv->connections.resize(newValue);
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+	if (_priv->connections.size() < newValue)
+		_priv->connections.resize(newValue);
+	else while (newValue < _priv->connections.size())
+	{
+		auto item = _priv->connections.back();
+		_priv->connections.pop_back()
+		if (item)
+		{
+			item->close();
+			--_priv->activeConnections;
+		}
+	}
 }
 
 bool TelnetAppender::requiresLayout() const

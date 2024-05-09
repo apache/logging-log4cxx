@@ -36,8 +36,9 @@ clients that connect to the TCP port.
 
 This allows logging output to be monitored using TCP/IP.
 To receive log data, use telnet to connect to the configured port number.
-This is handy for remote monitoring, especially when monitoring a
-servlet.
+
+TelnetAppender is most useful as a secondary appender,
+especially when monitoring a servlet remotely.
 
 If no layout is provided, the log message only is sent to attached client(s).
 
