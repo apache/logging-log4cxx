@@ -20,10 +20,6 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
-#include <log4cxx/helpers/serversocket.h>
-#include <thread>
-#include <vector>
-#include <log4cxx/helpers/charsetencoder.h>
 
 namespace LOG4CXX_NS
 {
@@ -33,38 +29,24 @@ class ByteBuffer;
 }
 namespace net
 {
-typedef LOG4CXX_NS::helpers::SocketPtr Connection;
-LOG4CXX_LIST_DEF(ConnectionList, Connection);
 
 /**
-<p>The TelnetAppender is a log4cxx appender that specializes in
-writing to a read-only socket.  The output is provided in a
-telnet-friendly way so that a log can be monitored over TCP/IP.
-Clients using telnet connect to the socket and receive log data.
-This is handy for remote monitoring, especially when monitoring a
-servlet.
+The TelnetAppender writes log messages to
+clients that connect to the TCP port.
 
-<p>Here is a list of the available configuration options:
+This allows logging output to be monitored using TCP/IP.
+To receive log data, use telnet to connect to the configured port number.
 
-<table border=1>
-<tr>
-<td align=center><b>Name</b></td>
-<td align=center><b>Requirement</b></td>
-<td align=center><b>Description</b></td>
-<td align=center><b>Sample Value</b></td>
-</tr>
+TelnetAppender is most useful as a secondary appender,
+especially when monitoring a servlet remotely.
 
-<tr>
-<td>Port</td>
-<td>optional</td>
-<td>This parameter determines the port to use for announcing log events.  The default port is 23 (telnet).</td>
-<td>5875</td>
-</table>
+If no layout is provided, the log message only is sent to attached client(s).
+
+See TelnetAppender::setOption() for the available options.
+
 */
 class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 {
-		class SocketHandler;
-		friend class SocketHandler;
 	private:
 		static const int DEFAULT_PORT;
 		static const int MAX_CONNECTIONS;
@@ -80,12 +62,9 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		~TelnetAppender();
 
 		/**
-		This appender requires a layout to format the text to the
-		attached client(s). */
-		bool requiresLayout() const override
-		{
-			return true;
-		}
+		If no layout is provided, sends only the log message to attached client(s).
+		*/
+		bool requiresLayout() const override;
 
 		/**
 		The current encoding value.
@@ -115,6 +94,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		Supported options | Supported values | Default value
 		-------------- | ---------------- | ---------------
 		Port | {int} | 23
+		MaxConnections | {int} | 20
 		Encoding | C,UTF-8,UTF-16,UTF-16BE,UTF-16LE,646,US-ASCII,ISO646-US,ANSI_X3.4-1968,ISO-8859-1,ISO-LATIN-1 | UTF-8
 
 		\sa AppenderSkeleton::setOption()
@@ -122,34 +102,45 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
-		Returns value of the <b>Port</b> option.
+		The TCP <b>Port</b> number on which to accept connections.
 		*/
 		int getPort() const;
 
 		/**
-		The <b>Port</b> option takes a positive integer representing
-		the port where the server is waiting for connections.
+		Use \c newValue as the TCP port number on which to accept connections.
 		*/
-		void setPort(int port1);
+		void setPort(int newValue);
+
+		/**
+		The number of allowed concurrent connections.
+
+		\sa setOption
+		 */
+		int getMaxConnections() const;
+
+		/**
+		Set the number of allowed concurrent connections to \c newValue.
+
+		\sa setOption
+		 */
+		void setMaxConnections(int newValue);
 
 
-		/** shuts down the appender. */
+		/** Shutdown this appender. */
 		void close() override;
 
 	protected:
-		/** Handles a log event.  For this appender, that means writing the
-		message to each connected client.  */
+		/** Send \c event to each connected client.
+		*/
 		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
-
-		//---------------------------------------------------------- SocketHandler:
 
 	private:
 		//   prevent copy and assignment statements
 		TelnetAppender(const TelnetAppender&);
 		TelnetAppender& operator=(const TelnetAppender&);
 
-		void write(LOG4CXX_NS::helpers::ByteBuffer&);
-		void writeStatus(const LOG4CXX_NS::helpers::SocketPtr& socket, const LogString& msg, LOG4CXX_NS::helpers::Pool& p);
+		void write(helpers::ByteBuffer&);
+		void writeStatus(const helpers::SocketPtr& socket, const LogString& msg, helpers::Pool& p);
 		void acceptConnections();
 
 		struct TelnetAppenderPriv;

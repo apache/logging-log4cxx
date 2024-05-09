@@ -20,6 +20,7 @@
 #include "../appenderskeletontestcase.h"
 #include <apr_thread_proc.h>
 #include <apr_time.h>
+#include <thread>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -102,8 +103,8 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateWriteNoClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-			appender->setLayout(createLayout());
 			appender->setPort(TEST_PORT);
+			appender->setMaxConnections(1);
 			Pool p;
 			appender->activateOptions(p);
 			LoggerPtr root(Logger::getRootLogger());
@@ -111,6 +112,10 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 
 			for (int i = 0; i < 50; i++)
 			{
+//#define ALLOW_TESTING_WITH_TELNET
+#ifdef ALLOW_TESTING_WITH_TELNET
+				std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+#endif
 				LOG4CXX_INFO(root, "Hello, World " << i);
 			}
 		}

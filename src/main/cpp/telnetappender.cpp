@@ -19,11 +19,14 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/helpers/charsetencoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <mutex>
+#include <thread>
+#include <vector>
 
 #if LOG4CXX_EVENTS_AT_EXIT
 #include <log4cxx/private/atexitregistry.h>
@@ -32,6 +35,9 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::net;
+
+typedef helpers::SocketPtr Connection;
+LOG4CXX_LIST_DEF(ConnectionList, Connection);
 
 IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 
@@ -107,7 +113,8 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 		_priv->serverSocket->setSoTimeout(1000);
 	}
 
-	_priv->sh = ThreadUtility::instance()->createThread( LOG4CXX_STR("TelnetAppender"), &TelnetAppender::acceptConnections, this );
+	if (!_priv->sh.joinable())
+		_priv->sh = ThreadUtility::instance()->createThread( LOG4CXX_STR("TelnetAppender"), &TelnetAppender::acceptConnections, this );
 }
 
 void TelnetAppender::setOption(const LogString& option,
@@ -116,6 +123,10 @@ void TelnetAppender::setOption(const LogString& option,
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("PORT"), LOG4CXX_STR("port")))
 	{
 		setPort(OptionConverter::toInt(value, DEFAULT_PORT));
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("MAXCONNECTIONS"), LOG4CXX_STR("maxconnections")))
+	{
+		setMaxConnections(OptionConverter::toInt(value, MAX_CONNECTIONS));
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ENCODING"), LOG4CXX_STR("encoding")))
 	{
@@ -203,7 +214,10 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	if (count > 0)
 	{
 		LogString msg;
-		_priv->layout->format(msg, event, _priv->pool);
+		if (_priv->layout)
+			_priv->layout->format(msg, event, p);
+		else
+			msg = event->getMessage();
 		msg.append(LOG4CXX_STR("\r\n"));
 		size_t bytesSize = msg.size() * 2;
 		char* bytes = p.pstralloc(bytesSize);
@@ -317,4 +331,31 @@ int TelnetAppender::getPort() const
 void TelnetAppender::setPort(int port1)
 {
 	_priv->port = port1;
+}
+
+int TelnetAppender::getMaxConnections() const
+{
+	return static_cast<int>(_priv->connections.size());
+}
+
+void TelnetAppender::setMaxConnections(int newValue)
+{
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+	if (_priv->connections.size() < newValue)
+		_priv->connections.resize(newValue);
+	else while (newValue < _priv->connections.size())
+	{
+		auto item = _priv->connections.back();
+		_priv->connections.pop_back();
+		if (item)
+		{
+			item->close();
+			--_priv->activeConnections;
+		}
+	}
+}
+
+bool TelnetAppender::requiresLayout() const
+{
+	return false;
 }
