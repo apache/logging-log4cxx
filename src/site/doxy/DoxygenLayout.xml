@@ -3,7 +3,7 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="Introduction"/>
-    <tab type="pages" visible="yes" title="Usage Guide" intro=""/>
+    <tab type="pages" visible="yes" title="Usage Guide" intro="These pages cover usage, concepts, examples and customising the behavior of the Log4cxx library"/>
     <tab type="usergroup" visible="yes" title="Reference Material" intro="">
       <tab type="user" url="@ref LoggingMacros" visible="yes" title="Logging macros" intro=""/>
       <tab type="namespaces" visible="yes" title="">
