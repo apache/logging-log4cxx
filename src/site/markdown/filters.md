@@ -89,7 +89,9 @@ The following filters are available:
 * [MapFilter](@ref log4cxx.filter.MapFilter) - Based off of the log messages MDC, accept or deny the message
 * [StringMatchFilter](@ref log4cxx.filter.StringMatchFilter) - If the given substring is found in the message, accept or deny
 
-## MDC Filter Configuration {#map-filter}
+# Runtime Configuration {#configure-filter}
+
+## Using MDC Values {#map-filter}
 
 The [MapFilter](@ref log4cxx.filter.MapFilter) allows filtering against data elements that are in the *Mapped Diagnostic Context* (*log4cxx::MDC*).
 
@@ -217,7 +219,7 @@ In the case where we only want to log entries from a particular set of IP addres
 </log4j:configuration>
 ```
 
-## Log Statement Location Filter Configuration {#location-info-filter}
+## Using the Request Location {#location-info-filter}
 
 The [LocationInfoFilter](@ref log4cxx.filter.LocationInfoFilter) allows filtering against the location in the file that
 the log statement was made.  Location information must not be disabled in order
