@@ -454,7 +454,8 @@ Log4cxx provides appenders to write to:
 - [files](@ref log4cxx.rolling.RollingFileAppender)
 - [the NT Event log](@ref log4cxx.nt.NTEventLogAppender)
 - [the UNIX Syslog](@ref log4cxx.net.SyslogAppender)
-- [a socket server](@ref log4cxx.net.XMLSocketAppender)
+- [a TCP port](@ref log4cxx.net.TelnetAppender)
+- [a remote log processor](@ref log4cxx.net.XMLSocketAppender)
 - [a SMTP server](@ref log4cxx.net.SMTPAppender)
 - [a database](@ref log4cxx.db.ODBCAppender)
 
