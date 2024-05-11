@@ -2042,10 +2042,6 @@ class LOG4CXX_EXPORT Logger :
 LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 }
 
-/** @addtogroup LoggingMacros Logging macros
-@{
-*/
-
 #if !defined(LOG4CXX_UNLIKELY)
 	#if __GNUC__ >= 3
 		/**
@@ -2093,6 +2089,9 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 #endif
 #endif
 
+/** @addtogroup LoggingMacros Logging macros
+@{
+*/
 
 /**
 Add a new logging event containing \c message to attached appender(s) if this logger is enabled for \c events.
