@@ -53,7 +53,7 @@ class LOG4CXX_EXPORT LogLog
 		~LogLog();
 
 		/**
-		 *  Is internal debugging is enabled?
+		 *  Is internal debugging enabled?
 		 **/
 		static bool isDebugEnabled();
 
