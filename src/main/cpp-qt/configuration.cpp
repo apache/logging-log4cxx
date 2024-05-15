@@ -108,16 +108,22 @@ Configuration::configureFromFileAndWatch(const QVector<QString>& directories,
 			QString canidate_str = dir + "/" + fname;
 			QFile candidate(canidate_str);
 
-			LOG4CXX_DECODE_QSTRING(msg, "Checking file " + canidate_str);
-			LogLog::debug(msg);
+			if (LogLog::isDebugEnabled())
+			{
+				LOG4CXX_DECODE_QSTRING(msg, "Checking file " + canidate_str);
+				LogLog::debug(msg);
+			}
 			if (candidate.exists())
 			{
 				LOG4CXX_NS::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
 				if( configStatus == LOG4CXX_NS::spi::ConfigurationStatus::Configured ){
 					return {configStatus, canidate_str};
 				}
-				LOG4CXX_DECODE_QSTRING(failmsg, "Unable to load  " + canidate_str + ": trying next");
-				LogLog::debug(failmsg);
+				if (LogLog::isDebugEnabled())
+				{
+					LOG4CXX_DECODE_QSTRING(failmsg, "Unable to load  " + canidate_str + ": trying next");
+					LogLog::debug(failmsg);
+				}
 			}
 		}
 	}

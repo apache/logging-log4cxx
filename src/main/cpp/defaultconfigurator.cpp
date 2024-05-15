@@ -72,9 +72,12 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 		{
 			File candidate(names[i]);
 
-			LogString debugMsg = LOG4CXX_STR("Checking file ");
-			debugMsg.append(names[i]);
-			LogLog::debug(debugMsg);
+			if (LogLog::isDebugEnabled())
+			{
+				LogString debugMsg = LOG4CXX_STR("Checking file ");
+				debugMsg.append(names[i]);
+				LogLog::debug(debugMsg);
+			}
 			if (candidate.exists(pool))
 			{
 				configuration = candidate;
@@ -180,16 +183,20 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 			LogString canidate_str = dir + LOG4CXX_STR("/") + fname;
 			File candidate(canidate_str);
 
-			LogString debugMsg = LOG4CXX_STR("Checking file ");
-			debugMsg.append(canidate_str);
-			LogLog::debug(debugMsg);
+			if (LogLog::isDebugEnabled())
+			{
+				LogString debugMsg = LOG4CXX_STR("Checking file ");
+				debugMsg.append(canidate_str);
+				LogLog::debug(debugMsg);
+			}
 			if (candidate.exists(pool))
 			{
 				LOG4CXX_NS::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
 				if( configStatus == LOG4CXX_NS::spi::ConfigurationStatus::Configured ){
 					return ResultType{configStatus, canidate_str};
 				}
-				LogLog::debug(LOG4CXX_STR("Unable to load file: trying next"));
+				if (LogLog::isDebugEnabled())
+					LogLog::debug(LOG4CXX_STR("Unable to load file: trying next"));
 			}
 		}
 	}

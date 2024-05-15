@@ -70,7 +70,7 @@ bool LogLog::isDebugEnabled()
 {
 	auto p = getInstance().m_priv.get();
 	return p && !p->quietMode // Not deleted by onexit processing?
-			 && !p->debugEnabled;
+			 && p->debugEnabled;
 }
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
