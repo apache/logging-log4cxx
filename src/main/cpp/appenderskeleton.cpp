@@ -131,6 +131,23 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 	append(event, pool1);
 }
 
+bool AppenderSkeleton::AppenderSkeletonPrivate::hasLayout()
+{
+	if (!this->layout)
+	{
+		if (!this->warnedNoLayout)
+		{
+			this->errorHandler->error
+				( LogString(LOG4CXX_STR("No layout set for the appender named ["))
+				+ this->name + LOG4CXX_STR("].")
+				);
+			this->warnedNoLayout = true;
+		}
+		return false;
+	}
+	return true;
+}
+
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 {
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);

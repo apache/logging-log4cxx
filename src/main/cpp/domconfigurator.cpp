@@ -211,7 +211,10 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 {
 
 	LogString className(subst(getAttribute(utf8Decoder, appenderElement, CLASS_ATTR)));
-	LogLog::debug(LOG4CXX_STR("Class name: [") + className + LOG4CXX_STR("]"));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Class name: [") + className + LOG4CXX_STR("]"));
+	}
 
 	try
 	{
@@ -291,9 +294,12 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 				if (appender->instanceof(AppenderAttachable::getStaticClass()))
 				{
 					AppenderAttachablePtr aa = LOG4CXX_NS::cast<AppenderAttachable>(appender);
-					LogLog::debug(LOG4CXX_STR("Attaching appender named [") +
-						refName + LOG4CXX_STR("] to appender named [") +
-						appender->getName() + LOG4CXX_STR("]."));
+					if (LogLog::isDebugEnabled())
+					{
+						LogLog::debug(LOG4CXX_STR("Attaching appender named [") +
+							refName + LOG4CXX_STR("] to appender named [") +
+							appender->getName() + LOG4CXX_STR("]."));
+					}
 					aa->addAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
 				}
 				else
@@ -427,7 +433,10 @@ void DOMConfigurator::parseLogger(
 	// Create a new Logger object from the <category> element.
 	LogString loggerName = subst(getAttribute(utf8Decoder, loggerElement, NAME_ATTR));
 
-	LogLog::debug(LOG4CXX_STR("Retreiving an instance of Logger."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Retreiving an instance of ") + loggerName);
+	}
 	LoggerPtr logger = m_priv->repository->getLogger(loggerName, m_priv->loggerFactory);
 
 	// Setting up a logger needs to be an atomic operation, in order
@@ -437,8 +446,11 @@ void DOMConfigurator::parseLogger(
 			subst(getAttribute(utf8Decoder, loggerElement, ADDITIVITY_ATTR)),
 			true);
 
-	LogLog::debug(LOG4CXX_STR("Setting [") + logger->getName() + LOG4CXX_STR("] additivity to [") +
-		(additivity ? LogString(LOG4CXX_STR("true")) : LogString(LOG4CXX_STR("false"))) + LOG4CXX_STR("]."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Setting [") + logger->getName() + LOG4CXX_STR("] additivity to [") +
+			(additivity ? LogString(LOG4CXX_STR("true")) : LogString(LOG4CXX_STR("false"))) + LOG4CXX_STR("]."));
+	}
 	logger->setAdditivity(additivity);
 	parseChildrenOfLoggerElement(p, utf8Decoder, loggerElement, logger, false, doc, appenders);
 }
@@ -456,11 +468,13 @@ void DOMConfigurator::parseLoggerFactory(
 	if (className.empty())
 	{
 		LogLog::error(LOG4CXX_STR("Logger Factory tag class attribute not found."));
-		LogLog::debug(LOG4CXX_STR("No Logger Factory configured."));
 	}
 	else
 	{
-		LogLog::debug(LOG4CXX_STR("Desired logger factory: [") + className + LOG4CXX_STR("]"));
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Desired logger factory: [") + className + LOG4CXX_STR("]"));
+		}
 		std::shared_ptr<Object> obj = OptionConverter::instantiateByClassName(
 				className,
 				LoggerFactory::getStaticClass(),
@@ -524,7 +538,9 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			AppenderPtr appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders);
 			LogString refName =  subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
 
-			if (appender != 0)
+			if (!LogLog::isDebugEnabled())
+				;
+			else if (appender != 0)
 			{
 				LogLog::debug(LOG4CXX_STR("Adding appender named [") + refName +
 					LOG4CXX_STR("] to logger [") + logger->getName() + LOG4CXX_STR("]."));
@@ -564,7 +580,10 @@ LayoutPtr DOMConfigurator::parseLayout (
 	apr_xml_elem* layout_element)
 {
 	LogString className(subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR)));
-	LogLog::debug(LOG4CXX_STR("Parsing layout of class: \"") + className + LOG4CXX_STR("\""));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Parsing layout of class: \"") + className + LOG4CXX_STR("\""));
+	}
 
 	try
 	{
@@ -604,7 +623,10 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 	apr_xml_elem* layout_element)
 {
 	LogString className = subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR));
-	LogLog::debug(LOG4CXX_STR("Parsing triggering policy of class: \"") + className + LOG4CXX_STR("\""));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Parsing triggering policy of class: \"") + className + LOG4CXX_STR("\""));
+	}
 
 	try
 	{
@@ -657,7 +679,10 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 	apr_xml_elem* layout_element)
 {
 	LogString className = subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR));
-	LogLog::debug(LOG4CXX_STR("Parsing rolling policy of class: \"") + className + LOG4CXX_STR("\""));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Parsing rolling policy of class: \"") + className + LOG4CXX_STR("\""));
+	}
 
 	try
 	{
@@ -706,7 +731,10 @@ void DOMConfigurator::parseLevel(
 	}
 
 	LogString levelStr(subst(getAttribute(utf8Decoder, element, VALUE_ATTR)));
-	LogLog::debug(LOG4CXX_STR("Level value for ") + loggerName + LOG4CXX_STR(" is [") + levelStr + LOG4CXX_STR("]."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Level value for ") + loggerName + LOG4CXX_STR(" is [") + levelStr + LOG4CXX_STR("]."));
+	}
 
 	if (StringHelper::equalsIgnoreCase(levelStr, LOG4CXX_STR("INHERITED"), LOG4CXX_STR("inherited"))
 		|| StringHelper::equalsIgnoreCase(levelStr, LOG4CXX_STR("NULL"), LOG4CXX_STR("null")))
@@ -730,7 +758,10 @@ void DOMConfigurator::parseLevel(
 		}
 		else
 		{
-			LogLog::debug(LOG4CXX_STR("Desired Level sub-class: [") + className + LOG4CXX_STR("]"));
+			if (LogLog::isDebugEnabled())
+			{
+				LogLog::debug(LOG4CXX_STR("Desired Level sub-class: [") + className + LOG4CXX_STR("]"));
+			}
 
 			try
 			{
@@ -758,8 +789,11 @@ void DOMConfigurator::parseLevel(
 		}
 	}
 
-	LogLog::debug(loggerName + LOG4CXX_STR(" level set to ") +
-		logger->getEffectiveLevel()->toString());
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(loggerName + LOG4CXX_STR(" level set to ") +
+			logger->getEffectiveLevel()->toString());
+	}
 }
 
 void DOMConfigurator::setParameter(LOG4CXX_NS::helpers::Pool& p,
@@ -777,10 +811,13 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 {
 	repository1->setConfigured(true);
 	m_priv->repository = repository1;
-	LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
-	msg.append(filename.getPath());
-	msg.append(LOG4CXX_STR("..."));
-	LogLog::debug(msg);
+	if (LogLog::isDebugEnabled())
+	{
+		LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
+		msg.append(filename.getPath());
+		msg.append(LOG4CXX_STR("..."));
+		LogLog::debug(msg);
+	}
 
 	m_priv->loggerFactory = std::make_shared<DefaultLoggerFactory>();
 
@@ -807,9 +844,12 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 		apr_xml_parser* parser = NULL;
 		apr_xml_doc* doc = NULL;
 
-		LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
-				+ filename.getPath() + LOG4CXX_STR("].");
-		LogLog::debug(debugMsg);
+		if (LogLog::isDebugEnabled())
+		{
+			LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
+					+ filename.getPath() + LOG4CXX_STR("].");
+			LogLog::debug(debugMsg);
+		}
 
 		rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
 
@@ -1012,7 +1052,10 @@ void DOMConfigurator::parse(
 	LogString debugAttrib = subst(getAttribute(utf8Decoder, element, INTERNAL_DEBUG_ATTR));
 
 	static const WideLife<LogString> NULL_STRING(LOG4CXX_STR("NULL"));
-	LogLog::debug(LOG4CXX_STR("debug attribute= \"") + debugAttrib + LOG4CXX_STR("\"."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("debug attribute= \"") + debugAttrib + LOG4CXX_STR("\"."));
+	}
 
 	// if the log4j.dtd is not specified in the XML file, then the
 	// "debug" attribute is returned as the empty string.
@@ -1020,7 +1063,7 @@ void DOMConfigurator::parse(
 	{
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(debugAttrib, true));
 	}
-	else
+	else if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Ignoring internalDebug attribute."));
 	}
@@ -1036,7 +1079,10 @@ void DOMConfigurator::parse(
 	}
 
 	LogString thresholdStr = subst(getAttribute(utf8Decoder, element, THRESHOLD_ATTR));
-	LogLog::debug(LOG4CXX_STR("Threshold =\"") + thresholdStr + LOG4CXX_STR("\"."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Threshold =\"") + thresholdStr + LOG4CXX_STR("\"."));
+	}
 
 	if (!thresholdStr.empty() && thresholdStr != NULL_STRING.value())
 	{

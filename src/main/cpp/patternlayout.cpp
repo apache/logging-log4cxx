@@ -149,8 +149,12 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
 											LOG4CXX_STR("ERRORCOLOR"),
 											LOG4CXX_STR("errorcolor"))){
 		m_priv->m_errorColor = value;
-		LogLog::debug(LOG4CXX_STR("Setting error color to "));
-		LogLog::debug(value);
+		if (LogLog::isDebugEnabled())
+		{
+			LogString msg(LOG4CXX_STR("Setting error color to "));
+			msg += value;
+			LogLog::debug(msg);
+		}
 	}else if(StringHelper::equalsIgnoreCase(option,
 											LOG4CXX_STR("FATALCOLOR"),
 											LOG4CXX_STR("fatalcolor"))){

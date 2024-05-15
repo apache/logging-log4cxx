@@ -53,6 +53,11 @@ class LOG4CXX_EXPORT LogLog
 		~LogLog();
 
 		/**
+		 *  Is internal debugging is enabled?
+		 **/
+		static bool isDebugEnabled();
+
+		/**
 		Use the value of \c enabled as the new internal debug logging state.
 		*/
 		static void setInternalDebugging(bool enabled);

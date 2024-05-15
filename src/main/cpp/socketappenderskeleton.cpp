@@ -85,11 +85,14 @@ void SocketAppenderSkeleton::connect(Pool& p)
 
 		try
 		{
-			LogString msg(LOG4CXX_STR("Connecting to [")
-				+ _priv->address->toString() + LOG4CXX_STR(":"));
-			StringHelper::toString(_priv->port, p, msg);
-			msg += LOG4CXX_STR("].");
-			LogLog::debug(msg);
+			if (LogLog::isDebugEnabled())
+			{
+				LogString msg(LOG4CXX_STR("Connecting to [")
+					+ _priv->address->toString() + LOG4CXX_STR(":"));
+				StringHelper::toString(_priv->port, p, msg);
+				msg += LOG4CXX_STR("].");
+				LogLog::debug(msg);
+			}
 			SocketPtr socket = Socket::create(_priv->address, _priv->port);
 			setSocket(socket, p);
 		}
@@ -151,14 +154,20 @@ void SocketAppenderSkeleton::monitor()
 	{
 		try
 		{
-			LogString msg(LOG4CXX_STR("Attempting connection to [")
-				+ _priv->address->toString() + LOG4CXX_STR(":"));
-			StringHelper::toString(_priv->port, p, msg);
-			msg += LOG4CXX_STR("].");
-			LogLog::debug(msg);
+			if (LogLog::isDebugEnabled())
+			{
+				LogString msg(LOG4CXX_STR("Attempting connection to [")
+					+ _priv->address->toString() + LOG4CXX_STR(":"));
+				StringHelper::toString(_priv->port, p, msg);
+				msg += LOG4CXX_STR("].");
+				LogLog::debug(msg);
+			}
 			socket = Socket::create(_priv->address, _priv->port);
 			setSocket(socket, p);
-			LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
+			if (LogLog::isDebugEnabled())
+			{
+				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
+			}
 			return;
 		}
 		catch (ConnectException& e)
