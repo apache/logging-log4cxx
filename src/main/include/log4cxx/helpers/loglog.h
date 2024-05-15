@@ -109,7 +109,8 @@ class LOG4CXX_EXPORT LogLog
 } // namespace log4cxx
 
 #define LOGLOG_DEBUG(log) { \
-		LOG4CXX_NS::helpers::LogLog::debug(log) ; }
+		if (LogLog::isDebugEnabled()) \
+			LOG4CXX_NS::helpers::LogLog::debug(log) ; }
 
 #define LOGLOG_WARN(log) { \
 		LOG4CXX_NS::helpers::LogLog::warn(log) ; }

@@ -92,10 +92,13 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 
 	if (configuration.exists(pool))
 	{
-		LogString msg(LOG4CXX_STR("Using configuration file ["));
-		msg += configuration.getPath();
-		msg += LOG4CXX_STR("] for automatic log4cxx configuration");
-		LogLog::debug(msg);
+		if (LogLog::isDebugEnabled())
+		{
+			LogString msg(LOG4CXX_STR("Using configuration file ["));
+			msg += configuration.getPath();
+			msg += LOG4CXX_STR("] for automatic log4cxx configuration");
+			LogLog::debug(msg);
+		}
 
 		LoggerRepositoryPtr repo(repository);
 		OptionConverter::selectAndConfigure(
@@ -107,7 +110,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 				: getConfigurationWatchDelay()
 			);
 	}
-	else
+	else if (LogLog::isDebugEnabled())
 	{
 		if (configurationFileName.empty())
 		{

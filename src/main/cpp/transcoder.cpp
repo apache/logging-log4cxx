@@ -627,11 +627,14 @@ void Transcoder::decode(const CFStringRef& src, LogString& dst)
 {
 	auto length = CFStringGetLength(src);
 #if defined(_DEBUG)
-	Pool pool;
-	LogString msg(LOG4CXX_STR("Transcoder::decodeCFString"));
-	msg += LOG4CXX_STR(" length ");
-	StringHelper::toString((size_t)length, pool, msg);
-	LogLog::debug(msg);
+	if (LogLog::isDebugEnabled())
+	{
+		Pool pool;
+		LogString msg(LOG4CXX_STR("Transcoder::decodeCFString"));
+		msg += LOG4CXX_STR(" length ");
+		StringHelper::toString((size_t)length, pool, msg);
+		LogLog::debug(msg);
+	}
 #endif
 
 	if (length > 0)

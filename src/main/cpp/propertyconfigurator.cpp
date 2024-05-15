@@ -423,8 +423,11 @@ void PropertyConfigurator::parseLogger(
 			continue;
 		}
 
-		LogLog::debug(LOG4CXX_STR("Parsing appender named ")
-			+ appenderName + LOG4CXX_STR("\"."));
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Parsing appender named ")
+				+ appenderName + LOG4CXX_STR("\"."));
+		}
 		appender = parseAppender(props, appenderName);
 
 		if (appender != 0)
@@ -497,8 +500,11 @@ AppenderPtr PropertyConfigurator::parseAppender(
 			if (layout != 0)
 			{
 				appender->setLayout(layout);
-				LogLog::debug((LogString) LOG4CXX_STR("Parsing layout options for \"")
-					+ appenderName + LOG4CXX_STR("\"."));
+				if (LogLog::isDebugEnabled())
+				{
+					LogLog::debug((LogString) LOG4CXX_STR("Parsing layout options for \"")
+						+ appenderName + LOG4CXX_STR("\"."));
+				}
 
 				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."), p);
 				if (LogLog::isDebugEnabled())
