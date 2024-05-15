@@ -107,46 +107,22 @@ void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool1)
    value <code>false</code> is returned. */
 bool WriterAppender::checkEntryConditions() const
 {
-	static bool warnedClosed = false;
-	static bool warnedNoWriter = false;
-	static bool warnedNoLayout = false;
+	return _priv->checkWriter() && _priv->checkLayout() && _priv->checkNotClosed();
+}
 
-	if (_priv->closed)
+bool WriterAppender::WriterAppenderPriv::checkWriter()
+{
+	if (this->writer == 0)
 	{
-		if (!warnedClosed)
+		if (!this->warnedNoWriter)
 		{
-			LogLog::warn(LOG4CXX_STR("Not allowed to write to a closed appender."));
-			warnedClosed = true;
-		}
-
-		return false;
-	}
-
-	if (_priv->writer == 0)
-	{
-		if (!warnedNoWriter)
-		{
-			_priv->errorHandler->error(
+			this->errorHandler->error(
 				LogString(LOG4CXX_STR("No output stream or file set for the appender named [")) +
-				_priv->name + LOG4CXX_STR("]."));
-			warnedNoWriter = true;
-		}
-
-		return false;
-	}
-
-	if (_priv->layout == 0)
-	{
-		if (!warnedNoLayout)
-		{
-			_priv->errorHandler->error(
-				LogString(LOG4CXX_STR("No layout set for the appender named [")) +
-				_priv->name + LOG4CXX_STR("]."));
-			warnedNoLayout = true;
+				this->name + LOG4CXX_STR("]."));
+			this->warnedNoWriter = true;
 		}
 		return false;
 	}
-
 	return true;
 }
 
