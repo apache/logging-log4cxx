@@ -70,6 +70,12 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 
 	LOG4CXX_NS::helpers::Pool pool;
 	mutable std::recursive_mutex mutex;
+
+	bool warnedClosed = false;
+	bool checkNotClosed();
+
+	bool warnedNoLayout = false;
+	bool checkLayout();
 };
 
 }

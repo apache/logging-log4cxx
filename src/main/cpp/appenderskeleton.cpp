@@ -131,6 +131,37 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 	append(event, pool1);
 }
 
+bool AppenderSkeleton::AppenderSkeletonPrivate::checkNotClosed()
+{
+	if (this->closed)
+	{
+		if (!this->warnedClosed)
+		{
+			LogLog::warn(LOG4CXX_STR("Not allowed to write to a closed appender."));
+			this->warnedClosed = true;
+		}
+		return false;
+	}
+	return true;
+}
+
+bool AppenderSkeleton::AppenderSkeletonPrivate::checkLayout()
+{
+	if (!this->layout)
+	{
+		if (!this->warnedNoLayout)
+		{
+			this->errorHandler->error
+				( LogString(LOG4CXX_STR("No layout set for the appender named ["))
+				+ this->name + LOG4CXX_STR("].")
+				);
+			this->warnedNoLayout = true;
+		}
+		return false;
+	}
+	return true;
+}
+
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 {
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
