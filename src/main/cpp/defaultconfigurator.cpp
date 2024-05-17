@@ -72,9 +72,12 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 		{
 			File candidate(names[i]);
 
-			LogString debugMsg = LOG4CXX_STR("Checking file ");
-			debugMsg.append(names[i]);
-			LogLog::debug(debugMsg);
+			if (LogLog::isDebugEnabled())
+			{
+				LogString debugMsg = LOG4CXX_STR("Checking file ");
+				debugMsg.append(names[i]);
+				LogLog::debug(debugMsg);
+			}
 			if (candidate.exists(pool))
 			{
 				configuration = candidate;
@@ -89,10 +92,13 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 
 	if (configuration.exists(pool))
 	{
-		LogString msg(LOG4CXX_STR("Using configuration file ["));
-		msg += configuration.getPath();
-		msg += LOG4CXX_STR("] for automatic log4cxx configuration");
-		LogLog::debug(msg);
+		if (LogLog::isDebugEnabled())
+		{
+			LogString msg(LOG4CXX_STR("Using configuration file ["));
+			msg += configuration.getPath();
+			msg += LOG4CXX_STR("] for automatic log4cxx configuration");
+			LogLog::debug(msg);
+		}
 
 		LoggerRepositoryPtr repo(repository);
 		OptionConverter::selectAndConfigure(
@@ -104,7 +110,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 				: getConfigurationWatchDelay()
 			);
 	}
-	else
+	else if (LogLog::isDebugEnabled())
 	{
 		if (configurationFileName.empty())
 		{
@@ -180,16 +186,20 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 			LogString canidate_str = dir + LOG4CXX_STR("/") + fname;
 			File candidate(canidate_str);
 
-			LogString debugMsg = LOG4CXX_STR("Checking file ");
-			debugMsg.append(canidate_str);
-			LogLog::debug(debugMsg);
+			if (LogLog::isDebugEnabled())
+			{
+				LogString debugMsg = LOG4CXX_STR("Checking file ");
+				debugMsg.append(canidate_str);
+				LogLog::debug(debugMsg);
+			}
 			if (candidate.exists(pool))
 			{
 				LOG4CXX_NS::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
 				if( configStatus == LOG4CXX_NS::spi::ConfigurationStatus::Configured ){
 					return ResultType{configStatus, canidate_str};
 				}
-				LogLog::debug(LOG4CXX_STR("Unable to load file: trying next"));
+				if (LogLog::isDebugEnabled())
+					LogLog::debug(LOG4CXX_STR("Unable to load file: trying next"));
 			}
 		}
 	}

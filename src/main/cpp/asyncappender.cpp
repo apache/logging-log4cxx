@@ -561,7 +561,7 @@ void AsyncAppender::dispatch()
 				}
 			}
 		}
-		if (!isActive)
+		if (!isActive && LogLog::isDebugEnabled())
 		{
 			LogString msg(LOG4CXX_STR("AsyncAppender")); 
 			msg += LOG4CXX_STR(" discardCount ");

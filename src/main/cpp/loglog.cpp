@@ -66,12 +66,18 @@ LogLog& LogLog::getInstance()
 	return internalLogger;
 }
 
+bool LogLog::isDebugEnabled()
+{
+	auto p = getInstance().m_priv.get();
+	return p && !p->quietMode // Not deleted by onexit processing?
+			 && p->debugEnabled;
+}
+
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
 	auto p = getInstance().m_priv.get();
-	std::lock_guard<std::mutex> lock(p->mutex);
-
-	p->debugEnabled = debugEnabled1;
+	if (p && !p->quietMode) // Not deleted by onexit processing?
+		p->debugEnabled = debugEnabled1;
 }
 
 void LogLog::debug(const LogString& msg)

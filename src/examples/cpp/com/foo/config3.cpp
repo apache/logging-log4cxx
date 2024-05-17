@@ -67,31 +67,35 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 	if (std::string::npos != slashIndex) {
 		// Extract the path
 		altPrefix = programFileName.substr(0, slashIndex + 1);
-#if defined(_DEBUG)
-		LogString msg1 = LOG4CXX_STR("Alternate prefix [");
-		helpers::Transcoder::decode(altPrefix, msg1);
-		msg1 += LOG4CXX_STR("]");
-		helpers::LogLog::debug(msg1);
-#endif
+		if (helpers::LogLog::isDebugEnabled())
+		{
+			LogString msg = LOG4CXX_STR("Alternate prefix [");
+			helpers::Transcoder::decode(altPrefix, msg);
+			msg += LOG4CXX_STR("]");
+			helpers::LogLog::debug(msg);
+		}
 		// Add a local directory relative name
 		result.push_back(programFileName.substr(slashIndex + 1));
-#if defined(_DEBUG)
-		LogString msg2(LOG4CXX_STR("Alternate configuration file name ["));
-		helpers::Transcoder::decode(result.back(), msg2);
-		msg2 += LOG4CXX_STR("]");
-		helpers::LogLog::debug(msg2);
-#endif
+		if (helpers::LogLog::isDebugEnabled())
+		{
+			LogString msg(LOG4CXX_STR("Alternate configuration file name ["));
+			helpers::Transcoder::decode(result.back(), msg);
+			msg += LOG4CXX_STR("]");
+			helpers::LogLog::debug(msg);
+		}
 		// Add a local directory relative name without any extension
 		auto dotIndex = result.back().rfind('.');
-		if (std::string::npos != dotIndex) {
+		if (std::string::npos != dotIndex)
+		{
 			result.push_back(result.back());
 			result.back().erase(dotIndex);
-#if defined(_DEBUG)
-			LogString msg3(LOG4CXX_STR("Alternate configuration file name ["));
-			helpers::Transcoder::decode(result.back(), msg3);
-			msg3 += LOG4CXX_STR("]");
-			helpers::LogLog::debug(msg3);
-#endif
+			if (helpers::LogLog::isDebugEnabled())
+			{
+				LogString msg(LOG4CXX_STR("Alternate configuration file name ["));
+				helpers::Transcoder::decode(result.back(), msg);
+				msg += LOG4CXX_STR("]");
+				helpers::LogLog::debug(msg);
+			}
 		}
 	}
 	else if (!programFileName.empty()) {
@@ -99,12 +103,13 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 		if (std::string::npos != dotIndex) {
 			programFileName.erase(dotIndex);
 			result.push_back(programFileName);
-#if defined(_DEBUG)
-			LogString msg(LOG4CXX_STR("Alternate configuration file name ["));
-			helpers::Transcoder::decode(result.back(), msg);
-			msg += LOG4CXX_STR("]");
-			helpers::LogLog::debug(msg);
-#endif
+			if (helpers::LogLog::isDebugEnabled())
+			{
+				LogString msg(LOG4CXX_STR("Alternate configuration file name ["));
+				helpers::Transcoder::decode(result.back(), msg);
+				msg += LOG4CXX_STR("]");
+				helpers::LogLog::debug(msg);
+			}
 		}
 	}
 	result.push_back("log4cxx");

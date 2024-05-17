@@ -49,8 +49,11 @@ FallbackErrorHandler::~FallbackErrorHandler() {}
 
 void FallbackErrorHandler::setLogger(const LoggerPtr& logger)
 {
-	LogLog::debug(((LogString) LOG4CXX_STR("FB: Adding logger ["))
-		+ logger->getName() + LOG4CXX_STR("]."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(((LogString) LOG4CXX_STR("FB: Adding logger ["))
+			+ logger->getName() + LOG4CXX_STR("]."));
+	}
 	m_priv->loggers.push_back(logger);
 }
 
@@ -65,9 +68,12 @@ void FallbackErrorHandler::error(const LogString& message,
 	const std::exception& e,
 	int, const spi::LoggingEventPtr&) const
 {
-	LogLog::debug(((LogString) LOG4CXX_STR("FB: The following error reported: "))
-		+  message, e);
-	LogLog::debug(LOG4CXX_STR("FB: INITIATING FALLBACK PROCEDURE."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(((LogString) LOG4CXX_STR("FB: The following error reported: "))
+			+  message, e);
+		LogLog::debug(LOG4CXX_STR("FB: INITIATING FALLBACK PROCEDURE."));
+	}
 
 	AppenderPtr primaryLocked = m_priv->primary.lock();
 	AppenderPtr backupLocked = m_priv->backup.lock();
@@ -79,17 +85,23 @@ void FallbackErrorHandler::error(const LogString& message,
 
 	for (LoggerPtr l : m_priv->loggers)
 	{
-		LogLog::debug(((LogString) LOG4CXX_STR("FB: Searching for ["))
-			+ primaryLocked->getName() + LOG4CXX_STR("] in logger [")
-			+ l->getName() + LOG4CXX_STR("]."));
-		LogLog::debug(((LogString) LOG4CXX_STR("FB: Replacing ["))
-			+ primaryLocked->getName() + LOG4CXX_STR("] by [")
-			+ backupLocked->getName() + LOG4CXX_STR("] in logger [")
-			+ l->getName() + LOG4CXX_STR("]."));
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(((LogString) LOG4CXX_STR("FB: Searching for ["))
+				+ primaryLocked->getName() + LOG4CXX_STR("] in logger [")
+				+ l->getName() + LOG4CXX_STR("]."));
+			LogLog::debug(((LogString) LOG4CXX_STR("FB: Replacing ["))
+				+ primaryLocked->getName() + LOG4CXX_STR("] by [")
+				+ backupLocked->getName() + LOG4CXX_STR("] in logger [")
+				+ l->getName() + LOG4CXX_STR("]."));
+		}
 		l->removeAppender(primaryLocked);
-		LogLog::debug(((LogString) LOG4CXX_STR("FB: Adding appender ["))
-			+ backupLocked->getName() + LOG4CXX_STR("] to logger ")
-			+ l->getName());
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(((LogString) LOG4CXX_STR("FB: Adding appender ["))
+				+ backupLocked->getName() + LOG4CXX_STR("] to logger ")
+				+ l->getName());
+		}
 		l->addAppender(backupLocked);
 	}
 	m_priv->errorReported = true;
@@ -97,15 +109,21 @@ void FallbackErrorHandler::error(const LogString& message,
 
 void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)
 {
-	LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting primary appender to ["))
-		+ primary1->getName() + LOG4CXX_STR("]."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting primary appender to ["))
+			+ primary1->getName() + LOG4CXX_STR("]."));
+	}
 	m_priv->primary = primary1;
 }
 
 void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 {
-	LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting backup appender to ["))
-		+ backup1->getName() + LOG4CXX_STR("]."));
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting backup appender to ["))
+			+ backup1->getName() + LOG4CXX_STR("]."));
+	}
 	m_priv->backup = backup1;
 
 	// Make sure that we keep a reference to the appender around, since otherwise

@@ -89,8 +89,11 @@ void PropertySetter::setProperty(const LogString& option,
 
 	if (obj != 0 && obj->instanceof(OptionHandler::getStaticClass()))
 	{
-		LogLog::debug(LOG4CXX_STR("Setting option name=[") +
-			option + LOG4CXX_STR("], value=[") + value + LOG4CXX_STR("]"));
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Setting option name=[") +
+				option + LOG4CXX_STR("], value=[") + value + LOG4CXX_STR("]"));
+		}
 		OptionHandlerPtr handler = LOG4CXX_NS::cast<OptionHandler>(obj);
 		handler->setOption(option, value);
 	}
