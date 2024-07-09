@@ -32,5 +32,6 @@ src/test/cpp/Testing/
 src/test/resources/org/
 src/test/resources/output/
 target/
+build/
 
 *.user
