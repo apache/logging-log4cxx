@@ -26,7 +26,7 @@
 #include <signal.h>
 #include <mutex>
 
-#if WIN32
+#ifdef _WIN32
 	#include <windows.h>
 	#include <processthreadsapi.h>
 #endif
@@ -143,7 +143,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
 		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
 	}
-#elif WIN32
+#elif defined(_WIN32)
 	typedef HRESULT (WINAPI *TSetThreadDescription)(HANDLE, PCWSTR);
 	static struct initialiser
 	{

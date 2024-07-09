@@ -396,7 +396,7 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 		thread_name = getCurrentThreadName();
 	else
 		thread_name = Transcoder::decode(result);
-#elif WIN32
+#elif defined(_WIN32)
 	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
 	static struct initialiser
 	{

@@ -24,7 +24,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/transcoder.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <Windows.h>
 #elif __APPLE__
 #include <mach-o/dyld.h>
@@ -48,7 +48,7 @@ auto DefaultConfigurationFileNames(std::string& altPrefix) -> std::vector<std::s
 	static const int bufSize = 4096;
 	char buf[bufSize+1] = {0}, pathSepar = '/';
 	uint32_t bufCount = 0;
-#if defined(WIN32)
+#if defined(_WIN32)
 	GetModuleFileName(NULL, buf, bufSize);
 	pathSepar = '\\';
 #elif defined(__APPLE__)
