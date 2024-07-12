@@ -16,7 +16,7 @@
  */
 
 #if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
-#include <Windows.h>
+#include <windows.h>
 #include <Heapapi.h>
 #include <log4cxx/nt/nteventlogappender.h>
 #include <log4cxx/spi/loggingevent.h>

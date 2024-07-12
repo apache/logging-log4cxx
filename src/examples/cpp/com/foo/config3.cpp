@@ -25,7 +25,7 @@
 #include <log4cxx/helpers/transcoder.h>
 
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 #elif __APPLE__
 #include <mach-o/dyld.h>
 #elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)

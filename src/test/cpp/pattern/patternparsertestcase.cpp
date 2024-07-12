@@ -57,7 +57,7 @@
 #include <log4cxx/private/log4cxx_private.h>
 #include <thread>
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 #endif
 
 using namespace log4cxx;
