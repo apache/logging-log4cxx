@@ -18,7 +18,7 @@
 #ifndef _LOG4CXX_LOGGER_H
 #define _LOG4CXX_LOGGER_H
 
-#include <log4cxx/helpers/appenderattachableimpl.h>
+#include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/spi/location/locationinfo.h>
@@ -46,8 +46,8 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 This is the central class in the log4cxx package. Most logging
 operations, except configuration, are done through this class.
 */
-class LOG4CXX_EXPORT Logger :
-	public virtual LOG4CXX_NS::spi::AppenderAttachable
+class LOG4CXX_EXPORT Logger
+	: public virtual spi::AppenderAttachable
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
@@ -66,12 +66,12 @@ class LOG4CXX_EXPORT Logger :
 		sets its name.
 
 		<p>It is intended to be only used by factory-classes.
-
-		@param pool lifetime of pool must be longer than logger.
-		@param name The name of the logger.
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
 		Logger(helpers::Pool& pool, const LogString& name);
-
+#else
+		Logger(const LogString& name);
+#endif
 		~Logger();
 
 
@@ -97,7 +97,7 @@ class LOG4CXX_EXPORT Logger :
 		@param event the event to log.
 		@param p memory pool for any allocations needed to process request.
 		*/
-		void callAppenders(const LOG4CXX_NS::spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) const;
+		void callAppenders(const spi::LoggingEventPtr& event, helpers::Pool& p) const;
 
 		/**
 		Close all attached appenders implementing the AppenderAttachable

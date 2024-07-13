@@ -44,7 +44,9 @@ class XFactory :
 
 		XFactory();
 		LoggerPtr makeNewLoggerInstance(
+#if LOG4CXX_ABI_VERSION <= 15
 			log4cxx::helpers::Pool& pool,
+#endif
 			const LogString& name) const override;
 };
 
@@ -72,9 +74,11 @@ class XLogger : public Logger
 		/**
 		        Just calls the parent constuctor.
 		*/
-		XLogger(log4cxx::helpers::Pool& pool,
-			const LogString& name1) : Logger(pool, name1) {}
-
+#if LOG4CXX_ABI_VERSION <= 15
+		XLogger(log4cxx::helpers::Pool& pool, const LogString& name) : Logger(pool, name) {}
+#else
+		XLogger(const LogString& name) : Logger(name) {}
+#endif
 		/**
 		        Nothing to activate.
 		*/

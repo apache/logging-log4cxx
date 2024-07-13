@@ -25,7 +25,11 @@ using namespace LOG4CXX_NS::spi;
 using namespace LOG4CXX_NS::helpers;
 
 RootLogger::RootLogger(Pool& pool, const LevelPtr level1) :
+#if LOG4CXX_ABI_VERSION <= 15
 	Logger(pool, LOG4CXX_STR("root"))
+#else
+	Logger(LOG4CXX_STR("root"))
+#endif
 {
 	setLevel(level1);
 }

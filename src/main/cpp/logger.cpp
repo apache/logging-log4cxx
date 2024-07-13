@@ -15,14 +15,11 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/logmanager.h>
-#include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/level.h>
-#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/hierarchy.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
@@ -40,12 +37,19 @@ using namespace LOG4CXX_NS::spi;
 
 struct Logger::LoggerPrivate
 {
-	LoggerPrivate(Pool& p, const LogString& name1):
-		name(name1),
-		repositoryRaw(0),
-		aai(p),
-		additive(true),
-		levelData(Level::getData()) {}
+	LoggerPrivate(
+#if LOG4CXX_ABI_VERSION <= 15
+		Pool& p,
+#endif
+		const LogString& name1)
+		: name(name1)
+		, repositoryRaw(0)
+#if LOG4CXX_ABI_VERSION <= 15
+		, aai(p)
+#endif
+		, additive(true)
+		, levelData(Level::getData())
+		{}
 
 	/**
 	The name of this logger.
@@ -71,7 +75,7 @@ struct Logger::LoggerPrivate
 
 
 	// Loggers need to know what Hierarchy they are in
-	LOG4CXX_NS::spi::LoggerRepository* repositoryRaw;
+	spi::LoggerRepository* repositoryRaw;
 
 	helpers::AppenderAttachableImpl aai;
 
@@ -89,8 +93,13 @@ struct Logger::LoggerPrivate
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
+#if LOG4CXX_ABI_VERSION <= 15
 Logger::Logger(Pool& p, const LogString& name1)
 	: m_priv(std::make_unique<LoggerPrivate>(p, name1))
+#else
+Logger::Logger(const LogString& name1)
+	: m_priv(std::make_unique<LoggerPrivate>(name1))
+#endif
 	, m_threshold(0)
 {
 }

@@ -246,7 +246,11 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	}
 	if (!result && factory)
 	{
+#if LOG4CXX_ABI_VERSION <= 15
 		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
+#else
+		LoggerPtr logger(factory->makeNewLoggerInstance(name));
+#endif
 		logger->setHierarchy(this);
 		m_priv->loggers.insert(LoggerMap::value_type(name, logger));
 

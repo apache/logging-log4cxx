@@ -14,12 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
-#include <log4cxx/appender.h>
-#include <log4cxx/spi/loggingevent.h>
 #include <algorithm>
-#include <log4cxx/helpers/pool.h>
 #include <mutex>
 
 using namespace LOG4CXX_NS;
@@ -36,8 +32,12 @@ struct AppenderAttachableImpl::priv_data
 };
 
 
+#if LOG4CXX_ABI_VERSION <= 15
 AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool)
 	: m_priv()
+#else
+AppenderAttachableImpl::AppenderAttachableImpl()
+#endif
 {
 }
 
