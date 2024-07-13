@@ -20,7 +20,6 @@
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
