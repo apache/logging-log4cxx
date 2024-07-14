@@ -21,12 +21,8 @@
 
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggerfactory.h>
-#include <vector>
-#include <map>
 #include <log4cxx/provisionnode.h>
-#include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/hierarchyeventlistener.h>
-#include <log4cxx/helpers/pool.h>
 
 namespace LOG4CXX_NS
 {
