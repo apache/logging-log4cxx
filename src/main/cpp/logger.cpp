@@ -93,9 +93,8 @@ Logger::Logger(const LogString& name1)
 }
 
 #if LOG4CXX_ABI_VERSION <= 15
-Logger::Logger(Pool& p, const LogString& name1)
-	: m_priv(std::make_unique<LoggerPrivate>(name1))
-	, m_threshold(0)
+Logger::Logger(Pool& p, const LogString& name)
+	: Logger(name)
 {
 }
 #endif

@@ -38,9 +38,7 @@ class LOG4CXX_EXPORT DefaultLoggerFactory :
 		END_LOG4CXX_CAST_MAP()
 
 		[[ deprecated( "Pool is no longer required" ) ]]
-		LoggerPtr makeNewLoggerInstance(
-			helpers::Pool& pool,
-			const LogString& name) const override;
+		LoggerPtr makeNewLoggerInstance(helpers::Pool& pool, const LogString& name) const override;
 };
 #endif
 }  // namespace log4cxx
