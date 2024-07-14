@@ -227,7 +227,11 @@ LevelPtr Hierarchy::getThreshold() const
 
 LoggerPtr Hierarchy::getLogger(const LogString& name)
 {
+#if LOG4CXX_ABI_VERSION <= 15
 	static WideLife<spi::LoggerFactoryPtr> defaultFactory = std::make_shared<DefaultLoggerFactory>();
+#else
+	static WideLife<spi::LoggerFactoryPtr> defaultFactory = std::make_shared<LoggerFactory>();
+#endif
 	return getLogger(name, defaultFactory);
 }
 
@@ -246,7 +250,11 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	}
 	if (!result && factory)
 	{
+#if LOG4CXX_ABI_VERSION <= 15
+		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
+#else
 		LoggerPtr logger(factory->makeNewLoggerInstance(name));
+#endif
 		logger->setHierarchy(this);
 		m_priv->loggers.insert(LoggerMap::value_type(name, logger));
 
@@ -283,7 +291,7 @@ LoggerPtr Hierarchy::getRootLogger() const
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	if (!m_priv->root)
 	{
-		m_priv->root = std::make_shared<RootLogger>(m_priv->pool, Level::getDebug());
+		m_priv->root = std::make_shared<RootLogger>(Level::getDebug());
 		m_priv->root->setHierarchy(const_cast<Hierarchy*>(this));
 	}
 

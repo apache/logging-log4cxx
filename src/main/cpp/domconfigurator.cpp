@@ -33,7 +33,7 @@
 #if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/defaultloggerfactory.h>
 #else
-#include <log4cxx/loggerfactory.h>
+#include <log4cxx/spi/loggerfactory.h>
 #endif
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
