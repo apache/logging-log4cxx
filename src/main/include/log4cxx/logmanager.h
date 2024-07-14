@@ -80,7 +80,7 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using LoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
 		the repository is configured.
@@ -98,14 +98,16 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::string& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the logger \c name instance if it exists in the hierarchy.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr exists(const std::string& name);
 #if LOG4CXX_WCHAR_T_API
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using LoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
 		the repository is configured.
@@ -122,7 +124,9 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::wstring& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the logger \c name instance if it exists in the hierarchy.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr exists(const std::wstring& name);
 #endif
@@ -130,7 +134,7 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using LoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
 		passing {@link DefaultConfigurator::configure} to ensure
@@ -149,7 +153,9 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the logger \c name instance if it exists in the hierarchy.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr exists(const std::basic_string<UniChar>& name);
 #endif
@@ -157,7 +163,7 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using LoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
 		passing {@link DefaultConfigurator::configure} to ensure
@@ -176,7 +182,9 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const CFStringRef& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the logger \c name instance if it exists in the hierarchy.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr exists(const CFStringRef& name);
 #endif
@@ -185,7 +193,7 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using LoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
 		passing {@link DefaultConfigurator::configure} to ensure
@@ -205,7 +213,9 @@ class LOG4CXX_EXPORT LogManager
 			const spi::LoggerFactoryPtr& factory);
 
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the logger \c name instance if it exists in the hierarchy.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr existsLS(const LogString& name);
 
