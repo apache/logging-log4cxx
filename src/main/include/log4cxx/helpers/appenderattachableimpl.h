@@ -44,10 +44,10 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 *   Create new instance.
 		 */
-#if LOG4CXX_ABI_VERSION <= 15
-		AppenderAttachableImpl(Pool& pool);
-#else
 		AppenderAttachableImpl();
+#if LOG4CXX_ABI_VERSION <= 15
+		[[ deprecated( "Pool is no longer required" ) ]]
+		AppenderAttachableImpl(Pool& pool);
 #endif
 		~AppenderAttachableImpl();
 

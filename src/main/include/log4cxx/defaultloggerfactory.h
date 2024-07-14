@@ -36,11 +36,14 @@ class LOG4CXX_EXPORT DefaultLoggerFactory :
 		LOG4CXX_CAST_ENTRY(spi::LoggerFactory)
 		END_LOG4CXX_CAST_MAP()
 
-		LoggerPtr makeNewLoggerInstance(
+		LoggerPtr makeNewLoggerInstance(const LogString& name) const override;
+
 #if LOG4CXX_ABI_VERSION <= 15
+		[[ deprecated( "Pool is no longer required" ) ]]
+		LoggerPtr makeNewLoggerInstance(
 			helpers::Pool& pool,
-#endif
 			const LogString& name) const override;
+#endif
 };
 }  // namespace log4cxx
 

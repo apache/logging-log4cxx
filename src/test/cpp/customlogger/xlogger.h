@@ -43,11 +43,14 @@ class XFactory :
 		END_LOG4CXX_CAST_MAP()
 
 		XFactory();
-		LoggerPtr makeNewLoggerInstance(
+
+		LoggerPtr makeNewLoggerInstance(const LogString& name) const override;
+
 #if LOG4CXX_ABI_VERSION <= 15
-			log4cxx::helpers::Pool& pool,
-#endif
+		LoggerPtr makeNewLoggerInstance(
+			helpers::Pool& pool,
 			const LogString& name) const override;
+#endif
 };
 
 typedef std::shared_ptr<XFactory> XFactoryPtr;
@@ -74,11 +77,8 @@ class XLogger : public Logger
 		/**
 		        Just calls the parent constuctor.
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-		XLogger(log4cxx::helpers::Pool& pool, const LogString& name) : Logger(pool, name) {}
-#else
 		XLogger(const LogString& name) : Logger(name) {}
-#endif
+
 		/**
 		        Nothing to activate.
 		*/

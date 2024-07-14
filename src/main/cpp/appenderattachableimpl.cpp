@@ -30,15 +30,16 @@ struct AppenderAttachableImpl::priv_data
 	mutable std::mutex m_mutex;
 };
 
+AppenderAttachableImpl::AppenderAttachableImpl()
+{
+}
 
 #if LOG4CXX_ABI_VERSION <= 15
 AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool)
 	: m_priv()
-#else
-AppenderAttachableImpl::AppenderAttachableImpl()
-#endif
 {
 }
+#endif
 
 AppenderAttachableImpl::~AppenderAttachableImpl()
 {

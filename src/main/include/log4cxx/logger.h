@@ -67,10 +67,10 @@ class LOG4CXX_EXPORT Logger
 
 		<p>It is intended to be only used by factory-classes.
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-		Logger(helpers::Pool& pool, const LogString& name);
-#else
 		Logger(const LogString& name);
+#if LOG4CXX_ABI_VERSION <= 15
+		[[ deprecated( "Pool is no longer required" ) ]]
+		Logger(helpers::Pool& pool, const LogString& name);
 #endif
 		~Logger();
 

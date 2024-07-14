@@ -37,16 +37,9 @@ using namespace LOG4CXX_NS::spi;
 
 struct Logger::LoggerPrivate
 {
-	LoggerPrivate(
-#if LOG4CXX_ABI_VERSION <= 15
-		Pool& p,
-#endif
-		const LogString& name1)
+	LoggerPrivate(const LogString& name1)
 		: name(name1)
 		, repositoryRaw(0)
-#if LOG4CXX_ABI_VERSION <= 15
-		, aai(p)
-#endif
 		, additive(true)
 		, levelData(Level::getData())
 		{}
@@ -93,16 +86,19 @@ struct Logger::LoggerPrivate
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
-#if LOG4CXX_ABI_VERSION <= 15
-Logger::Logger(Pool& p, const LogString& name1)
-	: m_priv(std::make_unique<LoggerPrivate>(p, name1))
-#else
 Logger::Logger(const LogString& name1)
 	: m_priv(std::make_unique<LoggerPrivate>(name1))
-#endif
 	, m_threshold(0)
 {
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+Logger::Logger(Pool& p, const LogString& name1)
+	: m_priv(std::make_unique<LoggerPrivate>(name1))
+	, m_threshold(0)
+{
+}
+#endif
 
 Logger::~Logger()
 {

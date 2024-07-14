@@ -22,15 +22,16 @@ using namespace LOG4CXX_NS;
 
 IMPLEMENT_LOG4CXX_OBJECT(DefaultLoggerFactory)
 
-LoggerPtr DefaultLoggerFactory::makeNewLoggerInstance(
+LoggerPtr DefaultLoggerFactory::makeNewLoggerInstance(const LogString& name) const
+{
+	return std::make_shared<Logger>(name);
+}
+
 #if LOG4CXX_ABI_VERSION <= 15
+LoggerPtr DefaultLoggerFactory::makeNewLoggerInstance(
 	helpers::Pool& pool,
-#endif
 	const LogString& name) const
 {
-#if LOG4CXX_ABI_VERSION <= 15
 	return std::make_shared<Logger>(pool, name);
-#else
-	return std::make_shared<Logger>(name);
-#endif
 }
+#endif
