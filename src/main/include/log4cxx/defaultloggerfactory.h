@@ -26,6 +26,7 @@ namespace LOG4CXX_NS
 class Logger;
 typedef std::shared_ptr<Logger> LoggerPtr;
 
+#if LOG4CXX_ABI_VERSION <= 15
 class LOG4CXX_EXPORT DefaultLoggerFactory :
 	public virtual spi::LoggerFactory,
 	public virtual helpers::Object
@@ -36,15 +37,12 @@ class LOG4CXX_EXPORT DefaultLoggerFactory :
 		LOG4CXX_CAST_ENTRY(spi::LoggerFactory)
 		END_LOG4CXX_CAST_MAP()
 
-		LoggerPtr makeNewLoggerInstance(const LogString& name) const override;
-
-#if LOG4CXX_ABI_VERSION <= 15
 		[[ deprecated( "Pool is no longer required" ) ]]
 		LoggerPtr makeNewLoggerInstance(
 			helpers::Pool& pool,
 			const LogString& name) const override;
-#endif
 };
+#endif
 }  // namespace log4cxx
 
 #endif //_LOG4CXX_DEFAULT_LOGGER_FACTORY_H

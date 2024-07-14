@@ -35,7 +35,11 @@ class LOG4CXX_EXPORT LoggerFactory : public virtual helpers::Object
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerFactory)
 		virtual ~LoggerFactory() {}
 
+#if LOG4CXX_ABI_VERSION <= 15
+		LoggerPtr makeNewLoggerInstance(const LogString& name) const;
+#else
 		virtual LoggerPtr makeNewLoggerInstance(const LogString& name) const = 0;
+#endif
 
 #if LOG4CXX_ABI_VERSION <= 15
 		[[ deprecated( "Pool is no longer required" ) ]]
