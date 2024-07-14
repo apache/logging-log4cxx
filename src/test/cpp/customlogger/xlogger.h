@@ -44,7 +44,11 @@ class XFactory :
 
 		XFactory();
 
+#if LOG4CXX_ABI_VERSION <= 15
+		LoggerPtr makeNewLoggerInstance(const LogString& name) const;
+#else
 		LoggerPtr makeNewLoggerInstance(const LogString& name) const override;
+#endif
 
 #if LOG4CXX_ABI_VERSION <= 15
 		LoggerPtr makeNewLoggerInstance(

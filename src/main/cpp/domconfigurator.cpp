@@ -30,7 +30,11 @@
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/loggerfactory.h>
+#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/defaultloggerfactory.h>
+#else
+#include <log4cxx/loggerfactory.h>
+#endif
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -819,7 +823,11 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 		LogLog::debug(msg);
 	}
 
+#if LOG4CXX_ABI_VERSION <= 15
 	m_priv->loggerFactory = std::make_shared<DefaultLoggerFactory>();
+#else
+	m_priv->loggerFactory = std::make_shared<LoggerFactory>();
+#endif
 
 	Pool p;
 	apr_file_t* fd;

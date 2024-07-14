@@ -75,7 +75,12 @@ PropertyWatchdog* PropertyConfigurator::pdog = NULL;
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
 PropertyConfigurator::PropertyConfigurator()
-	: registry(new std::map<LogString, AppenderPtr>()), loggerFactory(new DefaultLoggerFactory())
+	: registry(new std::map<LogString, AppenderPtr>())
+#if LOG4CXX_ABI_VERSION <= 15
+	, loggerFactory(new DefaultLoggerFactory())
+#else
+	, loggerFactory(new LoggerFactory())
+#endif
 {
 }
 
