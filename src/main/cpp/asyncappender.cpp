@@ -119,9 +119,6 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		AppenderSkeletonPrivate(),
 		buffer(DEFAULT_BUFFER_SIZE),
 		bufferSize(DEFAULT_BUFFER_SIZE),
-#if LOG4CXX_ABI_VERSION <= 15
-		appenders(pool),
-#endif
 		dispatcher(),
 		locationInfo(false),
 		blocking(true)
