@@ -17,20 +17,20 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/propertyconfigurator.h>
-#include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
+#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/defaultloggerfactory.h>
+#else
+#include <log4cxx/spi/loggerfactory.h>
+#endif
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/appender.h>
-#include <log4cxx/logger.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/config/propertysetter.h>
-#include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/fileinputstream.h>
