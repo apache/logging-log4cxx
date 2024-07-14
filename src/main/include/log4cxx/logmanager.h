@@ -98,7 +98,7 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::string& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 A pointer to the logger \c name instance if it exists in the hierarchy.
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
 
 		 @returns A null pointer unless the \c name Logger already exists.
 		 */
@@ -124,7 +124,7 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::wstring& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 A pointer to the logger \c name instance if it exists in the hierarchy.
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
 
 		 @returns A null pointer unless the \c name Logger already exists.
 		 */
@@ -153,7 +153,7 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 A pointer to the logger \c name instance if it exists in the hierarchy.
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
 
 		 @returns A null pointer unless the \c name Logger already exists.
 		 */
@@ -182,7 +182,7 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const CFStringRef& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 A pointer to the logger \c name instance if it exists in the hierarchy.
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
 
 		 @returns A null pointer unless the \c name Logger already exists.
 		 */
@@ -213,7 +213,7 @@ class LOG4CXX_EXPORT LogManager
 			const spi::LoggerFactoryPtr& factory);
 
 		/**
-		 A pointer to the logger \c name instance if it exists in the hierarchy.
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
 
 		 @returns A null pointer unless the \c name Logger already exists.
 		 */
@@ -229,21 +229,21 @@ class LOG4CXX_EXPORT LogManager
 
 		/**
 		Reset all values contained in this current
-		{@link spi::LoggerRepository LoggerRepository}61
+		{@link spi::LoggerRepository LoggerRepository}
 		to their default.
 		*/
 		static void resetConfiguration();
 
 		/**
-		Remove the \c name Logger from the hierarchy.
+		Remove the \c name Logger from the {@link spi::LoggerRepository LoggerRepository}.
 
-		Note: The \c name Logger must be retrieved from the hierarchy
+		Note: The \c name Logger must be retrieved from the {@link spi::LoggerRepository LoggerRepository}
 		\b after any subsequent configuration file change
 		for the newly loaded settings to be used.
 
 		@param name The logger to remove.
 		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
-		@returns true if \c name Logger was removed from the hierarchy.
+		@returns true if \c name Logger was removed from the {@link spi::LoggerRepository LoggerRepository}.
 		*/
 		static bool removeLogger(const LogString& name, bool ifNotUsed = true);
 }; // class LogManager
