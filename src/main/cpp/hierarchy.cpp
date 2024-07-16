@@ -15,24 +15,18 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
-#include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/hierarchy.h>
+#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/defaultloggerfactory.h>
-#include <log4cxx/logger.h>
-#include <log4cxx/spi/hierarchyeventlistener.h>
-#include <log4cxx/level.h>
-#include <algorithm>
+#endif
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/appender.h>
-#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/stringhelper.h>
-#if !defined(LOG4CXX)
-	#define LOG4CXX 1
-#endif
 #include <log4cxx/spi/rootlogger.h>
+#include <algorithm>
+#include <map>
 #include <mutex>
-#include "assert.h"
+#include <vector>
 
 
 using namespace LOG4CXX_NS;
@@ -227,7 +221,11 @@ LevelPtr Hierarchy::getThreshold() const
 
 LoggerPtr Hierarchy::getLogger(const LogString& name)
 {
+#if LOG4CXX_ABI_VERSION <= 15
 	static WideLife<spi::LoggerFactoryPtr> defaultFactory = std::make_shared<DefaultLoggerFactory>();
+#else
+	static WideLife<spi::LoggerFactoryPtr> defaultFactory = std::make_shared<LoggerFactory>();
+#endif
 	return getLogger(name, defaultFactory);
 }
 
@@ -246,7 +244,11 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	}
 	if (!result && factory)
 	{
+#if LOG4CXX_ABI_VERSION <= 15
 		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
+#else
+		LoggerPtr logger(factory->makeNewLoggerInstance(name));
+#endif
 		logger->setHierarchy(this);
 		m_priv->loggers.insert(LoggerMap::value_type(name, logger));
 
@@ -283,7 +285,7 @@ LoggerPtr Hierarchy::getRootLogger() const
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	if (!m_priv->root)
 	{
-		m_priv->root = std::make_shared<RootLogger>(m_priv->pool, Level::getDebug());
+		m_priv->root = std::make_shared<RootLogger>(Level::getDebug());
 		m_priv->root->setHierarchy(const_cast<Hierarchy*>(this));
 	}
 

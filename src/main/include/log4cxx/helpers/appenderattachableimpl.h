@@ -20,10 +20,8 @@
 
 
 #include <log4cxx/spi/appenderattachable.h>
-#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/log4cxx.h>
-#include <mutex>
 
 namespace LOG4CXX_NS
 {
@@ -45,10 +43,12 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 	public:
 		/**
 		 *   Create new instance.
-		 *   @param pool pool, must be longer-lived than instance.
 		 */
+		AppenderAttachableImpl();
+#if LOG4CXX_ABI_VERSION <= 15
+		[[ deprecated( "Pool is no longer required" ) ]]
 		AppenderAttachableImpl(Pool& pool);
-
+#endif
 		~AppenderAttachableImpl();
 
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachableImpl)

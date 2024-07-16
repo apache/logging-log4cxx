@@ -14,17 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log4cxx/logstring.h>
+
+#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/defaultloggerfactory.h>
-#include <log4cxx/logger.h>
+#else
+#include <log4cxx/spi/loggerfactory.h>
+#endif
 
 using namespace LOG4CXX_NS;
+using namespace spi;
 
+#if LOG4CXX_ABI_VERSION <= 15
 IMPLEMENT_LOG4CXX_OBJECT(DefaultLoggerFactory)
 
 LoggerPtr DefaultLoggerFactory::makeNewLoggerInstance(
-	LOG4CXX_NS::helpers::Pool& pool,
+	helpers::Pool& pool,
 	const LogString& name) const
 {
-	return std::make_shared<Logger>(pool, name);
+	return std::make_shared<Logger>(name);
 }
+#endif
+
+LoggerPtr LoggerFactory::makeNewLoggerInstance(const LogString& name) const
+{
+	return std::make_shared<Logger>(name);
+}
+

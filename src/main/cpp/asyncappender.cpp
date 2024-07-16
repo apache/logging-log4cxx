@@ -119,7 +119,6 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		AppenderSkeletonPrivate(),
 		buffer(DEFAULT_BUFFER_SIZE),
 		bufferSize(DEFAULT_BUFFER_SIZE),
-		appenders(pool),
 		dispatcher(),
 		locationInfo(false),
 		blocking(true)

@@ -80,7 +80,7 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using DefaultLoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
 		the repository is configured.
@@ -98,14 +98,16 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::string& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr exists(const std::string& name);
 #if LOG4CXX_WCHAR_T_API
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using DefaultLoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
 		the repository is configured.
@@ -122,7 +124,9 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::wstring& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr exists(const std::wstring& name);
 #endif
@@ -130,7 +134,7 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using DefaultLoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
 		passing {@link DefaultConfigurator::configure} to ensure
@@ -149,7 +153,9 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr exists(const std::basic_string<UniChar>& name);
 #endif
@@ -157,7 +163,7 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using DefaultLoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
 		passing {@link DefaultConfigurator::configure} to ensure
@@ -176,7 +182,9 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr getLogger(const CFStringRef& name,
 			const spi::LoggerFactoryPtr& factory);
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr exists(const CFStringRef& name);
 #endif
@@ -185,7 +193,7 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using DefaultLoggerFactory to create it if required.
+		using the default factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
 		passing {@link DefaultConfigurator::configure} to ensure
@@ -205,7 +213,9 @@ class LOG4CXX_EXPORT LogManager
 			const spi::LoggerFactoryPtr& factory);
 
 		/**
-		 Does the logger \c name exist in the hierarchy?
+		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
+
+		 @returns A null pointer unless the \c name Logger already exists.
 		 */
 		static LoggerPtr existsLS(const LogString& name);
 
@@ -219,21 +229,21 @@ class LOG4CXX_EXPORT LogManager
 
 		/**
 		Reset all values contained in this current
-		{@link spi::LoggerRepository LoggerRepository}61
+		{@link spi::LoggerRepository LoggerRepository}
 		to their default.
 		*/
 		static void resetConfiguration();
 
 		/**
-		Remove the \c name Logger from the hierarchy.
+		Remove the \c name Logger from the {@link spi::LoggerRepository LoggerRepository}.
 
-		Note: The \c name Logger must be retrieved from the hierarchy
+		Note: The \c name Logger must be retrieved from the {@link spi::LoggerRepository LoggerRepository}
 		\b after any subsequent configuration file change
 		for the newly loaded settings to be used.
 
 		@param name The logger to remove.
 		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
-		@returns true if \c name Logger was removed from the hierarchy.
+		@returns true if \c name Logger was removed from the {@link spi::LoggerRepository LoggerRepository}.
 		*/
 		static bool removeLogger(const LogString& name, bool ifNotUsed = true);
 }; // class LogManager

@@ -40,7 +40,12 @@ class LOG4CXX_EXPORT RootLogger : public Logger
 		The root logger names itself as "root". However, the root
 		logger cannot be retrieved by name.
 		*/
-		RootLogger(LOG4CXX_NS::helpers::Pool& pool, const LevelPtr level);
+		RootLogger(const LevelPtr& level);
+
+#if LOG4CXX_ABI_VERSION <= 15
+		[[ deprecated( "Pool is no longer required" ) ]]
+		RootLogger(helpers::Pool& pool, const LevelPtr level);
+#endif
 
 		~RootLogger() {}
 

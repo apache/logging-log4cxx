@@ -32,9 +32,24 @@ a sub-class of Logger.
 class LOG4CXX_EXPORT LoggerFactory : public virtual helpers::Object
 {
 	public:
+#if LOG4CXX_ABI_VERSION <= 15
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerFactory)
+#else
+		DECLARE_LOG4CXX_OBJECT(LoggerFactory)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(LoggerFactory)
+		END_LOG4CXX_CAST_MAP()
+#endif
 		virtual ~LoggerFactory() {}
+
+#if LOG4CXX_ABI_VERSION <= 15
+		[[ deprecated( "Pool is no longer required" ) ]]
 		virtual LoggerPtr makeNewLoggerInstance(helpers::Pool& pool, const LogString& name) const = 0;
+
+		LoggerPtr makeNewLoggerInstance(const LogString& name) const;
+#else
+		virtual LoggerPtr makeNewLoggerInstance(const LogString& name) const;
+#endif
 };
 
 
