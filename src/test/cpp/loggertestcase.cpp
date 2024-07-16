@@ -73,13 +73,13 @@ public:
 
 	void addAppenderEvent(
 		const Logger* logger,
-			const Appender* appender){
+			const Appender* appender) override {
 		numAdded++;
 	}
 
 	void removeAppenderEvent(
 		const Logger* logger,
-			const Appender* appender){
+			const Appender* appender) override {
 		numRemoved++;
 	}
 };
