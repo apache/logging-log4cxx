@@ -24,24 +24,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [osx-11, osx-12]
+        name: [osx-13, osx-14]
         include:
-          - name: osx-11
-            os: macos-11
+          - name: osx-13
+            os: macos-13
             cxx: clang++
-            cc: clang
             odbc: OFF
-          - name: osx-12
-            os: macos-12
+            qt: ON
+          - name: osx-14
+            os: macos-14
             cxx: clang++
-            cc: clang
             odbc: ON
+            qt: OFF
 
     steps:
     - uses: actions/checkout@v3
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: main
+
+    - name: 'Configure Dependencies'
+      run: |
+        brew install apr-util
+        if [ ${{ matrix.odbc }} == ON ]; then brew install unixodbc; fi
+        if [ ${{ matrix.qt }} == ON ]; then brew install qt; fi
 
     - name: 'configure and build'
       run: |
@@ -52,8 +58,7 @@ jobs:
         cmake --build .
 
     - name: run unit tests
-      shell: pwsh
       run: |
         cd main
         cd build
-        ctest -C Debug --output-on-failure -V
+        ctest -C Debug --output-on-failure
