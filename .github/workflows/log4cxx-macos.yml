@@ -45,7 +45,7 @@ jobs:
 
     - name: 'Configure Dependencies'
       run: |
-        brew install apr-util
+        if [ ${{ matrix.os }} != macos-13 ]; then brew install apr-util; fi
         if [ ${{ matrix.odbc }} == ON ]; then brew install unixodbc; fi
         if [ ${{ matrix.qt }} == ON ]; then brew install qt; fi
 
