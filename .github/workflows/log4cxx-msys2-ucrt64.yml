@@ -40,6 +40,7 @@ jobs:
     steps:
     - uses: msys2/setup-msys2@v2
       with:
+        msystem: ${{matrix.sys}}
         update: true
         install: >-
           git
@@ -56,7 +57,7 @@ jobs:
     - name: 'configure and build'
       shell: msys2 {0}
       run: |
-        cmake -S log4cxx -B log4cxx/build -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_BUILD_TYPE=Debug
+        cmake -G Ninja -S log4cxx -B log4cxx/build -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_BUILD_TYPE=Debug
         cmake --build log4cxx/build
 
     - name: 'run unit tests'
