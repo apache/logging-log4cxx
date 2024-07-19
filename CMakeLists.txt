@@ -170,35 +170,33 @@ IF(MSVC AND BUILD_SHARED_LIBS AND LOG4CXX_INSTALL_PDB)
   )
 ENDIF()
 
-if(UNIX)
-  # Support for pkg-config in consuming projects
-  set(prefix "${CMAKE_INSTALL_PREFIX}")
-  set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
-  set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
-  set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
-  set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
-  configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx.pc.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc"
-  )
+# Support for pkg-config in consuming projects
+set(prefix "${CMAKE_INSTALL_PREFIX}")
+set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
+set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
+set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx.pc.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc"
+)
 
-  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc" 
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc" 
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
-  if(LOG4CXX_QT_SUPPORT)
-      set(prefix "${CMAKE_INSTALL_PREFIX}")
-      set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
-      set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
-      set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
-      set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
-      configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx-qt.pc.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}-qt.pc"
-      )
+if(LOG4CXX_QT_SUPPORT)
+    set(prefix "${CMAKE_INSTALL_PREFIX}")
+    set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
+    set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
+    set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+    set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx-qt.pc.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}-qt.pc"
+    )
 
-      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}-qt.pc"
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
-      )
-  endif(LOG4CXX_QT_SUPPORT)
-endif(UNIX)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}-qt.pc"
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+    )
+endif(LOG4CXX_QT_SUPPORT)
 
 # Support for find_package(log4cxx) in consuming CMake projects using
 # target_include_directories(myApplication PRIVATE $<TARGET_PROPERTY:log4cxx,INTERFACE_INCLUDE_DIRECTORIES>)

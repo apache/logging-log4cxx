@@ -22,7 +22,7 @@
 #include <string>
 #include <string.h>
 
-#if defined(_WIN32)
+#if defined(_MSC_VER)
 #define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
 #else
 #define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '/'
