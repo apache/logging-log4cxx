@@ -34,7 +34,7 @@ jobs:
         - name: ucrt64-gnu
           sys: ucrt64
           env: ucrt-x86_64
-          compiler-package: mingw-w64-ucrt-x86_64-gcc
+          compiler-package: gcc
           cxx: g++
 
     steps:
@@ -44,7 +44,7 @@ jobs:
         update: true
         install: >-
           git
-          ${{ matrix.compiler-package }}
+          mingw-w64-${{ matrix.env }}-${{ matrix.compiler-package }}
           mingw-w64-${{ matrix.env }}-ccmake
           mingw-w64-${{ matrix.env }}-ninja
           mingw-w64-${{ matrix.env }}-apr-util
