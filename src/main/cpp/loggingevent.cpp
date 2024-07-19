@@ -383,7 +383,7 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 #if LOG4CXX_HAS_THREAD_LOCAL
 	thread_local LogString thread_name;
 #else
-	static WideLife<LogString> thread_name = LOG4CXX_STR("(noname)");
+	static LogString thread_name = LOG4CXX_STR("(noname)");
 #endif
 	if( !thread_name.empty() ){
 		return thread_name;
