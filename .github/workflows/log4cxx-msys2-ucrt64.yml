@@ -44,7 +44,7 @@ jobs:
         install: >-
           git
           ${{ matrix.compiler-package }}
-          mingw-w64-cmake
+          mingw-w64-${{ matrix.env }}-ccmake
           mingw-w64-${{ matrix.env }}-ninja
           mingw-w64-${{ matrix.env }}-apr-util
 
