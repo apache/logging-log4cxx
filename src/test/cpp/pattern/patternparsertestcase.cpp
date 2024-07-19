@@ -56,8 +56,8 @@
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
 #include <thread>
-#if WIN32
-#include <Windows.h>
+#ifdef _WIN32
+#include <windows.h>
 #endif
 
 using namespace log4cxx;
@@ -89,12 +89,12 @@ public:
 	{
 		LogString threadName = LOG4CXX_STR("log4cxx-thr");
 
-#if LOG4CXX_HAS_PTHREAD_SETNAME
+#if LOG4CXX_HAS_PTHREAD_SETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
 	LOG4CXX_ENCODE_CHAR(sthreadName, threadName);
 	if( pthread_setname_np( pthread_self(), sthreadName.c_str() ) < 0 ){
 		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
-#elif WIN32
+#elif defined(_WIN32)
 	LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
 	HRESULT hr = SetThreadDescription(GetCurrentThread(), wthreadName.c_str());
 	if(FAILED(hr)){

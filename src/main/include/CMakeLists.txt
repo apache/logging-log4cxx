@@ -121,9 +121,12 @@ CHECK_SYMBOL_EXISTS(mbsrtowcs "cwchar" HAS_MBSRTOWCS)
 CHECK_SYMBOL_EXISTS(wcstombs "cstdlib" HAS_WCSTOMBS)
 CHECK_SYMBOL_EXISTS(fwide "cwchar" HAS_FWIDE )
 CHECK_SYMBOL_EXISTS(syslog "syslog.h" HAS_SYSLOG)
-if(UNIX)
+if(NOT MSVC)
     set(CMAKE_REQUIRED_LIBRARIES "pthread")
-    CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
+    # pthread_sigmask exists on MINGW but with no function
+    if(NOT MINGW)
+        CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
+    endif()
     CHECK_SYMBOL_EXISTS(pthread_self "pthread.h" HAS_PTHREAD_SELF)
 
     # Check for the (linux) pthread_setname_np.
@@ -138,7 +141,7 @@ if(UNIX)
     if(${PTHREAD_GETNAME_NP_FOUND})
         set(HAS_PTHREAD_GETNAME 1)
     endif()
-endif(UNIX)
+endif()
 
 foreach(varName
   HAS_THREAD_LOCAL

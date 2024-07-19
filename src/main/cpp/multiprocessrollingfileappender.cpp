@@ -241,7 +241,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 			if (stat == APR_SUCCESS)
 			{
-#ifdef WIN32
+#ifdef _WIN32
 				snprintf(szUid, MAX_FILE_LEN, "%p", uid);
 #else
 				snprintf(szUid, MAX_FILE_LEN, "%u", (unsigned int)uid);

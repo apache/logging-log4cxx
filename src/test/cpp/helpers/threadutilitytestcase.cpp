@@ -33,7 +33,7 @@ LOGUNIT_CLASS(ThreadUtilityTest)
 	LOGUNIT_TEST(testNullFunctions);
 	LOGUNIT_TEST(testCustomFunctions);
 	LOGUNIT_TEST(testDefaultFunctions);
-#if LOG4CXX_HAS_PTHREAD_SETNAME || defined(WIN32)
+#if LOG4CXX_HAS_PTHREAD_SETNAME || defined(_WIN32)
 	LOGUNIT_TEST(testThreadNameLogging);
 #endif
 	LOGUNIT_TEST_SUITE_END();

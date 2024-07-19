@@ -333,12 +333,12 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 
 const LogString& LoggingEvent::getCurrentThreadName()
 {
-#if defined(_WIN32)
-	using ThreadIdType = DWORD;
-	ThreadIdType threadId = GetCurrentThreadId();
-#elif LOG4CXX_HAS_PTHREAD_SELF
+#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
 	using ThreadIdType = pthread_t;
 	ThreadIdType threadId = pthread_self();
+#elif defined(_WIN32)
+	using ThreadIdType = DWORD;
+	ThreadIdType threadId = GetCurrentThreadId();
 #else
 	using ThreadIdType = int;
 	ThreadIdType threadId = 0;
@@ -362,15 +362,15 @@ const LogString& LoggingEvent::getCurrentThreadName()
 		return thread_id_string;
 	}
 
-#if defined(_WIN32)
-	char result[20];
-	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
-	thread_id_string = Transcoder::decode(result);
-#elif LOG4CXX_HAS_PTHREAD_SELF
+#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
 	// pthread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	char result[sizeof(pthread_t) * 3 + 10];
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
+	thread_id_string = Transcoder::decode(result);
+#elif defined(_WIN32)
+	char result[20];
+	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
 	thread_id_string = Transcoder::decode(result);
 #else
 	thread_id_string = LOG4CXX_STR("0x00000000");
@@ -389,14 +389,14 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 		return thread_name;
 	}
 
-#if LOG4CXX_HAS_PTHREAD_GETNAME
+#if LOG4CXX_HAS_PTHREAD_GETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
 	char result[16];
 	pthread_t current_thread = pthread_self();
 	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
 		thread_name = getCurrentThreadName();
 	else
 		thread_name = Transcoder::decode(result);
-#elif WIN32
+#elif defined(_WIN32)
 	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
 	static struct initialiser
 	{
