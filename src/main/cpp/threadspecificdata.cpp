@@ -99,7 +99,7 @@ LogString& ThreadSpecificData::getThreadName()
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(logchar&)
+std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(const logchar&)
 {
 	if (auto data = getCurrentData())
 		return data->m_priv->logchar_stringstream;
@@ -109,7 +109,7 @@ std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(logchar&)
 #endif
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(wchar_t&)
+std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(const wchar_t&)
 {
 	if (auto data = getCurrentData())
 		return data->m_priv->wchar_stringstream;
@@ -119,7 +119,7 @@ std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(wchar_t&)
 #endif
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(UniChar&)
+std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
 {
 	if (auto data = getCurrentData())
 		return data->m_priv->unichar_stringstream;
