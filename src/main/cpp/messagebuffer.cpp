@@ -26,6 +26,10 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
+#include <apr.h>
+#if !LOG4CXX_HAS_THREAD_LOCAL && APR_HAS_THREADS
+#include <log4cxx/helpers/threadspecificdata.h>
+#endif
 
 using namespace LOG4CXX_NS::helpers;
 
