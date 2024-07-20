@@ -53,7 +53,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		MDC::Map& getMap();
 
 		template <typename T>
-		static std::basic_stringstream<T>& getStringStream()
+		static std::basic_ostringstream<T>& getStringStream()
 		{
 			return getStream(T());
 		}
@@ -63,13 +63,13 @@ class LOG4CXX_EXPORT ThreadSpecificData
 	private:
 		static ThreadSpecificData& getDataNoThreads();
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-		static std::basic_stringstream<logchar>& getStream(logchar&);
+		static std::basic_ostringstream<logchar>& getStream(logchar&);
 #endif
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-		static std::basic_stringstream<wchar_t>& getStream(wchar_t&);
+		static std::basic_ostringstream<wchar_t>& getStream(wchar_t&);
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-		static std::basic_stringstream<UniChar>& getStream(UniChar&);
+		static std::basic_ostringstream<UniChar>& getStream(UniChar&);
 #endif
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ThreadSpecificDataPrivate, m_priv)
 };

@@ -35,13 +35,13 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 	MDC::Map mdcMap;
 	LogString str[2];
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-	std::basic_stringstream<logchar> logchar_stringstream;
+	std::basic_ostringstream<logchar> logchar_stringstream;
 #endif
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-	std::basic_stringstream<wchar_t> wchar_stringstream;
+	std::basic_ostringstream<wchar_t> wchar_stringstream;
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::basic_stringstream<UniChar> unichar_stringstream;
+	std::basic_ostringstream<UniChar> unichar_stringstream;
 #endif
 };
 
@@ -99,31 +99,31 @@ LogString& ThreadSpecificData::getThreadName()
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-std::basic_stringstream<logchar>& ThreadSpecificData::getStream(logchar&)
+std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(logchar&)
 {
 	if (auto data = getCurrentData())
 		return data->m_priv->logchar_stringstream;
-	static std::basic_stringstream<logchar> ss;
+	static std::basic_ostringstream<logchar> ss;
 	return ss;
 }
 #endif
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-std::basic_stringstream<wchar_t>& ThreadSpecificData::getStream(wchar_t&)
+std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(wchar_t&)
 {
 	if (auto data = getCurrentData())
 		return data->m_priv->wchar_stringstream;
-	static std::basic_stringstream<wchar_t> ss;
+	static std::basic_ostringstream<wchar_t> ss;
 	return ss;
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-std::basic_stringstream<UniChar>& ThreadSpecificData::getStream(UniChar&)
+std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(UniChar&)
 {
 	if (auto data = getCurrentData())
 		return data->m_priv->unichar_stringstream;
-	static std::basic_stringstream<UniChar> ss;
+	static std::basic_ostringstream<UniChar> ss;
 	return ss;
 }
 #endif
