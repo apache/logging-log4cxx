@@ -25,6 +25,7 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <sstream>
+#include <algorithm>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
