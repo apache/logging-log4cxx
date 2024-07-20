@@ -215,24 +215,3 @@ void ThreadSpecificData::inherit(const NDC::Stack& src)
 	}
 }
 
-
-
-ThreadSpecificData* ThreadSpecificData::createCurrentData()
-{
-#if APR_HAS_THREADS
-	ThreadSpecificData* newData = new ThreadSpecificData();
-	apr_status_t stat = apr_threadkey_private_set(newData, APRInitializer::getTlsKey());
-
-	if (stat != APR_SUCCESS)
-	{
-		delete newData;
-		newData = NULL;
-	}
-
-	return newData;
-#elif LOG4CXX_HAS_THREAD_LOCAL
-	return getCurrentData();
-#else
-	return 0;
-#endif
-}
