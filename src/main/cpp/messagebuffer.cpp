@@ -42,7 +42,7 @@ struct StringOrStream
 		{}
 	~StringOrStream()
 	{
-#if !LOG4CXX_HAS_THREAD_LOCAL
+#if !LOG4CXX_HAS_THREAD_LOCAL && !APR_HAS_THREADS
 		delete stream;
 #endif
 	}
@@ -53,9 +53,13 @@ struct StringOrStream
 	{
 		if (!this->stream)
 		{
-#if LOG4CXX_HAS_THREAD_LOCAL
+#if LOG4CXX_HAS_THREAD_LOCAL || APR_HAS_THREADS
 			const static std::basic_ostringstream<T> initialState;
+#if LOG4CXX_HAS_THREAD_LOCAL
 			thread_local static std::basic_ostringstream<T> sStream;
+#else
+			auto& sStream = ThreadSpecificData::getStringStream<T>();
+#endif
 			this->stream = &sStream;
 			this->stream->clear();
 			this->stream->precision(initialState.precision());

@@ -17,9 +17,6 @@
 
 #include "logunit.h"
 
-#define LOG4CXX_TEST 1
-#include <log4cxx/private/log4cxx_private.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/simplelayout.h>
@@ -253,13 +250,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				{
 					for (size_t i = 0; i < LEN; i++)
 					{
-// As at 2024-7-19 the msys2 ucrt-x86_64 runtime terminates with error c0000374 during thread local data cleanup
-// The call to debug() avoids the use of the thread_local data in MessageBuffer
-#if LOG4CXX_HAS_THREAD_LOCAL && LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-						root->debug("message" + std::to_string(i));
-#else
 						LOG4CXX_DEBUG(root, "message" << i);
-#endif
 					}
 				});
 			}
