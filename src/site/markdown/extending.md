@@ -61,13 +61,16 @@ IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 }
 ~~~
 
-These macros allow Log4cxx to instantiate your class.
+These macros allow Log4cxx to instantiate your class and provide log4cxx::cast.
 The `DECLARE_LOG4CXX_OBJECT` macro adds method declarations and
 the `IMPLEMENT_LOG4CXX_OBJECT` macro adds implementations.
 The `IMPLEMENT_LOG4CXX_OBJECT` also adds a static reference value
 which is initialized during program startup
 by calling, for example, `NullWriterAppender::registerClass()`.
+
 To avoid [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof)
+when configuring Log4cxx during static initialization
+(as in [Runtime Configuration])
 you should place the `IMPLEMENT_LOG4CXX_OBJECT` macro
 in the file that loads the configuration.
 Alternatively, you could call `NullWriterAppender::registerClass()`
@@ -158,3 +161,5 @@ This example shows how to extend Log4cxx with a new appender.
 
 \example custom-appender.xml
 This example shows how to use a new appender in a configuration file.
+
+[Runtime Configuration]:quick-start.html#configuration
