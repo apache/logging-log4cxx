@@ -61,9 +61,14 @@ IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 }
 ~~~
 
-These macros tell Log4cxx what the name of our class is, as well as giving
-Log4cxx a way of instansiating our class.  Without these macros, the custom
-class will not work.
+These macros allow Log4cxx to instantiate your class.
+The `DECLARE_LOG4CXX_OBJECT` macro adds method declarations and
+the `IMPLEMENT_LOG4CXX_OBJECT` macro adds implementations.
+The `IMPLEMENT_LOG4CXX_OBJECT` also adds a statically initialized value
+that will register your class name with Log4cxx during program startup.
+To avoid [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof)
+you should place the `IMPLEMENT_LOG4CXX_OBJECT` macro
+in the file that loads the configuration.
 
 Now, let's add some basic functionality to our class.  As the name of
 our class implies, we are going to do nothing with our appender here, as
