@@ -123,20 +123,11 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 #endif
 
 	// Fallback implementation that is not expected to be used
-#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-	using ThreadIdType = pthread_t;
-	ThreadIdType threadId = pthread_self();
-#elif defined(_WIN32)
-	using ThreadIdType = DWORD;
-	ThreadIdType threadId = GetCurrentThreadId();
-#else
-	using ThreadIdType = int;
-	ThreadIdType threadId = 0;
-#endif
-	using TaggedData = std::pair<ThreadIdType, ThreadSpecificData>;
+	using TaggedData = std::pair<std::thread::id, ThreadSpecificData>;
 	static std::list<TaggedData> thread_id_map;
 	static std::mutex mutex;
 	std::lock_guard<std::mutex> lock(mutex);
+	auto threadId = std::this_thread::get_id();
 	auto pThreadId = std::find_if(thread_id_map.begin(), thread_id_map.end()
 		, [threadId](const TaggedData& item) { return threadId == item.first; });
 	if (thread_id_map.end() == pThreadId)
