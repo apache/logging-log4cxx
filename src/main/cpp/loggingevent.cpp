@@ -344,14 +344,14 @@ const LogString& LoggingEvent::getCurrentThreadName()
 		return thread_id_string;
 	}
 
-#if 0//LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
+#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
 	// pthread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	auto threadId = pthread_self();
 	char result[sizeof(pthread_t) * 3 + 10];
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 	thread_id_string = Transcoder::decode(result);
-#elif 0//defined(_WIN32)
+#elif defined(_WIN32)
 	char result[20];
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
 	thread_id_string = Transcoder::decode(result);
