@@ -33,6 +33,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 {
 	public:
 		ThreadSpecificData();
+		ThreadSpecificData(ThreadSpecificData&& other);
 		~ThreadSpecificData();
 
 		/**
@@ -61,7 +62,6 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		static LogString& getThreadName();
 
 	private:
-		static ThreadSpecificData& getDataNoThreads();
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
 		static std::basic_ostringstream<logchar>& getStream(const logchar&);
 #endif

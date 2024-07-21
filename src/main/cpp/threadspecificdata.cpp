@@ -50,6 +50,11 @@ ThreadSpecificData::ThreadSpecificData()
 {
 }
 
+ThreadSpecificData::ThreadSpecificData(ThreadSpecificData&& other)
+	: m_priv(std::move(other.m_priv))
+{
+}
+
 ThreadSpecificData::~ThreadSpecificData()
 {
 }
@@ -67,8 +72,57 @@ MDC::Map& ThreadSpecificData::getMap()
 
 LogString& ThreadSpecificData::getThreadIdString()
 {
-	if (auto data = getCurrentData())
-		return data->m_priv->str[0];
+	return getCurrentData()->m_priv->str[0];
+}
+
+LogString& ThreadSpecificData::getThreadName()
+{
+	return getCurrentData()->m_priv->str[1];
+}
+
+#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
+std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(const logchar&)
+{
+	return getCurrentData()->m_priv->logchar_stringstream;
+}
+#endif
+
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(const wchar_t&)
+{
+	return getCurrentData()->m_priv->wchar_stringstream;
+}
+#endif
+
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
+{
+	return getCurrentData()->m_priv->unichar_stringstream;
+}
+#endif
+
+ThreadSpecificData* ThreadSpecificData::getCurrentData()
+{
+#if APR_HAS_THREADS
+	void* pData = NULL;
+	if (APR_SUCCESS == apr_threadkey_private_get(&pData, APRInitializer::getTlsKey())
+		&& !pData)
+	{
+		pData = new ThreadSpecificData();
+		if (APR_SUCCESS != apr_threadkey_private_set(pData, APRInitializer::getTlsKey()))
+		{
+			delete pData;
+			pData = NULL;
+		}
+	}
+	if (pData)
+		return (ThreadSpecificData*) pData;
+#elif LOG4CXX_HAS_THREAD_LOCAL
+	thread_local ThreadSpecificData data;
+	return &data;
+#endif
+
+	// Fallback implementation that is not expected to be used
 #if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
 	using ThreadIdType = pthread_t;
 	ThreadIdType threadId = pthread_self();
@@ -79,139 +133,67 @@ LogString& ThreadSpecificData::getThreadIdString()
 	using ThreadIdType = int;
 	ThreadIdType threadId = 0;
 #endif
-	using ListItem = std::pair<ThreadIdType, LogString>;
-	static std::list<ListItem> thread_id_map;
+//#ifdef STD_PAIR_WITH_THREAD_SPECIFIC_DATA_COMPILES
+#ifdef STD_PAIR_WITH_THREAD_SPECIFIC_DATA_COMPILES
+	using TaggedData = std::pair<ThreadIdType, ThreadSpecificData>;
+#else
+	struct TaggedData
+	{
+		ThreadIdType first;
+		ThreadSpecificData second;
+		TaggedData(const ThreadIdType& id, ThreadSpecificData&& data)
+			: first(id)
+			, second(std::move(data))
+		{}
+	};
+#endif
+	static std::list<TaggedData> thread_id_map;
 	static std::mutex mutex;
 	std::lock_guard<std::mutex> lock(mutex);
 	auto pThreadId = std::find_if(thread_id_map.begin(), thread_id_map.end()
-		, [threadId](const ListItem& item) { return threadId == item.first; });
+		, [threadId](const TaggedData& item) { return threadId == item.first; });
 	if (thread_id_map.end() == pThreadId)
-		pThreadId = thread_id_map.insert(thread_id_map.begin(), ListItem(threadId, LogString()));
-	return pThreadId->second;
-}
-
-LogString& ThreadSpecificData::getThreadName()
-{
-	if (auto data = getCurrentData())
-		return data->m_priv->str[1];
-	static LogString thread_name = LOG4CXX_STR("(noname)");
-	return thread_name;
-}
-
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(const logchar&)
-{
-	if (auto data = getCurrentData())
-		return data->m_priv->logchar_stringstream;
-	static std::basic_ostringstream<logchar> ss;
-	return ss;
-}
-#endif
-
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(const wchar_t&)
-{
-	if (auto data = getCurrentData())
-		return data->m_priv->wchar_stringstream;
-	static std::basic_ostringstream<wchar_t> ss;
-	return ss;
-}
-#endif
-
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
-{
-	if (auto data = getCurrentData())
-		return data->m_priv->unichar_stringstream;
-	static std::basic_ostringstream<UniChar> ss;
-	return ss;
-}
-#endif
-
-ThreadSpecificData& ThreadSpecificData::getDataNoThreads()
-{
-	static WideLife<ThreadSpecificData> noThreadData;
-	return noThreadData;
-}
-
-ThreadSpecificData* ThreadSpecificData::getCurrentData()
-{
-#if APR_HAS_THREADS
-	void* pData = NULL;
-	apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
-	if (!pData)
-	{
-		pData = new ThreadSpecificData();
-		apr_threadkey_private_set(pData, APRInitializer::getTlsKey());
-	}
-	return (ThreadSpecificData*) pData;
-#elif LOG4CXX_HAS_THREAD_LOCAL
-	thread_local ThreadSpecificData data;
-	return &data;
-#else
-	return &getDataNoThreads();
-#endif
+		pThreadId = thread_id_map.emplace(thread_id_map.begin(), threadId, ThreadSpecificData());
+	return &pThreadId->second;
 }
 
 void ThreadSpecificData::recycle()
 {
 #if APR_HAS_THREADS
-
 	if (m_priv->ndcStack.empty() && m_priv->mdcMap.empty())
 	{
 		void* pData = NULL;
-		apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
-
-		if (stat == APR_SUCCESS && pData == this)
-		{
-			stat = apr_threadkey_private_set(0, APRInitializer::getTlsKey());
-
-			if (stat == APR_SUCCESS)
-			{
+		if (APR_SUCCESS == apr_threadkey_private_get(&pData, APRInitializer::getTlsKey())
+			&& pData == this
+			&& APR_SUCCESS == apr_threadkey_private_set(0, APRInitializer::getTlsKey()))
 				delete this;
-			}
-		}
 	}
-
 #endif
 }
 
 void ThreadSpecificData::put(const LogString& key, const LogString& val)
 {
-	if (auto data = getCurrentData())
-	{
-		data->getMap()[key] = val;
-	}
+	getCurrentData()->getMap()[key] = val;
 }
-
-
-
 
 void ThreadSpecificData::push(const LogString& val)
 {
-	if (auto data = getCurrentData())
+	NDC::Stack& stack = getCurrentData()->getStack();
+	if (stack.empty())
 	{
-		NDC::Stack& stack = data->getStack();
-
-		if (stack.empty())
-		{
-			stack.push(NDC::DiagnosticContext(val, val));
-		}
-		else
-		{
-			LogString fullMessage(stack.top().second);
-			fullMessage.append(1, (logchar) 0x20);
-			fullMessage.append(val);
-			stack.push(NDC::DiagnosticContext(val, fullMessage));
-		}
+		stack.push(NDC::DiagnosticContext(val, val));
+	}
+	else
+	{
+		LogString fullMessage(stack.top().second);
+		fullMessage.append(1, (logchar) 0x20);
+		fullMessage.append(val);
+		stack.push(NDC::DiagnosticContext(val, fullMessage));
 	}
 }
 
 void ThreadSpecificData::inherit(const NDC::Stack& src)
 {
-	if (auto data = getCurrentData())
-	{
-		data->getStack() = src;
-	}
+	getCurrentData()->getStack() = src;
 }
 
