@@ -111,7 +111,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 		pData = new ThreadSpecificData();
 		if (APR_SUCCESS != apr_threadkey_private_set(pData, APRInitializer::getTlsKey()))
 		{
-			delete pData;
+			delete (ThreadSpecificData*)pData;
 			pData = NULL;
 		}
 	}
@@ -133,20 +133,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 	using ThreadIdType = int;
 	ThreadIdType threadId = 0;
 #endif
-//#ifdef STD_PAIR_WITH_THREAD_SPECIFIC_DATA_COMPILES
-#ifdef STD_PAIR_WITH_THREAD_SPECIFIC_DATA_COMPILES
 	using TaggedData = std::pair<ThreadIdType, ThreadSpecificData>;
-#else
-	struct TaggedData
-	{
-		ThreadIdType first;
-		ThreadSpecificData second;
-		TaggedData(const ThreadIdType& id, ThreadSpecificData&& data)
-			: first(id)
-			, second(std::move(data))
-		{}
-	};
-#endif
 	static std::list<TaggedData> thread_id_map;
 	static std::mutex mutex;
 	std::lock_guard<std::mutex> lock(mutex);
