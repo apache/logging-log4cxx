@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-
 #include <log4cxx/asyncappender.h>
-
 
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -28,10 +26,6 @@
 #include <thread>
 #include <atomic>
 #include <condition_variable>
-
-#if LOG4CXX_EVENTS_AT_EXIT
-#include <log4cxx/private/atexitregistry.h>
-#endif
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
