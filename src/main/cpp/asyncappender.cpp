@@ -115,20 +115,21 @@ typedef std::map<LogString, DiscardSummary> DiscardMap;
 
 struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
-	AsyncAppenderPriv() :
-		AppenderSkeletonPrivate(),
-		buffer(DEFAULT_BUFFER_SIZE),
-		bufferSize(DEFAULT_BUFFER_SIZE),
-		dispatcher(),
-		locationInfo(false),
-		blocking(true)
-#if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{stopDispatcher();})
-#endif
+	AsyncAppenderPriv()
+		: AppenderSkeletonPrivate()
+		, buffer(DEFAULT_BUFFER_SIZE)
+		, bufferSize(DEFAULT_BUFFER_SIZE)
+		, dispatcher()
+		, locationInfo(false)
+		, blocking(true)
 		, eventCount(0)
 		, dispatchedCount(0)
 		, commitCount(0)
+		{ }
+
+	~AsyncAppenderPriv()
 	{
+		stopDispatcher();
 	}
 
 	/**
@@ -190,10 +191,6 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 * Does appender block when buffer is full.
 	*/
 	bool blocking;
-
-#if LOG4CXX_EVENTS_AT_EXIT
-	helpers::AtExitRegistry::Raii atExitRegistryRaii;
-#endif
 
 	/**
 	 * Used to calculate the buffer position at which to store the next event.
