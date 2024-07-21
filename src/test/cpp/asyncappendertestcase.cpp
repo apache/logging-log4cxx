@@ -310,6 +310,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOG4CXX_INFO(root, "Message");
 			auto& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT(0 < v.size());
+			asyncAppender->close(); // Wait for dispatch thread to complete
 		}
 
 		/**

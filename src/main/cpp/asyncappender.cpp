@@ -171,10 +171,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 	void stopDispatcher()
 	{
-		{
-			std::lock_guard<std::mutex> lock(bufferMutex);
-			closed = true;
-		}
+		this->setClosed();
 		bufferNotEmpty.notify_all();
 		bufferNotFull.notify_all();
 
@@ -212,6 +209,18 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 * Used to communicate to the dispatch thread when an event is committed in buffer.
 	*/
 	alignas(hardware_constructive_interference_size) std::atomic<size_t> commitCount;
+
+	bool isClosed()
+	{
+		std::lock_guard<std::mutex> lock(this->bufferMutex);
+		return this->closed;
+	}
+
+	void setClosed()
+	{
+		std::lock_guard<std::mutex> lock(this->bufferMutex);
+		this->closed = true;
+	}
 };
 
 
@@ -280,7 +289,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if (!priv->dispatcher.joinable())
 	{
-		std::lock_guard<std::mutex> lock(priv->bufferMutex);
+		std::lock_guard<std::recursive_mutex> lock(priv->mutex);
 		if (!priv->dispatcher.joinable())
 			priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 	}
@@ -515,7 +524,7 @@ void AsyncAppender::dispatch()
 				{ return priv->dispatchedCount != priv->commitCount || priv->closed; }
 			);
 		}
-		isActive = !priv->closed;
+		isActive = !priv->isClosed();
 
 		while (events.size() < priv->bufferSize && priv->dispatchedCount != priv->commitCount)
 		{
@@ -545,34 +554,35 @@ void AsyncAppender::dispatch()
 			}
 			catch (std::exception& ex)
 			{
-				if (isActive)
+				if (!priv->isClosed())
 				{
 					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, item);
-					isActive = false;
+					priv->setClosed();
 				}
 			}
 			catch (...)
 			{
-				if (isActive)
+				if (!priv->isClosed())
 				{
 					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
-					isActive = false;
+					priv->setClosed();
 				}
 			}
 		}
-		if (!isActive && LogLog::isDebugEnabled())
+	}
+	if (LogLog::isDebugEnabled())
+	{
+		Pool p;
+		LogString msg(LOG4CXX_STR("AsyncAppender"));
+		msg += LOG4CXX_STR(" discardCount ");
+		StringHelper::toString(discardCount, p, msg);
+		msg += LOG4CXX_STR(" pendingCountHistogram");
+		for (auto item : pendingCountHistogram)
 		{
-			LogString msg(LOG4CXX_STR("AsyncAppender")); 
-			msg += LOG4CXX_STR(" discardCount ");
-			StringHelper::toString(discardCount, p, msg);
-			msg += LOG4CXX_STR(" pendingCountHistogram");
-			for (auto item : pendingCountHistogram)
-			{
-				msg += logchar(' ');
-				StringHelper::toString(item, p, msg);
-			}
-			LogLog::debug(msg);
+			msg += logchar(' ');
+			StringHelper::toString(item, p, msg);
 		}
+		LogLog::debug(msg);
 	}
 
 }
