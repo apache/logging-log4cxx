@@ -37,6 +37,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/date.h>
+#include <thread>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;
@@ -355,7 +356,9 @@ const LogString& LoggingEvent::getCurrentThreadName()
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
 	thread_id_string = Transcoder::decode(result);
 #else
-	thread_id_string = LOG4CXX_STR("0x00000000");
+	std::stringstream ss;
+	ss << std::hex << "0x" << std::this_thread::get_id();
+	thread_id_string = ss.str();
 #endif
 	return thread_id_string;
 }
