@@ -557,7 +557,7 @@ void AsyncAppender::dispatch()
 				if (!priv->isClosed())
 				{
 					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, item);
-					priv->setClosed();
+					isActive = false;
 				}
 			}
 			catch (...)
@@ -565,7 +565,7 @@ void AsyncAppender::dispatch()
 				if (!priv->isClosed())
 				{
 					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
-					priv->setClosed();
+					isActive = false;
 				}
 			}
 		}
