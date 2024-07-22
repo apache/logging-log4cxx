@@ -23,6 +23,7 @@
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
+#include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <sstream>
 #include <algorithm>
@@ -147,7 +148,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 
 void ThreadSpecificData::recycle()
 {
-#if APR_HAS_THREADS
+#if !LOG4CXX_HAS_THREAD_LOCAL && APR_HAS_THREADS
 	if (m_priv->ndcStack.empty() && m_priv->mdcMap.empty())
 	{
 		void* pData = NULL;
