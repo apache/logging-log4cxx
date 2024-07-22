@@ -49,8 +49,12 @@ public:
 	}
 
 	void setOption(const LogString& option, const LogString& value) override {
-		if (helpers::StringHelper::equalsIgnoreCase(option,
-										   LOG4CXX_STR("SOMEVALUE"), LOG4CXX_STR("somevalue"))){
+		if (helpers::StringHelper::equalsIgnoreCase
+			( option
+			, LOG4CXX_STR("SOMEVALUE")
+			, LOG4CXX_STR("somevalue")
+			))
+		{
 			// Do something with the 'value' here.
 		}
 	}
