@@ -27,6 +27,10 @@
 #include <atomic>
 #include <condition_variable>
 
+#if LOG4CXX_EVENTS_AT_EXIT
+#include <log4cxx/private/atexitregistry.h>
+#endif
+
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
@@ -99,12 +103,12 @@ typedef std::map<LogString, DiscardSummary> DiscardMap;
 #endif
 
 #ifdef __cpp_lib_hardware_interference_size
-    using std::hardware_constructive_interference_size;
-    using std::hardware_destructive_interference_size;
+	using std::hardware_constructive_interference_size;
+	using std::hardware_destructive_interference_size;
 #else
-    // 64 bytes on x86-64 │ L1_CACHE_BYTES │ L1_CACHE_SHIFT │ __cacheline_aligned │ ...
-    constexpr std::size_t hardware_constructive_interference_size = 64;
-    constexpr std::size_t hardware_destructive_interference_size = 64;
+	// 64 bytes on x86-64 │ L1_CACHE_BYTES │ L1_CACHE_SHIFT │ __cacheline_aligned │ ...
+	constexpr std::size_t hardware_constructive_interference_size = 64;
+	constexpr std::size_t hardware_destructive_interference_size = 64;
 #endif
 
 struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
@@ -116,6 +120,9 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		, dispatcher()
 		, locationInfo(false)
 		, blocking(true)
+#if LOG4CXX_EVENTS_AT_EXIT
+		, atExitRegistryRaii([this]{stopDispatcher();})
+#endif
 		, eventCount(0)
 		, dispatchedCount(0)
 		, commitCount(0)
@@ -185,6 +192,10 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 * Does appender block when buffer is full.
 	*/
 	bool blocking;
+
+#if LOG4CXX_EVENTS_AT_EXIT
+	helpers::AtExitRegistry::Raii atExitRegistryRaii;
+#endif
 
 	/**
 	 * Used to calculate the buffer position at which to store the next event.
