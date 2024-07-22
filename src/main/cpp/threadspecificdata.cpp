@@ -32,9 +32,14 @@ using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 struct ThreadSpecificData::ThreadSpecificDataPrivate{
+	ThreadSpecificDataPrivate()
+		: pNames(std::make_shared<NameData>())
+		{}
 	NDC::Stack ndcStack;
 	MDC::Map mdcMap;
-	LogString str[2];
+
+	std::shared_ptr<NameData> pNames;
+
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
 	std::basic_ostringstream<logchar> logchar_stringstream;
 #endif
@@ -60,7 +65,6 @@ ThreadSpecificData::~ThreadSpecificData()
 {
 }
 
-
 NDC::Stack& ThreadSpecificData::getStack()
 {
 	return m_priv->ndcStack;
@@ -73,12 +77,17 @@ MDC::Map& ThreadSpecificData::getMap()
 
 LogString& ThreadSpecificData::getThreadIdString()
 {
-	return getCurrentData()->m_priv->str[0];
+	return getCurrentData()->m_priv->pNames->first;
 }
 
 LogString& ThreadSpecificData::getThreadName()
 {
-	return getCurrentData()->m_priv->str[1];
+	return getCurrentData()->m_priv->pNames->second;
+}
+
+auto ThreadSpecificData::getThreadNames() -> NameDataPtr
+{
+	return getCurrentData()->m_priv->pNames;
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
@@ -104,7 +113,10 @@ std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
 
 ThreadSpecificData* ThreadSpecificData::getCurrentData()
 {
-#if APR_HAS_THREADS
+#if LOG4CXX_HAS_THREAD_LOCAL
+	thread_local ThreadSpecificData data;
+	return &data;
+#elif APR_HAS_THREADS
 	void* pData = NULL;
 	if (APR_SUCCESS == apr_threadkey_private_get(&pData, APRInitializer::getTlsKey())
 		&& !pData)
@@ -118,9 +130,6 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 	}
 	if (pData)
 		return (ThreadSpecificData*) pData;
-#elif LOG4CXX_HAS_THREAD_LOCAL
-	thread_local ThreadSpecificData data;
-	return &data;
 #endif
 
 	// Fallback implementation that is not expected to be used

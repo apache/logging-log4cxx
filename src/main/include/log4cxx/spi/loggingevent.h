@@ -169,11 +169,20 @@ class LOG4CXX_EXPORT LoggingEvent :
 		*/
 		KeySet getMDCKeySet() const;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		Obtain a copy of this thread's MDC prior to serialization
 		or asynchronous logging.
 		*/
+		[[ deprecated( "Use LoadDC instead" ) ]]
 		void getMDCCopy() const;
+#endif
+
+		/**
+		Obtain a copy of this thread's diagnostic context prior to serialization
+		or asynchronous logging.
+		*/
+		void LoadDC() const;
 
 		/**
 		* Return a previously set property.

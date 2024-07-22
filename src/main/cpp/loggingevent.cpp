@@ -37,6 +37,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/date.h>
+#include <log4cxx/helpers/optional.h>
 #include <thread>
 
 using namespace LOG4CXX_NS;
@@ -46,11 +47,15 @@ using namespace LOG4CXX_NS::helpers;
 struct LoggingEvent::LoggingEventPrivate
 {
 	LoggingEventPrivate() :
+#if LOG4CXX_ABI_VERSION <= 15
 		ndc(0),
 		mdcCopy(0),
+#endif
 		properties(0),
+#if LOG4CXX_ABI_VERSION <= 15
 		ndcLookupRequired(true),
 		mdcCopyLookupRequired(true),
+#endif
 		timeStamp(0),
 		locationInfo(),
 		threadName(getCurrentThreadName()),
@@ -66,11 +71,15 @@ struct LoggingEvent::LoggingEventPrivate
 		) :
 		logger(logger1),
 		level(level1),
+#if LOG4CXX_ABI_VERSION <= 15
 		ndc(0),
 		mdcCopy(0),
+#endif
 		properties(0),
+#if LOG4CXX_ABI_VERSION <= 15
 		ndcLookupRequired(true),
 		mdcCopyLookupRequired(true),
+#endif
 		message(std::move(message1)),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
@@ -85,11 +94,15 @@ struct LoggingEvent::LoggingEventPrivate
 		const LogString& message1, const LocationInfo& locationInfo1) :
 		logger(logger1),
 		level(level1),
+#if LOG4CXX_ABI_VERSION <= 15
 		ndc(0),
 		mdcCopy(0),
+#endif
 		properties(0),
+#if LOG4CXX_ABI_VERSION <= 15
 		ndcLookupRequired(true),
 		mdcCopyLookupRequired(true),
+#endif
 		message(message1),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
@@ -101,8 +114,6 @@ struct LoggingEvent::LoggingEventPrivate
 
 	~LoggingEventPrivate()
 	{
-		delete ndc;
-		delete mdcCopy;
 		delete properties;
 	}
 
@@ -114,17 +125,20 @@ struct LoggingEvent::LoggingEventPrivate
 	/** level of logging event. */
 	LevelPtr level;
 
+#if LOG4CXX_ABI_VERSION <= 15
 	/** The nested diagnostic context (NDC) of logging event. */
 	mutable LogString* ndc;
 
 	/** The mapped diagnostic context (MDC) of logging event. */
 	mutable MDC::Map* mdcCopy;
+#endif
 
 	/**
 	* A map of String keys and String values.
 	*/
 	std::map<LogString, LogString>* properties;
 
+#if LOG4CXX_ABI_VERSION <= 15
 	/** Have we tried to do an NDC lookup? If we did, there is no need
 	*  to do it again.  Note that its value is always false when
 	*  serialized. Thus, a receiving SocketNode will never use it's own
@@ -138,6 +152,7 @@ struct LoggingEvent::LoggingEventPrivate
 	* the getMDC and getMDCCopy methods.
 	*/
 	mutable bool mdcCopyLookupRequired;
+#endif
 
 	/** The application supplied message of logging event. */
 	LogString message;
@@ -164,6 +179,15 @@ struct LoggingEvent::LoggingEventPrivate
 	const LogString& threadUserName;
 
 	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
+
+	ThreadSpecificData::NameDataPtr pNames = ThreadSpecificData::getCurrentData()->getThreadNames();
+
+	struct DiagnosticContext
+	{
+		Optional<NDC::DiagnosticContext> ctx;
+		MDC::Map map;
+	};
+	mutable std::unique_ptr<DiagnosticContext> dc;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
@@ -203,100 +227,76 @@ LoggingEvent::~LoggingEvent()
 {
 }
 
-const LogString& LoggingEvent::getThreadUserName() const{
+const LogString& LoggingEvent::getThreadUserName() const
+{
 	return m_priv->threadUserName;
 }
 
 bool LoggingEvent::getNDC(LogString& dest) const
 {
-	if (m_priv->ndcLookupRequired)
+	bool result = false;
+	// Use the copy of the diagnostic context if it exists.
+	// Otherwise use the NDC that is associated with the thread.
+	if (m_priv->dc)
 	{
-		m_priv->ndcLookupRequired = false;
-		LogString val;
-
-		if (NDC::get(val))
-		{
-			m_priv->ndc = new LogString(val);
-		}
+		if (result = m_priv->dc->ctx.has_value())
+			dest.append(NDC::getFullMessage(m_priv->dc->ctx.value()));
 	}
-
-	if (m_priv->ndc)
-	{
-		dest.append(*m_priv->ndc);
-		return true;
-	}
-
-	return false;
+	else
+		result = NDC::get(dest);
+	return result;
 }
 
 bool LoggingEvent::getMDC(const LogString& key, LogString& dest) const
 {
-	// Note the mdcCopy is used if it exists. Otherwise we use the MDC
-	// that is associated with the thread.
-	if (m_priv->mdcCopy != 0 && !m_priv->mdcCopy->empty())
+	bool result = false;
+	// Use the copy of the diagnostic context if it exists.
+	// Otherwise use the MDC that is associated with the thread.
+	if (m_priv->dc)
 	{
-		MDC::Map::const_iterator it = m_priv->mdcCopy->find(key);
-
-		if (it != m_priv->mdcCopy->end())
+		auto& map = m_priv->dc->map;
+		auto it = map.find(key);
+		if (it != map.end() && !it->second.empty())
 		{
-			if (!it->second.empty())
-			{
-				dest.append(it->second);
-				return true;
-			}
+			dest.append(it->second);
+			result = true;
 		}
 	}
-
-	return MDC::get(key, dest);
-
+	else
+		result = MDC::get(key, dest);
+	return result;
 }
 
 LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 {
-	LoggingEvent::KeySet set;
-
-	if (m_priv->mdcCopy && !m_priv->mdcCopy->empty())
+	LoggingEvent::KeySet result;
+	if (m_priv->dc)
 	{
-		for (auto const& item : *m_priv->mdcCopy)
-		{
-			set.push_back(item.first);
-
-		}
+		for (auto const& item : m_priv->dc->map)
+			result.push_back(item.first);
 	}
-	else
-	{
-		ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
-
-		if (data)
-		{
-			for (auto const& item : data->getMap())
-			{
-				set.push_back(item.first);
-			}
-		}
-	}
-
-	return set;
+	else for (auto const& item : ThreadSpecificData::getCurrentData()->getMap())
+		result.push_back(item.first);
+	return result;
 }
 
+void LoggingEvent::LoadDC() const
+{
+	m_priv->dc = std::make_unique<LoggingEventPrivate::DiagnosticContext>();
+	auto pData = ThreadSpecificData::getCurrentData();
+	m_priv->dc->map = pData->getMap();
+	auto& stack = pData->getStack();
+	if (!stack.empty())
+		m_priv->dc->ctx = stack.top();
+}
+
+#if LOG4CXX_ABI_VERSION <= 15
 void LoggingEvent::getMDCCopy() const
 {
-	if (m_priv->mdcCopyLookupRequired)
-	{
-		m_priv->mdcCopyLookupRequired = false;
-		// the clone call is required for asynchronous logging.
-		ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
-
-		if (data != 0)
-		{
-			m_priv->mdcCopy = new MDC::Map(data->getMap());
-		}
-		else
-		{
-			m_priv->mdcCopy = new MDC::Map();
-		}
-	}
+	if (!m_priv->dc)
+		LoadDC();
 }
+#endif
 
 bool LoggingEvent::getProperty(const LogString& key, LogString& dest) const
 {
@@ -334,11 +334,7 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 
 const LogString& LoggingEvent::getCurrentThreadName()
 {
-#if LOG4CXX_HAS_THREAD_LOCAL
-	thread_local LogString thread_id_string;
-#else
 	LogString& thread_id_string = ThreadSpecificData::getThreadIdString();
-#endif
 	if ( !thread_id_string.empty() )
 	{
 		return thread_id_string;
@@ -365,11 +361,7 @@ const LogString& LoggingEvent::getCurrentThreadName()
 
 const LogString& LoggingEvent::getCurrentThreadUserName()
 {
-#if LOG4CXX_HAS_THREAD_LOCAL
-	thread_local LogString thread_name;
-#else
 	LogString& thread_name = ThreadSpecificData::getThreadName();
-#endif
 	if( !thread_name.empty() ){
 		return thread_name;
 	}

@@ -61,6 +61,9 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		static LogString& getThreadIdString();
 		static LogString& getThreadName();
 
+		using NameData = std::pair<LogString, LogString>;
+		using NameDataPtr = std::shared_ptr<NameData>;
+		static NameDataPtr getThreadNames();
 	private:
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
 		static std::basic_ostringstream<logchar>& getStream(const logchar&);
