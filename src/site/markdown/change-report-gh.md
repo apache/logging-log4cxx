@@ -53,6 +53,11 @@ Release 1.3.0 includes the following new features:
 * Overhead reduction of upto 60% sending logging events to an appender
 * Statistics on the AsyncAppender's queue length (in Log4cxx debug output)
 
+The following issues have been addressed:
+
+* MSYS2/MINGW build errors \[[#389](https://github.com/apache/logging-log4cxx/pull/389)\] 
+* `thread_local` problems in MSYS2/MINGW \[[#394](https://github.com/apache/logging-log4cxx/pull/394)\]
+
 ## Release 1.2.0 - 2024-01-01 {#rel_1_2_0}
 
 The following issues have been addressed:

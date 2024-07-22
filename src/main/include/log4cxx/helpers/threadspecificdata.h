@@ -33,6 +33,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 {
 	public:
 		ThreadSpecificData();
+		ThreadSpecificData(ThreadSpecificData&& other);
 		~ThreadSpecificData();
 
 		/**
@@ -49,13 +50,27 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		static void push(const LogString& val);
 		static void inherit(const LOG4CXX_NS::NDC::Stack& stack);
 
-		LOG4CXX_NS::NDC::Stack& getStack();
-		LOG4CXX_NS::MDC::Map& getMap();
+		NDC::Stack& getStack();
+		MDC::Map& getMap();
 
+		template <typename T>
+		static std::basic_ostringstream<T>& getStringStream()
+		{
+			return getStream(T());
+		}
+		static LogString& getThreadIdString();
+		static LogString& getThreadName();
 
 	private:
-		static ThreadSpecificData& getDataNoThreads();
-		static ThreadSpecificData* createCurrentData();
+#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
+		static std::basic_ostringstream<logchar>& getStream(const logchar&);
+#endif
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+		static std::basic_ostringstream<wchar_t>& getStream(const wchar_t&);
+#endif
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+		static std::basic_ostringstream<UniChar>& getStream(const UniChar&);
+#endif
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ThreadSpecificDataPrivate, m_priv)
 };
 

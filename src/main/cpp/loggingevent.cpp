@@ -37,6 +37,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/date.h>
+#include <thread>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;
@@ -333,29 +334,10 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 
 const LogString& LoggingEvent::getCurrentThreadName()
 {
-#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-	using ThreadIdType = pthread_t;
-	ThreadIdType threadId = pthread_self();
-#elif defined(_WIN32)
-	using ThreadIdType = DWORD;
-	ThreadIdType threadId = GetCurrentThreadId();
-#else
-	using ThreadIdType = int;
-	ThreadIdType threadId = 0;
-#endif
-
 #if LOG4CXX_HAS_THREAD_LOCAL
 	thread_local LogString thread_id_string;
 #else
-	using ListItem = std::pair<ThreadIdType, LogString>;
-	static std::list<ListItem> thread_id_map;
-	static std::mutex mutex;
-	std::lock_guard<std::mutex> lock(mutex);
-	auto pThreadId = std::find_if(thread_id_map.begin(), thread_id_map.end()
-		, [threadId](const ListItem& item) { return threadId == item.first; });
-	if (thread_id_map.end() == pThreadId)
-		pThreadId = thread_id_map.insert(thread_id_map.begin(), ListItem(threadId, LogString()));
-	LogString& thread_id_string = pThreadId->second;
+	LogString& thread_id_string = ThreadSpecificData::getThreadIdString();
 #endif
 	if ( !thread_id_string.empty() )
 	{
@@ -365,15 +347,18 @@ const LogString& LoggingEvent::getCurrentThreadName()
 #if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
 	// pthread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
+	auto threadId = pthread_self();
 	char result[sizeof(pthread_t) * 3 + 10];
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 	thread_id_string = Transcoder::decode(result);
 #elif defined(_WIN32)
 	char result[20];
-	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
+	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
 	thread_id_string = Transcoder::decode(result);
 #else
-	thread_id_string = LOG4CXX_STR("0x00000000");
+	std::stringstream ss;
+	ss << std::hex << "0x" << std::this_thread::get_id();
+	thread_id_string = Transcoder::decode(ss.str().c_str());
 #endif
 	return thread_id_string;
 }
@@ -383,7 +368,7 @@ const LogString& LoggingEvent::getCurrentThreadUserName()
 #if LOG4CXX_HAS_THREAD_LOCAL
 	thread_local LogString thread_name;
 #else
-	static WideLife<LogString> thread_name = LOG4CXX_STR("(noname)");
+	LogString& thread_name = ThreadSpecificData::getThreadName();
 #endif
 	if( !thread_name.empty() ){
 		return thread_name;

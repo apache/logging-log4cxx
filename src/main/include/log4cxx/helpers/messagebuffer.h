@@ -719,7 +719,7 @@ class LOG4CXX_EXPORT MessageBuffer
 
 		/**
 		 *   Remove the constructed string.
-		 *   @param buf used only to signal that
+		 *   @param os used only to signal that
 		 *       the embedded stream was not used.
 		 */
 		std::basic_string<UniChar> extract_str(std::basic_ostream<UniChar>& os);

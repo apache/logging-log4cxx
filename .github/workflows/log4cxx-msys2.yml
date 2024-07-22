@@ -1,0 +1,79 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+name: log4cxx-msys2
+
+on: [push, pull_request]
+
+jobs:
+  job:
+    name: ${{ matrix.env }}-${{ matrix.cxx }}-build-and-test
+    runs-on: windows-2022
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [ ucrt64-clang, ucrt64-gnu ]
+        include:
+        - name: ucrt64-clang
+          sys: ucrt64
+          env: ucrt-x86_64
+          compiler-package: clang
+          cxx: clang++
+        - name: ucrt64-gnu
+          sys: ucrt64
+          env: ucrt-x86_64
+          compiler-package: gcc
+          cxx: g++
+        - name: mingw64-clang
+          sys: mingw64
+          env: x86_64
+          compiler-package: clang
+          cxx: clang++
+        - name: mingw64-gnu
+          sys: mingw64
+          env: x86_64
+          compiler-package: gcc
+          cxx: g++
+
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{matrix.sys}}
+        update: true
+        install: >-
+          git
+          mingw-w64-${{ matrix.env }}-${{ matrix.compiler-package }}
+          mingw-w64-${{ matrix.env }}-ccmake
+          mingw-w64-${{ matrix.env }}-ninja
+          mingw-w64-${{ matrix.env }}-apr-util
+          sed
+          zip
+
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false # do not persist auth token in the local git config
+        path: log4cxx
+
+    - name: 'configure and build'
+      shell: msys2 {0}
+      run: |
+        cmake -G Ninja -S log4cxx -B log4cxx/build -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_BUILD_TYPE=Debug
+        cmake --build log4cxx/build
+
+    - name: 'run unit tests'
+      shell: msys2 {0}
+      run: |
+        cd log4cxx/build
+        ctest -C Debug --output-on-failure

@@ -246,14 +246,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			std::vector<std::thread> threads;
 			for ( int x = 0; x < threadCount; x++ )
 			{
-				std::thread thr([root, LEN]()
+				threads.emplace_back([root, LEN]()
 				{
 					for (size_t i = 0; i < LEN; i++)
 					{
 						LOG4CXX_DEBUG(root, "message" << i);
 					}
 				});
-				threads.push_back( std::move(thr) );
 			}
 
 			for ( auto& thr : threads )
