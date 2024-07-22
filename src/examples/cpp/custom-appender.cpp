@@ -20,7 +20,9 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/xml/domconfigurator.h>
 
-namespace LOG4CXX_NS {
+using namespace LOG4CXX_NS;
+
+namespace com::foo {
 
 class NullWriterAppender : public AppenderSkeleton {
 public:
@@ -60,8 +62,6 @@ IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 
 int main( int argc, char** argv )
 {
-    using namespace log4cxx;
-
 	xml::DOMConfigurator::configure( "custom-appender.xml" );
 
 	LoggerPtr rootLogger = Logger::getRootLogger();

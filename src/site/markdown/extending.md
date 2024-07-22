@@ -32,7 +32,9 @@ log4cxx.AppenderSkeleton so that we don't need to implement all of
 the virtual methods that are defined in log4cxx.Appender:
 
 ~~~{.cpp}
-namespace log4cxx {
+using namespace log4cxx;
+
+namespace com::foo {
 
 class NullWriterAppender : public AppenderSkeleton {
 };
@@ -44,7 +46,9 @@ Next, we need to add in a few macros in order to properly register
 our new appender with Log4cxx:
 
 ~~~{.cpp}
-namespace log4cxx {
+using namespace log4cxx;
+
+namespace com::foo {
 
 class NullWriterAppender : public AppenderSkeleton {
 public:
