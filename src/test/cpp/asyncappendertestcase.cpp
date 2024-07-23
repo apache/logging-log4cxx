@@ -267,11 +267,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN*threadCount, (int)v.size());
 			std::map<LogString, int> perThreadCount;
+			std::vector<int> msgCount(LEN, 0);
 			for (auto m : v)
 			{
 				auto i = StringHelper::toInt(m->getMessage().substr(7));
 				LOGUNIT_ASSERT(0 <= i);
 				LOGUNIT_ASSERT(i < LEN);
+				++msgCount[i];
 				++perThreadCount[m->getThreadName()];
 			}
 			LOGUNIT_ASSERT_EQUAL(threadCount, (int)perThreadCount.size());
@@ -279,6 +281,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			{
 				LOGUNIT_ASSERT_EQUAL(item.second, LEN);
 			}
+			for (size_t i = 0; i < LEN; i++)
+				LOGUNIT_ASSERT_EQUAL(msgCount[i], threadCount);
 		}
 
 		/**
