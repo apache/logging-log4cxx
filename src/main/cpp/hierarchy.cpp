@@ -62,6 +62,8 @@ struct Hierarchy::HierarchyPrivate
 	ProvisionNodeMap provisionNodes;
 
 	std::vector<AppenderPtr> allAppenders;
+
+	mutable std::mutex listenerMutex;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
@@ -91,7 +93,7 @@ Hierarchy::~Hierarchy()
 
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
-	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+	std::lock_guard<std::mutex> lock(m_priv->listenerMutex);
 
 	if (std::find(m_priv->listeners.begin(), m_priv->listeners.end(), listener) != m_priv->listeners.end())
 	{
@@ -105,7 +107,7 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 
 void Hierarchy::removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
-	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+	std::lock_guard<std::mutex> lock(m_priv->listenerMutex);
 
     auto found = std::find(m_priv->listeners.begin(), m_priv->listeners.end(), listener);
     if(found != m_priv->listeners.end()){
@@ -194,7 +196,7 @@ void Hierarchy::fireAddAppenderEvent(const Logger* logger, const Appender* appen
 	setConfigured(true);
 	HierarchyEventListenerList clonedList;
 	{
-		std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+		std::lock_guard<std::mutex> lock(m_priv->listenerMutex);
 		clonedList = m_priv->listeners;
 	}
 
@@ -207,7 +209,7 @@ void Hierarchy::fireRemoveAppenderEvent(const Logger* logger, const Appender* ap
 {
 	HierarchyEventListenerList clonedList;
 	{
-		std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
+		std::lock_guard<std::mutex> lock(m_priv->listenerMutex);
 		clonedList = m_priv->listeners;
 	}
 	for (auto& item : clonedList)
