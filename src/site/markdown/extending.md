@@ -74,7 +74,7 @@ by calling, for example, `NullWriterAppender::registerClass()`.
 
 To avoid [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof)
 when configuring Log4cxx during static initialization
-(as in [Runtime Configuration])
+(as in [the recommended runtime configuration technique])
 you should place the `IMPLEMENT_LOG4CXX_OBJECT` macro
 in the file that loads the configuration.
 Alternatively, you could call `NullWriterAppender::registerClass()`
@@ -166,4 +166,4 @@ This example shows how to extend Log4cxx with a new appender.
 \example custom-appender.xml
 This example shows how to use a new appender in a configuration file.
 
-[Runtime Configuration]:quick-start.html#configuration
+[the recommended runtime configuration technique]:quick-start.html#configuration
