@@ -94,18 +94,16 @@ struct LoggingEvent::LoggingEventPrivate
 	}
 
 	/**
-	* The logger of the logging event.
+	* The name of the logger used to make the logging request
 	**/
 	LogString logger;
 
-	/** level of logging event. */
+	/** severity level of logging event. */
 	LevelPtr level;
 
 #if LOG4CXX_ABI_VERSION <= 15
-	/** The nested diagnostic context (NDC) of logging event. */
 	mutable LogString* ndc{NULL};
 
-	/** The mapped diagnostic context (MDC) of logging event. */
 	mutable MDC::Map* mdcCopy{NULL};
 #endif
 
@@ -115,52 +113,35 @@ struct LoggingEvent::LoggingEventPrivate
 	std::map<LogString, LogString>* properties{NULL};
 
 #if LOG4CXX_ABI_VERSION <= 15
-	/** Have we tried to do an NDC lookup? If we did, there is no need
-	*  to do it again.  Note that its value is always false when
-	*  serialized. Thus, a receiving SocketNode will never use it's own
-	*  (incorrect) NDC. See also writeObject method.
-	*/
 	mutable bool ndcLookupRequired{false};
 
-	/**
-	* Have we tried to do an MDC lookup? If we did, there is no need to do it
-	* again.  Note that its value is always false when serialized. See also
-	* the getMDC and getMDCCopy methods.
-	*/
 	mutable bool mdcCopyLookupRequired{false};
 #endif
 
-	/** The application supplied message of logging event. */
+	/** The application supplied message. */
 	LogString message;
 
 
-	/** The number of microseconds elapsed from 01.01.1970 until logging event
-	 was created. */
+	/** The number of microseconds elapsed since 1970-01-01
+	 *  at the time this logging event was created.
+	 */
 	log4cxx_time_t timeStamp;
 
-	/** The is the location where this log statement was written. */
+	/** The source code location where the logging request was made. */
 	const spi::LocationInfo locationInfo;
 
 
 #if LOG4CXX_ABI_VERSION <= 15
-	/** The identifier of thread in which this logging event
-	was generated.
-	*/
 	const LogString& threadName;
 
-	/**
-	 * The user-specified name of the thread(on a per-platform basis).
-	 * This is set using a method such as pthread_setname_np on POSIX
-	 * systems or SetThreadDescription on Windows.
-	 */
 	const LogString& threadUserName;
 #endif
 
 	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
 
 	/**
-	 *  This ensures the above string references remain valid
-	 *  for the lifetime of this LoggingEvent (i.e. even after thread termination).
+	 *  Thread names that remain valid for the lifetime of this LoggingEvent
+	 *  (i.e. even after thread termination).
 	 */
 	ThreadSpecificData::NamePairPtr pNames;
 

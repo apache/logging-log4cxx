@@ -61,6 +61,8 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 	void setThreadUserName();
 };
 
+/* Generate an identifier for the current thread
+*/
 void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadIdName()
 {
 #if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
@@ -81,6 +83,11 @@ void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadIdName()
 #endif
 }
 
+/*
+ * Get the user-specified name of the current thread (on a per-platform basis).
+ * This is set using a method such as pthread_setname_np on POSIX
+ * systems or SetThreadDescription on Windows.
+ */
 void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadUserName()
 {
 #if LOG4CXX_HAS_PTHREAD_GETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
