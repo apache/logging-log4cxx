@@ -38,7 +38,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 
 		/**
 		 *  Gets current thread specific data.
-		 *  @return thread specific data, may be null.
+		 *  @return a pointer that is never null.
 		 */
 		static ThreadSpecificData* getCurrentData();
 		/**
@@ -48,7 +48,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 
 		static void put(const LogString& key, const LogString& val);
 		static void push(const LogString& val);
-		static void inherit(const LOG4CXX_NS::NDC::Stack& stack);
+		static void inherit(const NDC::Stack& stack);
 
 		NDC::Stack& getStack();
 		MDC::Map& getMap();
@@ -61,9 +61,15 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		static LogString& getThreadIdString();
 		static LogString& getThreadName();
 
-		using NameData = std::pair<LogString, LogString>;
-		using NameDataPtr = std::shared_ptr<NameData>;
-		static NameDataPtr getThreadNames();
+		/**
+		 *  A reference counted pointer to thread specific strings.
+		 *
+		 *  String references will remain valid
+		 *  for the lifetime of this pointer (i.e. even after thread termination).
+		 */
+		struct OtherData;
+		using OtherDataPtr = std::shared_ptr<OtherData>;
+		static OtherDataPtr getOtherData();
 	private:
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
 		static std::basic_ostringstream<logchar>& getStream(const logchar&);

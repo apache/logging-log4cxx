@@ -32,14 +32,18 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
+struct ThreadSpecificData::OtherData : public std::pair<LogString, LogString>
+{
+};
+
 struct ThreadSpecificData::ThreadSpecificDataPrivate{
 	ThreadSpecificDataPrivate()
-		: pNames(std::make_shared<NameData>())
+		: pOtherData(std::make_shared<OtherData>())
 		{}
 	NDC::Stack ndcStack;
 	MDC::Map mdcMap;
 
-	std::shared_ptr<NameData> pNames;
+	std::shared_ptr<OtherData> pOtherData;
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
 	std::basic_ostringstream<logchar> logchar_stringstream;
@@ -78,17 +82,17 @@ MDC::Map& ThreadSpecificData::getMap()
 
 LogString& ThreadSpecificData::getThreadIdString()
 {
-	return getCurrentData()->m_priv->pNames->first;
+	return getCurrentData()->m_priv->pOtherData->first;
 }
 
 LogString& ThreadSpecificData::getThreadName()
 {
-	return getCurrentData()->m_priv->pNames->second;
+	return getCurrentData()->m_priv->pOtherData->second;
 }
 
-auto ThreadSpecificData::getThreadNames() -> NameDataPtr
+auto ThreadSpecificData::getOtherData() -> OtherDataPtr
 {
-	return getCurrentData()->m_priv->pNames;
+	return getCurrentData()->m_priv->pOtherData;
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
