@@ -41,26 +41,49 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		 *  @return a pointer that is never null.
 		 */
 		static ThreadSpecificData* getCurrentData();
+
 		/**
-		 *  Release this ThreadSpecficData if empty.
+		 *  Remove current thread data from APR if the diagnostic context is empty.
 		 */
 		void recycle();
 
+		/**
+		 *  Add the \c key \c val pair to the mapped diagnostic context of the current thread
+		 */
 		static void put(const LogString& key, const LogString& val);
+
+		/**
+		 *  Add \c val to the nested diagnostic context of the current thread
+		 */
 		static void push(const LogString& val);
+
+		/**
+		 *  Use \c stack as the nested diagnostic context of the current thread
+		 */
 		static void inherit(const NDC::Stack& stack);
 
+		/**
+		 *  The nested diagnostic context of the current thread
+		 */
 		NDC::Stack& getStack();
+
+		/**
+		 *  The mapped diagnostic context of the current thread
+		 */
 		MDC::Map& getMap();
 
+		/**
+		 *  A character outpur stream only assessable to the current thread
+		 */
 		template <typename T>
 		static std::basic_ostringstream<T>& getStringStream()
 		{
 			return getStream(T());
 		}
-		static LogString& getThreadIdString();
-		static LogString& getThreadName();
 
+		/**
+		 *  The names assigned to the current thread
+		 */
 		struct NamePair
 		{
 			LogString idString;
@@ -68,7 +91,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		};
 		using NamePairPtr = std::shared_ptr<NamePair>;
 		/**
-		 *  A reference counted pointer to thread specific strings.
+		 *  A reference counted pointer to the names of the current thread.
 		 *
 		 *  String references will remain valid
 		 *  for the lifetime of this pointer (i.e. even after thread termination).

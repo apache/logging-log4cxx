@@ -154,16 +154,6 @@ MDC::Map& ThreadSpecificData::getMap()
 	return m_priv->mdcMap;
 }
 
-LogString& ThreadSpecificData::getThreadIdString()
-{
-	return getCurrentData()->m_priv->pNamePair->idString;
-}
-
-LogString& ThreadSpecificData::getThreadName()
-{
-	return getCurrentData()->m_priv->pNamePair->threadName;
-}
-
 auto ThreadSpecificData::getNames() -> NamePairPtr
 {
 	return getCurrentData()->m_priv->pNamePair;
