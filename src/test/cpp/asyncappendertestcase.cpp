@@ -234,7 +234,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		// this test checks all messages are delivered from multiple threads
 		void testMultiThread()
 		{
-			size_t LEN = 2000; // Larger than default buffer size (128)
+			int LEN = 2000; // Larger than default buffer size (128)
 			int threadCount = 6;
 			auto root = Logger::getRootLogger();
 			auto vectorAppender = std::make_shared<VectorAppender>();
@@ -248,7 +248,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			{
 				threads.emplace_back([root, LEN]()
 				{
-					for (size_t i = 0; i < LEN; i++)
+					for (int i = 0; i < LEN; i++)
 					{
 						LOG4CXX_DEBUG(root, "message" << i);
 					}
@@ -265,18 +265,19 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->close();
 
 			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(LEN*threadCount, v.size());
-			std::vector<int> count(LEN, 0);
+			LOGUNIT_ASSERT_EQUAL(LEN*threadCount, (int)v.size());
+			std::map<LogString, int> perThreadCount;
 			for (auto m : v)
 			{
 				auto i = StringHelper::toInt(m->getMessage().substr(7));
 				LOGUNIT_ASSERT(0 <= i);
 				LOGUNIT_ASSERT(i < LEN);
-				++count[i];
+				++perThreadCount[m->getThreadName()];
 			}
-			for (size_t i = 0; i < LEN; i++)
+			LOGUNIT_ASSERT_EQUAL(threadCount, (int)perThreadCount.size());
+			for (auto& item : perThreadCount)
 			{
-				LOGUNIT_ASSERT_EQUAL(count[i], threadCount);
+				LOGUNIT_ASSERT_EQUAL(item.second, LEN);
 			}
 		}
 
