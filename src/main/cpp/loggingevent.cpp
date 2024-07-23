@@ -135,7 +135,7 @@ struct LoggingEvent::LoggingEventPrivate
 	log4cxx_time_t timeStamp;
 
 	/** The is the location where this log statement was written. */
-	const LOG4CXX_NS::spi::LocationInfo locationInfo;
+	const spi::LocationInfo locationInfo;
 
 
 	/** The identifier of thread in which this logging event
@@ -152,8 +152,16 @@ struct LoggingEvent::LoggingEventPrivate
 
 	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
 
+	/**
+	 *  This ensures the above string references remain valid
+	 *  for the lifetime of this LoggingEvent (i.e. even after thread termination).
+	 */
 	ThreadSpecificData::OtherDataPtr pNames = ThreadSpecificData::getCurrentData()->getOtherData();
 
+	/**
+	 *  Used to hold the diagnostic context when the lifetime
+	 *  of this LoggingEvent exceeds the duration of the logging request.
+	 */
 	struct DiagnosticContext
 	{
 		Optional<NDC::DiagnosticContext> ctx;
