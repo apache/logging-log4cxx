@@ -28,17 +28,9 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/threadspecificdata.h>
-#include <log4cxx/helpers/transcoder.h>
-
-#include <apr_portable.h>
-#include <apr_strings.h>
-#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <log4cxx/logger.h>
-#include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/optional.h>
-#include <thread>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;
@@ -46,10 +38,13 @@ using namespace LOG4CXX_NS::helpers;
 
 struct LoggingEvent::LoggingEventPrivate
 {
-	LoggingEventPrivate() :
+	LoggingEventPrivate(const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()) :
 		timeStamp(0),
-		threadName(getCurrentThreadName()),
-		threadUserName(getCurrentThreadUserName())
+#if LOG4CXX_ABI_VERSION <= 15
+		threadName(p->idString),
+		threadUserName(p->threadName),
+#endif
+		pNames(p)
 	{
 	}
 
@@ -58,29 +53,38 @@ struct LoggingEvent::LoggingEventPrivate
 		, const LevelPtr& level1
 		, const LocationInfo& locationInfo1
 		, LogString&& message1
+		, const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()
 		) :
 		logger(logger1),
 		level(level1),
 		message(std::move(message1)),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
-		threadName(getCurrentThreadName()),
-		threadUserName(getCurrentThreadUserName()),
-		chronoTimeStamp(std::chrono::microseconds(timeStamp))
+#if LOG4CXX_ABI_VERSION <= 15
+		threadName(p->idString),
+		threadUserName(p->threadName),
+#endif
+		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
+		pNames(p)
 	{
 	}
 
 	LoggingEventPrivate(
 		const LogString& logger1, const LevelPtr& level1,
-		const LogString& message1, const LocationInfo& locationInfo1) :
+		const LogString& message1, const LocationInfo& locationInfo1,
+		const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()
+		) :
 		logger(logger1),
 		level(level1),
 		message(message1),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
-		threadName(getCurrentThreadName()),
-		threadUserName(getCurrentThreadUserName()),
-		chronoTimeStamp(std::chrono::microseconds(timeStamp))
+#if LOG4CXX_ABI_VERSION <= 15
+		threadName(p->idString),
+		threadUserName(p->threadName),
+#endif
+		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
+		pNames(p)
 	{
 	}
 
@@ -138,6 +142,7 @@ struct LoggingEvent::LoggingEventPrivate
 	const spi::LocationInfo locationInfo;
 
 
+#if LOG4CXX_ABI_VERSION <= 15
 	/** The identifier of thread in which this logging event
 	was generated.
 	*/
@@ -149,6 +154,7 @@ struct LoggingEvent::LoggingEventPrivate
 	 * systems or SetThreadDescription on Windows.
 	 */
 	const LogString& threadUserName;
+#endif
 
 	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
 
@@ -156,17 +162,17 @@ struct LoggingEvent::LoggingEventPrivate
 	 *  This ensures the above string references remain valid
 	 *  for the lifetime of this LoggingEvent (i.e. even after thread termination).
 	 */
-	ThreadSpecificData::OtherDataPtr pNames = ThreadSpecificData::getCurrentData()->getOtherData();
+	ThreadSpecificData::NamePairPtr pNames;
 
-	/**
-	 *  Used to hold the diagnostic context when the lifetime
-	 *  of this LoggingEvent exceeds the duration of the logging request.
-	 */
 	struct DiagnosticContext
 	{
 		Optional<NDC::DiagnosticContext> ctx;
 		MDC::Map map;
 	};
+	/**
+	 *  Used to hold the diagnostic context when the lifetime
+	 *  of this LoggingEvent exceeds the duration of the logging request.
+	 */
 	mutable std::unique_ptr<DiagnosticContext> dc;
 };
 
@@ -209,7 +215,7 @@ LoggingEvent::~LoggingEvent()
 
 const LogString& LoggingEvent::getThreadUserName() const
 {
-	return m_priv->threadUserName;
+	return m_priv->pNames->threadName;
 }
 
 bool LoggingEvent::getNDC(LogString& dest) const
@@ -311,82 +317,6 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 	return set;
 }
 
-
-const LogString& LoggingEvent::getCurrentThreadName()
-{
-	LogString& thread_id_string = ThreadSpecificData::getThreadIdString();
-	if ( !thread_id_string.empty() )
-	{
-		return thread_id_string;
-	}
-
-#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-	// pthread_t encoded in HEX takes needs as many characters
-	// as two times the size of the type, plus an additional null byte.
-	auto threadId = pthread_self();
-	char result[sizeof(pthread_t) * 3 + 10];
-	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
-	thread_id_string = Transcoder::decode(result);
-#elif defined(_WIN32)
-	char result[20];
-	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
-	thread_id_string = Transcoder::decode(result);
-#else
-	std::stringstream ss;
-	ss << std::hex << "0x" << std::this_thread::get_id();
-	thread_id_string = Transcoder::decode(ss.str().c_str());
-#endif
-	return thread_id_string;
-}
-
-const LogString& LoggingEvent::getCurrentThreadUserName()
-{
-	LogString& thread_name = ThreadSpecificData::getThreadName();
-	if( !thread_name.empty() ){
-		return thread_name;
-	}
-
-#if LOG4CXX_HAS_PTHREAD_GETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-	char result[16];
-	pthread_t current_thread = pthread_self();
-	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
-		thread_name = getCurrentThreadName();
-	else
-		thread_name = Transcoder::decode(result);
-#elif defined(_WIN32)
-	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
-	static struct initialiser
-	{
-		HMODULE hKernelBase;
-		TGetThreadDescription GetThreadDescription;
-		initialiser()
-			: hKernelBase(GetModuleHandleA("KernelBase.dll"))
-			, GetThreadDescription(nullptr)
-		{
-			if (hKernelBase)
-				GetThreadDescription = reinterpret_cast<TGetThreadDescription>(GetProcAddress(hKernelBase, "GetThreadDescription"));
-		}
-	} win32func;
-	if (win32func.GetThreadDescription)
-	{
-		PWSTR result = 0;
-		HRESULT hr = win32func.GetThreadDescription(GetCurrentThread(), &result);
-		if (SUCCEEDED(hr) && result)
-		{
-			std::wstring wresult = result;
-			LOG4CXX_DECODE_WCHAR(decoded, wresult);
-			LocalFree(result);
-			thread_name = decoded;
-		}
-	}
-	if (thread_name.empty())
-		thread_name = getCurrentThreadName();
-#else
-	thread_name = getCurrentThreadName();
-#endif
-	return thread_name;
-}
-
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
 	if (m_priv->properties == 0)
@@ -419,7 +349,7 @@ const LogString& LoggingEvent::getRenderedMessage() const
 
 const LogString& LoggingEvent::getThreadName() const
 {
-	return m_priv->threadName;
+	return m_priv->pNames->idString;
 }
 
 log4cxx_time_t LoggingEvent::getTimeStamp() const

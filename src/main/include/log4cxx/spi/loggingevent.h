@@ -212,8 +212,6 @@ class LOG4CXX_EXPORT LoggingEvent :
 		//
 		LoggingEvent(const LoggingEvent&);
 		LoggingEvent& operator=(const LoggingEvent&);
-		static const LogString& getCurrentThreadName();
-		static const LogString& getCurrentThreadUserName();
 
 };
 

@@ -19,7 +19,10 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <apr_thread_proc.h>
+#include <apr_strings.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
@@ -32,18 +35,17 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
-struct ThreadSpecificData::OtherData : public std::pair<LogString, LogString>
-{
-};
-
 struct ThreadSpecificData::ThreadSpecificDataPrivate{
 	ThreadSpecificDataPrivate()
-		: pOtherData(std::make_shared<OtherData>())
-		{}
+		: pNamePair(std::make_shared<NamePair>())
+	{
+		setThreadIdName();
+		setThreadUserName();
+	}
 	NDC::Stack ndcStack;
 	MDC::Map mdcMap;
 
-	std::shared_ptr<OtherData> pOtherData;
+	std::shared_ptr<NamePair> pNamePair;
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
 	std::basic_ostringstream<logchar> logchar_stringstream;
@@ -54,7 +56,72 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 	std::basic_ostringstream<UniChar> unichar_stringstream;
 #endif
+
+	void setThreadIdName();
+	void setThreadUserName();
 };
+
+void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadIdName()
+{
+#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
+	// pthread_t encoded in HEX takes needs as many characters
+	// as two times the size of the type, plus an additional null byte.
+	auto threadId = pthread_self();
+	char result[sizeof(pthread_t) * 3 + 10];
+	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
+	this->pNamePair->idString = Transcoder::decode(result);
+#elif defined(_WIN32)
+	char result[20];
+	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
+	this->pNamePair->idString = Transcoder::decode(result);
+#else
+	std::stringstream ss;
+	ss << std::hex << "0x" << std::this_thread::get_id();
+	this->pNamePair->idString = Transcoder::decode(ss.str().c_str());
+#endif
+}
+
+void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadUserName()
+{
+#if LOG4CXX_HAS_PTHREAD_GETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
+	char result[16];
+	pthread_t current_thread = pthread_self();
+	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
+		this->pNamePair->threadName = this->pNamePair->idString;
+	else
+		this->pNamePair->threadName = Transcoder::decode(result);
+#elif defined(_WIN32)
+	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
+	static struct initialiser
+	{
+		HMODULE hKernelBase;
+		TGetThreadDescription GetThreadDescription;
+		initialiser()
+			: hKernelBase(GetModuleHandleA("KernelBase.dll"))
+			, GetThreadDescription(nullptr)
+		{
+			if (hKernelBase)
+				GetThreadDescription = reinterpret_cast<TGetThreadDescription>(GetProcAddress(hKernelBase, "GetThreadDescription"));
+		}
+	} win32func;
+	if (win32func.GetThreadDescription)
+	{
+		PWSTR result = 0;
+		HRESULT hr = win32func.GetThreadDescription(GetCurrentThread(), &result);
+		if (SUCCEEDED(hr) && result)
+		{
+			std::wstring wresult = result;
+			LOG4CXX_DECODE_WCHAR(decoded, wresult);
+			LocalFree(result);
+			this->pNamePair->threadName = decoded;
+		}
+	}
+	if (this->pNamePair->threadName.empty())
+		this->pNamePair->threadName = this->pNamePair->idString;
+#else
+	this->pNamePair->threadName = this->pNamePair->idString;
+#endif
+}
 
 ThreadSpecificData::ThreadSpecificData()
 	: m_priv(std::make_unique<ThreadSpecificDataPrivate>())
@@ -82,17 +149,17 @@ MDC::Map& ThreadSpecificData::getMap()
 
 LogString& ThreadSpecificData::getThreadIdString()
 {
-	return getCurrentData()->m_priv->pOtherData->first;
+	return getCurrentData()->m_priv->pNamePair->idString;
 }
 
 LogString& ThreadSpecificData::getThreadName()
 {
-	return getCurrentData()->m_priv->pOtherData->second;
+	return getCurrentData()->m_priv->pNamePair->threadName;
 }
 
-auto ThreadSpecificData::getOtherData() -> OtherDataPtr
+auto ThreadSpecificData::getNames() -> NamePairPtr
 {
-	return getCurrentData()->m_priv->pOtherData;
+	return getCurrentData()->m_priv->pNamePair;
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR

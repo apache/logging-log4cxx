@@ -61,15 +61,19 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		static LogString& getThreadIdString();
 		static LogString& getThreadName();
 
+		struct NamePair
+		{
+			LogString idString;
+			LogString threadName;
+		};
+		using NamePairPtr = std::shared_ptr<NamePair>;
 		/**
 		 *  A reference counted pointer to thread specific strings.
 		 *
 		 *  String references will remain valid
 		 *  for the lifetime of this pointer (i.e. even after thread termination).
 		 */
-		struct OtherData;
-		using OtherDataPtr = std::shared_ptr<OtherData>;
-		static OtherDataPtr getOtherData();
+		static NamePairPtr getNames();
 	private:
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
 		static std::basic_ostringstream<logchar>& getStream(const logchar&);
