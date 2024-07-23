@@ -152,7 +152,7 @@ struct LoggingEvent::LoggingEventPrivate
 
 	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
 
-	ThreadSpecificData::NameDataPtr pNames = ThreadSpecificData::getCurrentData()->getThreadNames();
+	ThreadSpecificData::OtherDataPtr pNames = ThreadSpecificData::getCurrentData()->getOtherData();
 
 	struct DiagnosticContext
 	{
