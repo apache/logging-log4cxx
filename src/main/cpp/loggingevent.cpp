@@ -47,17 +47,7 @@ using namespace LOG4CXX_NS::helpers;
 struct LoggingEvent::LoggingEventPrivate
 {
 	LoggingEventPrivate() :
-#if LOG4CXX_ABI_VERSION <= 15
-		ndc(0),
-		mdcCopy(0),
-#endif
-		properties(0),
-#if LOG4CXX_ABI_VERSION <= 15
-		ndcLookupRequired(true),
-		mdcCopyLookupRequired(true),
-#endif
 		timeStamp(0),
-		locationInfo(),
 		threadName(getCurrentThreadName()),
 		threadUserName(getCurrentThreadUserName())
 	{
@@ -71,15 +61,6 @@ struct LoggingEvent::LoggingEventPrivate
 		) :
 		logger(logger1),
 		level(level1),
-#if LOG4CXX_ABI_VERSION <= 15
-		ndc(0),
-		mdcCopy(0),
-#endif
-		properties(0),
-#if LOG4CXX_ABI_VERSION <= 15
-		ndcLookupRequired(true),
-		mdcCopyLookupRequired(true),
-#endif
 		message(std::move(message1)),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
@@ -94,15 +75,6 @@ struct LoggingEvent::LoggingEventPrivate
 		const LogString& message1, const LocationInfo& locationInfo1) :
 		logger(logger1),
 		level(level1),
-#if LOG4CXX_ABI_VERSION <= 15
-		ndc(0),
-		mdcCopy(0),
-#endif
-		properties(0),
-#if LOG4CXX_ABI_VERSION <= 15
-		ndcLookupRequired(true),
-		mdcCopyLookupRequired(true),
-#endif
 		message(message1),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
@@ -127,16 +99,16 @@ struct LoggingEvent::LoggingEventPrivate
 
 #if LOG4CXX_ABI_VERSION <= 15
 	/** The nested diagnostic context (NDC) of logging event. */
-	mutable LogString* ndc;
+	mutable LogString* ndc{NULL};
 
 	/** The mapped diagnostic context (MDC) of logging event. */
-	mutable MDC::Map* mdcCopy;
+	mutable MDC::Map* mdcCopy{NULL};
 #endif
 
 	/**
 	* A map of String keys and String values.
 	*/
-	std::map<LogString, LogString>* properties;
+	std::map<LogString, LogString>* properties{NULL};
 
 #if LOG4CXX_ABI_VERSION <= 15
 	/** Have we tried to do an NDC lookup? If we did, there is no need
@@ -144,14 +116,14 @@ struct LoggingEvent::LoggingEventPrivate
 	*  serialized. Thus, a receiving SocketNode will never use it's own
 	*  (incorrect) NDC. See also writeObject method.
 	*/
-	mutable bool ndcLookupRequired;
+	mutable bool ndcLookupRequired{false};
 
 	/**
 	* Have we tried to do an MDC lookup? If we did, there is no need to do it
 	* again.  Note that its value is always false when serialized. See also
 	* the getMDC and getMDCCopy methods.
 	*/
-	mutable bool mdcCopyLookupRequired;
+	mutable bool mdcCopyLookupRequired{false};
 #endif
 
 	/** The application supplied message of logging event. */
