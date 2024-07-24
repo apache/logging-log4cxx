@@ -75,7 +75,7 @@ by calling, for example, `NullWriterAppender::registerClass()`.
 To avoid [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof)
 when configuring Log4cxx during static initialization
 (as in [the recommended runtime configuration technique])
-you should put your extenstion classes (and the `IMPLEMENT_LOG4CXX_OBJECT` macro)
+you should put your extension classes (and the `IMPLEMENT_LOG4CXX_OBJECT` macro)
 in a dynamic library (DSO/DLL) that is loaded before loading the Log4cxx configuration.
 Alternatively, you could call `NullWriterAppender::registerClass()`
 before loading the configuration.
