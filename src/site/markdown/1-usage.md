@@ -27,9 +27,9 @@ See the following pages for usage information:
 * @subpage concepts
 * @subpage configuration-samples
 * @subpage filters
+* @subpage extending-log4cxx
 * @subpage qt-support
 * @subpage stacktrace-support
-* @subpage extending-log4cxx
 * @subpage threading
 * @subpage multiprocess-logging
 * @subpage environment-variables
