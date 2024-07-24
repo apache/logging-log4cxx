@@ -57,6 +57,7 @@ The following issues have been addressed:
 
 * MSYS2/MINGW build errors \[[#389](https://github.com/apache/logging-log4cxx/pull/389)\] 
 * `thread_local` problems in MSYS2/MINGW \[[#394](https://github.com/apache/logging-log4cxx/pull/394)\]
+* A potential 'use after free' fault when using AsyncAppender \[[#397](https://github.com/apache/logging-log4cxx/pull/397)\]
 
 ## Release 1.2.0 - 2024-01-01 {#rel_1_2_0}
 
