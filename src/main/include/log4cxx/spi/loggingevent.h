@@ -111,6 +111,7 @@ class LOG4CXX_EXPORT LoggingEvent :
 
 		/**
 		 * The name you gave to the thread in which this logging event was created.
+		 * You can create a named thread using log4cxx::helpers::ThreadUtility::createThread.
 		 * If Log4cxx is unable to retrieve the thread name using a platform-specific call,
 		 * the value is the same as the thread identity.
 		 */
@@ -181,6 +182,7 @@ class LOG4CXX_EXPORT LoggingEvent :
 		* @return true if \c dest was changed.
 		*/
 		bool getProperty(const LogString& key, LogString& dest) const;
+
 		/**
 		* The set of of the key values in the properties
 		* for the event.
@@ -189,7 +191,7 @@ class LOG4CXX_EXPORT LoggingEvent :
 		KeySet getPropertyKeySet() const;
 
 		/**
-		* Associate \c value with the property \c key.  since 1.3
+		* Associate \c value with the property \c key.
 		*/
 		void setProperty(const LogString& key, const LogString& value);
 
