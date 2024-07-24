@@ -282,12 +282,8 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		priv->appenders.appendLoopOnAppenders(event, p);
 	}
 
-	// Set the NDC and MDC for the calling thread as these
-	// LoggingEvent fields were not set at event creation time.
-	LogString ndcVal;
-	event->getNDC(ndcVal);
-	// Get a copy of this thread's MDC.
-	event->getMDCCopy();
+	// Get a copy of this thread's diagnostic context
+	event->LoadDC();
 
 	if (!priv->dispatcher.joinable())
 	{

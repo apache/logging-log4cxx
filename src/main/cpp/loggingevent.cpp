@@ -28,16 +28,9 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/threadspecificdata.h>
-#include <log4cxx/helpers/transcoder.h>
-
-#include <apr_portable.h>
-#include <apr_strings.h>
-#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <log4cxx/logger.h>
-#include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/date.h>
-#include <thread>
+#include <log4cxx/helpers/optional.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;
@@ -45,16 +38,13 @@ using namespace LOG4CXX_NS::helpers;
 
 struct LoggingEvent::LoggingEventPrivate
 {
-	LoggingEventPrivate() :
-		ndc(0),
-		mdcCopy(0),
-		properties(0),
-		ndcLookupRequired(true),
-		mdcCopyLookupRequired(true),
+	LoggingEventPrivate(const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()) :
 		timeStamp(0),
-		locationInfo(),
-		threadName(getCurrentThreadName()),
-		threadUserName(getCurrentThreadUserName())
+#if LOG4CXX_ABI_VERSION <= 15
+		threadName(p->idString),
+		threadUserName(p->threadName),
+#endif
+		pNames(p)
 	{
 	}
 
@@ -63,107 +53,108 @@ struct LoggingEvent::LoggingEventPrivate
 		, const LevelPtr& level1
 		, const LocationInfo& locationInfo1
 		, LogString&& message1
+		, const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()
 		) :
 		logger(logger1),
 		level(level1),
-		ndc(0),
-		mdcCopy(0),
-		properties(0),
-		ndcLookupRequired(true),
-		mdcCopyLookupRequired(true),
 		message(std::move(message1)),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
-		threadName(getCurrentThreadName()),
-		threadUserName(getCurrentThreadUserName()),
-		chronoTimeStamp(std::chrono::microseconds(timeStamp))
+#if LOG4CXX_ABI_VERSION <= 15
+		threadName(p->idString),
+		threadUserName(p->threadName),
+#endif
+		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
+		pNames(p)
 	{
 	}
 
 	LoggingEventPrivate(
 		const LogString& logger1, const LevelPtr& level1,
-		const LogString& message1, const LocationInfo& locationInfo1) :
+		const LogString& message1, const LocationInfo& locationInfo1,
+		const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()
+		) :
 		logger(logger1),
 		level(level1),
-		ndc(0),
-		mdcCopy(0),
-		properties(0),
-		ndcLookupRequired(true),
-		mdcCopyLookupRequired(true),
 		message(message1),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
-		threadName(getCurrentThreadName()),
-		threadUserName(getCurrentThreadUserName()),
-		chronoTimeStamp(std::chrono::microseconds(timeStamp))
+#if LOG4CXX_ABI_VERSION <= 15
+		threadName(p->idString),
+		threadUserName(p->threadName),
+#endif
+		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
+		pNames(p)
 	{
 	}
 
 	~LoggingEventPrivate()
 	{
-		delete ndc;
-		delete mdcCopy;
 		delete properties;
 	}
 
 	/**
-	* The logger of the logging event.
+	* The name of the logger used to make the logging request
 	**/
 	LogString logger;
 
-	/** level of logging event. */
+	/** severity level of logging event. */
 	LevelPtr level;
 
-	/** The nested diagnostic context (NDC) of logging event. */
-	mutable LogString* ndc;
+#if LOG4CXX_ABI_VERSION <= 15
+	mutable LogString* ndc{NULL};
 
-	/** The mapped diagnostic context (MDC) of logging event. */
-	mutable MDC::Map* mdcCopy;
+	mutable MDC::Map* mdcCopy{NULL};
+#endif
 
 	/**
 	* A map of String keys and String values.
 	*/
-	std::map<LogString, LogString>* properties;
+	std::map<LogString, LogString>* properties{NULL};
 
-	/** Have we tried to do an NDC lookup? If we did, there is no need
-	*  to do it again.  Note that its value is always false when
-	*  serialized. Thus, a receiving SocketNode will never use it's own
-	*  (incorrect) NDC. See also writeObject method.
-	*/
-	mutable bool ndcLookupRequired;
+#if LOG4CXX_ABI_VERSION <= 15
+	mutable bool ndcLookupRequired{false};
 
-	/**
-	* Have we tried to do an MDC lookup? If we did, there is no need to do it
-	* again.  Note that its value is always false when serialized. See also
-	* the getMDC and getMDCCopy methods.
-	*/
-	mutable bool mdcCopyLookupRequired;
+	mutable bool mdcCopyLookupRequired{false};
+#endif
 
-	/** The application supplied message of logging event. */
+	/** The application supplied message. */
 	LogString message;
 
 
-	/** The number of microseconds elapsed from 01.01.1970 until logging event
-	 was created. */
+	/** The number of microseconds elapsed since 1970-01-01
+	 *  at the time this logging event was created.
+	 */
 	log4cxx_time_t timeStamp;
 
-	/** The is the location where this log statement was written. */
-	const LOG4CXX_NS::spi::LocationInfo locationInfo;
+	/** The source code location where the logging request was made. */
+	const spi::LocationInfo locationInfo;
 
 
-	/** The identifier of thread in which this logging event
-	was generated.
-	*/
+#if LOG4CXX_ABI_VERSION <= 15
 	const LogString& threadName;
 
-	/**
-	 * The user-specified name of the thread(on a per-platform basis).
-	 * This is set using a method such as pthread_setname_np on POSIX
-	 * systems or SetThreadDescription on Windows.
-	 */
 	const LogString& threadUserName;
+#endif
 
 	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
+
+	/**
+	 *  Thread names that remain valid for the lifetime of this LoggingEvent
+	 *  (i.e. even after thread termination).
+	 */
+	ThreadSpecificData::NamePairPtr pNames;
+
+	struct DiagnosticContext
+	{
+		Optional<NDC::DiagnosticContext> ctx;
+		MDC::Map map;
+	};
+	/**
+	 *  Used to hold the diagnostic context when the lifetime
+	 *  of this LoggingEvent exceeds the duration of the logging request.
+	 */
+	mutable std::unique_ptr<DiagnosticContext> dc;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
@@ -203,100 +194,76 @@ LoggingEvent::~LoggingEvent()
 {
 }
 
-const LogString& LoggingEvent::getThreadUserName() const{
-	return m_priv->threadUserName;
+const LogString& LoggingEvent::getThreadUserName() const
+{
+	return m_priv->pNames->threadName;
 }
 
 bool LoggingEvent::getNDC(LogString& dest) const
 {
-	if (m_priv->ndcLookupRequired)
+	bool result = false;
+	// Use the copy of the diagnostic context if it exists.
+	// Otherwise use the NDC that is associated with the thread.
+	if (m_priv->dc)
 	{
-		m_priv->ndcLookupRequired = false;
-		LogString val;
-
-		if (NDC::get(val))
-		{
-			m_priv->ndc = new LogString(val);
-		}
+		if (result = m_priv->dc->ctx.has_value())
+			dest.append(NDC::getFullMessage(m_priv->dc->ctx.value()));
 	}
-
-	if (m_priv->ndc)
-	{
-		dest.append(*m_priv->ndc);
-		return true;
-	}
-
-	return false;
+	else
+		result = NDC::get(dest);
+	return result;
 }
 
 bool LoggingEvent::getMDC(const LogString& key, LogString& dest) const
 {
-	// Note the mdcCopy is used if it exists. Otherwise we use the MDC
-	// that is associated with the thread.
-	if (m_priv->mdcCopy != 0 && !m_priv->mdcCopy->empty())
+	bool result = false;
+	// Use the copy of the diagnostic context if it exists.
+	// Otherwise use the MDC that is associated with the thread.
+	if (m_priv->dc)
 	{
-		MDC::Map::const_iterator it = m_priv->mdcCopy->find(key);
-
-		if (it != m_priv->mdcCopy->end())
+		auto& map = m_priv->dc->map;
+		auto it = map.find(key);
+		if (it != map.end() && !it->second.empty())
 		{
-			if (!it->second.empty())
-			{
-				dest.append(it->second);
-				return true;
-			}
+			dest.append(it->second);
+			result = true;
 		}
 	}
-
-	return MDC::get(key, dest);
-
+	else
+		result = MDC::get(key, dest);
+	return result;
 }
 
 LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 {
-	LoggingEvent::KeySet set;
-
-	if (m_priv->mdcCopy && !m_priv->mdcCopy->empty())
+	LoggingEvent::KeySet result;
+	if (m_priv->dc)
 	{
-		for (auto const& item : *m_priv->mdcCopy)
-		{
-			set.push_back(item.first);
-
-		}
+		for (auto const& item : m_priv->dc->map)
+			result.push_back(item.first);
 	}
-	else
-	{
-		ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
-
-		if (data)
-		{
-			for (auto const& item : data->getMap())
-			{
-				set.push_back(item.first);
-			}
-		}
-	}
-
-	return set;
+	else for (auto const& item : ThreadSpecificData::getCurrentData()->getMap())
+		result.push_back(item.first);
+	return result;
 }
 
+void LoggingEvent::LoadDC() const
+{
+	m_priv->dc = std::make_unique<LoggingEventPrivate::DiagnosticContext>();
+	auto pData = ThreadSpecificData::getCurrentData();
+	m_priv->dc->map = pData->getMap();
+	auto& stack = pData->getStack();
+	if (!stack.empty())
+		m_priv->dc->ctx = stack.top();
+}
+
+#if LOG4CXX_ABI_VERSION <= 15
 void LoggingEvent::getMDCCopy() const
 {
-	if (m_priv->mdcCopyLookupRequired)
-	{
-		m_priv->mdcCopyLookupRequired = false;
-		// the clone call is required for asynchronous logging.
-		ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
-
-		if (data != 0)
-		{
-			m_priv->mdcCopy = new MDC::Map(data->getMap());
-		}
-		else
-		{
-			m_priv->mdcCopy = new MDC::Map();
-		}
-	}
+	if (!m_priv->dc)
+		LoadDC();
 }
+#endif
 
 bool LoggingEvent::getProperty(const LogString& key, LogString& dest) const
 {
@@ -331,90 +298,6 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 	return set;
 }
 
-
-const LogString& LoggingEvent::getCurrentThreadName()
-{
-#if LOG4CXX_HAS_THREAD_LOCAL
-	thread_local LogString thread_id_string;
-#else
-	LogString& thread_id_string = ThreadSpecificData::getThreadIdString();
-#endif
-	if ( !thread_id_string.empty() )
-	{
-		return thread_id_string;
-	}
-
-#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-	// pthread_t encoded in HEX takes needs as many characters
-	// as two times the size of the type, plus an additional null byte.
-	auto threadId = pthread_self();
-	char result[sizeof(pthread_t) * 3 + 10];
-	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
-	thread_id_string = Transcoder::decode(result);
-#elif defined(_WIN32)
-	char result[20];
-	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
-	thread_id_string = Transcoder::decode(result);
-#else
-	std::stringstream ss;
-	ss << std::hex << "0x" << std::this_thread::get_id();
-	thread_id_string = Transcoder::decode(ss.str().c_str());
-#endif
-	return thread_id_string;
-}
-
-const LogString& LoggingEvent::getCurrentThreadUserName()
-{
-#if LOG4CXX_HAS_THREAD_LOCAL
-	thread_local LogString thread_name;
-#else
-	LogString& thread_name = ThreadSpecificData::getThreadName();
-#endif
-	if( !thread_name.empty() ){
-		return thread_name;
-	}
-
-#if LOG4CXX_HAS_PTHREAD_GETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-	char result[16];
-	pthread_t current_thread = pthread_self();
-	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
-		thread_name = getCurrentThreadName();
-	else
-		thread_name = Transcoder::decode(result);
-#elif defined(_WIN32)
-	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
-	static struct initialiser
-	{
-		HMODULE hKernelBase;
-		TGetThreadDescription GetThreadDescription;
-		initialiser()
-			: hKernelBase(GetModuleHandleA("KernelBase.dll"))
-			, GetThreadDescription(nullptr)
-		{
-			if (hKernelBase)
-				GetThreadDescription = reinterpret_cast<TGetThreadDescription>(GetProcAddress(hKernelBase, "GetThreadDescription"));
-		}
-	} win32func;
-	if (win32func.GetThreadDescription)
-	{
-		PWSTR result = 0;
-		HRESULT hr = win32func.GetThreadDescription(GetCurrentThread(), &result);
-		if (SUCCEEDED(hr) && result)
-		{
-			std::wstring wresult = result;
-			LOG4CXX_DECODE_WCHAR(decoded, wresult);
-			LocalFree(result);
-			thread_name = decoded;
-		}
-	}
-	if (thread_name.empty())
-		thread_name = getCurrentThreadName();
-#else
-	thread_name = getCurrentThreadName();
-#endif
-	return thread_name;
-}
-
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
 	if (m_priv->properties == 0)
@@ -447,7 +330,7 @@ const LogString& LoggingEvent::getRenderedMessage() const
 
 const LogString& LoggingEvent::getThreadName() const
 {
-	return m_priv->threadName;
+	return m_priv->pNames->idString;
 }
 
 log4cxx_time_t LoggingEvent::getTimeStamp() const

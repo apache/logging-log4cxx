@@ -33,12 +33,12 @@ NDC::~NDC()
 }
 
 
-LogString& NDC::getMessage(NDC::DiagnosticContext& ctx)
+const LogString& NDC::getMessage(const DiagnosticContext& ctx)
 {
 	return ctx.first;
 }
 
-LogString& NDC::getFullMessage(NDC::DiagnosticContext& ctx)
+const LogString& NDC::getFullMessage(const DiagnosticContext& ctx)
 {
 	return ctx.second;
 }
