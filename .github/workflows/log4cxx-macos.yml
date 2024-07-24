@@ -38,7 +38,7 @@ jobs:
             qt: OFF
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: main

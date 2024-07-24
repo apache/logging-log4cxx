@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 38
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: main
@@ -45,5 +45,5 @@ jobs:
       run: |
         cd main
         cd build
-        ctest -C Debug --output-on-failure -V
+        ctest -C Debug --output-on-failure
 

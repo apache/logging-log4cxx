@@ -32,21 +32,21 @@ jobs:
             os: windows-2022
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: main
 
     - name: 'Restore Prebuilt Dependencies'
       id: restore-vcpkg-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: vcpkg
         key: ${{ runner.os }}-${{ matrix.name }}-cache-x64
 
     - name: 'Checkout VCPKG'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microsoft/vcpkg
         path: vcpkg
@@ -83,5 +83,4 @@ jobs:
       run: |
         cd main
         cd build
-        ctest -C Debug --output-on-failure -V
-
+        ctest -C Debug --output-on-failure
