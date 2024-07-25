@@ -118,7 +118,6 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 #endif
 				LOG4CXX_INFO(root, "Hello, World " << i);
 			}
-			appender->close();
 		}
 
 };

@@ -52,7 +52,7 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{stopAcceptingConnections();})
 #endif
-        {}
+        { stopAcceptingConnections(); }
 
 	int port;
 	ConnectionList connections;
@@ -73,14 +73,14 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 			if (!this->serverSocket || this->closed)
 				return;
 			this->closed = true;
-			// Interrupt accept()
-			try
-			{
-				this->serverSocket->close();
-			}
-			catch (Exception&)
-			{
-			}
+		}
+		// Interrupt accept()
+		try
+		{
+			this->serverSocket->close();
+		}
+		catch (Exception&)
+		{
 		}
 		if (this->sh.joinable())
 			this->sh.join();
