@@ -148,9 +148,7 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 
 	if (p)
 	{
-//		subsuite->name = (const char*) memcpy(calloc(p - suite_name + 1, 1),
-//				suite_name, p - suite_name);
-		int length = p - suite_name + 1;
+		int length = p - suite_name;
 		subsuite->name = std::string( suite_name, length );
 	}
 	else
@@ -196,7 +194,7 @@ void abts_run_test(abts_suite* ts, const char* name, test_func f, void* value)
 	abts_case tc;
 	sub_suite* ss;
 
-	if (!should_test_run(ts->tail->name.c_str()))
+	if (!should_test_run(name))
 	{
 		return;
 	}
