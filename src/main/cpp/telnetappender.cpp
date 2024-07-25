@@ -73,14 +73,14 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 			if (!this->serverSocket || this->closed)
 				return;
 			this->closed = true;
-			// Interrupt accept()
-			try
-			{
-				this->serverSocket->close();
-			}
-			catch (Exception&)
-			{
-			}
+		}
+		// Interrupt accept()
+		try
+		{
+			this->serverSocket->close();
+		}
+		catch (Exception&)
+		{
 		}
 		if (this->sh.joinable())
 			this->sh.join();

@@ -81,7 +81,8 @@ APRServerSocket::APRServerSocket(int port) :
 	}
 }
 
-void APRServerSocket::close(){
+void APRServerSocket::close()
+{
 	std::lock_guard<std::mutex> lock(_priv->mutex);
 
 	if (_priv->socket != 0)
@@ -103,9 +104,12 @@ accepts it
 */
 SocketPtr APRServerSocket::accept()
 {
-	std::lock_guard<std::mutex> lock(_priv->mutex);
-
-	if (_priv->socket == 0)
+	apr_socket_t* s;
+	{
+		std::lock_guard<std::mutex> lock(_priv->mutex);
+		s = _priv->socket;
+	}
+	if (s == 0)
 	{
 		throw IOException();
 	}
@@ -115,7 +119,7 @@ SocketPtr APRServerSocket::accept()
 	poll.desc_type = APR_POLL_SOCKET;
 	poll.reqevents = APR_POLLIN;
 	poll.rtnevents = 0;
-	poll.desc.s = _priv->socket;
+	poll.desc.s = s;
 	poll.client_data = NULL;
 
 	apr_int32_t signaled;
@@ -140,7 +144,7 @@ SocketPtr APRServerSocket::accept()
 	}
 
 	apr_socket_t* newSocket;
-	status = apr_socket_accept(&newSocket, _priv->socket, newPool);
+	status = apr_socket_accept(&newSocket, s, newPool);
 
 	if (status != APR_SUCCESS)
 	{
