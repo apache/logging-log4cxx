@@ -234,7 +234,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		// this test checks all messages are delivered from multiple threads
 		void testMultiThread()
 		{
-			size_t LEN = 2000; // Larger than default buffer size (128)
+			int LEN = 2000; // Larger than default buffer size (128)
 			int threadCount = 6;
 			auto root = Logger::getRootLogger();
 			auto vectorAppender = std::make_shared<VectorAppender>();
@@ -246,14 +246,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			std::vector<std::thread> threads;
 			for ( int x = 0; x < threadCount; x++ )
 			{
-				std::thread thr([root, LEN]()
+				threads.emplace_back([root, LEN]()
 				{
-					for (size_t i = 0; i < LEN; i++)
+					for (int i = 0; i < LEN; i++)
 					{
 						LOG4CXX_DEBUG(root, "message" << i);
 					}
 				});
-				threads.push_back( std::move(thr) );
 			}
 
 			for ( auto& thr : threads )
@@ -266,19 +265,24 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->close();
 
 			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(LEN*threadCount, v.size());
-			std::vector<int> count(LEN, 0);
+			LOGUNIT_ASSERT_EQUAL(LEN*threadCount, (int)v.size());
+			std::map<LogString, int> perThreadCount;
+			std::vector<int> msgCount(LEN, 0);
 			for (auto m : v)
 			{
 				auto i = StringHelper::toInt(m->getMessage().substr(7));
 				LOGUNIT_ASSERT(0 <= i);
 				LOGUNIT_ASSERT(i < LEN);
-				++count[i];
+				++msgCount[i];
+				++perThreadCount[m->getThreadName()];
+			}
+			LOGUNIT_ASSERT_EQUAL(threadCount, (int)perThreadCount.size());
+			for (auto& item : perThreadCount)
+			{
+				LOGUNIT_ASSERT_EQUAL(item.second, LEN);
 			}
 			for (size_t i = 0; i < LEN; i++)
-			{
-				LOGUNIT_ASSERT_EQUAL(count[i], threadCount);
-			}
+				LOGUNIT_ASSERT_EQUAL(msgCount[i], threadCount);
 		}
 
 		/**
@@ -305,7 +309,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->setErrorHandler(errorHandler);
 
 			LOG4CXX_INFO(root, "Message");
-			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+			std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
 			LOGUNIT_ASSERT(errorHandler->errorReported());
 			LOG4CXX_INFO(root, "Message");
 			auto& v = vectorAppender->getVector();

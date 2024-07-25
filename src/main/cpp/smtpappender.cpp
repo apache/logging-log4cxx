@@ -644,11 +644,8 @@ void SMTPAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		return;
 	}
 
-	LogString ndc;
-	event->getNDC(ndc);
-	event->getThreadName();
-	// Get a copy of this thread's MDC.
-	event->getMDCCopy();
+	// Get a copy of this thread's diagnostic context
+	event->LoadDC();
 
 	_priv->cb.add(event);
 

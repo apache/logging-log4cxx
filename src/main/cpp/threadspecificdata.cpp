@@ -15,25 +15,128 @@
  * limitations under the License.
  */
 
+#include <log4cxx/log4cxx.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <apr_thread_proc.h>
+#include <apr_strings.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
+#include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/aprinitializer.h>
+#include <sstream>
+#include <algorithm>
+#include <thread>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 struct ThreadSpecificData::ThreadSpecificDataPrivate{
-	LOG4CXX_NS::NDC::Stack ndcStack;
-	LOG4CXX_NS::MDC::Map mdcMap;
+	ThreadSpecificDataPrivate()
+		: pNamePair(std::make_shared<NamePair>())
+	{
+		setThreadIdName();
+		setThreadUserName();
+	}
+	NDC::Stack ndcStack;
+	MDC::Map mdcMap;
+
+	std::shared_ptr<NamePair> pNamePair;
+
+#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
+	std::basic_ostringstream<logchar> logchar_stringstream;
+#endif
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+	std::basic_ostringstream<wchar_t> wchar_stringstream;
+#endif
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+	std::basic_ostringstream<UniChar> unichar_stringstream;
+#endif
+
+	void setThreadIdName();
+	void setThreadUserName();
 };
+
+/* Generate an identifier for the current thread
+*/
+void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadIdName()
+{
+#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
+	// pthread_t encoded in HEX takes needs as many characters
+	// as two times the size of the type, plus an additional null byte.
+	auto threadId = pthread_self();
+	char result[sizeof(pthread_t) * 3 + 10];
+	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
+	this->pNamePair->idString = Transcoder::decode(result);
+#elif defined(_WIN32)
+	char result[20];
+	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
+	this->pNamePair->idString = Transcoder::decode(result);
+#else
+	std::stringstream ss;
+	ss << std::hex << "0x" << std::this_thread::get_id();
+	this->pNamePair->idString = Transcoder::decode(ss.str().c_str());
+#endif
+}
+
+/*
+ * Get the user-specified name of the current thread (on a per-platform basis).
+ * This is set using a method such as pthread_setname_np on POSIX
+ * systems or SetThreadDescription on Windows.
+ */
+void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadUserName()
+{
+#if LOG4CXX_HAS_PTHREAD_GETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
+	char result[16];
+	pthread_t current_thread = pthread_self();
+	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
+		this->pNamePair->threadName = this->pNamePair->idString;
+	else
+		this->pNamePair->threadName = Transcoder::decode(result);
+#elif defined(_WIN32)
+	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
+	static struct initialiser
+	{
+		HMODULE hKernelBase;
+		TGetThreadDescription GetThreadDescription;
+		initialiser()
+			: hKernelBase(GetModuleHandleA("KernelBase.dll"))
+			, GetThreadDescription(nullptr)
+		{
+			if (hKernelBase)
+				GetThreadDescription = reinterpret_cast<TGetThreadDescription>(GetProcAddress(hKernelBase, "GetThreadDescription"));
+		}
+	} win32func;
+	if (win32func.GetThreadDescription)
+	{
+		PWSTR result = 0;
+		HRESULT hr = win32func.GetThreadDescription(GetCurrentThread(), &result);
+		if (SUCCEEDED(hr) && result)
+		{
+			std::wstring wresult = result;
+			LOG4CXX_DECODE_WCHAR(decoded, wresult);
+			LocalFree(result);
+			this->pNamePair->threadName = decoded;
+		}
+	}
+	if (this->pNamePair->threadName.empty())
+		this->pNamePair->threadName = this->pNamePair->idString;
+#else
+	this->pNamePair->threadName = this->pNamePair->idString;
+#endif
+}
 
 ThreadSpecificData::ThreadSpecificData()
 	: m_priv(std::make_unique<ThreadSpecificDataPrivate>())
+{
+}
+
+ThreadSpecificData::ThreadSpecificData(ThreadSpecificData&& other)
+	: m_priv(std::move(other.m_priv))
 {
 }
 
@@ -41,138 +144,113 @@ ThreadSpecificData::~ThreadSpecificData()
 {
 }
 
-
-LOG4CXX_NS::NDC::Stack& ThreadSpecificData::getStack()
+NDC::Stack& ThreadSpecificData::getStack()
 {
 	return m_priv->ndcStack;
 }
 
-LOG4CXX_NS::MDC::Map& ThreadSpecificData::getMap()
+MDC::Map& ThreadSpecificData::getMap()
 {
 	return m_priv->mdcMap;
 }
 
-ThreadSpecificData& ThreadSpecificData::getDataNoThreads()
+auto ThreadSpecificData::getNames() -> NamePairPtr
 {
-	static WideLife<ThreadSpecificData> noThreadData;
-	return noThreadData;
+	return getCurrentData()->m_priv->pNamePair;
 }
+
+#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
+std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(const logchar&)
+{
+	return getCurrentData()->m_priv->logchar_stringstream;
+}
+#endif
+
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(const wchar_t&)
+{
+	return getCurrentData()->m_priv->wchar_stringstream;
+}
+#endif
+
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
+{
+	return getCurrentData()->m_priv->unichar_stringstream;
+}
+#endif
 
 ThreadSpecificData* ThreadSpecificData::getCurrentData()
 {
-#if APR_HAS_THREADS
-	void* pData = NULL;
-	apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
-	return (ThreadSpecificData*) pData;
-#elif LOG4CXX_HAS_THREAD_LOCAL
+#if LOG4CXX_HAS_THREAD_LOCAL
 	thread_local ThreadSpecificData data;
 	return &data;
-#else
-	return &getDataNoThreads();
+#elif APR_HAS_THREADS
+	void* pData = NULL;
+	if (APR_SUCCESS == apr_threadkey_private_get(&pData, APRInitializer::getTlsKey())
+		&& !pData)
+	{
+		pData = new ThreadSpecificData();
+		if (APR_SUCCESS != apr_threadkey_private_set(pData, APRInitializer::getTlsKey()))
+		{
+			delete (ThreadSpecificData*)pData;
+			pData = NULL;
+		}
+	}
+	if (pData)
+		return (ThreadSpecificData*) pData;
 #endif
+
+	// Fallback implementation that is not expected to be used
+	using TaggedData = std::pair<std::thread::id, ThreadSpecificData>;
+	static std::list<TaggedData> thread_id_map;
+	static std::mutex mutex;
+	std::lock_guard<std::mutex> lock(mutex);
+	auto threadId = std::this_thread::get_id();
+	auto pThreadId = std::find_if(thread_id_map.begin(), thread_id_map.end()
+		, [threadId](const TaggedData& item) { return threadId == item.first; });
+	if (thread_id_map.end() == pThreadId)
+		pThreadId = thread_id_map.emplace(thread_id_map.begin(), threadId, ThreadSpecificData());
+	return &pThreadId->second;
 }
 
 void ThreadSpecificData::recycle()
 {
-#if APR_HAS_THREADS
-
+#if !LOG4CXX_HAS_THREAD_LOCAL && APR_HAS_THREADS
 	if (m_priv->ndcStack.empty() && m_priv->mdcMap.empty())
 	{
 		void* pData = NULL;
-		apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
-
-		if (stat == APR_SUCCESS && pData == this)
-		{
-			stat = apr_threadkey_private_set(0, APRInitializer::getTlsKey());
-
-			if (stat == APR_SUCCESS)
-			{
+		if (APR_SUCCESS == apr_threadkey_private_get(&pData, APRInitializer::getTlsKey())
+			&& pData == this
+			&& APR_SUCCESS == apr_threadkey_private_set(0, APRInitializer::getTlsKey()))
 				delete this;
-			}
-		}
 	}
-
 #endif
 }
 
 void ThreadSpecificData::put(const LogString& key, const LogString& val)
 {
-	ThreadSpecificData* data = getCurrentData();
-
-	if (data == 0)
-	{
-		data = createCurrentData();
-	}
-
-	if (data != 0)
-	{
-		data->getMap()[key] = val;
-	}
+	getCurrentData()->getMap()[key] = val;
 }
-
-
-
 
 void ThreadSpecificData::push(const LogString& val)
 {
-	ThreadSpecificData* data = getCurrentData();
-
-	if (data == 0)
+	NDC::Stack& stack = getCurrentData()->getStack();
+	if (stack.empty())
 	{
-		data = createCurrentData();
+		stack.push(NDC::DiagnosticContext(val, val));
 	}
-
-	if (data != 0)
+	else
 	{
-		NDC::Stack& stack = data->getStack();
-
-		if (stack.empty())
-		{
-			stack.push(NDC::DiagnosticContext(val, val));
-		}
-		else
-		{
-			LogString fullMessage(stack.top().second);
-			fullMessage.append(1, (logchar) 0x20);
-			fullMessage.append(val);
-			stack.push(NDC::DiagnosticContext(val, fullMessage));
-		}
+		LogString fullMessage(stack.top().second);
+		fullMessage.append(1, (logchar) 0x20);
+		fullMessage.append(val);
+		stack.push(NDC::DiagnosticContext(val, fullMessage));
 	}
 }
 
 void ThreadSpecificData::inherit(const NDC::Stack& src)
 {
-	ThreadSpecificData* data = getCurrentData();
-
-	if (data == 0)
-	{
-		data = createCurrentData();
-	}
-
-	if (data != 0)
-	{
-		data->getStack() = src;
-	}
+	getCurrentData()->getStack() = src;
 }
 
-
-
-ThreadSpecificData* ThreadSpecificData::createCurrentData()
-{
-#if APR_HAS_THREADS
-	ThreadSpecificData* newData = new ThreadSpecificData();
-	apr_status_t stat = apr_threadkey_private_set(newData, APRInitializer::getTlsKey());
-
-	if (stat != APR_SUCCESS)
-	{
-		delete newData;
-		newData = NULL;
-	}
-
-	return newData;
-#elif LOG4CXX_HAS_THREAD_LOCAL
-	return getCurrentData();
-#else
-	return 0;
-#endif
-}

@@ -26,6 +26,9 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
+#if !LOG4CXX_HAS_THREAD_LOCAL
+#include <log4cxx/helpers/threadspecificdata.h>
+#endif
 
 using namespace LOG4CXX_NS::helpers;
 
@@ -40,12 +43,6 @@ struct StringOrStream
 	StringOrStream()
 		: stream(nullptr)
 		{}
-	~StringOrStream()
-	{
-#if !LOG4CXX_HAS_THREAD_LOCAL
-		delete stream;
-#endif
-	}
 	/**
 	 * Move the character buffer from \c buf to \c stream
 	 */
@@ -53,18 +50,18 @@ struct StringOrStream
 	{
 		if (!this->stream)
 		{
-#if LOG4CXX_HAS_THREAD_LOCAL
 			const static std::basic_ostringstream<T> initialState;
+#if LOG4CXX_HAS_THREAD_LOCAL
 			thread_local static std::basic_ostringstream<T> sStream;
+#else
+			auto& sStream = ThreadSpecificData::getStringStream<T>();
+#endif
 			this->stream = &sStream;
 			this->stream->clear();
 			this->stream->precision(initialState.precision());
 			this->stream->width(initialState.width());
 			this->stream->setf(initialState.flags(), ~initialState.flags());
 			this->stream->fill(initialState.fill());
-#else
-			this->stream = new std::basic_ostringstream<T>();
-#endif
 			auto index = this->buf.size();
 			this->stream->str(std::move(this->buf));
 			this->stream->seekp(index);

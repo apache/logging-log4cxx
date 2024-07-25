@@ -33,29 +33,80 @@ class LOG4CXX_EXPORT ThreadSpecificData
 {
 	public:
 		ThreadSpecificData();
+		ThreadSpecificData(ThreadSpecificData&& other);
 		~ThreadSpecificData();
 
 		/**
 		 *  Gets current thread specific data.
-		 *  @return thread specific data, may be null.
+		 *  @return a pointer that is never null.
 		 */
 		static ThreadSpecificData* getCurrentData();
+
 		/**
-		 *  Release this ThreadSpecficData if empty.
+		 *  Remove current thread data from APR if the diagnostic context is empty.
 		 */
 		void recycle();
 
+		/**
+		 *  Add the \c key \c val pair to the mapped diagnostic context of the current thread
+		 */
 		static void put(const LogString& key, const LogString& val);
+
+		/**
+		 *  Add \c val to the nested diagnostic context of the current thread
+		 */
 		static void push(const LogString& val);
-		static void inherit(const LOG4CXX_NS::NDC::Stack& stack);
 
-		LOG4CXX_NS::NDC::Stack& getStack();
-		LOG4CXX_NS::MDC::Map& getMap();
+		/**
+		 *  Use \c stack as the nested diagnostic context of the current thread
+		 */
+		static void inherit(const NDC::Stack& stack);
 
+		/**
+		 *  The nested diagnostic context of the current thread
+		 */
+		NDC::Stack& getStack();
 
+		/**
+		 *  The mapped diagnostic context of the current thread
+		 */
+		MDC::Map& getMap();
+
+		/**
+		 *  A character outpur stream only assessable to the current thread
+		 */
+		template <typename T>
+		static std::basic_ostringstream<T>& getStringStream()
+		{
+			return getStream(T());
+		}
+
+		/**
+		 *  The names assigned to the current thread
+		 */
+		struct NamePair
+		{
+			LogString idString;
+			LogString threadName;
+		};
+		using NamePairPtr = std::shared_ptr<NamePair>;
+		/**
+		 *  A reference counted pointer to the names of the current thread.
+		 *
+		 *  String references will remain valid
+		 *  for the lifetime of this pointer (i.e. even after thread termination).
+		 */
+		static NamePairPtr getNames();
 	private:
-		static ThreadSpecificData& getDataNoThreads();
-		static ThreadSpecificData* createCurrentData();
+#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
+		static std::basic_ostringstream<logchar>& getStream(const logchar&);
+#endif
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+		static std::basic_ostringstream<wchar_t>& getStream(const wchar_t&);
+#endif
+#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+		static std::basic_ostringstream<UniChar>& getStream(const UniChar&);
+#endif
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ThreadSpecificDataPrivate, m_priv)
 };
 

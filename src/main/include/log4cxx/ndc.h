@@ -286,11 +286,11 @@ class LOG4CXX_EXPORT NDC
 		static bool pop(CFStringRef& dst);
 #endif
 
+		static const LogString& getMessage(const DiagnosticContext& ctx);
+		static const LogString& getFullMessage(const DiagnosticContext& ctx);
 	private:
 		NDC(const NDC&);
 		NDC& operator=(const NDC&);
-		static LogString& getMessage(DiagnosticContext& ctx);
-		static LogString& getFullMessage(DiagnosticContext& ctx);
 }; // class NDC;
 }  // namespace log4cxx
 
