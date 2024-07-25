@@ -111,7 +111,7 @@ SocketPtr APRServerSocket::accept()
 	}
 	if (s == 0)
 	{
-		throw IOException();
+		throw IOException(LOG4CXX_STR("socket is 0"));
 	}
 
 	apr_pollfd_t poll;
