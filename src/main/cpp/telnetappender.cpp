@@ -52,7 +52,7 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{stopAcceptingConnections();})
 #endif
-        {}
+        { stopAcceptingConnections(); }
 
 	int port;
 	ConnectionList connections;
