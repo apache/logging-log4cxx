@@ -32,7 +32,9 @@ log4cxx.AppenderSkeleton so that we don't need to implement all of
 the virtual methods that are defined in log4cxx.Appender:
 
 ~~~{.cpp}
-namespace log4cxx {
+using namespace log4cxx;
+
+namespace com::foo {
 
 class NullWriterAppender : public AppenderSkeleton {
 };
@@ -44,7 +46,9 @@ Next, we need to add in a few macros in order to properly register
 our new appender with Log4cxx:
 
 ~~~{.cpp}
-namespace log4cxx {
+using namespace log4cxx;
+
+namespace com::foo {
 
 class NullWriterAppender : public AppenderSkeleton {
 public:
@@ -61,9 +65,21 @@ IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 }
 ~~~
 
-These macros tell Log4cxx what the name of our class is, as well as giving
-Log4cxx a way of instansiating our class.  Without these macros, the custom
-class will not work.
+These macros allow Log4cxx to instantiate your class and provide log4cxx::cast.
+The `DECLARE_LOG4CXX_OBJECT` macro adds method declarations and
+the `IMPLEMENT_LOG4CXX_OBJECT` macro adds implementations.
+The `IMPLEMENT_LOG4CXX_OBJECT` also adds a static reference value
+which is initialized during program startup
+by calling, for example, `NullWriterAppender::registerClass()`.
+
+To avoid [Static Initialization Order Fiasco](https://en.cppreference.com/w/cpp/language/siof)
+when configuring Log4cxx during static initialization
+(as in [the recommended runtime configuration technique])
+you should put your extension classes (and the `IMPLEMENT_LOG4CXX_OBJECT` macro)
+in a dynamic library (DSO/DLL) that is loaded before loading the Log4cxx configuration.
+Alternatively, you could call `NullWriterAppender::registerClass()`
+before loading the configuration.
+Multiple `registerClass()` calls do no harm.
 
 Now, let's add some basic functionality to our class.  As the name of
 our class implies, we are going to do nothing with our appender here, as
@@ -149,3 +165,5 @@ This example shows how to extend Log4cxx with a new appender.
 
 \example custom-appender.xml
 This example shows how to use a new appender in a configuration file.
+
+[the recommended runtime configuration technique]:quick-start.html#configuration

@@ -65,9 +65,9 @@ hierarchy.
 When dealing with large amounts of logging information, it can be useful
 to filter on messages that we are interested in.  This filtering only
 takes places after determining that the level of the current logger would
-log the message in the first place.  When defining filters, note that
-they can only be defined on a per-appender basis, they do not globally
-affect anything.
+log the message in the first place (as shown in detail by [the flow chart]).
+Note that filters can only be applied on a per-appender basis,
+they do not globally affect anything.
 
 The filtering system is similar in concept to Linux iptables rules, in
 that there is a chain of filters that can accept a log message, deny the
@@ -276,3 +276,5 @@ ignore each iteration of the loop.
 
 \example ndc-example.cpp
 This example shows how to add a context string to each logging message using the NDC.
+
+[the flow chart]:log-flow.html
