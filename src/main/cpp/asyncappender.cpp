@@ -318,11 +318,11 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			priv->bufferNotEmpty.notify_all();
 			break;
 		}
-		priv->bufferNotEmpty.notify_all();
 		//
 		//   Following code is only reachable if buffer is full or eventCount has overflowed
 		//
 		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		priv->bufferNotEmpty.notify_all();
 		//
 		//   if blocking and thread is not already interrupted
 		//      and not the dispatcher then
