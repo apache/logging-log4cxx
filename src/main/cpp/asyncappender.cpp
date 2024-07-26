@@ -223,6 +223,11 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		std::lock_guard<std::mutex> lock(this->bufferMutex);
 		this->closed = true;
 	}
+
+	/**
+	 * Used to ensure the dispatch thread does not wait when a logging thread is waiting.
+	*/
+	int blockedCount{0};
 };
 
 
@@ -313,11 +318,11 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			priv->bufferNotEmpty.notify_all();
 			break;
 		}
-		priv->bufferNotEmpty.notify_all();
 		//
 		//   Following code is only reachable if buffer is full or eventCount has overflowed
 		//
 		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		priv->bufferNotEmpty.notify_all();
 		//
 		//   if blocking and thread is not already interrupted
 		//      and not the dispatcher then
@@ -328,10 +333,12 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			&& !priv->closed
 			&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
 		{
+			++priv->blockedCount;
 			priv->bufferNotFull.wait(lock, [this]()
 			{
 				return priv->eventCount - priv->dispatchedCount < priv->bufferSize;
 			});
+			--priv->blockedCount;
 			discard = false;
 		}
 
@@ -519,7 +526,7 @@ void AsyncAppender::dispatch()
 		{
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
 			priv->bufferNotEmpty.wait(lock, [this]() -> bool
-				{ return priv->dispatchedCount != priv->commitCount || priv->closed; }
+				{ return 0 < priv->blockedCount || priv->dispatchedCount != priv->commitCount || priv->closed; }
 			);
 		}
 		isActive = !priv->isClosed();
