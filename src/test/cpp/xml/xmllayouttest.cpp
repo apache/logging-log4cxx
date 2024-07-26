@@ -338,7 +338,7 @@ public:
 			}
 		}
 
-		LOGUNIT_ASSERT_EQUAL(2, childElementCount);
+		LOGUNIT_ASSERT_EQUAL(20, childElementCount);
 	}
 
 	/**
