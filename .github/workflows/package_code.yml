@@ -31,7 +31,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: clean-checkout
@@ -60,7 +60,7 @@ jobs:
         sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
         sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: always()
       with:
         name: 'Upload release files'

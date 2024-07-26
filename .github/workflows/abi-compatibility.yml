@@ -32,7 +32,7 @@ jobs:
       fail-fast: false
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: main
@@ -58,7 +58,7 @@ jobs:
         cp $(find . -name compat_report.html) .
         cp $(find . -name new-abi.dump) .
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: always()
       with:
         name: abi_info

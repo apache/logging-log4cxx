@@ -32,7 +32,7 @@ jobs:
       SONAR_SERVER_URL: "https://sonarcloud.io"
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false # do not persist auth token in the local git config
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
@@ -44,7 +44,7 @@ jobs:
           java-version: 17
 
       - name: Set up Python 3.8 for gcovr
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: 3.8
 
