@@ -42,7 +42,7 @@ class LOG4CXX_EXPORT FileWatchdog
 		/**
 		The default delay between every file modification check, set to 60
 		seconds.  */
-		static long DEFAULT_DELAY /*= 60000*/;
+		static long DEFAULT_DELAY /*= 60000 ms*/;
 
 	protected:
 		FileWatchdog(const File& filename);
@@ -52,9 +52,9 @@ class LOG4CXX_EXPORT FileWatchdog
 
 	public:
 		/**
-		Set the delay to observe between each check of the file changes.
+		Use \c delay as the number of milliseconds to wait between each check for file changes.
 		*/
-		void setDelay(long delay1);
+		void setDelay(long delay);
 
 		/**
 		Create a thread that periodically checks for a file change after first calling doOnChange() on the current thread.

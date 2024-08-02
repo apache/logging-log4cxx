@@ -52,10 +52,16 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		parameter.
 
 		@param configFileName The file to parse
-		@param repository The hierarchy to operation upon.
+		@param repository Where the Logger instances reside.
 		*/
-		virtual ConfigurationStatus doConfigure(const File& configFileName,
-			spi::LoggerRepositoryPtr repository) = 0;
+		virtual ConfigurationStatus doConfigure
+			( const File&                     configFileName
+#if LOG4CXX_ABI_VERSION <= 15
+			, spi::LoggerRepositoryPtr        repository
+#else
+			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
+#endif
+			) = 0;
 
 	protected:
 		Configurator();

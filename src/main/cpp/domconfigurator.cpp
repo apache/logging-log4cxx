@@ -811,10 +811,17 @@ void DOMConfigurator::setParameter(LOG4CXX_NS::helpers::Pool& p,
 	propSetter.setProperty(name, value, p);
 }
 
-spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr repository1)
+spi::ConfigurationStatus DOMConfigurator::doConfigure
+	( const File&                     filename
+#if LOG4CXX_ABI_VERSION <= 15
+	, spi::LoggerRepositoryPtr        repository
+#else
+	, const spi::LoggerRepositoryPtr& repository
+#endif
+	)
 {
-	repository1->setConfigured(true);
-	m_priv->repository = repository1;
+	m_priv->repository = repository ? repository : LogManager::getLoggerRepository();
+	m_priv->repository->setConfigured(true);
 	if (LogLog::isDebugEnabled())
 	{
 		LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
@@ -893,6 +900,13 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure(const File& filename, spi:
 	return spi::ConfigurationStatus::Configured;
 }
 
+// Read configuration options from \c filename.
+spi::ConfigurationStatus DOMConfigurator::configure(const File& filename)
+{
+	return DOMConfigurator().doConfigure(filename, LogManager::getLoggerRepository());
+}
+
+#if LOG4CXX_ABI_VERSION <= 15
 spi::ConfigurationStatus DOMConfigurator::configure(const std::string& filename)
 {
 	File file(filename);
@@ -952,7 +966,12 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& f
 
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 {
-	File file(filename);
+	return configureAndWatch(File(filename), delay);
+}
+#endif // LOG4CXX_ABI_VERSION <= 15
+
+spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& file, long delay)
+{
 	if ( xdog )
 	{
 		APRInitializer::unregisterCleanup(xdog);
@@ -963,12 +982,13 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& f
 
 	xdog = new XMLWatchdog(file);
 	APRInitializer::registerCleanup(xdog);
-	xdog->setDelay(delay);
+	xdog->setDelay(0 < delay ? delay : FileWatchdog::DEFAULT_DELAY);
 	xdog->start();
 
 	return status;
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 #if LOG4CXX_WCHAR_T_API
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
 {
@@ -1031,6 +1051,7 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& f
 	return status;
 }
 #endif
+#endif // LOG4CXX_ABI_VERSION <= 15
 
 void DOMConfigurator::parse(
 	Pool& p,
