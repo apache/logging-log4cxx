@@ -290,8 +290,6 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		<code>configFilename</code> is read to configure log4cxx.
 
 		The thread will be stopped by a LogManager::shutdown call.
-		Failure to call LogManager::shutdown may result in a fault
-		when the process exits.
 
 		@param configFilename A configuration file in XML format.
 		@param delay The delay in milliseconds to wait between each check.
