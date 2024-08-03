@@ -91,7 +91,7 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 
 		if (stat != APR_SUCCESS)
 		{
-			throw IOException(stat);
+			throw IOException(priv->destination.getName(), stat);
 		}
 
 		stat =  apr_procattr_child_out_set(attr, child_out, NULL);
