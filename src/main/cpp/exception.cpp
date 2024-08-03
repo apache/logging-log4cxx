@@ -182,16 +182,22 @@ LogString IOException::formatMessage(log4cxx_status_t stat)
 
 LogString IOException::formatMessage(const LogString& type, log4cxx_status_t stat)
 {
-	char err_buff[1024];
 	LogString s = type;
-	s.append(LOG4CXX_STR(": error code "));
-	Pool p;
-	StringHelper::toString(stat, p, s);
-	s.append(LOG4CXX_STR(": "));
+	char err_buff[1024] = {0};
 	apr_strerror(stat, err_buff, sizeof(err_buff));
-	std::string sMsg = err_buff;
-	LOG4CXX_DECODE_CHAR(lsMsg, sMsg);
-	s.append(lsMsg);
+	if (!err_buff[0])
+	{
+		s.append(LOG4CXX_STR(": APR error code "));
+		Pool p;
+		StringHelper::toString(stat, p, s);
+	}
+	else
+	{
+		s.append(LOG4CXX_STR(" - "));
+		std::string sMsg = err_buff;
+		LOG4CXX_DECODE_CHAR(lsMsg, sMsg);
+		s.append(lsMsg);
+	}
 	return s;
 }
 
