@@ -185,9 +185,9 @@ LogString IOException::formatMessage(const LogString& type, log4cxx_status_t sta
 	LogString s = type;
 	char err_buff[1024] = {0};
 	apr_strerror(stat, err_buff, sizeof(err_buff));
-	if (!err_buff[0])
+	if (0 == err_buff[0] || 0 == strncmp(err_buff, "APR does not understand", 23))
 	{
-		s.append(LOG4CXX_STR(": APR error code "));
+		s.append(LOG4CXX_STR(": error code "));
 		Pool p;
 		StringHelper::toString(stat, p, s);
 	}
