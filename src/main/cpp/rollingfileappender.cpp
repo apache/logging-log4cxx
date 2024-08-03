@@ -344,9 +344,10 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								}
 							}
 
+							bool appendToExisting = true;
 							if (success)
 							{
-								if (rollover1->getAppend())
+								if (appendToExisting = rollover1->getAppend())
 								{
 									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
 								}
@@ -372,16 +373,8 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 										_priv->errorHandler->error(lsMsg, ex, 0);
 									}
 								}
-
-								setFileInternal(
-									rollover1->getActiveFileName(), rollover1->getAppend(),
-									_priv->bufferedIO, _priv->bufferSize, p);
 							}
-							else
-							{
-								setFileInternal(
-									rollover1->getActiveFileName(), true, _priv->bufferedIO, _priv->bufferSize, p);
-							}
+							setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize, p);
 						}
 						else
 						{

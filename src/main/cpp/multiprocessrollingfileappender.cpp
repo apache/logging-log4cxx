@@ -336,16 +336,18 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 								}
 								catch (std::exception& ex)
 								{
-									LogLog::warn(LOG4CXX_STR("Exception on rollover"));
-									LogString exmsg;
-									LOG4CXX_NS::helpers::Transcoder::decode(ex.what(), exmsg);
-									_priv->errorHandler->error(exmsg, ex, 0);
+									LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
+									lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+									lsMsg.append(getFile());
+									lsMsg.append(LOG4CXX_STR("]"));
+									_priv->errorHandler->error(lsMsg, ex, 0);
 								}
 							}
 
+							bool appendToExisting = true;
 							if (success)
 							{
-								if (rollover1->getAppend())
+								if (appendToExisting = rollover1->getAppend())
 								{
 									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
 								}
@@ -354,25 +356,25 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 									_priv->fileLength = 0;
 								}
 
-								//
-								//  async action not yet implemented
-								//
 								ActionPtr asyncAction(rollover1->getAsynchronous());
 
 								if (asyncAction != NULL)
 								{
-									asyncAction->execute(p);
+									try
+									{
+										asyncAction->execute(p);
+									}
+									catch (std::exception& ex)
+									{
+										LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
+										lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+										lsMsg.append(getFile());
+										lsMsg.append(LOG4CXX_STR("]"));
+										_priv->errorHandler->error(lsMsg, ex, 0);
+									}
 								}
-
-								setFileInternal(
-									rollover1->getActiveFileName(), rollover1->getAppend(),
-									_priv->bufferedIO, _priv->bufferSize, p);
 							}
-							else
-							{
-								setFileInternal(
-									rollover1->getActiveFileName(), true, _priv->bufferedIO, _priv->bufferSize, p);
-							}
+							setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize, p);
 						}
 						else
 						{
@@ -397,10 +399,11 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 								}
 								catch (std::exception& ex)
 								{
-									LogLog::warn(LOG4CXX_STR("Exception during rollover"));
-									LogString exmsg;
-									LOG4CXX_NS::helpers::Transcoder::decode(ex.what(), exmsg);
-									_priv->errorHandler->error(exmsg, ex, 0);
+									LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
+									lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+									lsMsg.append(getFile());
+									lsMsg.append(LOG4CXX_STR("]"));
+									_priv->errorHandler->error(lsMsg, ex, 0);
 								}
 							}
 
@@ -435,10 +438,11 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 				}
 				catch (std::exception& ex)
 				{
-					LogLog::warn(LOG4CXX_STR("Exception during rollover"));
-					LogString exmsg;
-					LOG4CXX_NS::helpers::Transcoder::decode(ex.what(), exmsg);
-					_priv->errorHandler->error(exmsg, ex, 0);
+					LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
+					lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+					lsMsg.append(getFile());
+					lsMsg.append(LOG4CXX_STR("]"));
+					_priv->errorHandler->error(lsMsg, ex, 0);
 				}
 
 			}
