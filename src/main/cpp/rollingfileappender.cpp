@@ -336,11 +336,10 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								}
 								catch (std::exception& ex)
 								{
-									LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-									lsMsg.append(LOG4CXX_STR("- during rollover of ["));
-									lsMsg.append(getFile());
-									lsMsg.append(LOG4CXX_STR("]"));
-									_priv->errorHandler->error(lsMsg, ex, 0);
+									LogString msg(LOG4CXX_STR("Rollover of ["));
+									msg.append(getFile());
+									msg.append(LOG4CXX_STR("] failed"));
+									_priv->errorHandler->error(msg, ex, 0);
 								}
 							}
 
@@ -366,11 +365,10 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 									}
 									catch (std::exception& ex)
 									{
-										LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-										lsMsg.append(LOG4CXX_STR("- during rollover of ["));
-										lsMsg.append(getFile());
-										lsMsg.append(LOG4CXX_STR("]"));
-										_priv->errorHandler->error(lsMsg, ex, 0);
+										LogString msg(LOG4CXX_STR("Rollover of ["));
+										msg.append(getFile());
+										msg.append(LOG4CXX_STR("] failed"));
+										_priv->errorHandler->error(msg, ex, 0);
 									}
 								}
 							}
@@ -399,11 +397,10 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								}
 								catch (std::exception& ex)
 								{
-									LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-									lsMsg.append(LOG4CXX_STR("- during rollover of ["));
-									lsMsg.append(getFile());
-									lsMsg.append(LOG4CXX_STR("]"));
-									_priv->errorHandler->error(lsMsg, ex, 0);
+									LogString msg(LOG4CXX_STR("Rollover of ["));
+									msg.append(getFile());
+									msg.append(LOG4CXX_STR("] failed"));
+									_priv->errorHandler->error(msg, ex, 0);
 								}
 							}
 
@@ -433,11 +430,10 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 				}
 				catch (std::exception& ex)
 				{
-					LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-					lsMsg.append(LOG4CXX_STR("- during rollover of ["));
-					lsMsg.append(getFile());
-					lsMsg.append(LOG4CXX_STR("]"));
-					_priv->errorHandler->error(lsMsg, ex, 0);
+					LogString msg(LOG4CXX_STR("Rollover of ["));
+					msg.append(getFile());
+					msg.append(LOG4CXX_STR("] failed"));
+					_priv->errorHandler->error(msg, ex, 0);
 				}
 		}
 	}
@@ -468,11 +464,10 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 		}
 		catch (std::exception& ex)
 		{
-			LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-			lsMsg.append(LOG4CXX_STR("- during rollover of ["));
-			lsMsg.append(getFile());
-			lsMsg.append(LOG4CXX_STR("]"));
-			_priv->errorHandler->error(lsMsg);
+			LogString msg(LOG4CXX_STR("Rollover of ["));
+			msg.append(getFile());
+			msg.append(LOG4CXX_STR("] failed"));
+			_priv->errorHandler->error(msg, ex, 0);
 		}
 	}
 
