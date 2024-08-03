@@ -86,7 +86,7 @@ LogString InputStreamReader::read(Pool& p)
 
 		if (stat != 0)
 		{
-			throw IOException(stat);
+			throw IOException(LOG4CXX_STR("decode"), stat);
 		}
 
 		if (buf.remaining() > 0)
