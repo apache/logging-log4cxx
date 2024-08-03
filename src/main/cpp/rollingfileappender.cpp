@@ -433,18 +433,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 
 								if (asyncAction != NULL)
 								{
-									try
-									{
-										asyncAction->execute(p);
-									}
-									catch (std::exception& ex)
-									{
-										LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-										lsMsg.append(LOG4CXX_STR("- during rollover of ["));
-										lsMsg.append(getFile());
-										lsMsg.append(LOG4CXX_STR("]"));
-										_priv->errorHandler->error(lsMsg, ex, 0);
-									}
+									asyncAction->execute(p);
 								}
 							}
 
