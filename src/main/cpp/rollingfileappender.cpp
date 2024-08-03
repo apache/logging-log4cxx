@@ -340,7 +340,6 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 									lsMsg.append(LOG4CXX_STR("- during rollover of ["));
 									lsMsg.append(getFile());
 									lsMsg.append(LOG4CXX_STR("]"));
-									LogLog::error(lsMsg);
 									_priv->errorHandler->error(lsMsg, ex, 0);
 								}
 							}
@@ -356,9 +355,6 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 									_priv->fileLength = 0;
 								}
 
-								//
-								//  async action not yet implemented
-								//
 								ActionPtr asyncAction(rollover1->getAsynchronous());
 
 								if (asyncAction != NULL)
