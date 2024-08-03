@@ -28,12 +28,12 @@ IMPLEMENT_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
 
 struct OnlyOnceErrorHandler::OnlyOnceErrorHandlerPrivate{
 	OnlyOnceErrorHandlerPrivate() :
-		WARN_PREFIX(LOG4CXX_STR("log4cxx warning: ")),
-		ERROR_PREFIX(LOG4CXX_STR("log4cxx error: ")),
 		firstTime(true){}
 
+#if LOG4CXX_ABI_VERSION <= 15
 	LogString WARN_PREFIX;
 	LogString ERROR_PREFIX;
+#endif
 	mutable bool firstTime;
 };
 

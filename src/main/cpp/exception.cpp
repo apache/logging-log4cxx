@@ -153,6 +153,11 @@ IOException::IOException(log4cxx_status_t stat)
 {
 }
 
+IOException::IOException(const LogString& type, log4cxx_status_t stat)
+	: Exception(formatMessage(type, stat))
+{
+}
+
 
 IOException::IOException(const LogString& msg1)
 	: Exception(msg1)
@@ -172,16 +177,21 @@ IOException& IOException::operator=(const IOException& src)
 
 LogString IOException::formatMessage(log4cxx_status_t stat)
 {
+	return formatMessage(LOG4CXX_STR("IO Exception"), stat);
+}
+
+LogString IOException::formatMessage(const LogString& type, log4cxx_status_t stat)
+{
 	char err_buff[1024];
-	LogString s(LOG4CXX_STR("IO Exception : status code = "));
+	LogString s = type;
+	s.append(LOG4CXX_STR(": error code "));
 	Pool p;
 	StringHelper::toString(stat, p, s);
-	s.append(LOG4CXX_STR("("));
+	s.append(LOG4CXX_STR(": "));
 	apr_strerror(stat, err_buff, sizeof(err_buff));
 	std::string sMsg = err_buff;
 	LOG4CXX_DECODE_CHAR(lsMsg, sMsg);
 	s.append(lsMsg);
-	s.append(LOG4CXX_STR(")"));
 	return s;
 }
 

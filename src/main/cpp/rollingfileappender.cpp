@@ -337,9 +337,10 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								catch (std::exception& ex)
 								{
 									LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-									LogString errorMsg = LOG4CXX_STR("Exception on rollover: ");
-									errorMsg.append(lsMsg);
-									LogLog::error(errorMsg);
+									lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+									lsMsg.append(getFile());
+									lsMsg.append(LOG4CXX_STR("]"));
+									LogLog::error(lsMsg);
 									_priv->errorHandler->error(lsMsg, ex, 0);
 								}
 							}
@@ -362,7 +363,18 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 
 								if (asyncAction != NULL)
 								{
-									asyncAction->execute(p);
+									try
+									{
+										asyncAction->execute(p);
+									}
+									catch (std::exception& ex)
+									{
+										LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
+										lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+										lsMsg.append(getFile());
+										lsMsg.append(LOG4CXX_STR("]"));
+										_priv->errorHandler->error(lsMsg, ex, 0);
+									}
 								}
 
 								setFileInternal(
@@ -399,9 +411,9 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								catch (std::exception& ex)
 								{
 									LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-									LogString errorMsg = LOG4CXX_STR("Exception during rollover: ");
-									errorMsg.append(lsMsg);
-									LogLog::warn(errorMsg);
+									lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+									lsMsg.append(getFile());
+									lsMsg.append(LOG4CXX_STR("]"));
 									_priv->errorHandler->error(lsMsg, ex, 0);
 								}
 							}
@@ -417,14 +429,22 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 									_priv->fileLength = 0;
 								}
 
-								//
-								//   async action not yet implemented
-								//
 								ActionPtr asyncAction(rollover1->getAsynchronous());
 
 								if (asyncAction != NULL)
 								{
-									asyncAction->execute(p);
+									try
+									{
+										asyncAction->execute(p);
+									}
+									catch (std::exception& ex)
+									{
+										LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
+										lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+										lsMsg.append(getFile());
+										lsMsg.append(LOG4CXX_STR("]"));
+										_priv->errorHandler->error(lsMsg, ex, 0);
+									}
 								}
 							}
 
@@ -436,9 +456,9 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 				catch (std::exception& ex)
 				{
 					LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-					LogString errorMsg = LOG4CXX_STR("Exception during rollover: ");
-					errorMsg.append(lsMsg);
-					LogLog::warn(errorMsg);
+					lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+					lsMsg.append(getFile());
+					lsMsg.append(LOG4CXX_STR("]"));
 					_priv->errorHandler->error(lsMsg, ex, 0);
 				}
 		}
@@ -471,9 +491,9 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 		catch (std::exception& ex)
 		{
 			LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-			LogString errorMsg = LOG4CXX_STR("Exception during rollover attempt: ");
-			errorMsg.append(lsMsg);
-			LogLog::warn(errorMsg);
+			lsMsg.append(LOG4CXX_STR("- during rollover of ["));
+			lsMsg.append(getFile());
+			lsMsg.append(LOG4CXX_STR("]"));
 			_priv->errorHandler->error(lsMsg);
 		}
 	}
