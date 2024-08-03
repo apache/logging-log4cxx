@@ -120,7 +120,7 @@ bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 	{
 		LogLog::warn(LOG4CXX_STR("Failed to fork zip during log rotation; leaving log file uncompressed"));
 		if (priv->throwIOExceptionOnForkFailure)
-			throw IOException("zip", stat);
+			throw IOException(LOG4CXX_STR("zip"), stat);
 		/* If we fail here (to create the zip child process),
 		 * skip the compression and consider the rotation to be
 		 * otherwise successful. The caller has already rotated
