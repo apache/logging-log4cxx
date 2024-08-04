@@ -346,7 +346,8 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 							bool appendToExisting = true;
 							if (success)
 							{
-								if (appendToExisting = rollover1->getAppend())
+								appendToExisting = rollover1->getAppend();
+								if (appendToExisting)
 								{
 									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
 								}
