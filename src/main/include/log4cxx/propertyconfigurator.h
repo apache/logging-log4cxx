@@ -275,24 +275,33 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		PropertyConfigurator();
 		virtual ~PropertyConfigurator();
 		/**
-		Read configuration from a file. <b>The existing configuration is
-		not cleared nor reset.</b> If you require a different behavior,
-		then call {@link LogManager#resetConfiguration
-		resetConfiguration} method before calling
-		<code>doConfigure</code>.
+		Read configuration from \c configFileName.
+		If \c repository is not provided,
+		the spi::LoggerRepository held by LogManager is used.
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
 
-		@param configFileName The name of the configuration file where the
-		configuration information is stored.
-		@param hierarchy The hierarchy to operation upon.
+		@param configFileName The file to parse.
+		@param repository Where the Logger instances reside.
 		*/
-		spi::ConfigurationStatus doConfigure(const File& configFileName,
-			spi::LoggerRepositoryPtr hierarchy) override;
+		spi::ConfigurationStatus doConfigure
+			( const File&                     configFileName
+#if LOG4CXX_ABI_VERSION <= 15
+			, spi::LoggerRepositoryPtr        repository
+#else
+			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
+#endif
+			) override;
 
 		/**
 		Read configuration options from file <code>configFilename</code>.
+		Stores Logger instances in the spi::LoggerRepository held by LogManager.
 		*/
 		static spi::ConfigurationStatus configure(const File& configFilename);
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		Like {@link #configureAndWatch(const File& configFilename, long delay)}
 		except that the
@@ -301,27 +310,28 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		@param configFilename A file in key=value format.
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const File& configFilename);
-
+#endif
 		/**
-		Read the configuration file <code>configFilename</code> if it
-		exists. Moreover, a thread will be created that will periodically
-		check if <code>configFilename</code> has been created or
-		modified. The period is determined by the <code>delay</code>
-		argument. If a change or file creation is detected, then
-		<code>configFilename</code> is read to configure Log4cxx.
+		Read configuration options from \c configFilename (if it exists).
+		Stores Logger instances in the spi::LoggerRepository held by LogManager.
+		A thread will be created that periodically checks
+		whether \c configFilename has been created or modified.
+		A period of log4cxx::helpers::FileWatchdog#DEFAULT_DELAY
+		is used if \c delay is not a positive number.
+		If a change or file creation is detected,
+		then \c configFilename is read to configure Log4cxx.
 
 		The thread will be stopped by a LogManager::shutdown call.
-		Failure to call LogManager::shutdown may result in a fault
-		when the process exits.
 
 		@param configFilename A file in key=value format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const File& configFilename,
-			long delay);
+			long delay = 0);
 
 		/**
 		Read configuration options from <code>properties</code>.
+		Stores Logger instances in the spi::LoggerRepository held by LogManager.
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected format.
 		*/

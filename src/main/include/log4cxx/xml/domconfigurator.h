@@ -216,11 +216,20 @@ class LOG4CXX_EXPORT DOMConfigurator :
 
 		DOMConfigurator(LOG4CXX_NS::helpers::Pool& p);
 
+#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		A static version of #doConfigure.
+		*/
+		static spi::ConfigurationStatus configure(const char* filename) { return configure(std::string(filename)); }
 		/**
 		A static version of #doConfigure.
 		*/
 		static spi::ConfigurationStatus configure(const std::string& filename);
 #if LOG4CXX_WCHAR_T_API
+		/**
+		A static version of #doConfigure.
+		*/
+		static spi::ConfigurationStatus configure(const wchar_t* filename) { return configure(std::wstring(filename)); }
 		/**
 		A static version of #doConfigure.
 		*/
@@ -239,7 +248,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		static spi::ConfigurationStatus configure(const CFStringRef& filename);
 #endif
 		/**
-		Like #configureAndWatch(const std::string& configFilename, long delay)
+		Like #configureAndWatch(const File& filename, long delay)
 		except that the default delay as defined by
 		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
 		@param configFilename A configuration file in XML format.
@@ -247,7 +256,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename);
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Like #configureAndWatch(const std::string& configFilename, long delay)
+		Like #configureAndWatch(const File& filename, long delay)
 		except that the default delay as defined by
 		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
 		@param configFilename A configuration file in XML format.
@@ -256,7 +265,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		/**
-		Like #configureAndWatch(const std::string& configFilename, long delay)
+		Like #configureAndWatch(const File& filename, long delay)
 		except that the default delay as defined by
 		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
 		@param configFilename A configuration file in XML format.
@@ -265,7 +274,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Like #configureAndWatch(const std::string& configFilename, long delay)
+		Like #configureAndWatch(const File& filename, long delay)
 		except that the default delay as defined by
 		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
 		@param configFilename A configuration file in XML format.
@@ -281,8 +290,6 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		<code>configFilename</code> is read to configure log4cxx.
 
 		The thread will be stopped by a LogManager::shutdown call.
-		Failure to call LogManager::shutdown may result in a fault
-		when the process exits.
 
 		@param configFilename A configuration file in XML format.
 		@param delay The delay in milliseconds to wait between each check.
@@ -291,35 +298,69 @@ class LOG4CXX_EXPORT DOMConfigurator :
 			long delay);
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Refer #configureAndWatch(const std::string& configFilename, long delay)
+		Refer #configureAndWatch(const File& filename, long delay)
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename,
 			long delay);
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		/**
-		Refer #configureAndWatch(const std::string& configFilename, long delay)
+		Refer #configureAndWatch(const File& filename, long delay)
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename,
 			long delay);
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Refer #configureAndWatch(const std::string& configFilename, long delay)
+		Refer #configureAndWatch(const File& filename, long delay)
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename,
 			long delay);
 #endif
+#endif // LOG4CXX_ABI_VERSION <= 15
 
 		/**
-		Interpret the XML file pointed by <code>filename</code> and set up
-		log4cxx accordingly.
-		<p>The configuration is done relative to the hierarchy parameter.
+		Interpret \c filename as an XML file and set up Log4cxx accordingly.
+		If \c repository is not provided,
+		the spi::LoggerRepository held by LogManager is used.
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
+
 		@param filename The file to parse.
-		@param repository The hierarchy to operation upon.
+		@param repository Where the Logger instances reside.
 		*/
-		spi::ConfigurationStatus doConfigure(const File& filename,
-			spi::LoggerRepositoryPtr repository) override;
+		spi::ConfigurationStatus doConfigure
+			( const File&                     filename
+#if LOG4CXX_ABI_VERSION <= 15
+			, spi::LoggerRepositoryPtr        repository
+#else
+			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
+#endif
+			) override;
+
+		/**
+		Read configuration options from \c configFilename.
+		Stores Logger instances in the spi::LoggerRepository held by LogManager.
+		*/
+		static spi::ConfigurationStatus configure(const File& configFilename);
+
+		/**
+		Read configuration options from \c configFilename (if it exists).
+		A thread will be created that periodically checks
+		whether \c configFilename has been created or modified.
+		A period of log4cxx::helpers::FileWatchdog#DEFAULT_DELAY
+		is used if \c delay is not a positive number.
+		If a change or file creation is detected,
+		then \c configFilename is read to configure Log4cxx.
+
+		The thread will be stopped by a LogManager::shutdown call.
+
+		@param configFilename A XML format file.
+		@param delay The delay in milliseconds to wait between each check.
+		*/
+		static spi::ConfigurationStatus configureAndWatch(const File& configFilename, long delay = 0);
 
 	protected:
 		static LogString getAttribute(

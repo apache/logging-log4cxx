@@ -89,9 +89,16 @@ PropertyConfigurator::~PropertyConfigurator()
 	delete registry;
 }
 
-spi::ConfigurationStatus PropertyConfigurator::doConfigure(const File& configFileName,
-	spi::LoggerRepositoryPtr hierarchy)
+spi::ConfigurationStatus PropertyConfigurator::doConfigure
+	( const File&                     configFileName
+#if LOG4CXX_ABI_VERSION <= 15
+	, spi::LoggerRepositoryPtr        repository
+#else
+	, const spi::LoggerRepositoryPtr& repository
+#endif
+	)
 {
+	auto hierarchy = repository ? repository : LogManager::getLoggerRepository();
 	hierarchy->setConfigured(true);
 
 	Properties props;
@@ -138,12 +145,12 @@ spi::ConfigurationStatus PropertyConfigurator::configure(helpers::Properties& pr
 	return PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(const File& configFilename)
 {
 	return configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
 }
-
-
+#endif
 
 spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 	const File& configFilename, long delay)
@@ -158,7 +165,7 @@ spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 
 	pdog = new PropertyWatchdog(configFilename);
 	APRInitializer::registerCleanup(pdog);
-	pdog->setDelay(delay);
+	pdog->setDelay(0 < delay ? delay : FileWatchdog::DEFAULT_DELAY);
 	pdog->start();
 
 	return stat;
