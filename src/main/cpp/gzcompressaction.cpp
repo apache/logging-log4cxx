@@ -91,7 +91,7 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 
 		if (stat != APR_SUCCESS)
 		{
-			throw IOException(stat);
+			throw IOException(priv->destination.getName(), stat);
 		}
 
 		stat =  apr_procattr_child_out_set(attr, child_out, NULL);
@@ -130,11 +130,11 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 		apr_proc_t pid;
 		stat = apr_proc_create(&pid, "gzip", args, NULL, attr, aprpool);
 
-		if (stat != APR_SUCCESS && priv->throwIOExceptionOnForkFailure)
+		if (stat != APR_SUCCESS)
 		{
-			throw IOException(stat);
-		}else if(stat != APR_SUCCESS && !priv->throwIOExceptionOnForkFailure)
-		{
+			LogLog::warn(LOG4CXX_STR("Failed to fork gzip during log rotation; leaving log file uncompressed"));
+			if (priv->throwIOExceptionOnForkFailure)
+				throw IOException(LOG4CXX_STR("gzip"), stat);
 			/* If we fail here (to create the gzip child process),
 			 * skip the compression and consider the rotation to be
 			 * otherwise successful. The caller has already rotated
@@ -143,12 +143,7 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 			 * same path with `.gz` appended). Remove the empty
 			 * destination file and leave source as-is.
 			 */
-			LogLog::warn(LOG4CXX_STR("Failed to fork gzip during log rotation; leaving log file uncompressed"));
 			stat = apr_file_close(child_out);
-			if (stat != APR_SUCCESS)
-			{
-				LogLog::warn(LOG4CXX_STR("Failed to close abandoned .gz file; ignoring"));
-			}
 			return true;
 		}
 

@@ -116,11 +116,11 @@ bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 	apr_proc_t pid;
 	stat = apr_proc_create(&pid, "zip", args, NULL, attr, aprpool);
 
-	if (stat != APR_SUCCESS && priv->throwIOExceptionOnForkFailure)
+	if (stat != APR_SUCCESS)
 	{
-		throw IOException(stat);
-	}else if(stat != APR_SUCCESS && !priv->throwIOExceptionOnForkFailure)
-	{
+		LogLog::warn(LOG4CXX_STR("Failed to fork zip during log rotation; leaving log file uncompressed"));
+		if (priv->throwIOExceptionOnForkFailure)
+			throw IOException(LOG4CXX_STR("zip"), stat);
 		/* If we fail here (to create the zip child process),
 		 * skip the compression and consider the rotation to be
 		 * otherwise successful. The caller has already rotated
@@ -129,7 +129,6 @@ bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 		 * same path with `.zip` appended). Remove the empty
 		 * destination file and leave source as-is.
 		 */
-		LogLog::warn(LOG4CXX_STR("Failed to fork zip during log rotation; leaving log file uncompressed"));
 		return true;
 	}
 

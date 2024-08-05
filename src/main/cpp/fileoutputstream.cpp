@@ -73,7 +73,7 @@ apr_file_t* FileOutputStream::open(const LogString& filename,
 
 	if (stat != APR_SUCCESS)
 	{
-		throw IOException(stat);
+		throw IOException(filename, stat);
 	}
 
 	return fileptr;
@@ -110,7 +110,7 @@ void FileOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 {
 	if (m_priv->fileptr == NULL)
 	{
-		throw IOException(-1);
+		throw NullPointerException(LOG4CXX_STR("FileOutputStream"));
 	}
 
 	size_t nbytes = buf.remaining();

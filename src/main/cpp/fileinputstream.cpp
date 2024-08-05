@@ -61,7 +61,7 @@ void FileInputStream::open(const LogString& filename)
 
 	if (stat != APR_SUCCESS)
 	{
-		throw IOException(stat);
+		throw IOException(filename, stat);
 	}
 }
 
@@ -75,7 +75,7 @@ FileInputStream::FileInputStream(const File& aFile) :
 
 	if (stat != APR_SUCCESS)
 	{
-		throw IOException(stat);
+		throw IOException(aFile.getName(), stat);
 	}
 }
 
