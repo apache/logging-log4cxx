@@ -66,6 +66,9 @@ find_package(APR-Util REQUIRED)
 
 find_package( Threads REQUIRED )
 
+# Find LibFuzzer
+include("${CMAKE_CURRENT_LIST_DIR}/src/cmake/FindLibFuzzer.cmake")
+
 # Find expat for XML parsing
 find_package(EXPAT REQUIRED)
 if(TARGET EXPAT::EXPAT)
@@ -144,7 +147,7 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/main/include/log4cxx
 )
 
 install(TARGETS log4cxx EXPORT ${LOG4CXX_LIB_NAME}Targets
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} 
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
@@ -180,7 +183,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx.pc.in"
   "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc"
 )
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc" 
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lib${LOG4CXX_LIB_NAME}.pc"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 if(LOG4CXX_QT_SUPPORT)
@@ -299,6 +302,7 @@ message(STATUS "  C++ features requested: ......... : ${CMAKE_CXX_STANDARD}")
 message(STATUS "  Build shared library ............ : ${BUILD_SHARED_LIBS}")
 message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
 message(STATUS "  Build examples................... : ${BUILD_EXAMPLES}")
+message(STATUS "  Build fuzzers.................... : ${BUILD_FUZZERS}")
 message(STATUS "  Build site ...................... : ${BUILD_SITE}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  log4cxx library name ............ : ${LOG4CXX_LIB_NAME}")
