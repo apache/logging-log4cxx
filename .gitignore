@@ -19,6 +19,7 @@ pom.xml.releaseBackup
 release.properties
 
 autom4te.cache/
+.idea/
 .vs/
 out/
 src/**/__history/
