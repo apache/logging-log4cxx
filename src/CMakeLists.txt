@@ -40,7 +40,15 @@ if(BUILD_EXAMPLES)
   add_subdirectory(examples/cpp)
 endif()
 
-option(BUILD_FUZZERS "Build log4cxx fuzzers" ${BUILD_TESTING})
+# Define `BUILD_FUZZERS_DEFAULT`
+if(BUILD_TESTING AND LIBFUZZER_FOUND)
+  set(BUILD_FUZZERS_DEFAULT ON)
+else()
+  set(BUILD_FUZZERS_DEFAULT OFF)
+endif()
+
+# Define `BUILD_FUZZERS`
+option(BUILD_FUZZERS "Build log4cxx fuzzers" ${BUILD_FUZZERS_DEFAULT})
 if(BUILD_FUZZERS)
   if(NOT LIBFUZZER_FOUND)
     message(SEND_ERROR "libfuzzer, required by the requested fuzzer build, is not found")

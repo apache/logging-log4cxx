@@ -46,7 +46,7 @@ cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && cd ../../..
 
 # Build the project
 mkdir build && cd $_
-cmake -DBUILD_SHARED_LIBS=off ..
+cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_FUZZERS=ON ..
 make -j
 
 # Copy executables & resources
