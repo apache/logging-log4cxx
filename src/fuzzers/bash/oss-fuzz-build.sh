@@ -27,12 +27,6 @@ Usage: $0 <outputDir>
   outputDir
 
     The output directory to dump runner scripts and their dependencies.
-
-Environment variables:
-
-  BUILD (optional)
-
-    If "false", Maven installation will be skipped.
 EOF
   exit 1
 fi
@@ -45,7 +39,7 @@ mkdir -p "$outputDir"
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && cd ../../..
 
 # Build the project
-mkdir build && cd $_
+mkdir -p build && cd $_
 cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_FUZZERS=ON ..
 make -j
 
