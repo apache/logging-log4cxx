@@ -20,7 +20,7 @@
 if [[ "$#" -ne 1 ]]; then
   cat >&2 <<EOF
 Generates fuzzer runner scripts to be employed by Google OSS-Fuzz.
-See "FUZZING.adoc" for details.
+For details, see: http://logging.apache.org/log4cxx/fuzzing.html
 
 Usage: $0 <outputDir>
 
