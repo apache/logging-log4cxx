@@ -21,8 +21,6 @@ Testing coverage {#supported-systems}
  limitations under the License.
 -->
 
-## Covered by Github
-
 These Github provided environments are
 used in continuous integration and unit testing:
 
@@ -31,25 +29,4 @@ used in continuous integration and unit testing:
 * Ubuntu 22.04 - GNU g++ 11.4.0, Clang 14.0.0
 * MacOS 11 - AppleClang 13.0
 * MacOS 12 - AppleClang 14.0
-
-## Covered by the team
-
-The following list provides an overview about the environments some of the
-team members have access to and therefore normally should work out of the box
-or at least were used sometimes in the past. This list by no means tells
-something about how good the support on each platform is, it's just a guide.
-
-The following platforms/compilers are expected to work correctly:
-
-* Windows 10(32 and 64-bit) - MSVC 2017, 2019
-* Windows 10(32-bit) - Embarcadero C++ Builder XE 4
-* Windows 11(64-bit) - MSVC 2019, 2022
-* Debian 10(32 and 64-bit) - gcc 8.3.0, clang-7
-* Ubuntu 20.04(32 and 64-bit) - gcc, clang
-* Mac OSX - clang
-
-Various Linux distributions already have Log4cxx as part of their package
-managers - consult the documentation for your distribution to determine
-if a package already exists.
-
-[users mailing list]:@ref mailing-lists
+* Msys2 - ucrt-x86_64/mingw-x86_64, GNU g++ 14.2.0 and Clang 18.1.8
