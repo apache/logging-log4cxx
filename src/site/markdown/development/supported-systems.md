@@ -27,6 +27,6 @@ used in continuous integration and unit testing:
 * Windows - Visual Studio 2019 and 2022
 * Ubuntu 20.04 - GNU g++ 9.4.0, Clang 11.0.0
 * Ubuntu 22.04 - GNU g++ 11.4.0, Clang 14.0.0
-* MacOS 11 - AppleClang 13.0
-* MacOS 12 - AppleClang 14.0
+* MacOS 13 - AppleClang 15.0
+* MacOS 14 - AppleClang 15.0
 * Msys2 - ucrt-x86_64/mingw-x86_64, GNU g++ 14.2.0 and Clang 18.1.8
