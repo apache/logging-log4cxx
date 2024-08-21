@@ -26,6 +26,10 @@ Have a look at the [Building with CMake] page for more information.
 If you have trouble building, either [create an issue]
 or send a message to the [users mailing list](mailto:log4cxx-user@logging.apache.org).
 
+Various Linux distributions already have Log4cxx as part of their package
+managers - consult the documentation for your distribution to determine
+if a package already exists.
+
 See the following pages for information on building Log4cxx:
 
 * @subpage dependencies
