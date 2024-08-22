@@ -243,7 +243,7 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 		for (auto const& item : m_priv->dc->map)
 			result.push_back(item.first);
 	}
-	else for (auto const& item : ThreadSpecificData::getMap())
+	else for (auto const& item : ThreadSpecificData::getCurrentData()->getMap())
 		result.push_back(item.first);
 	return result;
 }
