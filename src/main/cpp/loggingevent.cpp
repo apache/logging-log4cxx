@@ -38,7 +38,7 @@ using namespace LOG4CXX_NS::helpers;
 
 struct LoggingEvent::LoggingEventPrivate
 {
-	LoggingEventPrivate(const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()) :
+	LoggingEventPrivate(const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getNames()) :
 		timeStamp(0),
 #if LOG4CXX_ABI_VERSION <= 15
 		threadName(p->idString),
@@ -53,7 +53,7 @@ struct LoggingEvent::LoggingEventPrivate
 		, const LevelPtr& level1
 		, const LocationInfo& locationInfo1
 		, LogString&& message1
-		, const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()
+		, const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getNames()
 		) :
 		logger(logger1),
 		level(level1),
@@ -72,7 +72,7 @@ struct LoggingEvent::LoggingEventPrivate
 	LoggingEventPrivate(
 		const LogString& logger1, const LevelPtr& level1,
 		const LogString& message1, const LocationInfo& locationInfo1,
-		const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getCurrentData()->getNames()
+		const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getNames()
 		) :
 		logger(logger1),
 		level(level1),
@@ -243,7 +243,7 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 		for (auto const& item : m_priv->dc->map)
 			result.push_back(item.first);
 	}
-	else for (auto const& item : ThreadSpecificData::getCurrentData()->getMap())
+	else for (auto const& item : ThreadSpecificData::getMap())
 		result.push_back(item.first);
 	return result;
 }
