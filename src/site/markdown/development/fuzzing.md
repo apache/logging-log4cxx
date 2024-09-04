@@ -37,25 +37,48 @@ Log4cxx provides OSS-Fuzz integration with following helpers:
 
 1. Clone the OSS-Fuzz repository:
    ~~~~
-   git clone --depth 1 https://github.com/google/oss-fuzz
-   cd oss-fuzz/projects/apache-logging-log4cxx
+   git clone --depth 1 https://github.com/google/oss-fuzz google-oss-fuzz && cd $_
    ~~~~
 1. Build the container image:
    ~~~~
-   docker build -t oss-fuzz-log4cxx .
+   python infra/helper.py build_image apache-logging-log4cxx
    ~~~~
 1. Run the container image to build the Log4cxx project and generate runner scripts along with dependencies:
    ~~~~
-   # Set the directory where the generated runner scripts will be dumped to
-   export LOG4CXX_FUZZ_DIR="/path/to/store/generated/fuzzers"
-
-   docker run -it -e FUZZING_LANGUAGE=c++ -v "$LOG4CXX_FUZZ_DIR":/out --network host oss-fuzz-log4cxx
+   python infra/helper.py build_fuzzers \
+     --sanitizer address --engine libfuzzer --architecture x86_64 \
+     apache-logging-log4cxx
    ~~~~
 1. List generated runner scripts:
    ~~~~
-   ls -al "$LOG4CXX_FUZZ_DIR"
+   ls -al build/out/apache-logging-log4cxx
+   ~~~~
+1. Check one of the generated runner scripts:
+1. ~~~~
+   python infra/helper.py check_build \
+     --sanitizer address --engine libfuzzer --architecture x86_64 \
+     apache-logging-log4cxx PatternLayoutFuzzer
    ~~~~
 1. Execute one of the generated runner scripts:
    ~~~~
-   docker run -it -e FUZZING_LANGUAGE=c++ -v "$LOG4CXX_FUZZ_DIR":/out oss-fuzz-log4cxx /out/PatternLayoutFuzzer
+   python infra/helper.py run_fuzzer \
+     --sanitizer address --engine libfuzzer --architecture x86_64 \
+     apache-logging-log4cxx PatternLayoutFuzzer
    ~~~~
+
+## Viewing fuzzing failures detected by OSS-Fuzz {#view}
+
+The system running fuzzers registered to OSS-Fuzz is called **ClusterFuzz**, which provides [a web interface](https://oss-fuzz.com) for maintainers to monitor the fuzzing results.
+Tests outputs and [reproduction](#reproduce) inputs for failed tests are stored in [a Google Cloud Storage bucket](https://console.cloud.google.com/storage/browser/apache-logging-log4cxx-logs.clusterfuzz-external.appspot.com).
+Access to both the web interface and the bucket is restricted, and only allowed to [those configured for the project](https://github.com/google/oss-fuzz/blob/master/projects/apache-logging-log4cxx/project.yaml).
+
+## Reproducing fuzzing failures detected by OSS-Fuzz {#reproduce}
+
+Download the associated `.testcase` file from [the Google Cloud Storage bucket](https://console.cloud.google.com/storage/browser/apache-logging-log4cxx-logs.clusterfuzz-external.appspot.com), and run the following command:
+
+~~~~
+python infra/helper.py reproduce \
+  apache-logging-log4cxx <FUZZ-TARGET-NAME> <TESTCASE-FILE-PATH>
+~~~~
+
+Refer to https://google.github.io/oss-fuzz/advanced-topics/reproducing/[the related OSS-Fuzz documentation] for details.
