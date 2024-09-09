@@ -382,7 +382,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void fatal(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -398,7 +398,7 @@ class LOG4CXX_EXPORT Logger
 		void fatal(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -414,7 +414,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void fatal(const std::wstring& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -431,7 +431,7 @@ class LOG4CXX_EXPORT Logger
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -447,7 +447,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void fatal(const std::basic_string<UniChar>& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -464,7 +464,7 @@ class LOG4CXX_EXPORT Logger
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -480,7 +480,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void fatal(const CFStringRef& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -710,7 +710,7 @@ class LOG4CXX_EXPORT Logger
 		void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message,
 			const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c message to attached appender(s).
+		Add a new logging event containing \c message to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
