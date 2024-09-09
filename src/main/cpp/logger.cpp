@@ -175,6 +175,21 @@ void Logger::addEvent(const LevelPtr& level, std::string&& message, const Locati
 	callAppenders(event, p);
 }
 
+void Logger::addFatalEvent(std::string&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Fatal, std::move(message), location);
+}
+
+void Logger::addErrorEvent(std::string&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Error, std::move(message), location);
+}
+
+void Logger::addWarnEvent(std::string&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Warn, std::move(message), location);
+}
+
 void Logger::addInfoEvent(std::string&& message, const LocationInfo& location) const
 {
 	addEvent(m_priv->levelData.Info, std::move(message), location);
@@ -771,6 +786,21 @@ void Logger::addEvent(const LevelPtr& level, std::wstring&& message, const Locat
 	callAppenders(event, p);
 }
 
+void Logger::addFatalEvent(std::wstring&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Fatal, std::move(message), location);
+}
+
+void Logger::addErrorEvent(std::wstring&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Error, std::move(message), location);
+}
+
+void Logger::addWarnEvent(std::wstring&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Warn, std::move(message), location);
+}
+
 void Logger::addInfoEvent(std::wstring&& message, const LocationInfo& location) const
 {
 	addEvent(m_priv->levelData.Info, std::move(message), location);
@@ -947,6 +977,21 @@ void Logger::addEvent(const LevelPtr& level1, std::basic_string<UniChar>&& messa
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, location, std::move(msg));
 	Pool p;
 	callAppenders(event, p);
+}
+
+void Logger::addFatalEvent(std::basic_string<UniChar>&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Fatal, std::move(message), location);
+}
+
+void Logger::addErrorEvent(std::basic_string<UniChar>&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Error, std::move(message), location);
+}
+
+void Logger::addWarnEvent(std::basic_string<UniChar>&& message, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData.Warn, std::move(message), location);
 }
 
 void Logger::addInfoEvent(std::basic_string<UniChar>&& message, const LocationInfo& location) const
