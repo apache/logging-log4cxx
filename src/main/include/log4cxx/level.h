@@ -229,8 +229,9 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 			LevelPtr Trace;
 			LevelPtr All;
 		};
+		using DataPtr = std::shared_ptr<Data>;
 
-		static const Data& getData();
+		static const DataPtr& getData();
 		static LevelPtr getAll();
 		static LevelPtr getFatal();
 		static LevelPtr getError();
