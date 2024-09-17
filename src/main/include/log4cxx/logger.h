@@ -382,7 +382,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void fatal(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -398,7 +398,7 @@ class LOG4CXX_EXPORT Logger
 		void fatal(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -414,7 +414,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void fatal(const std::wstring& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -431,7 +431,7 @@ class LOG4CXX_EXPORT Logger
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -447,7 +447,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void fatal(const std::basic_string<UniChar>& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -464,7 +464,7 @@ class LOG4CXX_EXPORT Logger
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -480,7 +480,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void fatal(const CFStringRef& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
+		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
 
 		<p>This method first checks if this logger is <code>ERROR</code>
 		enabled by comparing the level of this logger with the
@@ -497,7 +497,7 @@ class LOG4CXX_EXPORT Logger
 #endif
 
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -507,7 +507,31 @@ class LOG4CXX_EXPORT Logger
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new info level logging event containing \c message and \c location to attached appender(s).
+		Add a new fatal level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addFatalEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new error level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addErrorEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new warning level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addWarnEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new info level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
@@ -515,7 +539,7 @@ class LOG4CXX_EXPORT Logger
 		void addInfoEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new debug level logging event containing \c message and \c location to attached appender(s).
+		Add a new debug level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
@@ -523,7 +547,7 @@ class LOG4CXX_EXPORT Logger
 		void addDebugEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new trace level logging event containing \c message and \c location to attached appender(s).
+		Add a new trace level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
@@ -531,7 +555,7 @@ class LOG4CXX_EXPORT Logger
 		void addTraceEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -540,7 +564,7 @@ class LOG4CXX_EXPORT Logger
 		void forcedLog(const LevelPtr& level, const std::string& message,
 			const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c message to attached appender(s).
+		Add a new logging event containing \c message to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -549,7 +573,7 @@ class LOG4CXX_EXPORT Logger
 
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -559,7 +583,31 @@ class LOG4CXX_EXPORT Logger
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new info level logging event containing \c message and \c location to attached appender(s).
+		Add a new fatal level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addFatalEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new error level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addErrorEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new warning level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addWarnEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add a new info level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
@@ -567,7 +615,7 @@ class LOG4CXX_EXPORT Logger
 		void addInfoEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new debug level logging event containing \c message and \c location to attached appender(s).
+		Add a new debug level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
@@ -575,7 +623,7 @@ class LOG4CXX_EXPORT Logger
 		void addDebugEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new trace level logging event containing \c message and \c location to attached appender(s).
+		Add a new trace level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
@@ -583,7 +631,7 @@ class LOG4CXX_EXPORT Logger
 		void addTraceEvent(std::wstring&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -592,7 +640,7 @@ class LOG4CXX_EXPORT Logger
 		void forcedLog(const LevelPtr& level, const std::wstring& message,
 			const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c message to attached appender(s).
+		Add a new logging event containing \c message to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -601,7 +649,7 @@ class LOG4CXX_EXPORT Logger
 #endif
 #if LOG4CXX_UNICHAR_API
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -610,21 +658,42 @@ class LOG4CXX_EXPORT Logger
 		void addEvent(const LevelPtr& level, std::basic_string<UniChar>&& message,
 			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 		/**
-		Add a new info level logging event containing \c message and \c location to attached appender(s).
+		Add a new fatal level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addFatalEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+		/**
+		Add a new error level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addErrorEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+		/**
+		Add a new warning level logging event containing \c message and \c location to attached appender(s)
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addWarnEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+		/**
+		Add a new info level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
 		*/
 		void addInfoEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 		/**
-		Add a new debug level logging event containing \c message and \c location to attached appender(s).
+		Add a new debug level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
 		*/
 		void addDebugEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 		/**
-		Add a new trace level logging event containing \c message and \c location to attached appender(s).
+		Add a new trace level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
@@ -632,7 +701,7 @@ class LOG4CXX_EXPORT Logger
 		void addTraceEvent(std::basic_string<UniChar>&& message,const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -641,7 +710,7 @@ class LOG4CXX_EXPORT Logger
 		void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message,
 			const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c message to attached appender(s).
+		Add a new logging event containing \c message to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -650,7 +719,7 @@ class LOG4CXX_EXPORT Logger
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -659,7 +728,7 @@ class LOG4CXX_EXPORT Logger
 		void forcedLog(const LevelPtr& level, const CFStringRef& message,
 			const LOG4CXX_NS::spi::LocationInfo& location) const;
 		/**
-		Add a new logging event containing \c message to attached appender(s).
+		Add a new logging event containing \c message to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message The text to add to the logging event.
@@ -667,7 +736,7 @@ class LOG4CXX_EXPORT Logger
 		void forcedLog(const LevelPtr& level, const CFStringRef& message) const;
 #endif
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message the message string to log.
@@ -677,7 +746,7 @@ class LOG4CXX_EXPORT Logger
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
-		Add a new logging event containing \c message and \c location to attached appender(s).
+		Add a new logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param level The logging event level.
 		@param message the message string to log.
@@ -2282,7 +2351,7 @@ catch (const std::exception& ex)
 #define LOG4CXX_WARN(logger, message) do { \
 		if (::LOG4CXX_NS::Logger::isWarnEnabledFor(logger)) {\
 			::LOG4CXX_NS::helpers::MessageBuffer oss_; \
-			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addWarnEvent(oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>WARN</code> events.
@@ -2301,7 +2370,7 @@ catch (const std::exception& ex)
 */
 #define LOG4CXX_WARN_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isWarnEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getWarn(), ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
+			logger->addWarnEvent(::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
 #define LOG4CXX_WARN_FMT(logger, fmt, ...)
@@ -2325,7 +2394,7 @@ catch (std::exception& ex)
 #define LOG4CXX_ERROR(logger, message) do { \
 		if (::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
 			::LOG4CXX_NS::helpers::MessageBuffer oss_; \
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addErrorEvent(oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
@@ -2344,7 +2413,7 @@ catch (std::exception& ex)
 */
 #define LOG4CXX_ERROR_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
+			logger->addErrorEvent(::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 
 /**
 If \c condition is not true, add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
@@ -2357,7 +2426,7 @@ If \c condition is not true, add a new logging event containing \c message to at
 		if (!(condition) && ::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
 			::LOG4CXX_NS::helpers::MessageBuffer oss_; \
 			LOG4CXX_STACKTRACE \
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addErrorEvent(oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 If \c condition is not true, add a new logging event containing
@@ -2372,7 +2441,7 @@ if \c logger is enabled for <code>ERROR</code> events.
 #define LOG4CXX_ASSERT_FMT(logger, condition, fmt, ...) do { \
 		if (!(condition) && ::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
 			LOG4CXX_STACKTRACE \
-			logger->addEvent(::LOG4CXX_NS::Level::getError(), ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
+			logger->addErrorEvent(::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 
 #else
 #define LOG4CXX_ERROR(logger, message)
@@ -2396,7 +2465,7 @@ LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
 #define LOG4CXX_FATAL(logger, message) do { \
 		if (::LOG4CXX_NS::Logger::isFatalEnabledFor(logger)) {\
 			::LOG4CXX_NS::helpers::MessageBuffer oss_; \
-			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			logger->addFatalEvent(oss_.extract_str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>FATAL</code> events.
@@ -2412,7 +2481,7 @@ LOG4CXX_FATAL_FMT(m_log, "{} is not supported", m_renderSystem->getName());
 */
 #define LOG4CXX_FATAL_FMT(logger, fmt, ...) do { \
 		if (::LOG4CXX_NS::Logger::isFatalEnabledFor(logger)) {\
-			logger->addEvent(::LOG4CXX_NS::Level::getFatal(), ::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
+			logger->addFatalEvent(::LOG4CXX_FORMAT_NS::format(fmt LOG4CXX_FMT_VA_ARG(__VA_ARGS__)), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
 #define LOG4CXX_FATAL_FMT(logger, fmt, ...)

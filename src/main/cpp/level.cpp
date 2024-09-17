@@ -104,9 +104,9 @@ LevelPtr Level::toLevel(int val)
 	return toLevel(val, Level::getDebug());
 }
 
-const Level::Data& Level::getData()
+const Level::DataPtr& Level::getData()
 {
-	static Data data =
+	static WideLife<DataPtr> data = std::make_shared<Data>(Data
 		{ getOff()
 		, getFatal()
 		, getError()
@@ -115,7 +115,7 @@ const Level::Data& Level::getData()
 		, getDebug()
 		, getTrace()
 		, getAll()
-		};
+		});
 	return data;
 }
 
