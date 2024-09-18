@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-#include <iostream>
+#include <iostream>		// for `cout`, `endl`
+#include <cstdlib>		// for `exit()`, `EXIT_FAILURE`
+#include <unistd.h>		// for `readlink`, `chdir`
+#include <libgen.h> 	// for `dirname`
+#include <limits.h>		// for `PATH_MAX`
 #include <fuzzer/FuzzedDataProvider.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/appenderskeleton.h>
@@ -64,14 +68,53 @@ LOG4CXX_PTR_DEF(EncodingAppender);
 
 } // namespace
 
-#define MAX_STRING_LENGTH 30
+static void findExecutablePath(char* buffer) {
+    ssize_t length = readlink("/proc/self/exe", buffer, PATH_MAX);
+    if (length == -1) {
+		std::cerr << "ERROR: Failed to find the executable path" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	buffer[length] = '\0';
+}
 
-extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+static void chdirExecutableHome() {
+    char executablePath[PATH_MAX];
+    findExecutablePath(executablePath);
+    char* executableHome = dirname(executablePath);
+	if (chdir(executableHome) != 0) {
+		std::cerr << "DEBUG: Executable path: " << executablePath << std::endl;
+		std::cerr << "DEBUG: Executable home: " << executableHome << std::endl;
+		std::cerr << "ERROR: Failed to `chdir()` the executable path" << std::endl;
+	}
+}
+
+static int INITIALIZED = 0;
+
+static void init() {
+
+	// Initialize only once
+	if (INITIALIZED != 0) {
+		return;
+	}
+	std::cout << "DEBUG: Initializing" << std::endl;
 
 	// Report the effective Git commit ID
 	std::cout << "INFO: Produced using the Git commit ID: " << GIT_COMMIT_ID << std::endl;
 
+	// Load the configuration
+	chdirExecutableHome();
 	PropertyConfigurator::configure("PatternLayoutFuzzer.properties");
+
+	// Toggle initialization flag
+		std::cout << "DEBUG: Initialized" << std::endl;
+	INITIALIZED = 1;
+
+}
+
+#define MAX_STRING_LENGTH 30
+
+extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+	init();
 	LoggerPtr logger = Logger::getRootLogger();
   	FuzzedDataProvider dataProvider(data, size);
   	while (dataProvider.remaining_bytes() > 0) {
