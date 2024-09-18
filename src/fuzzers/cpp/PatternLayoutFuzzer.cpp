@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+#include <iostream>
 #include <fuzzer/FuzzedDataProvider.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/appenderskeleton.h>
@@ -66,6 +67,10 @@ LOG4CXX_PTR_DEF(EncodingAppender);
 #define MAX_STRING_LENGTH 30
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
+
+	// Report the effective Git commit ID
+	std::cout << "INFO: Produced using the Git commit ID: " << GIT_COMMIT_ID << std::endl;
+
 	PropertyConfigurator::configure("PatternLayoutFuzzer.properties");
 	LoggerPtr logger = Logger::getRootLogger();
   	FuzzedDataProvider dataProvider(data, size);

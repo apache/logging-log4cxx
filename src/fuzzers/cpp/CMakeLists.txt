@@ -17,8 +17,15 @@
 
 set(ALL_LOG4CXX_FUZZERS PatternLayoutFuzzer)
 
+# Get the most recent Git commit ID
+execute_process(
+    COMMAND git rev-parse HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_COMMIT_ID
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
 set(FUZZER_SANITIZE_FLAGS "-fsanitize=fuzzer,address,signed-integer-overflow")
-set(FUZZER_COMPILE_DEFINITIONS "-DCOMPILE_DEFINITIONS=${FUZZER_SANITIZE_FLAGS}")
+set(FUZZER_COMPILE_DEFINITIONS "-DCOMPILE_DEFINITIONS=${FUZZER_SANITIZE_FLAGS}" "-DGIT_COMMIT_ID=\"${GIT_COMMIT_ID}\"")
 
 if(WIN32)
   include(win32_target_environment_path)
