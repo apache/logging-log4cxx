@@ -46,7 +46,7 @@ cmake \
   -DBUILD_EXAMPLES=OFF \
   -DBUILD_FUZZERS=ON \
   ..
-cmake --build .
+cmake --build . -j
 
 # Copy executables & resources
 find src/fuzzers/cpp -maxdepth 1 -executable -type f -exec cp -v {} "$outputDir/" \;
