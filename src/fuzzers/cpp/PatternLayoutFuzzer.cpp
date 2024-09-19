@@ -109,7 +109,7 @@ static void init() {
 	INITIALIZED = 1;
 }
 
-#define MAX_STRING_LENGTH 30
+#define MAX_STRING_LENGTH 512
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	init();
