@@ -34,6 +34,7 @@ jobs:
             odbc: OFF
             multithread: OFF
             exitevents: OFF
+            fuzzers: OFF
           - name: ubuntu20-clang
             os: ubuntu-20.04
             cxx: clang++
@@ -42,6 +43,7 @@ jobs:
             odbc: ON
             multithread: OFF
             exitevents: OFF
+            fuzzers: ON
           - name: ubuntu22-gcc
             os: ubuntu-22.04
             cxx: g++
@@ -50,6 +52,7 @@ jobs:
             odbc: OFF
             multithread: ON
             exitevents: ON
+            fuzzers: OFF
           - name: ubuntu22-clang
             os: ubuntu-22.04
             cxx: clang++
@@ -58,6 +61,7 @@ jobs:
             odbc: OFF
             multithread: ON
             exitevents: OFF
+            fuzzers: ON
 
     steps:
     - uses: actions/checkout@v4
@@ -87,7 +91,14 @@ jobs:
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} -DLOG4CXX_QT_SUPPORT=${{ matrix.qt }}  -DENABLE_MULTITHREAD_TEST=${{ matrix.multithread }} -DLOG4CXX_EVENTS_AT_EXIT=${{ matrix.exitevents }} ..
+        cmake \
+          -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
+          -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
+          -DLOG4CXX_QT_SUPPORT=${{ matrix.qt }} \
+          -DENABLE_MULTITHREAD_TEST=${{ matrix.multithread }} \
+          -DLOG4CXX_EVENTS_AT_EXIT=${{ matrix.exitevents }} \
+          -DBUILD_FUZZERS=${{ matrix.fuzzers }} \
+          ..
         cmake --build .
 
     - name: run unit tests

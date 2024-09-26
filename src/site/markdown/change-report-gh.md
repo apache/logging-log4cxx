@@ -52,10 +52,11 @@ Release 1.3.0 includes the following new features:
 
 * Overhead reduction of upto 60% sending logging events to an appender
 * Statistics on the AsyncAppender's queue length (in Log4cxx debug output)
+* [Fuzz tests](@ref fuzzing) along with [Google OSS-Fuzz](https://github.com/google/oss-fuzz) integration
 
 The following issues have been addressed:
 
-* MSYS2/MINGW build errors \[[#389](https://github.com/apache/logging-log4cxx/pull/389)\] 
+* MSYS2/MINGW build errors \[[#389](https://github.com/apache/logging-log4cxx/pull/389)\]
 * `thread_local` problems in MSYS2/MINGW \[[#394](https://github.com/apache/logging-log4cxx/pull/394)\]
 * A potential 'use after free' fault when using AsyncAppender \[[#397](https://github.com/apache/logging-log4cxx/pull/397)\]
 
