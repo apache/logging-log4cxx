@@ -51,7 +51,7 @@ Steps
     - `cd apache-dist-logging-release`
     - `svn up log4cxx`
     - `cd log4cxx`
-    - copy in artifacts
+    - `cp -r ../apache-dist-logging-dev/log4cxx 1.3.0`
     - `svn add 1.3.0`
     - `svn commit`
 1. Make the new version of the web site live.
