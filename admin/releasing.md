@@ -19,7 +19,7 @@ Steps
 1. Tag HEAD as the release candidate
     - `git checkout master`
     - `git push origin tag v1.3.0-RC1`
-1. Get the artifacts in build/artifacts up to https://downloads.apache.org/logging/log4cxx/
+1. Remove the old artifacts from svn
     - `svn co https://dist.apache.org/repos/dist/dev/logging -N apache-dist-logging-dev`
     - `cd apache-dist-logging-dev`
     - `svn up log4cxx`
@@ -37,15 +37,16 @@ Steps
 1. Sign release artifacts (Refer: https://infra.apache.org/release-signing.html)
     - `gpg --armor --output apache-log4cxx-1.3.0.zip.asc --detach-sig apache-log4cxx-1.3.0.zip`
     - `gpg --armor --output apache-log4cxx-1.3.0.tar.gz.asc --detach-sig apache-log4cxx-1.3.0.tar.gz`
+1. Send the new artifacts to svn
     - `svn add *`
     - `svn commit -m 'log4cxx 1.3.0'`
     - check https://dist.apache.org/repos/dist/dev/logging/log4cxx
 1. Raise a vote on the mailing list (dev@logging.apache.org)
-   - Using [the template](MailTemplate.txt)
+   - Using [this template](MailTemplate.txt)
 1. Wait 72 hours (the minimum)
 1. When the vote has 3 or more +1's, announce the result
-   - Using [the template](MailTemplate.Result.txt)
-1. Copy the apache artifacts to the release svn repo and commit
+   - Using [this template](MailTemplate.Result.txt)
+1. Get artifacts up to https://downloads.apache.org/logging/log4cxx/
     - `svn co https://dist.apache.org/repos/dist/release/logging -N apache-dist-logging-release`
     - `cd apache-dist-logging-release`
     - `svn up log4cxx`
@@ -63,5 +64,5 @@ Steps
     - `git checkout v1.3.0-RC1`
     - `git push origin tag rel/v1.3.0`
 1. Announce the release to the mailing lists (announce@apache.org, dev@logging.apache.org)
-   - Using [the template](MailTemplate.Announce.txt)
+   - Using [this template](MailTemplate.Announce.txt)
 
