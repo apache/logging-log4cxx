@@ -7,7 +7,7 @@ using 1.3.0 as an example Log4cxx version.
 Prerequisites
 ----------
 
-* The documentaion changes have been committed to the log4cxx source code repository
+* The documentation changes have been committed to the log4cxx source code repository
 * Doxygen 1.9.6 in available on your system
 * APR and APR-Util are available on your system
 
@@ -27,7 +27,7 @@ Steps to update the Log4cxx web site
 1. Move the newly generated files to the web site working directory
     - `mv /tmp/build/src/site/html 1.3.0`
     - `git add 1.3.0`
-1. push the `asf-staging` branch to Github and wait a bit
+1. Push the `asf-staging` branch to Github and wait a bit
     - `git commit -m "Improved the ... documentation"`
     - `git push`
 1. Check https://logging.staged.apache.org/log4cxx (after a minute or two)
@@ -54,7 +54,7 @@ Steps to add a new version to the Log4cxx web site
     - `ln -s 1.2.0 old_stable`
 1. Update `.htaccess` so the final `RewriteRule` redirects to the new version
     - `RewriteRule ^(.*)$     /log4cxx/1.3.0/$1      [R=temp,L]`
-1. push the `asf-staging` branch to github and wait a bit 
+1. Push the `asf-staging` branch to github and wait a bit 
     - `git add 1.3.0 latest_stable old_stable .htaccess`
     - `git commit -m "Add the 1.3.0 documentation"`
     - `git push`
