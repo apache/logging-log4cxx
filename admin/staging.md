@@ -22,9 +22,8 @@ Steps to update the Log4cxx web site
     - `git clone https://github.com/apache/logging-log4cxx-site /tmp/log4cxx-site`
     - `cd /tmp/log4cxx-site`
     - `git checkout asf-staging`
-1. Remove the previously generated files from the web site working directory
-    - `git rm 1.3.0`
-1. Move the newly generated files to the web site working directory
+1. Use the newly generated files for the web site documentation
+    - `git rm -r 1.3.0`
     - `mv /tmp/build/src/site/html 1.3.0`
     - `git add 1.3.0`
 1. Push the `asf-staging` branch to Github and wait a bit
@@ -45,17 +44,20 @@ Steps to add a new version to the Log4cxx web site
     - `git clone https://github.com/apache/logging-log4cxx-site /tmp/log4cxx-site`
     - `cd /tmp/log4cxx-site`
     - `git checkout asf-staging`
-1. Move the generated files to the web site working directory
+1. Use the newly generated files for the web site documentation
+    - `git rm -r 1.3.0`
     - `mv /tmp/build/src/site/html /tmp/log4cxx-site/1.3.0`
+    - `git add 1.3.0`
 1. Update the symbolic links in the base of the web site working directory
     - `cd /tmp/log4cxx-site`
     - `rm latest_stable old_stable`
     - `ln -s 1.3.0 latest_stable`
     - `ln -s 1.2.0 old_stable`
+    - `git add latest_stable old_stable`
 1. Update `.htaccess` so the final `RewriteRule` redirects to the new version
     - `RewriteRule ^(.*)$     /log4cxx/1.3.0/$1      [R=temp,L]`
+    - `git add .htaccess`
 1. Push the `asf-staging` branch to github and wait a bit
-    - `git add 1.3.0 latest_stable old_stable .htaccess`
     - `git commit -m "Add the 1.3.0 documentation"`
     - `git push`
 1. Check https://logging.staged.apache.org/log4cxx (after a minute or two)

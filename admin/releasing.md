@@ -9,7 +9,7 @@ Prerequisites
 
 * The version number (in src/cmake/projectVersionDetails.cmake) has been updated
 * The change log (in src/site/markdown/change-report-gh.md) is up-to-date.
-* The web-site for the new version has been published to https://logging.staged.apache.org/log4cxx
+* The web-site for the new version has been published to https://logging.staged.apache.org/log4cxx (using [this procedure](staging.md) )
 * An e-mail has been sent to dev@logging.apache.org announcing the intention to release
 * Your public key is available in [Apache Logging KEYS file](https://dist.apache.org/repos/dist/release/logging/KEYS)
 
