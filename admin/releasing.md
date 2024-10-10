@@ -37,7 +37,7 @@ Steps
         - The browser will download the file `Upload release files.zip` onto your system
 1. Unpack the release files using these commands
     - `cd apache-dist-logging-dev/log4cxx`
-    - `unzip "~/Downloads/Upload release files.zip"`
+    - `unzip "$HOME/Downloads/Upload release files.zip"`
 1. Sign release artifacts (Refer: https://infra.apache.org/release-signing.html)
     - `gpg --armor --output apache-log4cxx-1.3.0.zip.asc --detach-sig apache-log4cxx-1.3.0.zip`
     - `gpg --armor --output apache-log4cxx-1.3.0.tar.gz.asc --detach-sig apache-log4cxx-1.3.0.tar.gz`
@@ -51,22 +51,19 @@ Steps
 1. When the vote has 3 or more +1's, announce the result
    - Using [this template](MailTemplate.Result.txt)
 1. Get artifacts up to https://downloads.apache.org/logging/log4cxx/
-    - `svn co https://dist.apache.org/repos/dist/release/logging -N apache-dist-logging-release`
-    - `cd apache-dist-logging-release`
-    - `svn up log4cxx`
-    - `cd log4cxx`
-    - `cp -r ../apache-dist-logging-dev/log4cxx 1.3.0`
-    - `svn add 1.3.0`
-    - `svn commit`
+    - `svn move -m "Release log4cxx 1.3.0" https://dist.apache.org/repos/dist/dev/logging/log4cxx   https://dist.apache.org/repos/dist/release/logging/log4cxx/1.3.0`
+1. Tag the released version
+    - `git checkout v1.3.0-RC1`
+    - `git push origin tag rel/v1.3.0`
 1. Make the new version of the web site live.
     - `git clone https://github.com/apache/logging-log4cxx-site /tmp/log4cxx-site`
     - `cd /tmp/log4cxx-site`
     - `git checkout asf-site`
     - `git rebase asf-staging`
     - `git push origin asf-site`
-1. Tag the released version
-    - `git checkout v1.3.0-RC1`
-    - `git push origin tag rel/v1.3.0`
+1. Check https://logging.apache.org/log4cxx (after a minute or two)
+    - Are you seeing the new pages?
+    - Download links for the new version should now work
 1. Announce the release to the mailing lists (announce@apache.org, dev@logging.apache.org)
    - Using [this template](MailTemplate.Announce.txt)
 

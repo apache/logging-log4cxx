@@ -34,6 +34,6 @@ Steps
 1. Confirm the artifacts were sourced from Github using these commands
     - `mkdir /tmp/log4cxx-github`
     - `cd /tmp/log4cxx-github`
-    - `unzip "~/Downloads/Upload release files.zip"`
+    - `unzip "$HOME/Downloads/Upload release files.zip"`
     - `diff /tmp/log4cxx{,-github}/apache-log4cxx-1.3.0.tar.gz.sha512`
     - `diff /tmp/log4cxx{,-github}/apache-log4cxx-1.3.0.zip.sha512`
