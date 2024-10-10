@@ -38,10 +38,10 @@ Steps
 1. Unpack the release files using these commands
     - `cd apache-dist-logging-dev/log4cxx`
     - `unzip "$HOME/Downloads/Upload release files.zip"`
-1. Sign release artifacts (Refer: https://infra.apache.org/release-signing.html)
+1. Sign release artifacts (Refer: https://infra.apache.org/release-signing.html) (with `apache-dist-logging-dev/log4cxx` as the working directory)
     - `gpg --armor --output apache-log4cxx-1.3.0.zip.asc --detach-sig apache-log4cxx-1.3.0.zip`
     - `gpg --armor --output apache-log4cxx-1.3.0.tar.gz.asc --detach-sig apache-log4cxx-1.3.0.tar.gz`
-1. Send the new artifacts to svn
+1. Send the new artifacts to svn (with `apache-dist-logging-dev/log4cxx` as the working directory)
     - `svn add *`
     - `svn commit -m 'log4cxx 1.3.0'`
     - check https://dist.apache.org/repos/dist/dev/logging/log4cxx
