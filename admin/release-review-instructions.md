@@ -21,15 +21,17 @@ Steps
     - Run the script
     - For success, the final output line needs to include:
         - `100% tests passed, 0 tests failed out of 62`
-1. Confirm the artifacts were sourced from Github
-    - Got to https://github.com/apache/logging-log4cxx/commits/v1.3.0-RC1
-    - The log of the most recent commit can be accessed
-      using the "Details" link in the pop-up window shown
-      when the green tick is clicked.
-    - The artifacts are available in the Github action log
-      under the "Run action/upload-artifact" step of
-      the "Generate release files" Github action.
+1. Download the packaged release files from Github
+    - Open https://github.com/apache/logging-log4cxx/commits/v1.3.0-RC1 in your web browser
+    - Click the green tick mark on the top commit
+        - The `All checks have passed` pop-up window will display
+    - Click the "Details" link on the row next to `Generate release files / Package code for release`
+        - The `Package for release` log window will display
+    - Click the `>` to the left of `Run action/upload-artifact`
+        - The numbered steps will display
     - Click the link next to `Artifact download URL:`
+        - The browser will download the file `Upload release files.zip` onto your system
+1. Confirm the artifacts were sourced from Github using these commands
     - `mkdir /tmp/log4cxx-github`
     - `cd /tmp/log4cxx-github`
     - `unzip "~/Downloads/Upload release files.zip"`

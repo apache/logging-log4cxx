@@ -42,5 +42,7 @@ if cmake --version >/dev/null  ; then
   cmake --build test-build || exit
   cd test-build
   ctest
+else
+  echo "Please install cmake"
 fi
 

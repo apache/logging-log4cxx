@@ -25,13 +25,17 @@ Steps
     - `svn up log4cxx`
     - `cd log4cxx`
     - `svn delete *`
-1. Download the latest release artifacts
-    - The link to the packaged artifacts is available
-      in the Github action log under the "Run action/upload-artifact" step of
-      the "Generate release files" Github action.
-      The log of the most recent commit can be accessed
-      using the "Details" link in the pop-up window shown
-      when the green tick is clicked.
+1. Download the packaged release files from Github
+    - Open https://github.com/apache/logging-log4cxx/commits/v1.3.0-RC1 in your web browser
+    - Click the green tick mark on the top commit
+        - The `All checks have passed` pop-up window will display
+    - Click the "Details" link on the row next to `Generate release files / Package code for release`
+        - The `Package for release` log window will display
+    - Click the `>` to the left of `Run action/upload-artifact`
+        - The numbered steps will display
+    - Click the link next to `Artifact download URL:`
+        - The browser will download the file `Upload release files.zip` onto your system
+1. Unpack the release files using these commands
     - `cd apache-dist-logging-dev/log4cxx`
     - `unzip "~/Downloads/Upload release files.zip"`
 1. Sign release artifacts (Refer: https://infra.apache.org/release-signing.html)
