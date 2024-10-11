@@ -15,54 +15,91 @@
 name: Generate release files
 
 on:
+  workflow_call:
   push:
     branches:
       - master
-#  pull_request:
-#    branches:
-#      - master
+
+permissions: read-all
 
 jobs:
-  job1:
-    name: 'Package code for release'
-    runs-on: ubuntu-20.04
-    timeout-minutes: 38
-    strategy:
-      fail-fast: false
+
+  package:
+    name: Package code
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false # do not persist auth token in the local git config
-        path: clean-checkout
+      - name: Checkout repository
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871   # 4.2.1
+        with:
+          persist-credentials: false # do not persist auth token in the local git config
 
-# Consider using CPack when it supports a white-list for included files
-#    - name: 'Install minimum dependencies'
-#      run: |
-#        sudo apt-get install -y libapr1-dev libaprutil1-dev
-#
-#    - name: 'Create release files'
-#      run: |
-#        cmake -B package -S clean-checkout -DAPACHE_MAINTAINER=yes -DCPACK_PACKAGE_DIRECTORY=`pwd`
-#        cmake --build package --target dist
-#
-    - name: 'Create release files'
-      run: |
-        cd clean-checkout
-        rm -r src/main/abi-symbols
-        VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
-        tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," INSTALL  LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in  KEYS
-        cd ..
-        sha512sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha512"
-        sha256sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha256"
-        tar xf "apache-log4cxx-$VERSION.tar.gz"
-        zip -rm "apache-log4cxx-$VERSION.zip" apache-log4cxx-$VERSION
-        sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
-        sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
+      - name: Determine version
+        shell: bash
+        run: |
+          VERSION=$(grep -Po '(?<=set\(log4cxx_VER ")(.*)(?="\))' src/cmake/projectVersionDetails.cmake)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: 'Upload release files'
-        path: |
-          apache-log4cxx-*
+      - name: Create release files
+        shell: bash
+        run: |
+          ./package.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882   # 4.4.3
+        if: always()
+        with:
+          name: apache-log4cxx
+          path: |
+            CMakeLists/apache-log4cxx-*
+
+  verify-reproducibility:
+    name: Verify reproducibility
+    needs: package
+    runs-on:
+      - ubuntu-latest
+      - macos-latest
+      - windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871   # 4.2.1
+        with:
+          persist-credentials: false # do not persist auth token in the local git config
+
+      - name: Determine version
+        shell: bash
+        run: |
+          VERSION=$(grep -Po '(?<=set\(log4cxx_VER ")(.*)(?="\))' src/cmake/projectVersionDetails.cmake)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Download artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16   # 4.1.8
+        with:
+          name: apache-log4cxx
+          path: |
+            CMakeLists/reference
+
+      - name: Check release files
+        id: check
+        shell: bash
+        run: |
+          ./package.sh
+          current=CMakeLists/apache-log4cxx-$VERSION
+          reference=CMakeLists/reference/apache-log4cxx-$VERSION
+          for format in tar.gz zip; do
+            for hash in sha256 sha512; do
+              if cmp --silent "$reference.$format.$hash" "$current.$format.$hash"; then
+                echo Files apache-log4cxx-$VERSION.$format differ\! >& 2
+                exit 1
+              fi
+            done
+          done
+
+      - name: Upload reproducibility results
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882   # 4.4.3
+        if: ${{ failure() && steps.check.conclusion == 'failure' }}
+        with:
+          name: apache-log4cxx-reproducibility-${{ runner.os }}
+          path: |
+            CMakeLists/apache-log4cxx-*
