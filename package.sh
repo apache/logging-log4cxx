@@ -51,6 +51,9 @@ cp -r \
   "$build/$OUTPUT_DIR"
 rm -r "$build/$OUTPUT_DIR"/src/main/abi-symbols
 
+# Fix last-modified time
+find "$build/$OUTPUT_DIR" -exec touch --date="$OUTPUT_TIMESTAMP" -m {} +
+
 # Create TAR file
 #
 # See https://reproducible-builds.org/docs/archives/ for reproducibility tips
@@ -66,8 +69,7 @@ fi
 
 (
   cd "$build"
-  tar --mtime="$OUTPUT_TIMESTAMP" \
-    --owner=0 --group=0 --numeric-owner \
+  tar --owner=0 --group=0 --numeric-owner \
     --sort=name \
     --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
     --create --gzip --file "$TAR_ARCHIVE" "$OUTPUT_DIR"
@@ -86,7 +88,6 @@ if [ -f "$ZIP_ARCHIVE" ]; then
   exit 1
 fi
 
-find "$build/$OUTPUT_DIR" -exec touch --date="$OUTPUT_TIMESTAMP" -m {} +
 # Sort files and zip.
 (
   cd "$build"
