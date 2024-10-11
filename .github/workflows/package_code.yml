@@ -15,7 +15,7 @@
 name: Generate release files
 
 on:
-  workflow_call:
+  workflow_dispatch:
   push:
     branches:
       - master
