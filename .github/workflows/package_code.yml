@@ -39,7 +39,7 @@ jobs:
       - name: Determine version
         shell: bash
         run: |
-          VERSION=$(grep -Po '(?<=set\(log4cxx_VER ")(.*)(?="\))' src/cmake/projectVersionDetails.cmake)
+          VERSION=$(sed -n -e "s/^set(log4cxx_VER \"\(.*\)\")/\1/p" < src/cmake/projectVersionDetails.cmake)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Create release files
@@ -74,7 +74,7 @@ jobs:
       - name: Determine version
         shell: bash
         run: |
-          VERSION=$(grep -Po '(?<=set\(log4cxx_VER ")(.*)(?="\))' src/cmake/projectVersionDetails.cmake)
+          VERSION=$(sed -n -e "s/^set(log4cxx_VER \"\(.*\)\")/\1/p" < src/cmake/projectVersionDetails.cmake)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Download artifacts
@@ -89,12 +89,14 @@ jobs:
         shell: bash
         run: |
           ./package.sh
-          current=CMakeFiles/apache-log4cxx-$VERSION
+          current=CMakeFiles/dist/apache-log4cxx-$VERSION
           reference=CMakeFiles/reference/apache-log4cxx-$VERSION
           for format in tar.gz zip; do
             for hash in sha256 sha512; do
-              if cmp --silent "$reference.$format.$hash" "$current.$format.$hash"; then
+              if ! cmp --silent "$reference.$format.$hash" "$current.$format.$hash"; then
                 echo Files apache-log4cxx-$VERSION.$format differ\! >& 2
+                cat $reference.$format.$hash >& 2
+                cat $current.$format.$hash >& 2
                 exit 1
               fi
             done

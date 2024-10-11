@@ -3,13 +3,13 @@
 set -e
 
 # Determine the version and build timestamp
-VERSION=$(grep -Po '(?<=set\(log4cxx_VER ")(.*)(?="\))' src/cmake/projectVersionDetails.cmake)
+VERSION=$(sed -n -e "s/^set(log4cxx_VER \"\(.*\)\")/\1/p" < src/cmake/projectVersionDetails.cmake)
 if ! echo "$VERSION" | grep -Pq '^\d+\.\d+\.\d+$'; then
   echo Invalid version number: "$VERSION" >& 2
   exit 1
 fi
 
-OUTPUT_TIMESTAMP=$(grep -Po '(?<=set\(log4cxx_OUTPUT_TIMESTAMP ")(.*)(?="\))' src/cmake/projectVersionDetails.cmake)
+OUTPUT_TIMESTAMP=$(sed -n -e "s/^set(log4cxx_OUTPUT_TIMESTAMP \"\(.*\)\")/\1/p" < src/cmake/projectVersionDetails.cmake)
 if ! echo "$OUTPUT_TIMESTAMP" | grep -Pq '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'; then
   echo Invalid build timestamp: "$OUTPUT_TIMESTAMP" >& 2
   echo Run '`'date -u +%Y-%m-%dT%H:%M:%SZ'`' to generate it
