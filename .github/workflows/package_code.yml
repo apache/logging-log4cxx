@@ -1,7 +1,8 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
+# The ASF licenses this file to you under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
 # the License.  You may obtain a copy of the License at
 #
@@ -12,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 name: Generate release files
 
 on:
@@ -51,15 +53,17 @@ jobs:
         with:
           name: apache-log4cxx
           path: |
-            CMakeLists/apache-log4cxx-*
+            CMakeFiles/apache-log4cxx-*
 
   verify-reproducibility:
     name: Verify reproducibility
     needs: package
-    runs-on:
-      - ubuntu-latest
-      - macos-latest
-      - windows-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
 
     steps:
       - name: Checkout repository
@@ -78,15 +82,15 @@ jobs:
         with:
           name: apache-log4cxx
           path: |
-            CMakeLists/reference
+            CMakeFiles/reference
 
       - name: Check release files
         id: check
         shell: bash
         run: |
           ./package.sh
-          current=CMakeLists/apache-log4cxx-$VERSION
-          reference=CMakeLists/reference/apache-log4cxx-$VERSION
+          current=CMakeFiles/apache-log4cxx-$VERSION
+          reference=CMakeFiles/reference/apache-log4cxx-$VERSION
           for format in tar.gz zip; do
             for hash in sha256 sha512; do
               if cmp --silent "$reference.$format.$hash" "$current.$format.$hash"; then
@@ -100,6 +104,6 @@ jobs:
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882   # 4.4.3
         if: ${{ failure() && steps.check.conclusion == 'failure' }}
         with:
-          name: apache-log4cxx-reproducibility-${{ runner.os }}
+          name: apache-log4cxx-reproducibility-${{ matrix.os }}
           path: |
-            CMakeLists/apache-log4cxx-*
+            CMakeFiles/apache-log4cxx-*
