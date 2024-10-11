@@ -2,11 +2,16 @@
 
 set -e
 
+VERSION=$1
+if [ -z "$VERSION" ] ; then
+  VERSION=1.3.0
+fi
+
 if [ -z "$BASE_DL" ] ; then
   BASE_DL=https://dist.apache.org/repos/dist/dev/logging/log4cxx
 fi
 if [ -z "$ARCHIVE" ] ; then
-  ARCHIVE=apache-log4cxx-1.3.0
+  ARCHIVE=apache-log4cxx-$VERSION
 fi
 if [ -z "$TEST_DIRECTORY" ] ; then
   TEST_DIRECTORY=/tmp/log4cxx
