@@ -19,7 +19,7 @@
 
 # The variable name must not clash with the log4cxx_VERSION* variables automatically
 # defined by the project() command.
-set(log4cxx_VER "1.3.0")
+set(log4cxx_VER 1.3.0.0)
 
 # Timestamp used for the source archive to guarantee reproducible builds in ISO 8601 format.
 #

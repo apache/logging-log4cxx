@@ -78,7 +78,7 @@ jobs:
         shell: bash
         run: |
           ./package.sh
-          VERSION=$(sed -n -e "s/^set(log4cxx_VER \"\(.*\)\")/\1/p" < src/cmake/projectVersionDetails.cmake)
+          VERSION=$(sed -n -e "s/^set(log4cxx_VER \(.*\)\.[[:digit:]]\+)/\1/p" < src/cmake/projectVersionDetails.cmake)
           current=CMakeFiles/dist/apache-log4cxx-$VERSION
           reference=CMakeFiles/reference/apache-log4cxx-$VERSION
           for format in tar.gz zip; do

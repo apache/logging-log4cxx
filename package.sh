@@ -5,7 +5,7 @@ set -e
 # Shorthand for digit class:
 d="[[:digit:]]"
 # Determine the version and build timestamp
-VERSION=$(sed -n -e "s/^set(log4cxx_VER \"\(.*\)\")/\1/p" < src/cmake/projectVersionDetails.cmake)
+VERSION=$(sed -n -e "s/^set(log4cxx_VER \(.*\)\.$d\+)/\1/p" < src/cmake/projectVersionDetails.cmake)
 if ! echo "$VERSION" | grep -Eq "^$d+\.$d+\.$d+$"; then
   echo Invalid version number: "$VERSION" >& 2
   exit 1
