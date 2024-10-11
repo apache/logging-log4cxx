@@ -25,7 +25,7 @@ build=CMakeFiles
 dist="$build/dist"
 
 # Create source directory
-mkdir -p "$build"
+mkdir -p "$dist"
 OUTPUT_DIR="$build/apache-log4cxx-$VERSION"
 if [ -f "$OUTPUT_DIR" ]; then
   if [ ! -d "$OUTPUT_DIR" ]; then
