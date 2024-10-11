@@ -53,7 +53,7 @@ jobs:
         with:
           name: apache-log4cxx
           path: |
-            CMakeFiles/apache-log4cxx-*
+            CMakeFiles/dist/*
 
   verify-reproducibility:
     name: Verify reproducibility
@@ -106,4 +106,4 @@ jobs:
         with:
           name: apache-log4cxx-reproducibility-${{ matrix.os }}
           path: |
-            CMakeFiles/apache-log4cxx-*
+            CMakeFiles/dist/*

@@ -16,8 +16,13 @@ if ! echo "$OUTPUT_TIMESTAMP" | grep -Pq '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
   exit 1
 fi
 
-# Build directory
+# Build directory containing temporary files
+#
 build=CMakeFiles
+
+# Directory containing the distribution archives
+#
+dist="$build/dist"
 
 # Create source directory
 mkdir -p "$build"
@@ -51,7 +56,7 @@ rm -r "$OUTPUT_DIR"/src/main/abi-symbols
 # Create TAR file
 #
 # See https://reproducible-builds.org/docs/archives/ for reproducibility tips
-TAR_ARCHIVE="$build/apache-log4cxx-$VERSION.tar.gz"
+TAR_ARCHIVE="$dist/apache-log4cxx-$VERSION.tar.gz"
 echo 'Tar version:'
 tar --version | sed -e 's/^/\t/'
 echo 'Gzip version:'
@@ -74,7 +79,7 @@ echo -e Tar archive: "$TAR_ARCHIVE"
 #
 # See https://reproducible-builds.org/docs/archives/ for reproducibility tips
 # Change the mtime of all files
-ZIP_ARCHIVE="$build/apache-log4cxx-$VERSION.zip"
+ZIP_ARCHIVE="$dist/apache-log4cxx-$VERSION.zip"
 echo 'Zip version:'
 zip --version | sed 's/^/\t/'
 if [ -f "$ZIP_ARCHIVE" ]; then
@@ -88,14 +93,14 @@ find "$OUTPUT_DIR" -exec touch --date="$OUTPUT_TIMESTAMP" -m {} +
   cd "$build"
   find apache-log4cxx-$VERSION -print0 |
   LC_ALL=C sort -z |
-  xargs -0 zip -q -X apache-log4cxx-$VERSION.zip
+  xargs -0 zip -q -X dist/apache-log4cxx-$VERSION.zip
 )
 
 echo -e ZIP archive: "$ZIP_ARCHIVE"
 
 # Generate hashes
 (
-  cd "$build"
+  cd "$dist"
   for format in tar.gz zip; do
     sha256sum apache-log4cxx-$VERSION.$format > apache-log4cxx-$VERSION.$format.sha256
     sha512sum apache-log4cxx-$VERSION.$format > apache-log4cxx-$VERSION.$format.sha512
