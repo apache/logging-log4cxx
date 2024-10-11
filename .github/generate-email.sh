@@ -72,7 +72,6 @@ positive than negative votes are required.
 
 == Release Notes
 EOF
-    dump_release_notes
     ;;
 
 announce)
@@ -91,7 +90,6 @@ website[1].
 
 == Release Notes
 EOF
-    dump_release_notes
     ;;
 
 *) fail_for_invalid_args
