@@ -155,6 +155,7 @@ jobs:
 
           # Checkout the SVN repository
           export SVN_DIR="$(mktemp)/svn-repo"
+          mkdir -p "$SVN_DIR"
           svn co \
             "https://dist.apache.org/repos/dist/dev/logging/$PROJECT_ID" \
             "$SVN_DIR"
