@@ -129,7 +129,7 @@ jobs:
           for format in tar.gz zip; do
             tmp=(apache-log4cxx-*.$format)
             name="${tmp[@]}"
-            version=$(echo "$name" | sed -e "s/apache-log4cxx-\(.*\)\.$format")
+            version=$(echo "$name" | sed -e "s/apache-log4cxx-\(.*\)\.$format/\1/")
             if [ "$PROJECT_VERSION" != "$version" ]; then
               echo Unexpected version number for file "$name" >& 2
               exit 1
