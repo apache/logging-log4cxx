@@ -18,17 +18,13 @@ if ! echo "$OUTPUT_TIMESTAMP" | grep -Eq "^$d{4}-$d{2}-$d{2}T$d{2}:$d{2}:$d{2}Z$
   exit 1
 fi
 
-# Build directory containing temporary files
+# Build directory containing temporary files, all the paths are relative to it.
 #
 build=CMakeFiles
 
-# Directory containing the distribution archives
-#
-dist="$build/dist"
-
 # Create source directory
-mkdir -p "$dist"
-OUTPUT_DIR="$build/apache-log4cxx-$VERSION"
+mkdir -p "$build/dist"
+OUTPUT_DIR="apache-log4cxx-$VERSION"
 if [ -f "$OUTPUT_DIR" ]; then
   if [ ! -d "$OUTPUT_DIR" ]; then
     echo File "$OUTPUT_DIR" is not a directory >& 2
@@ -39,7 +35,7 @@ if [ -f "$OUTPUT_DIR" ]; then
     exit 1
   fi
 fi
-mkdir -p "$OUTPUT_DIR"
+mkdir -p "$build/$OUTPUT_DIR"
 
 # Copy files to directory
 cp -r \
@@ -52,13 +48,13 @@ cp -r \
   src \
   liblog4cxx.pc.in \
   liblog4cxx-qt.pc.in \
-  "$OUTPUT_DIR"
-rm -r "$OUTPUT_DIR"/src/main/abi-symbols
+  "$build/$OUTPUT_DIR"
+rm -r "$build/$OUTPUT_DIR"/src/main/abi-symbols
 
 # Create TAR file
 #
 # See https://reproducible-builds.org/docs/archives/ for reproducibility tips
-TAR_ARCHIVE="$dist/apache-log4cxx-$VERSION.tar.gz"
+TAR_ARCHIVE="dist/apache-log4cxx-$VERSION.tar.gz"
 echo 'Tar version:'
 tar --version | sed -e 's/^/\t/'
 echo 'Gzip version:'
@@ -68,20 +64,21 @@ if [ -f "$TAR_ARCHIVE" ]; then
   exit 1
 fi
 
-tar --transform="s!^$OUTPUT_DIR!apache-log4cxx-$VERSION!" \
-  --mtime="$OUTPUT_TIMESTAMP" \
-  --owner=0 --group=0 --numeric-owner \
-  --sort=name \
-  --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
-  --create --gzip --file "$TAR_ARCHIVE" "$OUTPUT_DIR"
-
-echo -e Tar archive: "$TAR_ARCHIVE"
+(
+  cd "$build"
+  tar --mtime="$OUTPUT_TIMESTAMP" \
+    --owner=0 --group=0 --numeric-owner \
+    --sort=name \
+    --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
+    --create --gzip --file "$TAR_ARCHIVE" "$OUTPUT_DIR"
+)
+echo -e Tar archive: "$build/$TAR_ARCHIVE"
 
 # Create ZIP file
 #
 # See https://reproducible-builds.org/docs/archives/ for reproducibility tips
 # Change the mtime of all files
-ZIP_ARCHIVE="$dist/apache-log4cxx-$VERSION.zip"
+ZIP_ARCHIVE="dist/apache-log4cxx-$VERSION.zip"
 echo 'Zip version:'
 zip --version | sed 's/^/\t/'
 if [ -f "$ZIP_ARCHIVE" ]; then
@@ -89,22 +86,22 @@ if [ -f "$ZIP_ARCHIVE" ]; then
   exit 1
 fi
 
-find "$OUTPUT_DIR" -exec touch --date="$OUTPUT_TIMESTAMP" -m {} +
+find "$build/$OUTPUT_DIR" -exec touch --date="$OUTPUT_TIMESTAMP" -m {} +
 # Sort files and zip.
 (
   cd "$build"
-  find apache-log4cxx-$VERSION -print0 |
+  find "$OUTPUT_DIR" -print0 |
   LC_ALL=C sort -z |
-  xargs -0 zip -q -X dist/apache-log4cxx-$VERSION.zip
+  xargs -0 zip -q -X "$ZIP_ARCHIVE"
 )
 
-echo -e ZIP archive: "$ZIP_ARCHIVE"
+echo -e ZIP archive: "$build/$ZIP_ARCHIVE"
 
 # Generate hashes
 (
-  cd "$dist"
-  for format in tar.gz zip; do
-    sha256sum apache-log4cxx-$VERSION.$format > apache-log4cxx-$VERSION.$format.sha256
-    sha512sum apache-log4cxx-$VERSION.$format > apache-log4cxx-$VERSION.$format.sha512
+  cd "$build/dist"
+  for file in *; do
+    sha256sum "$file" > "$file.sha256"
+    sha512sum "$file" > "$file.sha512"
   done
 )

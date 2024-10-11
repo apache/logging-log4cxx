@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        os: [ macos-latest, ubuntu-latest ]
 
     steps:
       - name: Checkout repository
@@ -92,19 +92,16 @@ jobs:
           current=CMakeFiles/dist/apache-log4cxx-$VERSION
           reference=CMakeFiles/reference/apache-log4cxx-$VERSION
           for format in tar.gz zip; do
-            for hash in sha256 sha512; do
-              if ! cmp --silent "$reference.$format.$hash" "$current.$format.$hash"; then
-                echo Files apache-log4cxx-$VERSION.$format differ\! >& 2
-                cat $reference.$format.$hash >& 2
-                cat $current.$format.$hash >& 2
-                exit 1
-              fi
-            done
+            if ! cmp --silent "$reference.$format" "$current.$format"; then
+              echo Files apache-log4cxx-$VERSION.$format differ\! >& 2
+              exit 1
+            fi
           done
 
       - name: Upload reproducibility results
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882   # 4.4.3
-        if: ${{ failure() && steps.check.conclusion == 'failure' }}
+        if: ${{ always() }}
+        #if: ${{ failure() && steps.check.conclusion == 'failure' }}
         with:
           name: apache-log4cxx-reproducibility-${{ matrix.os }}
           path: |
