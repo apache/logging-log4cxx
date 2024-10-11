@@ -55,6 +55,12 @@ Steps
 1. Tag the released version
     - `git checkout v1.3.0-RC1`
     - `git push origin tag rel/v1.3.0`
+1. Enter the release date in `src/site/markdown/change-report-gh.md`
+    - Commit the change
+    - Update the staged web site using [the update procedure](staging.md)
+1 Check the staged web site is ready to go live
+    - Are you are seeing the release date on changelog?
+    - Do the links on download page work?
 1. Make the new version of the web site live.
     - `git clone https://github.com/apache/logging-log4cxx-site /tmp/log4cxx-site`
     - `cd /tmp/log4cxx-site`
@@ -63,7 +69,7 @@ Steps
     - `git push origin asf-site`
 1. Check https://logging.apache.org/log4cxx (after a minute or two)
     - Are you seeing the new pages?
-    - Download links for the new version should now work
+    - Do the download links now work?
 1. Announce the release to the mailing lists (announce@apache.org, dev@logging.apache.org)
    - Using [this template](MailTemplate.Announce.txt)
 
