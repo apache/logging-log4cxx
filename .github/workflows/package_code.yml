@@ -151,7 +151,7 @@ jobs:
           SVN_PASSWORD: ${{ secrets.LOGGING_SVN_DEV_PASSWORD }}
         run: |
           # Find the effective Git commit ID
-          export COMMIT_ID=$(git rev-parse HEAD)
+          export COMMIT_ID="$GITHUB_SHA"
 
           # Checkout the SVN repository
           export SVN_DIR="$(mktemp)/svn-repo"
