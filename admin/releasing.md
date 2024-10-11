@@ -58,7 +58,7 @@ Steps
 1. Enter the release date in `src/site/markdown/change-report-gh.md`
     - Commit the change
     - Update the staged web site using [the update procedure](staging.md)
-1 Check the staged web site is ready to go live
+1. Check the staged web site is ready to go live
     - Are you are seeing the release date on changelog?
     - Do the links on download page work?
 1. Make the new version of the web site live.
