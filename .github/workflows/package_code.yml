@@ -119,7 +119,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
+          gpg-private-key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
 
       - name: Check files and sign
         env:
