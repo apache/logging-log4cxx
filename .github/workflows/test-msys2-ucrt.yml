@@ -14,7 +14,7 @@
 # limitations under the License.
 name: test-msys2-ucrt
 
-on: [workflow_dispatch]
+on: [workflow_dispatch, pull_request]
 
 jobs:
   job:
@@ -71,7 +71,7 @@ jobs:
         test_exe=`pwd`/src/test/cpp/asyncappendertestcase.exe
         for i in {1..15}
         do
-        $test_exe testMultiThread &
+        LOG4CXX_DEBUG=true $test_exe testMultiThread &
         test_pid=$!
         sleep 2s
         if ps -p $test_pid > /dev/null; then
