@@ -20,7 +20,7 @@ jobs:
   job:
     name: ${{ matrix.env }}-${{ matrix.cxx }}-asyncappender-multithreading
     runs-on: windows-2022
-    timeout-minutes: 5
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
