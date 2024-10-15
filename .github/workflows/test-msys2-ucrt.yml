@@ -66,9 +66,9 @@ jobs:
     - name: 'test asyncappender multithreading'
       shell: msys2 {0}
       run: |
-        cd log4cxx/build
-        export PATH=`pwd`/src/main/cpp:$PATH
-        test_exe=`pwd`/src/test/cpp/asyncappendertestcase.exe
+        test_exe=`pwd`/log4cxx/build/src/test/cpp/asyncappendertestcase.exe
+        export PATH=`pwd`/log4cxx/build/src/main/cpp:$PATH
+        cd log4cxx/src/test/resources
         for i in {1..15}
         do
         LOG4CXX_DEBUG=true $test_exe -v &
