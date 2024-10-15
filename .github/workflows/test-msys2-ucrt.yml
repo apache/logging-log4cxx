@@ -71,9 +71,9 @@ jobs:
         test_exe=`pwd`/src/test/cpp/asyncappendertestcase.exe
         for i in {1..15}
         do
-        LOG4CXX_DEBUG=true $test_exe testMultiThread &
+        LOG4CXX_DEBUG=true $test_exe -v &
         test_pid=$!
-        sleep 2s
+        sleep 5s
         if ps -p $test_pid > /dev/null; then
            gdb $test_exe --pid=$test_pid <<EOT
         info threads
