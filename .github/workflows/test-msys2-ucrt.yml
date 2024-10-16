@@ -81,7 +81,13 @@ jobs:
         info threads
         thread apply all backtrace
         EOT
-          kill $test_pid
-          break
+          sleep 5s
+          if ps -p $test_pid > /dev/null; then
+              echo "asyncappender is deadlocked!!"
+              kill $test_pid
+              break
+          else
+              echo "asyncappender terminated OK"
+          fi
         fi
         done
