@@ -30,6 +30,8 @@ Building with CMake {#build-cmake}
 | LOG4CXX_UNICHAR=yes  | Enable UniChar API methods, choice of yes, no (default).                                    |
 | LOG4CXX_CFSTRING=yes | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
 | BUILD_TESTING=off    | Do not build tests.  Tests are built by default                                             |
+| BUILD_FUZZERS        | Enabled by default if `BUILD_TESTING=ON` and libFuzzer is found.                            |
+| BUILD_SITE=OFF       | Set to `ON` to enable the project website build. Requires Doxygen.                          |
 | BUILD_SHARED_LIBS=off| Build Log4cxx as a static library. A dynamically linked Log4cxx library is built by default. Any compilation unit that includes a Log4cxx header must define LOG4CXX_STATIC.             |
 | APU_STATIC=yes       | Link to the APR-Util static library. By default, the Log4cxx shared library is linked to the APR-Util shared library. If BUILD_SHARED_LIBS=off, the static APR-Util library is used.     |
 | APR_STATIC=yes       | Link to the APR static library. By default, the Log4cxx shared library is linked to the APR shared library. If BUILD_SHARED_LIBS=off, the static APR library is always used.        |
@@ -91,7 +93,7 @@ Follow the directions at https://github.com/microsoft/vcpkg#quick-start-windows 
 the dependencies needed using `vcpkg install apr apr-util`.
 Command-line utilities(zip, grep, sed) are available in the Git for Windows distribution (C:/Program Files/Git/usr/bin/)
 or Msys2 can be downloaded from: https://www.msys2.org/ and by default will be installed under C:/msys2/bin.
-Unless you pass BUILD_TESTING=off, the location of command-line utilities must be provided 
+Unless you pass BUILD_TESTING=off, the location of command-line utilities must be provided
 to the Log4cxx cmake build in the LOG4CXX_TEST_PROGRAM_PATH cmake variable.
 
 2. Building from source in %HOMEPATH%/Libraries.

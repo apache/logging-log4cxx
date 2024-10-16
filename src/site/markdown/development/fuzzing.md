@@ -54,7 +54,7 @@ Log4cxx provides OSS-Fuzz integration with following helpers:
    ls -al build/out/apache-logging-log4cxx
    ~~~~
 1. Check one of the generated runner scripts:
-1. ~~~~
+   ~~~~
    python infra/helper.py check_build \
      --sanitizer address --engine libfuzzer --architecture x86_64 \
      apache-logging-log4cxx PatternLayoutFuzzer
