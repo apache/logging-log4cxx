@@ -66,6 +66,7 @@ jobs:
     - name: 'test asyncappender multithreading'
       shell: msys2 {0}
       run: |
+        wmic cpu get caption, deviceid, name, numberofcores, maxclockspeed, status
         test_exe=`pwd`/log4cxx/build/src/test/cpp/asyncappendertestcase.exe
         export PATH=`pwd`/log4cxx/build/src/main/cpp:$PATH
         cd log4cxx/src/test/resources
