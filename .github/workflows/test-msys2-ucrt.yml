@@ -74,7 +74,7 @@ jobs:
         $test_exe -v &
         test_pid=$!
         test_winpid=`ps -W -p $test_pid | grep '^ *[0-9]' | sed -E 's/ *[0-9]+ +[0-9]+ +[0-9]+ +([0-9]+).*/\1/'`
-        sleep 8s
+        sleep 12s
         if ps -p $test_pid > /dev/null; then
            gdb $test_exe --pid=$test_winpid <<EOT
         info threads
