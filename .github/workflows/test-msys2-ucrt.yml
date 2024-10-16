@@ -71,10 +71,10 @@ jobs:
         cd log4cxx/src/test/resources
         for i in {1..150}
         do
-        $test_exe -v &
+        $test_exe testMultiThread &
         test_pid=$!
         test_winpid=`ps -W -p $test_pid | grep '^ *[0-9]' | sed -E 's/ *[0-9]+ +[0-9]+ +[0-9]+ +([0-9]+).*/\1/'`
-        sleep 12s
+        sleep 3s
         if ps -p $test_pid > /dev/null; then
            gdb $test_exe --pid=$test_winpid <<EOT
         info threads
