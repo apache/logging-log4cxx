@@ -235,7 +235,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void testMultiThread()
 		{
 			int LEN = 2000; // Larger than default buffer size (128)
-			int threadCount = 6;
+			int threadCount = max(std::thread::hardware_concurrency(), 2);
 			auto root = Logger::getRootLogger();
 			auto vectorAppender = std::make_shared<VectorAppender>();
 			auto asyncAppender = std::make_shared<AsyncAppender>();
