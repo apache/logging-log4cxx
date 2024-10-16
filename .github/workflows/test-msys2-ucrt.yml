@@ -71,9 +71,9 @@ jobs:
         cd log4cxx/src/test/resources
         for i in {1..15}
         do
-        LOG4CXX_DEBUG=true $test_exe -v &
+        $test_exe -v &
         test_pid=$!
-        sleep 5s
+        sleep 8s
         if ps -p $test_pid > /dev/null; then
            gdb $test_exe --pid=$test_pid <<EOT
         info threads
