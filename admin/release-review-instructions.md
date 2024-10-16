@@ -17,7 +17,7 @@ Steps
 -----
 
 1. Download, verify check-sums, verify signatures, build and test
-    - Save to your system the verification script https://github.com/apache/logging-log4cxx/validate-release.sh
+    - Save to your system the verification script https://github.com/apache/logging-log4cxx/blob/master/admin/validate-release.sh
     - Run the script
     - For success, the final output line needs to include:
         - `100% tests passed, 0 tests failed out of 62`
