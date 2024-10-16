@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+#define NOMINMAX
 #include "logunit.h"
 
 #include <log4cxx/logger.h>
@@ -235,7 +236,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void testMultiThread()
 		{
 			int LEN = 2000; // Larger than default buffer size (128)
-			int threadCount = max(std::thread::hardware_concurrency(), 2);
+			int threadCount = std::max(std::thread::hardware_concurrency(), static_cast<unsigned int>(2));
 			auto root = Logger::getRootLogger();
 			auto vectorAppender = std::make_shared<VectorAppender>();
 			auto asyncAppender = std::make_shared<AsyncAppender>();
