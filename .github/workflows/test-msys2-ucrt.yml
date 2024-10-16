@@ -83,8 +83,12 @@ jobs:
         EOT
           sleep 5s
           if ps -p $test_pid > /dev/null; then
-              echo "asyncappender is deadlocked!!"
-              kill $test_pid
+              echo "asyncappender is still active"
+              gdb $test_exe --pid=$test_winpid <<EOT
+        info threads
+        thread apply all backtrace
+        EOT
+              #kill $test_pid
               break
           else
               echo "asyncappender terminated OK"
