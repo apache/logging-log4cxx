@@ -55,6 +55,9 @@ Steps
 1. Tag the released version
     - `git checkout v1.3.0-RC1`
     - `git push origin tag rel/v1.3.0`
+1. Set your details in `src/site/CMakeLists.txt`
+    - Set your name in the LOG4CXX_RELEASE_MANAGER variable
+    - Set your GnuPG key in the LOG4CXX_RELEASE_MANAGER_KEY variable
 1. Enter the release date in `src/site/markdown/change-report-gh.md`
     - Commit the change
     - Update the staged web site using [the update procedure](staging.md)
