@@ -310,10 +310,13 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			// Write to the ring buffer
 			priv->buffer[index] = AsyncAppenderPriv::EventData{event, pendingCount};
 			// Notify the dispatch thread that an event has been added
+			auto failureCount = 0;
 			auto savedEventCount = oldEventCount;
-			while (!priv->commitCount.compare_exchange_weak(oldEventCount, oldEventCount + 1, std::memory_order_acq_rel))
+			while (!priv->commitCount.compare_exchange_weak(oldEventCount, oldEventCount + 1, std::memory_order_release))
 			{
-				 oldEventCount = savedEventCount;
+				oldEventCount = savedEventCount;
+				if (2 < ++failureCount) // Did the scheduler suspend a thread between claiming a slot and advancing commitCount?
+					std::this_thread::yield(); // Wait a bit
 			}
 			priv->bufferNotEmpty.notify_all();
 			break;
