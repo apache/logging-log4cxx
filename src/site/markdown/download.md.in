@@ -31,23 +31,23 @@ Download {#download}
 
 |                         | Mirrors | Checksum | Signature |
 |-------------------------|---------|----------|-----------|
-| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (tar.gz)      | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc] |
-| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (zip)      | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc] |
+| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (tar.gz) | [source archive](${LOG4CXX_SOURCE_MIRROR_URL}.tar.gz) | [sha512](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.sha512) [sha256](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.sha256) | [GnuPG signature](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.asc) |
+| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (zip) | [source archive](${LOG4CXX_SOURCE_MIRROR_URL}.zip) | [sha512](${LOG4CXX_DISTRIBUTION_URL}.zip.sha512) [sha256](${LOG4CXX_DISTRIBUTION_URL}.zip.sha256) | [GnuPG signature](${LOG4CXX_DISTRIBUTION_URL}.zip.asc) |
 
 It is essential that you verify the integrity of the downloaded files using the PGP or SHA512 signatures.
 Please read [Verifying Apache HTTP Server Releases](https://httpd.apache.org/dev/verification.html) for more
 information on why you should verify our releases.
 
-The PGP signatures can be verified using PGP or GPG. First download the [KEYS](https://www.apache.org/dist/logging/KEYS)
+The PGP signatures can be verified using PGP or GPG. First download the [KEYS](${APACHE_LOGGING_DISTRIBUTION_URL}/KEYS)
 as well as the asc signature file for the relevant distribution. Make sure you get these files from the
-[main distribution directory](https://www.apache.org/dist/logging/), rather than from a mirror. Then verify the signatures using:
+[main distribution directory](${APACHE_LOGGING_DISTRIBUTION_URL}/), rather than from a mirror. Then verify the signatures using:
 
 ~~~
 % gpg --import KEYS
-% gpg --verify apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz
+% gpg --verify ${LOG4CXX_SOURCE_PACKAGE_FILE_NAME}.tar.gz.asc ${LOG4CXX_SOURCE_PACKAGE_FILE_NAME}.tar.gz
 ~~~
 
-* apache-log4cxx-${LOG4CXX_RELEASE_VERSION} is signed by ${releaseManager} (${releaseKey})
+* ${LOG4CXX_SOURCE_PACKAGE_FILE_NAME} is signed by ${LOG4CXX_RELEASE_MANAGER} (${LOG4CXX_RELEASE_MANAGER_KEY})
 
 Alternatively, you can verify the SHA512 signature on the files. A unix program called sha512 or sha512sum is included
 in many unix distributions.
@@ -56,18 +56,10 @@ in many unix distributions.
 
 | Version                  | Release Date |
 | :--------------------------: |  :----------------------:   |
-| [1.2.0](https://logging.apache.org/log4cxx/1.2.0/download.html) | Jan-2024 |
-| [1.1.0](https://logging.apache.org/log4cxx/1.1.0/download.html) | May-2023 |
-| [1.0.0](https://logging.apache.org/log4cxx/1.0.0/download.html) | Jan-2023 |
-| [0.13.0](https://logging.apache.org/log4cxx/0.13.0/download.html) | Aug-2022 |
-| [0.12.1](https://logging.apache.org/log4cxx/0.12.1/download.html) | Sept-2021 |
-| [0.11.0](https://logging.apache.org/log4cxx/0.11.0/download.html) | Aug-2020 |
-| [0.10.0](https://logging.apache.org/log4cxx/0.10.0/download.html) | 2008 |
-
-
-[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz]:https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz
-[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512
-[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc
-[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip]:https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip
-[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512
-[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc
+| [1.2.0](${LOG4CXX_DOCUMENTATION_URL}/1.2.0/download.html) | Jan-2024 |
+| [1.1.0](${LOG4CXX_DOCUMENTATION_URL}/1.1.0/download.html) | May-2023 |
+| [1.0.0](${LOG4CXX_DOCUMENTATION_URL}/1.0.0/download.html) | Jan-2023 |
+| [0.13.0](${LOG4CXX_DOCUMENTATION_URL}/0.13.0/download.html) | Aug-2022 |
+| [0.12.1](${LOG4CXX_DOCUMENTATION_URL}/0.12.1/download.html) | Sept-2021 |
+| [0.11.0](${LOG4CXX_DOCUMENTATION_URL}/0.11.0/download.html) | Aug-2020 |
+| [0.10.0](${LOG4CXX_DOCUMENTATION_URL}/0.10.0/download.html) | 2008 |
