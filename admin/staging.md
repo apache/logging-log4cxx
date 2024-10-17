@@ -15,7 +15,7 @@ Steps to update the Log4cxx web site
 -----
 
 1. Use Doxygen to generate the HTML, PNG, JS and CSS files
-    - `git clone https://github.com/apache/logging-log4cxx /tmp/log4cxx`
+    - `git clone --depth=1 https://github.com/apache/logging-log4cxx /tmp/log4cxx`
     - `cmake -B /tmp/build -S /tmp/log4cxx -DBUILD_SITE=on`
     - `cmake --build /tmp/build -t doc_doxygen`
 1. Check out the `asf-staging` branch of `logging-log4cxx-site`
@@ -28,7 +28,7 @@ Steps to update the Log4cxx web site
     - `git add 1.3.0`
 1. Push the `asf-staging` branch to Github and wait a bit
     - `git commit -m "Improved the ... documentation"`
-    - `git push`
+    - `git push origin asf-staging`
 1. Check https://logging.staged.apache.org/log4cxx (after a minute or two)
     - are you seeing the correct releases page?
 
@@ -37,7 +37,7 @@ Steps to add a new version to the Log4cxx web site
 -----
 
 1. Use Doxygen to generate the HTML, PNG, JS and CSS files
-    - `git clone https://github.com/apache/logging-log4cxx /tmp/log4cxx`
+    - `git clone --depth=1 https://github.com/apache/logging-log4cxx /tmp/log4cxx`
     - `cmake -B /tmp/build -S /tmp/log4cxx -DBUILD_SITE=on`
     - `cmake --build /tmp/build -t doc_doxygen`
 1. Check out the `asf-staging` branch of `logging-log4cxx-site`
@@ -59,7 +59,7 @@ Steps to add a new version to the Log4cxx web site
     - `git add .htaccess`
 1. Push the `asf-staging` branch to github and wait a bit
     - `git commit -m "Add the 1.3.0 documentation"`
-    - `git push`
+    - `git push origin asf-staging`
 1. Check https://logging.staged.apache.org/log4cxx (after a minute or two)
     - Are you seeing the new pages?
     - Download links for the new version should (at this point) not work
