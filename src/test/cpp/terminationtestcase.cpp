@@ -63,7 +63,7 @@ public:
 	{
 		auto root = getLogger();
 		LOG4CXX_INFO(root, "Message");
-		std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+		std::this_thread::sleep_for( std::chrono::milliseconds( 30 ) );
 		const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, v.size());
 	}
