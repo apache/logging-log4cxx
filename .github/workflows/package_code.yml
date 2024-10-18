@@ -1,7 +1,8 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
+# The ASF licenses this file to you under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
 # the License.  You may obtain a copy of the License at
 #
@@ -12,58 +13,180 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 name: Generate release files
 
 on:
   workflow_dispatch:
+    inputs:
+      project-version:
+        description: The version of Log4cxx
+        default: 1.3.0
   push:
     branches:
       - master
-#  pull_request:
-#    branches:
-#      - master
+
+permissions: read-all
 
 jobs:
-  job1:
-    name: 'Package code for release'
-    runs-on: ubuntu-20.04
-    timeout-minutes: 38
-    strategy:
-      fail-fast: false
+
+  package:
+    name: Package code
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false # do not persist auth token in the local git config
-        path: clean-checkout
+      - name: Checkout repository
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871   # 4.2.1
+        with:
+          persist-credentials: false # do not persist auth token in the local git config
 
-# Consider using CPack when it supports a white-list for included files
-#    - name: 'Install minimum dependencies'
-#      run: |
-#        sudo apt-get install -y libapr1-dev libaprutil1-dev
-#
-#    - name: 'Create release files'
-#      run: |
-#        cmake -B package -S clean-checkout -DAPACHE_MAINTAINER=yes -DCPACK_PACKAGE_DIRECTORY=`pwd`
-#        cmake --build package --target dist
-#
-    - name: 'Create release files'
-      run: |
-        cd clean-checkout
-        rm -r src/main/abi-symbols
-        VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
-        tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," INSTALL  LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in  KEYS
-        cd ..
-        sha512sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha512"
-        sha256sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha256"
-        tar xf "apache-log4cxx-$VERSION.tar.gz"
-        zip -rm "apache-log4cxx-$VERSION.zip" apache-log4cxx-$VERSION
-        sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
-        sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
+      - name: Create release files
+        shell: bash
+        run: ./package.sh
 
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: 'Upload release files'
-        path: |
-          apache-log4cxx-*
+      - name: Upload artifacts
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882   # 4.4.3
+        if: always()
+        with:
+          name: apache-log4cxx
+          path: CMakeFiles/dist/*
+
+  verify-reproducibility:
+    name: Verify reproducibility
+    needs: package
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871   # 4.2.1
+        with:
+          persist-credentials: false # do not persist auth token in the local git config
+
+      - name: Download artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16   # 4.1.8
+        with:
+          name: apache-log4cxx
+          path: CMakeFiles/reference
+
+      - name: Check release files
+        id: check
+        shell: bash
+        run: |
+          ./package.sh
+          VERSION=$(sed -n -e "s/^set(log4cxx_VER \(.*\)\.[[:digit:]]\+)/\1/p" < src/cmake/projectVersionDetails.cmake)
+          current=CMakeFiles/dist/apache-log4cxx-$VERSION
+          reference=CMakeFiles/reference/apache-log4cxx-$VERSION
+          for format in tar.gz zip; do
+            if ! cmp --silent "$reference.$format" "$current.$format"; then
+              echo Files apache-log4cxx-$VERSION.$format differ\! >& 2
+              exit 1
+            fi
+          done
+
+      - name: Upload reproducibility results
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882   # 4.4.3
+        if: ${{ failure() && steps.check.conclusion == 'failure' }}
+        with:
+          name: apache-log4cxx-reproducibility-${{ matrix.os }}
+          path: CMakeFiles/dist/*
+
+  sign-and-upload:
+    name: Sign and upload
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    needs:
+      - package
+      - verify-reproducibility
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871   # 4.2.1
+        with:
+          persist-credentials: false # do not persist auth token in the local git config
+
+      - name: Download artifacts
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16   # 4.1.8
+        with:
+          name: apache-log4cxx
+
+      - name: Setup GPG
+#        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4   # 6.1.0
+#        with:
+#          gpg_private_key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+        # Using `setup-java` as temporary workaround, since `crazy-max` is not authorized
+        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73   # 3.7.0
+        with:
+          distribution: temurin
+          java-version: 17
+          gpg-private-key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+
+      - name: Check files and sign
+        env:
+          PROJECT_VERSION: ${{ inputs.project-version }}
+        shell: bash
+        run: |
+          for format in tar.gz zip; do
+            tmp=(apache-log4cxx-*.$format)
+            name="${tmp[@]}"
+            version=$(echo "$name" | sed -e "s/apache-log4cxx-\(.*\)\.$format/\1/")
+            if [ "$PROJECT_VERSION" != "$version" ]; then
+              echo Unexpected version number for file "$name" >& 2
+              exit 1
+            fi
+            sha256sum -c "$name.sha256"
+            sha512sum -c "$name.sha512"
+            # Sign
+            gpg --armor --detach-sign --yes --pinentry-mode error "$name"
+          done
+
+      - name: Upload to Subversion
+        shell: bash
+        env:
+          DIST_FILENAME_PREFIX: apache-log4cxx
+          DIST_FILENAME_VERSIONED_PREFIX: apache-log4cxx-${{ inputs.project-version }}
+          PROJECT_ID: log4cxx
+          PROJECT_VERSION: ${{ inputs.project-version }}
+          SVN_USERNAME: ${{ secrets.LOGGING_SVN_DEV_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.LOGGING_SVN_DEV_PASSWORD }}
+        run: |
+          # Find the effective Git commit ID
+          export COMMIT_ID="$GITHUB_SHA"
+
+          # Checkout the SVN repository
+          export SVN_DIR="$(mktemp -d)/svn-repo"
+          svn co \
+            "https://dist.apache.org/repos/dist/dev/logging/$PROJECT_ID" \
+            "$SVN_DIR"
+          cd "$SVN_DIR"
+
+          # Switch to the distribution folder
+          [ -d "$PROJECT_VERSION" ] || {
+            mkdir "$PROJECT_VERSION"
+            svn add "$PROJECT_VERSION"
+          }
+          cd "$PROJECT_VERSION"
+
+          # Clean up old files
+          find . -name "${DIST_FILENAME_PREFIX}*" -type f -print0 | xargs -0 -r svn delete
+
+          # Generate emails
+          for EMAIL_TYPE in vote announce; do
+            "$GITHUB_WORKSPACE/.github/generate-email.sh" \
+              "$EMAIL_TYPE" "$PROJECT_VERSION" "$COMMIT_ID" \
+              > "${DIST_FILENAME_VERSIONED_PREFIX}-email-${EMAIL_TYPE}.txt"
+          done
+
+          # Copy the distribution
+          cp "$GITHUB_WORKSPACE/$DIST_FILENAME_VERSIONED_PREFIX"* .
+
+          # Add & commit changes
+          svn add "$DIST_FILENAME_PREFIX"*
+          svn commit \
+            --username "$SVN_USERNAME" \
+            --password "$SVN_PASSWORD" \
+            -m "Added \`${DIST_FILENAME_PREFIX}\` artifacts for release \`${PROJECT_VERSION}\`"
