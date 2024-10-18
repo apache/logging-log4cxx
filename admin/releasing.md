@@ -56,6 +56,7 @@ Steps
     - `svn move -m "Release log4cxx 1.3.0" https://dist.apache.org/repos/dist/dev/logging/log4cxx/1.3.0   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
 1. Tag the released version
     - `git checkout v1.3.0-RC1`
+    - `git tag rel/v1.3.0`
     - `git push origin tag rel/v1.3.0`
 1. Set your details in `src/site/CMakeLists.txt`
     - Set your name in the LOG4CXX_RELEASE_MANAGER variable
