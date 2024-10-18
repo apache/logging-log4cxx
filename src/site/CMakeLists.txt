@@ -21,6 +21,14 @@ if(BUILD_SITE)
 
     find_package( Doxygen REQUIRED dot )
 
+    set(LOG4CXX_SOURCE_PACKAGE_FILE_NAME "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}")
+    set(LOG4CXX_SOURCE_MIRROR_URL "https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/${LOG4CXX_SOURCE_PACKAGE_FILE_NAME}")
+    set(APACHE_LOGGING_DISTRIBUTION_URL "https://www.apache.org/dist/logging")
+    set(LOG4CXX_DOCUMENTATION_URL "https://logging.apache.org/log4cxx")
+    set(LOG4CXX_DISTRIBUTION_URL "${APACHE_LOGGING_DISTRIBUTION_URL}/log4cxx/${LOG4CXX_RELEASE_VERSION}/${LOG4CXX_SOURCE_PACKAGE_FILE_NAME}")
+    set(LOG4CXX_RELEASE_MANAGER "Stephen Webb")
+    set(LOG4CXX_RELEASE_MANAGER_KEY "C6FC425C96722EFC4E2D02D5D4305EBC16B4A78D")
+
     configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/doxy/Doxyfile.in
         ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile )
 
