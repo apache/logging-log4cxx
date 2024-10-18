@@ -79,4 +79,5 @@ Steps
     - Do the download links now work?
 1. Announce the release to the mailing lists (announce@apache.org, dev@logging.apache.org)
    - Using [this template](MailTemplate.Announce.txt)
+   - Send the mail using your `apache.org` account (Refer: https://eventmesh.apache.org/community/how-to-use-email/)
 
