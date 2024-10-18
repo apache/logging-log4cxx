@@ -7,8 +7,12 @@ if [ -z "$VERSION" ] ; then
   VERSION=1.3.0
 fi
 
+if [ -z "$STAGE" ] ; then
+  STAGE=dev # Alternatively release
+fi
+
 if [ -z "$BASE_DL" ] ; then
-  BASE_DL=https://dist.apache.org/repos/dist/dev/logging/log4cxx
+  BASE_DL=https://dist.apache.org/repos/dist/$STAGE/logging/log4cxx
 fi
 if [ -z "$ARCHIVE" ] ; then
   ARCHIVE=apache-log4cxx-$VERSION
@@ -20,7 +24,7 @@ fi
 test -d "$TEST_DIRECTORY" || mkdir "$TEST_DIRECTORY"
 cd "$TEST_DIRECTORY"
 
-FULL_DL="$BASE_DL/$ARCHIVE"
+FULL_DL="$BASE_DL/$VERSION/$ARCHIVE"
 
 for EXT in "tar.gz" "zip" ; do
   wget "$FULL_DL.$EXT" || exit $?
