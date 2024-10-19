@@ -11,6 +11,7 @@ Prerequisites
 * The change log (in src/site/markdown/change-report-gh.md) is up-to-date.
 * The web-site for the new version has been published to https://logging.staged.apache.org/log4cxx (using [this procedure](staging.md) )
 * An e-mail has been sent to dev@logging.apache.org announcing the intention to release
+* Your e-mail client can send mail from your `@apache.org` address. (Refer: https://eventmesh.apache.org/community/how-to-use-email/)
 * Your public key is available in [Apache Logging KEYS file](https://dist.apache.org/repos/dist/release/logging/KEYS)
 
 Steps
@@ -49,6 +50,7 @@ Steps
     - check https://dist.apache.org/repos/dist/dev/logging/log4cxx
 1. Raise a vote on the mailing list (dev@logging.apache.org)
    - Using [this template](MailTemplate.txt)
+   - Set the e-mail to `Plain text mode`
 1. Wait 72 hours (the minimum)
 1. When the vote has 3 or more +1's, announce the result
    - Using [this template](MailTemplate.Result.txt)
@@ -79,5 +81,6 @@ Steps
     - Do the download links now work?
 1. Announce the release to the mailing lists (announce@apache.org, dev@logging.apache.org)
    - Using [this template](MailTemplate.Announce.txt)
-   - Send the mail using your `apache.org` account (Refer: https://eventmesh.apache.org/community/how-to-use-email/)
+   - Send the mail using your `@apache.org` account
+   - Set the e-mail to `Plain text mode`
 
