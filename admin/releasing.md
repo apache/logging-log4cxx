@@ -2,7 +2,7 @@ Releasing a Log4cxx version
 ===================
 
 This document lists the steps that must be performed to release Log4cxx
-using 1.3.0 as the example.
+using 1.3.1 as the example.
 
 Prerequisites
 ----------
@@ -19,18 +19,18 @@ Steps
 
 1. Tag HEAD as the release candidate
     - `git checkout master`
-    - `git push origin tag v1.3.0-RC1`
+    - `git push origin tag v1.3.1-RC1`
 1. Remove the old artifacts from svn
     - `svn co https://dist.apache.org/repos/dist/dev/logging -N apache-dist-logging-dev`
     - `cd apache-dist-logging-dev`
     - `svn up log4cxx`
     - `cd log4cxx`
     - `svn delete *`
-    - `mkdir 1.3.0`
-    - `svn add 1.3.0`
-    - `cd 1.3.0`
+    - `mkdir 1.3.1`
+    - `svn add 1.3.1`
+    - `cd 1.3.1`
 1. Download the packaged release files from Github
-    - Open https://github.com/apache/logging-log4cxx/commits/v1.3.0-RC1 in your web browser
+    - Open https://github.com/apache/logging-log4cxx/commits/v1.3.1-RC1 in your web browser
     - Click the green tick mark on the top commit
         - The `All checks have passed` pop-up window will display
     - Click the "Details" link on the row next to `Generate release files / Package code for release`
@@ -39,14 +39,14 @@ Steps
         - The numbered steps will display
     - Click the link next to `Artifact download URL:`
         - The browser will download the file `Upload release files.zip` onto your system
-1. Unpack the release files using these commands (with `apache-dist-logging-dev/log4cxx/1.3.0` as the working directory)
+1. Unpack the release files using these commands (with `apache-dist-logging-dev/log4cxx/1.3.1` as the working directory)
     - `unzip "$HOME/Downloads/Upload release files.zip"`
-1. Sign release artifacts (Refer: https://infra.apache.org/release-signing.html) (with `apache-dist-logging-dev/log4cxx/1.3.0` as the working directory)
-    - `gpg --armor --output apache-log4cxx-1.3.0.zip.asc --detach-sig apache-log4cxx-1.3.0.zip`
-    - `gpg --armor --output apache-log4cxx-1.3.0.tar.gz.asc --detach-sig apache-log4cxx-1.3.0.tar.gz`
-1. Send the new artifacts to svn (with `apache-dist-logging-dev/log4cxx/1.3.0` as the working directory)
+1. Sign release artifacts (Refer: https://infra.apache.org/release-signing.html) (with `apache-dist-logging-dev/log4cxx/1.3.1` as the working directory)
+    - `gpg --armor --output apache-log4cxx-1.3.1.zip.asc --detach-sig apache-log4cxx-1.3.1.zip`
+    - `gpg --armor --output apache-log4cxx-1.3.1.tar.gz.asc --detach-sig apache-log4cxx-1.3.1.tar.gz`
+1. Send the new artifacts to svn (with `apache-dist-logging-dev/log4cxx/1.3.1` as the working directory)
     - `svn add *`
-    - `svn commit -m 'log4cxx 1.3.0'`
+    - `svn commit -m 'log4cxx 1.3.1'`
     - check https://dist.apache.org/repos/dist/dev/logging/log4cxx
 1. Raise a vote on the mailing list (dev@logging.apache.org)
    - Using [this template](MailTemplate.txt)
@@ -55,11 +55,11 @@ Steps
 1. When the vote has 3 or more +1's, announce the result
    - Using [this template](MailTemplate.Result.txt)
 1. Get artifacts up to https://downloads.apache.org/logging/log4cxx/
-    - `svn move -m "Release log4cxx 1.3.0" https://dist.apache.org/repos/dist/dev/logging/log4cxx/1.3.0   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
+    - `svn move -m "Release log4cxx 1.3.1" https://dist.apache.org/repos/dist/dev/logging/log4cxx/1.3.1   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
 1. Tag the released version
-    - `git checkout v1.3.0-RC1`
-    - `git tag rel/v1.3.0`
-    - `git push origin tag rel/v1.3.0`
+    - `git checkout v1.3.1-RC1`
+    - `git tag rel/v1.3.1`
+    - `git push origin tag rel/v1.3.1`
 1. Set your details in `src/site/CMakeLists.txt`
     - Set your name in the LOG4CXX_RELEASE_MANAGER variable
     - Set your GnuPG key in the LOG4CXX_RELEASE_MANAGER_KEY variable
