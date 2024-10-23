@@ -206,7 +206,7 @@ bool LoggingEvent::getNDC(LogString& dest) const
 	// Otherwise use the NDC that is associated with the thread.
 	if (m_priv->dc)
 	{
-		result = m_priv->dc->ctx.has_value();
+		result = bool(m_priv->dc->ctx);
 		if (result)
 			dest.append(NDC::getFullMessage(m_priv->dc->ctx.value()));
 	}

@@ -53,8 +53,9 @@ public:
 		this->second = value;
 		return *this;
 	}
-	bool has_value() const { return this->first; }
-	const T& value() const { return this->second; }
+	constexpr explicit operator bool() const noexcept { return this->first; }
+	constexpr bool has_value() const noexcept { return this->first; }
+	constexpr const T& value() const noexcept { return this->second; }
 };
 } // namespace LOG4CXX_NS
 #endif
