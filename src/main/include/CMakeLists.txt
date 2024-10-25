@@ -65,6 +65,12 @@ else()
     set(DOMCONFIGURATOR_SUPPORT 0)
 endif()
 
+if(ENABLE_FMT_LAYOUT)
+    set(FMT_LAYOUT_SUPPORT 1)
+else()
+    set(FMT_LAYOUT_SUPPORT 0)
+endif()
+
 option(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER "Support multiple processes logging to the same file" OFF)
 if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
     set(MULTIPROCESS_RFA 1)
