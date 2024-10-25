@@ -50,6 +50,9 @@
 #include <log4cxx/htmllayout.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/xml/xmllayout.h>
+#if LOG4CXX_HAS_FMT_LAYOUT
+#include <log4cxx/fmtlayout.h>
+#endif
 
 #include <log4cxx/filter/levelmatchfilter.h>
 #include <log4cxx/filter/levelrangefilter.h>
@@ -183,6 +186,9 @@ void Class::registerClasses()
 	SMTPAppender::registerClass();
 	JSONLayout::registerClass();
 	HTMLLayout::registerClass();
+#if LOG4CXX_HAS_FMT_LAYOUT
+	FMTLayout::registerClass();
+#endif
 	PatternLayout::registerClass();
 	SimpleLayout::registerClass();
 	XMLLayout::registerClass();
