@@ -98,10 +98,12 @@ Class::~Class()
 {
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 LogString Class::toString() const
 {
 	return getName();
 }
+#endif
 
 Object* Class::newInstance() const
 {
