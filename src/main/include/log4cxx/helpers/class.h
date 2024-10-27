@@ -34,6 +34,7 @@ class LOG4CXX_EXPORT Class
 		virtual ~Class();
 		virtual Object* newInstance() const;
 #if LOG4CXX_ABI_VERSION <= 15
+		[[ deprecated( "Use getName() instead" ) ]]
 		LogString toString() const;
 #endif
 		virtual LogString getName() const = 0;
