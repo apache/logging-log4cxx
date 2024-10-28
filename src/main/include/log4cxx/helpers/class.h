@@ -33,7 +33,10 @@ class LOG4CXX_EXPORT Class
 	public:
 		virtual ~Class();
 		virtual Object* newInstance() const;
+#if LOG4CXX_ABI_VERSION <= 15
+		[[ deprecated( "Use getName() instead" ) ]]
 		LogString toString() const;
+#endif
 		virtual LogString getName() const = 0;
 		static const Class& forName(const LogString& className);
 		static bool registerClass(const Class& newClass);

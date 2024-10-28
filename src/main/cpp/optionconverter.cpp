@@ -429,7 +429,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 			filename.substr(filename.length() - 4),
 			LOG4CXX_STR(".XML"), LOG4CXX_STR(".xml")))
 	{
-		clazz = LOG4CXX_NS::xml::DOMConfigurator::getStaticClass().toString();
+		clazz = LOG4CXX_NS::xml::DOMConfigurator::getStaticClass().getName();
 	}
 #endif
 
