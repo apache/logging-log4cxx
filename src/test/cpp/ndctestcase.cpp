@@ -27,6 +27,7 @@
 static log4cxx::NDC ndc("ndctest");
 
 using namespace log4cxx;
+
 LOGUNIT_CLASS(NDCTestCase)
 {
 	static File TEMP;
