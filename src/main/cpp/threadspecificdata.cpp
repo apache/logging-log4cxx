@@ -38,15 +38,15 @@ using namespace LOG4CXX_NS::helpers;
 struct ThreadSpecificData::ThreadSpecificDataPrivate{
 	ThreadSpecificDataPrivate()
 		: pNamePair(std::make_shared<NamePair>())
-        , isValid(true)
+		, isValid(true)
 	{
 		setThreadIdName();
 		setThreadUserName();
 	}
-    ~ThreadSpecificDataPrivate()
-    {
-        isValid = false;
-    }
+	~ThreadSpecificDataPrivate()
+	{
+		isValid = false;
+	}
 	NDC::Stack ndcStack;
 	MDC::Map mdcMap;
 
@@ -65,7 +65,7 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 	void setThreadIdName();
 	void setThreadUserName();
 
-    bool isValid; // Is this object un-destructed?
+	bool isValid; // Is this object un-destructed?
 };
 
 /* Generate an identifier for the current thread
@@ -149,7 +149,7 @@ ThreadSpecificData::ThreadSpecificData(ThreadSpecificData&& other)
 
 ThreadSpecificData::~ThreadSpecificData()
 {
-    m_priv.reset();
+	m_priv.reset();
 }
 
 NDC::Stack& ThreadSpecificData::getStack()
@@ -238,12 +238,16 @@ void ThreadSpecificData::recycle()
 
 void ThreadSpecificData::put(const LogString& key, const LogString& val)
 {
-	getCurrentData()->getMap()[key] = val;
+	if (auto p = getCurrentData())
+		p->getMap()[key] = val;
 }
 
 void ThreadSpecificData::push(const LogString& val)
 {
-	NDC::Stack& stack = getCurrentData()->getStack();
+	auto p = getCurrentData();
+	if (!p)
+		return;
+	NDC::Stack& stack = p->getStack();
 	if (stack.empty())
 	{
 		stack.push(NDC::DiagnosticContext(val, val));
@@ -259,6 +263,7 @@ void ThreadSpecificData::push(const LogString& val)
 
 void ThreadSpecificData::inherit(const NDC::Stack& src)
 {
-	getCurrentData()->getStack() = src;
+	if (auto p = getCurrentData())
+		p->getStack() = src;
 }
 
