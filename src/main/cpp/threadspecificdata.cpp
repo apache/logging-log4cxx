@@ -38,10 +38,15 @@ using namespace LOG4CXX_NS::helpers;
 struct ThreadSpecificData::ThreadSpecificDataPrivate{
 	ThreadSpecificDataPrivate()
 		: pNamePair(std::make_shared<NamePair>())
+        , isValid(true)
 	{
 		setThreadIdName();
 		setThreadUserName();
 	}
+    ~ThreadSpecificDataPrivate()
+    {
+        isValid = false;
+    }
 	NDC::Stack ndcStack;
 	MDC::Map mdcMap;
 
@@ -59,6 +64,8 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 
 	void setThreadIdName();
 	void setThreadUserName();
+
+    bool isValid; // Is this object un-destructed?
 };
 
 /* Generate an identifier for the current thread
@@ -184,7 +191,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 {
 #if LOG4CXX_HAS_THREAD_LOCAL
 	thread_local ThreadSpecificData data;
-	return &data;
+	return data.m_priv && data.m_priv->isValid ? &data : NULL;
 #elif APR_HAS_THREADS
 	void* pData = NULL;
 	if (APR_SUCCESS == apr_threadkey_private_get(&pData, APRInitializer::getTlsKey())
