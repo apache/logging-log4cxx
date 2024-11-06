@@ -157,7 +157,8 @@ MDC::Map& ThreadSpecificData::getMap()
 
 auto ThreadSpecificData::getNames() -> NamePairPtr
 {
-	return getCurrentData()->m_priv->pNamePair;
+	auto p = getCurrentData();
+	return p ? p->m_priv->pNamePair : std::make_shared<NamePair>();
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
