@@ -306,7 +306,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			auto index = oldEventCount % priv->buffer.size();
 			// Wait for a free slot
 			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount)
-				;
+				std::this_thread::yield(); // Allow the dispatch thread to free a slot
 			// Write to the ring buffer
 			priv->buffer[index] = AsyncAppenderPriv::EventData{event, pendingCount};
 			// Notify the dispatch thread that an event has been added
