@@ -149,6 +149,7 @@ ThreadSpecificData::ThreadSpecificData(ThreadSpecificData&& other)
 
 ThreadSpecificData::~ThreadSpecificData()
 {
+    m_priv.reset();
 }
 
 NDC::Stack& ThreadSpecificData::getStack()
