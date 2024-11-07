@@ -38,7 +38,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 
 		/**
 		 *  Gets current thread specific data.
-		 *  @return a pointer that is never null.
+		 *  @return a pointer that is non-null prior to application exit.
 		 */
 		static ThreadSpecificData* getCurrentData();
 

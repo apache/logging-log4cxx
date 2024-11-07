@@ -142,6 +142,7 @@ ThreadSpecificData::ThreadSpecificData(ThreadSpecificData&& other)
 
 ThreadSpecificData::~ThreadSpecificData()
 {
+	m_priv.reset();
 }
 
 NDC::Stack& ThreadSpecificData::getStack()
@@ -156,7 +157,8 @@ MDC::Map& ThreadSpecificData::getMap()
 
 auto ThreadSpecificData::getNames() -> NamePairPtr
 {
-	return getCurrentData()->m_priv->pNamePair;
+	auto p = getCurrentData();
+	return p ? p->m_priv->pNamePair : std::make_shared<NamePair>();
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
@@ -184,7 +186,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 {
 #if LOG4CXX_HAS_THREAD_LOCAL
 	thread_local ThreadSpecificData data;
-	return &data;
+	return data.m_priv ? &data : NULL;
 #elif APR_HAS_THREADS
 	void* pData = NULL;
 	if (APR_SUCCESS == apr_threadkey_private_get(&pData, APRInitializer::getTlsKey())
@@ -230,12 +232,16 @@ void ThreadSpecificData::recycle()
 
 void ThreadSpecificData::put(const LogString& key, const LogString& val)
 {
-	getCurrentData()->getMap()[key] = val;
+	if (auto p = getCurrentData())
+		p->getMap()[key] = val;
 }
 
 void ThreadSpecificData::push(const LogString& val)
 {
-	NDC::Stack& stack = getCurrentData()->getStack();
+	auto p = getCurrentData();
+	if (!p)
+		return;
+	NDC::Stack& stack = p->getStack();
 	if (stack.empty())
 	{
 		stack.push(NDC::DiagnosticContext(val, val));
@@ -251,6 +257,7 @@ void ThreadSpecificData::push(const LogString& val)
 
 void ThreadSpecificData::inherit(const NDC::Stack& src)
 {
-	getCurrentData()->getStack() = src;
+	if (auto p = getCurrentData())
+		p->getStack() = src;
 }
 
