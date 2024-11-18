@@ -66,9 +66,6 @@ find_package(APR-Util REQUIRED)
 
 find_package( Threads REQUIRED )
 
-# Find LibFuzzer
-include("${CMAKE_CURRENT_LIST_DIR}/src/cmake/FindLibFuzzer.cmake")
-
 # Find expat for XML parsing
 find_package(EXPAT REQUIRED)
 if(TARGET EXPAT::EXPAT)
@@ -214,7 +211,7 @@ install(EXPORT ${LOG4CXX_LIB_NAME}Targets
   FILE        ${LOG4CXX_LIB_NAME}Config.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
 )
-# Support for find_package(log4cxx 0.11) in consuming CMake projects
+# Support for find_package(log4cxx 1.3) in consuming CMake projects
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}ConfigVersion.cmake"
   VERSION       ${PROJECT_VERSION}
@@ -241,7 +238,7 @@ if(LOG4CXX_QT_SUPPORT)
 endif(LOG4CXX_QT_SUPPORT)
 
 #
-# Get the varaibles from the subdirectories
+# Get variables used in configuration information messages from subdirectories
 #
 get_directory_property( HAS_LIBESMTP DIRECTORY src/main/include DEFINITION HAS_LIBESMTP )
 get_directory_property( HAS_SYSLOG DIRECTORY src/main/include DEFINITION HAS_SYSLOG )
@@ -249,8 +246,12 @@ get_directory_property( FILESYSTEM_IMPL DIRECTORY src DEFINITION FILESYSTEM_IMPL
 get_directory_property( STD_MAKE_UNIQUE_IMPL DIRECTORY src DEFINITION STD_MAKE_UNIQUE_IMPL )
 get_directory_property( STD_LIB_HAS_UNICODE_STRING DIRECTORY src DEFINITION STD_LIB_HAS_UNICODE_STRING )
 get_directory_property( HAS_THREAD_LOCAL DIRECTORY src DEFINITION HAS_THREAD_LOCAL )
+get_directory_property( BUILD_FUZZERS DIRECTORY src DEFINITION BUILD_FUZZERS )
 
-foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG HAS_FMT)
+#
+# Use ON/OFF in configuration information messages
+#
+foreach(varName HAS_ODBC  HAS_LIBESMTP  HAS_SYSLOG)
   if(${varName} EQUAL 0)
     set(${varName} "OFF" )
   elseif(${varName} EQUAL 1)
@@ -267,40 +268,12 @@ else()
 endif()
 
 #
-# Package and sign if Apache maintainer
-#
-option(APACHE_MAINTAINER "Apache maintainer" OFF)
-if(APACHE_MAINTAINER)
-    set(CPACK_SOURCE_PACKAGE_FILE_NAME "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}")
-    set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
-    set(CPACK_SOURCE_IGNORE_FILES ".git/;.github/;.gitattributes;.gitignore;.vs/;out/;build/;sonar-project.properties;doap_log4cxx.rdf;CMakeLists.txt.user;src/main/abi-symbols/;src/test/resources/output/")
-    include(CPack)
-    if(CPACK_PACKAGE_DIRECTORY)
-      set(LOG4CXX_PACKAGE_FILEPATH_PREFIX "${CPACK_PACKAGE_DIRECTORY}/${CPACK_SOURCE_PACKAGE_FILE_NAME}")
-    else()
-      set(LOG4CXX_PACKAGE_FILEPATH_PREFIX "${CMAKE_BINARY_DIR}/${CPACK_SOURCE_PACKAGE_FILE_NAME}")
-    endif()
-
-    add_custom_target( dist
-	COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -- package_source
-	COMMAND ${CMAKE_COMMAND} -E sha512sum "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.tar.gz" > "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.tar.gz.sha512"
-	COMMAND ${CMAKE_COMMAND} -E sha512sum "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.zip" > "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.zip.sha512"
-	COMMAND gpg --armor --detach-sign --yes --pinentry-mode error "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.tar.gz" > "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.tar.gz.asc"
-	COMMAND gpg --armor --detach-sign --yes --pinentry-mode error "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.zip" > "${LOG4CXX_PACKAGE_FILEPATH_PREFIX}.zip.asc"
-	)
-endif()
-
-#
-# Check for any fatal configuration errors
-#
-
-#
 # Output configuration information
 # Similar to APR CMake configuration
 #
 message(STATUS "")
 message(STATUS "")
-message(STATUS "log4cxx configuration summary:")
+message(STATUS "Log4cxx configuration summary:")
 message(STATUS "")
 
 message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
@@ -348,7 +321,6 @@ message(STATUS "  ODBC Appender ................... : ${HAS_ODBC}")
 message(STATUS "  DB Appender ..................... : ON")
 message(STATUS "  SMTP Appender ................... : ${HAS_LIBESMTP}")
 message(STATUS "  XMLSocketAppender ............... : ${LOG4CXX_NETWORKING_SUPPORT}")
-message(STATUS "  SocketHubAppender ............... : ${LOG4CXX_NETWORKING_SUPPORT}")
 message(STATUS "  SyslogAppender .................. : ${LOG4CXX_NETWORKING_SUPPORT}")
 if(LOG4CXX_NETWORKING_SUPPORT)
 message(STATUS "  Using syslog.h .................. : ${HAS_SYSLOG}")

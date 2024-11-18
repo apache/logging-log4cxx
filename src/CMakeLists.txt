@@ -40,6 +40,9 @@ if(BUILD_EXAMPLES)
   add_subdirectory(examples/cpp)
 endif()
 
+# Find LibFuzzer
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/FindLibFuzzer.cmake")
+
 # Define `BUILD_FUZZERS_DEFAULT`
 if(BUILD_TESTING AND LIBFUZZER_FOUND)
   set(BUILD_FUZZERS_DEFAULT ON)
@@ -57,4 +60,8 @@ if(BUILD_FUZZERS)
   endif()
 endif()
 
-add_subdirectory(site)
+option(BUILD_SITE "Build log4cxx website" OFF)
+if(BUILD_SITE)
+  add_subdirectory(site)
+endif()
+
