@@ -135,7 +135,6 @@ void XMLSocketAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::he
 		}
 		catch (std::exception& e)
 		{
-			_priv->writer->close(p);
 			_priv->writer = nullptr;
 			LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
 
