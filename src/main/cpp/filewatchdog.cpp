@@ -41,7 +41,11 @@ struct FileWatchdog::FileWatchdogPrivate{
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{stopWatcher();})
 #endif
+	{ }
+
+	~FileWatchdogPrivate()
         { stopWatcher(); }
+
 	/**
 	The name of the file to observe  for changes.
 	*/

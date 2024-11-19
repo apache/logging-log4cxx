@@ -42,7 +42,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{stopMonitor();})
 #endif
-        { stopMonitor(); }
+        { }
 
 	SocketAppenderSkeletonPriv(helpers::InetAddressPtr address, int defaultPort, int reconnectionDelay) :
 		AppenderSkeletonPrivate(),
@@ -54,7 +54,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{stopMonitor();})
 #endif
-        { stopMonitor(); }
+        { }
 
 	SocketAppenderSkeletonPriv(const LogString& host, int port, int delay) :
 		AppenderSkeletonPrivate(),
@@ -66,6 +66,9 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{stopMonitor();})
 #endif
+	{ }
+
+	~SocketAppenderSkeletonPriv()
         { stopMonitor(); }
 
 	/**
