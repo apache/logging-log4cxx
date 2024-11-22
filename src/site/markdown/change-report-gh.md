@@ -25,7 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
-| [1.3.0](#rel_1_3_1) | 2024-11-XX | Bugfix release  |
+| [1.3.1](#rel_1_3_1) | 2024-11-XX | Bugfix release       |
 | [1.3.0](#rel_1_3_0) | 2024-10-21 | Maintenance release  |
 | [1.2.0](#rel_1_2_0) | 2024-01-01 | Maintenance release  |
 | [1.1.0](#rel_1_1_0) | 2023-05-01 | General bugfix release  |
