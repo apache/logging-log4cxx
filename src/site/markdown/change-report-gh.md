@@ -25,6 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
+| [1.3.0](#rel_1_3_1) | 2024-11-XX | Bugfix release  |
 | [1.3.0](#rel_1_3_0) | 2024-10-21 | Maintenance release  |
 | [1.2.0](#rel_1_2_0) | 2024-01-01 | Maintenance release  |
 | [1.1.0](#rel_1_1_0) | 2023-05-01 | General bugfix release  |
@@ -46,7 +47,22 @@ Change Log {#changelog}
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
-## Release 1.3.0 - 2024-XX-XX {#rel_1_3_0}
+
+## Release 1.3.1 - 2024-11-XX {#rel_1_3_1}
+
+This is a minor bugfix release to fix issues found with 1.3.0.
+
+
+### Bug {#rel_1_3_1_bugs}
+
+-  \[[#431](https://github.com/apache/logging-log4cxx/pull/431)\] -
+    Properly prevent undefined behaviour when an appender is deleted without being closed
+-  \[[#426](https://github.com/apache/logging-log4cxx/pull/426)\] -
+    Prevent abnormal termination on exit when using a static NDC/MDC variable
+-  \[[#419](https://github.com/apache/logging-log4cxx/pull/419)\] -
+    Support for std::experimental::optional (in the standard library used by gcc 5.4)
+
+## Release 1.3.0 - 2024-10-21 {#rel_1_3_0}
 
 Release 1.3.0 includes the following new features:
 
