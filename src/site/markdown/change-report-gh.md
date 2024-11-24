@@ -55,12 +55,12 @@ This is a minor bugfix release to fix issues found with 1.3.0.
 
 ### Bug {#rel_1_3_1_bugs}
 
--  \[[#431](https://github.com/apache/logging-log4cxx/pull/431)\] -
-    Properly prevent undefined behaviour when an appender is deleted without being closed
--  \[[#426](https://github.com/apache/logging-log4cxx/pull/426)\] -
-    Prevent abnormal termination on exit when using a static NDC/MDC variable
--  \[[#419](https://github.com/apache/logging-log4cxx/pull/419)\] -
-    Support for std::experimental::optional (in the standard library used by gcc 5.4)
+* Properly prevent undefined behaviour when an appender is deleted without being closed
+   \[[#431](https://github.com/apache/logging-log4cxx/pull/431)\]
+* Prevent abnormal termination on exit when using a static NDC/MDC variable
+   \[[#426](https://github.com/apache/logging-log4cxx/pull/426)\]
+* Support for std::experimental::optional (in the standard library used by gcc 5.4)
+   \[[#419](https://github.com/apache/logging-log4cxx/pull/419)\]
 
 ## Release 1.3.0 - 2024-10-21 {#rel_1_3_0}
 
