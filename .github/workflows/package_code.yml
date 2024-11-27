@@ -19,9 +19,9 @@ on:
   push:
     branches:
       - master
-#  pull_request:
-#    branches:
-#      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   job1:
@@ -36,6 +36,17 @@ jobs:
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: clean-checkout
+
+    - name: Setup GPG
+#        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4   # 6.1.0
+#        with:
+#          gpg_private_key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+        # Using `setup-java` as temporary workaround, since `crazy-max` is not authorized
+        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73   # 3.7.0
+        with:
+          distribution: temurin
+          java-version: 17
+          gpg-private-key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
 
 # Consider using CPack when it supports a white-list for included files
 #    - name: 'Install minimum dependencies'
@@ -56,10 +67,12 @@ jobs:
         cd ..
         sha512sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha512"
         sha256sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha256"
+        gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.tar.gz"
         tar xf "apache-log4cxx-$VERSION.tar.gz"
         zip -rm "apache-log4cxx-$VERSION.zip" apache-log4cxx-$VERSION
         sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
         sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
+        gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.zip"
 
     - uses: actions/upload-artifact@v4
       if: always()
