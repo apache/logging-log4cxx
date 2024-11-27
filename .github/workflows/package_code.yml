@@ -23,19 +23,26 @@ on:
 #    branches:
 #      - master
 
+permissions: read-all
+
 jobs:
   job1:
     name: 'Package code for release'
-    runs-on: ubuntu-20.04
-    timeout-minutes: 38
-    strategy:
-      fail-fast: false
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: clean-checkout
+
+    # Using `setup-java` as temporary workaround, since `crazy-max` is not authorized
+    - name: Setup GPG
+      uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73   # 3.7.0
+      with:
+        distribution: temurin
+        java-version: 17
+        gpg-private-key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
 
 # Consider using CPack when it supports a white-list for included files
 #    - name: 'Install minimum dependencies'
@@ -56,14 +63,16 @@ jobs:
         cd ..
         sha512sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha512"
         sha256sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha256"
+        gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.tar.gz"
         tar xf "apache-log4cxx-$VERSION.tar.gz"
         zip -rm "apache-log4cxx-$VERSION.zip" apache-log4cxx-$VERSION
         sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
         sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
+        gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.zip"
 
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: 'Upload release files'
+        name: 'release_files'
         path: |
           apache-log4cxx-*
