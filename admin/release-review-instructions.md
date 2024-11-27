@@ -30,10 +30,10 @@ Steps
     - Click the `>` to the left of `Run action/upload-artifact`
         - The numbered steps will display
     - Click the link next to `Artifact download URL:`
-        - The browser will download the file `Upload release files.zip` onto your system
+        - The browser will download the file `release_files.zip` onto your system
 1. Confirm the artifacts were sourced from Github using these commands
     - `mkdir /tmp/log4cxx-github`
     - `cd /tmp/log4cxx-github`
-    - `unzip "$HOME/Downloads/Upload release files.zip"`
+    - `unzip "$HOME/Downloads/release_files.zip"`
     - `diff /tmp/log4cxx{,-github}/apache-log4cxx-1.3.1.tar.gz.sha512`
     - `diff /tmp/log4cxx{,-github}/apache-log4cxx-1.3.1.zip.sha512`
