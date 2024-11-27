@@ -1,81 +1,78 @@
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-name: Generate release files
+    # Licensed to the Apache Software Foundation (ASF) under one or more
+    # contributor license agreements.  See the NOTICE file distributed with
+    # this work for additional information regarding copyright ownership.
+    # The ASF licenses this file to You under the Apache License, Version 2.0
+    # (the "License"); you may not use this file except in compliance with
+    # the License.  You may obtain a copy of the License at
+    #
+    #      http://www.apache.org/licenses/LICENSE-2.0
+    #
+    # Unless required by applicable law or agreed to in writing, software
+    # distributed under the License is distributed on an "AS IS" BASIS,
+    # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    # See the License for the specific language governing permissions and
+    # limitations under the License.
+    name: Generate release files
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+    on:
+      workflow_dispatch:
+      push:
+        branches:
+          - master
+      pull_request:
+        branches:
+          - master
 
-permissions: read-all
+    permissions: read-all
 
-jobs:
-  job1:
-    name: 'Package code for release'
-    runs-on: ubuntu-latest
+    jobs:
+      job1:
+        name: 'Package code for release'
+        runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false # do not persist auth token in the local git config
-        path: clean-checkout
+        steps:
+        - uses: actions/checkout@v4
+          with:
+            persist-credentials: false # do not persist auth token in the local git config
+            path: clean-checkout
 
-    - name: Setup GPG
-#        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4   # 6.1.0
-#        with:
-#          gpg_private_key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
         # Using `setup-java` as temporary workaround, since `crazy-max` is not authorized
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73   # 3.7.0
-        with:
-          distribution: temurin
-          java-version: 17
-          gpg-private-key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+        - name: Setup GPG
+          uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73   # 3.7.0
+          with:
+              distribution: temurin
+              java-version: 17
+              gpg-private-key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
 
-# Consider using CPack when it supports a white-list for included files
-#    - name: 'Install minimum dependencies'
-#      run: |
-#        sudo apt-get install -y libapr1-dev libaprutil1-dev
-#
-#    - name: 'Create release files'
-#      run: |
-#        cmake -B package -S clean-checkout -DAPACHE_MAINTAINER=yes -DCPACK_PACKAGE_DIRECTORY=`pwd`
-#        cmake --build package --target dist
-#
-    - name: 'Create release files'
-      run: |
-        cd clean-checkout
-        rm -r src/main/abi-symbols
-        VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
-        tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," INSTALL  LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in  KEYS
-        cd ..
-        sha512sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha512"
-        sha256sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha256"
-        gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.tar.gz"
-        tar xf "apache-log4cxx-$VERSION.tar.gz"
-        zip -rm "apache-log4cxx-$VERSION.zip" apache-log4cxx-$VERSION
-        sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
-        sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
-        gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.zip"
+    # Consider using CPack when it supports a white-list for included files
+    #    - name: 'Install minimum dependencies'
+    #      run: |
+    #        sudo apt-get install -y libapr1-dev libaprutil1-dev
+    #
+    #    - name: 'Create release files'
+    #      run: |
+    #        cmake -B package -S clean-checkout -DAPACHE_MAINTAINER=yes -DCPACK_PACKAGE_DIRECTORY=`pwd`
+    #        cmake --build package --target dist
+    #
+        - name: 'Create release files'
+          run: |
+            cd clean-checkout
+            rm -r src/main/abi-symbols
+            VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
+            tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," INSTALL  LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in  KEYS
+            cd ..
+            sha512sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha512"
+            sha256sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha256"
+            gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.tar.gz"
+            tar xf "apache-log4cxx-$VERSION.tar.gz"
+            zip -rm "apache-log4cxx-$VERSION.zip" apache-log4cxx-$VERSION
+            sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
+            sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
+            gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.zip"
 
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: 'release_files'
-        path: |
-          apache-log4cxx-*
+        - uses: actions/upload-artifact@v4
+          if: always()
+          with:
+            name: 'release_files'
+            path: |
+              apache-log4cxx-*
