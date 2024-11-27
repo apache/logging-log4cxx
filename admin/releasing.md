@@ -12,6 +12,8 @@ Prerequisites
 * The web-site for the new version has been published to https://logging.staged.apache.org/log4cxx (using [this procedure](staging.md) )
 * An e-mail has been sent to dev@logging.apache.org announcing the intention to release
 * Your e-mail client can send mail from your `@apache.org` address. (Refer: https://eventmesh.apache.org/community/how-to-use-email/)
+* You have generated a RSA key of length 2048 or more (Refer: https://infra.apache.org/release-signing.html)
+* You have practiced signing files for weeks or months (to ensure you remember your passphrase)
 * Your public key is available in [Apache Logging KEYS file](https://dist.apache.org/repos/dist/release/logging/KEYS)
 
 Steps
@@ -19,6 +21,8 @@ Steps
 
 1. Tag HEAD as the release candidate
     - `git checkout master`
+    - `git pull`
+    - `git tag v1.3.1-RC1`
     - `git push origin tag v1.3.1-RC1`
 1. Remove the old artifacts from svn
     - `svn co https://dist.apache.org/repos/dist/dev/logging -N apache-dist-logging-dev`
@@ -41,7 +45,7 @@ Steps
         - The browser will download the file `Upload release files.zip` onto your system
 1. Unpack the release files using these commands (with `apache-dist-logging-dev/log4cxx/1.3.1` as the working directory)
     - `unzip "$HOME/Downloads/Upload release files.zip"`
-1. Sign release artifacts (Refer: https://infra.apache.org/release-signing.html) (with `apache-dist-logging-dev/log4cxx/1.3.1` as the working directory)
+1. Sign release artifacts (with `apache-dist-logging-dev/log4cxx/1.3.1` as the working directory)
     - `gpg --armor --output apache-log4cxx-1.3.1.zip.asc --detach-sig apache-log4cxx-1.3.1.zip`
     - `gpg --armor --output apache-log4cxx-1.3.1.tar.gz.asc --detach-sig apache-log4cxx-1.3.1.tar.gz`
 1. Send the new artifacts to svn (with `apache-dist-logging-dev/log4cxx/1.3.1` as the working directory)
