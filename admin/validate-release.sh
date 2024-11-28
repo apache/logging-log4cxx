@@ -18,7 +18,7 @@ if [ -z "$ARCHIVE" ] ; then
   ARCHIVE=apache-log4cxx-$VERSION
 fi
 if [ -z "$TEST_DIRECTORY" ] ; then
-  TEST_DIRECTORY=/tmp/log4cxx
+  TEST_DIRECTORY=/tmp/log4cxx-$VERSION
 fi
 
 test -d "$TEST_DIRECTORY" || mkdir "$TEST_DIRECTORY"
@@ -26,21 +26,19 @@ cd "$TEST_DIRECTORY"
 
 FULL_DL="$BASE_DL/$VERSION/$ARCHIVE"
 
-for EXT in "tar.gz" "zip" ; do
-  wget "$FULL_DL.$EXT" || exit $?
-  wget "$FULL_DL.$EXT.asc" || exit $?
-  for SUM in "sha512" "sha256"; do
-    wget "$FULL_DL.$EXT.$SUM" || exit $?
+for ARCHIVE_TYPE in "tar.gz" "zip" ; do
+  test -f "$FULL_DL.$ARCHIVE_TYPE" && rm "$FULL_DL.$ARCHIVE_TYPE"
+  wget "$FULL_DL.$ARCHIVE_TYPE" || exit $?
+  for EXT in "asc" "sha512" "sha256"; do
+    test -f "$FULL_DL.$ARCHIVE_TYPE.$EXT" && rm "$FULL_DL.$ARCHIVE_TYPE.$EXT"
+    wget "$FULL_DL.$ARCHIVE_TYPE.$EXT" || exit $?
   done
-done
-for SUM in "sha512" "sha256"; do
-  echo "Validating $SUM checksum..."
-  "${SUM}sum" --check  "$ARCHIVE.$EXT.$SUM" || exit $?
-done
-
-for EXT in "tar.gz" "zip" ; do
+  for SUM in "sha512" "sha256"; do
+    echo "Validating $SUM checksum..."
+    "${SUM}sum" --check  "$ARCHIVE.$ARCHIVE_TYPE.$SUM" || exit $?
+  done
   echo "Validating signature..."
-  gpg --verify "$ARCHIVE.$EXT.asc" || exit $?
+  gpg --verify "$ARCHIVE.$ARCHIVE_TYPE.asc" || exit $?
 done
 
 if cmake --version >/dev/null  ; then
@@ -54,4 +52,3 @@ if cmake --version >/dev/null  ; then
 else
   echo "Please install cmake"
 fi
-
