@@ -27,10 +27,10 @@ cd "$TEST_DIRECTORY"
 FULL_DL="$BASE_DL/$VERSION/$ARCHIVE"
 
 for ARCHIVE_TYPE in "tar.gz" "zip" ; do
-  test -f "$FULL_DL.$ARCHIVE_TYPE" && rm "$FULL_DL.$ARCHIVE_TYPE"
+  test -f "$ARCHIVE.$ARCHIVE_TYPE" && rm "$ARCHIVE.$ARCHIVE_TYPE"
   wget "$FULL_DL.$ARCHIVE_TYPE" || exit $?
   for EXT in "asc" "sha512" "sha256"; do
-    test -f "$FULL_DL.$ARCHIVE_TYPE.$EXT" && rm "$FULL_DL.$ARCHIVE_TYPE.$EXT"
+    test -f "$ARCHIVE.$ARCHIVE_TYPE.$EXT" && rm "$ARCHIVE.$ARCHIVE_TYPE.$EXT"
     wget "$FULL_DL.$ARCHIVE_TYPE.$EXT" || exit $?
   done
   for SUM in "sha512" "sha256"; do
