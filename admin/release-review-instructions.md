@@ -35,5 +35,5 @@ Steps
     - `mkdir /tmp/log4cxx-github`
     - `cd /tmp/log4cxx-github`
     - `unzip "$HOME/Downloads/release_files.zip"`
-    - `diff /tmp/log4cxx{,-github}/apache-log4cxx-1.3.1.tar.gz.sha512`
-    - `diff /tmp/log4cxx{,-github}/apache-log4cxx-1.3.1.zip.sha512`
+    - `diff /tmp/log4cxx-{1.3.1,github}/apache-log4cxx-1.3.1.tar.gz.sha512`
+    - `diff /tmp/log4cxx-{1.3.1,github}/apache-log4cxx-1.3.1.zip.sha512`
