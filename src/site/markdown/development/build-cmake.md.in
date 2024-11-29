@@ -97,16 +97,16 @@ Use your browser to download source for Expat from github, APR and APR-Util from
 and Log4cxx from ${LOG4CXX_SOURCE_MIRROR_URL}.
 Extract the source code into directories libexpat, apr-${APACHE_APR_RELEASE_VERSION}, apr-util-${APACHE_APR_UTIL_RELEASE_VERSION} and apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.
 ~~~
-$ cd %HOMEPATH%/Libraries
-$ cmake -S libexpat/expat -B buildtrees/expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
-$ cmake --build buildtrees/expat --target install --config Release
-$ cmake -S apr-${APACHE_APR_RELEASE_VERSION} -B buildtrees/apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
-$ cmake --build buildtrees/apr --target install --config Release
-$ set CMAKE_PREFIX_PATH=%HOMEPATH%/Libraries/installed
-$ cmake -S apr-util-${APACHE_APR_UTIL_RELEASE_VERSION} -B buildtrees/apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
-$ cmake --build buildtrees/apr-util --target install --config Release
-$ cmake -S apache-log4cxx-${LOG4CXX_RELEASE_VERSION} -B buildtrees/log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed -DBUILD_TESTING=off
-$ cmake --build buildtrees/log4cxx --target install --config Release
+> cd %HOMEPATH%/Libraries
+> cmake -S libexpat/expat -B buildtrees/expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+> cmake --build buildtrees/expat --target install --config Release
+> cmake -S apr-${APACHE_APR_RELEASE_VERSION} -B buildtrees/apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+> cmake --build buildtrees/apr --target install --config Release
+> set CMAKE_PREFIX_PATH=%HOMEPATH%/Libraries/installed
+> cmake -S apr-util-${APACHE_APR_UTIL_RELEASE_VERSION} -B buildtrees/apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+> cmake --build buildtrees/apr-util --target install --config Release
+> cmake -S apache-log4cxx-${LOG4CXX_RELEASE_VERSION} -B buildtrees/log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed -DBUILD_TESTING=off
+> cmake --build buildtrees/log4cxx --target install --config Release
 ~~~
 
 3. Build from source and run unit tests in \%HOMEPATH\%/Libraries.
@@ -116,10 +116,10 @@ Command-line utilities (zip, grep, sed) are available in Msys2 which can be down
 from: https://www.msys2.org/ and by default will be installed under C:/msys64/usr/bin.
 ~~~
 # Install Expat, APR and APR-Util dependencies using the above commands.
-$ cmake -S apache-log4cxx-${LOG4CXX_RELEASE_VERSION} -B buildtrees/log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed -DLOG4CXX_TEST_PROGRAM_PATH=C:/msys64/usr/bin
-$ cmake --build buildtrees/log4cxx --config Debug
-$ cd buildtrees/log4cxx
-$ ctest --output-on-failure
+> cmake -S apache-log4cxx-${LOG4CXX_RELEASE_VERSION} -B buildtrees/log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed -DLOG4CXX_TEST_PROGRAM_PATH=C:/msys64/usr/bin
+> cmake --build buildtrees/log4cxx --config Debug
+> cd buildtrees/log4cxx
+> ctest --output-on-failure
 ~~~
 
 ## Mac OS/X:
