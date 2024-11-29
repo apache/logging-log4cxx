@@ -33,6 +33,9 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/doxy/Doxyfile.in
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/markdown/download.md.in
     ${CMAKE_CURRENT_BINARY_DIR}/markdown/download.md )
 
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/markdown/development/build-cmake.md.in
+    ${CMAKE_CURRENT_BINARY_DIR}/markdown/development/build-cmake.md )
+
 add_custom_target( doc_doxygen ALL
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${LOG4CXX_SOURCE_DIR}
