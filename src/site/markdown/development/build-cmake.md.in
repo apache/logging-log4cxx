@@ -68,15 +68,15 @@ $ sudo make install
 2. Install libraries locally in $HOME/libraries and
 statically bind APR into the Log4cxx DSO.
 ~~~
-$ wget https://archive.apache.org/dist/apr/apr-1.7.4.tar.bz2
-$ tar xf apr-1.7.4.tar.bz2
-$ cd apr-1.7.4
+$ wget https://archive.apache.org/dist/apr/apr-${APACHE_APR_RELEASE_VERSION}.tar.bz2
+$ tar xf apr-${APACHE_APR_RELEASE_VERSION}.tar.bz2
+$ cd apr-${APACHE_APR_RELEASE_VERSION}
 $ CFLAGS=-fPIC ./configure --prefix=$HOME/libraries
 $ make install
 $ cd $HOME
-$ wget https://archive.apache.org/dist/apr/apr-util-1.6.3.bz2
-$ tar xf apr-util-1.6.3.bz2
-$ cd apr-util-1.6.3
+$ wget https://archive.apache.org/dist/apr/apr-util-${APACHE_APR_UTIL_RELEASE_VERSION}.bz2
+$ tar xf apr-util-${APACHE_APR_UTIL_RELEASE_VERSION}.bz2
+$ cd apr-util-${APACHE_APR_UTIL_RELEASE_VERSION}
 $ CFLAGS=-fPIC ./configure --with-apr=$HOME/libraries --prefix=$HOME/libraries
 $ make install
 $ cd $HOME
@@ -91,26 +91,35 @@ $ cmake --build build/log4cxx --target install
 1. The easiest way to get dependencies installed is to use vcpkg.
 Follow the directions at https://github.com/microsoft/vcpkg#quick-start-windows and then install
 the dependencies needed using `vcpkg install apr apr-util`.
-Command-line utilities(zip, grep, sed) are available in the Git for Windows distribution (C:/Program Files/Git/usr/bin/)
-or Msys2 can be downloaded from: https://www.msys2.org/ and by default will be installed under C:/msys2/bin.
-Unless you pass BUILD_TESTING=off, the location of command-line utilities must be provided
-to the Log4cxx cmake build in the LOG4CXX_TEST_PROGRAM_PATH cmake variable.
 
 2. Building from source in \%HOMEPATH\%/Libraries.
-Use your browser to download source for Expat from github, APR and APR-Util from https://archive.apache.org/dist/apr/
-and Log4cxx from https://dlcdn.apache.org/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}.
-Extract the source code into directories libexpat, apr-1.7.4, apr-util-1.6.3 and apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.
+Use your browser to download source for Expat from github, APR and APR-Util from ${APACHE_APR_DOWNLOAD_URL}
+and Log4cxx from ${LOG4CXX_SOURCE_MIRROR_URL}.
+Extract the source code into directories libexpat, apr-${APACHE_APR_RELEASE_VERSION}, apr-util-${APACHE_APR_UTIL_RELEASE_VERSION} and apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.
 ~~~
 $ cd %HOMEPATH%/Libraries
 $ cmake -S libexpat/expat -B buildtrees/expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
 $ cmake --build buildtrees/expat --target install --config Release
-$ cmake -S apr-1.7.4 -B buildtrees/apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+$ cmake -S apr-${APACHE_APR_RELEASE_VERSION} -B buildtrees/apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
 $ cmake --build buildtrees/apr --target install --config Release
 $ set CMAKE_PREFIX_PATH=%HOMEPATH%/Libraries/installed
-$ cmake -S apr-util-1.6.3 -B buildtrees/apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
+$ cmake -S apr-util-${APACHE_APR_UTIL_RELEASE_VERSION} -B buildtrees/apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed
 $ cmake --build buildtrees/apr-util --target install --config Release
-$ cmake -S apache-log4cxx-${LOG4CXX_RELEASE_VERSION} -B buildtrees/log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed -DLOG4CXX_TEST_PROGRAM_PATH=C:/Program Files/Git/usr/bin
+$ cmake -S apache-log4cxx-${LOG4CXX_RELEASE_VERSION} -B buildtrees/log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed -DBUILD_TESTING=off
 $ cmake --build buildtrees/log4cxx --target install --config Release
+~~~
+
+3. Build from source and run unit tests in \%HOMEPATH\%/Libraries.
+The location of command-line utilities must be provided
+to the Log4cxx cmake build in the LOG4CXX_TEST_PROGRAM_PATH cmake variable.
+Command-line utilities (zip, grep, sed) are available in Msys2 which can be downloaded
+from: https://www.msys2.org/ and by default will be installed under C:/msys64/usr/bin.
+~~~
+# Install Expat, APR and APR-Util dependencies using the above commands.
+$ cmake -S apache-log4cxx-${LOG4CXX_RELEASE_VERSION} -B buildtrees/log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%/Libraries/installed -DLOG4CXX_TEST_PROGRAM_PATH=C:/msys64/usr/bin
+$ cmake --build buildtrees/log4cxx --config Debug
+$ cd buildtrees/log4cxx
+$ ctest --output-on-failure
 ~~~
 
 ## Mac OS/X:
