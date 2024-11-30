@@ -89,8 +89,19 @@ $ cmake --build build/log4cxx --target install
 ## Windows {#Windows}
 
 1. The easiest way to get dependencies installed is to use vcpkg.
-Follow the directions at https://github.com/microsoft/vcpkg#quick-start-windows and then install
-the dependencies needed using `vcpkg install apr apr-util`.
+
+ Use these commands to build and install Log4cxx.
+~~~
+> cd "%HOMEPATH%/Libraries"
+> git clone https://github.com/Microsoft/vcpkg.git
+> cd vcpkg
+> .\bootstrap-vcpkg.bat
+> vcpkg install log4cxx
+~~~
+
+ To link to Log4cxx to your application,
+add "-DCMAKE_TOOLCHAIN_FILE=%HOMEPATH%/Libraries/vcpkg/scripts/buildsystems/vcpkg.cmake"
+to your cmake command line arguments.
 
 2. Build from source in \%HOMEPATH\%/Libraries.
 
