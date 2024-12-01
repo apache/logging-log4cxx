@@ -1,18 +1,18 @@
 ﻿﻿To: announce@apache.org, dev@logging.apache.org
-Subject: [ANNOUNCE] Apache log4cxx 1.3.1 released
+Subject: [ANNOUNCE] Apache log4cxx 1.4.0 released
 
 Hi,
 
-The Apache log4cxx team is pleased to announce the 1.3.1 release.
+The Apache log4cxx team is pleased to announce the 1.4.0 release.
 
 For the list of new features and issues corrected, see:
-https://logging.apache.org/log4cxx/1.3.1/changelog.html#rel_1_3_1
+https://logging.apache.org/log4cxx/1.4.0/changelog.html#rel_1_4_0
 
 For official release downloads, see:
-https://logging.apache.org/log4cxx/1.3.1/download.html
+https://logging.apache.org/log4cxx/1.4.0/download.html
 
 For instructions on building Log4cxx, see:
-https://logging.apache.org/log4cxx/1.3.1/build.html
+https://logging.apache.org/log4cxx/1.4.0/build.html
 
 All other information is available on the Log4cxx project website:
-https://logging.apache.org/log4cxx/1.3.1
+https://logging.apache.org/log4cxx/1.4.0
