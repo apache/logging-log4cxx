@@ -24,6 +24,10 @@ set(ROLLING_TESTS
     timebasedrollingtest
     rollingfileappenderpropertiestest
 )
+if(LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER)
+  list(APPEND ROLLING_TESTS multiprocessrollingtest)
+endif()
+
 foreach(fileName  IN LISTS ROLLING_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
 endforeach()
