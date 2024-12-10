@@ -100,7 +100,7 @@ jobs:
           -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
           -DLOG4CXX_QT_SUPPORT=${{ matrix.qt }} \
           -DENABLE_MULTITHREAD_TEST=${{ matrix.multithread }} \
-          -LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=${{ matrix.multiprocess }} \
+          -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=${{ matrix.multiprocess }} \
           -DLOG4CXX_EVENTS_AT_EXIT=${{ matrix.exitevents }} \
           -DBUILD_FUZZERS=${{ matrix.fuzzers }} \
           ..
