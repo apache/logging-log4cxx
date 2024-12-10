@@ -42,6 +42,77 @@ using namespace LOG4CXX_NS::rolling;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
 
+namespace LOG4CXX_NS
+{
+namespace rolling
+{
+/**
+ * Wrapper for OutputStream that will report all write
+ * operations back to this class for file length calculations.
+ */
+class CountingOutputStream : public OutputStream
+{
+		/**
+		 * Wrapped output stream.
+		 */
+	private:
+		OutputStreamPtr os;
+
+		/**
+		 * Rolling file appender to inform of stream writes.
+		 */
+		MultiprocessRollingFileAppender* rfa;
+
+	public:
+		/**
+		 * Constructor.
+		 * @param os output stream to wrap.
+		 * @param rfa rolling file appender to inform.
+		 */
+		CountingOutputStream(
+			OutputStreamPtr& os1, MultiprocessRollingFileAppender* rfa1) :
+			os(os1), rfa(rfa1)
+		{
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		void close(Pool& p)
+		{
+			os->close(p);
+			rfa = 0;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		void flush(Pool& p)
+		{
+			os->flush(p);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		void write(ByteBuffer& buf, Pool& p)
+		{
+			os->write(buf, p);
+
+			if (rfa != 0)
+			{
+				rfa->setFileLength(File().setPath(rfa->getFile()).length(p));
+			}
+		}
+
+		OutputStreamPtr& getFileOutPutStreamPtr()
+		{
+			return os;
+		}
+};
+}
+}
+
 struct MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv : public FileAppenderPriv
 {
 	MultiprocessRollingFileAppenderPriv() :
@@ -504,10 +575,19 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 	//
 	apr_finfo_t finfo1, finfo2;
 	apr_status_t st1, st2;
-	const WriterPtr writer = getWriter();
-	const FileOutputStreamPtr fos = LOG4CXX_NS::cast<FileOutputStream>( writer );
+	auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(getWriter());
+	if( !osw ){
+		LogLog::error( LOG4CXX_STR("Can't cast writer to OutputStreamWriter") );
+		return;
+	}
+	auto cos = LOG4CXX_NS::cast<CountingOutputStream>(osw->getOutputStreamPtr());
+	if( !cos ){
+		LogLog::error( LOG4CXX_STR("Can't cast stream to CountingOutputStream") );
+		return;
+	}
+	auto fos = LOG4CXX_NS::cast<FileOutputStream>(cos->getFileOutPutStreamPtr());
 	if( !fos ){
-		LogLog::error( LOG4CXX_STR("Can't cast writer to FileOutputStream") );
+		LogLog::error( LOG4CXX_STR("Can't cast stream to FileOutputStream") );
 		return;
 	}
 	apr_file_t* _fd = fos->getFilePtr();
@@ -584,77 +664,6 @@ void MultiprocessRollingFileAppender::setTriggeringPolicy(const TriggeringPolicy
 void MultiprocessRollingFileAppender::close()
 {
 	FileAppender::close();
-}
-
-namespace LOG4CXX_NS
-{
-namespace rolling
-{
-/**
- * Wrapper for OutputStream that will report all write
- * operations back to this class for file length calculations.
- */
-class CountingOutputStream : public OutputStream
-{
-		/**
-		 * Wrapped output stream.
-		 */
-	private:
-		OutputStreamPtr os;
-
-		/**
-		 * Rolling file appender to inform of stream writes.
-		 */
-		MultiprocessRollingFileAppender* rfa;
-
-	public:
-		/**
-		 * Constructor.
-		 * @param os output stream to wrap.
-		 * @param rfa rolling file appender to inform.
-		 */
-		CountingOutputStream(
-			OutputStreamPtr& os1, MultiprocessRollingFileAppender* rfa1) :
-			os(os1), rfa(rfa1)
-		{
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		void close(Pool& p)
-		{
-			os->close(p);
-			rfa = 0;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		void flush(Pool& p)
-		{
-			os->flush(p);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		void write(ByteBuffer& buf, Pool& p)
-		{
-			os->write(buf, p);
-
-			if (rfa != 0)
-			{
-				rfa->setFileLength(File().setPath(rfa->getFile()).length(p));
-			}
-		}
-
-		OutputStream& getFileOutPutStreamPtr()
-		{
-			return *os;
-		}
-};
-}
 }
 
 /**
