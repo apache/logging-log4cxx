@@ -20,8 +20,6 @@
 #include "../insertwide.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
-#include <log4cxx/helpers/pool.h>
-#include <log4cxx/logger.h>
 
 using namespace log4cxx;
 
@@ -50,11 +48,8 @@ public:
 	 */
 	void test1()
 	{
-#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
-		log4cxx::xml::DOMConfigurator::configure("./input/rolling/multiprocess.xml");
-
+		xml::DOMConfigurator::configure("./input/rolling/multiprocess.xml");
 		common(LOG4CXX_STR("output/multiprocess-test"));
-#endif
 	}
 
 private:
