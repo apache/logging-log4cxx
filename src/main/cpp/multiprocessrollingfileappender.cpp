@@ -105,9 +105,24 @@ class CountingOutputStream : public OutputStream
 			}
 		}
 
-		OutputStreamPtr& getFileOutPutStreamPtr()
+		static FileOutputStreamPtr getFileOutputStream(const WriterPtr& writer)
 		{
-			return os;
+			FileOutputStreamPtr result;
+			auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(writer);
+			if( !osw ){
+				LogLog::error( LOG4CXX_STR("Can't cast writer to OutputStreamWriter") );
+				return result;
+			}
+			auto cos = LOG4CXX_NS::cast<CountingOutputStream>(osw->getOutputStreamPtr());
+			if( !cos ){
+				LogLog::error( LOG4CXX_STR("Can't cast stream to CountingOutputStream") );
+				return result;
+			}
+			result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
+			if( !result ){
+				LogLog::error( LOG4CXX_STR("Can't cast stream to FileOutputStream") );
+			}
+			return result;
 		}
 };
 }
@@ -354,16 +369,11 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 			if (bAlreadyRolled)
 			{
-				apr_finfo_t finfo1, finfo2;
-				apr_status_t st1, st2;
-				const WriterPtr writer = getWriter();
-				const FileOutputStreamPtr fos = LOG4CXX_NS::cast<FileOutputStream>( writer );
-				if( !fos ){
-					LogLog::error( LOG4CXX_STR("Can't cast writer to FileOutputStream") );
+				auto fos = CountingOutputStream::getFileOutputStream(getWriter());
+				if( !fos )
 					return false;
-				}
-				apr_file_t* _fd = fos->getFilePtr();
-				st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, _fd);
+				apr_finfo_t finfo1;
+				apr_status_t st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, fos->getFilePtr());
 
 				if (st1 != APR_SUCCESS)
 				{
@@ -371,11 +381,12 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 				}
 
 				LogString fname = getFile();
-				st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, p.getAPRPool());
+				apr_finfo_t finfo2;
+				apr_status_t st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, p.getAPRPool());
 
 				if (st2 != APR_SUCCESS)
 				{
-					LogLog::warn(LOG4CXX_STR("apr_stat failed."));
+					LogLog::warn(fname + LOG4CXX_STR(": apr_stat failed."));
 				}
 
 				bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS)
@@ -452,10 +463,11 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 							setFileInternal(rollover1->getActiveFileName());
 							// Call activateOptions to create any intermediate directories(if required)
 							FileAppender::activateOptionsInternal(p);
-							OutputStreamPtr os(new FileOutputStream(
-									rollover1->getActiveFileName(), rollover1->getAppend()));
-							WriterPtr newWriter(createWriter(os));
-							setWriterInternal(newWriter);
+							OutputStreamPtr os = std::make_shared<FileOutputStream>
+								( rollover1->getActiveFileName()
+								, rollover1->getAppend()
+								);
+							setWriterInternal(createWriter(os));
 
 							bool success = true;
 
@@ -571,39 +583,27 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 		}
 	}
 
-	//do re-check before every write
+	auto fos = CountingOutputStream::getFileOutputStream(getWriter());
+	if( !fos )
+		return;
+
+	// check for a file rolloover before every write
 	//
-	apr_finfo_t finfo1, finfo2;
-	apr_status_t st1, st2;
-	auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(getWriter());
-	if( !osw ){
-		LogLog::error( LOG4CXX_STR("Can't cast writer to OutputStreamWriter") );
-		return;
-	}
-	auto cos = LOG4CXX_NS::cast<CountingOutputStream>(osw->getOutputStreamPtr());
-	if( !cos ){
-		LogLog::error( LOG4CXX_STR("Can't cast stream to CountingOutputStream") );
-		return;
-	}
-	auto fos = LOG4CXX_NS::cast<FileOutputStream>(cos->getFileOutPutStreamPtr());
-	if( !fos ){
-		LogLog::error( LOG4CXX_STR("Can't cast stream to FileOutputStream") );
-		return;
-	}
-	apr_file_t* _fd = fos->getFilePtr();
-	st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, _fd);
+	apr_finfo_t finfo1;
+	apr_status_t st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, fos->getFilePtr());
 
 	if (st1 != APR_SUCCESS)
 	{
 		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
 	}
 
-	st2 = apr_stat(&finfo2, std::string(getFile()).c_str(), APR_FINFO_IDENT, p.getAPRPool());
+	LogString fname = getFile();
+	apr_finfo_t finfo2;
+	apr_status_t st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, p.getAPRPool());
 
 	if (st2 != APR_SUCCESS)
 	{
-		LogString err = "apr_stat failed. file:" + getFile();
-		LogLog::warn(err);
+		LogLog::warn(fname + LOG4CXX_STR(": apr_stat failed."));
 	}
 
 	bool bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS)
