@@ -20,7 +20,7 @@
 
 #include <log4cxx/fileappender.h>
 #include <log4cxx/spi/optionhandler.h>
-#include <log4cxx/fileappender.h>
+#include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/rolling/triggeringpolicy.h>
 #include <log4cxx/rolling/rollingpolicy.h>
 #include <log4cxx/rolling/action.h>
@@ -34,12 +34,12 @@ namespace rolling
 /**
  * A special version of the RollingFileAppender that acts properly with multiple processes
  */
-class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public FileAppender
+class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppender
 {
 		DECLARE_LOG4CXX_OBJECT(MultiprocessRollingFileAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(MultiprocessRollingFileAppender)
-		LOG4CXX_CAST_ENTRY_CHAIN(FileAppender)
+		LOG4CXX_CAST_ENTRY_CHAIN(RollingFileAppender)
 		END_LOG4CXX_CAST_MAP()
 	protected:
 		struct MultiprocessRollingFileAppenderPriv;

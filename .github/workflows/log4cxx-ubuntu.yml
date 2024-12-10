@@ -32,6 +32,7 @@ jobs:
             fmt: OFF
             qt: ON
             odbc: OFF
+            multiprocess: ON
             multithread: OFF
             exitevents: OFF
             fuzzers: OFF
@@ -41,6 +42,7 @@ jobs:
             fmt: ON
             qt: OFF
             odbc: ON
+            multiprocess: OFF
             multithread: OFF
             exitevents: OFF
             fuzzers: ON
@@ -50,6 +52,7 @@ jobs:
             fmt: OFF
             qt: OFF
             odbc: OFF
+            multiprocess: OFF
             multithread: ON
             exitevents: ON
             fuzzers: OFF
@@ -59,6 +62,7 @@ jobs:
             fmt: ON
             qt: OFF
             odbc: OFF
+            multiprocess: OFF
             multithread: ON
             exitevents: OFF
             fuzzers: ON
@@ -96,6 +100,7 @@ jobs:
           -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
           -DLOG4CXX_QT_SUPPORT=${{ matrix.qt }} \
           -DENABLE_MULTITHREAD_TEST=${{ matrix.multithread }} \
+          -LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=${{ matrix.multiprocess }} \
           -DLOG4CXX_EVENTS_AT_EXIT=${{ matrix.exitevents }} \
           -DBUILD_FUZZERS=${{ matrix.fuzzers }} \
           ..

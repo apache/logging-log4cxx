@@ -32,7 +32,7 @@
 #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
 #include <log4cxx/rolling/manualtriggeringpolicy.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <log4cxx/private/fileappender_priv.h>
+#include <log4cxx/private/rollingfileappender_priv.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <log4cxx/private/boost-std-configuration.h>
 #include <mutex>
@@ -130,43 +130,14 @@ using namespace LOG4CXX_NS::rolling;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
 
-struct MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv : public FileAppenderPriv
-{
-	MultiprocessRollingFileAppenderPriv() :
-		FileAppenderPriv(),
-		fileLength(0) {}
-
-	/**
-	 * Triggering policy.
-	 */
-	TriggeringPolicyPtr triggeringPolicy;
-
-	/**
-	 * Rolling policy.
-	 */
-	RollingPolicyPtr rollingPolicy;
-
-	/**
-	 * Length of current active log file.
-	 */
-	size_t fileLength;
-
-	/**
-	 *  save the loggingevent
-	 */
-	spi::LoggingEventPtr _event;
-};
-
-#define _priv static_cast<MultiprocessRollingFileAppenderPriv*>(m_priv.get())
+#define _priv static_cast<RollingFileAppenderPriv*>(m_priv.get())
 
 IMPLEMENT_LOG4CXX_OBJECT(MultiprocessRollingFileAppender)
-
 
 /**
  * Construct a new instance.
  */
-MultiprocessRollingFileAppender::MultiprocessRollingFileAppender() :
-	FileAppender (std::make_unique<MultiprocessRollingFileAppenderPriv>())
+MultiprocessRollingFileAppender::MultiprocessRollingFileAppender()
 {
 }
 
