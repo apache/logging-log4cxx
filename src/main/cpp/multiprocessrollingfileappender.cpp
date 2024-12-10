@@ -37,13 +37,11 @@
 #include <log4cxx/private/boost-std-configuration.h>
 #include <mutex>
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::rolling;
-using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::spi;
-
 namespace LOG4CXX_NS
 {
+
+using namespace helpers;
+
 namespace rolling
 {
 /**
@@ -52,81 +50,85 @@ namespace rolling
  */
 class CountingOutputStream : public OutputStream
 {
-		/**
-		 * Wrapped output stream.
-		 */
-	private:
-		OutputStreamPtr os;
+	/**
+	 * Wrapped output stream.
+	 */
+private:
+	OutputStreamPtr os;
 
-		/**
-		 * Rolling file appender to inform of stream writes.
-		 */
-		MultiprocessRollingFileAppender* rfa;
+	/**
+	 * Rolling file appender to inform of stream writes.
+	 */
+	MultiprocessRollingFileAppender* rfa;
 
-	public:
-		/**
-		 * Constructor.
-		 * @param os output stream to wrap.
-		 * @param rfa rolling file appender to inform.
-		 */
-		CountingOutputStream(
-			OutputStreamPtr& os1, MultiprocessRollingFileAppender* rfa1) :
-			os(os1), rfa(rfa1)
+public:
+	/**
+	 * Constructor.
+	 * @param os output stream to wrap.
+	 * @param rfa rolling file appender to inform.
+	 */
+	CountingOutputStream(const OutputStreamPtr& os1, MultiprocessRollingFileAppender* rfa1)
+		: os(os1), rfa(rfa1)
+	{
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	void close(Pool& p) override
+	{
+		os->close(p);
+		rfa = 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	void flush(Pool& p) override
+	{
+		os->flush(p);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	void write(ByteBuffer& buf, Pool& p) override
+	{
+		os->write(buf, p);
+
+		if (rfa != 0)
 		{
+			rfa->setFileLength(File().setPath(rfa->getFile()).length(p));
 		}
+	}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		void close(Pool& p)
-		{
-			os->close(p);
-			rfa = 0;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		void flush(Pool& p)
-		{
-			os->flush(p);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		void write(ByteBuffer& buf, Pool& p)
-		{
-			os->write(buf, p);
-
-			if (rfa != 0)
-			{
-				rfa->setFileLength(File().setPath(rfa->getFile()).length(p));
-			}
-		}
-
-		static FileOutputStreamPtr getFileOutputStream(const WriterPtr& writer)
-		{
-			FileOutputStreamPtr result;
-			auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(writer);
-			if( !osw ){
-				LogLog::error( LOG4CXX_STR("Can't cast writer to OutputStreamWriter") );
-				return result;
-			}
-			auto cos = LOG4CXX_NS::cast<CountingOutputStream>(osw->getOutputStreamPtr());
-			if( !cos ){
-				LogLog::error( LOG4CXX_STR("Can't cast stream to CountingOutputStream") );
-				return result;
-			}
-			result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
-			if( !result ){
-				LogLog::error( LOG4CXX_STR("Can't cast stream to FileOutputStream") );
-			}
+	static FileOutputStreamPtr getFileOutputStream(const WriterPtr& writer)
+	{
+		FileOutputStreamPtr result;
+		auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(writer);
+		if( !osw ){
+			LogLog::error( LOG4CXX_STR("Can't cast writer to OutputStreamWriter") );
 			return result;
 		}
+		auto cos = LOG4CXX_NS::cast<CountingOutputStream>(osw->getOutputStreamPtr());
+		if( !cos ){
+			LogLog::error( LOG4CXX_STR("Can't cast stream to CountingOutputStream") );
+			return result;
+		}
+		result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
+		if( !result ){
+			LogLog::error( LOG4CXX_STR("Can't cast stream to FileOutputStream") );
+		}
+		return result;
+	}
 };
-}
-}
+} // namespace rolling
+} // namespace LOG4CXX_NS
+
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::rolling;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 struct MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv : public FileAppenderPriv
 {
