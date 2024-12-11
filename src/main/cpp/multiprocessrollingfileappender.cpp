@@ -291,19 +291,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 							if (auto pAction = rollover1->getSynchronous())
 							{
-								success = false;
-
-								try
-								{
-									success = pAction->execute(p);
-								}
-								catch (std::exception& ex)
-								{
-									LogString msg(LOG4CXX_STR("Rollover of ["));
-									msg.append(getFile());
-									msg.append(LOG4CXX_STR("] failed"));
-									_priv->errorHandler->error(msg, ex, 0);
-								}
+								success = pAction->execute(p);
 							}
 
 							bool appendToExisting = true;
@@ -319,9 +307,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 									_priv->fileLength = 0;
 								}
 
-								ActionPtr asyncAction(rollover1->getAsynchronous());
-
-								if (asyncAction != NULL)
+								if (auto asyncAction = rollover1->getAsynchronous())
 								{
 									try
 									{
@@ -329,12 +315,19 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 									}
 									catch (std::exception& ex)
 									{
-										LogString msg(LOG4CXX_STR("Rollover of ["));
+										LogString msg(LOG4CXX_STR("Async action in rollover ["));
 										msg.append(getFile());
 										msg.append(LOG4CXX_STR("] failed"));
 										_priv->errorHandler->error(msg, ex, 0);
 									}
 								}
+							}
+							else
+							{
+								LogString msg(LOG4CXX_STR("Rollover of ["));
+								msg.append(getFile());
+								msg.append(LOG4CXX_STR("] failed"));
+								_priv->errorHandler->error(msg);
 							}
 							setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize, p);
 						}
