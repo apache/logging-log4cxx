@@ -112,7 +112,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		 */
 		void reopenLatestFile(LOG4CXX_NS::helpers::Pool& p);
 
-		friend class CountingOutputStream;
+		friend class MultiprocessOutputStream;
 
 };
 

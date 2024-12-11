@@ -45,10 +45,10 @@ using namespace helpers;
 namespace rolling
 {
 /**
- * Wrapper for OutputStream that will report all write
- * operations back to this class for file length calculations.
+ * Wrapper for OutputStream that will report all log file
+ * size changes back to the appender for file length calculations.
  */
-class CountingOutputStream : public OutputStream
+class MultiprocessOutputStream : public OutputStream
 {
 	/**
 	 * Wrapped output stream.
@@ -67,7 +67,7 @@ public:
 	 * @param os output stream to wrap.
 	 * @param rfa rolling file appender to inform.
 	 */
-	CountingOutputStream(const OutputStreamPtr& os1, MultiprocessRollingFileAppender* rfa1)
+	MultiprocessOutputStream(const OutputStreamPtr& os1, MultiprocessRollingFileAppender* rfa1)
 		: os(os1), rfa(rfa1)
 	{
 	}
@@ -110,9 +110,9 @@ public:
 			LogLog::error( LOG4CXX_STR("Can't cast writer to OutputStreamWriter") );
 			return result;
 		}
-		auto cos = LOG4CXX_NS::cast<CountingOutputStream>(osw->getOutputStreamPtr());
+		auto cos = LOG4CXX_NS::cast<MultiprocessOutputStream>(osw->getOutputStreamPtr());
 		if( !cos ){
-			LogLog::error( LOG4CXX_STR("Can't cast stream to CountingOutputStream") );
+			LogLog::error( LOG4CXX_STR("Can't cast stream to MultiprocessOutputStream") );
 			return result;
 		}
 		result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
@@ -252,7 +252,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 			if (bAlreadyRolled)
 			{
-				auto fos = CountingOutputStream::getFileOutputStream(getWriter());
+				auto fos = MultiprocessOutputStream::getFileOutputStream(getWriter());
 				if( !fos )
 					return false;
 				apr_finfo_t finfo1;
@@ -462,7 +462,7 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 		}
 	}
 
-	auto fos = CountingOutputStream::getFileOutputStream(getWriter());
+	auto fos = MultiprocessOutputStream::getFileOutputStream(getWriter());
 	if( !fos )
 		return;
 
@@ -521,7 +521,7 @@ void MultiprocessRollingFileAppender::setRollingPolicy(const RollingPolicyPtr& p
  */
 WriterPtr MultiprocessRollingFileAppender::createWriter(OutputStreamPtr& os)
 {
-	OutputStreamPtr cos = std::make_shared<CountingOutputStream>(os, this);
+	OutputStreamPtr cos = std::make_shared<MultiprocessOutputStream>(os, this);
 	return FileAppender::createWriter(cos);
 }
 
