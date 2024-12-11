@@ -72,16 +72,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p);
 
-	public:
-
-		/**
-		 * Sets the rolling policy. In case the 'policy' argument also implements
-		 * {@link TriggeringPolicy}, then the triggering policy for this appender
-		 * is automatically set to be the policy argument.
-		 * @param policy
-		 */
-		void setRollingPolicy(const RollingPolicyPtr& policy);
-
 	protected:
 		/**
 		   Returns an OutputStreamWriter when passed an OutputStream.  The

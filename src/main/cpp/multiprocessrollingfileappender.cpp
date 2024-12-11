@@ -34,7 +34,6 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/rollingfileappender_priv.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
-#include <log4cxx/private/boost-std-configuration.h>
 #include <mutex>
 
 namespace LOG4CXX_NS
@@ -185,6 +184,9 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 	//
 	if (_priv->rollingPolicy != NULL)
 	{
+
+		if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
+			pTimeBased->setMultiprocess(true);
 
 		{
 			LogString fileName(getFile());
@@ -473,20 +475,6 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 	}
 
 	FileAppender::subAppend(event, p);
-}
-
-/**
- * Sets the rolling policy.
- * @param policy rolling policy.
- */
-void MultiprocessRollingFileAppender::setRollingPolicy(const RollingPolicyPtr& policy)
-{
-	_priv->rollingPolicy = policy;
-
-	TimeBasedRollingPolicyPtr timeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(policy);
-	if( timeBased ){
-		timeBased->setMultiprocess(true);
-	}
 }
 
 /**

@@ -301,32 +301,6 @@ void TimeBasedRollingPolicy::activateOptions(LOG4CXX_NS::helpers::Pool& pool)
 	formatFileName(obj, buf, pool);
 	m_priv->lastFileName = buf;
 
-	if( m_priv->multiprocess ){
-#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
-		if (getPatternConverterList().size())
-		{
-			(*(getPatternConverterList().begin()))->format(obj, m_priv->_fileNamePattern, pool);
-		}
-		else
-		{
-			m_priv->_fileNamePattern = m_priv->lastFileName;
-		}
-
-		if (!m_priv->_lock_file)
-		{
-			const std::string lockname = createFile(std::string(m_priv->_fileNamePattern), LOCK_FILE_SUFFIX, m_priv->_mmapPool);
-			apr_status_t stat = apr_file_open(&m_priv->_lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_priv->_mmapPool.getAPRPool());
-
-			if (stat != APR_SUCCESS)
-			{
-				LogLog::warn(LOG4CXX_STR("open lock file failed."));
-			}
-		}
-
-		initMMapFile(m_priv->lastFileName, m_priv->_mmapPool);
-#endif
-	}
-
 	m_priv->suffixLength = 0;
 
 	if (m_priv->lastFileName.length() >= 3)
@@ -406,6 +380,31 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 	if( m_priv->multiprocess ){
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+
+		if (!m_priv->bAlreadyInitialized)
+		{
+			if (getPatternConverterList().size())
+			{
+				(*(getPatternConverterList().begin()))->format(obj, m_priv->_fileNamePattern, pool);
+			}
+			else
+			{
+				m_priv->_fileNamePattern = m_priv->lastFileName;
+			}
+
+			if (!m_priv->_lock_file)
+			{
+				const std::string lockname = createFile(std::string(m_priv->_fileNamePattern), LOCK_FILE_SUFFIX, m_priv->_mmapPool);
+				apr_status_t stat = apr_file_open(&m_priv->_lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_priv->_mmapPool.getAPRPool());
+
+				if (stat != APR_SUCCESS)
+				{
+					LogLog::warn(lockname + LOG4CXX_STR(": apr_file_open failed."));
+				}
+			}
+
+			initMMapFile(m_priv->lastFileName, m_priv->_mmapPool);
+		}
 		m_priv->bAlreadyInitialized = true;
 
 		if (m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
