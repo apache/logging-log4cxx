@@ -203,28 +203,14 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 			}
 
 			bool bAlreadyRolled = true;
-			apr_uid_t uid;
-			apr_gid_t groupid;
-			apr_status_t stat = apr_uid_current(&uid, &groupid, p.getAPRPool());
 
-			char szUid[MAX_FILE_LEN] = {'\0'};
-			if (stat == APR_SUCCESS)
-			{
-#ifdef _WIN32
-				snprintf(szUid, MAX_FILE_LEN, "%p", uid);
-#else
-				snprintf(szUid, MAX_FILE_LEN, "%u", (unsigned int)uid);
-#endif
-			}
-
-			LOG4CXX_NS::filesystem::path path = fileName;
-			const auto lockname = path.parent_path() / (path.filename().string() + szUid + ".lock");
+			LogString lockname = fileName + ".lock";
 			apr_file_t* lock_file;
-			stat = apr_file_open(&lock_file, lockname.string().c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, p.getAPRPool());
+			auto stat = apr_file_open(&lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, p.getAPRPool());
 
 			if (stat != APR_SUCCESS)
 			{
-				LogString err = LOG4CXX_STR("lockfile return error: open lockfile failed. ");
+				LogString err = lockname + LOG4CXX_STR(": apr_file_open error: ");
 				err += (strerror(errno));
 				LogLog::warn(err);
 				bAlreadyRolled = false;
@@ -236,7 +222,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 				if (stat != APR_SUCCESS)
 				{
-					LogString err = LOG4CXX_STR("apr_file_lock: lock failed. ");
+					LogString err = lockname + LOG4CXX_STR(": apr_file_lock error: ");
 					err += (strerror(errno));
 					LogLog::warn(err);
 					bAlreadyRolled = false;
