@@ -141,14 +141,6 @@ MultiprocessRollingFileAppender::MultiprocessRollingFileAppender()
 {
 }
 
-/**
- * Prepare instance of use.
- */
-void MultiprocessRollingFileAppender::activateOptions(Pool& p)
-{
-	RollingFileAppender::activateOptions(p);
-}
-
 void MultiprocessRollingFileAppender::releaseFileLock(apr_file_t* lock_file)
 {
 	if (lock_file)
