@@ -109,7 +109,8 @@ public:
 		int fileCount = 0;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
-			if (dir_entry.path().string().substr(0, 19) == "multiprocess-dated-")
+			LogString filename(dir_entry.path().filename().string());
+			if (filename.substr(0, 19) == "multiprocess-dated-")
 				++fileCount;
 		}
 		LOGUNIT_ASSERT(1 < fileCount);
