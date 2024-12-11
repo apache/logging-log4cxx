@@ -84,10 +84,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 	public:
 
-		RollingPolicyPtr getRollingPolicy() const;
-
-		TriggeringPolicyPtr getTriggeringPolicy() const;
-
 		/**
 		 * Sets the rolling policy. In case the 'policy' argument also implements
 		 * {@link TriggeringPolicy}, then the triggering policy for this appender
@@ -95,14 +91,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		 * @param policy
 		 */
 		void setRollingPolicy(const RollingPolicyPtr& policy);
-
-		void setTriggeringPolicy(const TriggeringPolicyPtr& policy);
-
-	public:
-		/**
-		  * Close appender.  Waits for any asynchronous file compression actions to be completed.
-		*/
-		void close() override;
 
 	protected:
 		/**
@@ -115,19 +103,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		 @return new writer.
 		 */
 		helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os) override;
-
-	public:
-		/**
-		 * Get byte length of current active log file.
-		 * @return byte length of current active log file.
-		 */
-		size_t getFileLength() const;
-
-		/**
-		 * Increments estimated byte length of current active log file.
-		 * @param increment additional bytes written to log file.
-		 */
-		void incrementFileLength(size_t increment);
 
 	private:
 		/**

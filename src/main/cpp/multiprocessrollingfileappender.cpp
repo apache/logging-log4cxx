@@ -211,15 +211,11 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 			}
 
 			bool bAlreadyRolled = true;
-			char szDirName[MAX_FILE_LEN] = {'\0'};
-			char szBaseName[MAX_FILE_LEN] = {'\0'};
-			char szUid[MAX_FILE_LEN] = {'\0'};
-			memcpy(szDirName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
-			memcpy(szBaseName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
 			apr_uid_t uid;
 			apr_gid_t groupid;
 			apr_status_t stat = apr_uid_current(&uid, &groupid, p.getAPRPool());
 
+			char szUid[MAX_FILE_LEN] = {'\0'};
 			if (stat == APR_SUCCESS)
 			{
 #ifdef _WIN32
@@ -229,7 +225,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 #endif
 			}
 
-			LOG4CXX_NS::filesystem::path path = szDirName;
+			LOG4CXX_NS::filesystem::path path = fileName;
 			const auto lockname = path.parent_path() / (path.filename().string() + szUid + ".lock");
 			apr_file_t* lock_file;
 			stat = apr_file_open(&lock_file, lockname.string().c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, p.getAPRPool());
@@ -293,9 +289,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 				try
 				{
-					RolloverDescriptionPtr rollover1(_priv->rollingPolicy->rollover(this->getFile(), this->getAppend(), p));
-
-					if (rollover1 != NULL)
+					if (auto rollover1 = _priv->rollingPolicy->rollover(this->getFile(), this->getAppend(), p))
 					{
 						if (rollover1->getActiveFileName() == getFile())
 						{
@@ -303,13 +297,13 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 							bool success = true;
 
-							if (rollover1->getSynchronous() != NULL)
+							if (auto pAction = rollover1->getSynchronous())
 							{
 								success = false;
 
 								try
 								{
-									success = rollover1->getSynchronous()->execute(p);
+									success = pAction->execute(p);
 								}
 								catch (std::exception& ex)
 								{
@@ -366,13 +360,13 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 							bool success = true;
 
-							if (rollover1->getSynchronous() != NULL)
+							if (auto pAction = rollover1->getSynchronous())
 							{
 								success = false;
 
 								try
 								{
-									success = rollover1->getSynchronous()->execute(p);
+									success = pAction->execute(p);
 								}
 								catch (std::exception& ex)
 								{
@@ -397,9 +391,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 								//
 								//   async action not yet implemented
 								//
-								ActionPtr asyncAction(rollover1->getAsynchronous());
-
-								if (asyncAction != NULL)
+								if (auto asyncAction = rollover1->getAsynchronous())
 								{
 									asyncAction->execute(p);
 								}
@@ -513,24 +505,6 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 }
 
 /**
- * Get rolling policy.
- * @return rolling policy.
- */
-RollingPolicyPtr MultiprocessRollingFileAppender::getRollingPolicy() const
-{
-	return _priv->rollingPolicy;
-}
-
-/**
- * Get triggering policy.
- * @return triggering policy.
- */
-TriggeringPolicyPtr MultiprocessRollingFileAppender::getTriggeringPolicy() const
-{
-	return _priv->triggeringPolicy;
-}
-
-/**
  * Sets the rolling policy.
  * @param policy rolling policy.
  */
@@ -542,23 +516,6 @@ void MultiprocessRollingFileAppender::setRollingPolicy(const RollingPolicyPtr& p
 	if( timeBased ){
 		timeBased->setMultiprocess(true);
 	}
-}
-
-/**
- * Set triggering policy.
- * @param policy triggering policy.
- */
-void MultiprocessRollingFileAppender::setTriggeringPolicy(const TriggeringPolicyPtr& policy)
-{
-	_priv->triggeringPolicy = policy;
-}
-
-/**
- * Close appender.  Waits for any asynchronous file compression actions to be completed.
- */
-void MultiprocessRollingFileAppender::close()
-{
-	FileAppender::close();
 }
 
 /**
@@ -576,25 +533,8 @@ WriterPtr MultiprocessRollingFileAppender::createWriter(OutputStreamPtr& os)
 	return FileAppender::createWriter(cos);
 }
 
-/**
- * Get byte length of current active log file.
- * @return byte length of current active log file.
- */
-size_t MultiprocessRollingFileAppender::getFileLength() const
-{
-	return _priv->fileLength;
-}
 
 void MultiprocessRollingFileAppender::setFileLength(size_t length)
 {
 	_priv->fileLength = length;
-}
-
-/**
- * Increments estimated byte length of current active log file.
- * @param increment additional bytes written to log file.
- */
-void MultiprocessRollingFileAppender::incrementFileLength(size_t increment)
-{
-	_priv->fileLength += increment;
 }
