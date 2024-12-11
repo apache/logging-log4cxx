@@ -20,46 +20,38 @@
 #include "../insertwide.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/private/boost-std-configuration.h>
 
 using namespace log4cxx;
 
-/**
- *
- * Tests of rolling file appender with a filter based triggering policy.
- *
- *
- *
- *
- */
+auto getLogger(const std::string& name) -> LoggerPtr {
+    static struct log4cxx_initializer {
+        log4cxx_initializer() {
+			xml::DOMConfigurator::configure("input/rolling/multiprocess.xml");
+        }
+        ~log4cxx_initializer() {
+            LogManager::shutdown();
+        }
+    } initAndShutdown;
+    return name.empty()
+        ? LogManager::getRootLogger()
+        : LogManager::getLogger(name);
+}
+
 LOGUNIT_CLASS(MultiprocessRollingTest)
 {
 	LOGUNIT_TEST_SUITE(MultiprocessRollingTest);
 	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
-	void tearDown()
-	{
-		LogManager::getLoggerRepository()->resetConfiguration();
-	}
-
 	/**
-	 * Test basic rolling functionality using configuration file.
+	 * Test basic rolling functionality.
 	 */
 	void test1()
 	{
-		xml::DOMConfigurator::configure("./input/rolling/multiprocess.xml");
-		common(LOG4CXX_STR("output/multiprocess-test"));
-	}
-
-private:
-	/**
-	 *   Common aspects of test1 and test2
-	 */
-	void common(const LogString & baseName)
-	{
-
-		auto logger = Logger::getLogger("org.apache.log4j.rolling.MultiprocessRollingTest");
+		auto logger = getLogger("Test1");
 		// Write exactly 10 bytes with each log
 		for (int i = 0; i < 25; i++)
 		{
@@ -91,15 +83,45 @@ private:
 			}
 		}
 
-		//
-		//  test was constructed to mimic SizeBasedRollingTest.test2
-		//
+		LogString baseName = LOG4CXX_STR("output/rolling/multiprocess-test");
 		LOGUNIT_ASSERT_EQUAL(true,
 			Compare::compare(baseName + LOG4CXX_STR(".log"), LogString(LOG4CXX_STR("witness/rolling/multiprocess-test.log"))));
 		LOGUNIT_ASSERT_EQUAL(true,
 			Compare::compare(baseName + LOG4CXX_STR(".0"), LogString(LOG4CXX_STR("witness/rolling/multiprocess-test.0"))));
 		LOGUNIT_ASSERT_EQUAL(true,
 			Compare::compare(baseName + LOG4CXX_STR(".1"), LogString(LOG4CXX_STR("witness/rolling/multiprocess-test.1"))));
+	}
+
+	/**
+	 * Test size based rolling functionality.
+	 */
+	void test2()
+	{
+		auto logger = getLogger("Test2");
+		auto approxBytesPerLogEvent = 40 + 23;
+		auto requiredLogFileCount = 3;
+		auto approxBytesPerLogFile = 1000;
+		auto requiredLogEventCount = (approxBytesPerLogFile * requiredLogFileCount + approxBytesPerLogEvent - 1) / approxBytesPerLogEvent;
+		for ( int x = 0; x < requiredLogEventCount; x++ )
+		{
+			LOG4CXX_INFO( logger, "This is test message " << x );
+		}
+		int fileCount = 0;
+		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
+		{
+			if (dir_entry.path().string().substr(0, 19) == "multiprocess-dated-")
+				++fileCount;
+		}
+		LOGUNIT_ASSERT(1 < fileCount);
+	}
+
+private:
+	/**
+	 *   Common aspects of test1 and test2
+	 */
+	void common(const LogString & baseName)
+	{
+
 	}
 };
 
