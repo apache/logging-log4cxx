@@ -39,6 +39,9 @@
 	#include <log4cxx/nt/outputdebugstringappender.h>
 #endif
 #include <log4cxx/net/smtpappender.h>
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+#include <log4cxx/rolling/multiprocessrollingfileappender.h>
+#endif
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/net/syslogappender.h>
 #include <log4cxx/net/telnetappender.h>
@@ -199,6 +202,9 @@ void Class::registerClasses()
 	StringMatchFilter::registerClass();
 	LocationInfoFilter::registerClass();
 	LOG4CXX_NS::rolling::RollingFileAppender::registerClass();
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+	LOG4CXX_NS::rolling::MultiprocessRollingFileAppender::registerClass();
+#endif
 	LOG4CXX_NS::rolling::SizeBasedTriggeringPolicy::registerClass();
 	LOG4CXX_NS::rolling::TimeBasedRollingPolicy::registerClass();
 	LOG4CXX_NS::rolling::ManualTriggeringPolicy::registerClass();
