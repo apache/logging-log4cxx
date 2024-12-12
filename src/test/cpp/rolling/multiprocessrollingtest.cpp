@@ -45,6 +45,7 @@ LOGUNIT_CLASS(MultiprocessRollingTest)
 	LOGUNIT_TEST_SUITE(MultiprocessRollingTest);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
+	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -129,6 +130,22 @@ public:
 				++fileCount;
 		}
 		LOGUNIT_ASSERT(1 < fileCount);
+	}
+
+	/**
+	 * Generate about 30 rollovers per process using a time based rolling policy with a sized based trigger.
+	 */
+	void test3()
+	{
+		auto logger = getLogger("Test2");
+		auto approxBytesPerLogEvent = 40 + 23;
+		auto requiredLogFileCount = 30;
+		auto approxBytesPerLogFile = 1000;
+		auto requiredLogEventCount = (approxBytesPerLogFile * requiredLogFileCount + approxBytesPerLogEvent - 1) / approxBytesPerLogEvent;
+		for ( int x = 0; x < requiredLogEventCount; x++ )
+		{
+			LOG4CXX_INFO( logger, "This is test message " << x );
+		}
 	}
 
 private:
