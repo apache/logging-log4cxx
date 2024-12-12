@@ -21,6 +21,8 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/private/boost-std-configuration.h>
+#include <log4cxx/helpers/strftimedateformat.h>
+#include <log4cxx/helpers/date.h>
 
 using namespace log4cxx;
 
@@ -47,12 +49,11 @@ LOGUNIT_CLASS(MultiprocessRollingTest)
 
 public:
 	/**
-	 * Test basic rolling functionality.
+	 * Test a numeric rolling policy with a log level based trigger.
 	 */
 	void test1()
 	{
 		auto logger = getLogger("Test1");
-		// Write exactly 10 bytes with each log
 		for (int i = 0; i < 25; i++)
 		{
 			char msg[10];
@@ -93,10 +94,19 @@ public:
 	}
 
 	/**
-	 * Test size based rolling functionality.
+	 * Test a time based rolling policy with a sized based trigger.
 	 */
 	void test2()
 	{
+		LogString expectedPrefix = LOG4CXX_STR("multiprocess-dated-");
+		// remove any previously generated files
+		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
+		{
+			LogString filename(dir_entry.path().filename().string());
+			if (expectedPrefix.size() < filename.size() &&
+				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
+				std::filesystem::remove(dir_entry);
+		}
 		auto logger = getLogger("Test2");
 		auto approxBytesPerLogEvent = 40 + 23;
 		auto requiredLogFileCount = 3;
@@ -106,11 +116,16 @@ public:
 		{
 			LOG4CXX_INFO( logger, "This is test message " << x );
 		}
+
+		// Count rolled files
+		helpers::Pool p;
+		helpers::StrftimeDateFormat("%Y-%m-%d").format(expectedPrefix, helpers::Date::currentTime(), p);
 		int fileCount = 0;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
 			LogString filename(dir_entry.path().filename().string());
-			if (filename.substr(0, 19) == "multiprocess-dated-")
+			if (expectedPrefix.size() < filename.size() &&
+				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
 				++fileCount;
 		}
 		LOGUNIT_ASSERT(1 < fileCount);
