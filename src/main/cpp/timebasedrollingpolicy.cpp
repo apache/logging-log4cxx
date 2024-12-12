@@ -28,7 +28,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/fileappender.h>
-#include <log4cxx/private/boost-std-configuration.h>
 #include <iostream>
 #include <apr_mmap.h>
 
@@ -160,29 +159,16 @@ void TimeBasedRollingPolicy::initMMapFile(const LogString& lastFileName, LOG4CXX
 
 const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName, const std::string& suffix, LOG4CXX_NS::helpers::Pool& pool)
 {
-	char szUid[MAX_FILE_LEN] = {'\0'};
-	char szBaseName[MAX_FILE_LEN] = {'\0'};
-	char szDirName[MAX_FILE_LEN] = {'\0'};
-	memcpy(szDirName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
-	memcpy(szBaseName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
-
+#ifdef _WIN32
+	return fileName + "0000" + suffix;
+#else
+	char szUid[MAX_FILE_LEN] = "0000";
 	apr_uid_t uid;
 	apr_gid_t groupid;
-	apr_status_t stat = apr_uid_current(&uid, &groupid, pool.getAPRPool());
-
-	if (stat == APR_SUCCESS)
-	{
-#ifdef _WIN32
-		snprintf(szUid, MAX_FILE_LEN, "%p", uid);
-#else
+	if (APR_SUCCESS == apr_uid_current(&uid, &groupid, pool.getAPRPool()))
 		snprintf(szUid, MAX_FILE_LEN, "%u", uid);
+	return fileName + szUid + suffix;
 #endif
-	}
-
-	LOG4CXX_NS::filesystem::path path(fileName);
-	std::string newFilename = path.filename().string() + szUid + suffix;
-	LOG4CXX_NS::filesystem::path retval = path.parent_path() / newFilename;
-	return retval.string();
 }
 
 int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, LOG4CXX_NS::helpers::Pool& pool)
