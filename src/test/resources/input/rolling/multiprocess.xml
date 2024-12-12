@@ -40,7 +40,7 @@
     <param name="file" value="output/rolling/multiprocess-dated.log"/>
     <param name="append" value="false"/>
     <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-      <param name="FileNamePattern" value="output/rolling/multiprocess-dated-%d{yyyy-MM-dd HH:mm:ss.SSS}.log.gz"/>
+      <param name="FileNamePattern" value="output/rolling/multiprocess-dated-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log.gz"/>
     </rollingPolicy>
     <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
       <param name="MaxFileSize" value="1KB"/>

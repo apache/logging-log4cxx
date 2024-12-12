@@ -131,7 +131,8 @@ bool TimeBasedRollingPolicy::isMapFileEmpty(LOG4CXX_NS::helpers::Pool& pool)
 		LogLog::warn(LOG4CXX_STR("apr_stat failed."));
 	}
 
-	if (st == APR_SUCCESS && !finfo.size)
+	if (st == APR_SUCCESS && (0 == finfo.size ||
+		(m_priv->_mmap && 0 == *static_cast<char*>(m_priv->_mmap->mm))))
 	{
 		return true;
 	}

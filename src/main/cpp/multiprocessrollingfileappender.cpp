@@ -269,7 +269,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 
 				try
 				{
-					if (auto rollover1 = _priv->rollingPolicy->rollover(this->getFile(), this->getAppend(), p))
+					if (auto rollover1 = _priv->rollingPolicy->rollover(getFile(), getAppend(), p))
 					{
 						if (rollover1->getActiveFileName() == getFile())
 						{
