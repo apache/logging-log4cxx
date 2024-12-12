@@ -159,16 +159,14 @@ void TimeBasedRollingPolicy::initMMapFile(const LogString& lastFileName, LOG4CXX
 
 const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName, const std::string& suffix, LOG4CXX_NS::helpers::Pool& pool)
 {
-#ifdef _WIN32
-	return fileName + "0000" + suffix;
-#else
 	char szUid[MAX_FILE_LEN] = "0000";
+#ifndef _WIN32 // The uid provided by the Windows version of apr_uid_current is not a constant value
 	apr_uid_t uid;
 	apr_gid_t groupid;
 	if (APR_SUCCESS == apr_uid_current(&uid, &groupid, pool.getAPRPool()))
 		snprintf(szUid, MAX_FILE_LEN, "%u", uid);
-	return fileName + szUid + suffix;
 #endif
+	return fileName + szUid + suffix;
 }
 
 int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, LOG4CXX_NS::helpers::Pool& pool)
