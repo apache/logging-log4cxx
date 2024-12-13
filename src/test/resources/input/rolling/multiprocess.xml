@@ -50,6 +50,20 @@
     </layout>
   </appender>
 
+  <appender name="DATED-UNCOMPRESSED" class="org.apache.log4j.rolling.MultiprocessRollingFileAppender">
+    <param name="file" value="output/rolling/multiprocess-dated.log"/>
+    <param name="append" value="false"/>
+    <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+      <param name="FileNamePattern" value="output/rolling/multiprocess-dated-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log"/>
+    </rollingPolicy>
+    <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+      <param name="MaxFileSize" value="1KB"/>
+    </triggeringPolicy>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n"/>
+    </layout>
+  </appender>
+
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%m%n"/>
@@ -63,6 +77,11 @@
 
   <logger name="Test2" additivity="false">
     <appender-ref ref="DATED"/>
+    <level value="info"/>
+  </logger>
+
+  <logger name="Test3" additivity="false">
+    <appender-ref ref="DATED-UNCOMPRESSED"/>
     <level value="info"/>
   </logger>
 
