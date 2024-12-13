@@ -27,17 +27,17 @@
 using namespace log4cxx;
 
 auto getLogger(const std::string& name) -> LoggerPtr {
-    static struct log4cxx_initializer {
-        log4cxx_initializer() {
+	static struct log4cxx_initializer {
+		log4cxx_initializer() {
 			xml::DOMConfigurator::configure("input/rolling/multiprocess.xml");
-        }
-        ~log4cxx_initializer() {
-            LogManager::shutdown();
-        }
-    } initAndShutdown;
-    return name.empty()
-        ? LogManager::getRootLogger()
-        : LogManager::getLogger(name);
+		}
+		~log4cxx_initializer() {
+			LogManager::shutdown();
+		}
+	} initAndShutdown;
+	return name.empty()
+		? LogManager::getRootLogger()
+		: LogManager::getLogger(name);
 }
 
 LOGUNIT_CLASS(MultiprocessRollingTest)
