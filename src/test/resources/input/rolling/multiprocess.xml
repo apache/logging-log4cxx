@@ -60,7 +60,7 @@
       <param name="MaxFileSize" value="1KB"/>
     </triggeringPolicy>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n"/>
+      <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c %-5p - %m%n"/>
     </layout>
   </appender>
 

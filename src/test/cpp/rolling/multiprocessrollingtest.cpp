@@ -175,7 +175,7 @@ public:
 		}
 
 		// Check all messages are saved to files
-		LogString expectedPrefix = LOG4CXX_STR("multiprocess-dated-");
+		LogString expectedPrefix = LOG4CXX_STR("multiprocess-dated");
 		LogString expectedSuffix = LOG4CXX_STR(".log");
 		std::vector<int> messageCount;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
@@ -189,7 +189,7 @@ public:
 				for (std::string line; std::getline(input, line);)
 				{
 					 auto pos = line.rfind(' ');
-					 if (line.npos != pos)
+					 if (line.npos != pos && pos + 1 < line.size() && isdigit(line[pos+1]))
 					 {
 						auto msgNumber = std::stoi(line.substr(pos));
 						if (messageCount.size() <= msgNumber)
