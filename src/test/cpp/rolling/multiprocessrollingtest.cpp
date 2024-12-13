@@ -158,6 +158,15 @@ public:
 	 */
 	void test4()
 	{
+		LogString expectedPrefix = LOG4CXX_STR("multiprocess-dated");
+		// remove any previously generated files
+		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
+		{
+			LogString filename(dir_entry.path().filename().string());
+			if (expectedPrefix.size() < filename.size() &&
+				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
+				std::filesystem::remove(dir_entry);
+		}
 		auto thisProgram = GetExecutableFileName();
 		const char* args[] = {thisProgram.c_str(), "test3", 0};
 		helpers::Pool p;
@@ -175,7 +184,6 @@ public:
 		}
 
 		// Check all messages are saved to files
-		LogString expectedPrefix = LOG4CXX_STR("multiprocess-dated");
 		LogString expectedSuffix = LOG4CXX_STR(".log");
 		std::vector<int> messageCount;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
