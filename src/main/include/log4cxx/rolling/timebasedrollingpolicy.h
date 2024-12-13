@@ -40,8 +40,8 @@ namespace rolling
  * <p>In order to use  <code>TimeBasedRollingPolicy</code>, the
  * <b>FileNamePattern</b> option must be set. It basically specifies the name of the
  * rolled log files. The value <code>FileNamePattern</code> should consist of
- * the name of the file, plus a suitably placed <code>%d</code> conversion
- * specifier. The <code>%d</code> conversion specifier may contain a date and
+ * the name of the file, plus a suitably placed <code>\%d</code> conversion
+ * specifier. The <code>\%d</code> conversion specifier may contain a date and
  * time pattern as specified by the {@link log4cxx::helpers::SimpleDateFormat} class. If
  * the date and time pattern is ommitted, then the default pattern of
  * "yyyy-MM-dd" is assumed. The following examples should clarify the point.
@@ -54,9 +54,9 @@ namespace rolling
  *     <th>Example</th>
  *   </tr>
  *   <tr>
- *     <td nowrap="true"><code>/wombat/folder/foo.%d</code></td>
+ *     <td nowrap="true"><code>/wombat/folder/foo.\%d</code></td>
  *     <td>Daily rollover (at midnight).  Due to the omission of the optional
- *         time and date pattern for the %d token specifier, the default pattern
+ *         time and date pattern for the \%d token specifier, the default pattern
  *         of "yyyy-MM-dd" is assumed, which corresponds to daily rollover.
  *     </td>
  *     <td>During November 23rd, 2004, logging output will go to
@@ -66,7 +66,7 @@ namespace rolling
  *     </td>
  *   </tr>
  *   <tr>
- *     <td nowrap="true"><code>/wombat/foo.%d{yyyy-MM}.log</code></td>
+ *     <td nowrap="true"><code>/wombat/foo.\%d{yyyy-MM}.log</code></td>
  *     <td>Rollover at the beginning of each month.</td>
  *     <td>During the month of October 2004, logging output will go to
  *     <code>/wombat/foo.2004-10.log</code>. After midnight of October 31st
@@ -87,7 +87,7 @@ namespace rolling
  *     <th>Example</th>
  *   </tr>
  *   <tr>
- *     <td nowrap="true"><code>/wombat/foo.%d.gz</code></td>
+ *     <td nowrap="true"><code>/wombat/foo.\%d.gz</code></td>
  *     <td>Daily rollover (at midnight) with automatic GZIP compression of the
  *      arcived files.</td>
  *     <td>During November 23rd, 2004, logging output will go to
@@ -116,7 +116,7 @@ namespace rolling
  *     <th>Example</th>
  *   </tr>
  *   <tr>
- *     <td nowrap="true"><code>/wombat/foo.log.%d</code></td>
+ *     <td nowrap="true"><code>/wombat/foo.log.\%d</code></td>
  *     <td nowrap="true"><code>/wombat/foo.log</code></td>
  *     <td>Daily rollover.</td>
  *

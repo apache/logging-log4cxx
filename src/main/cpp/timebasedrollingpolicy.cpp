@@ -28,7 +28,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/fileappender.h>
-#include <log4cxx/private/boost-std-configuration.h>
 #include <iostream>
 #include <apr_mmap.h>
 
@@ -131,7 +130,8 @@ bool TimeBasedRollingPolicy::isMapFileEmpty(LOG4CXX_NS::helpers::Pool& pool)
 		LogLog::warn(LOG4CXX_STR("apr_stat failed."));
 	}
 
-	if (st == APR_SUCCESS && !finfo.size)
+	if (st == APR_SUCCESS && (0 == finfo.size ||
+		(m_priv->_mmap && 0 == *static_cast<char*>(m_priv->_mmap->mm))))
 	{
 		return true;
 	}
@@ -159,29 +159,14 @@ void TimeBasedRollingPolicy::initMMapFile(const LogString& lastFileName, LOG4CXX
 
 const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName, const std::string& suffix, LOG4CXX_NS::helpers::Pool& pool)
 {
-	char szUid[MAX_FILE_LEN] = {'\0'};
-	char szBaseName[MAX_FILE_LEN] = {'\0'};
-	char szDirName[MAX_FILE_LEN] = {'\0'};
-	memcpy(szDirName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
-	memcpy(szBaseName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
-
+	char szUid[MAX_FILE_LEN] = "0000";
+#ifndef _WIN32 // The uid provided by the Windows version of apr_uid_current is not a constant value
 	apr_uid_t uid;
 	apr_gid_t groupid;
-	apr_status_t stat = apr_uid_current(&uid, &groupid, pool.getAPRPool());
-
-	if (stat == APR_SUCCESS)
-	{
-#ifdef _WIN32
-		snprintf(szUid, MAX_FILE_LEN, "%p", uid);
-#else
+	if (APR_SUCCESS == apr_uid_current(&uid, &groupid, pool.getAPRPool()))
 		snprintf(szUid, MAX_FILE_LEN, "%u", uid);
 #endif
-	}
-
-	LOG4CXX_NS::filesystem::path path(fileName);
-	std::string newFilename = path.filename().string() + szUid + suffix;
-	LOG4CXX_NS::filesystem::path retval = path.parent_path() / newFilename;
-	return retval.string();
+	return fileName + szUid + suffix;
 }
 
 int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, LOG4CXX_NS::helpers::Pool& pool)
@@ -301,32 +286,6 @@ void TimeBasedRollingPolicy::activateOptions(LOG4CXX_NS::helpers::Pool& pool)
 	formatFileName(obj, buf, pool);
 	m_priv->lastFileName = buf;
 
-	if( m_priv->multiprocess ){
-#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
-		if (getPatternConverterList().size())
-		{
-			(*(getPatternConverterList().begin()))->format(obj, m_priv->_fileNamePattern, pool);
-		}
-		else
-		{
-			m_priv->_fileNamePattern = m_priv->lastFileName;
-		}
-
-		if (!m_priv->_lock_file)
-		{
-			const std::string lockname = createFile(std::string(m_priv->_fileNamePattern), LOCK_FILE_SUFFIX, m_priv->_mmapPool);
-			apr_status_t stat = apr_file_open(&m_priv->_lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_priv->_mmapPool.getAPRPool());
-
-			if (stat != APR_SUCCESS)
-			{
-				LogLog::warn(LOG4CXX_STR("open lock file failed."));
-			}
-		}
-
-		initMMapFile(m_priv->lastFileName, m_priv->_mmapPool);
-#endif
-	}
-
 	m_priv->suffixLength = 0;
 
 	if (m_priv->lastFileName.length() >= 3)
@@ -406,6 +365,31 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 	if( m_priv->multiprocess ){
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+
+		if (!m_priv->bAlreadyInitialized)
+		{
+			if (getPatternConverterList().size())
+			{
+				(*(getPatternConverterList().begin()))->format(obj, m_priv->_fileNamePattern, pool);
+			}
+			else
+			{
+				m_priv->_fileNamePattern = m_priv->lastFileName;
+			}
+
+			if (!m_priv->_lock_file)
+			{
+				const std::string lockname = createFile(std::string(m_priv->_fileNamePattern), LOCK_FILE_SUFFIX, m_priv->_mmapPool);
+				apr_status_t stat = apr_file_open(&m_priv->_lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_priv->_mmapPool.getAPRPool());
+
+				if (stat != APR_SUCCESS)
+				{
+					LogLog::warn(lockname + LOG4CXX_STR(": apr_file_open failed."));
+				}
+			}
+
+			initMMapFile(m_priv->lastFileName, m_priv->_mmapPool);
+		}
 		m_priv->bAlreadyInitialized = true;
 
 		if (m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
