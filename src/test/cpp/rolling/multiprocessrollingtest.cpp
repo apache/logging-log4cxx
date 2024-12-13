@@ -181,7 +181,7 @@ public:
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
 			LogString filename(dir_entry.path().filename().string());
-			if (expectedPrefix.size() + expectedSuffix.size() < filename.size()
+			if (expectedPrefix.size() + expectedSuffix.size() <= filename.size()
 				&& filename.substr(0, expectedPrefix.size()) == expectedPrefix
 				&& filename.substr(filename.size() - expectedSuffix.size()) == expectedSuffix)
 			{
