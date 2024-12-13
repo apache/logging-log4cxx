@@ -29,12 +29,12 @@
 #include <log4cxx/rolling/rolloverdescription.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <log4cxx/rolling/fixedwindowrollingpolicy.h>
 #include <log4cxx/rolling/manualtriggeringpolicy.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/rollingfileappender_priv.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <mutex>
+#include <thread>
 
 namespace LOG4CXX_NS
 {
@@ -129,7 +129,91 @@ using namespace LOG4CXX_NS::rolling;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
 
-#define _priv static_cast<RollingFileAppenderPriv*>(m_priv.get())
+struct MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv
+	: public RollingFileAppenderPriv
+{
+	~MultiprocessRollingFileAppenderPriv()
+	{
+		if (lock_file)
+			apr_file_close(lock_file);
+	}
+
+	apr_file_t* lock_file = NULL;
+
+public: // Support classes
+	class Lock
+	{
+		MultiprocessRollingFileAppenderPriv* m_parent;
+		LogString m_lockFileName;
+		bool m_ok;
+	public: // ...structors
+		/**
+		 *  Get an exclusive file lock
+		 */
+		Lock(MultiprocessRollingFileAppenderPriv* parent, const LogString& fileName)
+			: m_parent(parent)
+			, m_ok(false)
+		{
+			if (!m_parent->lock_file)
+			{
+				if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(m_parent->rollingPolicy))
+					pTimeBased->setMultiprocess(true);
+
+				LogString filePrefix(fileName);
+				if (auto basePolicy = LOG4CXX_NS::cast<RollingPolicyBase>(m_parent->rollingPolicy))
+				{
+					if (basePolicy->getPatternConverterList().size())
+					{
+						Pool p;
+						ObjectPtr obj = std::make_shared<Date>(apr_time_now());
+						LogString fileNamePattern;
+						(*(basePolicy->getPatternConverterList().begin()))->format(obj, fileNamePattern, p);
+						filePrefix = std::string(fileNamePattern);
+					}
+				}
+				LogString lockFileName = filePrefix + ".lock";
+				auto stat = apr_file_open(&m_parent->lock_file, lockFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_parent->pool.getAPRPool());
+				if (stat != APR_SUCCESS)
+				{
+					LogString err = lockFileName + LOG4CXX_STR(": apr_file_open error: ");
+					err += (strerror(errno));
+					LogLog::warn(err);
+					m_parent->lock_file = NULL;
+				}
+			}
+			if (m_parent->lock_file)
+			{
+				if (apr_file_lock(m_parent->lock_file, APR_FLOCK_EXCLUSIVE) != APR_SUCCESS)
+				{
+					LogString err = fileName + LOG4CXX_STR(": apr_file_lock error: ");
+					err += (strerror(errno));
+					LogLog::warn(err);
+				}
+				else
+					m_ok = true;
+			}
+			;
+		}
+
+		/**
+		 *  Release the file lock
+		 */
+		~Lock()
+		{
+			if (m_parent->lock_file)
+			{
+				if (apr_file_unlock(m_parent->lock_file) != APR_SUCCESS)
+				{
+					LogLog::warn(LOG4CXX_STR("apr_file_unlock failed"));
+				}
+			}
+		}
+	public: // Accessors
+		bool hasLock() const { return m_ok; }
+	};
+};
+
+#define _priv static_cast<MultiprocessRollingFileAppenderPriv*>(m_priv.get())
 
 IMPLEMENT_LOG4CXX_OBJECT(MultiprocessRollingFileAppender)
 
@@ -137,23 +221,41 @@ IMPLEMENT_LOG4CXX_OBJECT(MultiprocessRollingFileAppender)
  * Construct a new instance.
  */
 MultiprocessRollingFileAppender::MultiprocessRollingFileAppender()
+	: RollingFileAppender(std::make_unique<MultiprocessRollingFileAppenderPriv>())
 {
 }
 
-void MultiprocessRollingFileAppender::releaseFileLock(apr_file_t* lock_file)
+bool MultiprocessRollingFileAppender::isAlreadyRolled()
 {
-	if (lock_file)
+	auto fos = MultiprocessOutputStream::getFileOutputStream(getWriter());
+	if( !fos )
+		return false;
+	apr_finfo_t finfo1;
+	apr_status_t st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, fos->getFilePtr());
+
+	if (st1 != APR_SUCCESS)
 	{
-		apr_status_t stat = apr_file_unlock(lock_file);
-
-		if (stat != APR_SUCCESS)
-		{
-			LogLog::warn(LOG4CXX_STR("flock: unlock failed"));
-		}
-
-		apr_file_close(lock_file);
-		lock_file = NULL;
+		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
 	}
+
+	LogString fname = getFile();
+	apr_status_t st2;
+	apr_finfo_t finfo2;
+	for (auto count : {1, 2, 3})
+	{
+		st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, _priv->pool.getAPRPool());
+		if (st2 == APR_SUCCESS)
+			break;
+		std::this_thread::yield();
+	}
+	if (st2 != APR_SUCCESS)
+	{
+		LogLog::warn(fname + LOG4CXX_STR(": apr_stat failed."));
+	}
+
+	return st2 != APR_SUCCESS ||
+		((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS) &&
+		((finfo1.device != finfo2.device) || (finfo1.inode != finfo2.inode)));
 }
 
 /**
@@ -185,86 +287,12 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 	if (_priv->rollingPolicy != NULL)
 	{
 
-		if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
-			pTimeBased->setMultiprocess(true);
-
 		{
-			LogString fileName(getFile());
-			RollingPolicyBasePtr basePolicy = LOG4CXX_NS::cast<RollingPolicyBase>(_priv->rollingPolicy);
-			apr_time_t n = apr_time_now();
-			ObjectPtr obj = std::make_shared<Date>(n);
-			LogString fileNamePattern;
+			MultiprocessRollingFileAppenderPriv::Lock lk(_priv, getFile());
+			if (!lk.hasLock())
+				return false;
 
-			if (basePolicy)
-			{
-				if (basePolicy->getPatternConverterList().size())
-				{
-					(*(basePolicy->getPatternConverterList().begin()))->format(obj, fileNamePattern, p);
-					fileName = std::string(fileNamePattern);
-				}
-			}
-
-			bool bAlreadyRolled = true;
-
-			LogString lockname = fileName + ".lock";
-			apr_file_t* lock_file;
-			auto stat = apr_file_open(&lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, p.getAPRPool());
-
-			if (stat != APR_SUCCESS)
-			{
-				LogString err = lockname + LOG4CXX_STR(": apr_file_open error: ");
-				err += (strerror(errno));
-				LogLog::warn(err);
-				bAlreadyRolled = false;
-				lock_file = NULL;
-			}
-			else
-			{
-				stat = apr_file_lock(lock_file, APR_FLOCK_EXCLUSIVE);
-
-				if (stat != APR_SUCCESS)
-				{
-					LogString err = lockname + LOG4CXX_STR(": apr_file_lock error: ");
-					err += (strerror(errno));
-					LogLog::warn(err);
-					bAlreadyRolled = false;
-				}
-				else
-				{
-					if (_priv->_event)
-					{
-						_priv->triggeringPolicy->isTriggeringEvent(this, _priv->_event, getFile(), getFileLength());
-					}
-				}
-			}
-
-			if (bAlreadyRolled)
-			{
-				auto fos = MultiprocessOutputStream::getFileOutputStream(getWriter());
-				if( !fos )
-					return false;
-				apr_finfo_t finfo1;
-				apr_status_t st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, fos->getFilePtr());
-
-				if (st1 != APR_SUCCESS)
-				{
-					LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
-				}
-
-				LogString fname = getFile();
-				apr_finfo_t finfo2;
-				apr_status_t st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, p.getAPRPool());
-
-				if (st2 != APR_SUCCESS)
-				{
-					LogLog::warn(fname + LOG4CXX_STR(": apr_stat failed."));
-				}
-
-				bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS)
-						&& ((finfo1.device != finfo2.device) || (finfo1.inode != finfo2.inode)));
-			}
-
-			if (!bAlreadyRolled)
+			if (!isAlreadyRolled())
 			{
 
 				try
@@ -285,6 +313,7 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 							bool appendToExisting = true;
 							if (success)
 							{
+
 								appendToExisting = rollover1->getAppend();
 								if (appendToExisting)
 								{
@@ -373,7 +402,6 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 							writeHeader(p);
 						}
 
-						releaseFileLock(lock_file);
 						return true;
 					}
 				}
@@ -390,8 +418,6 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 			{
 				reopenLatestFile(p);
 			}
-
-			releaseFileLock(lock_file);
 		}
 	}
 
@@ -443,33 +469,7 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 		}
 	}
 
-	auto fos = MultiprocessOutputStream::getFileOutputStream(getWriter());
-	if( !fos )
-		return;
-
-	// check for a file rolloover before every write
-	//
-	apr_finfo_t finfo1;
-	apr_status_t st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, fos->getFilePtr());
-
-	if (st1 != APR_SUCCESS)
-	{
-		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
-	}
-
-	LogString fname = getFile();
-	apr_finfo_t finfo2;
-	apr_status_t st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, p.getAPRPool());
-
-	if (st2 != APR_SUCCESS)
-	{
-		LogLog::warn(fname + LOG4CXX_STR(": apr_stat failed."));
-	}
-
-	bool bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS)
-			&& ((finfo1.device != finfo2.device) || (finfo1.inode != finfo2.inode)));
-
-	if (bAlreadyRolled)
+	if (isAlreadyRolled())
 	{
 		reopenLatestFile(p);
 	}

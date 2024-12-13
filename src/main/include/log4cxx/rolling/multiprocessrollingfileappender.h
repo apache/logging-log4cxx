@@ -92,10 +92,11 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		void setFileLength(size_t length);
 
 		/**
-		 *  Release the file lock
-		 * @return void
+		 *  Was the log file changed?
+		 * @return true if the log file must be reopened
 		 */
-		void releaseFileLock(apr_file_t* lock_file);
+		bool isAlreadyRolled();
+
 		/**
 		 * re-open the latest file when its own handler has been renamed
 		 * @return void

@@ -88,6 +88,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 	public:
 		RollingFileAppender();
+		RollingFileAppender( std::unique_ptr<RollingFileAppenderPriv> priv );
 
 		/** Returns the value of the <b>MaxBackupIndex</b> option. */
 		int getMaxBackupIndex() const;
