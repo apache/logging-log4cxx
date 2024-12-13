@@ -20,9 +20,9 @@
 #include "../insertwide.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
-#include <log4cxx/private/boost-std-configuration.h>
 #include <log4cxx/helpers/strftimedateformat.h>
 #include <log4cxx/helpers/date.h>
+#include <filesystem>
 
 using namespace log4cxx;
 
