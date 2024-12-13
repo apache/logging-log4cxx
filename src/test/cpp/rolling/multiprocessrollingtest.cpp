@@ -186,6 +186,7 @@ public:
 		// Check all messages are saved to files
 		LogString expectedSuffix = LOG4CXX_STR(".log");
 		std::vector<int> messageCount;
+		std::map<int, int> perThreadMessageCount;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
 			LogString filename(dir_entry.path().filename().string());
@@ -204,6 +205,12 @@ public:
 							messageCount.resize(msgNumber + 1);
 						++messageCount[msgNumber];
 					 }
+					 pos = line.find("[0x");
+					 if (line.npos != pos && pos + 4 < line.size())
+					 {
+						auto threadNumber = std::stoi(line.substr(pos + 4), 0, 16);
+						++perThreadMessageCount[threadNumber];
+					 }
 				}
 			}
 		}
@@ -214,6 +221,16 @@ public:
 			{
 				msg += logchar(' ');
 				helpers::StringHelper::toString(item, p, msg);
+			}
+			helpers::LogLog::debug(msg);
+		}
+		if (helpers::LogLog::isDebugEnabled())
+		{
+			LogString msg(LOG4CXX_STR("perThreadMessageCount "));
+			for (auto item : perThreadMessageCount)
+			{
+				msg += logchar(' ');
+				helpers::StringHelper::toString(item.second, p, msg);
 			}
 			helpers::LogLog::debug(msg);
 		}
