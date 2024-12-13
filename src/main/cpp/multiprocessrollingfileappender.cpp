@@ -241,12 +241,13 @@ bool MultiprocessRollingFileAppender::isAlreadyRolled()
 	LogString fname = getFile();
 	apr_status_t st2;
 	apr_finfo_t finfo2;
-	for (auto count : {1, 2, 3})
+	int retryCount = 0;
+	while (APR_SUCCESS != (st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, _priv->pool.getAPRPool())))
 	{
-		st2 = apr_stat(&finfo2, fname.c_str(), APR_FINFO_IDENT, _priv->pool.getAPRPool());
-		if (st2 == APR_SUCCESS)
+		if (5 == ++retryCount)
 			break;
-		std::this_thread::yield();
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(30ms);
 	}
 	if (st2 != APR_SUCCESS)
 	{
