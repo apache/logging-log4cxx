@@ -192,7 +192,6 @@ public: // Support classes
 				else
 					m_ok = true;
 			}
-			;
 		}
 
 		/**
@@ -298,17 +297,13 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 			if (rollover1->getActiveFileName() == getFile())
 			{
 
-				bool success = false;
-
+				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
-				{
 					success = pAction->execute(p);
-				}
 
 				bool appendToExisting = true;
 				if (success)
 				{
-
 					appendToExisting = rollover1->getAppend();
 					if (appendToExisting)
 					{
