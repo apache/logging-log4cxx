@@ -119,7 +119,7 @@ public:
 		auto approxBytesPerLogEvent = 40 + 23;
 		auto requiredLogFileCount = 3;
 		size_t approxBytesPerLogFile = 1000;
-		if (auto pAppender = LOG4CXX_NS::cast<rolling::RollingFileAppender>(logger->getAppender(LOG4CXX_STR("DATED-UNCOMPRESSED"))))
+		if (auto pAppender = LOG4CXX_NS::cast<rolling::RollingFileAppender>(logger->getAppender(LOG4CXX_STR("DATED"))))
 		{
 			if (auto pPolicy = LOG4CXX_NS::cast<rolling::SizeBasedTriggeringPolicy>(pAppender->getTriggeringPolicy()))
 				approxBytesPerLogFile = pPolicy->getMaxFileSize();
