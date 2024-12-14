@@ -205,11 +205,21 @@ public:
 							messageCount.resize(msgNumber + 1);
 						++messageCount[msgNumber];
 					 }
-					 pos = line.find("[0x");
+					 pos = line.find(" [0x");
 					 if (line.npos != pos && pos + 4 < line.size())
 					 {
-						auto threadNumber = std::stoi(line.substr(pos + 4), 0, 16);
-						++perThreadMessageCount[threadNumber];
+						try
+						{
+							auto threadNumber = std::stoi(line.substr(pos + 4), 0, 16);
+							++perThreadMessageCount[threadNumber];
+						}
+						catch (std::exception const& ex)
+						{
+							LogString msg(ex.what());
+							msg += " processing\n";
+							msg += line;
+							helpers::LogLog::debug(msg);
+						}
 					 }
 				}
 			}
