@@ -107,7 +107,7 @@ public:
 	 */
 	void test2()
 	{
-		std::string expectedPrefix = LOG4CXX_STR("multiprocess-dated-");
+		std::string expectedPrefix = LOG4CXX_STR("multiprocess-2-");
 		// remove any previously generated files
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
@@ -151,9 +151,6 @@ public:
 	void test3()
 	{
 		auto logger = getLogger("Test3");
-		//LOG4CXX_INFO( logger, "Startup ");
-		using namespace std::chrono_literals;
-		std::this_thread::sleep_for(100ms);
 		auto approxBytesPerLogEvent = 40 + 23;
 		auto requiredLogFileCount = 30;
 		size_t approxBytesPerLogFile = 1000;
@@ -174,7 +171,7 @@ public:
 	 */
 	void test4()
 	{
-		std::string expectedPrefix("multiprocess-dated");
+		std::string expectedPrefix("multiprocess-3");
 		// remove any previously generated files
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{

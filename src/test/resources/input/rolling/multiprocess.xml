@@ -37,10 +37,10 @@
   </appender>
 
   <appender name="DATED" class="org.apache.log4j.rolling.MultiprocessRollingFileAppender">
-    <param name="file" value="output/rolling/multiprocess-dated.log"/>
+    <param name="file" value="output/rolling/multiprocess-2.log"/>
     <param name="append" value="false"/>
     <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-      <param name="FileNamePattern" value="output/rolling/multiprocess-dated-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log.gz"/>
+      <param name="FileNamePattern" value="output/rolling/multiprocess-2-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log.gz"/>
     </rollingPolicy>
     <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
       <param name="MaxFileSize" value="1KB"/>
@@ -51,10 +51,10 @@
   </appender>
 
   <appender name="DATED-UNCOMPRESSED" class="org.apache.log4j.rolling.MultiprocessRollingFileAppender">
-    <param name="file" value="output/rolling/multiprocess-dated.log"/>
+    <param name="file" value="output/rolling/multiprocess-3.log"/>
     <param name="append" value="true"/>
     <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-      <param name="FileNamePattern" value="output/rolling/multiprocess-dated-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log"/>
+      <param name="FileNamePattern" value="output/rolling/multiprocess-3-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log"/>
     </rollingPolicy>
     <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
       <param name="MaxFileSize" value="1KB"/>
