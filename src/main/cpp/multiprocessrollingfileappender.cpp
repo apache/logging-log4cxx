@@ -350,11 +350,9 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 					);
 				setWriterInternal(createWriter(os));
 
-				bool success = false;
+				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
-				{
 					success = pAction->execute(p);
-				}
 
 				if (success)
 				{
