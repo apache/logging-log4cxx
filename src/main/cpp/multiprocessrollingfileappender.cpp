@@ -290,8 +290,9 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 	{
 		MultiprocessRollingFileAppenderPriv::Lock lk(_priv, getFile());
 		if (!lk.hasLock())
-			;
-		else if (auto rollover1 = _priv->rollingPolicy->rollover(getFile(), getAppend(), p))
+			LogLog::warn(LOG4CXX_STR("Failed to lock ") + getFile());
+
+		if (auto rollover1 = _priv->rollingPolicy->rollover(getFile(), getAppend(), p))
 		{
 			closeWriter();
 			if (rollover1->getActiveFileName() == getFile())
