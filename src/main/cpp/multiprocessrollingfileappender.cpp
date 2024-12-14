@@ -156,9 +156,6 @@ public: // Support classes
 		{
 			if (!m_parent->lock_file)
 			{
-				if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(m_parent->rollingPolicy))
-					pTimeBased->setMultiprocess(true);
-
 				LogString filePrefix(fileName);
 				if (auto basePolicy = LOG4CXX_NS::cast<RollingPolicyBase>(m_parent->rollingPolicy))
 				{
@@ -223,6 +220,18 @@ MultiprocessRollingFileAppender::MultiprocessRollingFileAppender()
 	: RollingFileAppender(std::make_unique<MultiprocessRollingFileAppenderPriv>())
 {
 }
+
+/**
+ * Prepare instance of use.
+ */
+void MultiprocessRollingFileAppender::activateOptions(Pool& p)
+{
+	RollingFileAppender::activateOptions(p);
+
+	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
+		pTimeBased->setMultiprocess(true);
+}
+	
 
 bool MultiprocessRollingFileAppender::isAlreadyRolled()
 {

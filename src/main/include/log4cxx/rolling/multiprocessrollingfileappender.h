@@ -48,6 +48,13 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		MultiprocessRollingFileAppender();
 
 		/**
+		\copybrief FileAppender::activateOptions()
+
+		\sa FileAppender::activateOptions()
+		*/
+		void activateOptions(helpers::Pool& pool ) override;
+
+		/**
 		   Implements the usual roll over behaviour.
 
 		   <p>If <code>MaxBackupIndex</code> is positive, then files
