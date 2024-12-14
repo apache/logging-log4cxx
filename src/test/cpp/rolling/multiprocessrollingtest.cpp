@@ -20,6 +20,8 @@
 #include "../insertwide.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/rolling/multiprocessrollingfileappender.h>
+#include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/helpers/strftimedateformat.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/loglog.h>
@@ -28,7 +30,7 @@
 #include <fstream>
 #include <apr_thread_proc.h>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 auto getLogger(const std::string& name) -> LoggerPtr {
 	static struct log4cxx_initializer {
@@ -59,7 +61,7 @@ public:
 	 */
 	void test1()
 	{
-		auto logger = getLogger("Test1");
+		auto logger = getLogger(LOG4CXX_STR("Test1"));
 		for (int i = 0; i < 25; i++)
 		{
 			char msg[10];
@@ -113,10 +115,15 @@ public:
 				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
 				std::filesystem::remove(dir_entry);
 		}
-		auto logger = getLogger("Test2");
+		auto logger = getLogger(LOG4CXX_STR("Test2"));
 		auto approxBytesPerLogEvent = 40 + 23;
 		auto requiredLogFileCount = 3;
-		auto approxBytesPerLogFile = 1000;
+		size_t approxBytesPerLogFile = 1000;
+		if (auto pAppender = LOG4CXX_NS::cast<rolling::RollingFileAppender>(logger->getAppender(LOG4CXX_STR("DATED-UNCOMPRESSED"))))
+		{
+			if (auto pPolicy = LOG4CXX_NS::cast<rolling::SizeBasedTriggeringPolicy>(pAppender->getTriggeringPolicy()))
+				approxBytesPerLogFile = pPolicy->getMaxFileSize();
+		}
 		auto requiredLogEventCount = (approxBytesPerLogFile * requiredLogFileCount + approxBytesPerLogEvent - 1) / approxBytesPerLogEvent;
 		for ( int x = 0; x < requiredLogEventCount; x++ )
 		{
@@ -142,10 +149,15 @@ public:
 	 */
 	void test3()
 	{
-		auto logger = getLogger("Test3");
+		auto logger = getLogger(LOG4CXX_STR("Test3"));
 		auto approxBytesPerLogEvent = 40 + 23;
 		auto requiredLogFileCount = 30;
-		auto approxBytesPerLogFile = 1000;
+		size_t approxBytesPerLogFile = 1000;
+		if (auto pAppender = LOG4CXX_NS::cast<rolling::RollingFileAppender>(logger->getAppender(LOG4CXX_STR("DATED-UNCOMPRESSED"))))
+		{
+			if (auto pPolicy = LOG4CXX_NS::cast<rolling::SizeBasedTriggeringPolicy>(pAppender->getTriggeringPolicy()))
+				approxBytesPerLogFile = pPolicy->getMaxFileSize();
+		}
 		auto requiredLogEventCount = (approxBytesPerLogFile * requiredLogFileCount + approxBytesPerLogEvent - 1) / approxBytesPerLogEvent;
 		for ( int x = 0; x < requiredLogEventCount; x++ )
 		{
