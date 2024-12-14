@@ -61,7 +61,7 @@ public:
 	 */
 	void test1()
 	{
-		auto logger = getLogger(LOG4CXX_STR("Test1"));
+		auto logger = getLogger("Test1");
 		for (int i = 0; i < 25; i++)
 		{
 			char msg[10];
@@ -106,16 +106,16 @@ public:
 	 */
 	void test2()
 	{
-		LogString expectedPrefix = LOG4CXX_STR("multiprocess-dated-");
+		std::string expectedPrefix = LOG4CXX_STR("multiprocess-dated-");
 		// remove any previously generated files
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
-			LogString filename(dir_entry.path().filename().string());
+			std::string filename(dir_entry.path().filename().string());
 			if (expectedPrefix.size() < filename.size() &&
 				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
 				std::filesystem::remove(dir_entry);
 		}
-		auto logger = getLogger(LOG4CXX_STR("Test2"));
+		auto logger = getLogger("Test2");
 		auto approxBytesPerLogEvent = 40 + 23;
 		auto requiredLogFileCount = 3;
 		size_t approxBytesPerLogFile = 1000;
@@ -149,7 +149,7 @@ public:
 	 */
 	void test3()
 	{
-		auto logger = getLogger(LOG4CXX_STR("Test3"));
+		auto logger = getLogger("Test3");
 		auto approxBytesPerLogEvent = 40 + 23;
 		auto requiredLogFileCount = 30;
 		size_t approxBytesPerLogFile = 1000;
@@ -170,11 +170,11 @@ public:
 	 */
 	void test4()
 	{
-		LogString expectedPrefix = LOG4CXX_STR("multiprocess-dated");
+		std::string expectedPrefix("multiprocess-dated");
 		// remove any previously generated files
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
-			LogString filename(dir_entry.path().filename().string());
+			std::string filename(dir_entry.path().filename().string());
 			if (expectedPrefix.size() < filename.size() &&
 				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
 				std::filesystem::remove(dir_entry);
@@ -196,12 +196,12 @@ public:
 		}
 
 		// Check all messages are saved to files
-		LogString expectedSuffix = LOG4CXX_STR(".log");
+		std::string expectedSuffix(".log");
 		std::vector<int> messageCount;
 		std::map<long long, int> perThreadMessageCount;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
-			LogString filename(dir_entry.path().filename().string());
+			std::string filename(dir_entry.path().filename().string());
 			if (expectedPrefix.size() + expectedSuffix.size() <= filename.size()
 				&& filename.substr(0, expectedPrefix.size()) == expectedPrefix
 				&& filename.substr(filename.size() - expectedSuffix.size()) == expectedSuffix)
@@ -221,9 +221,10 @@ public:
 						}
 						catch (std::exception const& ex)
 						{
-							LogString msg(ex.what());
-							msg += " processing\n";
-							msg += line;
+							LogString msg;
+							helpers::Transcoder::decode(ex.what(), msg);
+							msg += LOG4CXX_STR(" processing\n");
+							helpers::Transcoder::decode(line, msg);
 							helpers::LogLog::warn(msg);
 						}
 					 }
@@ -237,9 +238,10 @@ public:
 						}
 						catch (std::exception const& ex)
 						{
-							LogString msg(ex.what());
-							msg += " processing\n";
-							msg += line;
+							LogString msg;
+							helpers::Transcoder::decode(ex.what(), msg);
+							msg += LOG4CXX_STR(" processing\n");
+							helpers::Transcoder::decode(line, msg);
 							helpers::LogLog::warn(msg);
 						}
 					 }

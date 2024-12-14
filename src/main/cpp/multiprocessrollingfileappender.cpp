@@ -156,7 +156,8 @@ public: // Support classes
 		{
 			if (!m_parent->lock_file)
 			{
-				LogString filePrefix(fileName);
+				std::string filePrefix;
+				Transcoder::encode(fileName, filePrefix);
 				if (auto basePolicy = LOG4CXX_NS::cast<RollingPolicyBase>(m_parent->rollingPolicy))
 				{
 					if (basePolicy->getPatternConverterList().size())
@@ -165,15 +166,18 @@ public: // Support classes
 						ObjectPtr obj = std::make_shared<Date>(apr_time_now());
 						LogString fileNamePattern;
 						(*(basePolicy->getPatternConverterList().begin()))->format(obj, fileNamePattern, p);
-						filePrefix = std::string(fileNamePattern);
+						filePrefix.clear();
+						Transcoder::encode(fileNamePattern, filePrefix);
 					}
 				}
-				LogString lockFileName = filePrefix + ".lock";
+				std::string lockFileName = filePrefix + ".lock";
 				auto stat = apr_file_open(&m_parent->lock_file, lockFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_parent->pool.getAPRPool());
 				if (stat != APR_SUCCESS)
 				{
-					LogString err = lockFileName + LOG4CXX_STR(": apr_file_open error: ");
-					err += (strerror(errno));
+					LogString err;
+					Transcoder::decode(lockFileName, err);
+					err += LOG4CXX_STR(": apr_file_open: ");
+					Transcoder::decode(strerror(errno), err);
 					LogLog::warn(err);
 					m_parent->lock_file = NULL;
 				}
@@ -182,8 +186,10 @@ public: // Support classes
 			{
 				if (apr_file_lock(m_parent->lock_file, APR_FLOCK_EXCLUSIVE) != APR_SUCCESS)
 				{
-					LogString err = fileName + LOG4CXX_STR(": apr_file_lock error: ");
-					err += (strerror(errno));
+					LogString err;
+					Transcoder::decode(fileName, err);
+					err += LOG4CXX_STR(": apr_file_lock: ");
+					Transcoder::decode(strerror(errno), err);
 					LogLog::warn(err);
 				}
 				else
@@ -307,7 +313,6 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 			closeWriter();
 			if (rollover1->getActiveFileName() == getFile())
 			{
-
 				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
 					success = pAction->execute(p);
@@ -390,8 +395,6 @@ bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p)
 						}
 					}
 				}
-
-				writeHeader(p);
 			}
 
 			result = true;
