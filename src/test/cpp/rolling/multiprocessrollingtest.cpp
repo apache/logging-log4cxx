@@ -186,7 +186,7 @@ public:
 		// Check all messages are saved to files
 		LogString expectedSuffix = LOG4CXX_STR(".log");
 		std::vector<int> messageCount;
-		std::map<int, int> perThreadMessageCount;
+		std::map<long long, int> perThreadMessageCount;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
 			LogString filename(dir_entry.path().filename().string());
@@ -198,19 +198,29 @@ public:
 				for (std::string line; std::getline(input, line);)
 				{
 					 auto pos = line.rfind(' ');
-					 if (line.npos != pos && pos + 1 < line.size() && isdigit(line[pos+1]))
+					 if (line.npos != pos && pos + 1 < line.size())
 					 {
-						auto msgNumber = std::stoi(line.substr(pos));
-						if (messageCount.size() <= msgNumber)
-							messageCount.resize(msgNumber + 1);
-						++messageCount[msgNumber];
+						try
+						{
+							auto msgNumber = std::stoi(line.substr(pos));
+							if (messageCount.size() <= msgNumber)
+								messageCount.resize(msgNumber + 1);
+							++messageCount[msgNumber];
+						}
+						catch (std::exception const& ex)
+						{
+							LogString msg(ex.what());
+							msg += " processing\n";
+							msg += line;
+							helpers::LogLog::debug(msg);
+						}
 					 }
 					 pos = line.find(" [0x");
 					 if (line.npos != pos && pos + 4 < line.size())
 					 {
 						try
 						{
-							auto threadNumber = std::stoi(line.substr(pos + 4), 0, 16);
+							auto threadNumber = std::stoll(line.substr(pos + 4), 0, 16);
 							++perThreadMessageCount[threadNumber];
 						}
 						catch (std::exception const& ex)
