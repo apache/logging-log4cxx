@@ -212,7 +212,7 @@ public:
 							LogString msg(ex.what());
 							msg += " processing\n";
 							msg += line;
-							helpers::LogLog::debug(msg);
+							helpers::LogLog::warn(msg);
 						}
 					 }
 					 pos = line.find(" [0x");
@@ -228,7 +228,7 @@ public:
 							LogString msg(ex.what());
 							msg += " processing\n";
 							msg += line;
-							helpers::LogLog::debug(msg);
+							helpers::LogLog::warn(msg);
 						}
 					 }
 				}
