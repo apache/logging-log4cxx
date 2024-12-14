@@ -29,6 +29,7 @@
 #include <filesystem>
 #include <fstream>
 #include <apr_thread_proc.h>
+#include <thread>
 
 using namespace LOG4CXX_NS;
 
@@ -150,6 +151,9 @@ public:
 	void test3()
 	{
 		auto logger = getLogger("Test3");
+		LOG4CXX_INFO( logger, "Startup ");
+		using namespace std::chrono_literals;
+		std::this_thread::sleep_for(30ms);
 		auto approxBytesPerLogEvent = 40 + 23;
 		auto requiredLogFileCount = 30;
 		size_t approxBytesPerLogFile = 1000;
