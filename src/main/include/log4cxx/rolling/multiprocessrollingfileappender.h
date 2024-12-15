@@ -77,8 +77,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		*/
 		void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
-		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p);
-
 	protected:
 		/**
 		   Returns an OutputStreamWriter when passed an OutputStream.  The
@@ -92,6 +90,8 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os) override;
 
 	private:
+		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p, const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
+
 		/**
 		 * Set byte length of current active log file.
 		 * @return void
@@ -100,9 +100,10 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 		/**
 		 *  Was the log file changed?
+		 *  @param pSize if not NULL, receives the log file size
 		 * @return true if the log file must be reopened
 		 */
-		bool isAlreadyRolled();
+		bool isAlreadyRolled(size_t* pSize = 0);
 
 		/**
 		 * re-open the latest file when its own handler has been renamed
