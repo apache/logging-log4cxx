@@ -398,7 +398,7 @@ WriterPtr MultiprocessRollingFileAppender::createWriter(OutputStreamPtr& os)
 		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
 		_priv->errorHandler->error(msg);
 	}
-	return FileAppender::createWriter(os);
+	return RollingFileAppender::createWriter(os);
 }
 
 
