@@ -101,8 +101,6 @@ public:
 			rfa->setFileLength(File().setPath(rfa->getFile()).length(p));
 		}
 	}
-
-	static FileOutputStreamPtr getFileOutputStream(MultiprocessRollingFileAppender* rfa);
 };
 } // namespace rolling
 } // namespace LOG4CXX_NS
@@ -121,6 +119,7 @@ struct MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv
 			apr_file_close(lock_file);
 	}
 
+	apr_file_t* log_file = NULL;
 	apr_file_t* lock_file = NULL;
 
 public: // Support classes
@@ -198,39 +197,6 @@ public: // Support classes
 	};
 };
 
-	FileOutputStreamPtr
-MultiprocessOutputStream::getFileOutputStream(MultiprocessRollingFileAppender* rfa)
-{
-	auto writer = rfa->getWriter();
-	FileOutputStreamPtr result;
-	auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(writer);
-	if( !osw )
-	{
-		if (auto bw = LOG4CXX_NS::cast<BufferedWriter>(writer))
-			osw = LOG4CXX_NS::cast<OutputStreamWriter>(bw->getWriter());
-	}
-	if( !osw ){
-		LogString msg(LOG4CXX_STR("Can't cast writer to OutputStreamWriter"));
-		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
-		rfa->m_priv->errorHandler->error(msg);
-		return result;
-	}
-	auto cos = LOG4CXX_NS::cast<MultiprocessOutputStream>(osw->getOutputStreamPtr());
-	if( !cos ){
-		LogString msg(LOG4CXX_STR("Can't cast stream to MultiprocessOutputStream"));
-		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
-		rfa->m_priv->errorHandler->error(msg);
-		return result;
-	}
-	result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
-	if( !result ){
-		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));
-		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
-		rfa->m_priv->errorHandler->error(msg);
-	}
-	return result;
-}
-
 #define _priv static_cast<MultiprocessRollingFileAppenderPriv*>(m_priv.get())
 
 IMPLEMENT_LOG4CXX_OBJECT(MultiprocessRollingFileAppender)
@@ -259,14 +225,13 @@ void MultiprocessRollingFileAppender::activateOptions(Pool& p)
  */
 bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName, size_t* pSize)
 {
-	auto fos = MultiprocessOutputStream::getFileOutputStream(this);
-	if( !fos )
+	if( !_priv->log_file )
 		return false;
 	apr_int32_t wantedInfo = APR_FINFO_IDENT;
 	if (pSize)
 		wantedInfo |= APR_FINFO_SIZE;
 	apr_finfo_t finfo1;
-	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, fos->getFilePtr());
+	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, _priv->log_file);
 
 	if (st1 != APR_SUCCESS)
 		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
@@ -495,6 +460,15 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
  */
 WriterPtr MultiprocessRollingFileAppender::createWriter(OutputStreamPtr& os)
 {
+	auto fos = LOG4CXX_NS::cast<FileOutputStream>(os);
+	if( fos )
+		_priv->log_file = fos->getFilePtr();
+	else
+	{
+		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));
+		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
+		_priv->errorHandler->error(msg);
+	}
 	OutputStreamPtr cos = std::make_shared<MultiprocessOutputStream>(os, this);
 	return FileAppender::createWriter(cos);
 }
