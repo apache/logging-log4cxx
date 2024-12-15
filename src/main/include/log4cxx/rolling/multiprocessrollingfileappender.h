@@ -19,11 +19,8 @@
 #define LOG4CXX_ROLLING_MULTIPROCESS_ROLLING_FILE_APPENDER_H
 
 #include <log4cxx/fileappender.h>
-#include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/rolling/triggeringpolicy.h>
-#include <log4cxx/rolling/rollingpolicy.h>
-#include <log4cxx/rolling/action.h>
 
 namespace LOG4CXX_NS
 {
@@ -33,6 +30,9 @@ namespace rolling
 
 /**
  * A special version of the RollingFileAppender that acts properly with multiple processes
+ *
+ * Note: Do *not* set the option <code>Append</code> to <code>false</code>.
+ * Rolling over files is only relevant when you are appending.
  */
 class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppender
 {
@@ -90,7 +90,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os) override;
 
 	private:
-		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p, const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
+		bool rolloverInternal(helpers::Pool& p, const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
 
 		/**
 		 * Set byte length of current active log file.
@@ -109,7 +109,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		 * re-open the latest file when its own handler has been renamed
 		 * @return void
 		 */
-		void reopenLatestFile(LOG4CXX_NS::helpers::Pool& p);
+		void reopenLatestFile(helpers::Pool& p);
 
 		friend class MultiprocessOutputStream;
 

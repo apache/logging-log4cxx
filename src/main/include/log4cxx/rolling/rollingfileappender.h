@@ -43,19 +43,16 @@ namespace rolling
  * <code>RollingPolicy</code> and a <code>TriggeringPolicy</code>.
  *
  * <p><code>RollingFileAppender</code> can be configured programattically or
- * using {@link log4cxx::xml::DOMConfigurator}. Here is a sample
- * configration file:
+ * using {@link log4cxx::xml::DOMConfigurator}.
+ * The following is a sample configuration file.
 
 <pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
 &lt;!DOCTYPE log4j:configuration>
-
-&lt;log4j:configuration debug="true">
-
+  &lt;log4j:configuration debug="true">
   &lt;appender name="ROLL" class="org.apache.log4j.rolling.RollingFileAppender">
     <b>&lt;rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
       &lt;param name="FileNamePattern" value="/wombat/foo.%d{yyyy-MM}.gz"/>
     &lt;/rollingPolicy></b>
-
     &lt;layout class="org.apache.log4j.PatternLayout">
       &lt;param name="ConversionPattern" value="%c{1} - %m%n"/>
     &lt;/layout>
@@ -64,7 +61,6 @@ namespace rolling
   &lt;root>
     &lt;appender-ref ref="ROLL"/>
   &lt;/root>
-
 &lt;/log4j:configuration>
 </pre>
 
@@ -73,9 +69,10 @@ namespace rolling
  * {@link TimeBasedRollingPolicy} for more details.
  *
  *
+ * Note: Do *not* set the option <code>Append</code> to <code>false</code>.
+ * Rolling over files is only relevant when you are appending.
  *
- *
- * */
+ */
 class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 {
 		DECLARE_LOG4CXX_OBJECT(RollingFileAppender)
