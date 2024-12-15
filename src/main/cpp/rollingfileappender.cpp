@@ -42,8 +42,13 @@ IMPLEMENT_LOG4CXX_OBJECT(RollingFileAppender)
 /**
  * Construct a new instance.
  */
-RollingFileAppender::RollingFileAppender() :
-	FileAppender (std::make_unique<RollingFileAppenderPriv>())
+RollingFileAppender::RollingFileAppender()
+	: FileAppender(std::make_unique<RollingFileAppenderPriv>())
+{
+}
+
+RollingFileAppender::RollingFileAppender( std::unique_ptr<RollingFileAppenderPriv> priv )
+	: FileAppender(std::move(priv))
 {
 }
 

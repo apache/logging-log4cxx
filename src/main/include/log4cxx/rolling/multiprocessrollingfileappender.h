@@ -19,11 +19,8 @@
 #define LOG4CXX_ROLLING_MULTIPROCESS_ROLLING_FILE_APPENDER_H
 
 #include <log4cxx/fileappender.h>
-#include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/rolling/triggeringpolicy.h>
-#include <log4cxx/rolling/rollingpolicy.h>
-#include <log4cxx/rolling/action.h>
 
 namespace LOG4CXX_NS
 {
@@ -33,6 +30,9 @@ namespace rolling
 
 /**
  * A special version of the RollingFileAppender that acts properly with multiple processes
+ *
+ * Note: Do *not* set the option <code>Append</code> to <code>false</code>.
+ * Rolling over files is only relevant when you are appending.
  */
 class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppender
 {
@@ -46,6 +46,13 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 	public:
 		MultiprocessRollingFileAppender();
+
+		/**
+		\copybrief FileAppender::activateOptions()
+
+		\sa FileAppender::activateOptions()
+		*/
+		void activateOptions(helpers::Pool& pool ) override;
 
 		/**
 		   Implements the usual roll over behaviour.
@@ -70,8 +77,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		*/
 		void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
-		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p);
-
 	protected:
 		/**
 		   Returns an OutputStreamWriter when passed an OutputStream.  The
@@ -86,21 +91,28 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 	private:
 		/**
-		 * Set byte length of current active log file.
-		 * @return void
+		 * Coordinate a rollover with other processes
+
+		 * @return true if this process perfomed the rollover.
+		 */
+		bool synchronizedRollover(helpers::Pool& p, const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
+
+		/**
+		 * Set the length of current active log file to \c length bytes.
 		 */
 		void setFileLength(size_t length);
 
 		/**
-		 *  Release the file lock
-		 * @return void
+		 *  Was \c fileName renamed?
+		 *  @param pSize if not NULL, receives the log file size
+		 * @return true if the log file must be reopened
 		 */
-		void releaseFileLock(apr_file_t* lock_file);
+		bool isAlreadyRolled(const LogString& fileName, size_t* pSize = 0);
+
 		/**
-		 * re-open the latest file when its own handler has been renamed
-		 * @return void
+		 * re-open \c fileName (used after it has been renamed)
 		 */
-		void reopenLatestFile(LOG4CXX_NS::helpers::Pool& p);
+		void reopenFile(const LogString& fileName, size_t fileLength);
 
 		friend class MultiprocessOutputStream;
 

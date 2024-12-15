@@ -82,3 +82,8 @@ void BufferedWriter::write(const LogString& str, Pool& p)
 	}
 }
 
+WriterPtr BufferedWriter::getWriter() const
+{
+	return m_priv->out;
+}
+

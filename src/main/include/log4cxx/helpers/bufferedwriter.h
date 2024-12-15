@@ -50,6 +50,7 @@ class LOG4CXX_EXPORT BufferedWriter : public Writer
 		void flush(Pool& p) override;
 		void write(const LogString& str, Pool& p) override;
 
+		WriterPtr getWriter() const;
 	private:
 		BufferedWriter(const BufferedWriter&);
 		BufferedWriter& operator=(const BufferedWriter&);
