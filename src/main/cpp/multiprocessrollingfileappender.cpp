@@ -101,25 +101,7 @@ public:
 		}
 	}
 
-	static FileOutputStreamPtr getFileOutputStream(const WriterPtr& writer)
-	{
-		FileOutputStreamPtr result;
-		auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(writer);
-		if( !osw ){
-			LogLog::error( LOG4CXX_STR("Can't cast writer to OutputStreamWriter") );
-			return result;
-		}
-		auto cos = LOG4CXX_NS::cast<MultiprocessOutputStream>(osw->getOutputStreamPtr());
-		if( !cos ){
-			LogLog::error( LOG4CXX_STR("Can't cast stream to MultiprocessOutputStream") );
-			return result;
-		}
-		result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
-		if( !result ){
-			LogLog::error( LOG4CXX_STR("Can't cast stream to FileOutputStream") );
-		}
-		return result;
-	}
+	static FileOutputStreamPtr getFileOutputStream(MultiprocessRollingFileAppender* rfa);
 };
 } // namespace rolling
 } // namespace LOG4CXX_NS
@@ -215,6 +197,28 @@ public: // Support classes
 	};
 };
 
+	FileOutputStreamPtr
+MultiprocessOutputStream::getFileOutputStream(MultiprocessRollingFileAppender* rfa)
+{
+	auto writer = rfa->getWriter();
+	FileOutputStreamPtr result;
+	auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(writer);
+	if( !osw ){
+		rfa->m_priv->errorHandler->error(LOG4CXX_STR("Can't cast writer to OutputStreamWriter"));
+		return result;
+	}
+	auto cos = LOG4CXX_NS::cast<MultiprocessOutputStream>(osw->getOutputStreamPtr());
+	if( !cos ){
+		rfa->m_priv->errorHandler->error(LOG4CXX_STR("Can't cast stream to MultiprocessOutputStream") );
+		return result;
+	}
+	result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
+	if( !result ){
+		rfa->m_priv->errorHandler->error(LOG4CXX_STR("Can't cast stream to FileOutputStream") );
+	}
+	return result;
+}
+
 #define _priv static_cast<MultiprocessRollingFileAppenderPriv*>(m_priv.get())
 
 IMPLEMENT_LOG4CXX_OBJECT(MultiprocessRollingFileAppender)
@@ -237,13 +241,13 @@ void MultiprocessRollingFileAppender::activateOptions(Pool& p)
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
 		pTimeBased->setMultiprocess(true);
 }
-	
+
 /**
  * Was \c fileName renamed?
  */
 bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName, size_t* pSize)
 {
-	auto fos = MultiprocessOutputStream::getFileOutputStream(getWriter());
+	auto fos = MultiprocessOutputStream::getFileOutputStream(this);
 	if( !fos )
 		return false;
 	apr_int32_t wantedInfo = APR_FINFO_IDENT;
