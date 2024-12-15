@@ -29,6 +29,7 @@
 #include <log4cxx/rolling/rolloverdescription.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/bufferedwriter.h>
 #include <log4cxx/rolling/manualtriggeringpolicy.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/rollingfileappender_priv.h>
@@ -203,18 +204,29 @@ MultiprocessOutputStream::getFileOutputStream(MultiprocessRollingFileAppender* r
 	auto writer = rfa->getWriter();
 	FileOutputStreamPtr result;
 	auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(writer);
+	if( !osw )
+	{
+		if (auto bw = LOG4CXX_NS::cast<BufferedWriter>(writer))
+			osw = LOG4CXX_NS::cast<OutputStreamWriter>(bw->getWriter());
+	}
 	if( !osw ){
-		rfa->m_priv->errorHandler->error(LOG4CXX_STR("Can't cast writer to OutputStreamWriter"));
+		LogString msg(LOG4CXX_STR("Can't cast writer to OutputStreamWriter"));
+		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
+		rfa->m_priv->errorHandler->error(msg);
 		return result;
 	}
 	auto cos = LOG4CXX_NS::cast<MultiprocessOutputStream>(osw->getOutputStreamPtr());
 	if( !cos ){
-		rfa->m_priv->errorHandler->error(LOG4CXX_STR("Can't cast stream to MultiprocessOutputStream") );
+		LogString msg(LOG4CXX_STR("Can't cast stream to MultiprocessOutputStream"));
+		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
+		rfa->m_priv->errorHandler->error(msg);
 		return result;
 	}
 	result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
 	if( !result ){
-		rfa->m_priv->errorHandler->error(LOG4CXX_STR("Can't cast stream to FileOutputStream") );
+		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));
+		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
+		rfa->m_priv->errorHandler->error(msg);
 	}
 	return result;
 }
