@@ -296,10 +296,15 @@ bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName,
 bool MultiprocessRollingFileAppender::rollover(Pool& p)
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	return rolloverInternal(p);
+	return synchronizedRollover(p);
 }
 
-bool MultiprocessRollingFileAppender::rolloverInternal(Pool& p, const TriggeringPolicyPtr& trigger)
+/**
+ * Coordinate a rollover with other processes
+
+ * @return true if this process perfomed the rollover.
+ */
+bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const TriggeringPolicyPtr& trigger)
 {
 	bool result = false;
 	LogString fileName = getFile();
@@ -445,7 +450,7 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 		try
 		{
 			_priv->_event = event;
-			rolloverInternal(p, _priv->triggeringPolicy);
+			synchronizedRollover(p, _priv->triggeringPolicy);
 		}
 		catch (std::exception& ex)
 		{

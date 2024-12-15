@@ -90,11 +90,15 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os) override;
 
 	private:
-		bool rolloverInternal(helpers::Pool& p, const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
+		/**
+		 * Coordinate a rollover with other processes
+
+		 * @return true if this process perfomed the rollover.
+		 */
+		bool synchronizedRollover(helpers::Pool& p, const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
 
 		/**
-		 * Set byte length of current active log file.
-		 * @return void
+		 * Set the length of current active log file to \c length bytes.
 		 */
 		void setFileLength(size_t length);
 
