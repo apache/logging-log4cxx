@@ -37,74 +37,6 @@
 #include <mutex>
 #include <thread>
 
-namespace LOG4CXX_NS
-{
-
-using namespace helpers;
-
-namespace rolling
-{
-/**
- * Wrapper for OutputStream that will report all log file
- * size changes back to the appender for file length calculations.
- */
-class MultiprocessOutputStream : public OutputStream
-{
-	/**
-	 * Wrapped output stream.
-	 */
-private:
-	OutputStreamPtr os;
-
-	/**
-	 * Rolling file appender to inform of stream writes.
-	 */
-	MultiprocessRollingFileAppender* rfa;
-
-public:
-	/**
-	 * Constructor.
-	 * @param os output stream to wrap.
-	 * @param rfa rolling file appender to inform.
-	 */
-	MultiprocessOutputStream(const OutputStreamPtr& os1, MultiprocessRollingFileAppender* rfa1)
-		: os(os1), rfa(rfa1)
-	{
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	void close(Pool& p) override
-	{
-		os->close(p);
-		rfa = 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	void flush(Pool& p) override
-	{
-		os->flush(p);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	void write(ByteBuffer& buf, Pool& p) override
-	{
-		os->write(buf, p);
-
-		if (rfa != 0)
-		{
-			rfa->setFileLength(File().setPath(rfa->getFile()).length(p));
-		}
-	}
-};
-} // namespace rolling
-} // namespace LOG4CXX_NS
-
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::rolling;
 using namespace LOG4CXX_NS::helpers;
@@ -289,19 +221,18 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 {
 	bool result = false;
 	LogString fileName = getFile();
-	size_t fileLength = 0;
 	if (!_priv->rollingPolicy)
 		; // can't roll without a policy
-	else if (isAlreadyRolled(fileName, &fileLength))
-		reopenFile(fileName, fileLength);
+	else if (isAlreadyRolled(fileName, &_priv->fileLength))
+		reopenFile(fileName);
 	else
 	{
 		MultiprocessRollingFileAppenderPriv::Lock lk(_priv, fileName);
 		if (!lk.hasLock())
 			LogLog::warn(LOG4CXX_STR("Failed to lock ") + fileName);
-		else if (isAlreadyRolled(fileName, &fileLength))
-			reopenFile(fileName, fileLength);
-		else if (trigger && !trigger->isTriggeringEvent(this, _priv->_event, fileName, fileLength))
+		else if (isAlreadyRolled(fileName, &_priv->fileLength))
+			reopenFile(fileName);
+		else if (trigger && !trigger->isTriggeringEvent(this, _priv->_event, fileName, _priv->fileLength))
 			;
 		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend(), p))
 		{
@@ -402,14 +333,13 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 /**
  * re-open \c fileName (used after it has been renamed)
  */
-void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName, size_t fileLength)
+void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 {
 	closeWriter();
 	OutputStreamPtr os = std::make_shared<FileOutputStream>(fileName, true);
 	WriterPtr newWriter(createWriter(os));
 	setFile(fileName);
 	setWriter(newWriter);
-	_priv->fileLength = fileLength;
 }
 
 /**
@@ -419,9 +349,8 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
-	size_t fileLength = getFileLength();
 	LogString fileName = getFile();
-	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, fileLength))
+	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, _priv->fileLength))
 	{
 		//
 		//   wrap rollover request in try block since
@@ -441,9 +370,9 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 			_priv->errorHandler->error(msg, ex, 0);
 		}
 	}
-	else if (isAlreadyRolled(fileName, &fileLength))
+	else if (isAlreadyRolled(fileName, &_priv->fileLength))
 	{
-		reopenFile(fileName, fileLength);
+		reopenFile(fileName);
 	}
 
 	FileAppender::subAppend(event, p);
@@ -469,8 +398,7 @@ WriterPtr MultiprocessRollingFileAppender::createWriter(OutputStreamPtr& os)
 		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
 		_priv->errorHandler->error(msg);
 	}
-	OutputStreamPtr cos = std::make_shared<MultiprocessOutputStream>(os, this);
-	return FileAppender::createWriter(cos);
+	return FileAppender::createWriter(os);
 }
 
 

@@ -112,10 +112,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		/**
 		 * re-open \c fileName (used after it has been renamed)
 		 */
-		void reopenFile(const LogString& fileName, size_t fileLength);
-
-		friend class MultiprocessOutputStream;
-
+		void reopenFile(const LogString& fileName);
 };
 
 LOG4CXX_PTR_DEF(MultiprocessRollingFileAppender);
