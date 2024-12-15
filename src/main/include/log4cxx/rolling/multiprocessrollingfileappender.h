@@ -99,17 +99,16 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		void setFileLength(size_t length);
 
 		/**
-		 *  Was the log file changed?
+		 *  Was \c fileName renamed?
 		 *  @param pSize if not NULL, receives the log file size
 		 * @return true if the log file must be reopened
 		 */
-		bool isAlreadyRolled(size_t* pSize = 0);
+		bool isAlreadyRolled(const LogString& fileName, size_t* pSize = 0);
 
 		/**
-		 * re-open the latest file when its own handler has been renamed
-		 * @return void
+		 * re-open \c fileName (used after it has been renamed)
 		 */
-		void reopenLatestFile(helpers::Pool& p);
+		void reopenFile(const LogString& fileName, size_t fileLength);
 
 		friend class MultiprocessOutputStream;
 
