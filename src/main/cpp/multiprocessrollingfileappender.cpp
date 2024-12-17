@@ -158,8 +158,10 @@ void MultiprocessRollingFileAppender::activateOptions(Pool& p)
 bool MultiprocessRollingFileAppender::isRolloverCheckNeeded()
 {
 	bool result = true;
+#ifdef WIN32 // apr_stat is slow on Windows
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
 		result = !pTimeBased->isLastFileNameUnchanged();
+#endif
 	return result;
 }
 
