@@ -153,6 +153,17 @@ void MultiprocessRollingFileAppender::activateOptions(Pool& p)
 }
 
 /**
+ * Is it possible the current log file was renamed?
+ */
+bool MultiprocessRollingFileAppender::isRolloverCheckNeeded()
+{
+	bool result = true;
+	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
+		result = !pTimeBased->isLastFileNameUnchanged();
+	return result;
+}
+
+/**
  * Was \c fileName renamed?
  */
 bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName, size_t* pSize)
@@ -189,6 +200,24 @@ bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName,
 	return st2 != APR_SUCCESS ||
 		((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS) &&
 		((finfo1.device != finfo2.device) || (finfo1.inode != finfo2.inode)));
+}
+
+/**
+ * Put the current size of the log file into \c pSize.
+ */
+bool MultiprocessRollingFileAppender::getCurrentFileSize(size_t* pSize)
+{
+	if( !_priv->log_file )
+		return false;
+	apr_int32_t wantedInfo = APR_FINFO_SIZE;
+	apr_finfo_t finfo;
+	if (apr_file_info_get(&finfo, wantedInfo, _priv->log_file) != APR_SUCCESS)
+	{
+		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
+		return false;
+	}
+	*pSize = finfo.size;
+	return true;
 }
 
 /**
@@ -370,10 +399,10 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 			_priv->errorHandler->error(msg, ex, 0);
 		}
 	}
+	else if (!isRolloverCheckNeeded())
+		getCurrentFileSize(&_priv->fileLength);
 	else if (isAlreadyRolled(fileName, &_priv->fileLength))
-	{
 		reopenFile(fileName);
-	}
 
 	FileAppender::subAppend(event, p);
 }

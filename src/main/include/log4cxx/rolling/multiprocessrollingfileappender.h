@@ -103,11 +103,22 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		void setFileLength(size_t length);
 
 		/**
+		 * Is it possible the current log file was renamed?
+		 */
+		bool isRolloverCheckNeeded();
+
+		/**
 		 *  Was \c fileName renamed?
 		 *  @param pSize if not NULL, receives the log file size
 		 * @return true if the log file must be reopened
 		 */
 		bool isAlreadyRolled(const LogString& fileName, size_t* pSize = 0);
+
+		/**
+		 * Put the current size of the log file into \c pSize.
+		 * @return true if the log file size was put into \c pSize
+		 */
+		bool getCurrentFileSize(size_t* pSize);
 
 		/**
 		 * re-open \c fileName (used after it has been renamed)
