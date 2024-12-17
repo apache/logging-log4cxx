@@ -530,3 +530,23 @@ void TimeBasedRollingPolicy::setOption(const LogString& option,
 		RollingPolicyBase::setOption(option, value);
 	}
 }
+
+/**
+ * Was the name in shared memory set by this process?
+ */
+bool TimeBasedRollingPolicy::isLastFileNameUnchanged()
+{
+	bool result = true;
+	if( m_priv->multiprocess ){
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+		if (m_priv->_mmap)
+		{
+			lockMMapFile(APR_FLOCK_SHARED);
+			LogString mapCurrent((char*)m_priv->_mmap->mm);
+			unLockMMapFile();
+			result = (mapCurrent == m_priv->lastFileName);
+		}
+#endif
+	}
+	return result;
+}

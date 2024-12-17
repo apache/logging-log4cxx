@@ -37,76 +37,6 @@
 #include <mutex>
 #include <thread>
 
-namespace LOG4CXX_NS
-{
-
-using namespace helpers;
-
-namespace rolling
-{
-/**
- * Wrapper for OutputStream that will report all log file
- * size changes back to the appender for file length calculations.
- */
-class MultiprocessOutputStream : public OutputStream
-{
-	/**
-	 * Wrapped output stream.
-	 */
-private:
-	OutputStreamPtr os;
-
-	/**
-	 * Rolling file appender to inform of stream writes.
-	 */
-	MultiprocessRollingFileAppender* rfa;
-
-public:
-	/**
-	 * Constructor.
-	 * @param os output stream to wrap.
-	 * @param rfa rolling file appender to inform.
-	 */
-	MultiprocessOutputStream(const OutputStreamPtr& os1, MultiprocessRollingFileAppender* rfa1)
-		: os(os1), rfa(rfa1)
-	{
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	void close(Pool& p) override
-	{
-		os->close(p);
-		rfa = 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	void flush(Pool& p) override
-	{
-		os->flush(p);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	void write(ByteBuffer& buf, Pool& p) override
-	{
-		os->write(buf, p);
-
-		if (rfa != 0)
-		{
-			rfa->setFileLength(File().setPath(rfa->getFile()).length(p));
-		}
-	}
-
-	static FileOutputStreamPtr getFileOutputStream(MultiprocessRollingFileAppender* rfa);
-};
-} // namespace rolling
-} // namespace LOG4CXX_NS
-
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::rolling;
 using namespace LOG4CXX_NS::helpers;
@@ -121,6 +51,7 @@ struct MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv
 			apr_file_close(lock_file);
 	}
 
+	apr_file_t* log_file = NULL;
 	apr_file_t* lock_file = NULL;
 
 public: // Support classes
@@ -198,39 +129,6 @@ public: // Support classes
 	};
 };
 
-	FileOutputStreamPtr
-MultiprocessOutputStream::getFileOutputStream(MultiprocessRollingFileAppender* rfa)
-{
-	auto writer = rfa->getWriter();
-	FileOutputStreamPtr result;
-	auto osw = LOG4CXX_NS::cast<OutputStreamWriter>(writer);
-	if( !osw )
-	{
-		if (auto bw = LOG4CXX_NS::cast<BufferedWriter>(writer))
-			osw = LOG4CXX_NS::cast<OutputStreamWriter>(bw->getWriter());
-	}
-	if( !osw ){
-		LogString msg(LOG4CXX_STR("Can't cast writer to OutputStreamWriter"));
-		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
-		rfa->m_priv->errorHandler->error(msg);
-		return result;
-	}
-	auto cos = LOG4CXX_NS::cast<MultiprocessOutputStream>(osw->getOutputStreamPtr());
-	if( !cos ){
-		LogString msg(LOG4CXX_STR("Can't cast stream to MultiprocessOutputStream"));
-		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
-		rfa->m_priv->errorHandler->error(msg);
-		return result;
-	}
-	result = LOG4CXX_NS::cast<FileOutputStream>(cos->os);
-	if( !result ){
-		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));
-		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
-		rfa->m_priv->errorHandler->error(msg);
-	}
-	return result;
-}
-
 #define _priv static_cast<MultiprocessRollingFileAppenderPriv*>(m_priv.get())
 
 IMPLEMENT_LOG4CXX_OBJECT(MultiprocessRollingFileAppender)
@@ -255,18 +153,30 @@ void MultiprocessRollingFileAppender::activateOptions(Pool& p)
 }
 
 /**
+ * Is it possible the current log file was renamed?
+ */
+bool MultiprocessRollingFileAppender::isRolloverCheckNeeded()
+{
+	bool result = true;
+#ifdef WIN32 // apr_stat is slow on Windows
+	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
+		result = !pTimeBased->isLastFileNameUnchanged();
+#endif
+	return result;
+}
+
+/**
  * Was \c fileName renamed?
  */
 bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName, size_t* pSize)
 {
-	auto fos = MultiprocessOutputStream::getFileOutputStream(this);
-	if( !fos )
+	if( !_priv->log_file )
 		return false;
 	apr_int32_t wantedInfo = APR_FINFO_IDENT;
 	if (pSize)
 		wantedInfo |= APR_FINFO_SIZE;
 	apr_finfo_t finfo1;
-	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, fos->getFilePtr());
+	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, _priv->log_file);
 
 	if (st1 != APR_SUCCESS)
 		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
@@ -292,6 +202,24 @@ bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName,
 	return st2 != APR_SUCCESS ||
 		((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS) &&
 		((finfo1.device != finfo2.device) || (finfo1.inode != finfo2.inode)));
+}
+
+/**
+ * Put the current size of the log file into \c pSize.
+ */
+bool MultiprocessRollingFileAppender::getCurrentFileSize(size_t* pSize)
+{
+	if( !_priv->log_file )
+		return false;
+	apr_int32_t wantedInfo = APR_FINFO_SIZE;
+	apr_finfo_t finfo;
+	if (apr_file_info_get(&finfo, wantedInfo, _priv->log_file) != APR_SUCCESS)
+	{
+		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
+		return false;
+	}
+	*pSize = finfo.size;
+	return true;
 }
 
 /**
@@ -324,19 +252,18 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 {
 	bool result = false;
 	LogString fileName = getFile();
-	size_t fileLength = 0;
 	if (!_priv->rollingPolicy)
 		; // can't roll without a policy
-	else if (isAlreadyRolled(fileName, &fileLength))
-		reopenFile(fileName, fileLength);
+	else if (isAlreadyRolled(fileName, &_priv->fileLength))
+		reopenFile(fileName);
 	else
 	{
 		MultiprocessRollingFileAppenderPriv::Lock lk(_priv, fileName);
 		if (!lk.hasLock())
 			LogLog::warn(LOG4CXX_STR("Failed to lock ") + fileName);
-		else if (isAlreadyRolled(fileName, &fileLength))
-			reopenFile(fileName, fileLength);
-		else if (trigger && !trigger->isTriggeringEvent(this, _priv->_event, fileName, fileLength))
+		else if (isAlreadyRolled(fileName, &_priv->fileLength))
+			reopenFile(fileName);
+		else if (trigger && !trigger->isTriggeringEvent(this, _priv->_event, fileName, _priv->fileLength))
 			;
 		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend(), p))
 		{
@@ -437,14 +364,13 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 /**
  * re-open \c fileName (used after it has been renamed)
  */
-void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName, size_t fileLength)
+void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 {
 	closeWriter();
 	OutputStreamPtr os = std::make_shared<FileOutputStream>(fileName, true);
 	WriterPtr newWriter(createWriter(os));
 	setFile(fileName);
 	setWriter(newWriter);
-	_priv->fileLength = fileLength;
 }
 
 /**
@@ -454,9 +380,8 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
-	size_t fileLength = getFileLength();
 	LogString fileName = getFile();
-	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, fileLength))
+	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, _priv->fileLength))
 	{
 		//
 		//   wrap rollover request in try block since
@@ -476,10 +401,10 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 			_priv->errorHandler->error(msg, ex, 0);
 		}
 	}
-	else if (isAlreadyRolled(fileName, &fileLength))
-	{
-		reopenFile(fileName, fileLength);
-	}
+	else if (!isRolloverCheckNeeded())
+		getCurrentFileSize(&_priv->fileLength);
+	else if (isAlreadyRolled(fileName, &_priv->fileLength))
+		reopenFile(fileName);
 
 	FileAppender::subAppend(event, p);
 }
@@ -495,8 +420,16 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
  */
 WriterPtr MultiprocessRollingFileAppender::createWriter(OutputStreamPtr& os)
 {
-	OutputStreamPtr cos = std::make_shared<MultiprocessOutputStream>(os, this);
-	return FileAppender::createWriter(cos);
+	auto fos = LOG4CXX_NS::cast<FileOutputStream>(os);
+	if( fos )
+		_priv->log_file = fos->getFilePtr();
+	else
+	{
+		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));
+		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
+		_priv->errorHandler->error(msg);
+	}
+	return RollingFileAppender::createWriter(os);
 }
 
 

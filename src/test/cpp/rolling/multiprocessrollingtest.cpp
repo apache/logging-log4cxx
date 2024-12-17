@@ -173,7 +173,10 @@ public:
 	{
 		std::string expectedPrefix("multiprocess-3");
 		// remove any previously generated files
-		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
+		std::filesystem::path outputDir("output/rolling");
+		if (!exists(outputDir))
+			;
+		else for (auto const& dir_entry : std::filesystem::directory_iterator{outputDir})
 		{
 			std::string filename(dir_entry.path().filename().string());
 			if (expectedPrefix.size() < filename.size() &&
@@ -207,6 +210,7 @@ public:
 				&& filename.substr(0, expectedPrefix.size()) == expectedPrefix
 				&& filename.substr(filename.size() - expectedSuffix.size()) == expectedSuffix)
 			{
+				auto initialPerThreadMessageCount = perThreadMessageCount;
 				std::ifstream input(dir_entry.path());
 				for (std::string line; std::getline(input, line);)
 				{
@@ -246,6 +250,18 @@ public:
 							helpers::LogLog::warn(msg);
 						}
 					 }
+				}
+				if (helpers::LogLog::isDebugEnabled())
+				{
+					LogString msg;
+					helpers::Transcoder::decode(dir_entry.path().filename().string(), msg);
+					msg += LOG4CXX_STR(": perThreadMessageCount ");
+					for (auto item : perThreadMessageCount)
+					{
+						msg += logchar(' ');
+						helpers::StringHelper::toString(item.second - initialPerThreadMessageCount[item.first], p, msg);
+					}
+					helpers::LogLog::debug(msg);
 				}
 			}
 		}

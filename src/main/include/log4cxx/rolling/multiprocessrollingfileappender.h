@@ -29,7 +29,11 @@ namespace rolling
 
 
 /**
- * A special version of the RollingFileAppender that acts properly with multiple processes
+ * A special version of the RollingFileAppender that acts properly with multiple processes.
+ *
+ * Coordinating with other processes adds significant overhead compared to RollingFileAppender.
+ * Benchmarks show the overhead of this appender is more than 4 and 10 times
+ * the overhead of RollingFileAppender on Linux and Windows respectively.
  *
  * Note: Do *not* set the option <code>Append</code> to <code>false</code>.
  * Rolling over files is only relevant when you are appending.
@@ -103,6 +107,11 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		void setFileLength(size_t length);
 
 		/**
+		 * Is it possible the current log file was renamed?
+		 */
+		bool isRolloverCheckNeeded();
+
+		/**
 		 *  Was \c fileName renamed?
 		 *  @param pSize if not NULL, receives the log file size
 		 * @return true if the log file must be reopened
@@ -110,12 +119,15 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		bool isAlreadyRolled(const LogString& fileName, size_t* pSize = 0);
 
 		/**
+		 * Put the current size of the log file into \c pSize.
+		 * @return true if the log file size was put into \c pSize
+		 */
+		bool getCurrentFileSize(size_t* pSize);
+
+		/**
 		 * re-open \c fileName (used after it has been renamed)
 		 */
-		void reopenFile(const LogString& fileName, size_t fileLength);
-
-		friend class MultiprocessOutputStream;
-
+		void reopenFile(const LogString& fileName);
 };
 
 LOG4CXX_PTR_DEF(MultiprocessRollingFileAppender);

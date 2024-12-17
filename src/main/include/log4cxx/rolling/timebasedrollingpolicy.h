@@ -209,6 +209,11 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
+		/**
+		 * Was the name in shared memory set by this process?
+		 */
+		bool isLastFileNameUnchanged();
+
 	protected:
 		/**
 		 * A map from "d" and "date" to a date conversion formatter.

@@ -7,6 +7,10 @@
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/fileappender.h>
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+#include <log4cxx/rolling/multiprocessrollingfileappender.h>
+#include <log4cxx/rolling/timebasedrollingpolicy.h>
+#endif
 #include <log4cxx/private/appenderskeleton_priv.h>
 #if LOG4CXX_USING_STD_FORMAT
 #include <format>
@@ -65,6 +69,25 @@ public:
 	}
 };
 
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+class BenchmarkMultiprocessFileAppender : public rolling::MultiprocessRollingFileAppender
+{
+public:
+	BenchmarkMultiprocessFileAppender(const LayoutPtr& layout)
+	{
+		setLayout(layout);
+		auto tempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
+		auto policy = std::make_shared<rolling::TimeBasedRollingPolicy>();
+		policy->setFileNamePattern(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log"));
+		setRollingPolicy(policy);
+		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess.log"));
+		setBufferedIO(true);
+		helpers::Pool p;
+		activateOptions(p);
+	}
+};
+#endif
+
 void disableThousandSeparatorsInJSON()
 {
 	std::setlocale(LC_ALL, "C"); /* Set locale for C functions */
@@ -77,6 +100,9 @@ public: // Attributes
 	LoggerPtr m_logger = getLogger();
 	LoggerPtr m_asyncLogger = getAsyncLogger();
 	LoggerPtr m_fileLogger = getFileLogger();
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+	LoggerPtr m_multiprocessLogger = getMultiprocessLogger();
+#endif
 
 public: // Class methods
 	static int threadCount()
@@ -175,6 +201,27 @@ public: // Class methods
 		}
 		return result;
 	}
+
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+	static LoggerPtr getMultiprocessLogger()
+	{
+		LogString name = LOG4CXX_STR("benchmark.fixture.multiprocess");
+		auto r = LogManager::getLoggerRepository();
+		LoggerPtr result;
+		if (!(result = r->exists(name)))
+		{
+			result = r->getLogger(name);
+			result->setAdditivity(false);
+			result->setLevel(Level::getInfo());
+			auto writer = std::make_shared<BenchmarkMultiprocessFileAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n")));
+			writer->setName(LOG4CXX_STR("MultiprocessFileAppender"));
+			helpers::Pool p;
+			writer->activateOptions(p);
+			result->addAppender(writer);
+		}
+		return result;
+	}
+#endif
 };
 
 BENCHMARK_DEFINE_F(benchmarker, logDisabledTrace)(benchmark::State& state)
@@ -309,6 +356,20 @@ BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBuffer)(benchmark::S
 }
 BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBuffer)->Name("Logging int+float using MessageBuffer, pattern: %d %m%n");
 BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBuffer)->Name("Logging int+float using MessageBuffer, pattern: %d %m%n")->Threads(benchmarker::threadCount());
+
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+BENCHMARK_DEFINE_F(benchmarker, multiprocessFileIntPlusFloatValueMessageBuffer)(benchmark::State& state)
+{
+	int x = 0;
+	for (auto _ : state)
+	{
+		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		LOG4CXX_INFO( m_multiprocessLogger, "Hello: message number " << ++x
+			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, multiprocessFileIntPlusFloatValueMessageBuffer)->Name("Multiprocess logging int+float using MessageBuffer, pattern: %d %m%n");
+#endif
 
 BENCHMARK_MAIN();
 
