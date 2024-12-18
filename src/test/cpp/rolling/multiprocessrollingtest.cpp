@@ -24,6 +24,7 @@
 #include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/helpers/strftimedateformat.h>
 #include <log4cxx/helpers/date.h>
+#include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <filesystem>
@@ -109,7 +110,10 @@ public:
 	{
 		std::string expectedPrefix = LOG4CXX_STR("multiprocess-2-");
 		// remove any previously generated files
-		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
+		std::filesystem::path outputDir("output/rolling");
+		if (!exists(outputDir))
+			;
+		else for (auto const& dir_entry : std::filesystem::directory_iterator{outputDir})
 		{
 			std::string filename(dir_entry.path().filename().string());
 			if (expectedPrefix.size() < filename.size() &&
@@ -183,12 +187,14 @@ public:
 				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
 				std::filesystem::remove(dir_entry);
 		}
+		helpers::FileOutputStream output(LOG4CXX_STR("output/rolling/multiprocess-test4-child.log"), false);
 		auto thisProgram = GetExecutableFileName();
 		const char* args[] = {thisProgram.c_str(), "test3", 0};
 		helpers::Pool p;
 		apr_procattr_t* attr = NULL;
-		setTestAttributes(&attr, p);
+		setTestAttributes(&attr, output.getFilePtr(), p);
 		apr_proc_t pid[5];
+		auto startTime = helpers::Date::currentTime();
 		for (auto i : {0, 1, 2, 3, 4})
 			startTestInstance(&pid[i], attr, args, p);
 		for (auto i : {0, 1, 2, 3, 4})
@@ -197,6 +203,14 @@ public:
 			apr_exit_why_e reason;
 			apr_proc_wait(&pid[i], &exitCode, &reason, APR_WAIT);
 			LOGUNIT_ASSERT_EQUAL(exitCode, 0);
+		}
+		if (helpers::LogLog::isDebugEnabled())
+		{
+			LogString msg;
+			auto currentTime = helpers::Date::currentTime();
+			msg += LOG4CXX_STR("elapsed ");
+			helpers::StringHelper::toString(currentTime - startTime, p, msg);
+			helpers::LogLog::debug(msg);
 		}
 
 		// Check all messages are saved to files
@@ -291,19 +305,23 @@ public:
 
 private:
 
-	void setTestAttributes(apr_procattr_t** attr, helpers::Pool& p)
+	void setTestAttributes(apr_procattr_t** attr, apr_file_t* output, helpers::Pool& p)
 	{
 		if (apr_procattr_create(attr, p.getAPRPool()) != APR_SUCCESS)
 		{
-			LOGUNIT_FAIL("apr_procattr_create failed");
-		}
-		if (apr_procattr_io_set(*attr, APR_NO_PIPE, APR_NO_PIPE, APR_NO_PIPE) != APR_SUCCESS)
-		{
-			LOGUNIT_FAIL("apr_procattr_io_set failed");
+			LOGUNIT_FAIL("apr_procattr_create");
 		}
 		if (apr_procattr_cmdtype_set(*attr, APR_PROGRAM) != APR_SUCCESS)
 		{
-			LOGUNIT_FAIL("apr_procattr_cmdtype_set failed");
+			LOGUNIT_FAIL("apr_procattr_cmdtype_set");
+		}
+		if (apr_procattr_child_out_set(*attr, output, NULL) != APR_SUCCESS)
+		{
+			LOGUNIT_FAIL("apr_procattr_child_out_set");
+		}
+		if (apr_procattr_child_err_set(*attr, output, NULL) != APR_SUCCESS)
+		{
+			LOGUNIT_FAIL("apr_procattr_child_err_set");
 		}
 	}
 
@@ -315,7 +333,7 @@ private:
 		}
 		else
 		{
-			LOGUNIT_FAIL("apr_proc_create failed");
+			LOGUNIT_FAIL("apr_proc_create");
 		}
 	}
 

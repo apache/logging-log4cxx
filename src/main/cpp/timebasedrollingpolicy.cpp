@@ -550,3 +550,22 @@ bool TimeBasedRollingPolicy::isLastFileNameUnchanged()
 	}
 	return result;
 }
+
+/**
+ * Load the name (set by some other process) from shared memory
+ */
+void TimeBasedRollingPolicy::loadLastFileName()
+{
+	if( m_priv->multiprocess ){
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+		if (m_priv->_mmap)
+		{
+			lockMMapFile(APR_FLOCK_SHARED);
+			LogString mapLastFile((char*)m_priv->_mmap->mm);
+			unLockMMapFile();
+			if (!mapLastFile.empty())
+				m_priv->lastFileName = mapLastFile;
+		}
+#endif
+	}
+}

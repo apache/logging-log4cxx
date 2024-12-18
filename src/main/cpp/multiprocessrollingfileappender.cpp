@@ -37,6 +37,12 @@
 #include <mutex>
 #include <thread>
 
+#ifdef WIN32 // apr_stat is slow on Windows
+#define USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER 1
+#else
+#define USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER 0
+#endif
+
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::rolling;
 using namespace LOG4CXX_NS::helpers;
@@ -158,7 +164,7 @@ void MultiprocessRollingFileAppender::activateOptions(Pool& p)
 bool MultiprocessRollingFileAppender::isRolloverCheckNeeded()
 {
 	bool result = true;
-#ifdef WIN32 // apr_stat is slow on Windows
+#if USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
 		result = !pTimeBased->isLastFileNameUnchanged();
 #endif
@@ -367,6 +373,10 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 {
 	closeWriter();
+#if USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER
+	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
+		pTimeBased->loadLastFileName();
+#endif
 	OutputStreamPtr os = std::make_shared<FileOutputStream>(fileName, true);
 	WriterPtr newWriter(createWriter(os));
 	setFile(fileName);

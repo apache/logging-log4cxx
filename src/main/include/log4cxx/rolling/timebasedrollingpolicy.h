@@ -214,6 +214,11 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 		 */
 		bool isLastFileNameUnchanged();
 
+		/**
+		 * Load the name (set by some other process) from shared memory
+		 */
+		void loadLastFileName();
+
 	protected:
 		/**
 		 * A map from "d" and "date" to a date conversion formatter.
