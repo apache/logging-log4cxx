@@ -27,6 +27,7 @@
 #include <mutex>
 #include <list>
 #include <condition_variable>
+#include <algorithm>
 
 #ifdef _WIN32
 	#include <windows.h>
