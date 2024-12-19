@@ -60,6 +60,12 @@ struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPri
 	/**
 	How big should the IO buffer be? Default is 8K. */
 	int bufferSize;
+
+	/**
+	The number of seconds between each asynchronous output buffer flush.
+	Only active when <code>bufferedIO == true</code>.
+	*/
+	int bufferedSeconds{ 5 };
 };
 
 }

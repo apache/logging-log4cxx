@@ -21,6 +21,7 @@
 #include <thread>
 #include <functional>
 #include <memory>
+#include <chrono>
 
 #include "log4cxx/logstring.h"
 #include "widelife.h"
@@ -153,6 +154,23 @@ class LOG4CXX_EXPORT ThreadUtility
 
 			return t;
 		}
+
+		using Period = std::chrono::milliseconds;
+
+		/**
+		 * Add a periodic task
+		 */
+		void addPeriodicTask(const LogString& name, std::function<void()> f, const Period& delay);
+
+		/**
+		 * Has a \c taskName periodic task already been added?
+		 */
+		bool hasPeriodicTask(const LogString& name);
+
+		/**
+		 * Remove the \c taskName periodic task
+		 */
+		void removePeriodicTask(const LogString& name);
 };
 
 } /* namespace helpers */
