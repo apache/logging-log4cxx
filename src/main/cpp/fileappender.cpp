@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <log4cxx/helpers/bufferedwriter.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include "log4cxx/helpers/threadutility.h"
 #include <log4cxx/private/writerappender_priv.h>
 #include <log4cxx/private/fileappender_priv.h>
 #include <mutex>
@@ -81,6 +82,8 @@ FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
 FileAppender::~FileAppender()
 {
 	finalize();
+	if (_priv->bufferedIO && 0 < _priv->bufferedSeconds)
+		ThreadUtility::instance()->removePeriodicTask(getName());
 }
 
 void FileAppender::setAppend(bool fileAppend1)
@@ -140,6 +143,11 @@ void FileAppender::setOption(const LogString& option,
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 		_priv->bufferSize = OptionConverter::toFileSize(value, 8 * 1024);
 	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDSECONDS"), LOG4CXX_STR("bufferedseconds")))
+	{
+		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+		_priv->bufferedSeconds = OptionConverter::toInt(value, 0);
+	}
 	else
 	{
 		WriterAppender::setOption(option, value);
@@ -184,6 +192,20 @@ void FileAppender::activateOptionsInternal(Pool& p)
 	if (errors == 0)
 	{
 		WriterAppender::activateOptions(p);
+
+		if (!_priv->bufferedIO)
+			;
+		else if (0 < _priv->bufferedSeconds)
+		{
+			ThreadUtility::instance()->addPeriodicTask(getName()
+				, std::bind(&WriterAppenderPriv::flush, _priv)
+				, std::chrono::seconds(_priv->bufferedSeconds)
+				);
+		}
+		else if (0 == _priv->bufferedSeconds)
+		{
+			ThreadUtility::instance()->removePeriodicTask(getName());
+		}
 	}
 }
 

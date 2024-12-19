@@ -72,9 +72,6 @@ class LOG4CXX_EXPORT FileWatchdog
 		bool is_active();
 
 	private:
-		void run();
-		bool is_interrupted();
-
 
 		FileWatchdog(const FileWatchdog&);
 		FileWatchdog& operator=(const FileWatchdog&);
