@@ -22,9 +22,6 @@
 #include <time.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
-#include <atomic>
-#include <thread>
-#include <condition_variable>
 
 namespace LOG4CXX_NS
 {

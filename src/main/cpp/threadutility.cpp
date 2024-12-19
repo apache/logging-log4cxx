@@ -37,6 +37,10 @@
 #if LOG4CXX_EVENTS_AT_EXIT
 #include <log4cxx/private/atexitregistry.h>
 #endif
+#if !defined(LOG4CXX)
+	#define LOG4CXX 1
+#endif
+#include <log4cxx/helpers/aprinitializer.h>
 
 namespace LOG4CXX_NS
 {
@@ -117,8 +121,12 @@ ThreadUtility::~ThreadUtility() {}
 
 ThreadUtility* ThreadUtility::instance()
 {
-	static WideLife<ThreadUtility> instance;
-	return &instance.value();
+	using ThreadUtilityHolder = SingletonHolder<ThreadUtility>;
+	auto result = APRInitializer::getOrAddUnique<ThreadUtilityHolder>
+		( []() -> ObjectPtr
+			{ return std::make_shared<ThreadUtilityHolder>(); }
+		);
+	return &result->value();
 }
 
 void ThreadUtility::configure( ThreadConfigurationType type )

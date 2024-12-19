@@ -24,7 +24,7 @@
 #include <chrono>
 
 #include "log4cxx/logstring.h"
-#include "widelife.h"
+#include "singletonholder.h"
 
 namespace LOG4CXX_NS
 {
@@ -72,6 +72,7 @@ class LOG4CXX_EXPORT ThreadUtility
 {
 	private:
 		friend class LOG4CXX_NS::helpers::WideLife<ThreadUtility>;
+		friend class LOG4CXX_NS::helpers::SingletonHolder<ThreadUtility>;
 		ThreadUtility();
 
 		LOG4CXX_NS::helpers::ThreadStartPre preStartFunction();
