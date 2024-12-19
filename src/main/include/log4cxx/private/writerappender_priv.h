@@ -48,7 +48,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 		immediateFlush(true),
 		writer(writer1)
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{atExitActivated();})
+		, atExitRegistryRaii{ [this]{flush();} }
 #endif
 	{
 	}
@@ -57,7 +57,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 		AppenderSkeletonPrivate(layout1),
 		immediateFlush(true)
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{atExitActivated();})
+		, atExitRegistryRaii{ [this]{flush();} }
 #endif
 	{
 	}

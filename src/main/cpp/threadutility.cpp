@@ -26,6 +26,7 @@
 #include <signal.h>
 #include <mutex>
 #include <list>
+#include <condition_variable>
 
 #ifdef _WIN32
 	#include <windows.h>
@@ -253,8 +254,8 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 	std::lock_guard<std::mutex> lock(m_priv->job_mutex);
 	if (m_priv->maxDelay < delay)
 		m_priv->maxDelay = delay;
-	priv_data::TimePoint currentTime = std::chrono::system_clock::now();
-	m_priv->jobs.emplace_back(name, delay, currentTime + delay, 0, f);
+	auto currentTime = std::chrono::system_clock::now();
+	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, 0, f} );
 	if (!m_priv->thread.joinable())
 		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), std::bind(&priv_data::doPeriodicTasks, m_priv.get()));
 	else
