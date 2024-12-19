@@ -25,6 +25,7 @@
 
 #include <signal.h>
 #include <mutex>
+#include <list>
 
 #ifdef _WIN32
 	#include <windows.h>
@@ -304,8 +305,6 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 					break;
 				if (item.nextRun <= currentTime)
 				{
-					if (LogLog::isDebugEnabled())
-						LogLog::debug(LOG4CXX_STR("running ") + item.name);
 					try
 					{
 						item.f();
