@@ -24,6 +24,8 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <functional>
 #include <chrono>
+#include <thread>
+#include <condition_variable>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
