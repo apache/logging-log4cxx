@@ -20,6 +20,7 @@
 
 #include <log4cxx/private/writerappender_priv.h>
 #include <log4cxx/fileappender.h>
+#include <log4cxx/helpers/threadutility.h>
 
 namespace LOG4CXX_NS
 {
@@ -63,9 +64,15 @@ struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPri
 
 	/**
 	The number of seconds between each asynchronous output buffer flush.
-	Only active when <code>bufferedIO == true</code>.
+	Only used when <code>bufferedIO == true</code>.
 	*/
 	int bufferedSeconds{ 5 };
+
+	/**
+	Manages asynchronous output buffer flush.
+	Only used when <code>bufferedIO == true</code>.
+	*/
+	helpers::ThreadUtility::ManagerWeakPtr taskManager;
 };
 
 }

@@ -82,8 +82,8 @@ FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
 FileAppender::~FileAppender()
 {
 	finalize();
-	if (_priv->bufferedIO && 0 < _priv->bufferedSeconds)
-		ThreadUtility::instance()->removePeriodicTask(getName());
+	if (auto p = _priv->taskManager.lock())
+		p->value().removePeriodicTask(getName());
 }
 
 void FileAppender::setAppend(bool fileAppend1)
@@ -197,10 +197,12 @@ void FileAppender::activateOptionsInternal(Pool& p)
 			;
 		else if (0 < _priv->bufferedSeconds)
 		{
-			ThreadUtility::instance()->addPeriodicTask(getName()
+			auto taskManager = ThreadUtility::instancePtr();
+			taskManager->value().addPeriodicTask(getName()
 				, std::bind(&WriterAppenderPriv::flush, _priv)
 				, std::chrono::seconds(_priv->bufferedSeconds)
 				);
+			_priv->taskManager = taskManager;
 		}
 		else if (0 == _priv->bufferedSeconds)
 		{

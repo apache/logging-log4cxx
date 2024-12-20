@@ -65,13 +65,10 @@ enum class ThreadConfigurationType
 	BlockSignalsAndNameThread,
 };
 
-class ThreadUtility;
-LOG4CXX_PTR_DEF(ThreadUtility);
-
 class LOG4CXX_EXPORT ThreadUtility
 {
 	private:
-		friend class LOG4CXX_NS::helpers::SingletonHolder<ThreadUtility>;
+		friend class SingletonHolder<ThreadUtility>;
 		ThreadUtility();
 
 		LOG4CXX_NS::helpers::ThreadStartPre preStartFunction();
@@ -176,6 +173,11 @@ class LOG4CXX_EXPORT ThreadUtility
 		 * Remove any periodic task matching \c namePrefix
 		 */
 		void removePeriodicTasksMatching(const LogString& namePrefix);
+
+		using Manager = SingletonHolder<ThreadUtility>;
+		LOG4CXX_PTR_DEF(Manager);
+
+		static ManagerPtr instancePtr();
 };
 
 } /* namespace helpers */

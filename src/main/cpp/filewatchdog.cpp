@@ -36,8 +36,7 @@ struct FileWatchdog::FileWatchdogPrivate{
 	FileWatchdogPrivate(const File& file1) :
 		file(file1), delay(DEFAULT_DELAY), lastModif(0),
 		warnedAlready(false),
-		taskName{ LOG4CXX_STR("WatchDog_") + file1.getName() },
-		taskManager{ ThreadUtility::instance() }
+		taskName{ LOG4CXX_STR("WatchDog_") + file1.getName() }
 	{ }
 
 
@@ -60,7 +59,7 @@ struct FileWatchdog::FileWatchdogPrivate{
 	std::mutex interrupt_mutex;
 #endif
 	LogString taskName;
-	ThreadUtility* taskManager;
+	ThreadUtility::ManagerWeakPtr taskManager;
 };
 
 FileWatchdog::FileWatchdog(const File& file1)
@@ -76,12 +75,16 @@ FileWatchdog::~FileWatchdog()
 
 bool FileWatchdog::is_active()
 {
-	return m_priv->taskManager->hasPeriodicTask(m_priv->taskName);
+	bool result = false;
+	if (auto p = m_priv->taskManager.lock())
+		result = p->value().hasPeriodicTask(m_priv->taskName);
+	return result;
 }
 
 void FileWatchdog::stop()
 {
-	m_priv->taskManager->removePeriodicTask(m_priv->taskName);
+	if (auto p = m_priv->taskManager.lock())
+		p->value().removePeriodicTask(m_priv->taskName);
 }
 
 /**
@@ -134,7 +137,8 @@ void FileWatchdog::checkAndConfigure()
 void FileWatchdog::start()
 {
 	checkAndConfigure();
-	if (!m_priv->taskManager->hasPeriodicTask(m_priv->taskName))
+	auto taskManager = ThreadUtility::instancePtr();
+	if (taskManager->value().hasPeriodicTask(m_priv->taskName))
 	{
 		if (LogLog::isDebugEnabled())
 		{
@@ -146,19 +150,21 @@ void FileWatchdog::start()
 			msg += LOG4CXX_STR(" ms interval");
 			LogLog::debug(msg);
 		}
-		m_priv->taskManager->addPeriodicTask(m_priv->taskName
+		taskManager->value().addPeriodicTask(m_priv->taskName
 			, std::bind(&FileWatchdog::checkAndConfigure, this)
 			, std::chrono::milliseconds(m_priv->delay)
 			);
+		m_priv->taskManager = taskManager;
 	}
 }
 
 void FileWatchdog::setDelay(long delay1){
 	m_priv->delay = delay1;
-	if (m_priv->taskManager->hasPeriodicTask(m_priv->taskName))
+	auto p = m_priv->taskManager.lock();
+	if (p && p->value().hasPeriodicTask(m_priv->taskName))
 	{
-		m_priv->taskManager->removePeriodicTask(m_priv->taskName);
-		m_priv->taskManager->addPeriodicTask(m_priv->taskName
+		p->value().removePeriodicTask(m_priv->taskName);
+		p->value().addPeriodicTask(m_priv->taskName
 			, std::bind(&FileWatchdog::checkAndConfigure, this)
 			, std::chrono::milliseconds(m_priv->delay)
 			);

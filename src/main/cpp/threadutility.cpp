@@ -119,14 +119,18 @@ ThreadUtility::ThreadUtility()
 
 ThreadUtility::~ThreadUtility() {}
 
+auto ThreadUtility::instancePtr() -> ManagerPtr
+{
+	auto result = APRInitializer::getOrAddUnique<Manager>
+		( []() -> ObjectPtr
+			{ return std::make_shared<Manager>(); }
+		);
+	return result;
+}
+
 ThreadUtility* ThreadUtility::instance()
 {
-	using ThreadUtilityHolder = SingletonHolder<ThreadUtility>;
-	auto result = APRInitializer::getOrAddUnique<ThreadUtilityHolder>
-		( []() -> ObjectPtr
-			{ return std::make_shared<ThreadUtilityHolder>(); }
-		);
-	return &result->value();
+	return &instancePtr()->value();
 }
 
 void ThreadUtility::configure( ThreadConfigurationType type )
