@@ -51,7 +51,7 @@ struct ThreadUtility::priv_data
 {
 	priv_data()
 #if LOG4CXX_EVENTS_AT_EXIT
-		: atExitRegistryRaii{ []{ stopThread(); } }
+		: atExitRegistryRaii{ [this]{ stopThread(); } }
 #endif
 	{
 	}
@@ -296,6 +296,24 @@ void ThreadUtility::removePeriodicTask(const LogString& name)
 		);
 	if (m_priv->jobs.end() != pItem)
 		m_priv->jobs.erase(pItem);
+}
+
+/**
+ * Remove any periodic task matching \c namePrefix
+ */
+void ThreadUtility::removePeriodicTasksMatching(const LogString& namePrefix)
+{
+	while (1)
+	{
+		std::lock_guard<std::mutex> lock(m_priv->job_mutex);
+		auto pItem = std::find_if(m_priv->jobs.begin(), m_priv->jobs.end()
+			, [&namePrefix](const priv_data::NamedPeriodicFunction& item)
+			{ return namePrefix.size() <= item.name.size() && item.name.substr(0, namePrefix.size()) == namePrefix; }
+			);
+		if (m_priv->jobs.end() == pItem)
+			break;
+		m_priv->jobs.erase(pItem);
+	}
 }
 
 // Run ready tasks

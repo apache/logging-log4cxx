@@ -35,7 +35,8 @@ long FileWatchdog::DEFAULT_DELAY = 60000;
 struct FileWatchdog::FileWatchdogPrivate{
 	FileWatchdogPrivate(const File& file1) :
 		file(file1), delay(DEFAULT_DELAY), lastModif(0),
-		warnedAlready(false)
+		warnedAlready(false),
+		taskName{LOG4CXX_STR("WatchDog_") + file1.getName()}
 	{ }
 
 
@@ -57,7 +58,7 @@ struct FileWatchdog::FileWatchdogPrivate{
 	std::condition_variable interrupt;
 	std::mutex interrupt_mutex;
 #endif
-	LogString taskName{LOG4CXX_STR("FileWatchdog")};
+	LogString taskName;
 };
 
 FileWatchdog::FileWatchdog(const File& file1)
@@ -67,7 +68,6 @@ FileWatchdog::FileWatchdog(const File& file1)
 
 FileWatchdog::~FileWatchdog()
 {
-	stop();
 }
 
 
@@ -83,6 +83,14 @@ void FileWatchdog::stop()
 		LogLog::debug(LOG4CXX_STR("Stopping file watchdog"));
 		ThreadUtility::instance()->removePeriodicTask(m_priv->taskName);
 	}
+}
+
+/**
+Stop all tasks that periodically checks for a file change.
+*/
+void FileWatchdog::stopAll()
+{
+	ThreadUtility::instance()->removePeriodicTasksMatching(LOG4CXX_STR("WatchDog_"));
 }
 
 const File& FileWatchdog::file()

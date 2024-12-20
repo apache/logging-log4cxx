@@ -103,13 +103,12 @@ APRInitializer::~APRInitializer()
 #endif
 }
 
-void APRInitializer::stopWatchDogs()
+void APRInitializer::deleteWatchDogs()
 {
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
 
 	while (!m_priv->watchdogs.empty())
 	{
-		m_priv->watchdogs.back()->stop();
 		delete m_priv->watchdogs.back();
 		m_priv->watchdogs.pop_back();
 	}
@@ -117,7 +116,8 @@ void APRInitializer::stopWatchDogs()
 
 void APRInitializer::unregisterAll()
 {
-	getInstance().stopWatchDogs();
+	FileWatchdog::stopAll();
+	getInstance().deleteWatchDogs();
 }
 
 APRInitializer& APRInitializer::getInstance()

@@ -159,19 +159,24 @@ class LOG4CXX_EXPORT ThreadUtility
 		using Period = std::chrono::milliseconds;
 
 		/**
-		 * Add a periodic task
+		 * Add the \c taskName periodic task
 		 */
-		void addPeriodicTask(const LogString& name, std::function<void()> f, const Period& delay);
+		void addPeriodicTask(const LogString& taskName, std::function<void()> f, const Period& delay);
 
 		/**
 		 * Has a \c taskName periodic task already been added?
 		 */
-		bool hasPeriodicTask(const LogString& name);
+		bool hasPeriodicTask(const LogString& taskName);
 
 		/**
 		 * Remove the \c taskName periodic task
 		 */
-		void removePeriodicTask(const LogString& name);
+		void removePeriodicTask(const LogString& taskName);
+
+		/**
+		 * Remove any periodic task matching \c namePrefix
+		 */
+		void removePeriodicTasksMatching(const LogString& namePrefix);
 };
 
 } /* namespace helpers */

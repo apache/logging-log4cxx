@@ -54,20 +54,24 @@ class LOG4CXX_EXPORT FileWatchdog
 		void setDelay(long delay);
 
 		/**
-		Create a thread that periodically checks for a file change after first calling doOnChange() on the current thread.
+		Create an asynchronous task that periodically checks for a file change after first calling doOnChange().
 		*/
 		void start();
 
 		/**
-		Stop the thread that periodically checks for a file change.
+		Stop the task that periodically checks for a file change.
 		*/
 		void stop();
 
 		/**
-		Is the thread that periodically checks for a file change running?
+		Is the task that periodically checks for a file change running?
 		*/
 		bool is_active();
 
+		/**
+		Stop all tasks that periodically check for a file change.
+		*/
+		static void stopAll();
 	private:
 
 		FileWatchdog(const FileWatchdog&);
