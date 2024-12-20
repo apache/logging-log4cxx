@@ -207,7 +207,7 @@ void FileAppender::activateOptionsInternal(Pool& p)
 		else if (0 == _priv->bufferedSeconds)
 		{
 			if (auto p = _priv->taskManager.lock())
-				p->value()->removePeriodicTask(getName());
+				p->value().removePeriodicTask(getName());
 		}
 	}
 }
