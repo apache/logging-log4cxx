@@ -104,7 +104,7 @@ APRInitializer::APRInitializer() :
 
 APRInitializer::~APRInitializer()
 {
-	deleteWatchDogs();
+	stopWatchDogs();
 	isDestructed = true;
 #if APR_HAS_THREADS
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
@@ -112,12 +112,13 @@ APRInitializer::~APRInitializer()
 #endif
 }
 
-void APRInitializer::deleteWatchDogs()
+void APRInitializer::stopWatchDogs()
 {
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
 
 	while (!m_priv->watchdogs.empty())
 	{
+		m_priv->watchdogs.back()->stop();
 		delete m_priv->watchdogs.back();
 		m_priv->watchdogs.pop_back();
 	}
@@ -126,7 +127,7 @@ void APRInitializer::deleteWatchDogs()
 void APRInitializer::unregisterAll()
 {
 	FileWatchdog::stopAll();
-	getInstance().deleteWatchDogs();
+	getInstance().stopWatchDogs();
 }
 
 APRInitializer& APRInitializer::getInstance()
