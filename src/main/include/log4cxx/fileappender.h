@@ -130,6 +130,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		FileName | {any} | -
 		Append | True,False | True
 		BufferedIO | True,False | False
+		BufferedSeconds | {any} | 5
 		ImmediateFlush | True,False | False
 		BufferSize | (\ref fileSz1 "1") | 8 KB
 

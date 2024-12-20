@@ -22,9 +22,6 @@
 #include <time.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
-#include <atomic>
-#include <thread>
-#include <condition_variable>
 
 namespace LOG4CXX_NS
 {
@@ -72,9 +69,6 @@ class LOG4CXX_EXPORT FileWatchdog
 		bool is_active();
 
 	private:
-		void run();
-		bool is_interrupted();
-
 
 		FileWatchdog(const FileWatchdog&);
 		FileWatchdog& operator=(const FileWatchdog&);

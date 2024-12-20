@@ -21,9 +21,10 @@
 #include <thread>
 #include <functional>
 #include <memory>
+#include <chrono>
 
 #include "log4cxx/logstring.h"
-#include "widelife.h"
+#include "singletonholder.h"
 
 namespace LOG4CXX_NS
 {
@@ -71,6 +72,7 @@ class LOG4CXX_EXPORT ThreadUtility
 {
 	private:
 		friend class LOG4CXX_NS::helpers::WideLife<ThreadUtility>;
+		friend class LOG4CXX_NS::helpers::SingletonHolder<ThreadUtility>;
 		ThreadUtility();
 
 		LOG4CXX_NS::helpers::ThreadStartPre preStartFunction();
@@ -153,6 +155,23 @@ class LOG4CXX_EXPORT ThreadUtility
 
 			return t;
 		}
+
+		using Period = std::chrono::milliseconds;
+
+		/**
+		 * Add a periodic task
+		 */
+		void addPeriodicTask(const LogString& name, std::function<void()> f, const Period& delay);
+
+		/**
+		 * Has a \c taskName periodic task already been added?
+		 */
+		bool hasPeriodicTask(const LogString& name);
+
+		/**
+		 * Remove the \c taskName periodic task
+		 */
+		void removePeriodicTask(const LogString& name);
 };
 
 } /* namespace helpers */
