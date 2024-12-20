@@ -79,8 +79,8 @@ struct ThreadUtility::priv_data
 	std::condition_variable   interrupt;
 	std::mutex                interrupt_mutex;
 	bool                      terminated{false};
-	int                       retryCount{2};
-	Period                    maxDelay;
+	int                       retryCount{ 2 };
+	Period                    maxDelay{ 0 };
 
 	void doPeriodicTasks();
 

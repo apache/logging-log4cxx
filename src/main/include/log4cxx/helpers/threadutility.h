@@ -71,7 +71,6 @@ LOG4CXX_PTR_DEF(ThreadUtility);
 class LOG4CXX_EXPORT ThreadUtility
 {
 	private:
-		friend class LOG4CXX_NS::helpers::WideLife<ThreadUtility>;
 		friend class LOG4CXX_NS::helpers::SingletonHolder<ThreadUtility>;
 		ThreadUtility();
 

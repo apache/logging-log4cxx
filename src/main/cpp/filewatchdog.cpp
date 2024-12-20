@@ -78,11 +78,7 @@ bool FileWatchdog::is_active()
 
 void FileWatchdog::stop()
 {
-	if (is_active())
-	{
-		LogLog::debug(LOG4CXX_STR("Stopping file watchdog"));
-		ThreadUtility::instance()->removePeriodicTask(m_priv->taskName);
-	}
+	ThreadUtility::instance()->removePeriodicTask(m_priv->taskName);
 }
 
 /**
@@ -134,8 +130,8 @@ void FileWatchdog::checkAndConfigure()
 
 void FileWatchdog::start()
 {
-	checkAndConfigure();
 	auto p = ThreadUtility::instance();
+	checkAndConfigure();
 	if (!p->hasPeriodicTask(m_priv->taskName))
 	{
 		if (LogLog::isDebugEnabled())

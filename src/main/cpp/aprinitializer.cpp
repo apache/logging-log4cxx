@@ -96,6 +96,7 @@ APRInitializer::APRInitializer() :
 
 APRInitializer::~APRInitializer()
 {
+	deleteWatchDogs();
 	isDestructed = true;
 #if APR_HAS_THREADS
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
