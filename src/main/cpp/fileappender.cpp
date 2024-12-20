@@ -206,7 +206,8 @@ void FileAppender::activateOptionsInternal(Pool& p)
 		}
 		else if (0 == _priv->bufferedSeconds)
 		{
-			ThreadUtility::instance()->removePeriodicTask(getName());
+			if (auto p = _priv->taskManager.lock())
+				p->value()->removePeriodicTask(getName());
 		}
 	}
 }

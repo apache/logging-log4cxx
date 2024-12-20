@@ -136,8 +136,8 @@ void FileWatchdog::checkAndConfigure()
 
 void FileWatchdog::start()
 {
-	checkAndConfigure();
 	auto taskManager = ThreadUtility::instancePtr();
+	checkAndConfigure();
 	if (!taskManager->value().hasPeriodicTask(m_priv->taskName))
 	{
 		if (LogLog::isDebugEnabled())

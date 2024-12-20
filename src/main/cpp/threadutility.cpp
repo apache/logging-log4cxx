@@ -56,8 +56,10 @@ struct ThreadUtility::priv_data
 	{
 	}
 
+#ifdef MSYS_UCRT_DOES_NOT_HANG_HERE
 	~priv_data()
 	{ stopThread(); }
+#endif
 
 	ThreadStartPre  start_pre{nullptr};
 	ThreadStarted   started{nullptr};
