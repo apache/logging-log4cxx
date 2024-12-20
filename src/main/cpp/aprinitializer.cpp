@@ -126,7 +126,6 @@ void APRInitializer::stopWatchDogs()
 
 void APRInitializer::unregisterAll()
 {
-	FileWatchdog::stopAll();
 	getInstance().stopWatchDogs();
 }
 
