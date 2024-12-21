@@ -56,10 +56,8 @@ struct ThreadUtility::priv_data
 	{
 	}
 
-#ifdef MSYS_UCRT_DOES_NOT_HANG_HERE
 	~priv_data()
 	{ stopThread(); }
-#endif
 
 	ThreadStartPre  start_pre{nullptr};
 	ThreadStarted   started{nullptr};
@@ -291,6 +289,19 @@ bool ThreadUtility::hasPeriodicTask(const LogString& name)
 }
 
 /**
+ * Remove all periodic tasks and stop the processing thread
+ */
+void ThreadUtility::removeAllPeriodicTasks()
+{
+	{
+		std::lock_guard<std::mutex> lock(m_priv->job_mutex);
+		while (!m_priv->jobs.empty())
+			m_priv->jobs.pop_back();
+	}
+	m_priv->stopThread();
+}
+
+/**
  * Remove the \c taskName periodic task
  */
 void ThreadUtility::removePeriodicTask(const LogString& name)
@@ -301,7 +312,10 @@ void ThreadUtility::removePeriodicTask(const LogString& name)
 		{ return name == item.name; }
 		);
 	if (m_priv->jobs.end() != pItem)
+	{
 		m_priv->jobs.erase(pItem);
+		m_priv->interrupt.notify_one();
+	}
 }
 
 /**
@@ -320,6 +334,7 @@ void ThreadUtility::removePeriodicTasksMatching(const LogString& namePrefix)
 			break;
 		m_priv->jobs.erase(pItem);
 	}
+	m_priv->interrupt.notify_one();
 }
 
 // Run ready tasks
