@@ -16,8 +16,10 @@
  */
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/fileappender.h>
+#include <log4cxx/logmanager.h>
 #include <log4cxx/patternlayout.h>
 #include "logunit.h"
+#include <apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -33,6 +35,7 @@ LOGUNIT_CLASS(FileAppenderTest)
 	LOGUNIT_TEST(testDirectoryCreation);
 	LOGUNIT_TEST(testgetSetThreshold);
 	LOGUNIT_TEST(testIsAsSevereAsThreshold);
+	LOGUNIT_TEST(testBufferedOutput);
 	LOGUNIT_TEST_SUITE_END();
 public:
 	/**
@@ -80,6 +83,47 @@ public:
 		FileAppenderPtr appender = FileAppenderPtr(new FileAppender());
 		LevelPtr debug = Level::getDebug();
 		LOGUNIT_ASSERT(appender->isAsSevereAsThreshold(debug));
+	}
+
+	LoggerPtr getBufferedFileLogger()
+	{
+		LogString name = LOG4CXX_STR("test.fileappender");
+		auto r = LogManager::getLoggerRepository();
+		LoggerPtr result;
+		if (!(result = r->exists(name)))
+		{
+			result = r->getLogger(name);
+			result->setAdditivity(false);
+			result->setLevel(Level::getInfo());
+			auto layout = std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n"));
+			auto writer = std::make_shared<FileAppender>(layout, LOG4CXX_STR("output/newdir/temp.log"), false);
+			writer->setName(LOG4CXX_STR("FileAppender"));
+			writer->setBufferedIO(true);
+			writer->setBufferedSeconds(1);
+			helpers::Pool p;
+			writer->activateOptions(p);
+			result->addAppender(writer);
+		}
+		return result;
+	}
+
+	void testBufferedOutput()
+	{
+		auto logger = getBufferedFileLogger();
+		int requiredMsgCount = 10000;
+		for ( int x = 0; x < requiredMsgCount; x++ )
+		{
+			LOG4CXX_INFO( logger, "This is test message " << x );
+		}
+		auto appender = log4cxx::cast<FileAppender>(logger->getAppender(LOG4CXX_STR("FileAppender")));
+		LOGUNIT_ASSERT(appender);
+		File file(appender->getFile());
+		Pool p;
+		size_t initialLength = file.length(p);
+
+		// wait 1.1 sec and check the buffer is flushed
+		apr_sleep(1100000);
+		LOGUNIT_ASSERT(initialLength < file.length(p));
 	}
 };
 
