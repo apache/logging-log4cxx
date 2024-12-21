@@ -165,6 +165,11 @@ class LOG4CXX_EXPORT ThreadUtility
 		bool hasPeriodicTask(const LogString& taskName);
 
 		/**
+		 * Remove all periodic tasks and stop the processing thread
+		 */
+		void removeAllPeriodicTasks();
+
+		/**
 		 * Remove the \c taskName periodic task
 		 */
 		void removePeriodicTask(const LogString& taskName);
