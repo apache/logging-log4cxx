@@ -24,6 +24,27 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+auto getLogger(const std::string& name = std::string()) -> LoggerPtr {
+	static struct log4cxx_initializer {
+		log4cxx_initializer() {
+			auto layout = std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n"));
+			auto writer = std::make_shared<FileAppender>(layout, LOG4CXX_STR("output/newdir/temp.log"), false);
+			writer->setName(LOG4CXX_STR("FileAppender"));
+			writer->setBufferedIO(true);
+			writer->setBufferedSeconds(1);
+			helpers::Pool p;
+			writer->activateOptions(p);
+			LogManager::getRootLogger()->addAppender(writer);
+		}
+		~log4cxx_initializer() {
+			LogManager::shutdown();
+		}
+	} initAndShutdown;
+	return name.empty()
+		? LogManager::getRootLogger()
+		: LogManager::getLogger(name);
+}
+
 
 /**
  *
@@ -85,31 +106,9 @@ public:
 		LOGUNIT_ASSERT(appender->isAsSevereAsThreshold(debug));
 	}
 
-	LoggerPtr getBufferedFileLogger()
-	{
-		LogString name = LOG4CXX_STR("test.fileappender");
-		auto r = LogManager::getLoggerRepository();
-		LoggerPtr result;
-		if (!(result = r->exists(name)))
-		{
-			result = r->getLogger(name);
-			result->setAdditivity(false);
-			result->setLevel(Level::getInfo());
-			auto layout = std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n"));
-			auto writer = std::make_shared<FileAppender>(layout, LOG4CXX_STR("output/newdir/temp.log"), false);
-			writer->setName(LOG4CXX_STR("FileAppender"));
-			writer->setBufferedIO(true);
-			writer->setBufferedSeconds(1);
-			helpers::Pool p;
-			writer->activateOptions(p);
-			result->addAppender(writer);
-		}
-		return result;
-	}
-
 	void testBufferedOutput()
 	{
-		auto logger = getBufferedFileLogger();
+		auto logger = getLogger();
 		int requiredMsgCount = 10000;
 		for ( int x = 0; x < requiredMsgCount; x++ )
 		{
