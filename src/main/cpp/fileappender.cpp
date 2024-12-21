@@ -395,9 +395,19 @@ int FileAppender::getBufferSize() const
 	return _priv->bufferSize;
 }
 
-void FileAppender::setBufferSize(int bufferSize1)
+int FileAppender::getBufferedSeconds() const
 {
-	_priv->bufferSize = bufferSize1;
+	return _priv->bufferedSeconds;
+}
+
+void FileAppender::setBufferSize(int newValue)
+{
+	_priv->bufferSize = newValue;
+}
+
+void FileAppender::setBufferedSeconds(int newValue)
+{
+	_priv->bufferedSeconds = newValue;
 }
 
 bool FileAppender::getAppend() const
