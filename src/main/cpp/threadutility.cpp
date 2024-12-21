@@ -270,7 +270,10 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 	auto currentTime = std::chrono::system_clock::now();
 	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, 0, f} );
 	if (!m_priv->thread.joinable())
+	{
+		m_priv->terminated = false;
 		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), std::bind(&priv_data::doPeriodicTasks, m_priv.get()));
+	}
 	else
 		m_priv->interrupt.notify_one();
 }
