@@ -345,12 +345,12 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 {
 	while (!this->terminated)
 	{
-		if (this->jobs.empty())
-			break;
 		auto currentTime = std::chrono::system_clock::now();
 		TimePoint nextOperationTime = currentTime + this->maxDelay;
 		{
 			std::lock_guard<std::mutex> lock(this->job_mutex);
+			if (this->jobs.empty())
+				break;
 			for (auto& item : this->jobs)
 			{
 				if (this->terminated)
