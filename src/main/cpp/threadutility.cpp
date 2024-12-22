@@ -354,7 +354,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 			for (auto& item : this->jobs)
 			{
 				if (this->terminated)
-					break;
+					return;
 				if (item.nextRun <= currentTime)
 				{
 					try
