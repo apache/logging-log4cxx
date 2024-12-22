@@ -21,9 +21,10 @@
 #include <thread>
 #include <functional>
 #include <memory>
+#include <chrono>
 
 #include "log4cxx/logstring.h"
-#include "widelife.h"
+#include "singletonholder.h"
 
 namespace LOG4CXX_NS
 {
@@ -64,13 +65,10 @@ enum class ThreadConfigurationType
 	BlockSignalsAndNameThread,
 };
 
-class ThreadUtility;
-LOG4CXX_PTR_DEF(ThreadUtility);
-
 class LOG4CXX_EXPORT ThreadUtility
 {
 	private:
-		friend class LOG4CXX_NS::helpers::WideLife<ThreadUtility>;
+		friend class SingletonHolder<ThreadUtility>;
 		ThreadUtility();
 
 		LOG4CXX_NS::helpers::ThreadStartPre preStartFunction();
@@ -153,6 +151,38 @@ class LOG4CXX_EXPORT ThreadUtility
 
 			return t;
 		}
+
+		using Period = std::chrono::milliseconds;
+
+		/**
+		 * Add the \c taskName periodic task
+		 */
+		void addPeriodicTask(const LogString& taskName, std::function<void()> f, const Period& delay);
+
+		/**
+		 * Has a \c taskName periodic task already been added?
+		 */
+		bool hasPeriodicTask(const LogString& taskName);
+
+		/**
+		 * Remove all periodic tasks and stop the processing thread
+		 */
+		void removeAllPeriodicTasks();
+
+		/**
+		 * Remove the \c taskName periodic task
+		 */
+		void removePeriodicTask(const LogString& taskName);
+
+		/**
+		 * Remove any periodic task matching \c namePrefix
+		 */
+		void removePeriodicTasksMatching(const LogString& namePrefix);
+
+		using Manager = SingletonHolder<ThreadUtility>;
+		LOG4CXX_PTR_DEF(Manager);
+
+		static ManagerPtr instancePtr();
 };
 
 } /* namespace helpers */

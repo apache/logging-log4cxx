@@ -34,9 +34,12 @@ class Pool;
 /**
 *  FileAppender appends log events to a file.
 *
-*  <p>Support for <code>java.io.Writer</code> and console appending
-*  has been deprecated and then removed. See the replacement
-*  solutions: WriterAppender and ConsoleAppender.
+*  Uses a background thread to periodically flush the output buffer
+*  when <code>BufferedIO</code> option is set <code>true</code>.
+*  Use the <code>BufferedSeconds</code> option to control the frequency,
+*  using <code>0</code> to disable the background output buffer flush.
+*  Refer to FileAppender::setOption() for more information.
+*
 */
 class LOG4CXX_EXPORT FileAppender : public WriterAppender
 {
@@ -130,6 +133,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		FileName | {any} | -
 		Append | True,False | True
 		BufferedIO | True,False | False
+		BufferedSeconds | {any} | 5
 		ImmediateFlush | True,False | False
 		BufferSize | (\ref fileSz1 "1") | 8 KB
 
@@ -157,32 +161,54 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		int getBufferSize() const;
 
 		/**
+		Get the number of seconds between file writes
+		when the <code>BufferedIO</code> option is <code>true</code>.
+		*/
+		int getBufferedSeconds() const;
+
+		/**
+		Set file open mode to \c newValue.
+
 		The <b>Append</b> option takes a boolean value. It is set to
 		<code>true</code> by default. If true, then <code>File</code>
 		will be opened in append mode by #setFile (see
 		above). Otherwise, setFile will open
 		<code>File</code> in truncate mode.
 
-		<p>Note: Actual opening of the file is made when
+		<p>Note: The file is opened when
 		#activateOptions is called, not when the options are set.
 		*/
-		void setAppend(bool fileAppend1);
+		void setAppend(bool newValue);
 
 		/**
-		The <b>BufferedIO</b> option takes a boolean value. It is set to
-		<code>false</code> by default. If true, then <code>File</code>
-		will be opened in buffered mode.
+		Set buffered output behavior to \c newValue.
 
-		BufferedIO will significantly increase performance on heavily
-		loaded systems.
+		By default buffered output is disabled and
+		this appender writes each log message directly to the file.
+		When buffered output is enabled,
+		log messages are stored into a memory buffer
+		and written to the file periodically or when the buffer is full.
 
+		Using buffered output will significantly reduce logging overhead.
+
+		Note: Behavior change occurs when
+		#activateOptions is called, not when the options are set.
 		*/
-		void setBufferedIO(bool bufferedIO);
+		void setBufferedIO(bool newValue);
 
 		/**
-		Set the size of the IO buffer.
+		Use \c newValue as the size of the output buffer.
 		*/
-		void setBufferSize(int bufferSize1);
+		void setBufferSize(int newValue);
+
+		/**
+		Flush the output buffer every \c newValue seconds.
+		The default period is 5 seconds.
+
+		Note: #activateOptions must be called after an option is changed
+		to activate the new frequency.
+		*/
+		void setBufferedSeconds(int newValue);
 
 		/**
 		 *   Replaces double backslashes with single backslashes

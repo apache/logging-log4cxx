@@ -22,9 +22,6 @@
 #include <time.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
-#include <atomic>
-#include <thread>
-#include <condition_variable>
 
 namespace LOG4CXX_NS
 {
@@ -57,24 +54,25 @@ class LOG4CXX_EXPORT FileWatchdog
 		void setDelay(long delay);
 
 		/**
-		Create a thread that periodically checks for a file change after first calling doOnChange() on the current thread.
+		Create an asynchronous task that periodically checks for a file change after first calling doOnChange().
 		*/
 		void start();
 
 		/**
-		Stop the thread that periodically checks for a file change.
+		Stop the task that periodically checks for a file change.
 		*/
 		void stop();
 
 		/**
-		Is the thread that periodically checks for a file change running?
+		Is the task that periodically checks for a file change running?
 		*/
 		bool is_active();
 
+		/**
+		Stop all tasks that periodically check for a file change.
+		*/
+		static void stopAll();
 	private:
-		void run();
-		bool is_interrupted();
-
 
 		FileWatchdog(const FileWatchdog&);
 		FileWatchdog& operator=(const FileWatchdog&);

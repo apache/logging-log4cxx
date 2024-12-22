@@ -27,6 +27,7 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/threadutility.h>
 
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/file.h>
@@ -203,6 +204,7 @@ LoggerList LogManager::getCurrentLoggers()
 void LogManager::shutdown()
 {
 	APRInitializer::unregisterAll();
+	ThreadUtility::instance()->removeAllPeriodicTasks();
 	getLoggerRepository()->shutdown();
 }
 

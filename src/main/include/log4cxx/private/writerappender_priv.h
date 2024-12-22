@@ -37,7 +37,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 		AppenderSkeletonPrivate(),
 		immediateFlush(true)
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{atExitActivated();})
+		, atExitRegistryRaii{ [this]{ flush(); } }
 #endif
 	{
 	}
@@ -48,7 +48,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 		immediateFlush(true),
 		writer(writer1)
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{atExitActivated();})
+		, atExitRegistryRaii{ [this]{flush();} }
 #endif
 	{
 	}
@@ -57,19 +57,17 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 		AppenderSkeletonPrivate(layout1),
 		immediateFlush(true)
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{atExitActivated();})
+		, atExitRegistryRaii{ [this]{flush();} }
 #endif
 	{
 	}
 
-#if LOG4CXX_EVENTS_AT_EXIT
-	void atExitActivated()
+	void flush()
 	{
 		std::lock_guard<std::recursive_mutex> lock(mutex);
 		if (writer)
 			writer->flush(pool);
 	}
-#endif
 
 	/**
 	Immediate flush means that the underlying writer or output stream

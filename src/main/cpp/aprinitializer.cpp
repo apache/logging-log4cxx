@@ -34,6 +34,8 @@ using namespace LOG4CXX_NS;
 
 bool APRInitializer::isDestructed = false;
 
+using IdentifiedObject = std::pair<size_t, ObjectPtr>;
+
 struct APRInitializer::APRInitializerPrivate{
 	APRInitializerPrivate() :
 		p(0),
@@ -41,13 +43,19 @@ struct APRInitializer::APRInitializerPrivate{
 		tlsKey(0){
 
 	}
+	~APRInitializerPrivate()
+	{
+		// Delete in reverse order
+		while (!objects.empty())
+			objects.pop_back();
+	}
 
 	apr_pool_t* p;
 	std::mutex mutex;
 	std::list<FileWatchdog*> watchdogs;
 	log4cxx_time_t startTime;
 	apr_threadkey_t* tlsKey;
-	std::map<size_t, ObjectPtr> objects;
+	std::vector<IdentifiedObject> objects;
 };
 
 namespace
@@ -171,7 +179,13 @@ void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
 void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)
 {
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
-	m_priv->objects[key] = pObject;
+	auto pItem = std::find_if(m_priv->objects.begin(), m_priv->objects.end()
+		, [key](const IdentifiedObject& item) { return item.first == key; }
+		);
+	if (m_priv->objects.end() != pItem)
+		pItem->second = pObject;
+	else
+		m_priv->objects.emplace_back(key, pObject);
 }
 
 const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<ObjectPtr()> creator)
@@ -182,8 +196,11 @@ const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<Objec
 		// Ensure the internal logger has a longer life than other Log4cxx static data
 		LogLog::debug(LOG4CXX_STR("Started"));
 	}
-	auto pItem = m_priv->objects.find(key);
-	if (m_priv->objects.end() == pItem)
-		pItem = m_priv->objects.emplace(key, creator()).first;
-	return pItem->second;
+	auto pItem = std::find_if(m_priv->objects.begin(), m_priv->objects.end()
+		, [key](const IdentifiedObject& item) { return item.first == key; }
+		);
+	if (m_priv->objects.end() != pItem)
+		return pItem->second;
+	m_priv->objects.emplace_back(key, creator());
+	return m_priv->objects.back().second;
 }

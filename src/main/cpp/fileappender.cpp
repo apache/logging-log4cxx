@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <log4cxx/helpers/bufferedwriter.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include "log4cxx/helpers/threadutility.h"
 #include <log4cxx/private/writerappender_priv.h>
 #include <log4cxx/private/fileappender_priv.h>
 #include <mutex>
@@ -81,6 +82,8 @@ FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
 FileAppender::~FileAppender()
 {
 	finalize();
+	if (auto p = _priv->taskManager.lock())
+		p->value().removePeriodicTask(getName());
 }
 
 void FileAppender::setAppend(bool fileAppend1)
@@ -140,6 +143,11 @@ void FileAppender::setOption(const LogString& option,
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 		_priv->bufferSize = OptionConverter::toFileSize(value, 8 * 1024);
 	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDSECONDS"), LOG4CXX_STR("bufferedseconds")))
+	{
+		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+		_priv->bufferedSeconds = OptionConverter::toInt(value, 0);
+	}
 	else
 	{
 		WriterAppender::setOption(option, value);
@@ -184,6 +192,23 @@ void FileAppender::activateOptionsInternal(Pool& p)
 	if (errors == 0)
 	{
 		WriterAppender::activateOptions(p);
+
+		if (!_priv->bufferedIO)
+			;
+		else if (0 < _priv->bufferedSeconds)
+		{
+			auto taskManager = ThreadUtility::instancePtr();
+			taskManager->value().addPeriodicTask(getName()
+				, std::bind(&WriterAppenderPriv::flush, _priv)
+				, std::chrono::seconds(_priv->bufferedSeconds)
+				);
+			_priv->taskManager = taskManager;
+		}
+		else if (0 == _priv->bufferedSeconds)
+		{
+			if (auto p = _priv->taskManager.lock())
+				p->value().removePeriodicTask(getName());
+		}
 	}
 }
 
@@ -370,9 +395,19 @@ int FileAppender::getBufferSize() const
 	return _priv->bufferSize;
 }
 
-void FileAppender::setBufferSize(int bufferSize1)
+int FileAppender::getBufferedSeconds() const
 {
-	_priv->bufferSize = bufferSize1;
+	return _priv->bufferedSeconds;
+}
+
+void FileAppender::setBufferSize(int newValue)
+{
+	_priv->bufferSize = newValue;
+}
+
+void FileAppender::setBufferedSeconds(int newValue)
+{
+	_priv->bufferedSeconds = newValue;
 }
 
 bool FileAppender::getAppend() const

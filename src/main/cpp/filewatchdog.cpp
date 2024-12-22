@@ -24,10 +24,8 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <functional>
 #include <chrono>
-
-#if LOG4CXX_EVENTS_AT_EXIT
-#include <log4cxx/private/atexitregistry.h>
-#endif
+#include <thread>
+#include <condition_variable>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -37,14 +35,10 @@ long FileWatchdog::DEFAULT_DELAY = 60000;
 struct FileWatchdog::FileWatchdogPrivate{
 	FileWatchdogPrivate(const File& file1) :
 		file(file1), delay(DEFAULT_DELAY), lastModif(0),
-		warnedAlready(false), interrupted(0), thread()
-#if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{stopWatcher();})
-#endif
+		warnedAlready(false),
+		taskName{ LOG4CXX_STR("WatchDog_") + file1.getName() }
 	{ }
 
-	~FileWatchdogPrivate()
-        { stopWatcher(); }
 
 	/**
 	The name of the file to observe  for changes.
@@ -57,26 +51,15 @@ struct FileWatchdog::FileWatchdogPrivate{
 	long delay;
 	log4cxx_time_t lastModif;
 	bool warnedAlready;
-	volatile int interrupted;
+#if LOG4CXX_ABI_VERSION <= 15
+	int interrupted{ 0 };
 	Pool pool;
 	std::thread thread;
 	std::condition_variable interrupt;
 	std::mutex interrupt_mutex;
-
-#if LOG4CXX_EVENTS_AT_EXIT
-	helpers::AtExitRegistry::Raii atExitRegistryRaii;
 #endif
-
-	void stopWatcher()
-	{
-        {
-            std::lock_guard<std::mutex> lock(interrupt_mutex);
-            interrupted = 0xFFFF;
-        }
-        interrupt.notify_all();
-        if (thread.joinable())
-            thread.join();
-	}
+	LogString taskName;
+	ThreadUtility::ManagerWeakPtr taskManager;
 };
 
 FileWatchdog::FileWatchdog(const File& file1)
@@ -86,20 +69,30 @@ FileWatchdog::FileWatchdog(const File& file1)
 
 FileWatchdog::~FileWatchdog()
 {
-	if (m_priv->thread.joinable())
-		stop();
+	stop();
 }
 
 
 bool FileWatchdog::is_active()
 {
-	return m_priv->thread.joinable();
+	bool result = false;
+	if (auto p = m_priv->taskManager.lock())
+		result = p->value().hasPeriodicTask(m_priv->taskName);
+	return result;
 }
 
 void FileWatchdog::stop()
 {
-	LogLog::debug(LOG4CXX_STR("Stopping file watchdog"));
-	m_priv->stopWatcher();
+	if (auto p = m_priv->taskManager.lock())
+		p->value().removePeriodicTask(m_priv->taskName);
+}
+
+/**
+Stop all tasks that periodically checks for a file change.
+*/
+void FileWatchdog::stopAll()
+{
+	ThreadUtility::instance()->removePeriodicTasksMatching(LOG4CXX_STR("WatchDog_"));
 }
 
 const File& FileWatchdog::file()
@@ -141,50 +134,39 @@ void FileWatchdog::checkAndConfigure()
 	}
 }
 
-void FileWatchdog::run()
-{
-	if (LogLog::isDebugEnabled())
-	{
-		LogString msg(LOG4CXX_STR("Checking ["));
-		msg += m_priv->file.getPath();
-		msg += LOG4CXX_STR("] at ");
-		StringHelper::toString((int)m_priv->delay, m_priv->pool, msg);
-		msg += LOG4CXX_STR(" ms interval");
-		LogLog::debug(msg);
-	}
-
-	while (!is_interrupted())
-	{
-		std::unique_lock<std::mutex> lock( m_priv->interrupt_mutex );
-		if (!m_priv->interrupt.wait_for( lock, std::chrono::milliseconds( m_priv->delay ),
-			std::bind(&FileWatchdog::is_interrupted, this) ))
-			checkAndConfigure();
-	}
-
-	if (LogLog::isDebugEnabled())
-	{
-		LogString msg2(LOG4CXX_STR("Stop checking ["));
-		msg2 += m_priv->file.getPath();
-		msg2 += LOG4CXX_STR("]");
-		LogLog::debug(msg2);
-	}
-}
-
 void FileWatchdog::start()
 {
+	auto taskManager = ThreadUtility::instancePtr();
 	checkAndConfigure();
-	if (!m_priv->thread.joinable())
+	if (!taskManager->value().hasPeriodicTask(m_priv->taskName))
 	{
-		m_priv->interrupted = 0;
-		m_priv->thread = ThreadUtility::instance()->createThread(LOG4CXX_STR("FileWatchdog"), &FileWatchdog::run, this);
+		if (LogLog::isDebugEnabled())
+		{
+			Pool p;
+			LogString msg(LOG4CXX_STR("Checking ["));
+			msg += m_priv->file.getPath();
+			msg += LOG4CXX_STR("] at ");
+			StringHelper::toString((int)m_priv->delay, p, msg);
+			msg += LOG4CXX_STR(" ms interval");
+			LogLog::debug(msg);
+		}
+		taskManager->value().addPeriodicTask(m_priv->taskName
+			, std::bind(&FileWatchdog::checkAndConfigure, this)
+			, std::chrono::milliseconds(m_priv->delay)
+			);
+		m_priv->taskManager = taskManager;
 	}
-}
-
-bool FileWatchdog::is_interrupted()
-{
-	return m_priv->interrupted == 0xFFFF;
 }
 
 void FileWatchdog::setDelay(long delay1){
 	m_priv->delay = delay1;
+	auto p = m_priv->taskManager.lock();
+	if (p && p->value().hasPeriodicTask(m_priv->taskName))
+	{
+		p->value().removePeriodicTask(m_priv->taskName);
+		p->value().addPeriodicTask(m_priv->taskName
+			, std::bind(&FileWatchdog::checkAndConfigure, this)
+			, std::chrono::milliseconds(m_priv->delay)
+			);
+	}
 }
