@@ -82,4 +82,4 @@ else()
 endif()
 
 find_package_handle_standard_args(APR-Util
-  APR_UTIL_INCLUDE_DIR APR_UTIL_LIBRARIES EXPAT_LIBRARIES)
+  APR_UTIL_INCLUDE_DIR APR_UTIL_LIBRARIES)
