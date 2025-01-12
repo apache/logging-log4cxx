@@ -256,12 +256,6 @@ foreach(varName HAS_ODBC  HAS_LIBESMTP  HAS_SYSLOG)
   endif()
 endforeach()
 
-if(${WIN32})
-    set(HAS_NT_EVENTLOG_APPENDER "ON")
-else()
-    set(HAS_NT_EVENTLOG_APPENDER "OFF")
-endif()
-
 #
 # Output configuration information
 # Similar to APR CMake configuration
@@ -321,8 +315,8 @@ if(LOG4CXX_NETWORKING_SUPPORT)
 message(STATUS "  Using syslog.h .................. : ${HAS_SYSLOG}")
 endif()
 message(STATUS "  TelnetAppender .................. : ${LOG4CXX_NETWORKING_SUPPORT}")
-message(STATUS "  NTEventLogAppender .............. : ${HAS_NT_EVENTLOG_APPENDER}")
 if(WIN32)
+message(STATUS "  NTEventLogAppender .............. : ON")
 message(STATUS "  OutputDebugStringAppender ....... : ${LOG4CXX_NETWORKING_SUPPORT}")
 endif()
 message(STATUS "  ConsoleAppender ................. : ON")
