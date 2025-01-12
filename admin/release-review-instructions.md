@@ -8,16 +8,27 @@ The steps below use version 1.4.0 as an example.
 Prerequisites
 ----------
 
-* [GNU Privacy Guard](https://www.gnupg.org/) is installed on your system
 * A C++ compiler is available on your system
 * cmake, APR and APR-Util are installed on your system
+* [GNU Privacy Guard](https://www.gnupg.org/) is installed on your system
 * You have imported the [Apache Logging KEYS file](https://dist.apache.org/repos/dist/release/logging/KEYS)
+
+Additional Prerequisites (Windows only)
+----------
+
+* The `PATH` environment variable includes directories containing `cmake.exe` and `gpg.exe`
+* One of these environment variables is set (using / directory separators):
+  - `CMAKE_TOOLCHAIN_FILE` - The full path to the `vcpkg.cmake` file (where APR-Util is installed)
+  - `CMAKE_INSTALL_PREFIX` - The full path to the directory where EXPAT, APR and APR-Util libraries are installed
+* If the programs `zip.exe`, `gzip.exe` and `sed.exe` are not in `C:/msys64/usr/bin`, the environment has a variable `LOG4CXX_TEST_PROGRAM_PATH` set to the full path containing those programs
 
 Steps
 -----
 
 1. Download, verify check-sums, verify signatures, build and test
-    - Save to your system the verification script https://github.com/apache/logging-log4cxx/blob/master/admin/validate-release.sh
+    - Save to your system a verification script from https://github.com/apache/logging-log4cxx/blob/master/admin
+      - Linux, MacOS: `validate-release.sh`
+      - Windows: `validate-release.ps1`
     - Run the script
     - For success, the final output line needs to include:
         - `100% tests passed, 0 tests failed out of 62`
