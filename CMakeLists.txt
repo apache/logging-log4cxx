@@ -64,15 +64,10 @@ find_package(APR REQUIRED)
 option(APU_STATIC "Link to the APR-Util static library" OFF)
 find_package(APR-Util REQUIRED)
 
-find_package( Threads REQUIRED )
-
-# Find expat for XML parsing
-find_package(EXPAT REQUIRED)
-if(TARGET EXPAT::EXPAT)
-  set(EXPAT_LIBRARIES EXPAT::EXPAT)
-elseif(TARGET expat::expat)
-  set(EXPAT_LIBRARIES expat::expat)
-endif()
+if(NOT MSVC)
+  # The pthread library is used to name threads and mask signals
+  find_package(Threads REQUIRED)
+endif(NOT MSVC)
 
 option(LOG4CXX_ENABLE_ODBC "Support logging via ODBC" OFF)
 if(LOG4CXX_ENABLE_ODBC)
@@ -261,12 +256,6 @@ foreach(varName HAS_ODBC  HAS_LIBESMTP  HAS_SYSLOG)
   endif()
 endforeach()
 
-if(${WIN32})
-    set(HAS_NT_EVENTLOG_APPENDER "ON")
-else()
-    set(HAS_NT_EVENTLOG_APPENDER "OFF")
-endif()
-
 #
 # Output configuration information
 # Similar to APR CMake configuration
@@ -326,8 +315,10 @@ if(LOG4CXX_NETWORKING_SUPPORT)
 message(STATUS "  Using syslog.h .................. : ${HAS_SYSLOG}")
 endif()
 message(STATUS "  TelnetAppender .................. : ${LOG4CXX_NETWORKING_SUPPORT}")
-message(STATUS "  NTEventLogAppender .............. : ${HAS_NT_EVENTLOG_APPENDER}")
+if(WIN32)
+message(STATUS "  NTEventLogAppender .............. : ON")
 message(STATUS "  OutputDebugStringAppender ....... : ${LOG4CXX_NETWORKING_SUPPORT}")
+endif()
 message(STATUS "  ConsoleAppender ................. : ON")
 message(STATUS "  FileAppender .................... : ON")
 message(STATUS "  RollingFileAppender ............. : ON")

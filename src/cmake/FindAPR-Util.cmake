@@ -32,6 +32,16 @@ find_package(PkgConfig)
 pkg_check_modules(APR_UTIL apr-util-1)
 endif()
 
+if(APU_STATIC OR NOT BUILD_SHARED_LIBS)
+  # Find expat for XML parsing
+  find_package(EXPAT REQUIRED)
+  if(TARGET EXPAT::EXPAT)
+    set(EXPAT_LIBRARIES EXPAT::EXPAT)
+  elseif(TARGET expat::expat)
+    set(EXPAT_LIBRARIES expat::expat)
+  endif()
+endif()
+
 if(APR_UTIL_FOUND)
   find_path(APR_UTIL_INCLUDE_DIR
             NAMES apu.h
