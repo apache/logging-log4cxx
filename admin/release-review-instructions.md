@@ -43,8 +43,16 @@ Steps
     - Click the link next to `Artifact download URL:`
         - The browser will download the file `release_files.zip` onto your system
 1. Confirm the artifacts were sourced from Github using these commands
-    - `mkdir /tmp/log4cxx-github`
-    - `cd /tmp/log4cxx-github`
-    - `unzip "$HOME/Downloads/release_files.zip"`
-    - `diff /tmp/log4cxx-{1.4.0,github}/apache-log4cxx-1.4.0.tar.gz.sha512`
-    - `diff /tmp/log4cxx-{1.4.0,github}/apache-log4cxx-1.4.0.zip.sha512`
+    - Linux:
+      - `unzip "$HOME/Downloads/release_files.zip" -d /tmp/log4cxx-1.4.0/github`
+      - `diff /tmp/log4cxx-1.4.0{,/github}/apache-log4cxx-1.4.0.tar.gz.sha512`
+      - `diff /tmp/log4cxx-1.4.0{,/github}/apache-log4cxx-1.4.0.zip.sha512`
+    - Windows (powershell):
+      - `Set-Location -Path "${ENV:TEMP}\log4cxx-1.4.0"`
+      - `Expand-Archive -Path "${ENV:HOMEPATH}\Downloads\release_files.zip" -DestinationPath "github"`
+      - `$ARCHIVE="apache-log4cxx-1.4.0"`
+      - `foreach ($ARCHIVE_TYPE in @("tar.gz", "zip")) {`
+      - `if (@(Get-Content -Path "$ARCHIVE.$ARCHIVE_TYPE.sha512")[0] \``
+      - `-eq @(Get-Content -Path "github\$ARCHIVE.$ARCHIVE_TYPE.sha512")[0]) {`
+      - `Write-Output "$ARCHIVE.$ARCHIVE_TYPE.sha512: OK" } }`
+
