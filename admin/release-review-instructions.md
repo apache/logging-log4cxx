@@ -52,7 +52,7 @@ Steps
       - `Expand-Archive -Path "${ENV:HOMEPATH}\Downloads\release_files.zip" -DestinationPath "github"`
       - `$ARCHIVE="apache-log4cxx-1.4.0"`
       - `foreach ($ARCHIVE_TYPE in @("tar.gz", "zip")) {`
-      - `if (@(Get-Content -Path "$ARCHIVE.$ARCHIVE_TYPE.sha512")[0] \``
+      - `if (@(Get-Content -Path "$ARCHIVE.$ARCHIVE_TYPE.sha512")[0] `` `
       - `-eq @(Get-Content -Path "github\$ARCHIVE.$ARCHIVE_TYPE.sha512")[0]) {`
       - `Write-Output "$ARCHIVE.$ARCHIVE_TYPE.sha512: OK" } }`
 
