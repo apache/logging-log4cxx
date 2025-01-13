@@ -31,7 +31,7 @@ Steps
       - Windows: `validate-release.ps1`
     - Run the script
     - For success, the final output line needs to include:
-        - `100% tests passed, 0 tests failed out of 62`
+        - `100% tests passed, 0 tests failed out of 63`
 1. Download the packaged release files from Github
     - Open https://github.com/apache/logging-log4cxx/commits/v1.4.0-RC1 in your web browser
     - Click the green tick mark on the top commit
