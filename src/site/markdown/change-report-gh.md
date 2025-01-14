@@ -25,6 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
+| [1.4.0](#rel_1_4_0) | 2025-XX-XX |                      |
 | [1.3.1](#rel_1_3_1) | 2024-11-30 | Bugfix release       |
 | [1.3.0](#rel_1_3_0) | 2024-10-21 | Maintenance release  |
 | [1.2.0](#rel_1_2_0) | 2024-01-01 | Maintenance release  |
@@ -47,6 +48,17 @@ Change Log {#changelog}
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
+## Release 1.4.0 - 2025-XX-XX {#rel_1_4_0}
+
+Release 1.4.0 includes the following new features:
+
+* Buffered file output is now periodically flushed by a background thread
+   \[[#445](https://github.com/apache/logging-log4cxx/pull/445)\]
+
+The following issues have been addressed:
+
+* The MultiprocessRollingFileAppender did not work
+   \[[#439](https://github.com/apache/logging-log4cxx/issues/439)\]
 
 ## Release 1.3.1 - 2024-11-30 {#rel_1_3_1}
 
