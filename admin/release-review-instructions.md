@@ -8,19 +8,30 @@ The steps below use version 1.4.0 as an example.
 Prerequisites
 ----------
 
-* [GNU Privacy Guard](https://www.gnupg.org/) is installed on your system
 * A C++ compiler is available on your system
 * cmake, APR and APR-Util are installed on your system
+* [GNU Privacy Guard](https://www.gnupg.org/) is installed on your system
 * You have imported the [Apache Logging KEYS file](https://dist.apache.org/repos/dist/release/logging/KEYS)
+
+Additional Prerequisites (Windows only)
+----------
+
+* The `PATH` environment variable includes directories containing `cmake.exe` and `gpg.exe`
+* One of these environment variables is set (using / directory separators):
+  - `CMAKE_TOOLCHAIN_FILE` - The full path to the `vcpkg.cmake` file (where APR-Util is installed)
+  - `CMAKE_INSTALL_PREFIX` - The full path to the directory where EXPAT, APR and APR-Util libraries are installed
+* If the programs `zip.exe`, `gzip.exe` and `sed.exe` are not in `C:/msys64/usr/bin`, the environment has a variable `LOG4CXX_TEST_PROGRAM_PATH` set to the full path containing those programs
 
 Steps
 -----
 
 1. Download, verify check-sums, verify signatures, build and test
-    - Save to your system the verification script https://github.com/apache/logging-log4cxx/blob/master/admin/validate-release.sh
+    - Save to your system a verification script from https://github.com/apache/logging-log4cxx/blob/master/admin
+      - Linux, MacOS: `validate-release.sh`
+      - Windows: `validate-release.ps1`
     - Run the script
     - For success, the final output line needs to include:
-        - `100% tests passed, 0 tests failed out of 62`
+        - `100% tests passed, 0 tests failed out of 63`
 1. Download the packaged release files from Github
     - Open https://github.com/apache/logging-log4cxx/commits/v1.4.0-RC1 in your web browser
     - Click the green tick mark on the top commit
@@ -32,8 +43,19 @@ Steps
     - Click the link next to `Artifact download URL:`
         - The browser will download the file `release_files.zip` onto your system
 1. Confirm the artifacts were sourced from Github using these commands
-    - `mkdir /tmp/log4cxx-github`
-    - `cd /tmp/log4cxx-github`
-    - `unzip "$HOME/Downloads/release_files.zip"`
-    - `diff /tmp/log4cxx-{1.4.0,github}/apache-log4cxx-1.4.0.tar.gz.sha512`
-    - `diff /tmp/log4cxx-{1.4.0,github}/apache-log4cxx-1.4.0.zip.sha512`
+    - Linux, MacOS (bash):
+      - `cd /tmp/log4cxx-1.4.0`
+      - `unzip $HOME/Downloads/release_files.zip -d github`
+      - `ARCHIVE=apache-log4cxx-1.4.0`
+      - `for TYPE in tar.gz zip; do`
+      - `diff {,github/}$ARCHIVE.$TYPE.sha512 && echo "$ARCHIVE.$TYPE.sha512: OK"`
+      - `done`
+    - Windows (powershell):
+      - `Set-Location -Path "${ENV:TEMP}\log4cxx-1.4.0"`
+      - `Expand-Archive -Path "${ENV:HOMEPATH}\Downloads\release_files.zip" -DestinationPath "github"`
+      - `$ARCHIVE="apache-log4cxx-1.4.0"`
+      - `foreach ($TYPE in @("tar.gz", "zip")) {`
+      - `` if (@(Get-Content -Path "$ARCHIVE.$TYPE.sha512")[0]` ``
+      - `-eq @(Get-Content -Path "github\$ARCHIVE.$TYPE.sha512")[0]) {`
+      - `Write-Output "$ARCHIVE.$TYPE.sha512: OK" } }`
+
