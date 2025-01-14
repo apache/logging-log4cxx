@@ -48,7 +48,7 @@ Steps
       - `unzip $HOME/Downloads/release_files.zip -d github`
       - `ARCHIVE=apache-log4cxx-1.4.0`
       - `for TYPE in tar.gz zip; do`
-      - `diff {,github/}$ARCHIVE.$TYPE.sha512`
+      - `diff {,github/}$ARCHIVE.$TYPE.sha512 && echo "$ARCHIVE.$TYPE.sha512: OK"`
       - `done`
     - Windows (powershell):
       - `Set-Location -Path "${ENV:TEMP}\log4cxx-1.4.0"`
