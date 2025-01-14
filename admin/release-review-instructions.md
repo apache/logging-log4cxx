@@ -43,16 +43,19 @@ Steps
     - Click the link next to `Artifact download URL:`
         - The browser will download the file `release_files.zip` onto your system
 1. Confirm the artifacts were sourced from Github using these commands
-    - Linux:
-      - `unzip "$HOME/Downloads/release_files.zip" -d /tmp/log4cxx-1.4.0/github`
-      - `diff /tmp/log4cxx-1.4.0{,/github}/apache-log4cxx-1.4.0.tar.gz.sha512`
-      - `diff /tmp/log4cxx-1.4.0{,/github}/apache-log4cxx-1.4.0.zip.sha512`
+    - Linux, MacOS (bash):
+      - `cd /tmp/log4cxx-1.4.0`
+      - `unzip $HOME/Downloads/release_files.zip -d github`
+      - `ARCHIVE=apache-log4cxx-1.4.0`
+      - `for TYPE in tar.gz zip; do`
+      - `diff {,github/}$ARCHIVE.$TYPE.sha512`
+      - `done`
     - Windows (powershell):
       - `Set-Location -Path "${ENV:TEMP}\log4cxx-1.4.0"`
       - `Expand-Archive -Path "${ENV:HOMEPATH}\Downloads\release_files.zip" -DestinationPath "github"`
       - `$ARCHIVE="apache-log4cxx-1.4.0"`
-      - `foreach ($ARCHIVE_TYPE in @("tar.gz", "zip")) {`
-      - `` if (@(Get-Content -Path "$ARCHIVE.$ARCHIVE_TYPE.sha512")[0]` ``
-      - `-eq @(Get-Content -Path "github\$ARCHIVE.$ARCHIVE_TYPE.sha512")[0]) {`
-      - `Write-Output "$ARCHIVE.$ARCHIVE_TYPE.sha512: OK" } }`
+      - `foreach ($TYPE in @("tar.gz", "zip")) {`
+      - `` if (@(Get-Content -Path "$ARCHIVE.$TYPE.sha512")[0]` ``
+      - `-eq @(Get-Content -Path "github\$ARCHIVE.$TYPE.sha512")[0]) {`
+      - `Write-Output "$ARCHIVE.$TYPE.sha512: OK" } }`
 
