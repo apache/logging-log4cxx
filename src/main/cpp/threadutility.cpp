@@ -70,8 +70,8 @@ struct ThreadUtility::priv_data
 		Period                delay;
 		TimePoint             nextRun;
 		std::function<void()> f;
-		int                   errorCount{ 0 };
-		bool                  removed{ false };
+		int                   errorCount;
+		bool                  removed;
 	};
 	using JobStore = std::list<NamedPeriodicFunction>;
 	JobStore                  jobs;
@@ -269,7 +269,7 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 	if (m_priv->maxDelay < delay)
 		m_priv->maxDelay = delay;
 	auto currentTime = std::chrono::system_clock::now();
-	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, f} );
+	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, f, 0, false} );
 	if (!m_priv->thread.joinable())
 	{
 		m_priv->terminated = false;
