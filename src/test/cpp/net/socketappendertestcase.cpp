@@ -91,7 +91,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			{
 				LOGUNIT_FAIL("accept failed");
 			}
-			auto aprSocket = dynamic_pointer_cast<helpers::APRSocket>(incomingSocket);
+			auto aprSocket = std::dynamic_pointer_cast<helpers::APRSocket>(incomingSocket);
 			LOGUNIT_ASSERT(aprSocket);
 			auto pSocket = aprSocket->getSocketPtr();
 			LOGUNIT_ASSERT(pSocket);
