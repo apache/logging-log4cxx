@@ -67,6 +67,19 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			appender->activateOptions(pool);
 
 			BasicConfigurator::configure(appender);
+
+			helpers::ServerSocketUniquePtr serverSocket;
+			try
+			{
+				serverSocket = helpers::ServerSocket::create(tcpPort);
+			}
+			catch (std::exception& ex)
+			{
+				helpers::LogLog::error(LOG4CXX_STR("ServerSocket::create failed"), ex);
+				LOGUNIT_FAIL("ServerSocket::create");
+			}
+			serverSocket->setSoTimeout(1000); // milliseconds
+
 			auto logger = Logger::getLogger("test");
 			int logEventCount = 3000;
 			auto doLogging = [logger, logEventCount]()
@@ -77,18 +90,20 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 				}
 			};
 			std::vector<std::thread> loggingThread;
-			for (auto i: {0, 1})
+			for (auto i : {0, 1})
 				loggingThread.emplace_back(doLogging);
 
-			auto serverSocket = helpers::ServerSocket::create(tcpPort);
-			serverSocket->setSoTimeout(1000); // milliseconds
 			helpers::SocketPtr incomingSocket;
 			try
 			{
 				incomingSocket = serverSocket->accept();
 			}
-			catch (std::exception& )
+			catch (std::exception& ex)
 			{
+				helpers::LogLog::error(LOG4CXX_STR("ServerSocket::accept failed"), ex);
+				for (auto& t : loggingThread)
+						t.join();
+				serverSocket->close();
 				LOGUNIT_FAIL("accept failed");
 			}
 			auto aprSocket = std::dynamic_pointer_cast<helpers::APRSocket>(incomingSocket);
@@ -133,6 +148,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 				len = sizeof(buffer);
 			}
 			incomingSocket->close();
+			serverSocket->close();
 			for (auto& t : loggingThread)
 				t.join();
 
