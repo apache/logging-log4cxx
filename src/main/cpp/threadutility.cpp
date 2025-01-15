@@ -350,8 +350,6 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		TimePoint nextOperationTime = currentTime + this->maxDelay;
 		{
 			std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-			if (this->jobs.empty())
-				break;
 			for (auto& item : this->jobs)
 			{
 				if (this->terminated)
@@ -395,6 +393,8 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				break;
 			this->jobs.erase(pItem);
 		}
+		if (this->jobs.empty())
+			break;
 
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime);
