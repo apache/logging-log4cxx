@@ -60,7 +60,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			auto appender = std::make_shared<net::SocketAppender>();
 			appender->setLayout(std::make_shared<log4cxx::PatternLayout>(LOG4CXX_STR("%d [%T] %m%n")));
 			appender->setRemoteHost(LOG4CXX_STR("localhost"));
-			appender->setReconnectionDelay(100); // milliseconds
+			appender->setReconnectionDelay(50); // milliseconds
 			appender->setPort(tcpPort);
 			helpers::Pool pool;
 			appender->activateOptions(pool);
