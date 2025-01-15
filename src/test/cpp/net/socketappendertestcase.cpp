@@ -117,7 +117,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			while (APR_SUCCESS == apr_socket_recv(pSocket, buffer, &len))
 			{
 				auto pStart = &buffer[0];
-				auto pEnd = buffer + len;
+				auto pEnd = pStart + len;
 				for (auto pChar = pStart; pChar < pEnd; ++pChar)
 				{
 					if ('\n' == *pChar)
