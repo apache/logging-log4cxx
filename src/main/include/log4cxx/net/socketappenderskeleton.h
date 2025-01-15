@@ -164,7 +164,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		     connection is droppped.
 		     */
 
-		void monitor();
+		void retryConnect();
 		bool is_closed();
 		SocketAppenderSkeleton(const SocketAppenderSkeleton&);
 		SocketAppenderSkeleton& operator=(const SocketAppenderSkeleton&);

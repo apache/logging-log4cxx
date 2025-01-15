@@ -159,5 +159,10 @@ void APRSocket::close()
 	}
 }
 
+apr_socket_t* APRSocket::getSocketPtr() const
+{
+	return _priv->socket;
+}
+
 } //namespace helpers
 } //namespace log4cxx
