@@ -392,9 +392,9 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 			if (this->jobs.end() == pItem)
 				break;
 			this->jobs.erase(pItem);
+			if (this->jobs.empty())
+				return;
 		}
-		if (this->jobs.empty())
-			break;
 
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime);
