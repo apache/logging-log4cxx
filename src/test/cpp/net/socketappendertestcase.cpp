@@ -84,9 +84,10 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			int logEventCount = 3000;
 			auto doLogging = [logger, logEventCount]()
 			{
-				apr_sleep(50000);    // 50 millisecond
 				for( int x = 0; x < logEventCount; x++ ){
 					LOG4CXX_INFO(logger, "Message " << x);
+					if (0 == x % 1000)
+						apr_sleep(50000);    // 50 millisecond
 				}
 			};
 			std::vector<std::thread> loggingThread;
