@@ -124,7 +124,8 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			std::vector<int> messageCount;
 			char buffer[8*1024];
 			apr_size_t len = sizeof(buffer);
-			while (APR_SUCCESS == apr_socket_recv(pSocket, buffer, &len))
+			apr_status_t status;
+			while (APR_SUCCESS == (status = apr_socket_recv(pSocket, buffer, &len)))
 			{
 				auto pStart = &buffer[0];
 				auto pEnd = pStart + len;
@@ -156,6 +157,26 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 					}
 				}
 				len = sizeof(buffer);
+			}
+			if (helpers::LogLog::isDebugEnabled())
+			{
+				LogString msg = LOG4CXX_STR("apr_socket_recv terminated");
+				char err_buff[1024] = {0};
+				apr_strerror(status, err_buff, sizeof(err_buff));
+				if (0 == err_buff[0] || 0 == strncmp(err_buff, "APR does not understand", 23))
+				{
+					msg.append(LOG4CXX_STR(": error code "));
+					helpers::Pool p;
+					helpers::StringHelper::toString(status, p, msg);
+				}
+				else
+				{
+					msg.append(LOG4CXX_STR(" - "));
+					std::string sMsg = err_buff;
+					LOG4CXX_DECODE_CHAR(lsMsg, sMsg);
+					msg.append(lsMsg);
+				}
+				helpers::LogLog::debug(msg);
 			}
 			incomingSocket->close();
 			serverSocket->close();
