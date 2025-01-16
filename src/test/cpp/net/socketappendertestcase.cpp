@@ -47,6 +47,15 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 
 		LOGUNIT_TEST_SUITE_END();
 
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
+
 
 	public:
 
