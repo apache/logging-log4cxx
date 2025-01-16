@@ -30,7 +30,7 @@ void BasicConfigurator::configure(const LayoutPtr& layoutArg)
 	auto layout = layoutArg;
 	if (!layout)
 	{
-		static const helpers::WideLife<LogString> TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%r [%t] %p %c %x - %m%n"));
+		LogString TTCC_CONVERSION_PATTERN{LOG4CXX_STR("%r [%t] %p %c %x - %m%n")};
 		layout = std::make_shared<PatternLayout>(TTCC_CONVERSION_PATTERN);
 	}
 	auto appender = std::make_shared<ConsoleAppender>(layout);
@@ -39,6 +39,7 @@ void BasicConfigurator::configure(const LayoutPtr& layoutArg)
 
 void BasicConfigurator::configure(const AppenderPtr& appender)
 {
+	LogManager::getLoggerRepository()->setConfigured(true);
 	LoggerPtr root = Logger::getRootLogger();
 	root->addAppender(appender);
 }
