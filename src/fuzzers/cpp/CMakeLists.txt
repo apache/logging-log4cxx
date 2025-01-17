@@ -15,7 +15,8 @@
 # limitations under the License.
 #
 
-set(ALL_LOG4CXX_FUZZERS PatternLayoutFuzzer)
+set(ALL_LOG4CXX_FUZZERS PatternLayoutFuzzer XMLLayoutFuzzer)
+set(LOG4CXX_CHAR "utf-8")
 
 # Get the most recent Git commit ID
 execute_process(
