@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log4cxx/helpers/pool.h>
+#include <log4cxx/basicconfigurator.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/patternlayout.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include "logunit.h"
 #include <apr_time.h>
 
@@ -34,7 +37,7 @@ auto getLogger(const std::string& name = std::string()) -> LoggerPtr {
 			writer->setBufferedSeconds(1);
 			helpers::Pool p;
 			writer->activateOptions(p);
-			LogManager::getRootLogger()->addAppender(writer);
+			BasicConfigurator::configure(writer);
 		}
 		~log4cxx_initializer() {
 			LogManager::shutdown();
@@ -58,6 +61,16 @@ LOGUNIT_CLASS(FileAppenderTest)
 	LOGUNIT_TEST(testIsAsSevereAsThreshold);
 	LOGUNIT_TEST(testBufferedOutput);
 	LOGUNIT_TEST_SUITE_END();
+
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
+
 public:
 	/**
 	 * Tests that any necessary directories are attempted to
@@ -122,7 +135,16 @@ public:
 
 		// wait 1.1 sec and check the buffer is flushed
 		apr_sleep(1100000);
-		LOGUNIT_ASSERT(initialLength < file.length(p));
+		size_t flushedLength = file.length(p);
+		if (helpers::LogLog::isDebugEnabled())
+		{
+			LogString msg(LOG4CXX_STR("initialLength "));
+			helpers::StringHelper::toString(initialLength, p, msg);
+			msg += LOG4CXX_STR(" flushedLength ");
+			helpers::StringHelper::toString(flushedLength, p, msg);
+			helpers::LogLog::debug(msg);
+		}
+		LOGUNIT_ASSERT(initialLength < flushedLength);
 	}
 };
 
