@@ -133,8 +133,8 @@ public:
 		Pool p;
 		size_t initialLength = file.length(p);
 
-		// wait 1.1 sec and check the buffer is flushed
-		apr_sleep(1100000);
+		// wait 1.2 sec and check the buffer is flushed
+		apr_sleep(1200000);
 		size_t flushedLength = file.length(p);
 		if (helpers::LogLog::isDebugEnabled())
 		{
