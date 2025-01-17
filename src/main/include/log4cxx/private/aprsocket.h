@@ -41,6 +41,8 @@ class LOG4CXX_EXPORT APRSocket : public helpers::Socket
 		/** Closes this socket. */
 		virtual void close();
 
+		apr_socket_t* getSocketPtr() const;
+
 	private:
 		struct APRSocketPriv;
 };

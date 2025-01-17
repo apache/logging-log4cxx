@@ -69,16 +69,17 @@ struct ThreadUtility::priv_data
 		LogString             name;
 		Period                delay;
 		TimePoint             nextRun;
-		int                   errorCount;
 		std::function<void()> f;
+		int                   errorCount;
+		bool                  removed;
 	};
 	using JobStore = std::list<NamedPeriodicFunction>;
 	JobStore                  jobs;
-	std::mutex                job_mutex;
+	std::recursive_mutex      job_mutex;
 	std::thread               thread;
 	std::condition_variable   interrupt;
 	std::mutex                interrupt_mutex;
-	bool                      terminated{false};
+	bool                      terminated{ false };
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
 
@@ -264,11 +265,11 @@ ThreadStartPost ThreadUtility::postStartFunction()
  */
 void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()> f, const Period& delay)
 {
-	std::lock_guard<std::mutex> lock(m_priv->job_mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	if (m_priv->maxDelay < delay)
 		m_priv->maxDelay = delay;
 	auto currentTime = std::chrono::system_clock::now();
-	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, 0, f} );
+	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, f, 0, false} );
 	if (!m_priv->thread.joinable())
 	{
 		m_priv->terminated = false;
@@ -283,10 +284,10 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
  */
 bool ThreadUtility::hasPeriodicTask(const LogString& name)
 {
-	std::lock_guard<std::mutex> lock(m_priv->job_mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	auto pItem = std::find_if(m_priv->jobs.begin(), m_priv->jobs.end()
 		, [&name](const priv_data::NamedPeriodicFunction& item)
-		{ return name == item.name; }
+		{ return !item.removed && name == item.name; }
 		);
 	return m_priv->jobs.end() != pItem;
 }
@@ -297,7 +298,7 @@ bool ThreadUtility::hasPeriodicTask(const LogString& name)
 void ThreadUtility::removeAllPeriodicTasks()
 {
 	{
-		std::lock_guard<std::mutex> lock(m_priv->job_mutex);
+		std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 		while (!m_priv->jobs.empty())
 			m_priv->jobs.pop_back();
 	}
@@ -309,14 +310,14 @@ void ThreadUtility::removeAllPeriodicTasks()
  */
 void ThreadUtility::removePeriodicTask(const LogString& name)
 {
-	std::lock_guard<std::mutex> lock(m_priv->job_mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	auto pItem = std::find_if(m_priv->jobs.begin(), m_priv->jobs.end()
 		, [&name](const priv_data::NamedPeriodicFunction& item)
-		{ return name == item.name; }
+		{ return !item.removed && name == item.name; }
 		);
 	if (m_priv->jobs.end() != pItem)
 	{
-		m_priv->jobs.erase(pItem);
+		pItem->removed = true;
 		m_priv->interrupt.notify_one();
 	}
 }
@@ -328,14 +329,14 @@ void ThreadUtility::removePeriodicTasksMatching(const LogString& namePrefix)
 {
 	while (1)
 	{
-		std::lock_guard<std::mutex> lock(m_priv->job_mutex);
+		std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 		auto pItem = std::find_if(m_priv->jobs.begin(), m_priv->jobs.end()
 			, [&namePrefix](const priv_data::NamedPeriodicFunction& item)
-			{ return namePrefix.size() <= item.name.size() && item.name.substr(0, namePrefix.size()) == namePrefix; }
+			{ return !item.removed && namePrefix.size() <= item.name.size() && item.name.substr(0, namePrefix.size()) == namePrefix; }
 			);
 		if (m_priv->jobs.end() == pItem)
 			break;
-		m_priv->jobs.erase(pItem);
+		pItem->removed = true;
 	}
 	m_priv->interrupt.notify_one();
 }
@@ -348,14 +349,14 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		auto currentTime = std::chrono::system_clock::now();
 		TimePoint nextOperationTime = currentTime + this->maxDelay;
 		{
-			std::lock_guard<std::mutex> lock(this->job_mutex);
-			if (this->jobs.empty())
-				break;
+			std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
 			for (auto& item : this->jobs)
 			{
 				if (this->terminated)
 					return;
-				if (item.nextRun <= currentTime)
+				if (item.removed)
+					;
+				else if (item.nextRun <= currentTime)
 				{
 					try
 					{
@@ -380,17 +381,19 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 					nextOperationTime = item.nextRun;
 			}
 		}
-		// Remove faulty tasks
+		// Delete removed and faulty tasks
 		while (1)
 		{
-			std::lock_guard<std::mutex> lock(this->job_mutex);
+			std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
 			auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
 				, [this](const NamedPeriodicFunction& item)
-				{ return this->retryCount < item.errorCount; }
+				{ return item.removed || this->retryCount < item.errorCount; }
 				);
 			if (this->jobs.end() == pItem)
 				break;
 			this->jobs.erase(pItem);
+			if (this->jobs.empty())
+				return;
 		}
 
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);

@@ -16,10 +16,21 @@
  */
 
 #include "../appenderskeletontestcase.h"
-#include "apr.h"
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/basicconfigurator.h>
+#include <log4cxx/net/xmlsocketappender.h>
+#include <log4cxx/helpers/serversocket.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/private/aprsocket.h>
+#include <apr_network_io.h>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+namespace LOG4CXX_NS { namespace net {
+	using SocketAppender = XMLSocketAppender;
+} }
+
+using namespace LOG4CXX_NS;
 
 /**
    Unit tests of log4cxx::SocketAppender
@@ -32,61 +43,158 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
-		LOGUNIT_TEST(testInvalidHost);
+		LOGUNIT_TEST(testRetryConnect);
 
 		LOGUNIT_TEST_SUITE_END();
 
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
+
 
 	public:
-
-		void setUp()
-		{
-		}
-
-		void tearDown()
-		{
-			BasicConfigurator::resetConfiguration();
-		}
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
 			return new log4cxx::net::SocketAppender();
 		}
 
-		void testInvalidHost(){
-//			log4cxx::net::SocketAppenderPtr appender = std::make_shared<log4cxx::net::SocketAppender>();
-//			log4cxx::PatternLayoutPtr layout = std::make_shared<log4cxx::PatternLayout>(LOG4CXX_STR("%m%n"));
+		void testRetryConnect()
+		{
+			int tcpPort = 44445;
+			auto appender = std::make_shared<net::SocketAppender>();
+			appender->setLayout(std::make_shared<log4cxx::PatternLayout>(LOG4CXX_STR("%d [%T] %m%n")));
+			appender->setRemoteHost(LOG4CXX_STR("localhost"));
+			appender->setReconnectionDelay(50); // milliseconds
+			appender->setPort(tcpPort);
+			helpers::Pool pool;
+			appender->activateOptions(pool);
 
-//			log4cxx::helpers::ServerSocket serverSocket(4445);
+			BasicConfigurator::configure(appender);
 
-//			appender->setLayout(layout);
-//			appender->setRemoteHost(LOG4CXX_STR("localhost"));
-//			appender->setReconnectionDelay(1);
-//			appender->setPort(4445);
-//			log4cxx::helpers::Pool pool;
-//			appender->activateOptions(pool);
+			helpers::ServerSocketUniquePtr serverSocket;
+			try
+			{
+				serverSocket = helpers::ServerSocket::create(tcpPort);
+			}
+			catch (std::exception& ex)
+			{
+				helpers::LogLog::error(LOG4CXX_STR("ServerSocket::create failed"), ex);
+				LOGUNIT_FAIL("ServerSocket::create");
+			}
+			serverSocket->setSoTimeout(1000); // milliseconds
 
-//			BasicConfigurator::configure(appender);
+			auto logger = Logger::getLogger("test");
+			int logEventCount = 3000;
+			auto doLogging = [logger, logEventCount]()
+			{
+				for( int x = 0; x < logEventCount; x++ ){
+					LOG4CXX_INFO(logger, "Message " << x);
+					if (0 == x % 1000)
+						apr_sleep(50000);    // 50 millisecond
+				}
+			};
+			std::vector<std::thread> loggingThread;
+			for (auto i : {0, 1})
+				loggingThread.emplace_back(doLogging);
 
-//			log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getAll());
+			helpers::SocketPtr incomingSocket;
+			try
+			{
+				incomingSocket = serverSocket->accept();
+			}
+			catch (std::exception& ex)
+			{
+				helpers::LogLog::error(LOG4CXX_STR("ServerSocket::accept failed"), ex);
+				for (auto& t : loggingThread)
+						t.join();
+				serverSocket->close();
+				LOGUNIT_FAIL("accept failed");
+			}
+			auto aprSocket = std::dynamic_pointer_cast<helpers::APRSocket>(incomingSocket);
+			LOGUNIT_ASSERT(aprSocket);
+			auto pSocket = aprSocket->getSocketPtr();
+			LOGUNIT_ASSERT(pSocket);
+			apr_socket_timeout_set(pSocket, 200000);    // 200 millisecond
+			std::vector<int> messageCount;
+			char buffer[8*1024];
+			apr_size_t len = sizeof(buffer);
+			apr_status_t status;
+			while (APR_SUCCESS == (status = apr_socket_recv(pSocket, buffer, &len)))
+			{
+				auto pStart = &buffer[0];
+				auto pEnd = pStart + len;
+				for (auto pChar = pStart; pChar < pEnd; ++pChar)
+				{
+					if ('\n' == *pChar)
+					{
+						std::string line(pStart, pChar);
+						auto pos = line.rfind(' ');
+						if (line.npos != pos && pos + 1 < line.size())
+						{
+							try
+							{
+								auto msgNumber = std::stoi(line.substr(pos));
+								if (messageCount.size() <= msgNumber)
+									messageCount.resize(msgNumber + 1);
+								++messageCount[msgNumber];
+							}
+							catch (std::exception const& ex)
+							{
+								LogString msg;
+								helpers::Transcoder::decode(ex.what(), msg);
+								msg += LOG4CXX_STR(" processing\n");
+								helpers::Transcoder::decode(line, msg);
+								helpers::LogLog::warn(msg);
+							}
+						}
+						pStart = pChar + 1;
+					}
+				}
+				len = sizeof(buffer);
+			}
+			if (helpers::LogLog::isDebugEnabled())
+			{
+				LogString msg = LOG4CXX_STR("apr_socket_recv terminated");
+				char err_buff[1024] = {0};
+				apr_strerror(status, err_buff, sizeof(err_buff));
+				if (0 == err_buff[0] || 0 == strncmp(err_buff, "APR does not understand", 23))
+				{
+					msg.append(LOG4CXX_STR(": error code "));
+					helpers::Pool p;
+					helpers::StringHelper::toString(status, p, msg);
+				}
+				else
+				{
+					msg.append(LOG4CXX_STR(" - "));
+					std::string sMsg = err_buff;
+					LOG4CXX_DECODE_CHAR(lsMsg, sMsg);
+					msg.append(lsMsg);
+				}
+				helpers::LogLog::debug(msg);
+			}
+			incomingSocket->close();
+			serverSocket->close();
+			for (auto& t : loggingThread)
+				t.join();
 
-//			std::thread th1( [](){
-//				for( int x = 0; x < 3000; x++ ){
-//					LOG4CXX_INFO(Logger::getLogger(LOG4CXX_STR("test")), "Some message" );
-//				}
-//			});
-//			std::thread th2( [](){
-//				for( int x = 0; x < 3000; x++ ){
-//					LOG4CXX_INFO(Logger::getLogger(LOG4CXX_STR("test")), "Some message" );
-//				}
-//			});
-
-//			SocketPtr incomingSocket = serverSocket.accept();
-//			incomingSocket->close();
-
-//			// If we do not get here, we have deadlocked
-//			th1.join();
-//			th2.join();
+			if (helpers::LogLog::isDebugEnabled())
+			{
+				helpers::Pool p;
+				LogString msg(LOG4CXX_STR("messageCount "));
+				for (auto item : messageCount)
+				{
+					msg += logchar(' ');
+					helpers::StringHelper::toString(item, p, msg);
+				}
+				helpers::LogLog::debug(msg);
+			}
+			LOGUNIT_ASSERT_EQUAL(logEventCount, (int)messageCount.size());
 		}
 };
 

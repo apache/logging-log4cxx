@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/bytearrayoutputstream.h>
 #include <log4cxx/helpers/threadutility.h>
@@ -36,17 +37,17 @@ using namespace LOG4CXX_NS::net;
 #define _priv static_cast<SocketAppenderSkeletonPriv*>(m_priv.get())
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay)
-    : AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(defaultPort, reconnectionDelay))
+	: AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(defaultPort, reconnectionDelay))
 {
 }
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(helpers::InetAddressPtr address, int port, int reconnectionDelay)
-    : AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(address, port, reconnectionDelay))
+	: AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(address, port, reconnectionDelay))
 {
 }
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port, int reconnectionDelay)
-    : AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(host, port, reconnectionDelay))
+	: AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(host, port, reconnectionDelay))
 {
 }
 
@@ -68,8 +69,8 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-    _priv->stopMonitor();
-    cleanUp(_priv->pool);
+	_priv->stopMonitor();
+	cleanUp(_priv->pool);
 }
 
 void SocketAppenderSkeleton::connect(Pool& p)
@@ -136,22 +137,47 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 void SocketAppenderSkeleton::fireConnector()
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-
-	if ( !_priv->thread.joinable() )
-	{
-		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
-
-		_priv->thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketAppend"), &SocketAppenderSkeleton::monitor, this );
-	}
+    if (_priv->taskName.empty())
+    {
+        Pool p;
+        _priv->taskName = _priv->name + LOG4CXX_STR(":")
+            + _priv->address->toString() + LOG4CXX_STR(":");
+        StringHelper::toString(_priv->port, p, _priv->taskName);
+    }
+    auto taskManager = ThreadUtility::instancePtr();
+    if (!taskManager->value().hasPeriodicTask(_priv->taskName))
+    {
+        Pool p;
+        if (LogLog::isDebugEnabled())
+        {
+            Pool p;
+            LogString msg(LOG4CXX_STR("Waiting "));
+            StringHelper::toString(_priv->reconnectionDelay, p, msg);
+            msg += LOG4CXX_STR(" ms before retrying [")
+                + _priv->address->toString() + LOG4CXX_STR(":");
+            StringHelper::toString(_priv->port, p, msg);
+            msg += LOG4CXX_STR("].");
+            LogLog::debug(msg);
+        }
+        taskManager->value().addPeriodicTask(_priv->taskName
+            , std::bind(&SocketAppenderSkeleton::retryConnect, this)
+            , std::chrono::milliseconds(_priv->reconnectionDelay)
+            );
+    }
+    _priv->taskManager = taskManager;
 }
 
-void SocketAppenderSkeleton::monitor()
+void SocketAppenderSkeleton::retryConnect()
 {
-	Pool p;
-	SocketPtr socket;
-
-	while (!is_closed())
+	if (is_closed())
 	{
+		if (auto pManager = _priv->taskManager.lock())
+			pManager->value().removePeriodicTask(_priv->taskName);
+	}
+	else
+	{
+		Pool p;
+		SocketPtr socket;
 		try
 		{
 			if (LogLog::isDebugEnabled())
@@ -166,8 +192,14 @@ void SocketAppenderSkeleton::monitor()
 			setSocket(socket, p);
 			if (LogLog::isDebugEnabled())
 			{
-				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
+				LogString msg(LOG4CXX_STR("Connection established to [")
+					+ _priv->address->toString() + LOG4CXX_STR(":"));
+				StringHelper::toString(_priv->port, p, msg);
+				msg += LOG4CXX_STR("].");
+				LogLog::debug(msg);
 			}
+			if (auto pManager = _priv->taskManager.lock())
+				pManager->value().removePeriodicTask(_priv->taskName);
 			return;
 		}
 		catch (ConnectException& e)
@@ -197,26 +229,17 @@ void SocketAppenderSkeleton::monitor()
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}
-
-			std::unique_lock<std::mutex> lock( _priv->interrupt_mutex );
-			if (_priv->interrupt.wait_for( lock, std::chrono::milliseconds( _priv->reconnectionDelay ),
-				std::bind(&SocketAppenderSkeleton::is_closed, this) ))
-				break;
 		}
 	}
 }
 
 void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::stopMonitor()
 {
-	{
-		std::lock_guard<std::mutex> lock(this->interrupt_mutex);
-		if (this->closed)
-			return;
-		this->closed = true;
-	}
-	this->interrupt.notify_all();
-	if (this->thread.joinable())
-		this->thread.join();
+	this->closed = true;
+	if (this->taskName.empty())
+		;
+	else if (auto pManager = this->taskManager.lock())
+		pManager->value().removePeriodicTask(this->taskName);
 }
 
 bool SocketAppenderSkeleton::is_closed()
@@ -258,6 +281,17 @@ bool SocketAppenderSkeleton::getLocationInfo() const
 void SocketAppenderSkeleton::setReconnectionDelay(int reconnectionDelay1)
 {
 	_priv->reconnectionDelay = reconnectionDelay1;
+	if (_priv->taskName.empty())
+		return;
+	auto pManager = _priv->taskManager.lock();
+	if (pManager && pManager->value().hasPeriodicTask(_priv->taskName))
+	{
+		pManager->value().removePeriodicTask(_priv->taskName);
+		pManager->value().addPeriodicTask(_priv->taskName
+			, std::bind(&SocketAppenderSkeleton::retryConnect, this)
+			, std::chrono::milliseconds(_priv->reconnectionDelay)
+			);
+	}
 }
 
 int SocketAppenderSkeleton::getReconnectionDelay() const

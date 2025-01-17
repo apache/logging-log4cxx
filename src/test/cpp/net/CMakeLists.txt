@@ -20,6 +20,7 @@ if(LOG4CXX_NETWORKING_SUPPORT)
     set(NET_TESTS
 	syslogappendertestcase
 	telnetappendertestcase
+	socketappendertestcase
 	xmlsocketappendertestcase
     )
 else()
