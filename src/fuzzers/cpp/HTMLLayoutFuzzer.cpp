@@ -36,11 +36,12 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
 	// Optional locationinfo
 	if (fdp.ConsumeBool()) {
-		layout.setOption(LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo"));
+		layout.setOption(LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("true"));
 	}
 	// Optional threadinfo
 	if (fdp.ConsumeBool()) {
-		layout.setOption(LOG4CXX_STR("TITLE"), LOG4CXX_STR("title"));
+		LOG4CXX_DECODE_CHAR(title, fdp.ConsumeRandomLengthString());
+		layout.setOption(LOG4CXX_STR("TITLE"), title);
 	}
 
 	// Header
