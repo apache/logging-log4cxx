@@ -35,15 +35,15 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
 	// Optional locationinfo
 	if (fdp.ConsumeBool()) {
-		layout.setOption(LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo"));
+		layout.setOption(LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("true"));
 	}
 	// Optional threadinfo
 	if (fdp.ConsumeBool()) {
-		layout.setOption(LOG4CXX_STR("THREADINFO"), LOG4CXX_STR("threadinfo"));
+		layout.setOption(LOG4CXX_STR("THREADINFO"), LOG4CXX_STR("true"));
 	}
 	// Optional prettyprint
 	if (fdp.ConsumeBool()) {
-		layout.setOption(LOG4CXX_STR("PRETTYPRINT"), LOG4CXX_STR("prettyprint"));
+		layout.setOption(LOG4CXX_STR("PRETTYPRINT"), LOG4CXX_STR("true"));
 	}
 
 	// Create random strings we need later
