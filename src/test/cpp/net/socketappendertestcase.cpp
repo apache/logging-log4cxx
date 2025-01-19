@@ -160,23 +160,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			}
 			if (helpers::LogLog::isDebugEnabled())
 			{
-				LogString msg = LOG4CXX_STR("apr_socket_recv terminated");
-				char err_buff[1024] = {0};
-				apr_strerror(status, err_buff, sizeof(err_buff));
-				if (0 == err_buff[0] || 0 == strncmp(err_buff, "APR does not understand", 23))
-				{
-					msg.append(LOG4CXX_STR(": error code "));
-					helpers::Pool p;
-					helpers::StringHelper::toString(status, p, msg);
-				}
-				else
-				{
-					msg.append(LOG4CXX_STR(" - "));
-					std::string sMsg = err_buff;
-					LOG4CXX_DECODE_CHAR(lsMsg, sMsg);
-					msg.append(lsMsg);
-				}
-				helpers::LogLog::debug(msg);
+				helpers::LogLog::debug(helpers::Exception::makeMessage(LOG4CXX_STR("apr_socket_recv terminated"), status));
 			}
 			incomingSocket->close();
 			serverSocket->close();
