@@ -495,10 +495,8 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 
 			if (!mapCurrentBase.empty() && mapCurrentBase != filename)
 			{
-				const FileAppender* fappend = reinterpret_cast<const FileAppender*>(appender->cast(FileAppender::getStaticClass()));
-				if( fappend ){
-					const_cast<FileAppender*>(fappend)->setFile(mapCurrentBase);
-				}
+				if (auto fappend = dynamic_cast<FileAppender*>(appender))
+					fappend->setFile(mapCurrentBase);
 			}
 		}
 

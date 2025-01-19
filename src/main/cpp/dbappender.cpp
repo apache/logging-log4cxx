@@ -62,7 +62,7 @@ struct DBAppender::DBAppenderPriv : public AppenderSkeleton::AppenderSkeletonPri
 		}
 	}
 
-    apr_dbd_driver_t* m_driver = nullptr;
+    const apr_dbd_driver_t* m_driver = nullptr;
     apr_dbd_t* m_databaseHandle = nullptr;
     apr_dbd_prepared_t* preparedStmt = nullptr;
     std::vector<LogString> mappedName;
@@ -147,7 +147,7 @@ void DBAppender::setOption(const LogString& option, const LogString& value){
 void DBAppender::activateOptions(helpers::Pool& p){
     apr_status_t stat = apr_dbd_get_driver(_priv->m_pool.getAPRPool(),
                                            _priv->driverName.c_str(),
-                                           const_cast<const apr_dbd_driver_t**>(&_priv->m_driver));
+                                           &_priv->m_driver);
 
     if(stat != APR_SUCCESS){
         LogString errMsg = LOG4CXX_STR("Unable to get driver named ");
