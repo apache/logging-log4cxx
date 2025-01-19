@@ -23,6 +23,7 @@
 #include <log4cxx/rolling/multiprocessrollingfileappender.h>
 #include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/helpers/strftimedateformat.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/loglog.h>
@@ -108,7 +109,7 @@ public:
 	 */
 	void test2()
 	{
-		std::string expectedPrefix = LOG4CXX_STR("multiprocess-2-");
+		std::string expectedPrefix{ "multiprocess-2-" };
 		// remove any previously generated files
 		std::filesystem::path outputDir("output/rolling");
 		if (!exists(outputDir))
@@ -136,14 +137,16 @@ public:
 		}
 
 		// Count rolled files
+		LOG4CXX_DECODE_CHAR(expectedPrefixLS, expectedPrefix);
 		helpers::Pool p;
-		helpers::StrftimeDateFormat("%Y-%m-%d").format(expectedPrefix, helpers::Date::currentTime(), p);
+		helpers::StrftimeDateFormat(LOG4CXX_STR("%Y-%m-%d")).format(expectedPrefixLS, helpers::Date::currentTime(), p);
+		LOG4CXX_ENCODE_CHAR(rolledPrefix, expectedPrefixLS);
 		int fileCount = 0;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})
 		{
-			LogString filename(dir_entry.path().filename().string());
-			if (expectedPrefix.size() < filename.size() &&
-				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
+			std::string filename(dir_entry.path().filename().string());
+			if (rolledPrefix.size() < filename.size() &&
+				filename.substr(0, rolledPrefix.size()) == rolledPrefix)
 				++fileCount;
 		}
 		LOGUNIT_ASSERT(1 < fileCount);
