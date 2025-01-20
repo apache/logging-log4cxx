@@ -149,7 +149,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 
 	if (writes == 0 && rep)
 	{
-		rep->emitNoAppenderWarning(const_cast<Logger*>(this));
+		rep->emitNoAppenderWarning(this);
 	}
 }
 

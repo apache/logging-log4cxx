@@ -128,9 +128,9 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 
 	// Make sure that we keep a reference to the appender around, since otherwise
 	// the appender would be lost if it has no loggers that use it.
-	LoggerRepository* repository = LogManager::getRootLogger()->getLoggerRepository();
-	Hierarchy* hierarchy = dynamic_cast<Hierarchy*>(repository);
-	if(hierarchy){
+	auto repository = LogManager::getLoggerRepository();
+	if (auto hierarchy = dynamic_cast<Hierarchy*>(repository.get()))
+	{
 		hierarchy->addAppender(backup1);
 	}
 
