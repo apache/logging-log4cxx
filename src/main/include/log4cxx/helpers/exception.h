@@ -42,6 +42,7 @@ class LOG4CXX_EXPORT Exception : public ::std::exception
 		Exception(const Exception& src);
 		Exception& operator=(const Exception& src);
 		const char* what() const throw();
+		static LogString makeMessage(const LogString& type, log4cxx_status_t stat);
 	private:
 		enum { MSG_SIZE = 128 };
 		char msg[MSG_SIZE + 1];
@@ -97,7 +98,6 @@ class LOG4CXX_EXPORT IOException : public Exception
 		IOException& operator=(const IOException&);
 	private:
 		static LogString formatMessage(log4cxx_status_t stat);
-		static LogString formatMessage(const LogString& type, log4cxx_status_t stat);
 };
 
 class LOG4CXX_EXPORT MissingResourceException : public Exception

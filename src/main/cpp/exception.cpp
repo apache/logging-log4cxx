@@ -154,7 +154,7 @@ IOException::IOException(log4cxx_status_t stat)
 }
 
 IOException::IOException(const LogString& type, log4cxx_status_t stat)
-	: Exception(formatMessage(type, stat))
+	: Exception(makeMessage(type, stat))
 {
 }
 
@@ -177,10 +177,10 @@ IOException& IOException::operator=(const IOException& src)
 
 LogString IOException::formatMessage(log4cxx_status_t stat)
 {
-	return formatMessage(LOG4CXX_STR("IO Exception"), stat);
+	return makeMessage(LOG4CXX_STR("IO Exception"), stat);
 }
 
-LogString IOException::formatMessage(const LogString& type, log4cxx_status_t stat)
+LogString Exception::makeMessage(const LogString& type, log4cxx_status_t stat)
 {
 	LogString s = type;
 	char err_buff[1024] = {0};
@@ -243,9 +243,9 @@ PoolException& PoolException::operator=(const PoolException& src)
 	return *this;
 }
 
-LogString PoolException::formatMessage(log4cxx_status_t)
+LogString PoolException::formatMessage(log4cxx_status_t stat)
 {
-	return LOG4CXX_STR("Pool exception");
+	return makeMessage(LOG4CXX_STR("Pool exception"), stat);
 }
 
 
@@ -322,10 +322,7 @@ ThreadException& ThreadException::operator=(const ThreadException& src)
 
 LogString ThreadException::formatMessage(log4cxx_status_t stat)
 {
-	LogString s(LOG4CXX_STR("Thread exception: stat = "));
-	Pool p;
-	StringHelper::toString(stat, p, s);
-	return s;
+	return makeMessage(LOG4CXX_STR("Thread exception"), stat);
 }
 
 IllegalMonitorStateException::IllegalMonitorStateException(const LogString& msg1)
