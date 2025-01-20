@@ -48,7 +48,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	event->setProperty(LOG4CXX_STR(key1), LOG4CXX_STR(val1));
 
 	// Set MDC
-	log4cxx::MDC::put(key1, key2);
+	log4cxx::MDC::put(key2, val2);
 
 	// Location info
 	layout.setLocationInfo(true);
