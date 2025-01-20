@@ -154,8 +154,9 @@ void TimeBasedRollingPolicy::initMMapFile(const LogString& lastFileName, LOG4CXX
 	{
 		lockMMapFile(APR_FLOCK_EXCLUSIVE);
 		memset(m_priv->_mmap->mm, 0, MAX_FILE_LEN);
-		size_t byteCount = std::min(MAX_FILE_LEN - sizeof (logchar), sizeof (logchar) * lastFileName.size());
-		memcpy(m_priv->_mmap->mm, lastFileName.c_str(), byteCount);
+		size_t byteCount = sizeof (logchar) * lastFileName.size();
+		if (byteCount <= MAX_FILE_LEN - sizeof (logchar))
+			memcpy(m_priv->_mmap->mm, lastFileName.c_str(), byteCount);
 		unLockMMapFile();
 	}
 }
@@ -467,11 +468,18 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 	if( m_priv->multiprocess ){
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+		size_t byteCount = sizeof (logchar) * newFileName.size();
+		if (MAX_FILE_LEN - sizeof (logchar) < byteCount)
+		{
+			LogString msg(newFileName + LOG4CXX_STR(": cannot exceed "));
+			StringHelper::toString(MAX_FILE_LEN / sizeof (logchar), pool, msg);
+			msg += LOG4CXX_STR(" characters");
+			throw IllegalArgumentException(msg);
+		}
 		if (m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
 		{
 			lockMMapFile(APR_FLOCK_EXCLUSIVE);
 			memset(m_priv->_mmap->mm, 0, MAX_FILE_LEN);
-			size_t byteCount = std::min(MAX_FILE_LEN - sizeof (logchar), sizeof (logchar) * newFileName.size());
 			memcpy(m_priv->_mmap->mm, newFileName.c_str(), byteCount);
 			unLockMMapFile();
 		}
