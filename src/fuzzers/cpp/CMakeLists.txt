@@ -20,7 +20,9 @@ set(ALL_LOG4CXX_FUZZERS
     XMLLayoutFuzzer
     HTMLLayoutFuzzer
     JSONLayoutFuzzer
-    PatternParserFuzzer)
+    PatternParserFuzzer
+    TimeBasedRollingPolicyFuzzer
+)
 set(LOG4CXX_CHAR "utf-8")
 
 # Get the most recent Git commit ID
