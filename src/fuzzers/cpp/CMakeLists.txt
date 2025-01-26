@@ -22,6 +22,7 @@ set(ALL_LOG4CXX_FUZZERS
     JSONLayoutFuzzer
     PatternParserFuzzer
     TimeBasedRollingPolicyFuzzer
+    PatternConverterFuzzer
 )
 set(LOG4CXX_CHAR "utf-8")
 

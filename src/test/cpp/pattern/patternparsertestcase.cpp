@@ -270,6 +270,10 @@ public:
 		assertFormattedEquals(LOG4CXX_STR("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m"),
 			getFormatSpecifiers(),
 			expected);
+		// Check an invalid timezone is equivalent to an unspecified timezone
+		assertFormattedEquals(LOG4CXX_STR("%d{HH:mm:ss}{GMT} %d{HH:mm:ss}{GMT-X} %c  - %m"),
+			getFormatSpecifiers(),
+			expected);
 	}
 
 	void testThreadUsername()
