@@ -192,6 +192,8 @@ void FileAppender::activateOptionsInternal(Pool& p)
 	if (errors == 0)
 	{
 		WriterAppender::activateOptions(p);
+		if (auto p = _priv->taskManager.lock())
+			p->value().removePeriodicTask(getName());
 
 		if (!_priv->bufferedIO)
 			;
@@ -203,11 +205,6 @@ void FileAppender::activateOptionsInternal(Pool& p)
 				, std::chrono::seconds(_priv->bufferedSeconds)
 				);
 			_priv->taskManager = taskManager;
-		}
-		else if (0 == _priv->bufferedSeconds)
-		{
-			if (auto p = _priv->taskManager.lock())
-				p->value().removePeriodicTask(getName());
 		}
 	}
 }
