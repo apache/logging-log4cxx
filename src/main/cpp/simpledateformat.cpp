@@ -599,38 +599,29 @@ class RFC822TimeZoneToken : public PatternToken
 			else
 			{
 				apr_int32_t off = tm.tm_gmtoff;
-				size_t basePos = s.length();
-				s.append( LOG4CXX_STR( "+0000" ) );
+				s.reserve(s.length() + 5);
 
 				if ( off < 0 )
 				{
-					s[basePos] = 0x2D; // '-'
+					s.push_back( '-' );
 					off = -off;
+				}else{
+					s.push_back( '+' );
 				}
 
 				LogString hours;
 				StringHelper::toString( off / 3600, p, hours );
-				size_t hourPos = basePos + 2;
-
-				//
-				//   assumes that point values for 0-9 are same between char and wchar_t
-				//
-				for ( size_t i = hours.length(); i-- > 0; )
-				{
-					s[hourPos--] = hours[i];
+				if( hours.size() == 1 ){
+					s.push_back( '0' );
 				}
+				s.append(hours);
 
 				LogString min;
 				StringHelper::toString( ( off % 3600 ) / 60, p, min );
-				size_t minPos = basePos + 4;
-
-				//
-				//   assumes that point values for 0-9 are same between char and wchar_t
-				//
-				for ( size_t j = min.length(); j-- > 0; )
-				{
-					s[minPos--] = min[j];
+				if( min.size() == 1 ){
+					s.push_back( '0' );
 				}
+				s.append(min);
 			}
 		}
 };
