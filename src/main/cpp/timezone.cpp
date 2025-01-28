@@ -240,6 +240,13 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString& id )
 			hours = StringHelper::toInt(off);
 		}
 
+		// Make sure that our offset can't be crazy
+		if( hours > 14 ){
+			hours = 14;
+		}else if( hours < -12 ){
+			hours = -12;
+		}
+
 		LogString s(gmt);
 		Pool p;
 		LogString hh;
