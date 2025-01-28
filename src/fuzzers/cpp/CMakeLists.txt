@@ -18,10 +18,11 @@
 set(ALL_LOG4CXX_FUZZERS
     PatternLayoutFuzzer
     XMLLayoutFuzzer
-    HTMLLayoutFuzzer
+    HTMLLayoutFuzzer 
     JSONLayoutFuzzer
     PatternParserFuzzer
     PatternConverterFuzzer
+    DOMConfiguratorFuzzer
 )
 set(LOG4CXX_CHAR "utf-8")
 
