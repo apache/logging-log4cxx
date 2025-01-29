@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <fuzzer/FuzzedDataProvider.h>
 #include <log4cxx/pattern/patternparser.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include <log4cxx/pattern/loggerpatternconverter.h>
 #include <log4cxx/pattern/literalpatternconverter.h>
@@ -108,13 +109,22 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	
 	std::string loggerStr = fdp.ConsumeRandomLengthString();
 	std::string content = fdp.ConsumeRandomLengthString();
+	std::string pattern = fdp.ConsumeRandomLengthString();
+
+	LogString contentLogString;
+	LogString loggerLogString;
+	LogString patternLogString;
+
+	Transcoder::decode(content, contentLogString);
+	Transcoder::decode(loggerStr, loggerLogString);
+	Transcoder::decode(pattern, patternLogString);
 
 	// Create the event
-	log4cxx::LogString logger = LOG4CXX_STR(loggerStr);
+	log4cxx::LogString logger = loggerLogString;
 	log4cxx::LevelPtr level = log4cxx::Level::getInfo();
 	log4cxx::spi::LoggingEventPtr event = log4cxx::spi::LoggingEventPtr(
 		new log4cxx::spi::LoggingEvent(
-			logger, level, LOG4CXX_STR(content), LOG4CXX_LOCATION));
+			logger, level, contentLogString, LOG4CXX_LOCATION));
 
 
 	log4cxx::helpers::Pool p;
@@ -122,8 +132,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	std::vector<PatternConverterPtr> converters;
 	std::vector<FormattingInfoPtr> fields;
 
-	log4cxx::LogString pattern = LOG4CXX_STR(fdp.ConsumeRandomLengthString());
-	PatternParser::parse(pattern, converters, fields, patternMap);
+	PatternParser::parse(patternLogString, converters, fields, patternMap);
 
   	return 0;
 }

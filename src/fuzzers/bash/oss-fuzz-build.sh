@@ -38,16 +38,25 @@ mkdir -p "$outputDir"
 # Switch to the project directory (by referencing from the script directory)
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && cd ../../..
 
-# Build the project
-mkdir -p build && cd $_
-cmake \
-  -DBUILD_SHARED_LIBS=OFF \
-  -DBUILD_TESTING=OFF \
-  -DBUILD_EXAMPLES=OFF \
-  -DBUILD_FUZZERS=ON \
-  ..
-cmake --build . -j
+# Build a fuzzer with each encoding
+declare -a encodings=("utf-8" "wchar_t")
 
-# Copy executables & resources
-find src/fuzzers/cpp -maxdepth 1 -executable -type f -exec cp -v {} "$outputDir/" \;
-cp -v ../src/fuzzers/resources/* "$outputDir/"
+for encoding in "${encodings[@]}"
+do
+  echo heeeeere
+  # Build the project
+  mkdir -p build && cd $_
+  cmake \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DBUILD_TESTING=OFF \
+    -DBUILD_EXAMPLES=OFF \
+    -DBUILD_FUZZERS=ON \
+    -DLOG4CXX_CHAR="${encoding}" \
+    ..
+  cmake --build . -j
+
+  # Copy executables & resources
+  find src/fuzzers/cpp -maxdepth 1 -executable -type f -exec cp -v {} "$outputDir/" \;
+  cp ../src/fuzzers/resources/* "$outputDir/"
+  cd .. && rm -r build
+done
