@@ -52,8 +52,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     tbrp->activateOptions(pool);
     rfa->setRollingPolicy(tbrp);
     rfa->activateOptions(pool);
-    rfa->setBufferSize(fdp.ConsumeIntegral<int>());
-    rfa->activateOptions(pool);
     rfa->setBufferedSeconds(fdp.ConsumeIntegral<int>());
     rfa->activateOptions(pool);
     LoggerPtr logger = LogManager::getLogger("org.apache.log4j.TimeBasedRollingTest");
