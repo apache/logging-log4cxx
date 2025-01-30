@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <vector>
 #include <limits.h>
+#include <stdexcept>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::pattern;
@@ -291,7 +292,18 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern)
 		//
 		if (i == trimmed.length())
 		{
-			return std::make_shared<MaxElementAbbreviator>(StringHelper::toInt(trimmed));
+			int len = 256;
+			try{
+				len = StringHelper::toInt(trimmed);
+			}catch(std::out_of_range){}
+
+			if(len > 256){
+				len = 256;
+			}else if( len < 0 ){
+				len = 0;
+			}
+
+			return std::make_shared<MaxElementAbbreviator>(len);
 		}
 
 		std::vector<PatternAbbreviatorFragment> fragments;
