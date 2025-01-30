@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <vector>
 #include <limits.h>
+#include <stdexcept>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::pattern;
