@@ -21,6 +21,7 @@ set(ALL_LOG4CXX_FUZZERS
     HTMLLayoutFuzzer 
     JSONLayoutFuzzer
     PatternParserFuzzer
+    TimeBasedRollingPolicyFuzzer
     PatternConverterFuzzer
     DOMConfiguratorFuzzer
 )
