@@ -33,8 +33,16 @@ execute_process(
     OUTPUT_VARIABLE GIT_COMMIT_ID
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-set(FUZZER_SANITIZE_FLAGS "-fsanitize=fuzzer,address,signed-integer-overflow")
-set(FUZZER_COMPILE_DEFINITIONS "-DCOMPILE_DEFINITIONS=${FUZZER_SANITIZE_FLAGS}" "-DGIT_COMMIT_ID=\"${GIT_COMMIT_ID}\"")
+# If we are building the fuzzers in the OSS-Fuzz environment
+# we use their linker flag.
+if(DEFINED ENV{LIB_FUZZING_ENGINE})
+  set(FUZZER_SANITIZE_FLAGS $ENV{LIB_FUZZING_ENGINE})
+  set(FUZZER_COMPILE_DEFINITIONS "-DGIT_COMMIT_ID=\"${GIT_COMMIT_ID}\"")
+else()
+  set(FUZZER_SANITIZE_FLAGS "-fsanitize=fuzzer,address,signed-integer-overflow")
+  set(FUZZER_COMPILE_DEFINITIONS "-DCOMPILE_DEFINITIONS=${FUZZER_SANITIZE_FLAGS}" "-DGIT_COMMIT_ID=\"${GIT_COMMIT_ID}\"")
+endif()
+
 
 if(WIN32)
   include(win32_target_environment_path)
