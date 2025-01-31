@@ -59,7 +59,7 @@ jobs:
       - name: Install Build Wrapper
         uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v4.2.1
         env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: ${{ env.SONAR_SERVER_URL }}
 
       - name: Run build-wrapper
         run: |
@@ -83,7 +83,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v4.2.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: ${{ env.SONAR_SERVER_URL }}
           SONAR_ROOT_CERT: ${{ secrets.SONAR_ROOT_CERT }}
         with:
           # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
