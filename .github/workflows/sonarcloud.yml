@@ -80,9 +80,9 @@ jobs:
           gcovr --version
           gcovr --sonarqube \
             -r "$BaseDir" \
-            --exclude "$BaseDir/main/src/test/" \
-            --exclude "$BaseDir/main/src/examples/" \
-            --exclude "$BaseDir/main/src/fuzzers/" \
+            --exclude "$BaseDir/src/test/" \
+            --exclude "$BaseDir/src/examples/" \
+            --exclude "$BaseDir/src/fuzzers/" \
             --verbose --gcov-ignore-parse-errors \
             -o "$BaseDir/build/coverage.xml"
 
