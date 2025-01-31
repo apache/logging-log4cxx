@@ -43,9 +43,8 @@ declare -a encodings=("utf-8" "wchar_t")
 
 for encoding in "${encodings[@]}"
 do
-  echo heeeeere
   # Build the project
-  mkdir -p build && cd $_
+  mkdir -p build-"${encoding}" && cd $_
   cmake \
     -DBUILD_SHARED_LIBS=OFF \
     -DBUILD_TESTING=OFF \
@@ -58,5 +57,5 @@ do
   # Copy executables & resources
   find src/fuzzers/cpp -maxdepth 1 -executable -type f -exec cp -v {} "$outputDir/" \;
   cp ../src/fuzzers/resources/* "$outputDir/"
-  cd .. && rm -r build
+  cd .. && rm -r build-"${encoding}"
 done
