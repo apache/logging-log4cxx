@@ -18,6 +18,7 @@
 #include <log4cxx/pattern/nameabbreviator.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/loglog.h>
 #include <vector>
 #include <limits.h>
 #include <stdexcept>
@@ -293,9 +294,14 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern)
 		if (i == trimmed.length())
 		{
 			int len = 256;
-			try{
+			try
+			{
 				len = StringHelper::toInt(trimmed);
-			}catch(std::out_of_range){}
+			}
+			catch (const std::out_of_range& ex)
+			{
+				LogLog::warn(LOG4CXX_STR("Invalid name abreviator pattern: ") + pattern, ex);
+			}
 
 			if(len > 256){
 				len = 256;
