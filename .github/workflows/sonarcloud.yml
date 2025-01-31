@@ -28,7 +28,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      SONAR_ACTION_VERSION: v4.2.1
       SONAR_SERVER_URL: "https://sonarcloud.io"
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
@@ -58,7 +57,7 @@ jobs:
           sudo apt-get install -y libapr1-dev libaprutil1-dev
 
       - name: Install Build Wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@${{ env.SONAR_ACTION_VERSION }}
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v4.2.1
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
@@ -81,7 +80,7 @@ jobs:
           gcovr --sonarqube -r ../../../../ --verbose --gcov-ignore-parse-errors --exclude '../../../../src/test/' --exclude '../../../../src/examples' -o ../../../coverage.xml
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@${{ env.SONAR_ACTION_VERSION }}
+        uses: SonarSource/sonarqube-scan-action@v4.2.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -89,7 +88,7 @@ jobs:
         with:
           # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
           args: >
-            --define sonar.host.url="${{ env.SONAR_SERVER_URL }}" \
+            --define sonar.host.url="${{ env.SONAR_SERVER_URL }}"
             --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json" 
             --define sonar.coverageReportPaths=build/coverage.xml
 
