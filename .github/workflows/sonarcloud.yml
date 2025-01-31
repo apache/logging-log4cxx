@@ -63,19 +63,17 @@ jobs:
 
       - name: Run build-wrapper
         run: |
-          cd main
-          mkdir build
-          cmake -DBUILD_TESTING=on -DENABLE_COVERAGE=on -S . -B build
+          cmake -DBUILD_TESTING=on -DENABLE_COVERAGE=on -S main -B build
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ --config Release
 
       - name: Run tests to generate coverage statistics
         run: |
-          cd main/build
+          cd build
           make test
 
       - name: Collect coverage into one XML report
         run: |
-          cd main/build/src/main/cpp
+          cd build/src/main/cpp
           gcovr --version
           gcovr --sonarqube -r ../../../../ --verbose --gcov-ignore-parse-errors --exclude '../../../../src/test/' --exclude '../../../../src/examples' -o ../../../coverage.xml
 
