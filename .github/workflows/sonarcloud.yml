@@ -76,8 +76,15 @@ jobs:
           cd main
           BaseDir=$(pwd)
           cd build/src/main/cpp
+          set -v
           gcovr --version
-          gcovr --sonarqube -r "$BaseDir/main" --verbose --gcov-ignore-parse-errors --exclude "$BaseDir/main/src/test/" --exclude "$BaseDir/main/src/examples/" --exclude "$BaseDir/main/src/fuzzers/" -o "$BaseDir/build/coverage.xml"
+          gcovr --sonarqube \
+            -r "$BaseDir" \
+            --exclude "$BaseDir/main/src/test/" \
+            --exclude "$BaseDir/main/src/examples/" \
+            --exclude "$BaseDir/main/src/fuzzers/" \
+            --verbose --gcov-ignore-parse-errors \
+            -o "$BaseDir/build/coverage.xml"
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4.2.1
