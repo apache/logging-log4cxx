@@ -86,6 +86,7 @@ jobs:
           SONAR_HOST_URL: ${{ env.SONAR_SERVER_URL }}
           SONAR_ROOT_CERT: ${{ secrets.SONAR_ROOT_CERT }}
         with:
+          projectBaseDir: main
           # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
           args: >
             --define sonar.host.url="${{ env.SONAR_SERVER_URL }}"
