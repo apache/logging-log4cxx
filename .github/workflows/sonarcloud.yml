@@ -18,10 +18,8 @@ on:
   push:
     branches:
       - master
-      - next_stable
-      - sonar*
-  pull_request:
-    types: [opened, synchronize, reopened]
+#  pull_request:
+#    types: [opened, synchronize, reopened]
 
 jobs:
   build:
@@ -76,7 +74,6 @@ jobs:
           cd main
           BaseDir=$(pwd)
           cd build/src/main/cpp
-          set -v
           gcovr --version
           gcovr --sonarqube \
             -r "$BaseDir" \
