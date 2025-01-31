@@ -73,9 +73,10 @@ jobs:
 
       - name: Collect coverage into one XML report
         run: |
+          BaseDir=$(pwd)
           cd build/src/main/cpp
           gcovr --version
-          gcovr --sonarqube -r ../../../../ --verbose --gcov-ignore-parse-errors --exclude '../../../../src/test/' --exclude '../../../../src/examples' -o ../../../coverage.xml
+          gcovr --sonarqube -r "$BaseDir/main" --verbose --gcov-ignore-parse-errors --exclude "$BaseDir/main/src/test/" --exclude "$BaseDir/main/src/examples" -o "$BaseDir/coverage.xml"
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4.2.1
@@ -89,5 +90,5 @@ jobs:
           args: >
             --define sonar.host.url="${{ env.SONAR_SERVER_URL }}"
             --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
-            --define sonar.coverageReportPaths=build/coverage.xml
+            --define sonar.coverageReportPaths=coverage.xml
 
