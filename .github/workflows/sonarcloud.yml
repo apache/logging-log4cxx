@@ -18,8 +18,6 @@ on:
   push:
     branches:
       - master
-      - next_stable
-      - sonar*
 #  pull_request:
 #    types: [opened, synchronize, reopened]
 
@@ -28,7 +26,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      SONAR_SCANNER_VERSION: 5.0.1.3006
       SONAR_SERVER_URL: "https://sonarcloud.io"
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
@@ -57,29 +54,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libapr1-dev libaprutil1-dev
 
-      - name: Download and set up sonar-scanner
+      - name: Install Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v4.2.1
         env:
-          SONAR_SCANNER_DOWNLOAD_URL: https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-linux.zip
-        run: |
-          mkdir -p $HOME/.sonar
-          curl -sSLo $HOME/.sonar/sonar-scanner.zip ${{ env.SONAR_SCANNER_DOWNLOAD_URL }} 
-          unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
-          echo "$HOME/.sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux/bin" >> $GITHUB_PATH
-
-      - name: Download and set up build-wrapper
-        env:
-          BUILD_WRAPPER_DOWNLOAD_URL: ${{ env.SONAR_SERVER_URL }}/static/cpp/build-wrapper-linux-x86.zip
-        run: |
-          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${{ env.BUILD_WRAPPER_DOWNLOAD_URL }}
-          unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
-          echo "$HOME/.sonar/build-wrapper-linux-x86" >> $GITHUB_PATH
+          SONAR_HOST_URL: ${{ env.SONAR_SERVER_URL }}
 
       - name: Run build-wrapper
         run: |
-          cd main
-          mkdir build
-          cmake -DBUILD_TESTING=on -DENABLE_COVERAGE=on -S . -B build
-          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ --config Release
+          cmake -DBUILD_TESTING=on -DENABLE_COVERAGE=on -S main -B main/build
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build main/build/ --config Release
 
       - name: Run tests to generate coverage statistics
         run: |
@@ -88,17 +71,29 @@ jobs:
 
       - name: Collect coverage into one XML report
         run: |
-          cd main/build/src/main/cpp
-          gcovr --version
-          gcovr --sonarqube -r ../../../../ --verbose --gcov-ignore-parse-errors --exclude '../../../../src/test/' --exclude '../../../../src/examples' -o ../../../coverage.xml
-
-      - name: Run sonar-scanner
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-        run: |
           cd main
-          sonar-scanner \
-            --define sonar.host.url="${{ env.SONAR_SERVER_URL }}" \
-            --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" \
+          BaseDir=$(pwd)
+          cd build/src/main/cpp
+          gcovr --version
+          gcovr --sonarqube \
+            -r "$BaseDir" \
+            --exclude "$BaseDir/src/test/" \
+            --exclude "$BaseDir/src/examples/" \
+            --exclude "$BaseDir/src/fuzzers/" \
+            --verbose --gcov-ignore-parse-errors \
+            -o "$BaseDir/build/coverage.xml"
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4.2.1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+          SONAR_HOST_URL: ${{ env.SONAR_SERVER_URL }}
+          SONAR_ROOT_CERT: ${{ secrets.SONAR_ROOT_CERT }}
+        with:
+          projectBaseDir: main
+          # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
+          args: >
+            --define sonar.host.url="${{ env.SONAR_SERVER_URL }}"
+            --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
             --define sonar.coverageReportPaths=build/coverage.xml
+
