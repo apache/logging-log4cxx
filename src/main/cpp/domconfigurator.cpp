@@ -224,6 +224,10 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 	{
 		ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
 		AppenderPtr appender = LOG4CXX_NS::cast<Appender>(instance);
+		if(!appender){
+			LogLog::error(LOG4CXX_STR("Could not cast class of type [") + className + LOG4CXX_STR("] to appender"));
+			return AppenderPtr();
+		}
 		PropertySetter propSetter(appender);
 
 		appender->setName(subst(getAttribute(utf8Decoder, appenderElement, NAME_ATTR)));

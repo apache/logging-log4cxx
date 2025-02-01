@@ -53,6 +53,7 @@ LOGUNIT_CLASS(DOMTestCase)
 #endif
 	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST(test4);
+	LOGUNIT_TEST(invalidAppender);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
@@ -225,6 +226,13 @@ public:
 		Pool p;
 		bool exists = file.exists(p);
 		LOGUNIT_ASSERT(exists);
+	}
+
+	void invalidAppender()
+	{
+		// Load an XML file that attempts to use a levelmatchfilter as an appender.
+		// We should not crash when loading this file.
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMInvalidAppender.xml"));
 	}
 };
 

@@ -1,0 +1,7 @@
+<log4j:configuration xmlns:log4j=' '>
+  <appender name="TEMP" class="levelmatchfilter"></appender>
+
+  <root>
+    <appender-ref ref="TEMP"/>
+  </root>
+</log4j:configuration>
