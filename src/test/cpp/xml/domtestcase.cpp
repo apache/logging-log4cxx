@@ -53,6 +53,7 @@ LOGUNIT_CLASS(DOMTestCase)
 #endif
 	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST(test4);
+	LOGUNIT_TEST(recursiveAppenderRef);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
@@ -225,6 +226,12 @@ public:
 		Pool p;
 		bool exists = file.exists(p);
 		LOGUNIT_ASSERT(exists);
+	}
+
+	void recursiveAppenderRef()
+	{
+		// Load a bad XML file, make sure that we don't crash in endless recursion
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMConfiguratorRecursive.xml"));
 	}
 };
 

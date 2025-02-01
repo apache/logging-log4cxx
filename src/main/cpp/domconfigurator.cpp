@@ -295,7 +295,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 			{
 				LogString refName = subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
 
-				if (appender->instanceof(AppenderAttachable::getStaticClass()))
+				if (!refName.empty() && appender->instanceof(AppenderAttachable::getStaticClass()))
 				{
 					AppenderAttachablePtr aa = LOG4CXX_NS::cast<AppenderAttachable>(appender);
 					if (LogLog::isDebugEnabled())
@@ -305,6 +305,10 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 							appender->getName() + LOG4CXX_STR("]."));
 					}
 					aa->addAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
+				}
+				else if (refName.empty())
+				{
+					LogLog::error(LOG4CXX_STR("Can't add appender with empty ref attribute"));
 				}
 				else
 				{

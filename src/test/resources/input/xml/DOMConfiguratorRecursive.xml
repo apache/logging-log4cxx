@@ -1,0 +1,10 @@
+<log4j:configuration xmlns:log4j=" ">
+  <appender class="AsyncAppender">
+    <appender-ref/>
+  </appender>
+
+  <logger>
+    <appender-ref/>
+  </logger>
+
+</log4j:configuration>
