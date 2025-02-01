@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <fuzzer/FuzzedDataProvider.h>
 #include <log4cxx/pattern/patternconverter.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include <log4cxx/pattern/loggerpatternconverter.h>
 #include <log4cxx/pattern/literalpatternconverter.h>
@@ -47,19 +48,38 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::pattern;
 
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T
+wchar_t* wencode(const std::string& src, Pool& p)
+{
+        wchar_t* dst = (wchar_t*) p.palloc((src.length() + 1) * sizeof(wchar_t));
+        dst[src.length()] = 0;
+        std::memcpy(dst, src.data(), src.length() * sizeof(wchar_t));
+        return dst;
+}
+#endif
+
 // Creates options from the FuzzedDataProvider
 std::vector<log4cxx::LogString> createOptions(FuzzedDataProvider* fdp) {
-	std::string opt1 = fdp->ConsumeRandomLengthString();
-	std::string opt2 = fdp->ConsumeRandomLengthString();
-	std::string opt3 = fdp->ConsumeRandomLengthString();
-	std::string opt4 = fdp->ConsumeRandomLengthString();
-	std::string opt5 = fdp->ConsumeRandomLengthString();
+	std::string opt1Str = fdp->ConsumeRandomLengthString();
+	std::string opt2Str = fdp->ConsumeRandomLengthString();
+	std::string opt3Str = fdp->ConsumeRandomLengthString();
+	std::string opt4Str = fdp->ConsumeRandomLengthString();
+	std::string opt5Str = fdp->ConsumeRandomLengthString();
+	
+	LogString opt1, opt2, opt3, opt4, opt5;
+
+	Transcoder::decode(opt1Str, opt1);
+	Transcoder::decode(opt2Str, opt2);
+	Transcoder::decode(opt3Str, opt3);
+	Transcoder::decode(opt4Str, opt4);
+	Transcoder::decode(opt5Str, opt5);
+
 	std::vector<log4cxx::LogString> options =
-        { LOG4CXX_STR(opt1)
-        , LOG4CXX_STR(opt2)
-        , LOG4CXX_STR(opt3)
-        , LOG4CXX_STR(opt4)
-        , LOG4CXX_STR(opt5)
+        { opt1
+        , opt2
+        , opt3
+        , opt4
+        , opt5
         };
        return options;
 }
@@ -69,23 +89,30 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	FuzzedDataProvider fdp(data, size);
 	
 	std::string loggerStr = fdp.ConsumeRandomLengthString();
-	std::string content = fdp.ConsumeRandomLengthString();
+	std::string contentStr = fdp.ConsumeRandomLengthString();
+	
+	LogString logger, content;
+	Transcoder::decode(loggerStr, logger);
+	Transcoder::decode(contentStr, content);
 
 	// Create the event
-	log4cxx::LogString logger = LOG4CXX_STR(loggerStr);
-	log4cxx::LevelPtr level = log4cxx::Level::getInfo();
+	LevelPtr level = Level::getInfo();
+
+	Pool p;
+
 	log4cxx::spi::LoggingEventPtr event = log4cxx::spi::LoggingEventPtr(
 		new log4cxx::spi::LoggingEvent(
-			logger, level, LOG4CXX_STR(content), LOG4CXX_LOCATION));
-
-	log4cxx::helpers::Pool p;
-
+			logger, level, content, LOG4CXX_LOCATION));
 	// Select a converter and invoke it.
 	switch(fdp.ConsumeIntegralInRange<int>(0, 14)) {
 		case 0: {
 			std::string str1 = fdp.ConsumeRandomLengthString();
 			std::string str2 = fdp.ConsumeRandomLengthString();
-			PropertiesPatternConverter* converter = new PropertiesPatternConverter(LOG4CXX_STR(str1), LOG4CXX_STR(str2));
+			LogString a1, a2;
+			Transcoder::decode(str1, a1);
+			Transcoder::decode(str2, a2);
+
+			PropertiesPatternConverter* converter = new PropertiesPatternConverter(a1, a2);
 			converter->format(event, logger, p);
 			delete converter;
 		}

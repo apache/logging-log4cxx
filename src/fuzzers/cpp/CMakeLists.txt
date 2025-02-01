@@ -25,7 +25,6 @@ set(ALL_LOG4CXX_FUZZERS
     PatternConverterFuzzer
     DOMConfiguratorFuzzer
 )
-set(LOG4CXX_CHAR "utf-8")
 
 # Get the most recent Git commit ID
 execute_process(
@@ -58,7 +57,7 @@ else()
 endif()
 
 foreach(fuzzerName IN LISTS ALL_LOG4CXX_FUZZERS)
-  set(PROGRAM_NAME "${fuzzerName}")
+  set(PROGRAM_NAME "${fuzzerName}-${LOG4CXX_CHAR}")
   add_executable(${PROGRAM_NAME} ${fuzzerName}.cpp)
   target_compile_definitions(${PROGRAM_NAME}
     PRIVATE

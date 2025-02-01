@@ -16,16 +16,25 @@
  */
 
 #include "stdint.h"
+#include <iostream>
+#include <string>
+#include <cwchar>
 #include <log4cxx/logstring.h>
 #include <log4cxx/ndc.h>
 #include <log4cxx/xml/xmllayout.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <fuzzer/FuzzedDataProvider.h>
 #include <log4cxx/mdc.h>
+#include <log4cxx/helpers/transcoder.h>
+
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// Setup XMLLayout
 	log4cxx::xml::XMLLayout layout;
+	Pool p;
 
 	// Create random strings
 	FuzzedDataProvider fdp(data, size);
@@ -33,19 +42,34 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	std::string val1 = fdp.ConsumeRandomLengthString();
 	std::string key2 = fdp.ConsumeRandomLengthString();
 	std::string val2 = fdp.ConsumeRandomLengthString();
+	std::string ndcMessage = fdp.ConsumeRandomLengthString();
+	std::string loggerString = fdp.ConsumeRandomLengthString();
+	std::string propkey = fdp.ConsumeRandomLengthString();
+	std::string propval = fdp.ConsumeRandomLengthString();
 	std::string content = fdp.ConsumeRemainingBytesAsString();
 
-	log4cxx::LogString logger = LOG4CXX_STR("com.example.bar");
 	log4cxx::LevelPtr level = log4cxx::Level::getInfo();
-	std::string ndcMessage = "<envelope><faultstring><![CDATA[The EffectiveDate]]></faultstring><envelope>";
 	log4cxx::NDC::push(ndcMessage);
+        LogString logstring1;
+        LogString key1LogString;
+        LogString val1LogString;
+        LogString propkeyLogString;
+        LogString propvalLogString;
+        LogString logger;
+
+        Transcoder::decode(content, logstring1);
+        Transcoder::decode(loggerString, logger);
+        Transcoder::decode(key1, key1LogString);
+        Transcoder::decode(val1, val1LogString);
+        Transcoder::decode(propkey, propkeyLogString);
+        Transcoder::decode(propval, propvalLogString);
 	log4cxx::spi::LoggingEventPtr event = log4cxx::spi::LoggingEventPtr(
 		new log4cxx::spi::LoggingEvent(
-			logger, level, LOG4CXX_STR(content), LOG4CXX_LOCATION));
-
+			logger, level, logstring1, LOG4CXX_LOCATION));
 	// Set properties
 	layout.setProperties(true);
-	event->setProperty(LOG4CXX_STR(key1), LOG4CXX_STR(val1));
+	event->setProperty(propkeyLogString, propvalLogString);
+
 
 	// Set MDC
 	log4cxx::MDC::put(key2, val2);
@@ -54,7 +78,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	layout.setLocationInfo(true);
 
 	// Call the target API
-	log4cxx::helpers::Pool p;
 	log4cxx::LogString result;
 	layout.format(result, event, p);
 

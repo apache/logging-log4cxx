@@ -22,6 +22,7 @@
 #include <fuzzer/FuzzedDataProvider.h>
 #include <log4cxx/mdc.h>
 #include <log4cxx/htmllayout.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -30,7 +31,7 @@ using namespace log4cxx::spi;
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// Setup HTMLLayout
 	HTMLLayout layout;
-	log4cxx::helpers::Pool p;
+	Pool p;
 
 	FuzzedDataProvider fdp(data, size);
 
@@ -47,32 +48,42 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// Header
 	if (fdp.ConsumeBool()) {
 		std::string headerStr = fdp.ConsumeRandomLengthString();
-		layout.appendHeader(LOG4CXX_STR(headerStr), p);
+		LogString header;
+		Transcoder::decode(headerStr, header);
+		layout.appendHeader(header, p);
 	}
 
 	// Create random strings we need later
-	std::string key1 = fdp.ConsumeRandomLengthString();
-	std::string val1 = fdp.ConsumeRandomLengthString();
-	std::string key2 = fdp.ConsumeRandomLengthString();
-	std::string val2 = fdp.ConsumeRandomLengthString();
+	std::string key1Str = fdp.ConsumeRandomLengthString();
+	std::string val1Str = fdp.ConsumeRandomLengthString();
+	std::string key2Str = fdp.ConsumeRandomLengthString();
+	std::string val2Str = fdp.ConsumeRandomLengthString();
 	std::string key3 = fdp.ConsumeRandomLengthString();
 	std::string val3 = fdp.ConsumeRandomLengthString();
 	std::string key4 = fdp.ConsumeRandomLengthString();
 	std::string val4 = fdp.ConsumeRandomLengthString();
 	std::string ndcMessage = fdp.ConsumeRandomLengthString();
 	std::string loggerStr = fdp.ConsumeRandomLengthString();
-	std::string content = fdp.ConsumeRemainingBytesAsString();
+	std::string contentStr = fdp.ConsumeRemainingBytesAsString();
 
-	log4cxx::LogString logger = LOG4CXX_STR(loggerStr);
-	log4cxx::LevelPtr level = log4cxx::Level::getInfo();
-	log4cxx::NDC::push(ndcMessage);
-	log4cxx::spi::LoggingEventPtr event = log4cxx::spi::LoggingEventPtr(
+	LogString key1, key2, val1, val2, logger, content;
+
+	Transcoder::decode(loggerStr, logger);
+	Transcoder::decode(key1Str, key1);
+	Transcoder::decode(val1Str, val2);
+	Transcoder::decode(key2Str, key2);
+	Transcoder::decode(val2Str, val2);
+	Transcoder::decode(contentStr, content);
+	
+	LevelPtr level = log4cxx::Level::getInfo();
+	NDC::push(ndcMessage);
+	spi::LoggingEventPtr event = log4cxx::spi::LoggingEventPtr(
 		new log4cxx::spi::LoggingEvent(
-			logger, level, LOG4CXX_STR(content), LOG4CXX_LOCATION));
+			logger, level, content, LOG4CXX_LOCATION));
 
 	// Set properties
-	event->setProperty(LOG4CXX_STR(key1), LOG4CXX_STR(val1));
-	event->setProperty(LOG4CXX_STR(key2), LOG4CXX_STR(val2));
+	event->setProperty(key1, val1);
+	event->setProperty(key2, val2);
 
 	// Set MDC
 	log4cxx::MDC::put(key3, val3);
