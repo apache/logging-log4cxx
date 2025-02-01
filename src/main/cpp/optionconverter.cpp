@@ -363,6 +363,12 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
 			LOG4CXX_STR("] conversion) failed."), oops);
 	}
+	catch(const std::bad_cast&)
+	{
+		LogLog::warn(
+			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("] unable to be converted to "
+			"Level::LevelClass"));
+	}
 	catch (...)
 	{
 		LogLog::warn(
