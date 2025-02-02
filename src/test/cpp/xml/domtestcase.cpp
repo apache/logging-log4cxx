@@ -54,6 +54,8 @@ LOGUNIT_CLASS(DOMTestCase)
 	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(recursiveAppenderRef);
+	LOGUNIT_TEST(invalidAppender);
+	LOGUNIT_TEST(invalidLevel);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
@@ -228,10 +230,25 @@ public:
 		LOGUNIT_ASSERT(exists);
 	}
 
+
 	void recursiveAppenderRef()
 	{
 		// Load a bad XML file, make sure that we don't crash in endless recursion
 		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMConfiguratorRecursive.xml"));
+  }
+
+	void invalidAppender()
+	{
+		// Load an XML file that attempts to use a levelmatchfilter as an appender.
+		// We should not crash when loading this file.
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMInvalidAppender.xml"));
+  }
+  
+	void invalidLevel()
+	{
+		// Load an XML file that attempts to use a filter as a level.
+		// We should not crash when loading this file.
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMInvalidLevel.xml"));
 	}
 };
 
