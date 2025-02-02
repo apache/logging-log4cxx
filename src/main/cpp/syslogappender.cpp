@@ -334,8 +334,9 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		for (auto const& item : packets)
 		{
 			// use of "%s" to avoid a security hole
+			LOG4CXX_ENCODE_CHAR(itemStr, item);
 			::syslog(_priv->syslogFacility | event->getLevel()->getSyslogEquivalent(),
-				"%s", item.c_str());
+				"%s", itemStr.c_str());
 		}
 
 		return;
