@@ -47,7 +47,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     } else {
            tbrp->setFileNamePattern(LogString(LOG4CXX_STR("fuzz-%d{" DATE_PATTERN "}.zip")));
     }
-    rfa->setFile(LOG4CXX_STR(LOG4CXX_STR("test.log")));
+    rfa->setFile(LOG4CXX_STR("test.log"));
     
     tbrp->activateOptions(pool);
     rfa->setRollingPolicy(tbrp);
