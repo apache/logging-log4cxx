@@ -85,7 +85,7 @@ LogString OptionConverter::convertSpecialChars(const LogString& s)
 	{
 		c = *i++;
 
-		if (c == 0x5C /* '\\' */)
+		if (i != s.end() && c == 0x5C /* '\\' */)
 		{
 			c =  *i++;
 
