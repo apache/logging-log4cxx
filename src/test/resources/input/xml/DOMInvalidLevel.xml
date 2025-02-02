@@ -1,0 +1,11 @@
+<log4j:configuration xmlns:log4j=' '>
+  <appender name="TEMP" class="FileAppender">
+    <filter class="LevelMatchFilter">
+      <param name="LevelToMatch" value=" #Filter"/>
+    </filter>
+  </appender>
+
+  <root>
+    <appender-ref ref="TEMP"/>
+  </root>
+</log4j:configuration>

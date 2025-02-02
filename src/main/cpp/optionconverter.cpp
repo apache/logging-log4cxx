@@ -343,8 +343,13 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 
 	try
 	{
-		Level::LevelClass& levelClass =
-			(Level::LevelClass&)Loader::loadClass(clazz);
+		// Note: the dynamic_cast could fail across DLL boundaries.
+		// However, without the dynamic_cast a poorly formed XML file
+		// could attempt to load an invalid class as a filter, causing
+		// a crash.  If it can't be converted, a std::bad_cast should be
+		// thrown(and caught by the exception handler below)
+		const Level::LevelClass& levelClass =
+			dynamic_cast<const Level::LevelClass&>(Loader::loadClass(clazz));
 		return levelClass.toLevel(levelName);
 	}
 	catch (ClassNotFoundException&)
@@ -357,6 +362,12 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 		LogLog::warn(
 			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
 			LOG4CXX_STR("] conversion) failed."), oops);
+	}
+	catch(const std::bad_cast&)
+	{
+		LogLog::warn(
+			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("] unable to be converted to "
+			"Level::LevelClass"));
 	}
 	catch (...)
 	{
