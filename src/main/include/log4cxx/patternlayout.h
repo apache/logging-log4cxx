@@ -283,7 +283,7 @@ LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
  * <p>
  *  The first optional format modifier is the <em>left justification flag</em> which is
  *  just the minus (-) character. Then comes the optional <em>minimum field width</em>
- *  modifier. This is a decimal constant that represents the minimum number of characters
+ *  modifier. This is a 1 to 3 decimal digit constant that represents the minimum number of characters
  *  to output. If the data item requires fewer characters, it is padded on either the left
  *  or the right until the minimum width is reached. The default is to pad on the left
  *  (right justify) but you can specify right padding with the left justification flag. The
@@ -293,7 +293,7 @@ LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
  *
  * <p>
  *  This behavior can be changed using the <em>maximum field width</em> modifier which is
- *  designated by a period followed by a decimal constant. If the data item is longer than
+ *  designated by a period followed by a 1 to 3 decimal digit constant. If the data item is longer than
  *  the maximum field, then the extra characters are removed from the <em>beginning</em> of
  *  the data item and not from the end. For example, it the maximum field width is eight
  *  and the data item is ten characters long, then the first two characters of the data
