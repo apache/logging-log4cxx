@@ -80,6 +80,7 @@ LOGUNIT_CLASS(PatternParserTestCase)
 	LOGUNIT_TEST(testBasic2);
 	LOGUNIT_TEST(testMultiOption);
 	LOGUNIT_TEST(testThreadUsername);
+	LOGUNIT_TEST(testInvalidPatterns);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggingEventPtr event;
@@ -291,6 +292,16 @@ public:
 		assertFormattedEquals(LOG4CXX_STR("%relative %-5level [%threadname] %logger - %m%n"),
 			getFormatSpecifiers(),
 			expected);
+	}
+
+	void testInvalidPatterns()
+	{
+		assertFormattedEquals(LOG4CXX_STR("%6666c"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("%6666c"));
+		assertFormattedEquals(LOG4CXX_STR("%6.6666c"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("%6.6666c"));
 	}
 
 };

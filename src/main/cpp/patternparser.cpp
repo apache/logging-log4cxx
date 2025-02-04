@@ -125,6 +125,7 @@ void PatternParser::parse(
 	int state = LITERAL_STATE;
 	logchar c;
 	size_t i = 0;
+	int minDigitCount{ 0 }, maxDigitCount{ 0 };
 	FormattingInfoPtr formattingInfo(FormattingInfo::getDefault());
 
 	while (i < patternLength)
@@ -198,6 +199,7 @@ void PatternParser::parse(
 										formattingInfo->isLeftAligned(), c - 0x30 /* '0' */,
 										formattingInfo->getMaxLength());
 							state = MIN_STATE;
+							minDigitCount = 1;
 						}
 						else
 						{
@@ -221,12 +223,13 @@ void PatternParser::parse(
 			case MIN_STATE:
 				currentLiteral.append(1, c);
 
-				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
+				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */) && minDigitCount < 3)
 				{
 					formattingInfo = std::make_shared<FormattingInfo>(
 								formattingInfo->isLeftAligned(),
 								(formattingInfo->getMinLength() * 10) + (c - 0x30 /* '0' */),
 								formattingInfo->getMaxLength());
+					++minDigitCount;
 				}
 				else if (c == 0x2E /* '.' */)
 				{
@@ -257,6 +260,7 @@ void PatternParser::parse(
 								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
 								c - 0x30 /* '0' */);
 					state = MAX_STATE;
+					maxDigitCount = 1;
 				}
 				else
 				{
@@ -270,11 +274,12 @@ void PatternParser::parse(
 			case MAX_STATE:
 				currentLiteral.append(1, c);
 
-				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
+				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */) && maxDigitCount < 3)
 				{
 					formattingInfo = std::make_shared<FormattingInfo>(
 								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
 								(formattingInfo->getMaxLength() * 10) + (c - 0x30 /* '0' */));
+					++maxDigitCount;
 				}
 				else
 				{
