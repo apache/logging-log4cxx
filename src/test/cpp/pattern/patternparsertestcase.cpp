@@ -275,6 +275,9 @@ public:
 		assertFormattedEquals(LOG4CXX_STR("%d{HH:mm:ss}{GMT} %d{HH:mm:ss}{GMT-X} %c  - %m"),
 			getFormatSpecifiers(),
 			expected);
+		assertFormattedEquals(LOG4CXX_STR("%d{HH:mm:ss}{GMT} %d{HH:mm:ss}{GMT-1:62222222} %c  - %m"),
+			getFormatSpecifiers(),
+			expected);
 	}
 
 	void testThreadUsername()

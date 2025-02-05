@@ -23,6 +23,7 @@
 #include <apr_time.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
+#include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/pool.h>
@@ -241,10 +242,13 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString& id )
 		}
 
 		// Make sure that our offset can't be crazy
-		if( hours > 14 ){
-			hours = 14;
-		}else if( hours < -12 ){
-			hours = -12;
+		if( hours < -12 || 14 < hours)
+		{
+			throw RuntimeException(LOG4CXX_STR("Hour offset must be in (-12..14)"));
+		}
+		if (minutes < 0 || 60 < minutes)
+		{
+			throw RuntimeException(LOG4CXX_STR("Minute offset must be in (0..60)"));
 		}
 
 		LogString s(gmt);
