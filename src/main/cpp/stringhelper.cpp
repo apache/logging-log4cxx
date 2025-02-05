@@ -41,7 +41,7 @@ bool StringHelper::equalsIgnoreCase(const LogString& s1, const logchar* upper, c
 		++lower;
 	}
 
-	return 0 == *upper && iter == s1.end();
+	return 0 == *upper;
 }
 
 bool StringHelper::equalsIgnoreCase(const LogString& s1, const LogString& upper, const LogString& lower)
