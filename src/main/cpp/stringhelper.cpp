@@ -30,7 +30,7 @@ using namespace LOG4CXX_NS::helpers;
 
 bool StringHelper::equalsIgnoreCase(const LogString& s1, const logchar* upper, const logchar* lower)
 {
-	for (auto& item : s1)
+	for (const auto& item : s1)
 	{
 		if (0 == item || // OSS-Fuzz makes strings with embedded NUL characters
 			(item != *upper && item != *lower))
