@@ -24,6 +24,13 @@
 #include <log4cxx/jsonlayout.h>
 #include <log4cxx/helpers/transcoder.h>
 
+namespace
+{
+	const int MaxKeyLength = 50;
+	const int MaxValueLength = 500;
+	const int MaxMessageLength = 2000;
+}
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
@@ -48,17 +55,17 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	}
 
 	// Create random strings we need later
-	std::string key1Str = fdp.ConsumeRandomLengthString();
-	std::string val1Str = fdp.ConsumeRandomLengthString();
-	std::string key2Str = fdp.ConsumeRandomLengthString();
-	std::string val2Str = fdp.ConsumeRandomLengthString();
-	std::string key3Str = fdp.ConsumeRandomLengthString();
-	std::string val3Str = fdp.ConsumeRandomLengthString();
-	std::string key4Str = fdp.ConsumeRandomLengthString();
-	std::string val4Str = fdp.ConsumeRandomLengthString();
-	std::string ndcMessageStr = fdp.ConsumeRandomLengthString();
-	std::string loggerStr = fdp.ConsumeRandomLengthString();
-	std::string contentStr = fdp.ConsumeRemainingBytesAsString();
+	std::string key1Str = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val1Str = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string key2Str = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val2Str = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string key3Str = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val3Str = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string key4Str = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val4Str = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string ndcMessageStr = fdp.ConsumeRandomLengthString(MaxMessageLength);
+	std::string loggerStr = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string contentStr = fdp.ConsumeRandomLengthString(MaxMessageLength);
 
 	LogString key1, val1, key2, val2, key3, val3, key4, val4, ndcMessage, logger, content;
 	Transcoder::decode(key1Str, key1);
