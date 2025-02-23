@@ -27,8 +27,10 @@ required.  In order for that to happen, Log4cxx provides the
 log4cxx::rolling::MultiprocessRollingFileAppender that will check the size of the file when
 writing to the file and roll it over appropriately.
 
-This is an optional feature, and thus must be explicitly enabled when building
-Log4cxx.  This feature is also only supported on Linux at the moment.
-Because this feature is non-standard, it may not work properly in all
-circumstances.
+Coordinating with other processes adds significant overhead compared to log4cxx::rolling::RollingFileAppender.
+Benchmark measurments show the overhead of this appender is more than 3 and 10 times
+the overhead of log4cxx::rolling::RollingFileAppender on Linux and Windows respectively.
+
+This is an optional feature, and thus must be explicitly enabled
+by defining LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=on when building Log4cxx.
 
