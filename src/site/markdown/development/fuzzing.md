@@ -69,8 +69,7 @@ Log4cxx provides OSS-Fuzz integration with following helpers:
 ## Viewing fuzzing failures detected by OSS-Fuzz {#view}
 
 The system running fuzzers registered to OSS-Fuzz is called **ClusterFuzz**, which provides [a web interface](https://oss-fuzz.com) for maintainers to monitor the fuzzing results.
-Tests outputs and [reproduction](#reproduce) inputs for failed tests are stored in [a Google Cloud Storage bucket](https://console.cloud.google.com/storage/browser/apache-logging-log4cxx-logs.clusterfuzz-external.appspot.com).
-Access to both the web interface and the bucket is restricted, and only allowed to [those configured for the project](https://github.com/google/oss-fuzz/blob/master/projects/apache-logging-log4cxx/project.yaml).
+Test output and the input for any failed test (required for reproduction) are stored in [a Google Cloud Storage bucket](https://console.cloud.google.com/storage/browser/apache-logging-log4cxx-logs.clusterfuzz-external.appspot.com).
 
 ## Reproducing fuzzing failures detected by OSS-Fuzz {#reproduce}
 
@@ -81,4 +80,6 @@ python infra/helper.py reproduce \
   apache-logging-log4cxx <FUZZ-TARGET-NAME> <TESTCASE-FILE-PATH>
 ~~~~
 
-Refer to https://google.github.io/oss-fuzz/advanced-topics/reproducing/[the related OSS-Fuzz documentation] for details.
+Refer to [the related OSS-Fuzz documentation](https://google.github.io/oss-fuzz/advanced-topics/reproducing) for details.
+
+Access to both the web interface and the storage bucket is restricted, and only [those allowed to configure the oss-fuzz project](https://github.com/google/oss-fuzz/blob/master/projects/apache-logging-log4cxx/project.yaml).

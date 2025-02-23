@@ -20,9 +20,11 @@
 <br/>
 [![Windows (dll)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows.yml)
 [![Windows (static)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows-static.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-windows-static.yml)
+[![MSYS2](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-msys2.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/log4cxx-msys2.yml)
 <br/>
 [![ABI stability](https://github.com/apache/logging-log4cxx/actions/workflows/abi-compatibility.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/abi-compatibility.yml)
 [![Quality gate](https://github.com/apache/logging-log4cxx/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/apache/logging-log4cxx/actions/workflows/sonarcloud.yml)
+[![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/apache-logging-log4cxx.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:apache-logging-log4cxx)
 
 Apache Log4cxx is a logging framework for C++.
 
