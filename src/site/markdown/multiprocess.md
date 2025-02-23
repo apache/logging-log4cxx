@@ -30,6 +30,8 @@ writing to the file and roll it over appropriately.
 Coordinating with other processes adds significant overhead compared to log4cxx::rolling::RollingFileAppender.
 Benchmark measurements show the overhead of this appender is more than 3 and 10 times
 the overhead of log4cxx::rolling::RollingFileAppender on Linux and Windows respectively.
+This overhead can be moved to a background thread by attaching the MultiprocessRollingFileAppender
+to an log4cxx::AsyncAppender.
 
 This is an optional feature, and thus must be explicitly enabled
 by defining LOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=on when building Log4cxx.
