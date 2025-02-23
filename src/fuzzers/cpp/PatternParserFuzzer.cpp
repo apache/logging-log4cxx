@@ -43,6 +43,12 @@
 #include <log4cxx/pattern/throwableinformationpatternconverter.h>
 #include <log4cxx/pattern/threadusernamepatternconverter.h>
 
+namespace
+{
+    const int MaximumLoggerNameByteCount = 100;
+    const int MaximumMessageByteCount = 10000;
+    const int MaximumPatternByteCount = 10000;
+}
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
@@ -107,9 +113,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// will use to create strings from "data".
 	FuzzedDataProvider fdp(data, size);
 	
-	std::string loggerStr = fdp.ConsumeRandomLengthString();
-	std::string content = fdp.ConsumeRandomLengthString();
-	std::string pattern = fdp.ConsumeRandomLengthString();
+	std::string loggerStr = fdp.ConsumeRandomLengthString(MaximumLoggerNameByteCount);
+	std::string content = fdp.ConsumeRandomLengthString(MaximumMessageByteCount);
+	std::string pattern = fdp.ConsumeRandomLengthString(MaximumPatternByteCount);
 
 	LogString contentLogString;
 	LogString loggerLogString;
