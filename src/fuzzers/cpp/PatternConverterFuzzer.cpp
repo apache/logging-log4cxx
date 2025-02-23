@@ -67,7 +67,7 @@ auto createOptions(FuzzedDataProvider* fdp) {
 	Transcoder::decode(opt4Str, opt4);
 	Transcoder::decode(opt5Str, opt5);
 
-	return std::vector<log4cxx::LogString>
+	return std::vector<LogString>
 		{ opt1
 		, opt2
 		, opt3
