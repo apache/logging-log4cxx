@@ -28,7 +28,7 @@ log4cxx::rolling::MultiprocessRollingFileAppender that will check the size of th
 writing to the file and roll it over appropriately.
 
 Coordinating with other processes adds significant overhead compared to log4cxx::rolling::RollingFileAppender.
-Benchmark measurments show the overhead of this appender is more than 3 and 10 times
+Benchmark measurements show the overhead of this appender is more than 3 and 10 times
 the overhead of log4cxx::rolling::RollingFileAppender on Linux and Windows respectively.
 
 This is an optional feature, and thus must be explicitly enabled
