@@ -15,9 +15,13 @@
  * limitations under the License.
  */
 
-#include "stdint.h"
 #include <fuzzer/FuzzedDataProvider.h>
 #include <log4cxx/xml/domconfigurator.h>
+
+namespace
+{
+	const size_t MaximumFileByteCount = 100000;
+}
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -30,7 +34,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	if (!fp) {
 		return 0;
 	}
-	fwrite(data, size, 1, fp);
+	fwrite(data, std::min(size, MaximumFileByteCount), 1, fp);
 	fclose(fp);
 	DOMConfigurator::configure(filename);
 	return 0;
