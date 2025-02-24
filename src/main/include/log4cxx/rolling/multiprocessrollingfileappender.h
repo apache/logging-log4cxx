@@ -32,7 +32,7 @@ namespace rolling
  * A special version of the RollingFileAppender that acts properly with multiple processes.
  *
  * Coordinating with other processes adds significant overhead compared to RollingFileAppender.
- * Benchmarks show the overhead of this appender is more than 4 and 10 times
+ * Benchmarks show the overhead of this appender is more than 3 and 10 times
  * the overhead of RollingFileAppender on Linux and Windows respectively.
  *
  * Note: Do *not* set the option <code>Append</code> to <code>false</code>.
