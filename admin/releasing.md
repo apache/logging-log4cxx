@@ -80,4 +80,4 @@ Steps
    - Using [this template](MailTemplate.Announce.txt)
    - Send the mail using your `@apache.org` account
    - Set the e-mail to `Plain text mode`
-
+1. Add the release to the Apache Reporter System at https://reporter.apache.org/addrelease.html?logging
