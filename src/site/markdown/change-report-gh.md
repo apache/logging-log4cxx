@@ -59,14 +59,15 @@ The following issues have been addressed:
 
 * The MultiprocessRollingFileAppender did not work
    \[[#439](https://github.com/apache/logging-log4cxx/issues/439)\]
+* 
 * Boundary conditions not comprehensively checked when processing a configuration file
-   * [#470](https://github.com/apache/logging-log4cxx/issues/470)
-   , [#471](https://github.com/apache/logging-log4cxx/issues/471)
-   , [#472](https://github.com/apache/logging-log4cxx/issues/472)
-   , [#473](https://github.com/apache/logging-log4cxx/issues/473)
-   , [#475](https://github.com/apache/logging-log4cxx/issues/475)
-   , [#476](https://github.com/apache/logging-log4cxx/issues/476)
-   , [#477](https://github.com/apache/logging-log4cxx/issues/477)
+   * [#470](https://github.com/apache/logging-log4cxx/pull/470)
+   , [#471](https://github.com/apache/logging-log4cxx/pull/471)
+   , [#472](https://github.com/apache/logging-log4cxx/pull/472)
+   , [#473](https://github.com/apache/logging-log4cxx/pull/473)
+   , [#475](https://github.com/apache/logging-log4cxx/pull/475)
+   , [#476](https://github.com/apache/logging-log4cxx/pull/476)
+   , [#477](https://github.com/apache/logging-log4cxx/pull/477)
 
 ## Release 1.3.1 - 2024-11-30 {#rel_1_3_1}
 
