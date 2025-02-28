@@ -59,7 +59,6 @@ The following issues have been addressed:
 
 * The MultiprocessRollingFileAppender did not work
    \[[#439](https://github.com/apache/logging-log4cxx/issues/439)\]
-* 
 * Boundary conditions not comprehensively checked when processing a configuration file
    * [#470](https://github.com/apache/logging-log4cxx/pull/470)
    , [#471](https://github.com/apache/logging-log4cxx/pull/471)
