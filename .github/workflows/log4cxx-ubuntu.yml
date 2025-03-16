@@ -87,8 +87,8 @@ jobs:
         sudo apt-get install -y libapr1-dev libaprutil1-dev
         if [ ${{ matrix.fmt }} == ON ]; then sudo apt-get install -y libfmt-dev; fi
         if [ ${{ matrix.odbc }} == ON ]; then sudo apt-get install -y unixodbc-dev; fi
-        if [ ${{ matrix.qt }} == ON && ${{ matrix.qt6 }} == OFF ]; then sudo apt-get install -y qtbase5-dev; fi
-        if [ ${{ matrix.qt }} == ON && ${{ matrix.qt6 }} == ON ]; then sudo apt-get install -y qt6-base-dev; fi
+        if [ ${{ matrix.qt }} == ON ] && [ ${{ matrix.qt6 }} == OFF ]; then sudo apt-get install -y qtbase5-dev; fi
+        if [ ${{ matrix.qt }} == ON ] && [ ${{ matrix.qt6 }} == ON ]; then sudo apt-get install -y qt6-base-dev; fi
 
     - name: WORKAROUND FOR https://github.com/actions/runner-images/issues/8659
       if: |
