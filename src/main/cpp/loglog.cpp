@@ -92,7 +92,7 @@ void LogLog::debug(const LogString& msg)
 
 		std::lock_guard<std::mutex> lock(p->mutex);
 
-		emit(msg);
+		emit_log(msg);
 	}
 }
 
@@ -105,8 +105,8 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 			return;
 
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit(msg);
-		emit(e);
+		emit_log(msg);
+		emit_log(e);
 	}
 }
 
@@ -118,7 +118,7 @@ void LogLog::error(const LogString& msg)
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
 
-		emit(msg);
+		emit_log(msg);
 	}
 }
 
@@ -128,8 +128,8 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit(msg);
-		emit(e);
+		emit_log(msg);
+		emit_log(e);
 	}
 }
 
@@ -147,7 +147,7 @@ void LogLog::warn(const LogString& msg)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit(msg);
+		emit_log(msg);
 	}
 }
 
@@ -157,12 +157,12 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit(msg);
-		emit(e);
+		emit_log(msg);
+		emit_log(e);
 	}
 }
 
-void LogLog::emit(const LogString& msg)
+void LogLog::emit_log(const LogString& msg)
 {
 	LogString out(LOG4CXX_STR("log4cxx: "));
 
@@ -172,7 +172,7 @@ void LogLog::emit(const LogString& msg)
 	SystemErrWriter::write(out);
 }
 
-void LogLog::emit(const std::exception& ex)
+void LogLog::emit_log(const std::exception& ex)
 {
 	LogString out(LOG4CXX_STR("log4cxx: "));
 	const char* raw = ex.what();

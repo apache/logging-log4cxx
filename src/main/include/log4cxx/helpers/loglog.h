@@ -102,8 +102,8 @@ class LOG4CXX_EXPORT LogLog
 		static void warn(const LogString&  msg, const std::exception& ex);
 
 	private:
-		static void emit(const LogString& msg);
-		static void emit(const std::exception& ex);
+		static void emit_log(const LogString& msg);
+		static void emit_log(const std::exception& ex);
 };
 }  // namespace helpers
 } // namespace log4cxx

@@ -17,7 +17,8 @@
 
 # Log4cxx Qt support, if enabled
 if(LOG4CXX_QT_SUPPORT)
-    find_package(Qt5 COMPONENTS Core REQUIRED)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
     add_library(log4cxx-qt)
     if(BUILD_SHARED_LIBS)
@@ -27,7 +28,7 @@ if(LOG4CXX_QT_SUPPORT)
     endif()
     add_dependencies(log4cxx-qt log4cxx-qt-include)
     target_compile_definitions(log4cxx-qt PRIVATE "QT_NO_KEYWORDS")
-    target_link_libraries(log4cxx-qt Qt5::Core log4cxx)
+    target_link_libraries(log4cxx-qt Qt${QT_VERSION_MAJOR}::Core log4cxx)
     target_sources(log4cxx-qt
         PRIVATE
         messagehandler.cpp
