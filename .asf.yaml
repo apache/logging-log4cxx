@@ -15,7 +15,7 @@
 
 notifications:
   jira_options: link label
-  discussions: log4cxx-dev@logging.apache.org
+  discussions: dev@logging.apache.org
 
 github:
   description: "Apache Log4cxx is a C++ port of Apache Log4j"
