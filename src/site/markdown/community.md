@@ -33,10 +33,9 @@ some issues simply aren't bugs in the code base of the project or it's build too
 but may have a lot of different other reasons.
 
 If things really only don't work and you don't have any clue why,
-please use the [official support channels],
-i.e., [usage mailing list](mailto:log4cxx-user@logging.apache.org),
-[developer mailing lists](mailto:log4cxx-dev@logging.apache.org)
-or [GitHub Discussions] instead.
+please use the [official support channels] instead,
+i.e., [GitHub Discussions]
+or [developer mailing lists].
 
 # Reporting a security issue {#security}
 
@@ -48,9 +47,10 @@ See [artifact locations] for where you can get offical release artifacts and how
 
 [change log]:@ref changelog
 [JIRA]: https://issues.apache.org/jira/browse/LOGCXX
-[mailing list archives]: http://mail-archives.apache.org/mod_mbox/logging-log4cxx-user
+[mailing list archives]: https://lists.apache.org/list.html?dev@logging.apache.org
 [Github Issues]: https://github.com/apache/logging-log4cxx/issues
 [GitHub Discussions]: https://github.com/apache/logging-log4cxx/discussions
+[developer mailing lists]: mailto:dev@logging.apache.org
 [official support channels]: https://logging.apache.org/support.html
 [official security page]: https://logging.apache.org/security.html
 [artifact locations]: https://logging.apache.org/download.html
