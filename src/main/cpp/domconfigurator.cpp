@@ -535,10 +535,6 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 	PropertySetter propSetter(logger);
 	std::vector<AppenderPtr> newappenders;
 
-	// Remove all existing appenders from logger. They will be
-	// reconstructed if need be.
-	logger->removeAllAppenders();
-
 	for (apr_xml_elem* currentElement = loggerElement->first_child;
 		currentElement;
 		currentElement = currentElement->next)
@@ -550,20 +546,18 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			AppenderPtr appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders);
 			LogString refName =  subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
 
-			if (!LogLog::isDebugEnabled())
-				;
-			else if (appender != 0)
+			if (appender)
 			{
-				LogLog::debug(LOG4CXX_STR("Adding appender named [") + refName +
-					LOG4CXX_STR("] to logger [") + logger->getName() + LOG4CXX_STR("]."));
+				if (LogLog::isDebugEnabled())
+					LogLog::debug(LOG4CXX_STR("Adding appender named [") + refName +
+						LOG4CXX_STR("] to logger [") + logger->getName() + LOG4CXX_STR("]."));
+				newappenders.push_back(appender);
 			}
 			else
 			{
 				LogLog::debug(LOG4CXX_STR("Appender named [") + refName +
 					LOG4CXX_STR("] not found."));
 			}
-
-			logger->addAppender(appender);
 
 		}
 		else if (tagName == LEVEL_TAG)
@@ -579,6 +573,10 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			setParameter(p, utf8Decoder, currentElement, propSetter);
 		}
 	}
+	if (newappenders.empty())
+		logger->removeAllAppenders();
+	else
+		logger->replaceAppenders(newappenders);
 
 	propSetter.activate(p);
 }

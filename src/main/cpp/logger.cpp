@@ -112,21 +112,33 @@ void Logger::addAppender(const AppenderPtr newAppender)
 	}
 }
 
-void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additive1 )
+bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender)
 {
-	m_priv->additive = additive1;
-
-	m_priv->aai.removeAllAppenders();
-
-	for (auto const& item : appenders)
+	bool result = m_priv->aai.replaceAppender(oldAppender, newAppender);
+	if (result)
 	{
-		m_priv->aai.addAppender(item);
-
 		if (auto rep = getHierarchy())
-		{
-			rep->fireAddAppenderEvent(this, item.get());
-		}
+			rep->fireAddAppenderEvent(this, newAppender.get());
 	}
+	return result;
+}
+
+void Logger::replaceAppenders( const AppenderList& newList)
+{
+	m_priv->aai.replaceAppenders(newList);
+
+	if (auto rep = getHierarchy())
+	{
+		for (auto const& item : newList)
+			rep->fireAddAppenderEvent(this, item.get());
+	}
+}
+
+void Logger::reconfigure( const AppenderList& newList, bool newAdditivity )
+{
+	m_priv->additive = newAdditivity;
+
+	replaceAppenders(newList);
 }
 
 void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const

@@ -788,8 +788,7 @@ class LOG4CXX_EXPORT Logger
 		Return the the LoggerRepository where this
 		<code>Logger</code> is attached.
 		*/
-		LOG4CXX_NS::spi::LoggerRepository* getLoggerRepository() const;
-
+		spi::LoggerRepository* getLoggerRepository() const;
 
 		/**
 		* Get the logger name.
@@ -1792,6 +1791,17 @@ class LOG4CXX_EXPORT Logger
 		void removeAppender(const LogString& name) override;
 
 		/**
+		 * Replace \c oldAppender  with \c newAppender.
+		 * @return true if oldAppender was replaced with newAppender.
+		 */
+		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) LOG4CXX_16_VIRTUAL_SPECIFIER;
+
+		/**
+		 * Replace all previously added appenders with \c newList.
+		 */
+		void replaceAppenders(const AppenderList& newList) LOG4CXX_16_VIRTUAL_SPECIFIER;
+
+		/**
 		 Set the additivity flag for this logger.
 		  */
 		void setAdditivity(bool additive);
@@ -2095,12 +2105,13 @@ class LOG4CXX_EXPORT Logger
 		void trace(const std::string& msg) const;
 
 		/**
-		 * Reconfigure this logger by configuring all of the appenders.
+		 * Replace all current appenders with \c newList and
+		 * set the additivity flag to \c newAdditivity.
 		 *
-		 * @param appenders The appenders to set.  Any currently existing appenders are removed.
-		 * @param additivity The additivity of this logger
+		 * @param newList The appenders to set.
+		 * @param newAdditivity Whether this logger should send events to its parent.
 		 */
-		void reconfigure( const std::vector<AppenderPtr>& appenders, bool additivity );
+		void reconfigure( const AppenderList& newList, bool newAdditivity );
 
 	private:
 		//
