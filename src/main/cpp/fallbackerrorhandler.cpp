@@ -94,7 +94,7 @@ void FallbackErrorHandler::error(const LogString& message,
 		}
 		if (!l->replaceAppender(primaryLocked, backupLocked))
 		{
-			LogLog::warn(LOG4CXX_STR("FB: Failed to replace [")
+			LogLog::debug(LOG4CXX_STR("FB: Failed to replace [")
 				+ primaryLocked->getName() + LOG4CXX_STR("] with [")
 				+ backupLocked->getName() + LOG4CXX_STR("] in logger [")
 				+ l->getName() + LOG4CXX_STR("]."));
