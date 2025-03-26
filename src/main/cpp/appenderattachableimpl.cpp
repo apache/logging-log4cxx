@@ -181,8 +181,7 @@ bool AppenderAttachableImpl::replaceAppender(const AppenderPtr& oldAppender, con
 			});
 		if (it != m_priv->appenderList.end())
 		{
-			m_priv->appenderList.erase(it);
-			m_priv->appenderList.push_back(newAppender);
+			*it = newAppender;
 			found = true;
 		}
 	}
