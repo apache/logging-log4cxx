@@ -86,12 +86,12 @@ public:
 	void test1()
 	{
 		DOMConfigurator::configure("input/xml/fallback1.xml");
-		AppenderPtr appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
-		FileAppenderPtr primary = log4cxx::cast<FileAppender>(appender);
-		log4cxx::varia::FallbackErrorHandlerPtr eh;
-		log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
-		eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
+		auto appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
+		auto primary = log4cxx::cast<FileAppender>(appender);
+		auto errHandle = primary->getErrorHandler();
+		auto eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
 		LOGUNIT_ASSERT(eh != 0);
+
 		primary->setOption(LOG4CXX_STR("FILE"), BadPath);
 		Pool p;
 		primary->activateOptions(p);
@@ -128,12 +128,13 @@ public:
 	void test2()
 	{
 		DOMConfigurator::configure("input/xml/fallback2.xml");
-		AppenderPtr appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
-		FileAppenderPtr primary = log4cxx::cast<FileAppender>(appender);
-		log4cxx::varia::FallbackErrorHandlerPtr eh;
-		log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
-		eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
+		auto appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
+		auto primary = log4cxx::cast<FileAppender>(appender);
+		auto errHandle = primary->getErrorHandler();
+		auto eh = log4cxx::cast<varia::FallbackErrorHandler>(errHandle);
 		LOGUNIT_ASSERT(eh != 0);
+		
+		// Also check the logger named "test" for a reference to "PRIMARY" when "PRIMARY" fails
 		eh->setLogger(logger);
 
 		primary->setOption(LOG4CXX_STR("FILE"), BadPath);
