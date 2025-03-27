@@ -21,12 +21,27 @@
 #include <log4cxx/varia/fallbackerrorhandler.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/pool.h>
 #include "../logunit.h"
 #include "../util/transformer.h"
 #include "../util/compare.h"
 #include "../util/controlfilter.h"
 #include "../util/linenumberfilter.h"
 #include <iostream>
+
+namespace
+{
+	/*
+        The following path is carefully designed to fail on Linux and Windows,
+        so that the appender FALLBACK is used instead and the test succeeds in
+        the end. Linux considers "." as current directory, which can not be
+        created as a file, while Windows strips "/."[1] internally and fails at
+        ":", which is an invalid name.
+
+        [1]: https://en.wikipedia.org/wiki/Filename#Comparison_of_filename_limitations
+	*/
+	log4cxx::LogString BadPath{ LOG4CXX_STR("output/xyz/:/.") };
+}
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -71,15 +86,18 @@ public:
 	void test1()
 	{
 		DOMConfigurator::configure("input/xml/fallback1.xml");
-		AppenderPtr appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
-		FileAppenderPtr primary = log4cxx::cast<FileAppender>(appender);
-		log4cxx::varia::FallbackErrorHandlerPtr eh;
-		log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
-		eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
+		auto appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
+		auto primary = log4cxx::cast<FileAppender>(appender);
+		auto errHandle = primary->getErrorHandler();
+		auto eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
 		LOGUNIT_ASSERT(eh != 0);
 
-		common();
+		primary->setOption(LOG4CXX_STR("FILE"), BadPath);
+		Pool p;
+		primary->activateOptions(p);
 		LOGUNIT_ASSERT(eh->errorReported());
+
+		common();
 
 		std::string TEST1_PAT =
 			"FALLBACK - (root|test) - Message {0-9}";
@@ -110,15 +128,21 @@ public:
 	void test2()
 	{
 		DOMConfigurator::configure("input/xml/fallback2.xml");
-		AppenderPtr appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
-		FileAppenderPtr primary = log4cxx::cast<FileAppender>(appender);
-		log4cxx::varia::FallbackErrorHandlerPtr eh;
-		log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
-		eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
+		auto appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
+		auto primary = log4cxx::cast<FileAppender>(appender);
+		auto errHandle = primary->getErrorHandler();
+		auto eh = log4cxx::cast<varia::FallbackErrorHandler>(errHandle);
 		LOGUNIT_ASSERT(eh != 0);
+		
+		// Also check the logger named "test" for a reference to "PRIMARY" when "PRIMARY" fails
 		eh->setLogger(logger);
-		common();
+
+		primary->setOption(LOG4CXX_STR("FILE"), BadPath);
+		Pool p;
+		primary->activateOptions(p);
 		LOGUNIT_ASSERT(eh->errorReported());
+
+		common();
 
 		std::string TEST1_PAT =
 			"FALLBACK - (root|test) - Message {0-9}";

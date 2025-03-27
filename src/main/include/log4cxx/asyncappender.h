@@ -153,6 +153,17 @@ class LOG4CXX_EXPORT AsyncAppender :
 		void removeAppender(const LogString& name) override;
 
 		/**
+		 * Replace \c oldAppender  with \c newAppender.
+		 * @return true if oldAppender was replaced with newAppender.
+		 */
+		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) LOG4CXX_16_VIRTUAL_SPECIFIER;
+
+		/**
+		 * Replace any previously added appenders with \c newList.
+		 */
+		void replaceAppenders(const AppenderList& newList) LOG4CXX_16_VIRTUAL_SPECIFIER;
+
+		/**
 		* The <b>LocationInfo</b> attribute is provided for compatibility
 		* with log4j and has no effect on the log output.
 		* @param flag new value.

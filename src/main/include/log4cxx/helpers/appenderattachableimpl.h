@@ -101,6 +101,17 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		void removeAppender(const LogString& name) override;
 
+		/**
+		 * Replace \c oldAppender  with \c newAppender.
+		 * @return true if oldAppender was replaced with newAppender.
+		 */
+		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) LOG4CXX_16_VIRTUAL_SPECIFIER;
+
+		/**
+		 * Replace any previously added appenders with \c newList.
+		 */
+		void replaceAppenders(const AppenderList& newList) LOG4CXX_16_VIRTUAL_SPECIFIER;
+
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)
 

@@ -413,6 +413,16 @@ void AsyncAppender::removeAppender(const LogString& n)
 	priv->appenders.removeAppender(n);
 }
 
+bool AsyncAppender::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender)
+{
+	return priv->appenders.replaceAppender(oldAppender, newAppender);
+}
+
+void AsyncAppender::replaceAppenders( const AppenderList& newList)
+{
+	priv->appenders.replaceAppenders(newList);
+}
+
 bool AsyncAppender::getLocationInfo() const
 {
 	return priv->locationInfo;

@@ -167,4 +167,36 @@ void AppenderAttachableImpl::removeAppender(const LogString& name)
 	}
 }
 
+bool AppenderAttachableImpl::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender)
+{
+	bool found = false;
+	if (m_priv && oldAppender && newAppender)
+	{
+		auto oldName = oldAppender->getName();
+		std::lock_guard<std::mutex> lock( m_priv->m_mutex );
+		auto it = std::find_if(m_priv->appenderList.begin(), m_priv->appenderList.end()
+			, [&oldName](const AppenderPtr& appender) -> bool
+			{
+				return oldName == appender->getName();
+			});
+		if (it != m_priv->appenderList.end())
+		{
+			*it = newAppender;
+			found = true;
+		}
+	}
+	return found;
+}
+
+void AppenderAttachableImpl::replaceAppenders(const AppenderList& newList)
+{
+	auto oldAppenders = getAllAppenders();
+	if (!m_priv)
+		m_priv = std::make_unique<AppenderAttachableImpl::priv_data>();
+	std::lock_guard<std::mutex> lock( m_priv->m_mutex );
+	for (auto a : oldAppenders)
+		a->close();
+	m_priv->appenderList = newList;
+}
+
 

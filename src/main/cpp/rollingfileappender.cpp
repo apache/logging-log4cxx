@@ -253,11 +253,9 @@ void RollingFileAppender::activateOptions(Pool& p)
 
 			FileAppender::activateOptionsInternal(p);
 		}
-		catch (std::exception&)
+		catch (std::exception& ex)
 		{
-			LogLog::warn(
-				LogString(LOG4CXX_STR("Exception will initializing RollingFileAppender named "))
-				+ getName());
+			LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + getName(), ex);
 		}
 	}
 }

@@ -87,22 +87,18 @@ void FallbackErrorHandler::error(const LogString& message,
 	{
 		if (LogLog::isDebugEnabled())
 		{
-			LogLog::debug(((LogString) LOG4CXX_STR("FB: Searching for ["))
-				+ primaryLocked->getName() + LOG4CXX_STR("] in logger [")
-				+ l->getName() + LOG4CXX_STR("]."));
-			LogLog::debug(((LogString) LOG4CXX_STR("FB: Replacing ["))
-				+ primaryLocked->getName() + LOG4CXX_STR("] by [")
+			LogLog::debug(LOG4CXX_STR("FB: Replacing [")
+				+ primaryLocked->getName() + LOG4CXX_STR("] with [")
 				+ backupLocked->getName() + LOG4CXX_STR("] in logger [")
 				+ l->getName() + LOG4CXX_STR("]."));
 		}
-		l->removeAppender(primaryLocked);
-		if (LogLog::isDebugEnabled())
+		if (!l->replaceAppender(primaryLocked, backupLocked))
 		{
-			LogLog::debug(((LogString) LOG4CXX_STR("FB: Adding appender ["))
-				+ backupLocked->getName() + LOG4CXX_STR("] to logger ")
-				+ l->getName());
+			LogLog::debug(LOG4CXX_STR("FB: Failed to replace [")
+				+ primaryLocked->getName() + LOG4CXX_STR("] with [")
+				+ backupLocked->getName() + LOG4CXX_STR("] in logger [")
+				+ l->getName() + LOG4CXX_STR("]."));
 		}
-		l->addAppender(backupLocked);
 	}
 	m_priv->errorReported = true;
 }

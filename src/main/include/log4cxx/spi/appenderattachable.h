@@ -72,6 +72,19 @@ class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
 		 */
 		virtual void removeAppender(const LogString& name) = 0;
 
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		 * Replace \c oldAppender  with \c newAppender.
+		 * @return true if oldAppender was replaced with newAppender.
+		 */
+		virtual bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) = 0;
+
+		/**
+		 * Replace any previously added appenders with \c newList.
+		 */
+		virtual void replaceAppenders(const AppenderList& newList) = 0;
+#endif
+
 		// Dtor
 		virtual ~AppenderAttachable() {}
 };
@@ -80,5 +93,10 @@ LOG4CXX_PTR_DEF(AppenderAttachable);
 }
 }
 
+#if 15 < LOG4CXX_ABI_VERSION
+#define LOG4CXX_16_VIRTUAL_SPECIFIER override
+#else
+#define LOG4CXX_16_VIRTUAL_SPECIFIER 
+#endif
 
 #endif //_LOG4CXX_SPI_APPENDER_ATTACHABLE_H_
