@@ -19,7 +19,7 @@ on: [push, pull_request]
 jobs:
   job:
     name: log4cxx-cpp11
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 38
     steps:
     - uses: actions/checkout@v4
