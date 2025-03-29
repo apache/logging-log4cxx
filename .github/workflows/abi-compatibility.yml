@@ -51,11 +51,13 @@ jobs:
         cmake --build .
 
     - name: 'copy compat report'
+      if: always()
       run: |
         cp $(find . -name compat_report.html) .
         cp $(find . -name new-abi.dump) .
 
     - uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: abi_info
         path: |
