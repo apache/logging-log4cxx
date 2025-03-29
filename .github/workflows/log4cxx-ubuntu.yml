@@ -24,10 +24,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu20-gcc, ubuntu20-clang, ubuntu22-gcc, ubuntu22-clang]
+        name: [ubuntu22-gcc, ubuntu22-clang, ubuntu24-gcc, ubuntu24-clang]
         include:
-          - name: ubuntu20-gcc
-            os: ubuntu-20.04
+          - name: ubuntu22-gcc
+            os: ubuntu-22.04
             cxx: g++
             fmt: OFF
             qt: ON
@@ -38,8 +38,8 @@ jobs:
             exitevents: OFF
             fuzzers: OFF
             logchar: utf-8
-          - name: ubuntu20-clang
-            os: ubuntu-20.04
+          - name: ubuntu22-clang
+            os: ubuntu-22.04
             cxx: clang++
             fmt: ON
             qt: OFF
@@ -50,8 +50,8 @@ jobs:
             exitevents: OFF
             fuzzers: ON
             logchar: utf-8
-          - name: ubuntu22-gcc
-            os: ubuntu-22.04
+          - name: ubuntu24-gcc
+            os: ubuntu-24.04
             cxx: g++
             fmt: OFF
             qt: ON
@@ -62,8 +62,8 @@ jobs:
             exitevents: ON
             fuzzers: OFF
             logchar: utf-8
-          - name: ubuntu22-clang
-            os: ubuntu-22.04
+          - name: ubuntu24-clang
+            os: ubuntu-24.04
             cxx: clang++
             fmt: ON
             qt: OFF

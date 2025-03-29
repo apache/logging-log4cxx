@@ -37,9 +37,6 @@ namespace helpers
 {
 class Properties;
 
-class Object;
-typedef std::shared_ptr<Object> ObjectPtr;
-
 class Class;
 
 /** A convenience class to convert property values to specific types.*/
