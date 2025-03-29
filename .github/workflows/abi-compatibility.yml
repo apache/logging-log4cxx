@@ -40,9 +40,7 @@ jobs:
     - name: 'Configure Dependencies - Ubuntu'
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc-9 libapr1-dev libaprutil1-dev elfutils vtable-dumper universal-ctags
-        # note: sqlext.h exists on github VM, purge for now as we don't link correctly...
-        sudo apt-get purge unixodbc-dev
+        sudo apt-get install -y g++-9 libapr1-dev libaprutil1-dev elfutils vtable-dumper universal-ctags
 
     - name: 'run CMake'
       run: |
@@ -53,13 +51,11 @@ jobs:
         cmake --build .
 
     - name: 'copy compat report'
-      if: always()
       run: |
         cp $(find . -name compat_report.html) .
         cp $(find . -name new-abi.dump) .
 
     - uses: actions/upload-artifact@v4
-      if: always()
       with:
         name: abi_info
         path: |
