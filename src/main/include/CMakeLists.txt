@@ -222,3 +222,13 @@ if(LOG4CXX_QT_SUPPORT)
 	target_include_directories(log4cxx-qt-include PUBLIC . ${CMAKE_CURRENT_BINARY_DIR})
 	add_dependencies(log4cxx-qt-include log4cxx-include)
 endif()
+
+# A list of public header files
+set(PUBLIC_HEADER_FILES ${HEADERS} ${GENERATED_HEADERS} ${HEADERS_QT})
+list(FILTER PUBLIC_HEADER_FILES EXCLUDE REGEX ".*/private/.*")
+foreach(file ${PUBLIC_HEADER_FILES} )
+  file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/../cpp/public_header_files.txt
+     "${file}\n"
+  )
+endforeach()
+
