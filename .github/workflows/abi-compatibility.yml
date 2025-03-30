@@ -40,14 +40,14 @@ jobs:
     - name: 'Configure Dependencies - Ubuntu'
       run: |
         sudo apt-get update
-        sudo apt-get install -y g++-9 libapr1-dev libaprutil1-dev elfutils vtable-dumper universal-ctags
+        sudo apt-get install -y g++-11 libapr1-dev libaprutil1-dev elfutils vtable-dumper universal-ctags
 
     - name: 'run CMake'
       run: |
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=g++-9 -DLOG4CXX_ABI_CHECK=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -Og -fno-eliminate-unused-debug-types" -DBUILD_TESTING=off ..
+        cmake -DCMAKE_CXX_COMPILER=g++-11 -DLOG4CXX_ABI_CHECK=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-g -Og -fno-eliminate-unused-debug-types" -DBUILD_TESTING=off ..
         cmake --build .
 
     - name: 'copy compat report'

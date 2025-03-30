@@ -256,7 +256,7 @@ if(LOG4CXX_ABI_CHECK)
     include(FetchContent)
     FetchContent_Declare(abi-dumper
       GIT_REPOSITORY https://github.com/lvc/abi-dumper.git
-      GIT_TAG 1.2
+      GIT_TAG 1.4
     )
     FetchContent_GetProperties(abi-dumper)
     if(NOT abi-dumper_POPULATED)
