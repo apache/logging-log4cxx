@@ -19,7 +19,7 @@ on: [push, pull_request]
 jobs:
   job:
     name: log4cxx-cpp11
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     timeout-minutes: 38
     steps:
     - uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
     - name: 'Configure Dependencies - Ubuntu'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libapr1-dev libaprutil1-dev libboost-filesystem-dev libboost-thread-dev libesmtp-dev
+        sudo apt-get install -y libapr1-dev libaprutil1-dev libesmtp-dev
 
     - name: 'run cmake - *nix'
       run: |
