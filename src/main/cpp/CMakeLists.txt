@@ -15,9 +15,6 @@
 # limitations under the License.
 #
 
-# Options
-option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
-
 # Build the log4cxx library
 add_library(log4cxx)
 if(${log4cxx_ABI_VER} GREATER 15)
@@ -245,43 +242,3 @@ endif()
 if(${ENABLE_FMT_LAYOUT})
     target_link_libraries(log4cxx PUBLIC fmt::fmt)
 endif()
-
-if(LOG4CXX_ABI_CHECK)
-    if(NOT "log4cxx" STREQUAL "${LOG4CXX_NS}")
-      message(FATAL_ERROR "ABI compatability can only be checked if LOG4CXX_NS=log4cxx, but LOG4CXX_NS=${LOG4CXX_NS}.")
-    endif()
-
-    message("Getting dependencies for ABI compatability check...")
-    # Get the latest version of abi-dumper and abi-compliance-checker
-    include(FetchContent)
-    FetchContent_Declare(abi-dumper
-      GIT_REPOSITORY https://github.com/lvc/abi-dumper.git
-      GIT_TAG 1.4
-    )
-    FetchContent_GetProperties(abi-dumper)
-    if(NOT abi-dumper_POPULATED)
-      FetchContent_Populate(abi-dumper)
-    endif()
-
-    FetchContent_Declare(abi-compliance-checker
-      GIT_REPOSITORY https://github.com/lvc/abi-compliance-checker.git
-      GIT_TAG f60ce442c33f1d5cda1cec7cfddee24af1777572
-    )
-    FetchContent_GetProperties(abi-compliance-checker)
-    if(NOT abi-compliance-checker_POPULATED)
-      FetchContent_Populate(abi-compliance-checker)
-    endif()
-
-    set(abi-dumper-script ${abi-dumper_SOURCE_DIR}/abi-dumper.pl)
-    set(abi-compliance-script ${abi-compliance-checker_SOURCE_DIR}/abi-compliance-checker.pl)
-
-    add_custom_target(dump-abi ALL
-        COMMAND perl ${abi-dumper-script} -public-headers public_header_files.txt -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:log4cxx>
-        DEPENDS log4cxx
-        COMMENT "Dumping ABI symbols")
-
-    add_custom_target(compare-abi ALL
-        COMMAND perl ${abi-compliance-script} -skip-internal-symbols "\\d\\(fmt\\)" -skip-internal-types "\\(fmt\\)::" -l log4cxx -old ${LOG4CXX_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump
-        DEPENDS dump-abi
-        COMMENT "Comparing ABI symbols")
-endif(LOG4CXX_ABI_CHECK)

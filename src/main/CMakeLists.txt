@@ -39,3 +39,11 @@ if(LOG4CXX_QT_SUPPORT)
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     )
 endif(LOG4CXX_QT_SUPPORT)
+
+option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
+if(LOG4CXX_ABI_CHECK)
+  if(NOT "log4cxx" STREQUAL "${LOG4CXX_NS}")
+    message(FATAL_ERROR "ABI compatability can only be checked if LOG4CXX_NS=log4cxx, but LOG4CXX_NS=${LOG4CXX_NS}.")
+  endif()
+  add_subdirectory(abi-symbols)
+endif(LOG4CXX_ABI_CHECK)

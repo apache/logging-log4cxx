@@ -227,7 +227,7 @@ endif()
 set(PUBLIC_HEADER_FILES ${HEADERS} ${GENERATED_HEADERS} ${HEADERS_QT})
 list(FILTER PUBLIC_HEADER_FILES EXCLUDE REGEX ".*/private/.*")
 foreach(file ${PUBLIC_HEADER_FILES} )
-  file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/../cpp/public_header_files.txt
+  file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/../abi-symbols/public_header_files.txt
      "${file}\n"
   )
 endforeach()
