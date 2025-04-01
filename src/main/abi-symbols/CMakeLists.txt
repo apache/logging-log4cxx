@@ -18,7 +18,7 @@
 message("Getting dependencies for ABI compatability check...")
 # Get the latest version of abi-dumper and abi-compliance-checker
 include(FetchContent)
-FetchContent_MakeAvailable(abi-dumper
+FetchContent_Declare(abi-dumper
   GIT_REPOSITORY https://github.com/lvc/abi-dumper.git
   GIT_TAG 1.4
 )
@@ -27,7 +27,7 @@ if(NOT abi-dumper_POPULATED)
   FetchContent_Populate(abi-dumper)
 endif()
 
-FetchContent_MakeAvailable(abi-compliance-checker
+FetchContent_Declare(abi-compliance-checker
   GIT_REPOSITORY https://github.com/lvc/abi-compliance-checker.git
   GIT_TAG f60ce442c33f1d5cda1cec7cfddee24af1777572
 )
@@ -36,6 +36,8 @@ if(NOT abi-compliance-checker_POPULATED)
   FetchContent_Populate(abi-compliance-checker)
 endif()
 
+# The local script is patched to exclude register assignments to parameters
+#set(abi-dumper-script ${abi-dumper_SOURCE_DIR}/abi-dumper.pl)
 set(abi-dumper-script ${CMAKE_CURRENT_SOURCE_DIR}/abi-dumper.pl)
 set(abi-compliance-script ${abi-compliance-checker_SOURCE_DIR}/abi-compliance-checker.pl)
 
