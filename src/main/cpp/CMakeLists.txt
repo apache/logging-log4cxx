@@ -256,7 +256,7 @@ if(LOG4CXX_ABI_CHECK)
     include(FetchContent)
     FetchContent_Declare(abi-dumper
       GIT_REPOSITORY https://github.com/lvc/abi-dumper.git
-      GIT_TAG 1.2
+      GIT_TAG 1.4
     )
     FetchContent_GetProperties(abi-dumper)
     if(NOT abi-dumper_POPULATED)
@@ -276,7 +276,7 @@ if(LOG4CXX_ABI_CHECK)
     set(abi-compliance-script ${abi-compliance-checker_SOURCE_DIR}/abi-compliance-checker.pl)
 
     add_custom_target(dump-abi ALL
-        COMMAND perl ${abi-dumper-script} -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:log4cxx>
+        COMMAND perl ${abi-dumper-script} -public-headers public_header_files.txt -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:log4cxx>
         DEPENDS log4cxx
         COMMENT "Dumping ABI symbols")
 
