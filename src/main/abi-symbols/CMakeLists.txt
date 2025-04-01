@@ -42,7 +42,7 @@ set(abi-dumper-script ${CMAKE_CURRENT_SOURCE_DIR}/abi-dumper.pl)
 set(abi-compliance-script ${abi-compliance-checker_SOURCE_DIR}/abi-compliance-checker.pl)
 
 add_custom_target(dump-abi ALL
-    COMMAND perl ${abi-dumper-script} -public-headers public_header_files.txt -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:log4cxx>
+    COMMAND perl ${abi-dumper-script} -public-headers public_header_files.txt -o new-abi.dump -skip-cxx -vnum ${log4cxx_VER} $<TARGET_FILE:log4cxx>
     DEPENDS log4cxx
     COMMENT "Dumping ABI symbols"
 )
