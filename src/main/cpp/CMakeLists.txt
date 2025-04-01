@@ -18,6 +18,103 @@
 # Options
 option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
 
+set(foundation_classes
+  class.cpp
+  date.cpp
+  appenderattachableimpl.cpp
+  appenderskeleton.cpp
+  aprinitializer.cpp
+  bytebuffer.cpp
+  charsetdecoder.cpp
+  charsetencoder.cpp
+  classregistration.cpp
+  configurator.cpp
+  defaultconfigurator.cpp
+  defaultloggerfactory.cpp
+  defaultrepositoryselector.cpp
+  exception.cpp
+  fallbackerrorhandler.cpp
+  file.cpp
+  fileinputstream.cpp
+  fileoutputstream.cpp
+  filewatchdog.cpp
+  filter.cpp
+  hierarchy.cpp
+  inetaddress.cpp
+  inputstream.cpp
+  inputstreamreader.cpp
+  layout.cpp
+  level.cpp
+  loader.cpp
+  locale.cpp
+  locationinfo.cpp
+  logger.cpp
+  loggingevent.cpp
+  loglog.cpp
+  logmanager.cpp
+  mdc.cpp
+  ndc.cpp
+  onlyonceerrorhandler.cpp
+  optionconverter.cpp
+  outputstream.cpp
+  pool.cpp
+  properties.cpp
+  propertyresourcebundle.cpp
+  reader.cpp
+  resourcebundle.cpp
+  rollingpolicy.cpp
+  rootlogger.cpp
+  stringhelper.cpp
+  system.cpp
+  systemerrwriter.cpp
+  systemoutwriter.cpp
+  threadspecificdata.cpp
+  threadutility.cpp
+  transcoder.cpp
+  triggeringpolicy.cpp
+  writer.cpp
+)
+
+option(BUILD_FOUNDATION_LIBRARY "Build a minimal part of the log4cxx library" OFF)
+if(BUILD_FOUNDATION_LIBRARY)
+    add_library(log4cxx_foundation)
+    set(LOG4CXX_FOUNDATION_NAME "log4cxx_foundation")
+    set_target_properties(log4cxx_foundation PROPERTIES
+      VERSION ${LIBLOG4CXX_LIB_VERSION}
+      SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
+      OUTPUT_NAME ${LOG4CXX_FOUNDATION_NAME}
+      PDB_NAME ${LOG4CXX_FOUNDATION_NAME}
+      COMPILE_PDB_NAME ${LOG4CXX_FOUNDATION_NAME}
+      EXPORT_NAME ${LOG4CXX_FOUNDATION_NAME}
+    )
+    target_sources(log4cxx_foundation PRIVATE ${foundation_classes})
+    target_include_directories(log4cxx_foundation
+      PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+      INTERFACE
+        $<INSTALL_INTERFACE:include>
+      PRIVATE
+        ${APR_INCLUDE_DIR}
+        ${APR_UTIL_INCLUDE_DIR}
+    )
+    target_compile_definitions(log4cxx_foundation
+      PRIVATE
+        LOG4CXX
+        LOG4CXX_FOUNDATION_ONLY
+        ${LOG4CXX_COMPILE_DEFINITIONS}
+        ${APR_COMPILE_DEFINITIONS}
+        ${APR_UTIL_COMPILE_DEFINITIONS}
+    )
+    target_link_libraries(log4cxx_foundation
+      PRIVATE
+        ${APR_UTIL_LIBRARIES}
+        ${EXPAT_LIBRARIES}
+        ${APR_LIBRARIES}
+        ${APR_SYSTEM_LIBS}
+    )
+endif(BUILD_FOUNDATION_LIBRARY)
+
 # Build the log4cxx library
 add_library(log4cxx)
 if(${log4cxx_ABI_VER} GREATER 15)
@@ -35,7 +132,6 @@ endif()
 add_dependencies(log4cxx log4cxx-include)
 
 set(extra_classes "")
-
 if(LOG4CXX_NETWORKING_SUPPORT)
     list(APPEND extra_classes
         datagrampacket.cpp
@@ -75,146 +171,93 @@ endif()
 
 target_sources(log4cxx
   PRIVATE
+  ${foundation_classes}
   action.cpp
   andfilter.cpp
-  appenderattachableimpl.cpp
-  appenderskeleton.cpp
-  aprinitializer.cpp
   asyncappender.cpp
   basicconfigurator.cpp
   bufferedwriter.cpp
   bytearrayinputstream.cpp
   bytearrayoutputstream.cpp
-  bytebuffer.cpp
   cacheddateformat.cpp
-  charsetdecoder.cpp
-  charsetencoder.cpp
-  class.cpp
   classnamepatternconverter.cpp
-  classregistration.cpp
   colorstartpatternconverter.cpp
   colorendpatternconverter.cpp
-  configurator.cpp
   consoleappender.cpp
   cyclicbuffer.cpp
-  date.cpp
   dateformat.cpp
   datepatternconverter.cpp
   dbappender.cpp
-  defaultconfigurator.cpp
-  defaultloggerfactory.cpp
-  defaultrepositoryselector.cpp
-  exception.cpp
-  fallbackerrorhandler.cpp
-  file.cpp
   fileappender.cpp
   filedatepatternconverter.cpp
-  fileinputstream.cpp
   filelocationpatternconverter.cpp
-  fileoutputstream.cpp
   filerenameaction.cpp
-  filewatchdog.cpp
-  filter.cpp
   filterbasedtriggeringpolicy.cpp
   fixedwindowrollingpolicy.cpp
   formattinginfo.cpp
   fulllocationpatternconverter.cpp
   gzcompressaction.cpp
   hexdump.cpp
-  hierarchy.cpp
   htmllayout.cpp
-  inetaddress.cpp
-  inputstream.cpp
-  inputstreamreader.cpp
   integer.cpp
   integerpatternconverter.cpp
   jsonlayout.cpp
-  layout.cpp
-  level.cpp
   levelmatchfilter.cpp
   levelpatternconverter.cpp
   levelrangefilter.cpp
   linelocationpatternconverter.cpp
   lineseparatorpatternconverter.cpp
   literalpatternconverter.cpp
-  loader.cpp
-  locale.cpp
-  locationinfo.cpp
   locationinfofilter.cpp
-  logger.cpp
   loggermatchfilter.cpp
   loggerpatternconverter.cpp
-  loggingevent.cpp
   loggingeventpatternconverter.cpp
-  loglog.cpp
-  logmanager.cpp
   logstream.cpp
   manualtriggeringpolicy.cpp
   mapfilter.cpp
-  mdc.cpp
   messagebuffer.cpp
   messagepatternconverter.cpp
   methodlocationpatternconverter.cpp
   nameabbreviator.cpp
   namepatternconverter.cpp
-  ndc.cpp
   mdcpatternconverter.cpp
   ndcpatternconverter.cpp
   nteventlogappender.cpp
   odbcappender.cpp
-  onlyonceerrorhandler.cpp
-  optionconverter.cpp
   outputdebugstringappender.cpp
   outputstream.cpp
   outputstreamwriter.cpp
   patternconverter.cpp
   patternlayout.cpp
   patternparser.cpp
-  pool.cpp
-  properties.cpp
   propertiespatternconverter.cpp
   propertyconfigurator.cpp
-  propertyresourcebundle.cpp
   propertysetter.cpp
-  reader.cpp
   relativetimedateformat.cpp
   relativetimepatternconverter.cpp
-  resourcebundle.cpp
   rollingfileappender.cpp
-  rollingpolicy.cpp
   rollingpolicybase.cpp
   rolloverdescription.cpp
-  rootlogger.cpp
   shortfilelocationpatternconverter.cpp
   simpledateformat.cpp
   simplelayout.cpp
   sizebasedtriggeringpolicy.cpp
   smtpappender.cpp
   strftimedateformat.cpp
-  stringhelper.cpp
   stringmatchfilter.cpp
   stringtokenizer.cpp
-  system.cpp
-  systemerrwriter.cpp
-  systemoutwriter.cpp
   threadlocal.cpp
   threadpatternconverter.cpp
   threadusernamepatternconverter.cpp
-  threadspecificdata.cpp
-  threadutility.cpp
   throwableinformationpatternconverter.cpp
   timebasedrollingpolicy.cpp
   timezone.cpp
-  transcoder.cpp
   transform.cpp
-  triggeringpolicy.cpp
-  writer.cpp
   writerappender.cpp
   xmllayout.cpp
   zipcompressaction.cpp
   ${extra_classes}
 )
-
 if(LOG4CXX_EVENTS_AT_EXIT)
   target_sources(log4cxx
     PRIVATE atexitregistry.cpp
@@ -256,11 +299,11 @@ if(LOG4CXX_ABI_CHECK)
     include(FetchContent)
     FetchContent_Declare(abi-dumper
       GIT_REPOSITORY https://github.com/lvc/abi-dumper.git
-      GIT_TAG 1.2
+      GIT_TAG 1.4
     )
     FetchContent_GetProperties(abi-dumper)
     if(NOT abi-dumper_POPULATED)
-      FetchContent_Populate(abi-dumper)
+      FetchContent_MakeAvailable(abi-dumper)
     endif()
 
     FetchContent_Declare(abi-compliance-checker
@@ -269,14 +312,14 @@ if(LOG4CXX_ABI_CHECK)
     )
     FetchContent_GetProperties(abi-compliance-checker)
     if(NOT abi-compliance-checker_POPULATED)
-      FetchContent_Populate(abi-compliance-checker)
+      FetchContent_MakeAvailable(abi-compliance-checker)
     endif()
 
     set(abi-dumper-script ${abi-dumper_SOURCE_DIR}/abi-dumper.pl)
     set(abi-compliance-script ${abi-compliance-checker_SOURCE_DIR}/abi-compliance-checker.pl)
 
     add_custom_target(dump-abi ALL
-        COMMAND perl ${abi-dumper-script} -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:log4cxx>
+        COMMAND perl ${abi-dumper-script} -public-headers public_header_files.txt -o new-abi.dump -skip-cxx -vnum ${log4cxx_ABI_VER} $<TARGET_FILE:log4cxx>
         DEPENDS log4cxx
         COMMENT "Dumping ABI symbols")
 

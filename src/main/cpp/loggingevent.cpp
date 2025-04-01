@@ -22,7 +22,6 @@
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/system.h>
-#include <log4cxx/helpers/socket.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif

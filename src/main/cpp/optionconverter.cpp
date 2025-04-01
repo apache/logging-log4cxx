@@ -32,15 +32,17 @@
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/system.h>
-#include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/file.h>
-#include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/logmanager.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
+
+#ifndef LOG4CXX_FOUNDATION_ONLY
+#include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/filewatchdog.h>
 
 namespace LOG4CXX_NS
@@ -68,6 +70,7 @@ class ConfiguratorWatchdog  : public helpers::FileWatchdog
 };
 
 }
+#endif // LOG4CXX_FOUNDATION_ONLY
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -428,6 +431,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 void OptionConverter::selectAndConfigure(const File& configFileName,
 	const LogString& _clazz, spi::LoggerRepositoryPtr hierarchy, int delay)
 {
+#ifndef LOG4CXX_FOUNDATION_ONLY
 	ConfiguratorPtr configurator;
 	LogString clazz = _clazz;
 
@@ -473,4 +477,5 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	}
 	else
 		configurator->doConfigure(configFileName, hierarchy);
+#endif // LOG4CXX_FOUNDATION_ONLY
 }

@@ -22,8 +22,12 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
+#ifndef LOG4CXX_FOUNDATION_ONLY
+#if LOG4CXX_HAS_DOMCONFIGURATOR
 #include <log4cxx/xml/domconfigurator.h>
+#endif
 #include <log4cxx/propertyconfigurator.h>
+#endif // LOG4CXX_FOUNDATION_ONLY
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;
@@ -164,6 +168,7 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 }
 
 LOG4CXX_NS::spi::ConfigurationStatus DefaultConfigurator::tryLoadFile(const LogString& filename){
+#ifndef LOG4CXX_FOUNDATION_ONLY
 #if LOG4CXX_HAS_DOMCONFIGURATOR
 	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".xml"))){
 		return LOG4CXX_NS::xml::DOMConfigurator::configure(filename);
@@ -172,6 +177,7 @@ LOG4CXX_NS::spi::ConfigurationStatus DefaultConfigurator::tryLoadFile(const LogS
 	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".properties"))){
 		return LOG4CXX_NS::PropertyConfigurator::configure(filename);
 	}
+#endif // LOG4CXX_FOUNDATION_ONLY
 
 	return LOG4CXX_NS::spi::ConfigurationStatus::NotConfigured;
 }

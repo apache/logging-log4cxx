@@ -19,40 +19,45 @@
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/spi/filter.h>
-#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/errorhandler.h>
-#include <log4cxx/filter/denyallfilter.h>
+#include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/spi/repositoryselector.h>
 #include <log4cxx/spi/appenderattachable.h>
+#ifndef LOG4CXX_FOUNDATION_ONLY
+#if LOG4CXX_HAS_DOMCONFIGURATOR
 #include <log4cxx/helpers/xml.h>
+#endif
+#include <log4cxx/filter/denyallfilter.h>
 #include <log4cxx/spi/triggeringeventevaluator.h>
-#include <fstream>
-#include <log4cxx/helpers/transcoder.h>
-#include <log4cxx/helpers/fileinputstream.h>
+using namespace LOG4CXX_NS::filter;
+#endif // LOG4CXX_FOUNDATION_ONLY
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
-using namespace LOG4CXX_NS::filter;
 
 IMPLEMENT_LOG4CXX_OBJECT(Object)
 IMPLEMENT_LOG4CXX_OBJECT(OptionHandler)
 IMPLEMENT_LOG4CXX_OBJECT(ErrorHandler)
 IMPLEMENT_LOG4CXX_OBJECT(Appender)
-IMPLEMENT_LOG4CXX_OBJECT(Filter)
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachable)
+IMPLEMENT_LOG4CXX_OBJECT(Filter)
 IMPLEMENT_LOG4CXX_OBJECT(LoggerFactory)
 IMPLEMENT_LOG4CXX_OBJECT(LoggerRepository)
-IMPLEMENT_LOG4CXX_OBJECT(DenyAllFilter)
 IMPLEMENT_LOG4CXX_OBJECT(RepositorySelector)
+#ifndef LOG4CXX_FOUNDATION_ONLY
+#if LOG4CXX_HAS_DOMCONFIGURATOR
 IMPLEMENT_LOG4CXX_OBJECT(XMLDOMNode)
 IMPLEMENT_LOG4CXX_OBJECT(XMLDOMDocument)
 IMPLEMENT_LOG4CXX_OBJECT(XMLDOMElement)
 IMPLEMENT_LOG4CXX_OBJECT(XMLDOMNodeList)
+#endif
+IMPLEMENT_LOG4CXX_OBJECT(DenyAllFilter)
 IMPLEMENT_LOG4CXX_OBJECT(TriggeringEventEvaluator)
+#endif // LOG4CXX_FOUNDATION_ONLY
 
 const Class& Loader::loadClass(const LogString& clazz)
 {

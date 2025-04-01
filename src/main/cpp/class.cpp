@@ -28,6 +28,7 @@
 #include <log4cxx/private/log4cxx_private.h>
 
 
+#ifndef LOG4CXX_FOUNDATION_ONLY
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/fileappender.h>
@@ -72,13 +73,13 @@
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
 
-
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::net;
 using namespace LOG4CXX_NS::filter;
 using namespace LOG4CXX_NS::xml;
 using namespace LOG4CXX_NS::rolling;
+#endif // LOG4CXX_FOUNDATION_ONLY
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
 
 namespace LOG4CXX_NS
 {
@@ -178,6 +179,7 @@ bool Class::registerClass(const Class& newClass)
 
 void Class::registerClasses()
 {
+#ifndef LOG4CXX_FOUNDATION_ONLY
 	AsyncAppender::registerClass();
 	ConsoleAppender::registerClass();
 	FileAppender::registerClass();
@@ -220,5 +222,6 @@ void Class::registerClasses()
 	XMLSocketAppender::registerClass();
 	SyslogAppender::registerClass();
 #endif
+#endif // LOG4CXX_FOUNDATION_ONLY
 }
 
