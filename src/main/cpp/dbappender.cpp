@@ -62,11 +62,7 @@ struct DBAppender::DBAppenderPriv : public AppenderSkeleton::AppenderSkeletonPri
 		}
 	}
 
-#if 15 < LOG4CXX_ABI_VERSION
-    const apr_dbd_driver_t* m_driver = nullptr;
-#else
     apr_dbd_driver_t* m_driver = nullptr;
-#endif
     apr_dbd_t* m_databaseHandle = nullptr;
     apr_dbd_prepared_t* preparedStmt = nullptr;
     std::vector<LogString> mappedName;
