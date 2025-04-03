@@ -62,7 +62,7 @@ struct DBAppender::DBAppenderPriv : public AppenderSkeleton::AppenderSkeletonPri
 		}
 	}
 
-    apr_dbd_driver_t* m_driver = nullptr;
+    const apr_dbd_driver_t* m_driver = nullptr;
     apr_dbd_t* m_databaseHandle = nullptr;
     apr_dbd_prepared_t* preparedStmt = nullptr;
     std::vector<LogString> mappedName;
