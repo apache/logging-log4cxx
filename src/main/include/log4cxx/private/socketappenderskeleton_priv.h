@@ -72,11 +72,6 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	int port;
 	int reconnectionDelay;
 	bool locationInfo;
-#if LOG4CXX_ABI_VERSION <= 15
-	std::thread thread;
-	std::condition_variable interrupt;
-	std::mutex interrupt_mutex;
-#endif
 	void stopMonitor();
 
 	/**

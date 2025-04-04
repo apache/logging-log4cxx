@@ -40,10 +40,6 @@ struct LoggingEvent::LoggingEventPrivate
 {
 	LoggingEventPrivate(const ThreadSpecificData::NamePairPtr p = ThreadSpecificData::getNames()) :
 		timeStamp(0),
-#if LOG4CXX_ABI_VERSION <= 15
-		threadName(p->idString),
-		threadUserName(p->threadName),
-#endif
 		pNames(p)
 	{
 	}
@@ -60,10 +56,6 @@ struct LoggingEvent::LoggingEventPrivate
 		message(std::move(message1)),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
-#if LOG4CXX_ABI_VERSION <= 15
-		threadName(p->idString),
-		threadUserName(p->threadName),
-#endif
 		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
 		pNames(p)
 	{
@@ -79,10 +71,6 @@ struct LoggingEvent::LoggingEventPrivate
 		message(message1),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
-#if LOG4CXX_ABI_VERSION <= 15
-		threadName(p->idString),
-		threadUserName(p->threadName),
-#endif
 		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
 		pNames(p)
 	{
@@ -101,22 +89,10 @@ struct LoggingEvent::LoggingEventPrivate
 	/** severity level of logging event. */
 	LevelPtr level;
 
-#if LOG4CXX_ABI_VERSION <= 15
-	mutable LogString* ndc{NULL};
-
-	mutable MDC::Map* mdcCopy{NULL};
-#endif
-
 	/**
 	* A map of String keys and String values.
 	*/
 	std::map<LogString, LogString>* properties{NULL};
-
-#if LOG4CXX_ABI_VERSION <= 15
-	mutable bool ndcLookupRequired{false};
-
-	mutable bool mdcCopyLookupRequired{false};
-#endif
 
 	/** The application supplied message. */
 	LogString message;
@@ -129,13 +105,6 @@ struct LoggingEvent::LoggingEventPrivate
 
 	/** The source code location where the logging request was made. */
 	const spi::LocationInfo locationInfo;
-
-
-#if LOG4CXX_ABI_VERSION <= 15
-	const LogString& threadName;
-
-	const LogString& threadUserName;
-#endif
 
 	std::chrono::time_point<std::chrono::system_clock> chronoTimeStamp;
 

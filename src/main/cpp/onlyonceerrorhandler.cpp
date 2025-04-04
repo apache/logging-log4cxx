@@ -27,14 +27,7 @@ using namespace LOG4CXX_NS::spi;
 IMPLEMENT_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
 
 struct OnlyOnceErrorHandler::OnlyOnceErrorHandlerPrivate{
-	OnlyOnceErrorHandlerPrivate() :
-		firstTime(true){}
-
-#if LOG4CXX_ABI_VERSION <= 15
-	LogString WARN_PREFIX;
-	LogString ERROR_PREFIX;
-#endif
-	mutable bool firstTime;
+	mutable bool firstTime = true;
 };
 
 OnlyOnceErrorHandler::OnlyOnceErrorHandler() :

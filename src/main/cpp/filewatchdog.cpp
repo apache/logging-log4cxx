@@ -51,13 +51,6 @@ struct FileWatchdog::FileWatchdogPrivate{
 	long delay;
 	log4cxx_time_t lastModif;
 	bool warnedAlready;
-#if LOG4CXX_ABI_VERSION <= 15
-	int interrupted{ 0 };
-	Pool pool;
-	std::thread thread;
-	std::condition_variable interrupt;
-	std::mutex interrupt_mutex;
-#endif
 	LogString taskName;
 	ThreadUtility::ManagerWeakPtr taskManager;
 };
