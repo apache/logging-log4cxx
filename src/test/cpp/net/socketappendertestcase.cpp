@@ -80,7 +80,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			helpers::ServerSocketUniquePtr serverSocket;
 			try
 			{
-				serverSocket = helpers::ServerSocket::create(tcpPort);
+				serverSocket = helpers::ServerSocket::create(tcpPort, true);
 			}
 			catch (std::exception& ex)
 			{

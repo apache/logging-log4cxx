@@ -57,7 +57,12 @@ class LOG4CXX_EXPORT ServerSocket
 		*/
 		void setSoTimeout(int timeout);
 
+#if LOG4CXX_ABI_VERSION <= 15
 		static ServerSocketUniquePtr create(int port);
+		static ServerSocketUniquePtr create(int port, bool reuseAddress);
+#else
+		static ServerSocketUniquePtr create(int port, bool reuseAddress = false);
+#endif
 
 };
 }  // namespace helpers
