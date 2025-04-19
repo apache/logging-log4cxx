@@ -35,7 +35,12 @@ struct APRServerSocket::APRServerSocketPriv : public ServerSocketPrivate {
 	apr_socket_t* socket;
 };
 
-APRServerSocket::APRServerSocket(int port) :
+#if LOG4CXX_ABI_VERSION <= 15
+APRServerSocket::APRServerSocket(int port) : 
+	APRServerSocket(port, false) {}
+#endif
+
+APRServerSocket::APRServerSocket(int port, bool reuseAddress) :
 	ServerSocket(std::make_unique<APRServerSocketPriv>()){
 	apr_status_t status =
 		apr_socket_create(&_priv->socket, APR_INET, SOCK_STREAM,
@@ -51,6 +56,15 @@ APRServerSocket::APRServerSocket(int port) :
 	if (status != APR_SUCCESS)
 	{
 		throw SocketException(status);
+	}
+
+	if (reuseAddress) {
+		apr_status_t status = apr_socket_opt_set(_priv->socket, APR_SO_REUSEADDR, 1);
+
+		if (status != APR_SUCCESS)
+		{
+			throw SocketException(status);
+		}
 	}
 
 	// Create server socket address (including port number)
