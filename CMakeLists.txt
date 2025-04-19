@@ -33,10 +33,12 @@ set(LOG4CXX_NS "log4cxx" CACHE STRING "Root namespace name")
 # Note that the lib version is different from the SOVERSION
 # The lib version is the version of log4cxx, the SOVERSION is the ABI version
 # See also: https://cmake.org/pipermail/cmake/2012-September/051904.html
-set(current_log4cxx_ABI_VER 15)
-set(next_log4cxx_ABI_VER 16)
-set(log4cxx_ABI_VER "${current_log4cxx_ABI_VER}" CACHE STRING "The DSO library version")
-set_property(CACHE log4cxx_ABI_VER PROPERTY STRINGS "${current_log4cxx_ABI_VER}" "${next_log4cxx_ABI_VER}")
+option(LOG4CXX_BUILD_NEXT_ABI "Build code designated for the next ABI version" OFF)
+if(LOG4CXX_BUILD_NEXT_ABI)
+  set(log4cxx_ABI_VER 16)
+else()
+  set(log4cxx_ABI_VER 15)
+endif()
 set(LIBLOG4CXX_LIB_VERSION ${log4cxx_ABI_VER}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
 set(LIBLOG4CXX_LIB_SOVERSION ${log4cxx_ABI_VER})
 # Set the 'release' version.  This is the human-readable version
