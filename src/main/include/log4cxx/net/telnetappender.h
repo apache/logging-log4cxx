@@ -42,8 +42,9 @@ especially when monitoring a servlet remotely.
 
 If no layout is provided, the log message only is sent to attached client(s).
 
-The ReuseAddress option is disabled by default,
-enable it if you want it to be able to bind to the address immediately after restarting / crashing
+The ReuseAddress option is disabled by default.
+Enable it to be able to connect to this appender
+immediately after the logging process restarts.
 
 See TelnetAppender::setOption() for the available options.
 
@@ -131,7 +132,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 		/**
 		Use \c newValue for the SO_REUSEADDR option of the socket accepting connections.
-		This allows a telnet client to connect when the socket is in a TIME_WAIT state,
+		When set to \c true, a telnet client can connect when the socket is in a TIME_WAIT state,
 		so log message delivery will resume quickly when a terminated process restarts.
 
 		\sa setOption
