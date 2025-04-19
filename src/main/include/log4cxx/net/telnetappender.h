@@ -42,7 +42,7 @@ especially when monitoring a servlet remotely.
 
 If no layout is provided, the log message only is sent to attached client(s).
 
-The ReuseAddress option is disabled by default.
+The \c ReuseAddress option is disabled by default.
 Enable it to be able to connect to this appender
 immediately after the logging process restarts.
 
