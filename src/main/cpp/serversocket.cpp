@@ -57,6 +57,6 @@ ServerSocketUniquePtr ServerSocket::create(int port){
 }
 #endif
 
-ServerSocketUniquePtr ServerSocket::create(int port, bool reuseAddress){
-	return std::make_unique<APRServerSocket>(port, reuseAddress);
+ServerSocketUniquePtr ServerSocket::create(int port, bool reuseAddress, const LogString& hostname){
+	return std::make_unique<APRServerSocket>(port, reuseAddress, hostname);
 }

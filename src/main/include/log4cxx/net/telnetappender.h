@@ -117,6 +117,17 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		void setPort(int newValue);
 
 		/**
+		The <b>Hostname</b> on which to accept connections.
+		*/
+		LogString getHostname() const;
+
+		/**
+		Use \c newValue as the Hostname on which to accept connections.
+		By default connections are accepted on any network interface device.
+		*/
+		void setHostname(const LogString& newValue);
+
+		/**
 		The number of allowed concurrent connections.
 
 		\sa setOption

@@ -59,9 +59,9 @@ class LOG4CXX_EXPORT ServerSocket
 
 #if LOG4CXX_ABI_VERSION <= 15
 		static ServerSocketUniquePtr create(int port);
-		static ServerSocketUniquePtr create(int port, bool reuseAddress);
+		static ServerSocketUniquePtr create(int port, bool reuseAddress, const LogString& hostname);
 #else
-		static ServerSocketUniquePtr create(int port, bool reuseAddress = false);
+		static ServerSocketUniquePtr create(int port, bool reuseAddress = false, const LogString& hostname = {});
 #endif
 
 };
