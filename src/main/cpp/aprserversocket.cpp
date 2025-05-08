@@ -18,6 +18,7 @@
 #include <log4cxx/private/aprserversocket.h>
 #include <log4cxx/private/serversocket_priv.h>
 #include <log4cxx/private/aprsocket.h>
+#include <log4cxx/helpers/transcoder.h>
 #include "apr_network_io.h"
 #include "apr_pools.h"
 #include "apr_poll.h"
@@ -37,10 +38,10 @@ struct APRServerSocket::APRServerSocketPriv : public ServerSocketPrivate {
 
 #if LOG4CXX_ABI_VERSION <= 15
 APRServerSocket::APRServerSocket(int port) : 
-	APRServerSocket(port, false) {}
+	APRServerSocket(port, false, {}) {}
 #endif
 
-APRServerSocket::APRServerSocket(int port, bool reuseAddress) :
+APRServerSocket::APRServerSocket(int port, bool reuseAddress, const LogString& hostname) :
 	ServerSocket(std::make_unique<APRServerSocketPriv>()){
 	apr_status_t status =
 		apr_socket_create(&_priv->socket, APR_INET, SOCK_STREAM,
@@ -68,9 +69,16 @@ APRServerSocket::APRServerSocket(int port, bool reuseAddress) :
 	}
 
 	// Create server socket address (including port number)
+	std::string hostname_str;
+	const char* hostname_ptr = NULL;
+	if (!hostname.empty()) {
+		Transcoder::encode(hostname, hostname_str);
+		hostname_ptr = hostname_str.c_str();
+	}
+
 	apr_sockaddr_t* server_addr;
 	status =
-		apr_sockaddr_info_get(&server_addr, NULL, APR_INET,
+		apr_sockaddr_info_get(&server_addr, hostname_ptr, APR_INET,
 			port, 0, _priv->pool.getAPRPool());
 
 	if (status != APR_SUCCESS)

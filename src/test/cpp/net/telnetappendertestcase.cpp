@@ -106,6 +106,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setPort(TEST_PORT);
 			appender->setMaxConnections(1);
 			appender->setReuseAddress(true);
+			appender->setHostname(LOG4CXX_STR("127.0.0.1"));
 			Pool p;
 			appender->activateOptions(p);
 			LoggerPtr root(Logger::getRootLogger());
