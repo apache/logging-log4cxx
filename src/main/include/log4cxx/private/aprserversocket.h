@@ -33,9 +33,9 @@ class LOG4CXX_EXPORT APRServerSocket : public helpers::ServerSocket
         public:
 #if LOG4CXX_ABI_VERSION <= 15
             APRServerSocket(int port);
-            APRServerSocket(int port, bool reuseAddress);
+            APRServerSocket(int port, bool reuseAddress, const LogString& hostname);
 #else
-            APRServerSocket(int port, bool reuseAddress = false);
+            APRServerSocket(int port, bool reuseAddress = false, const LogString& hostname = {});
 #endif
 
 	    void close() override;

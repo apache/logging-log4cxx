@@ -58,6 +58,7 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 	{ stopAcceptingConnections(); }
 
 	int port;
+	LogString hostname;
 	bool reuseAddress = false;
 	ConnectionList connections;
 	LogString encoding;
@@ -113,7 +114,7 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 {
 	if (_priv->serverSocket == NULL)
 	{
-		_priv->serverSocket = ServerSocket::create(_priv->port, _priv->reuseAddress);
+		_priv->serverSocket = ServerSocket::create(_priv->port, _priv->reuseAddress, _priv->hostname);
 		_priv->serverSocket->setSoTimeout(1000);
 	}
 
@@ -139,6 +140,10 @@ void TelnetAppender::setOption(const LogString& option,
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("REUSEADDRESS"), LOG4CXX_STR("reuseaddress")))
 	{
 		setReuseAddress(OptionConverter::toBoolean(value, true));
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("HOSTNAME"), LOG4CXX_STR("hostname")))
+	{
+		setHostname(value);
 	}
 	else
 	{
@@ -339,6 +344,16 @@ int TelnetAppender::getPort() const
 void TelnetAppender::setPort(int port1)
 {
 	_priv->port = port1;
+}
+
+LogString TelnetAppender::getHostname() const
+{
+	return _priv->hostname;
+}
+
+void TelnetAppender::setHostname(const LogString& hostname)
+{
+	_priv->hostname = hostname;
 }
 
 int TelnetAppender::getMaxConnections() const
