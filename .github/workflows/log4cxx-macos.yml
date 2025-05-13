@@ -56,8 +56,6 @@ jobs:
 
     - name: 'configure and build'
       run: |
-        ls -l /usr/bin/g++*
-        ${{ matrix.cxx }} --version
         cd main
         mkdir build
         cd build
