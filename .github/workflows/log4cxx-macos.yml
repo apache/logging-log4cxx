@@ -36,6 +36,11 @@ jobs:
             cxx: clang++
             odbc: ON
             qt: OFF
+          - name: osx-g++
+            os: macos-latest
+            cxx: g++
+            odbc: OFF
+            qt: OFF
 
     steps:
     - uses: actions/checkout@v4
