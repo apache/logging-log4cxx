@@ -38,7 +38,7 @@ jobs:
             qt: OFF
           - name: osx-g++
             os: macos-latest
-            cxx: g++
+            cxx: g++-14
             odbc: OFF
             qt: OFF
 
@@ -56,6 +56,8 @@ jobs:
 
     - name: 'configure and build'
       run: |
+        ls -l /usr/bin/g++*
+        ${{ matrix.cxx }} --version
         cd main
         mkdir build
         cd build
