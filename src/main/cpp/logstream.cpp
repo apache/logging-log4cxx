@@ -41,6 +41,9 @@ logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags i
 	memset(this, 0, sizeof(*this));
 #endif
 #if LOG4CXX_INIT_IOS_BASE
+#if defined(__GNUC__)
+#error "GNUC and LOG4CXX_INIT_IOS_BASE are defined"
+#endif
 	init(NULL);
 #endif
 	flags(initval);
