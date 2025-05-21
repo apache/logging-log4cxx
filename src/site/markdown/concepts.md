@@ -459,15 +459,18 @@ Log4cxx provides appenders to write to:
 - [a SMTP server](@ref log4cxx.net.SMTPAppender)
 - [a database](@ref log4cxx.db.ODBCAppender)
 
-If the same file receives log requests concurrently from multiple process,
-use [this appender](@ref log4cxx.rolling.MultiprocessRollingFileAppender).
-It is also possible to log [asynchronously](@ref log4cxx.AsyncAppender)
-to another appender.
-See \ref async-example.xml
-
 The [addAppender](@ref log4cxx.Logger.addAppender)
 method adds an appender to a given logger.
 More than one appender can be attached to a logger.
+
+If the same file receives log requests concurrently from multiple process,
+use [this appender](@ref log4cxx.rolling.MultiprocessRollingFileAppender)
+to ensure a file rollover is not initiated in multiple processes.
+
+It is also possible (by using [AsyncAppender](@ref log4cxx.AsyncAppender))
+to configure Log4cxx to use a background thread
+to process [logging events](@ref log4cxx.spi::LoggingEvent) asynchronously.
+See \ref async-example.xml for a configuration file example.
 
 ## Additivity {#appender-additivity}
 
