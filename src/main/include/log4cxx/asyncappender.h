@@ -33,13 +33,29 @@ by processing log events asynchronously.
 The AsyncAppender stores the logging event in a bounded buffer
 and then returns control to the application.
 A separate thread forwards events to the attached appender(s).
-You can attach multiple appenders to an AsyncAppender.
 
 The AsyncAppender is useful when outputting to a slow event sink,
 for example, a remote SMTP server or a database.
-Attaching a FileAppender to AsyncAppender is not recommended
+Attaching a FileAppender to AsyncAppender
+to reduce logging overhead is not recommended
 as the inter-thread communication overhead
 can exceed the time to write directly to a file.
+
+You can attach multiple appenders to an AsyncAppender by:
+- calling AsyncAppender::addAppender repeatedly when progammatically configuring Log4cxx.
+- adding multiple <b>appender-ref</b> elements
+to the <b>appender class="AsyncAppender"</b> element
+when using runtime configuration.
+
+<b>Important note:</b> The <code>AsyncAppender</code> can only
+be configured at runtime using XML,
+i.e. when the application uses {@link xml::DOMConfigurator DOMConfigurator}
+to load the cofiguration file.
+
+Here is a sample configuration file:
+\include async-example.xml
+
+### Configurable properties
 
 When the application produces logging events faster
 than the background thread is able to process,
@@ -59,8 +75,8 @@ To determine whether the application produces logging events faster
 than the background thread is able to process, enable [Log4cxx internal debugging](internal-debugging.html).
 The AsyncAppender will output a histogram of queue length frequencies when closed.
 
-<b>Important note:</b> The <code>AsyncAppender</code> can only
-be script configured using the {@link xml::DOMConfigurator DOMConfigurator}.
+See AsyncAppender::setOption for details.
+
 */
 class LOG4CXX_EXPORT AsyncAppender :
 	public virtual spi::AppenderAttachable,
@@ -88,7 +104,8 @@ class LOG4CXX_EXPORT AsyncAppender :
 		virtual ~AsyncAppender();
 
 		/**
-		 * Add appender.
+		 * Ensure \c newAppender receives any logging event
+		 * added to this appender.
 		 *
 		 * @param newAppender appender to add, may not be null.
 		*/
@@ -121,10 +138,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		AppenderPtr getAppender(const LogString& name) const override;
 
 		/**
-		 * Gets whether the location of the logging request call
-		 * should be captured.
-		 *
-		 * @return the current value of the <b>LocationInfo</b> option.
+		 * The current value of the (unused) <b>LocationInfo</b> option.
 		*/
 		bool getLocationInfo() const;
 		/**
@@ -206,7 +220,6 @@ class LOG4CXX_EXPORT AsyncAppender :
 
 		Supported options | Supported values | Default value
 		-------------- | ---------------- | ---------------
-		LocationInfo | True,False | False
 		BufferSize | int  | 128
 		Blocking | True,False | True
 
