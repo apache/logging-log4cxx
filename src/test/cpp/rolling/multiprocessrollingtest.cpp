@@ -31,7 +31,16 @@
 #include <filesystem>
 #include <fstream>
 #include <apr_thread_proc.h>
-#include <thread>
+
+#ifdef _WIN32
+#include <windows.h> // GetModuleFileName
+#elif __APPLE__
+#include <mach-o/dyld.h> // _NSGetExecutablePath
+#elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
+#include <unistd.h> // getpid
+#else
+#include <cstring> // strncpy
+#endif
 
 using namespace LOG4CXX_NS;
 
@@ -131,7 +140,7 @@ public:
 				approxBytesPerLogFile = pPolicy->getMaxFileSize();
 		}
 		auto requiredLogEventCount = (approxBytesPerLogFile * requiredLogFileCount + approxBytesPerLogEvent - 1) / approxBytesPerLogEvent;
-		for ( int x = 0; x < requiredLogEventCount; x++ )
+		for ( size_t x = 0; x < requiredLogEventCount; x++ )
 		{
 			LOG4CXX_INFO( logger, "This is test message " << x );
 		}
@@ -167,7 +176,7 @@ public:
 				approxBytesPerLogFile = pPolicy->getMaxFileSize();
 		}
 		auto requiredLogEventCount = (approxBytesPerLogFile * requiredLogFileCount + approxBytesPerLogEvent - 1) / approxBytesPerLogEvent;
-		for ( int x = 0; x < requiredLogEventCount; x++ )
+		for ( size_t x = 0; x < requiredLogEventCount; x++ )
 		{
 			LOG4CXX_INFO( logger, "This is test message " << x );
 		}
@@ -192,6 +201,10 @@ public:
 		}
 		helpers::FileOutputStream output(LOG4CXX_STR("output/rolling/multiprocess-test4-child.log"), false);
 		auto thisProgram = GetExecutableFileName();
+		bool thisProgramExists = std::filesystem::exists(thisProgram);
+		if (!thisProgramExists && helpers::LogLog::isDebugEnabled())
+			helpers::LogLog::debug(LOG4CXX_STR("thisProgram: ") + thisProgram);
+		LOGUNIT_ASSERT(thisProgramExists);
 		const char* args[] = {thisProgram.c_str(), "test3", 0};
 		helpers::Pool p;
 		apr_procattr_t* attr = NULL;
@@ -205,6 +218,16 @@ public:
 			int exitCode;
 			apr_exit_why_e reason;
 			apr_proc_wait(&pid[i], &exitCode, &reason, APR_WAIT);
+			if (exitCode != 0 && helpers::LogLog::isDebugEnabled())
+			{
+				LogString msg = LOG4CXX_STR("child: ");
+				helpers::StringHelper::toString(i, p, msg);
+				msg += LOG4CXX_STR("; exit code: ");
+				helpers::StringHelper::toString(exitCode, p, msg);
+				msg += LOG4CXX_STR("; reason: ");
+				helpers::StringHelper::toString(reason, p, msg);
+				helpers::LogLog::debug(msg);
+			}
 			LOGUNIT_ASSERT_EQUAL(exitCode, 0);
 		}
 		if (helpers::LogLog::isDebugEnabled())
@@ -236,7 +259,7 @@ public:
 					 {
 						try
 						{
-							auto msgNumber = std::stoi(line.substr(pos));
+							auto msgNumber = std::stoull(line.substr(pos));
 							if (messageCount.size() <= msgNumber)
 								messageCount.resize(msgNumber + 1);
 							++messageCount[msgNumber];
@@ -344,11 +367,11 @@ private:
 	{
 		static const int bufSize = 4096;
 		char buf[bufSize+1] = {0};
-		uint32_t bufCount = 0;
+		[[maybe_unused]] uint32_t bufCount = bufSize;
 #if defined(_WIN32)
-		GetModuleFileName(NULL, buf, bufSize);
+		GetModuleFileName(NULL, buf, bufSize);  // TODO handle failure, e.g. ERROR_INSUFFICIENT_BUFFER
 #elif defined(__APPLE__)
-		_NSGetExecutablePath(buf, &bufCount);
+		_NSGetExecutablePath(buf, &bufCount);  // TODO handle failure
 #elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
 		std::ostringstream exeLink;
 		exeLink << "/proc/" << getpid() << "/exe";
@@ -372,4 +395,3 @@ private:
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(MultiprocessRollingTest);
-
