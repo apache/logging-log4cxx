@@ -64,9 +64,9 @@ support for {@link spi::Filter Filters}, custom
 {@link spi::ErrorHandler ErrorHandlers}, nested
 appenders such as the {@link AsyncAppender AsyncAppender}, etc.
 
-<h3>Appender configuration</h3>
+<h3>Configuring appenders</h3>
 
-Appender configuration syntax is:
+%Appender configuration syntax is:
 <pre>
 # For appender named <i>appenderName</i>, set its class.
 # Note: The appender name can contain dots.
@@ -391,7 +391,6 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 	private:
 		PropertyConfigurator(const PropertyConfigurator&);
 		PropertyConfigurator& operator=(const PropertyConfigurator&);
-		static PropertyWatchdog* pdog;
 }; // class PropertyConfigurator
 }  // namespace log4cxx
 

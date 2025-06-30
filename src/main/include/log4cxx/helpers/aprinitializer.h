@@ -52,6 +52,7 @@ class APRInitializer
 		static apr_threadkey_t* getTlsKey();
 		static bool isDestructed;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		 *  Register a FileWatchdog for deletion prior to termination.
 		 *    FileWatchdog must be
@@ -60,6 +61,7 @@ class APRInitializer
 		static void registerCleanup(FileWatchdog* watchdog);
 		static void unregisterCleanup(FileWatchdog* watchdog);
 		static void unregisterAll();
+#endif
 		/**
 		 *  Store a single instance type ObjectPtr for deletion prior to termination
 		 */
@@ -84,7 +86,6 @@ class APRInitializer
 	private: // Modifiers
 		void addObject(size_t key, const ObjectPtr& pObject);
 		const ObjectPtr& findOrAddObject(size_t key, std::function<ObjectPtr()> creator);
-		void stopWatchDogs();
 	private: // Attributes
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(APRInitializerPrivate, m_priv)
 	private: // Class methods

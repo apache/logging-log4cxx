@@ -49,6 +49,7 @@
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/helpers/messagebuffer.h>
 #include <log4cxx/helpers/threadutility.h>
+#include <log4cxx/helpers/singletonholder.h>
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>
@@ -89,11 +90,22 @@ class XMLWatchdog  : public FileWatchdog
 			DOMConfigurator().doConfigure(file(),
 				LogManager::getLoggerRepository());
 		}
+
+		static void startWatching(const File& filename, long delay)
+		{
+			using WatchdogHolder = SingletonHolder<XMLWatchdog>;
+			auto pHolder = APRInitializer::getOrAddUnique<WatchdogHolder>
+				( [&filename]() -> ObjectPtr
+					{ return std::make_shared<WatchdogHolder>(filename); }
+				);
+			auto& xdog = pHolder->value();
+			xdog.setFile(filename);
+			xdog.setDelay(0 < delay ? delay : FileWatchdog::DEFAULT_DELAY);
+			xdog.start();
+		}
 };
 }
 }
-XMLWatchdog* DOMConfigurator::xdog = NULL;
-
 
 IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 
@@ -978,19 +990,8 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& f
 
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& file, long delay)
 {
-	if ( xdog )
-	{
-		APRInitializer::unregisterCleanup(xdog);
-		delete xdog;
-	}
-
 	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-
-	xdog = new XMLWatchdog(file);
-	APRInitializer::registerCleanup(xdog);
-	xdog->setDelay(0 < delay ? delay : FileWatchdog::DEFAULT_DELAY);
-	xdog->start();
-
+	XMLWatchdog::startWatching(file, delay);
 	return status;
 }
 
@@ -999,19 +1000,8 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& file, lo
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
 {
 	File file(filename);
-	if ( xdog )
-	{
-		APRInitializer::unregisterCleanup(xdog);
-		delete xdog;
-	}
-
 	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-
-	xdog = new XMLWatchdog(file);
-	APRInitializer::registerCleanup(xdog);
-	xdog->setDelay(delay);
-	xdog->start();
-
+	XMLWatchdog::startWatching(file, delay);
 	return status;
 }
 #endif
@@ -1020,19 +1010,8 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& 
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename, long delay)
 {
 	File file(filename);
-	if ( xdog )
-	{
-		APRInitializer::unregisterCleanup(xdog);
-		delete xdog;
-	}
-
 	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-
-	xdog = new XMLWatchdog(file);
-	APRInitializer::registerCleanup(xdog);
-	xdog->setDelay(delay);
-	xdog->start();
-
+	XMLWatchdog::startWatching(file, delay);
 	return status;
 }
 #endif
@@ -1041,19 +1020,8 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_str
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
 {
 	File file(filename);
-	if ( xdog )
-	{
-		APRInitializer::unregisterCleanup(xdog);
-		delete xdog;
-	}
-
 	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-
-	xdog = new XMLWatchdog(file);
-	APRInitializer::registerCleanup(xdog);
-	xdog->setDelay(delay);
-	xdog->start();
-
+	XMLWatchdog::startWatching(file, delay);
 	return status;
 }
 #endif

@@ -42,6 +42,11 @@ public: // Object method stubs
 	LOG4CXX_CAST_ENTRY(ThisType)
 	END_LOG4CXX_CAST_MAP()
 
+public: // ...structors
+    SingletonHolder() {}
+    template <class ParamType>
+    SingletonHolder(const ParamType& arg) : m_data(arg) {}
+
 public: // Accessors
 	T& value() { return m_data; }
 };
