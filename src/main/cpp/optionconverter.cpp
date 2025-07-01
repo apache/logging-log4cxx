@@ -42,6 +42,7 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/filewatchdog.h>
+#include <log4cxx/helpers/singletonholder.h>
 
 namespace LOG4CXX_NS
 {
@@ -65,6 +66,19 @@ class ConfiguratorWatchdog  : public helpers::FileWatchdog
     {
         m_config->doConfigure(file(), LogManager::getLoggerRepository());
     }
+
+	static void startWatching(const spi::ConfiguratorPtr& config, const File& filename, long delay)
+	{
+		using WatchdogHolder = helpers::SingletonHolder<ConfiguratorWatchdog>;
+		auto pHolder = helpers::APRInitializer::getOrAddUnique<WatchdogHolder>
+			( [&config, &filename]() -> helpers::ObjectPtr
+				{ return std::make_shared<WatchdogHolder>(config, filename); }
+			);
+		auto& pdog = pHolder->value();
+		pdog.setFile(filename);
+		pdog.setDelay(delay);
+		pdog.start();
+	}
 };
 
 }
@@ -465,12 +479,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	}
 
 	if (0 < delay)
-	{
-		auto dog = new ConfiguratorWatchdog(configurator, configFileName);
-		APRInitializer::registerCleanup(dog);
-		dog->setDelay(delay);
-		dog->start();
-	}
+		ConfiguratorWatchdog::startWatching(configurator, configFileName, delay);
 	else
 		configurator->doConfigure(configFileName, hierarchy);
 }
