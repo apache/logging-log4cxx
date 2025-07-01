@@ -74,10 +74,11 @@ class ConfiguratorWatchdog  : public helpers::FileWatchdog
 			( [&config, &filename]() -> helpers::ObjectPtr
 				{ return std::make_shared<WatchdogHolder>(config, filename); }
 			);
-		auto& pdog = pHolder->value();
-		pdog.setFile(filename);
-		pdog.setDelay(delay);
-		pdog.start();
+		auto& dog = pHolder->value();
+		dog.m_config = config;
+		dog.setFile(filename);
+		dog.setDelay(delay);
+		dog.start();
 	}
 };
 
