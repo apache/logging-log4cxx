@@ -36,6 +36,7 @@
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/threadutility.h>
+#include <log4cxx/helpers/singletonholder.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 
 #define LOG4CXX 1
@@ -67,10 +68,21 @@ class PropertyWatchdog  : public FileWatchdog
 			PropertyConfigurator().doConfigure(file(),
 				LogManager::getLoggerRepository());
 		}
+
+		static void startWatching(const File& filename, long delay)
+		{
+			using WatchdogHolder = SingletonHolder<PropertyWatchdog>;
+			auto pHolder = APRInitializer::getOrAddUnique<WatchdogHolder>
+				( [&filename]() -> ObjectPtr
+					{ return std::make_shared<WatchdogHolder>(filename); }
+				);
+			auto& pdog = pHolder->value();
+			pdog.setFile(filename);
+			pdog.setDelay(0 < delay ? delay : FileWatchdog::DEFAULT_DELAY);
+			pdog.start();
+		}
 };
 }
-
-PropertyWatchdog* PropertyConfigurator::pdog = NULL;
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
@@ -155,19 +167,8 @@ spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(const File& con
 spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 	const File& configFilename, long delay)
 {
-	if (pdog)
-	{
-		APRInitializer::unregisterCleanup(pdog);
-		delete pdog;
-	}
-
 	spi::ConfigurationStatus stat = PropertyConfigurator().doConfigure(configFilename, LogManager::getLoggerRepository());
-
-	pdog = new PropertyWatchdog(configFilename);
-	APRInitializer::registerCleanup(pdog);
-	pdog->setDelay(0 < delay ? delay : FileWatchdog::DEFAULT_DELAY);
-	pdog->start();
-
+	PropertyWatchdog::startWatching(configFilename, delay);
 	return stat;
 }
 

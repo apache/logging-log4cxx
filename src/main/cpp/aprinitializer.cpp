@@ -52,7 +52,6 @@ struct APRInitializer::APRInitializerPrivate{
 
 	apr_pool_t* p;
 	std::mutex mutex;
-	std::list<FileWatchdog*> watchdogs;
 	log4cxx_time_t startTime;
 	apr_threadkey_t* tlsKey;
 	std::vector<IdentifiedObject> objects;
@@ -104,7 +103,6 @@ APRInitializer::APRInitializer() :
 
 APRInitializer::~APRInitializer()
 {
-	stopWatchDogs();
 	isDestructed = true;
 #if APR_HAS_THREADS
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
@@ -112,22 +110,11 @@ APRInitializer::~APRInitializer()
 #endif
 }
 
-void APRInitializer::stopWatchDogs()
-{
-	std::lock_guard<std::mutex> lock(m_priv->mutex);
-
-	while (!m_priv->watchdogs.empty())
-	{
-		m_priv->watchdogs.back()->stop();
-		delete m_priv->watchdogs.back();
-		m_priv->watchdogs.pop_back();
-	}
-}
-
+#if LOG4CXX_ABI_VERSION <= 15
 void APRInitializer::unregisterAll()
 {
-	getInstance().stopWatchDogs();
 }
+#endif
 
 APRInitializer& APRInitializer::getInstance()
 {
@@ -159,22 +146,15 @@ apr_threadkey_t* APRInitializer::getTlsKey()
 	return getInstance().m_priv->tlsKey;
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void APRInitializer::registerCleanup(FileWatchdog* watchdog)
 {
-	APRInitializer& instance(getInstance());
-	std::lock_guard<std::mutex> lock(instance.m_priv->mutex);
-	instance.m_priv->watchdogs.push_back(watchdog);
 }
 
 void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
 {
-	APRInitializer& instance(getInstance());
-	std::lock_guard<std::mutex> lock(instance.m_priv->mutex);
-
-	auto iter = std::find(instance.m_priv->watchdogs.begin(), instance.m_priv->watchdogs.end(), watchdog);
-	if (iter != instance.m_priv->watchdogs.end())
-		instance.m_priv->watchdogs.erase(iter);
 }
+#endif
 
 void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)
 {

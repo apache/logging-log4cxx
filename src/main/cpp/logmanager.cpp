@@ -203,7 +203,6 @@ LoggerList LogManager::getCurrentLoggers()
 
 void LogManager::shutdown()
 {
-	APRInitializer::unregisterAll();
 	ThreadUtility::instance()->removeAllPeriodicTasks();
 	getLoggerRepository()->shutdown();
 }

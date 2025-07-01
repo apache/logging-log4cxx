@@ -54,6 +54,11 @@ class LOG4CXX_EXPORT FileWatchdog
 		void setDelay(long delay);
 
 		/**
+		Change the watched file to \c filename.
+		*/
+		void setFile(const File& filename);
+
+		/**
 		Create an asynchronous task that periodically checks for a file change after first calling doOnChange().
 		*/
 		void start();

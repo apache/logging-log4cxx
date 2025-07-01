@@ -374,7 +374,6 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		//   prevent assignment or copy statements
 		DOMConfigurator(const DOMConfigurator&);
 		DOMConfigurator& operator=(const DOMConfigurator&);
-		static XMLWatchdog* xdog;
 
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(DOMConfiguratorPrivate, m_priv)
 };

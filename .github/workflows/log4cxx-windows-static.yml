@@ -24,12 +24,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [windows-2019, windows-2022]
+        name: [windows-2022, windows-2025]
         include:
-          - name: windows-2019
-            os: windows-2019
           - name: windows-2022
             os: windows-2022
+          - name: windows-2025
+            os: windows-2025
 
     steps:
     - uses: actions/checkout@v4
