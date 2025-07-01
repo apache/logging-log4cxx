@@ -52,7 +52,6 @@ struct APRInitializer::APRInitializerPrivate{
 
 	apr_pool_t* p;
 	std::mutex mutex;
-	std::list<FileWatchdog*> watchdogs;
 	log4cxx_time_t startTime;
 	apr_threadkey_t* tlsKey;
 	std::vector<IdentifiedObject> objects;
