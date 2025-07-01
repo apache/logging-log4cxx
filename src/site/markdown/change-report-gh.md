@@ -60,6 +60,10 @@ Release 1.5.0 includes the following new features:
 
 The following issues have been addressed:
 
+* Undefined behaviour when reloading a configuration file after calling LogManager::shutdown
+   \[[#504](https://github.com/apache/logging-log4cxx/issues/504)\]
+* Compilation error when using gcc on MacOS
+   \[[#499](https://github.com/apache/logging-log4cxx/issues/499)\]
 * It was possible for logging events to be lost when reloading a configuration file
    \[[#491](https://github.com/apache/logging-log4cxx/issues/491)\]
 
