@@ -48,6 +48,9 @@ public: // ...structors
 	SingletonHolder(Args&& ... args)
 		: m_data(std::forward<Args>(args) ... )
 	{}
+    // Prevent copying
+    SingletonHolder(const SingletonHolder&) = delete;
+    SingletonHolder(SingletonHolder&&) = delete;
 
 public: // Accessors
 	T& value() { return m_data; }
