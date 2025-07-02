@@ -44,11 +44,11 @@ public: // Object method stubs
 
 public: // ...structors
 	SingletonHolder() {}
-	template < typename ... Args
-	         , typename = std::enable_if<!std::is_same<std::decay<T>::type, SingletonHolder<T>>::value>::type
+	template < typename Arg0, typename ... Args
+	         , typename = std::enable_if<!std::is_same<std::decay<Arg0>::type, SingletonHolder>::value>::type
 	         >
-	SingletonHolder(Args&& ... args)
-		: m_data(std::forward<Args>(args) ... )
+	SingletonHolder(Arg0 arg0, Args&& ... args)
+		: m_data(arg0, std::forward<Args>(args) ... )
 	{}
 	// Prevent copying
 	SingletonHolder(const SingletonHolder&) = delete;
