@@ -44,8 +44,8 @@ public: // Object method stubs
 
 public: // ...structors
 	SingletonHolder() {}
-	template <typename ... Args
-	         , typename = std::enable_if_t<!std::is_same_v<std::decay_t<T>, SingletonHolder>>
+	template < typename ... Args
+	         , typename = std::enable_if<!std::is_same_v<std::decay_t<T>, SingletonHolder>>::type
 	         >
 	SingletonHolder(Args&& ... args)
 		: m_data(std::forward<Args>(args) ... )
