@@ -18,8 +18,8 @@ on:
   push:
     branches:
       - master
-#  pull_request:
-#    types: [opened, synchronize, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
@@ -94,6 +94,6 @@ jobs:
           # Consult https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/scanners/sonarscanner/ for more information and options
           args: >
             --define sonar.host.url="${{ env.SONAR_SERVER_URL }}"
-            --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
+            --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json" 
             --define sonar.coverageReportPaths=build/coverage.xml
 
