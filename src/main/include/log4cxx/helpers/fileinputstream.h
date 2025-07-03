@@ -20,7 +20,6 @@
 
 #include <log4cxx/helpers/inputstream.h>
 #include <log4cxx/file.h>
-#include <log4cxx/helpers/pool.h>
 #include <memory>
 
 namespace LOG4CXX_NS
@@ -81,9 +80,10 @@ class LOG4CXX_EXPORT FileInputStream : public InputStream
 
 	private:
 
-		FileInputStream(const FileInputStream&);
+		FileInputStream(const FileInputStream&) = delete;
+		FileInputStream(FileInputStream&&) = delete;
 
-		FileInputStream& operator=(const FileInputStream&);
+		FileInputStream& operator=(const FileInputStream&) = delete;
 		void open(const LogString&);
 
 };

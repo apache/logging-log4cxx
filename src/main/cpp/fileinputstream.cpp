@@ -19,12 +19,8 @@
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_file_io.h>
-#include <log4cxx/helpers/transcoder.h>
-#if !defined(LOG4CXX)
-	#define LOG4CXX 1
-#endif
-#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -82,7 +78,7 @@ FileInputStream::FileInputStream(const File& aFile) :
 
 FileInputStream::~FileInputStream()
 {
-	if (m_priv->fileptr != NULL && !APRInitializer::isDestructed)
+	if (m_priv->fileptr)
 	{
 		apr_file_close(m_priv->fileptr);
 	}
