@@ -42,26 +42,12 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	{
 	}
 
-	WriterAppenderPriv(const LayoutPtr& layout1, const helpers::WriterPtr& writer1) :
-		AppenderSkeletonPrivate(layout1),
-		immediateFlush(true),
-		writer(writer1)
-#if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii{ [this]{flush();} }
-#endif
+	WriterAppenderPriv(const LayoutPtr& layout1, const helpers::WriterPtr& writer1 = helpers::WriterPtr())
+		: WriterAppenderPriv()
 	{
+		this->layout = layout1;
+		this->writer = writer1;
 	}
-
-#if LOG4CXX_ABI_VERSION <= 15
-	WriterAppenderPriv(const LayoutPtr& layout1) :
-		AppenderSkeletonPrivate(layout1),
-		immediateFlush(true)
-#if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii{ [this]{flush();} }
-#endif
-	{
-	}
-#endif
 
 	void flush()
 	{
