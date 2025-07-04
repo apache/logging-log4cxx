@@ -27,38 +27,43 @@ using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(OutputStreamWriter)
 
-struct OutputStreamWriter::OutputStreamWriterPrivate{
-	OutputStreamWriterPrivate(OutputStreamPtr& out1) : out(out1), enc(CharsetEncoder::getDefaultEncoder()){}
-
-	OutputStreamWriterPrivate(OutputStreamPtr& out1,
-							  CharsetEncoderPtr& enc1)
-		: out(out1), enc(enc1){}
+struct OutputStreamWriter::OutputStreamWriterPrivate
+{
+	OutputStreamWriterPrivate
+		( const OutputStreamPtr& out1
+		, const CharsetEncoderPtr& enc1 = CharsetEncoder::getDefaultEncoder()
+		)
+		: out(out1)
+		, enc(enc1)
+		{}
 
 	OutputStreamPtr out;
 	CharsetEncoderPtr enc;
 };
 
-OutputStreamWriter::OutputStreamWriter(OutputStreamPtr& out1)
-	: m_priv(std::make_unique<OutputStreamWriterPrivate>(out1))
+OutputStreamWriter::OutputStreamWriter(const OutputStreamPtr& out)
+	: m_priv(std::make_unique<OutputStreamWriterPrivate>(out))
 {
-	if (out1 == 0)
+	if (!out)
 	{
-		throw NullPointerException(LOG4CXX_STR("out parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("OutputStream parameter may not be null."));
 	}
 }
 
-OutputStreamWriter::OutputStreamWriter(OutputStreamPtr& out1,
-	CharsetEncoderPtr& enc1)
-	: m_priv(std::make_unique<OutputStreamWriterPrivate>(out1, enc1))
+OutputStreamWriter::OutputStreamWriter
+	( const OutputStreamPtr& out
+	, const CharsetEncoderPtr& enc
+	)
+	: m_priv(std::make_unique<OutputStreamWriterPrivate>(out, enc))
 {
-	if (out1 == 0)
+	if (!out)
 	{
-		throw NullPointerException(LOG4CXX_STR("out parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("OutputStream parameter may not be null."));
 	}
 
-	if (enc1 == 0)
+	if (!enc)
 	{
-		throw NullPointerException(LOG4CXX_STR("enc parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("CharsetEncoder parameter may not be null."));
 	}
 }
 

@@ -323,7 +323,7 @@ void FileAppender::setFileInternal(
 
 	try
 	{
-		outStream = FileOutputStreamPtr(new FileOutputStream(filename, append1));
+		outStream = std::make_shared<FileOutputStream>(filename, append1);
 	}
 	catch (IOException&)
 	{
@@ -336,7 +336,7 @@ void FileAppender::setFileInternal(
 
 			if (!parentDir.exists(p) && parentDir.mkdirs(p))
 			{
-				outStream = OutputStreamPtr(new FileOutputStream(filename, append1));
+				outStream = std::make_shared<FileOutputStream>(filename, append1);
 			}
 			else
 			{

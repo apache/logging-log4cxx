@@ -43,8 +43,8 @@ class LOG4CXX_EXPORT OutputStreamWriter : public Writer
 		LOG4CXX_CAST_ENTRY_CHAIN(Writer)
 		END_LOG4CXX_CAST_MAP()
 
-		OutputStreamWriter(OutputStreamPtr& out);
-		OutputStreamWriter(OutputStreamPtr& out, CharsetEncoderPtr& enc);
+		OutputStreamWriter(const OutputStreamPtr& out);
+		OutputStreamWriter(const OutputStreamPtr& out, const CharsetEncoderPtr& enc);
 		~OutputStreamWriter();
 
 		void close(Pool& p) override;

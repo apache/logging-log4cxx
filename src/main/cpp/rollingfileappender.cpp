@@ -357,10 +357,11 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 							setFileInternal(rollover1->getActiveFileName());
 							// Call activateOptions to create any intermediate directories(if required)
 							FileAppender::activateOptionsInternal(p);
-							OutputStreamPtr os(new FileOutputStream(
-									rollover1->getActiveFileName(), rollover1->getAppend()));
-							WriterPtr newWriter(createWriter(os));
-							setWriterInternal(newWriter);
+							auto os = std::make_shared<FileOutputStream>
+									( rollover1->getActiveFileName()
+									, rollover1->getAppend()
+									);
+							setWriterInternal(createWriter(os));
 
 							bool success = true;
 
@@ -518,16 +519,19 @@ class CountingOutputStream : public OutputStream
 		 * @param os output stream to wrap.
 		 * @param rfa rolling file appender to inform.
 		 */
-		CountingOutputStream(
-			OutputStreamPtr& os1, RollingFileAppender* rfa1) :
-			os(os1), rfa(rfa1)
+		CountingOutputStream
+			( const OutputStreamPtr& os1
+			, RollingFileAppender* rfa1
+			)
+			: os(os1)
+			, rfa(rfa1)
 		{
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		void close(Pool& p)
+		void close(Pool& p) override
 		{
 			os->close(p);
 			rfa = 0;
@@ -536,7 +540,7 @@ class CountingOutputStream : public OutputStream
 		/**
 		 * {@inheritDoc}
 		 */
-		void flush(Pool& p)
+		void flush(Pool& p) override
 		{
 			os->flush(p);
 		}
@@ -544,7 +548,7 @@ class CountingOutputStream : public OutputStream
 		/**
 		 * {@inheritDoc}
 		 */
-		void write(ByteBuffer& buf, Pool& p)
+		void write(ByteBuffer& buf, Pool& p) override
 		{
 			os->write(buf, p);
 
@@ -566,7 +570,7 @@ class CountingOutputStream : public OutputStream
  @param os output stream, may not be null.
  @return new writer.
  */
-WriterPtr RollingFileAppender::createWriter(OutputStreamPtr& os)
+WriterPtr RollingFileAppender::createWriter(const OutputStreamPtr& os)
 {
 	OutputStreamPtr cos = std::make_shared<CountingOutputStream>(os, this);
 	return FileAppender::createWriter(cos);

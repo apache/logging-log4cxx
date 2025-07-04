@@ -91,7 +91,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		 @param os output stream, may not be null.
 		 @return new writer.
 		 */
-		helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os) override;
+		helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
 
 	private:
 		/**

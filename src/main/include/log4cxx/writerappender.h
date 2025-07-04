@@ -25,11 +25,6 @@
 namespace LOG4CXX_NS
 {
 
-namespace helpers
-{
-class Transcoder;
-}
-
 /**
 WriterAppender appends log events to a standard output stream
 */
@@ -48,9 +43,12 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		This default constructor does nothing.*/
 		WriterAppender();
 	protected:
-		WriterAppender(const LayoutPtr& layout,
-			LOG4CXX_NS::helpers::WriterPtr& writer);
+#if LOG4CXX_ABI_VERSION <= 15
+		WriterAppender(const LayoutPtr& layout, helpers::WriterPtr& writer);
 		WriterAppender(const LayoutPtr& layout);
+#else
+		WriterAppender(const LayoutPtr& layout, const helpers::WriterPtr& writer = helpers::WriterPtr());
+#endif
 		WriterAppender(std::unique_ptr<WriterAppenderPriv> priv);
 
 	public:
@@ -128,7 +126,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		    <code>encoding</code> property.  If the encoding value is
 		    specified incorrectly the writer will be opened using the default
 		    system encoding (an error message will be printed to the loglog.  */
-		virtual helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os);
+		virtual helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os);
 
 	public:
 		/**
@@ -165,9 +163,9 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		  @param writer An already opened Writer.
 		*/
-		void setWriter(const LOG4CXX_NS::helpers::WriterPtr& writer);
+		void setWriter(const helpers::WriterPtr& writer);
 
-		const LOG4CXX_NS::helpers::WriterPtr getWriter() const;
+		const helpers::WriterPtr getWriter() const;
 
 		bool requiresLayout() const override;
 
@@ -175,23 +173,23 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		 Actual writing occurs here.
 		*/
-		virtual void subAppend(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p);
+		virtual void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p);
 
 
 		/**
 		Write a footer as produced by the embedded layout's
 		Layout#appendFooter method.  */
-		virtual void writeFooter(LOG4CXX_NS::helpers::Pool& p);
+		virtual void writeFooter(helpers::Pool& p);
 
 		/**
 		Write a header as produced by the embedded layout's
 		Layout#appendHeader method.  */
-		virtual void writeHeader(LOG4CXX_NS::helpers::Pool& p);
+		virtual void writeHeader(helpers::Pool& p);
 
 		/**
 		 * Set the writer.  Mutex must already be held.
 		 */
-		void setWriterInternal(const LOG4CXX_NS::helpers::WriterPtr& writer);
+		void setWriterInternal(const helpers::WriterPtr& writer);
 
 	private:
 		//

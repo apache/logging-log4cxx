@@ -42,8 +42,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	{
 	}
 
-	WriterAppenderPriv(const LayoutPtr& layout1,
-		LOG4CXX_NS::helpers::WriterPtr& writer1) :
+	WriterAppenderPriv(const LayoutPtr& layout1, const helpers::WriterPtr& writer1) :
 		AppenderSkeletonPrivate(layout1),
 		immediateFlush(true),
 		writer(writer1)
@@ -53,6 +52,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	{
 	}
 
+#if LOG4CXX_ABI_VERSION <= 15
 	WriterAppenderPriv(const LayoutPtr& layout1) :
 		AppenderSkeletonPrivate(layout1),
 		immediateFlush(true)
@@ -61,6 +61,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 #endif
 	{
 	}
+#endif
 
 	void flush()
 	{
@@ -94,7 +95,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	/**
 	*  This is the {@link Writer Writer} where we will write to.
 	*/
-	LOG4CXX_NS::helpers::WriterPtr writer;
+	helpers::WriterPtr writer;
 
 #if LOG4CXX_EVENTS_AT_EXIT
 	helpers::AtExitRegistry::Raii atExitRegistryRaii;
