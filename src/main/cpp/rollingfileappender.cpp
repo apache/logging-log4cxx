@@ -357,7 +357,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 							setFileInternal(rollover1->getActiveFileName());
 							// Call activateOptions to create any intermediate directories(if required)
 							FileAppender::activateOptionsInternal(p);
-							auto os = std::make_shared<FileOutputStream>
+							OutputStreamPtr os = std::make_shared<FileOutputStream>
 									( rollover1->getActiveFileName()
 									, rollover1->getAppend()
 									);
@@ -570,7 +570,7 @@ class CountingOutputStream : public OutputStream
  @param os output stream, may not be null.
  @return new writer.
  */
-WriterPtr RollingFileAppender::createWriter(const OutputStreamPtr& os)
+WriterPtr RollingFileAppender::createWriter(LOG4CXX_16_CONST OutputStreamPtr& os)
 {
 	OutputStreamPtr cos = std::make_shared<CountingOutputStream>(os, this);
 	return FileAppender::createWriter(cos);

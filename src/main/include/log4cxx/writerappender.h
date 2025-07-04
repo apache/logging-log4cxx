@@ -22,6 +22,12 @@
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <atomic>
 
+#if 15 < LOG4CXX_ABI_VERSION
+#define LOG4CXX_16_CONST const
+#else
+#define LOG4CXX_16_CONST 
+#endif
+
 namespace LOG4CXX_NS
 {
 
@@ -126,7 +132,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		    <code>encoding</code> property.  If the encoding value is
 		    specified incorrectly the writer will be opened using the default
 		    system encoding (an error message will be printed to the loglog.  */
-		virtual helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os);
+		virtual helpers::WriterPtr createWriter(LOG4CXX_16_CONST helpers::OutputStreamPtr& os);
 
 	public:
 		/**

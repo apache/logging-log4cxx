@@ -190,7 +190,7 @@ void WriterAppender::closeWriter()
    <code>encoding</code> property.  If the encoding value is
    specified incorrectly the writer will be opened using the default
    system encoding (an error message will be printed to the loglog.  */
-WriterPtr WriterAppender::createWriter(const OutputStreamPtr& os)
+WriterPtr WriterAppender::createWriter(LOG4CXX_16_CONST OutputStreamPtr& os)
 {
 
 	LogString enc(getEncoding());
