@@ -41,7 +41,7 @@ struct OutputStreamWriter::OutputStreamWriterPrivate
 	CharsetEncoderPtr enc;
 };
 
-OutputStreamWriter::OutputStreamWriter(const OutputStreamPtr& out)
+OutputStreamWriter::OutputStreamWriter(LOG4CXX_16_CONST OutputStreamPtr& out)
 	: m_priv(std::make_unique<OutputStreamWriterPrivate>(out))
 {
 	if (!out)
@@ -51,8 +51,8 @@ OutputStreamWriter::OutputStreamWriter(const OutputStreamPtr& out)
 }
 
 OutputStreamWriter::OutputStreamWriter
-	( const OutputStreamPtr& out
-	, const CharsetEncoderPtr& enc
+	( LOG4CXX_16_CONST OutputStreamPtr& out
+	, LOG4CXX_16_CONST CharsetEncoderPtr& enc
 	)
 	: m_priv(std::make_unique<OutputStreamWriterPrivate>(out, enc))
 {
