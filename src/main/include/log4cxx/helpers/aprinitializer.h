@@ -23,34 +23,32 @@
 #endif
 
 #include <log4cxx/helpers/object.h>
-#include <list>
-#include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/widelife.h>
 
 extern "C" {
 	struct apr_threadkey_t;
 	struct apr_pool_t;
 }
-
-#include <mutex>
 #include <functional>
 
 namespace LOG4CXX_NS
 {
 namespace helpers
 {
+#if LOG4CXX_ABI_VERSION <= 15
 class FileWatchdog;
+#endif
 
 class APRInitializer
 {
 	public:
 #if LOG4CXX_ABI_VERSION <= 15
 		static log4cxx_time_t initialize();
+		static bool isDestructed;
 #endif
 		static apr_pool_t* getRootPool();
 		static log4cxx_time_t getStartTime();
 		static apr_threadkey_t* getTlsKey();
-		static bool isDestructed;
 
 #if LOG4CXX_ABI_VERSION <= 15
 		/**

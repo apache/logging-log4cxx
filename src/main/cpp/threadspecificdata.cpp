@@ -31,6 +31,8 @@
 #include <sstream>
 #include <algorithm>
 #include <thread>
+#include <mutex>
+#include <list>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;

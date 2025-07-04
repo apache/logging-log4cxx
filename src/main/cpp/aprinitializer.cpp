@@ -23,16 +23,18 @@
 #include <assert.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <apr_thread_proc.h>
-#include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/loglog.h>
-#include <list>
+#include <vector>
 #include <algorithm>
+#include <mutex>
 
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS;
 
+#if LOG4CXX_ABI_VERSION <= 15
 bool APRInitializer::isDestructed = false;
+#endif
 
 using IdentifiedObject = std::pair<size_t, ObjectPtr>;
 
@@ -68,7 +70,7 @@ void tlsDestructImpl(void* ptr)
 #if LOG4CXX_ABI_VERSION <= 15
 extern "C" void tlsDestruct(void* ptr)
 {
-	return tlsDestructImpl(ptr);
+	tlsDestructImpl(ptr);
 }
 #endif
 
@@ -103,7 +105,9 @@ APRInitializer::APRInitializer() :
 
 APRInitializer::~APRInitializer()
 {
+#if LOG4CXX_ABI_VERSION <= 15
 	isDestructed = true;
+#endif
 #if APR_HAS_THREADS
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
 	apr_threadkey_private_delete(m_priv->tlsKey);

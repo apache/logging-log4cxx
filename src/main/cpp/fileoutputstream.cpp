@@ -17,14 +17,10 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/fileoutputstream.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <apr_file_io.h>
-#include <log4cxx/helpers/transcoder.h>
-#if !defined(LOG4CXX)
-	#define LOG4CXX 1
-#endif
-#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -81,7 +77,7 @@ apr_file_t* FileOutputStream::open(const LogString& filename,
 
 FileOutputStream::~FileOutputStream()
 {
-	if (m_priv->fileptr != NULL && !APRInitializer::isDestructed)
+	if (m_priv->fileptr)
 	{
 		apr_file_close(m_priv->fileptr);
 	}
@@ -89,7 +85,7 @@ FileOutputStream::~FileOutputStream()
 
 void FileOutputStream::close(Pool& /* p */)
 {
-	if (m_priv->fileptr != NULL)
+	if (m_priv->fileptr)
 	{
 		apr_status_t stat = apr_file_close(m_priv->fileptr);
 
