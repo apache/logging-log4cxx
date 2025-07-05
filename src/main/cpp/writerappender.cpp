@@ -36,18 +36,26 @@ WriterAppender::WriterAppender() :
 {
 }
 
-WriterAppender::WriterAppender(const LayoutPtr& layout1,
-	LOG4CXX_NS::helpers::WriterPtr& writer1)
-	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout1, writer1))
+#if LOG4CXX_ABI_VERSION <= 15
+WriterAppender::WriterAppender(const LayoutPtr& layout, helpers::WriterPtr& writer)
+	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout, writer))
 {
 	Pool p;
 	activateOptions(p);
 }
 
-WriterAppender::WriterAppender(const LayoutPtr& layout1)
-	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout1))
+WriterAppender::WriterAppender(const LayoutPtr& layout)
+	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout))
 {
 }
+#else
+WriterAppender::WriterAppender(const LayoutPtr& layout, const helpers::WriterPtr& writer)
+	: AppenderSkeleton(std::make_unique<WriterAppenderPriv>(layout, writer))
+{
+	Pool p;
+	activateOptions(p);
+}
+#endif
 
 WriterAppender::WriterAppender(std::unique_ptr<WriterAppenderPriv> priv)
 	: AppenderSkeleton (std::move(priv))
@@ -182,7 +190,7 @@ void WriterAppender::closeWriter()
    <code>encoding</code> property.  If the encoding value is
    specified incorrectly the writer will be opened using the default
    system encoding (an error message will be printed to the loglog.  */
-WriterPtr WriterAppender::createWriter(OutputStreamPtr& os)
+WriterPtr WriterAppender::createWriter(LOG4CXX_16_CONST OutputStreamPtr& os)
 {
 
 	LogString enc(getEncoding());
@@ -213,7 +221,7 @@ WriterPtr WriterAppender::createWriter(OutputStreamPtr& os)
 		}
 	}
 
-	return WriterPtr(new OutputStreamWriter(os, encoder));
+	return std::make_shared<OutputStreamWriter>(os, encoder);
 }
 
 LogString WriterAppender::getEncoding() const

@@ -428,7 +428,7 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
  @param os output stream, may not be null.
  @return new writer.
  */
-WriterPtr MultiprocessRollingFileAppender::createWriter(OutputStreamPtr& os)
+WriterPtr MultiprocessRollingFileAppender::createWriter(LOG4CXX_16_CONST OutputStreamPtr& os)
 {
 	auto fos = LOG4CXX_NS::cast<FileOutputStream>(os);
 	if( fos )

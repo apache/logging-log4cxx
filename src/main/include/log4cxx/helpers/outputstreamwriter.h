@@ -22,6 +22,12 @@
 #include <log4cxx/helpers/outputstream.h>
 #include <log4cxx/helpers/charsetencoder.h>
 
+#if 15 < LOG4CXX_ABI_VERSION
+#define LOG4CXX_16_CONST const
+#else
+#define LOG4CXX_16_CONST 
+#endif
+
 namespace LOG4CXX_NS
 {
 
@@ -43,8 +49,8 @@ class LOG4CXX_EXPORT OutputStreamWriter : public Writer
 		LOG4CXX_CAST_ENTRY_CHAIN(Writer)
 		END_LOG4CXX_CAST_MAP()
 
-		OutputStreamWriter(OutputStreamPtr& out);
-		OutputStreamWriter(OutputStreamPtr& out, CharsetEncoderPtr& enc);
+		OutputStreamWriter(LOG4CXX_16_CONST OutputStreamPtr& out);
+		OutputStreamWriter(LOG4CXX_16_CONST OutputStreamPtr& out, LOG4CXX_16_CONST CharsetEncoderPtr& enc);
 		~OutputStreamWriter();
 
 		void close(Pool& p) override;

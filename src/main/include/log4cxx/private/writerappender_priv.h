@@ -42,24 +42,11 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	{
 	}
 
-	WriterAppenderPriv(const LayoutPtr& layout1,
-		LOG4CXX_NS::helpers::WriterPtr& writer1) :
-		AppenderSkeletonPrivate(layout1),
-		immediateFlush(true),
-		writer(writer1)
-#if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii{ [this]{flush();} }
-#endif
+	WriterAppenderPriv(const LayoutPtr& layout1, const helpers::WriterPtr& writer1 = helpers::WriterPtr())
+		: WriterAppenderPriv()
 	{
-	}
-
-	WriterAppenderPriv(const LayoutPtr& layout1) :
-		AppenderSkeletonPrivate(layout1),
-		immediateFlush(true)
-#if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii{ [this]{flush();} }
-#endif
-	{
+		this->layout = layout1;
+		this->writer = writer1;
 	}
 
 	void flush()
@@ -94,7 +81,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	/**
 	*  This is the {@link Writer Writer} where we will write to.
 	*/
-	LOG4CXX_NS::helpers::WriterPtr writer;
+	helpers::WriterPtr writer;
 
 #if LOG4CXX_EVENTS_AT_EXIT
 	helpers::AtExitRegistry::Raii atExitRegistryRaii;

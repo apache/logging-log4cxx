@@ -220,7 +220,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		 @param os output stream, may not be null.
 		 @return new writer.
 		 */
-		helpers::WriterPtr createWriter(helpers::OutputStreamPtr& os) override;
+		helpers::WriterPtr createWriter(LOG4CXX_16_CONST helpers::OutputStreamPtr& os) override;
 
 	public:
 		/**
