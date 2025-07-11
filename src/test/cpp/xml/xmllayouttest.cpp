@@ -482,9 +482,9 @@ public:
 		encoder->encode(html, iter, buf);
 		LOGUNIT_ASSERT(iter == html.end());
 		buf.flip();
-		apr_xml_parser* parser = apr_xml_parser_create(p.getAPRPool());
+		auto parser = apr_xml_parser_create(p.getAPRPool());
 		LOGUNIT_ASSERT(parser != 0);
-		apr_status_t stat = apr_xml_parser_feed(parser, buf.data(), buf.remaining());
+		auto stat = apr_xml_parser_feed(parser, buf.data(), buf.remaining());
 		LOGUNIT_ASSERT(stat == APR_SUCCESS);
 		apr_xml_doc* doc = 0;
 		stat = apr_xml_parser_done(parser, &doc);
@@ -494,19 +494,11 @@ public:
 
 		int childElementCount = 0;
 		for ( auto node = parsedResult->first_child
-			; node != NULL
-			; node = node->next)
+		    ; node != NULL
+		    ; node = node->next)
 		{
 			childElementCount++;
-
-			switch (childElementCount)
-			{
-				case 1:
-					LOGUNIT_ASSERT_EQUAL(std::string("tr"), std::string(node->name));
-					break;
-				default:
-					break;
-			}
+			LOGUNIT_ASSERT_EQUAL(std::string("tr"), std::string(node->name));
 		}
 		LOGUNIT_ASSERT(1 < childElementCount);
 	}
