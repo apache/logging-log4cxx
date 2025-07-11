@@ -129,3 +129,4 @@ void Transform::appendEscapingCDATA(
 
 	buf.append(input, start, input.length() - start);
 }
+
