@@ -109,18 +109,18 @@ void HTMLLayout::format(LogString& output,
 	if (event->getLevel()->equals(Level::getDebug()))
 	{
 		output.append(LOG4CXX_STR("<font color=\"#339933\">"));
-		output.append(event->getLevel()->toString());
+		Transform::appendEscapingTags(output, event->getLevel()->toString());
 		output.append(LOG4CXX_STR("</font>"));
 	}
 	else if (event->getLevel()->isGreaterOrEqual(Level::getWarn()))
 	{
 		output.append(LOG4CXX_STR("<font color=\"#993300\"><strong>"));
-		output.append(event->getLevel()->toString());
+		Transform::appendEscapingTags(output, event->getLevel()->toString());
 		output.append(LOG4CXX_STR("</strong></font>"));
 	}
 	else
 	{
-		output.append(event->getLevel()->toString());
+		Transform::appendEscapingTags(output, event->getLevel()->toString());
 	}
 
 	output.append(LOG4CXX_STR("</td>"));
