@@ -388,7 +388,6 @@ public:
 		layout.format(result, event, p);
 		MDC::clear();
 
-
 		apr_xml_elem* parsedResult = parse(result, p);
 		checkEventElement(parsedResult, event);
 
@@ -463,11 +462,11 @@ public:
 	 */
 	void testHTMLLayout()
 	{
-		std::string problemName = "com.example.bar<>&\"'";
-		LogString problemNameLS = LOG4CXX_STR("com.example.bar<>&\"'");
-		auto level = std::make_shared<XLevel>(6000, problemNameLS, 7);
-		NDC::push(problemName);
-		auto event = std::make_shared<LoggingEvent>(problemNameLS, level, problemNameLS, LOG4CXX_LOCATION);
+		LogString problemName = LOG4CXX_STR("com.example.bar<>&\"'");
+		auto level = std::make_shared<XLevel>(6000, problemName, 7);
+		NDC context(problemName);
+		auto event = std::make_shared<LoggingEvent>(problemName, level, problemName, LOG4CXX_LOCATION);
+
 		HTMLLayout layout;
 		Pool p;
 		LogString html(LOG4CXX_STR("<body>"));
@@ -497,7 +496,7 @@ public:
 		    ; node != NULL
 		    ; node = node->next)
 		{
-			childElementCount++;
+			++childElementCount;
 			LOGUNIT_ASSERT_EQUAL(std::string("tr"), std::string(node->name));
 		}
 		LOGUNIT_ASSERT(1 < childElementCount);
