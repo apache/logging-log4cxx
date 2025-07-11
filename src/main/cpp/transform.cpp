@@ -130,3 +130,27 @@ void Transform::appendEscapingCDATA(
 	buf.append(input, start, input.length() - start);
 }
 
+void Transform::appendEscapingQuote(
+	LogString& buf, const LogString& input)
+{
+	if (input.empty())
+		return;
+	logchar quote { 0x22 /* " */ };
+	size_t start = 0;
+	size_t index = input.find(quote, start);
+
+	while (index != input.npos)
+	{
+		if (start < index)
+			buf.append(input, start, index - start);
+		buf.append(LOG4CXX_STR("&quot;"));
+        start = index + 1;
+		if (start < input.size())
+			index = input.find(quote, start);
+		else
+			index = input.npos;
+	}
+
+	if (start < input.size())
+		buf.append(input, start, input.size() - start);
+}

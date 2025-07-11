@@ -127,7 +127,7 @@ void HTMLLayout::format(LogString& output,
 	output.append(LOG4CXX_EOL);
 
 	output.append(LOG4CXX_STR("<td title=\""));
-	output.append(event->getLoggerName());
+	Transform::appendEscapingQuote(output, event->getLoggerName());
 	output.append(LOG4CXX_STR(" logger\">"));
 	Transform::appendEscapingTags(output, event->getLoggerName());
 	output.append(LOG4CXX_STR("</td>"));

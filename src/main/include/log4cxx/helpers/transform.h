@@ -54,6 +54,13 @@ class LOG4CXX_EXPORT Transform
 		*/
 		static void appendEscapingCDATA(
 			LogString& buf, const LogString& input);
+
+		/**
+		* Add \c input to \c buf with double quote characters replaced with <b>&amp;quot;</b>.
+		*
+		* @param buf output stream holding the XML data to this point.
+		*/
+		static void appendEscapingQuote(LogString& buf, const LogString& input);
 }; // class Transform
 }  // namespace helpers
 } //namespace log4cxx
