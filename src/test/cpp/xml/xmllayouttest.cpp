@@ -465,7 +465,7 @@ public:
 	{
 		std::string problemName = "com.example.bar<>&\"'";
 		LogString problemNameLS = LOG4CXX_STR("com.example.bar<>&\"'");
-		LevelPtr level = LevelPtr(new XLevel(6000, problemNameLS, 7));
+		auto level = std::make_shared<XLevel>(6000, problemNameLS, 7);
 		NDC::push(problemName);
 		auto event = std::make_shared<LoggingEvent>(problemNameLS, level, problemNameLS, LOG4CXX_LOCATION);
 		HTMLLayout layout;
@@ -478,7 +478,7 @@ public:
 		char backing[3000];
 		ByteBuffer buf(backing, sizeof(backing));
 		CharsetEncoderPtr encoder(CharsetEncoder::getUTF8Encoder());
-		auto iter = html.begin();
+		LogString::const_iterator iter{ html.begin() };
 		encoder->encode(html, iter, buf);
 		LOGUNIT_ASSERT(iter == html.end());
 		buf.flip();
