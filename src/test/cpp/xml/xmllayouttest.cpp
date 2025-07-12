@@ -18,6 +18,7 @@
 #include "../logunit.h"
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/xmllayout.h>
+#include <log4cxx/htmllayout.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/mdc.h>
 
@@ -37,6 +38,7 @@
 #include "../xml/xlevel.h"
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/loglog.h>
 
 
 using namespace log4cxx;
@@ -67,6 +69,7 @@ LOGUNIT_CLASS(XMLLayoutTest)
 	LOGUNIT_TEST(testActivateOptions);
 	LOGUNIT_TEST(testProblemCharacters);
 	LOGUNIT_TEST(testNDCWithCDATA);
+	LOGUNIT_TEST(testHTMLLayout);
 	LOGUNIT_TEST_SUITE_END();
 
 
@@ -451,6 +454,52 @@ public:
 		}
 
 		LOGUNIT_ASSERT_EQUAL(1, ndcCount);
+	}
+
+	/**
+	 * Tests problematic characters in multiple fields.
+	 * @throws Exception if parser can not be constructed or source is not a valid XML document.
+	 */
+	void testHTMLLayout()
+	{
+		LogString problemName = LOG4CXX_STR("com.example.bar<>&\"'");
+		auto level = std::make_shared<XLevel>(6000, problemName, 7);
+		NDC context(problemName);
+		auto event = std::make_shared<LoggingEvent>(problemName, level, problemName, LOG4CXX_LOCATION);
+
+		HTMLLayout layout;
+		Pool p;
+		LogString html(LOG4CXX_STR("<body>"));
+		layout.format(html, event, p);
+		html += LOG4CXX_STR("</body>");
+
+		LogLog::debug(html);
+		char backing[3000];
+		ByteBuffer buf(backing, sizeof(backing));
+		CharsetEncoderPtr encoder(CharsetEncoder::getUTF8Encoder());
+		LogString::const_iterator iter{ html.begin() };
+		encoder->encode(html, iter, buf);
+		LOGUNIT_ASSERT(iter == html.end());
+		buf.flip();
+		auto parser = apr_xml_parser_create(p.getAPRPool());
+		LOGUNIT_ASSERT(parser != 0);
+		auto stat = apr_xml_parser_feed(parser, buf.data(), buf.remaining());
+		LOGUNIT_ASSERT(stat == APR_SUCCESS);
+		apr_xml_doc* doc = 0;
+		stat = apr_xml_parser_done(parser, &doc);
+		LOGUNIT_ASSERT(doc != 0);
+		auto parsedResult = doc->root;
+		LOGUNIT_ASSERT(parsedResult != 0);
+
+		int childElementCount = 0;
+		for ( auto node = parsedResult->first_child
+		    ; node != NULL
+		    ; node = node->next)
+		{
+			++childElementCount;
+			LOGUNIT_ASSERT_EQUAL(std::string("tr"), std::string(node->name));
+		}
+		LOGUNIT_ASSERT(1 < childElementCount);
 	}
 
 };
