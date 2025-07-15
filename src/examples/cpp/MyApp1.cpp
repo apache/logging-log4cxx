@@ -1,11 +1,11 @@
-#include <log4cxx/logger.h>
+#include <log4cxx/logmanager.h>
 #include <log4cxx/basicconfigurator.h>
 
-static auto logger = log4cxx::Logger::getLogger("MyApp");
+static auto logger = log4cxx::LogManager::getLogger("MyApp");
 
 void foo() {
 	// Get a logger that is a child of the statically declared logger
-	auto fooLogger = log4cxx::Logger::getLogger("MyApp.foo");
+	auto fooLogger = log4cxx::LogManager::getLogger("MyApp.foo");
 	LOG4CXX_TRACE(fooLogger, "Doing foo at trace level");
 	LOG4CXX_DEBUG(fooLogger, "Doing foo at debug level");
 	LOG4CXX_INFO(fooLogger, "Doing foo at info level");
@@ -20,5 +20,6 @@ int main(int argc, char **argv) {
 	LOG4CXX_INFO(logger, "Entering application.");
 	foo();
 	LOG4CXX_INFO(logger, "Exiting application.");
+	log4cxx::LogManager::shutdown();
 	return EXIT_SUCCESS;
 }
