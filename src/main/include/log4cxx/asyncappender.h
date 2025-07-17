@@ -34,7 +34,13 @@ The AsyncAppender stores the logging event in a bounded buffer
 and then returns control to the application.
 A separate thread forwards events to the attached appender(s).
 
-The AsyncAppender is useful when outputting to a slow event sink,
+<b>Important notes:</b>
+- Your application must call LogManager::shutdown when it exits
+to prevent undefined behaviour when using this appender.
+- Runtime configuration requires an XML configuration file
+(see the example below).
+
+This appender is useful when outputting to a slow event sink,
 for example, a remote SMTP server or a database.
 Attaching a FileAppender to AsyncAppender
 to reduce logging overhead is not recommended
@@ -46,11 +52,6 @@ You can attach multiple appenders to an AsyncAppender by:
 - adding multiple <b>appender-ref</b> elements
 to the <b>appender class="AsyncAppender"</b> element
 when using runtime configuration.
-
-<b>Important note:</b> The <code>AsyncAppender</code> can only
-be configured at runtime using XML,
-i.e. when the application uses {@link xml::DOMConfigurator DOMConfigurator}
-to load the cofiguration file.
 
 Here is a sample configuration file:
 \include async-example.xml

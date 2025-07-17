@@ -57,7 +57,8 @@ LogLog::LogLog() :
 	m_priv->debugEnabled = OptionConverter::toBoolean(log4cxxDebug, false);
 }
 
-LogLog::~LogLog(){}
+LogLog::~LogLog()
+{ m_priv.reset(); }
 
 LogLog& LogLog::getInstance()
 {
