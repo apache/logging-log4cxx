@@ -235,7 +235,7 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 			buf.append(input, start, index - start);
 		}
 
-		switch (input[index])
+		switch (ch)
 		{
 			case 0x08:
 				/* \b backspace */
