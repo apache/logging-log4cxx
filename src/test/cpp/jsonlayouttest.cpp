@@ -165,7 +165,7 @@ public:
 		LOGUNIT_ASSERT_EQUAL(cr_expected, cr_escaped);
 
 		logchar esc[] = {0x1e, 0x00};
-		logchar esc_expected[] = {0x22, 0x5c, 'u', 0x30, 0x30, 0x31, 0x3e, 0x22, 0x00};      /* ESC */
+		logchar esc_expected[] = {0x22, 0x5c, 'u', 0x30, 0x30, 0x31, 0x65, 0x22, 0x00};      /* ESC */
 		LogString esc_escaped;
 
 		appendQuotedEscapedString(esc_escaped, esc);

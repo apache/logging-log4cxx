@@ -215,6 +215,10 @@ void JSONLayout::appendQuotedEscapedString(LogString& buf,
 
 void JSONLayout::appendItem(const LogString& input, LogString& buf)
 {
+	auto toHexDigit = [](int ch) -> int
+	{
+		return (10 < ch ? (0x61 - 10) : 0x30) + ch;
+	};
 	/* add leading quote */
 	buf.push_back(0x22);
 
@@ -282,10 +286,10 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 			default:
 				buf.push_back(0x5c);
 				buf.push_back(0x75); // 'u'
-				buf.push_back(((ch & 0xF000) >> 12) + 0x30);
-				buf.push_back(((ch & 0xF00) >> 8) + 0x30);
-				buf.push_back(((ch & 0xF0) >> 4) + 0x30);
-				buf.push_back((ch & 0xF) + 0x30);
+				buf.push_back(toHexDigit((ch & 0xF000) >> 12));
+				buf.push_back(toHexDigit((ch & 0xF00) >> 8));
+				buf.push_back(toHexDigit((ch & 0xF0) >> 4));
+				buf.push_back(toHexDigit(ch & 0xF));
 				break;
 		}
 		start = ++index;
