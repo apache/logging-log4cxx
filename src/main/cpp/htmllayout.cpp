@@ -183,7 +183,7 @@ void HTMLLayout::appendHeader(LogString& output, Pool& p)
 	output.append(LOG4CXX_STR("<head>"));
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("<title>"));
-	output.append(m_priv->title);
+	Transform::appendEscapingTags(output, m_priv->title);
 	output.append(LOG4CXX_STR("</title>"));
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("<style type=\"text/css\">"));
