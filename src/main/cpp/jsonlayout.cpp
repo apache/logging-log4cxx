@@ -234,7 +234,7 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 			++index;
 			continue;
 		}
-		if (index > start)
+		if (start < index)
 		{
 			buf.append(input, start, index - start);
 		}
