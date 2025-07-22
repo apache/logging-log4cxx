@@ -57,9 +57,15 @@ Release 1.5.0 includes the following new features:
    \[[#488](https://github.com/apache/logging-log4cxx/pull/488)\]
 * TelnetAppender can now deliver messages when the socket is in a TIME_WAIT state
    \[[#495](https://github.com/apache/logging-log4cxx/pull/495)\]
+* TelnetAppender can be restricted to specific network
+   \[[#498](https://github.com/apache/logging-log4cxx/pull/498)\]
 
 The following issues have been addressed:
 
+* HTML output was illformed when the title contained the special HTML characters
+   \[[#513](https://github.com/apache/logging-log4cxx/issues/513)\]
+* JSON output illformed when a message contained certain control characters
+   \[[#512](https://github.com/apache/logging-log4cxx/issues/512)\]
 * Undefined behaviour when reloading a configuration file after calling LogManager::shutdown
    \[[#504](https://github.com/apache/logging-log4cxx/issues/504)\]
 * Compilation error when using gcc on MacOS
