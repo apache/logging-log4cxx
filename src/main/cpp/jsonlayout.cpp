@@ -215,32 +215,31 @@ void JSONLayout::appendQuotedEscapedString(LogString& buf,
 
 void JSONLayout::appendItem(const LogString& input, LogString& buf)
 {
+	auto toHexDigit = [](int ch) -> int
+	{
+		return (10 <= ch ? (0x61 - 10) : 0x30) + ch;
+	};
 	/* add leading quote */
 	buf.push_back(0x22);
 
-	logchar specialChars[] =
-	{
-		0x08,   /* \b backspace         */
-		0x09,   /* \t tab               */
-		0x0a,   /* \n newline           */
-		0x0c,   /* \f form feed         */
-		0x0d,   /* \r carriage return   */
-		0x22,   /* \" double quote      */
-		0x5c,   /* \\ backslash         */
-		0x00    /* terminating NULL for C-strings */
-	};
-
 	size_t start = 0;
-	size_t found = input.find_first_of(specialChars, start);
+	size_t index = 0;
 
-	while (found != LogString::npos)
+	for (int ch : input)
 	{
-		if (found > start)
+		if (0x22 == ch || 0x5c == ch)
+			;
+		else if (0x20 <= ch)
 		{
-			buf.append(input, start, found - start);
+			++index;
+			continue;
+		}
+		if (start < index)
+		{
+			buf.append(input, start, index - start);
 		}
 
-		switch (input[found])
+		switch (ch)
 		{
 			case 0x08:
 				/* \b backspace */
@@ -285,20 +284,15 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 				break;
 
 			default:
-				buf.push_back(input[found]);
+				buf.push_back(0x5c);
+				buf.push_back(0x75); // 'u'
+				buf.push_back(toHexDigit((ch & 0xF000) >> 12));
+				buf.push_back(toHexDigit((ch & 0xF00) >> 8));
+				buf.push_back(toHexDigit((ch & 0xF0) >> 4));
+				buf.push_back(toHexDigit(ch & 0xF));
 				break;
 		}
-
-		start = found + 1;
-
-		if (found < input.size())
-		{
-			found = input.find_first_of(specialChars, start);
-		}
-		else
-		{
-			found = LogString::npos;
-		}
+		start = ++index;
 	}
 
 	if (start < input.size())
