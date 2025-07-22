@@ -164,6 +164,13 @@ public:
 		appendQuotedEscapedString(cr_escaped, cr);
 		LOGUNIT_ASSERT_EQUAL(cr_expected, cr_escaped);
 
+		logchar sub[] = {0x1a, 0x00};
+		logchar sub_expected[] = {0x22, 0x5c, 'u', 0x30, 0x30, 0x31, 0x61, 0x22, 0x00};      /* SUB */
+		LogString sub_escaped;
+
+		appendQuotedEscapedString(sub_escaped, sub);
+		LOGUNIT_ASSERT_EQUAL(sub_expected, sub_escaped);
+
 		logchar esc[] = {0x1e, 0x00};
 		logchar esc_expected[] = {0x22, 0x5c, 'u', 0x30, 0x30, 0x31, 0x65, 0x22, 0x00};      /* ESC */
 		LogString esc_escaped;

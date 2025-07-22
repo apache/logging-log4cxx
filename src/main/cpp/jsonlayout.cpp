@@ -217,7 +217,7 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 {
 	auto toHexDigit = [](int ch) -> int
 	{
-		return (10 < ch ? (0x61 - 10) : 0x30) + ch;
+		return (10 <= ch ? (0x61 - 10) : 0x30) + ch;
 	};
 	/* add leading quote */
 	buf.push_back(0x22);
