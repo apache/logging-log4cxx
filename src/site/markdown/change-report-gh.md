@@ -62,16 +62,18 @@ Release 1.5.0 includes the following new features:
 
 The following issues have been addressed:
 
-* HTML output was illformed when the title contained the special HTML characters
-   \[[#513](https://github.com/apache/logging-log4cxx/issues/513)\]
-* JSON output illformed when a message contained certain control characters
-   \[[#512](https://github.com/apache/logging-log4cxx/issues/512)\]
+* HTML output was illformed when the logger name, title or thread name contained the special HTML characters
+   * [#509](https://github.com/apache/logging-log4cxx/pull/509)
+   , [#513](https://github.com/apache/logging-log4cxx/pull/513)
+   , [#514](https://github.com/apache/logging-log4cxx/pull/514)
+* JSON output was illformed when a message contained certain control characters
+   \[[#512](https://github.com/apache/logging-log4cxx/pull/512)\]
 * Undefined behaviour when reloading a configuration file after calling LogManager::shutdown
-   \[[#504](https://github.com/apache/logging-log4cxx/issues/504)\]
+   \[[#504](https://github.com/apache/logging-log4cxx/pull/504)\]
 * Compilation error when using gcc on MacOS
-   \[[#499](https://github.com/apache/logging-log4cxx/issues/499)\]
+   \[[#499](https://github.com/apache/logging-log4cxx/pull/499)\]
 * It was possible for logging events to be lost when reloading a configuration file
-   \[[#491](https://github.com/apache/logging-log4cxx/issues/491)\]
+   \[[#491](https://github.com/apache/logging-log4cxx/pull/491)\]
 
 ## Release 1.4.0 - 2025-03-01 {#rel_1_4_0}
 
@@ -557,9 +559,9 @@ AppenderPtr appender = log4cxx::cast<Appender>(instance);
 | ![](images/fix.gif "fix")    | helpers/object.h: DECLARE\_LOG4CXX\_OBJECT macro definition is missing virtual destructor declaration Fixes [LOGCXX-160](https://issues.apache.org/jira/browse/LOGCXX-160).                    |    |
 | ![](images/fix.gif "fix")    | Initialization of local static objects out of order on Linux Fixes [LOGCXX-159](https://issues.apache.org/jira/browse/LOGCXX-159).                                                             |    |
 | ![](images/fix.gif "fix")    | tolower not defined in stringhelper.cpp Fixes [LOGCXX-158](https://issues.apache.org/jira/browse/LOGCXX-158).                                                                                  |    |
-| ![](images/fix.gif "fix")    | make install fails since @manual\_dest@ replacement is missing in Makefiles Fixes [LOGCXX-157](https://issues.apache.org/jira/browse/LOGCXX-157).                                              |    |
-| ![](images/update.gif "update") | immediate flush in console appender Fixes [LOGCXX-156](https://issues.apache.org/jira/browse/LOGCXX-156).                                                                                      |    |
-| ![](images/update.gif "update") | Update source headers per new ASF header policy Fixes [LOGCXX-155](https://issues.apache.org/jira/browse/LOGCXX-155).                                                                          |    |
+| ![](images/fix.gif "fix")    | make install fails since \@manual_dest@ replacement is missing in Makefiles Fixes [LOGCXX-157](https://issues.apache.org/jira/browse/LOGCXX-157).                                              |    |
+| ![](images/update.gif "update") | immediate flush in console appender Fixes [LOGCXX-156](https://issues.apache.org/jira/browse/LOGCXX-156).                                                                                   |    |
+| ![](images/update.gif "update") | Update source headers per new ASF header policy Fixes [LOGCXX-155](https://issues.apache.org/jira/browse/LOGCXX-155).                                                                       |    |
 | ![](images/add.gif "add")    | Automate log4cxx site and doxygen generation and deployment Fixes [LOGCXX-153](https://issues.apache.org/jira/browse/LOGCXX-153).                                                              |    |
 | ![](images/fix.gif "fix")    | gcc warning about cast from \`const void\*' to \`log4cxx::helpers::Object\*' discards qualifiers from pointer target typ Fixes [LOGCXX-152](https://issues.apache.org/jira/browse/LOGCXX-152). |    |
 | ![](images/fix.gif "fix")    | Umlauts as literal in patternlayout won't be logged correct Fixes [LOGCXX-151](https://issues.apache.org/jira/browse/LOGCXX-151).                                                              |    |
