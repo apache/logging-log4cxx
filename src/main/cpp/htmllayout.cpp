@@ -98,9 +98,9 @@ void HTMLLayout::format(LogString& output,
 
 	output.append(LOG4CXX_STR("<td title=\""));
 	LogString threadName(event->getThreadName());
-	output.append(threadName);
+	Transform::appendEscapingTags(output, threadName);
 	output.append(LOG4CXX_STR(" thread\">"));
-	output.append(threadName);
+	Transform::appendEscapingTags(output, threadName);
 	output.append(LOG4CXX_STR("</td>"));
 	output.append(LOG4CXX_EOL);
 
