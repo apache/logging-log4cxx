@@ -25,7 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
-| [1.5.0](#rel_1_5_0) | 2025-XX-XX | Maintenance release  |
+| [1.5.0](#rel_1_5_0) | 2025-08-01 | Maintenance release  |
 | [1.4.0](#rel_1_4_0) | 2025-03-01 | Maintenance release  |
 | [1.3.1](#rel_1_3_1) | 2024-11-30 | Bugfix release       |
 | [1.3.0](#rel_1_3_0) | 2024-10-21 | Maintenance release  |
@@ -49,7 +49,7 @@ Change Log {#changelog}
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
-## Release 1.5.0 - 2025-XX-XX {#rel_1_5_0}
+## Release 1.5.0 - 2025-08-01 {#rel_1_5_0}
 
 Release 1.5.0 includes the following new features:
 
