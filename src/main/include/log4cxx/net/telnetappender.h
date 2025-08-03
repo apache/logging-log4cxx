@@ -98,6 +98,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		Supported options | Supported values | Default value
 		-------------- | ---------------- | ---------------
 		Port | {int} | 23
+		Hostname | name or numeric address |
 		MaxConnections | {int} | 20
 		Encoding | C,UTF-8,UTF-16,UTF-16BE,UTF-16LE,646,US-ASCII,ISO646-US,ANSI_X3.4-1968,ISO-8859-1,ISO-LATIN-1 | UTF-8
 		ReuseAddress | True,False | False
