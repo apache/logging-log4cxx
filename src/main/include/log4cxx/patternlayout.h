@@ -489,15 +489,15 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		ConversionPattern | {any} | \%m\%n
-		FatalColor | (\ref validColors "1") | magenta
-		ErrorColor | (\ref validColors "1") | red
-		WarnColor | (\ref validColors "1") | yellow
-		InfoColor | (\ref validColors "1") | green
-		DebugColor | (\ref validColors "1") | cyan
-		TraceColor | (\ref validColors "1") | blue
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		ConversionPattern | {any} | \%m\%n |
+		FatalColor | (\ref validColors "1") | magenta |
+		ErrorColor | (\ref validColors "1") | red |
+		WarnColor | (\ref validColors "1") | yellow |
+		InfoColor | (\ref validColors "1") | green |
+		DebugColor | (\ref validColors "1") | cyan |
+		TraceColor | (\ref validColors "1") | blue |
 
 		\anchor validColors (1) The word <code>None</code> or
 		<a href="https://en.wikipedia.org/wiki/ANSI_escape_code">valid ANSI escape sequence</a>.

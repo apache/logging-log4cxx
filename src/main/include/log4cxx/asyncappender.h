@@ -219,10 +219,10 @@ class LOG4CXX_EXPORT AsyncAppender :
 		/**
 		\copybrief AppenderSkeleton::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		BufferSize | int  | 128
-		Blocking | True,False | True
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		BufferSize | int  | 128 |
+		Blocking | True,False | True |
 
 		\sa AppenderSkeleton::setOption()
 		 */

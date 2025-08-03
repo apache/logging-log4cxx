@@ -112,9 +112,9 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		- | - | -
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		- | - | - |
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 

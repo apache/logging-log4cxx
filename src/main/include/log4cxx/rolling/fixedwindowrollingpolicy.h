@@ -102,11 +102,11 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		/**
 		\copybrief RollingPolicyBase::setOption()
 
-		Supported options | Supported values | Default value
-		:-------------- | :----------------: | :---------------:
-		MinIndex | 1-12 | 1
-		MaxIndex | 1-12 | 7
-		ThrowIOExceptionOnForkFailure | True,False | True
+		Supported options | Supported values | Default value |
+		:-------------- | :----------------: | :---------------: |
+		MinIndex | 1-12 | 1 |
+		MaxIndex | 1-12 | 7 |
+		ThrowIOExceptionOnForkFailure | True,False | True |
 
 		\sa RollingPolicyBase::setOption()
 		*/

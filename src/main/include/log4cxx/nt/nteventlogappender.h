@@ -53,11 +53,11 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		/**
 		\copybrief AppenderSkeleton::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		Server | (\ref winapi "1") | NULL
-		Source | (\ref winapi "1") | -
-		Log | (\ref eventLog "2") | Application
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		Server | (\ref winapi "1") | NULL |
+		Source | (\ref winapi "1") | - |
+		Log | (\ref eventLog "2") | Application |
 
 		\anchor winapi (1) Passed to the Win32 API method <a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-registereventsourcew">RegisterEventSource</a>.
 

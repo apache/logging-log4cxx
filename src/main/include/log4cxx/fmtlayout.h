@@ -265,9 +265,9 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		ConversionPattern | {any} | -
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		ConversionPattern | {any} | - |
 
 		 */
 		void setOption(const LogString& /* option */,

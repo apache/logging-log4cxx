@@ -64,10 +64,10 @@ class LOG4CXX_EXPORT StringMatchFilter : public spi::Filter
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		StringToMatch | {any} | -
-		AcceptOnMatch | True,False | True
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		StringToMatch | {any} | - |
+		AcceptOnMatch | True,False | True |
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 

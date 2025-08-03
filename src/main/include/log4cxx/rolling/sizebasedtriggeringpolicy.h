@@ -84,9 +84,9 @@ class LOG4CXX_EXPORT SizeBasedTriggeringPolicy : public TriggeringPolicy
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		MaxFileSize | (\ref fileSize "1") | 10 MB
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		MaxFileSize | (\ref fileSize "1") | 10 MB |
 
 		\anchor fileSize (1) An integer in the range 0 - 2^63.
 		 You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is

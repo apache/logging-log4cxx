@@ -91,9 +91,9 @@ class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
 		/**
 		\copybrief WriterAppender::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		Target | System.err,System.out | System.out
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		Target | System.err,System.out | System.out |
 
 		\sa WriterAppender::setOption()
 		 */

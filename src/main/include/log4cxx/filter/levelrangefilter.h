@@ -72,11 +72,11 @@ class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		LevelMin | (\ref validLevels "1") | ALL
-		LevelMax | (\ref validLevels "1") | OFF
-		AcceptOnMatch | True,False | True
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		LevelMin | (\ref validLevels "1") | ALL |
+		LevelMax | (\ref validLevels "1") | OFF |
+		AcceptOnMatch | True,False | True |
 
 		\anchor validLevels (1). One of "Trace", "Debug", "Info", "Warn", "Error", "Fatal", "Off", "All"
 		or a custom level in which case it is of the form <code>{levelName}#{registeredClassName}</code>.

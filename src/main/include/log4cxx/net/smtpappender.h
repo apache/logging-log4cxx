@@ -108,20 +108,20 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		/**
 		\copybrief AppenderSkeleton::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		smtpHost | {any} | -
-		smtpPort | {int} | 25
-		smtpUserName | {any} | -
-		smtpPassword | {any} | -
-		from | (\ref asciiCheck "1") | -
-		to | (\ref asciiCheck "1") | -
-		cc | (\ref asciiCheck "1") | -
-		bcc | (\ref asciiCheck "1") | -
-		subject | {any} | -
-		subject | {any} | -
-		buffersize | {int} | 512
-		evaluatorClass | (\ref AppenderSkeleton "2") | -
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		smtpHost | {any} | - |
+		smtpPort | {int} | 25 |
+		smtpUserName | {any} | - |
+		smtpPassword | {any} | - |
+		from | (\ref asciiCheck "1") | - |
+		to | (\ref asciiCheck "1") | - |
+		cc | (\ref asciiCheck "1") | - |
+		bcc | (\ref asciiCheck "1") | - |
+		subject | {any} | - |
+		subject | {any} | - |
+		buffersize | {int} | 512 |
+		evaluatorClass | (\ref AppenderSkeleton "2") | - |
 
 		\anchor asciiCheck (1) Only ASCII charaters
 
