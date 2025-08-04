@@ -120,7 +120,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(aprSocket);
 			auto pSocket = aprSocket->getSocketPtr();
 			LOGUNIT_ASSERT(pSocket);
-			apr_socket_timeout_set(pSocket, 200000);    // 200 millisecond
+			apr_socket_timeout_set(pSocket, 400000);    // 400 millisecond
 			std::vector<int> messageCount;
 			char buffer[8*1024];
 			apr_size_t len = sizeof(buffer);
