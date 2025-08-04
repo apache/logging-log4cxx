@@ -52,6 +52,7 @@ Steps
 1. Wait 72 hours (the minimum)
 1. When the vote has 3 or more +1's, announce the result
    - Using [this template](MailTemplate.Result.txt)
+   - Enter the name of each PMC member that voted
 1. Get artifacts up to https://downloads.apache.org/logging/log4cxx/
     - `svn move -m "Release log4cxx 1.6.0" https://dist.apache.org/repos/dist/dev/logging/log4cxx/1.6.0   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
 1. Tag the released version
