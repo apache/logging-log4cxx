@@ -31,8 +31,8 @@ Download {#download}
 
 |                         | Mirrors | Checksum | Signature |
 |-------------------------|---------|----------|-----------|
-| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (tar.gz) | [source archive](${LOG4CXX_SOURCE_MIRROR_URL}.tar.gz) | [sha512](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.sha512) [sha256](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.sha256) | [GnuPG signature](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.asc) |
-| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (zip) | [source archive](${LOG4CXX_SOURCE_MIRROR_URL}.zip) | [sha512](${LOG4CXX_DISTRIBUTION_URL}.zip.sha512) [sha256](${LOG4CXX_DISTRIBUTION_URL}.zip.sha256) | [GnuPG signature](${LOG4CXX_DISTRIBUTION_URL}.zip.asc) |
+| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (tar.gz) | [source archive](${LOG4CXX_SOURCE_MIRROR_FILE}.tar.gz) | [sha512](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.sha512) [sha256](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.sha256) | [GnuPG signature](${LOG4CXX_DISTRIBUTION_URL}.tar.gz.asc) |
+| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (zip) | [source archive](${LOG4CXX_SOURCE_MIRROR_FILE}.zip) | [sha512](${LOG4CXX_DISTRIBUTION_URL}.zip.sha512) [sha256](${LOG4CXX_DISTRIBUTION_URL}.zip.sha256) | [GnuPG signature](${LOG4CXX_DISTRIBUTION_URL}.zip.asc) |
 
 It is essential that you verify the integrity of the downloaded files using the PGP or SHA512 signatures.
 Please read [Verifying Apache HTTP Server Releases](https://httpd.apache.org/dev/verification.html) for more
