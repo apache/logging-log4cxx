@@ -85,11 +85,11 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		/**
 		\copybrief AppenderSkeleton::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		SysLogHost |  (\ref sysLogAddress "1") | -
-		Facility | (\ref facility "2") | -
-		MaxMessageLength | {int} | 1024
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		SysLogHost |  (\ref sysLogAddress "1") | - |
+		Facility | (\ref facility "2") | - |
+		MaxMessageLength | {int} | 1024 |
 
 		\anchor sysLogAddress (1) A valid internet address, optionally with the port number as a suffix after a ':'.
 

@@ -127,11 +127,11 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		/**
 		\copybrief AppenderSkeleton::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		RemoteHost |  (\ref inetAddress "1") | -
-		Port | {int} | (\ref defaultPort "2")
-		LocationInfo | True,False | False
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		RemoteHost |  (\ref inetAddress "1") | - |
+		Port | {int} | (\ref defaultPort "2") |
+		LocationInfo | True,False | False |
 
 		\anchor inetAddress (1) A valid internet address.
 

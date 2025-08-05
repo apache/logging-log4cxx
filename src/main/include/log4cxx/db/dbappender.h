@@ -125,13 +125,13 @@ class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
                 /**
                 \copybrief AppenderSkeleton::setOption()
 
-                Supported options | Supported values | Default value
-                :-------------- | :----------------: | :---------------:
-                DriverName | {any} | -
-                DriverParams | {any} | -
-                DatabaseName | {any} | -
-                SQL | {any} | -
-                ColumnMapping | (\ref rep "^") | -
+                Supported options | Supported values | Default value |
+                :-------------- | :----------------: | :---------------: |
+                DriverName | {any} | - |
+                DriverParams | {any} | - |
+                DatabaseName | {any} | - |
+                SQL | {any} | - |
+                ColumnMapping | (\ref rep "^") | - |
 
                 \anchor rep (^) One value for each '%%' character in the SQL value.
                 \sa AppenderSkeleton::setOption()

@@ -58,10 +58,10 @@ class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		LevelToMatch | (\ref validLevel "1") | -
-		AcceptOnMatch | True,False | True
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		LevelToMatch | (\ref validLevel "1") | - |
+		AcceptOnMatch | True,False | True |
 
 		\anchor validLevel (1) One of Trace, Debug, Info, Warn, Error, Fatal, Off, All
 		or a custom level in which case it is of the form <code>{levelName}#{registeredClassName}</code>.

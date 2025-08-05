@@ -128,11 +128,11 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		/**
 		\copybrief FileAppender::setOption()
 
-		Supported options | Supported values | Default value
-		:-------------- | :----------------: | :---------------:
-		FileDatePattern | (\ref dateChars "1") | -
-		MaxBackupIndex | 1-12 | 0
-		MaxFileSize | (\ref fileSz "2") | 10 MB
+		Supported options | Supported values | Default value |
+		:-------------- | :----------------: | :---------------: |
+		FileDatePattern | (\ref dateChars "1") | - |
+		MaxBackupIndex | 1-12 | 0 |
+		MaxFileSize | (\ref fileSz "2") | 10 MB |
 
 		\anchor dateChars (1) A pattern compatible with
 		  java.text.SimpleDateFormat, "ABSOLUTE", "DATE" or "ISO8601".

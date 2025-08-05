@@ -110,11 +110,11 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		LocationInfo | True,False | false
-		ThreadInfo | True,False | false
-		PrettyPrint | True,False | false
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		LocationInfo | True,False | false |
+		ThreadInfo | True,False | false |
+		PrettyPrint | True,False | false |
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 

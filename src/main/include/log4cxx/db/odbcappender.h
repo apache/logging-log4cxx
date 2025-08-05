@@ -159,14 +159,14 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		\copybrief AppenderSkeleton::setOption()
 
-		Supported options | Supported values | Default value
-		:-------------- | :----------------: | :---------------:
-		BufferSize | {int} | 1
-		ConnectionString | {any} | -
-		URL | {any} | -
-		DSN | {any} | -
-		User | {any} | -
-		Password | {any} | -
+		Supported options | Supported values | Default value |
+		:-------------- | :----------------: | :---------------: |
+		BufferSize | {int} | 1 |
+		ConnectionString | {any} | - |
+		URL | {any} | - |
+		DSN | {any} | - |
+		User | {any} | - |
+		Password | {any} | - |
 		SQL | {any} | -
 		ColumnMapping | (\ref colName "^") | -
 

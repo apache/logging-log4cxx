@@ -74,9 +74,9 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		- | - | -
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		- | - | - |
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 

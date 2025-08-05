@@ -80,9 +80,9 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		Threshold | Trace,Debug,Info,Warn,Error,Fatal,Off,All | All
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		Threshold | Trace,Debug,Info,Warn,Error,Fatal,Off,All | All |
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 

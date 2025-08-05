@@ -128,14 +128,14 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/**
 		\copybrief AppenderSkeleton::setOption()
 
-		Supported options | Supported values | Default value
-		:-------------- | :----------------: | :---------------:
-		FileName | {any} | -
-		Append | True,False | True
-		BufferedIO | True,False | False
-		BufferedSeconds | {any} | 5
-		ImmediateFlush | True,False | False
-		BufferSize | (\ref fileSz1 "1") | 8 KB
+		Supported options | Supported values | Default value |
+		:-------------- | :----------------: | :---------------: |
+		FileName | {any} | - |
+		Append | True,False | True |
+		BufferedIO | True,False | False |
+		BufferedSeconds | {any} | 5 |
+		ImmediateFlush | True,False | False |
+		BufferSize | (\ref fileSz1 "1") | 8 KB |
 
 		\anchor fileSz1 (1) An integer in the range 0 - 2^63.
 		 You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is

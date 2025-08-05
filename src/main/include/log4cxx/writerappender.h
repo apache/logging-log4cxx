@@ -145,9 +145,9 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		\copybrief AppenderSkeleton::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		Encoding | C,UTF-8,UTF-16,UTF-16BE,UTF-16LE,646,US-ASCII,ISO646-US,ANSI_X3.4-1968,ISO-8859-1,ISO-LATIN-1 | UTF-8
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		Encoding | C,UTF-8,UTF-16,UTF-16BE,UTF-16LE,646,US-ASCII,ISO646-US,ANSI_X3.4-1968,ISO-8859-1,ISO-LATIN-1 | UTF-8 |
 
 		\sa AppenderSkeleton::setOption()
 		 */

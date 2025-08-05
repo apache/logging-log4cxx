@@ -88,10 +88,10 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		-------------- | ---------------- | ---------------
-		Title |  {any} | Log4cxx Log Messages
-		LocationInfo | True,False | False
+		Supported options | Supported values | Default value |
+		-------------- | ---------------- | --------------- |
+		Title |  {any} | Log4cxx Log Messages |
+		LocationInfo | True,False | False |
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 

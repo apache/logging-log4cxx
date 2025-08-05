@@ -75,10 +75,10 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
-		Supported options | Supported values | Default value
-		:-------------- | :----------------: | :---------------:
-		FileNamePattern | (\ref legalChars "^") | -
-		CreateIntermediateDirectories | True,False | False
+		Supported options | Supported values | Default value |
+		:-------------- | :----------------: | :---------------: |
+		FileNamePattern | (\ref legalChars "^") | - |
+		CreateIntermediateDirectories | True,False | False |
 
 		\anchor legalChars (^) Legal file name characters plus any conversion specifier supported by the concrete class.
 
