@@ -39,13 +39,18 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		Configure \c repository.
 
 		If the configuration file name has not been provided by a call to setConfigurationFileName(),
-		the environment variable "LOG4CXX_CONFIGURATION" value is used,
+		the environment variable "LOG4CXX_CONFIGURATION" or "log4j.configuration" value is used,
 		with ${varname} instances using either a system environment variable value (if found)
 		otherwise using the helpers::Properties object
 		provided by spi::Configurator::properties.
 
+		\usage
+		~~~
+		setenv LOG4CXX_CONFIGURATION="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"
+		~~~
+
 		Unless a custom configurator is specified using the
-		"LOG4CXX_CONFIGURATOR_CLASS"
+		"LOG4CXX_CONFIGURATOR_CLASS" or "log4j.configuratorClass"
 		environment variable, the PropertyConfigurator will be used to
 		configure log4cxx unless the file name ends with the ".xml"
 		extension, in which case the DOMConfigurator will be used. If a
@@ -82,12 +87,23 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		Any ${varname} instances in the \c path value are expanded
 		using either a system environment variable value (if found)
 		otherwise using the map provided by spi::Configurator::properties.
+
+		\usage
+		~~~{.cpp}
+		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"))
+		~~~
+
 		*/
 		static void setConfigurationFileName(const LogString& path);
 
 		/**
 		Make \c seconds the time a background thread will delay before checking
 		for a change to the configuration file used by configure().
+
+		\usage
+		~~~{.cpp}
+		DefaultConfigurator::setConfigurationWatchSeconds(1);
+		~~~
 		*/
 		static void setConfigurationWatchSeconds(int seconds);
 
@@ -101,7 +117,10 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 * for this file in /etc/myapp, but to have this overriden by a file in /usr/local/etc/myapp, we would
 		 * call this function as follows:
 		 *
-		 * configureFromFile( { "/usr/local/etc/myapp", "/etc/myapp" }, { "myapp-logging.xml" );
+		 \usage
+		 ~~~{.cpp}
+		 DefaultConfigurator::configureFromFile( { "/usr/local/etc/myapp", "/etc/myapp" }, { "myapp-logging.xml" );
+		 ~~~
 		 *
 		 * This will then search for files in the following order:
 		 *

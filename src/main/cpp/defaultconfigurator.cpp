@@ -37,6 +37,10 @@ namespace
 	const LogString CONFIGURATION_FILE_KEY{ LOG4CXX_STR("LOG4CXX_CONFIGURATION") };
 	const LogString WATCH_SECONDS_KEY{ LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS") };
 	const LogString CONFIGURATOR_CLASS_KEY{ LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS") };
+#if LOG4CXX_VERSION_MAJOR <= 1
+	const LogString LOG4J_CONFIGURATION_FILE_KEY{ LOG4CXX_STR("log4j.configuration") };
+	const LogString LOG4J_CONFIGURATOR_CLASS_KEY{ LOG4CXX_STR("log4j.configuratorClass") };
+#endif
 }
 
 void DefaultConfigurator::setConfigurationFileName(const LogString& path)
@@ -136,7 +140,12 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 
 const LogString DefaultConfigurator::getConfiguratorClass()
 {
-	return System::getProperty(CONFIGURATOR_CLASS_KEY);
+	auto result = System::getProperty(CONFIGURATOR_CLASS_KEY);
+#if LOG4CXX_VERSION_MAJOR <= 1
+	if (result.empty())
+		result = System::getProperty(LOG4J_CONFIGURATOR_CLASS_KEY);
+#endif
+	return result;
 }
 
 
@@ -146,6 +155,10 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 	LogString configurationFileName = props.getProperty(CONFIGURATION_FILE_KEY);
 	if (configurationFileName.empty())
 		configurationFileName = System::getProperty(CONFIGURATION_FILE_KEY);
+#if LOG4CXX_VERSION_MAJOR <= 1
+	if (configurationFileName.empty())
+		configurationFileName = System::getProperty(LOG4J_CONFIGURATION_FILE_KEY);
+#endif
 	return OptionConverter::substVars(configurationFileName, props);
 }
 
