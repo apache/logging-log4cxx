@@ -36,12 +36,12 @@ class LOG4CXX_EXPORT DefaultConfigurator
 
 	public:
 		/**
-		Configure the default repository.
+		Configure \c repository.
 
 		If the configuration file name has not been provided by a call to setConfigurationFileName(),
 		the environment variable "LOG4CXX_CONFIGURATION" value is used,
 		with ${varname} instances expanded using the helpers::Properties object
-		provided by DefaultConfigurator::configurationProperties().
+		provided by spi::Configurator::configurationProperties.
 
 		Unless a custom configurator is specified using the
 		"LOG4CXX_CONFIGURATOR_CLASS"
@@ -60,13 +60,20 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		or the environment variables "LOG4CXX_CONFIGURATION_WATCH_SECONDS" contains a positive number
 		a background thread is started that will periodically check for a change to the configuration file
 		and apply any configuration changes found.
-		*/
-		static spi::ConfigurationStatus tryConfigure();
 
-		/**
-		Configure \c repository.
+		Call the spi::LoggerRepository::isConfigured \c repository member function
+		to determine whether a configuration file was found.
 		*/
 		static void configure(spi::LoggerRepositoryPtr repository);
+
+		/**
+		Attempt configuration by calling configure() passing the default repository.
+
+		See configure() for how the configuration file name is determined.
+
+		@return a success indicator.
+		*/
+		static spi::ConfigurationStatus tryConfigure();
 
 		/**
 		Make \c path the configuration file used by configure().
@@ -84,8 +91,8 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		static void setConfigurationWatchSeconds(int seconds);
 
 		/**
-		 * Configure Log4cxx from a file.  This method will attempt to load the configuration files in the
-		 * directories given.
+		 * Call <code>configure(LogManager::getLoggerRepository())</code> with a path composed of an entry in \c directories and an entry in \c filenames
+		 * when the combination identifies an existing file.
 		 *
 		 * For example, if we want a configuration file named 'myapp-logging.xml' with the default location
 		 * for this file in /etc/myapp, but to have this overriden by a file in /usr/local/etc/myapp, we would
@@ -117,7 +124,6 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		static const LogString getConfigurationFileName();
 		static const LogString getConfiguratorClass();
 		static int getConfigurationWatchDelay();
-		static spi::ConfigurationStatus tryLoadFile(const LogString& filename);
 
 };	 // class DefaultConfigurator
 }  // namespace log4cxx

@@ -29,8 +29,8 @@
 
 
 using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::spi;
-using namespace LOG4CXX_NS::helpers;
+using namespace spi;
+using namespace helpers;
 
 namespace
 {
@@ -52,11 +52,11 @@ void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
 	Configurator::configurationProperties().setProperty(WATCH_SECONDS_KEY, strSeconds);
 }
 
-spi::ConfigurationStatus DefaultConfigurator::tryConfigure()
+ConfigurationStatus DefaultConfigurator::tryConfigure()
 {
 	auto r = LogManager::getLoggerRepository();
 	configure(r);
-	return r->isConfigured() ? spi::ConfigurationStatus::Configured : spi::ConfigurationStatus::NotConfigured;
+	return r->isConfigured() ? ConfigurationStatus::Configured : ConfigurationStatus::NotConfigured;
 }
 
 void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
@@ -164,48 +164,34 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 	return milliseconds;
 }
 
-LOG4CXX_NS::spi::ConfigurationStatus DefaultConfigurator::tryLoadFile(const LogString& filename){
-#if LOG4CXX_HAS_DOMCONFIGURATOR
-	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".xml"))){
-		return LOG4CXX_NS::xml::DOMConfigurator::configure(filename);
-	}
-#endif
-	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".properties"))){
-		return LOG4CXX_NS::PropertyConfigurator::configure(filename);
-	}
+std::tuple<ConfigurationStatus,LogString>
+DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories, const std::vector<LogString>& filenames)
+{
+	using ResultType = std::tuple<ConfigurationStatus, LogString>;
+	Pool pool;
 
-	return LOG4CXX_NS::spi::ConfigurationStatus::NotConfigured;
-}
-
-std::tuple<LOG4CXX_NS::spi::ConfigurationStatus,LogString>
-DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories, const std::vector<LogString>& filenames){
-	using ResultType = std::tuple<LOG4CXX_NS::spi::ConfigurationStatus, LogString>;
-	LOG4CXX_NS::helpers::Pool pool;
-
-	for( LogString dir : directories ){
-		for( LogString fname : filenames ){
-			LogString canidate_str = dir + LOG4CXX_STR("/") + fname;
-			File candidate(canidate_str);
+	for (auto& dir : directories )
+	{
+		for (auto& fname : filenames )
+		{
+			auto candidate_str = dir + LOG4CXX_STR("/") + fname;
+			File candidate(candidate_str);
 
 			if (LogLog::isDebugEnabled())
-			{
-				LogString debugMsg = LOG4CXX_STR("Checking file ");
-				debugMsg.append(canidate_str);
-				LogLog::debug(debugMsg);
-			}
+				LogLog::debug(LOG4CXX_STR("Checking file ") + candidate_str);
 			if (candidate.exists(pool))
 			{
-				LOG4CXX_NS::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
-				if( configStatus == LOG4CXX_NS::spi::ConfigurationStatus::Configured ){
-					return ResultType{configStatus, canidate_str};
-				}
+				setConfigurationFileName(candidate_str);
+				auto configStatus = tryConfigure();
+				if( configStatus == ConfigurationStatus::Configured )
+					return ResultType{configStatus, candidate_str};
 				if (LogLog::isDebugEnabled())
-					LogLog::debug(LOG4CXX_STR("Unable to load file: trying next"));
+					LogLog::warn(LOG4CXX_STR("Unable to load: ") + candidate_str);
 			}
 		}
 	}
 
-	return ResultType{LOG4CXX_NS::spi::ConfigurationStatus::NotConfigured, LogString()};
+	return ResultType{ConfigurationStatus::NotConfigured, LogString()};
 }
 
 
