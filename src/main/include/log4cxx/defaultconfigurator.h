@@ -40,8 +40,9 @@ class LOG4CXX_EXPORT DefaultConfigurator
 
 		If the configuration file name has not been provided by a call to setConfigurationFileName(),
 		the environment variable "LOG4CXX_CONFIGURATION" value is used,
-		with ${varname} instances expanded using the helpers::Properties object
-		provided by spi::Configurator::configurationProperties.
+		with ${varname} instances using either a system environment variable value (if found)
+		otherwise using the helpers::Properties object
+		provided by spi::Configurator::properties.
 
 		Unless a custom configurator is specified using the
 		"LOG4CXX_CONFIGURATOR_CLASS"
@@ -80,7 +81,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 
 		Any ${varname} instances in the \c path value are expanded
 		using either a system environment variable value (if found)
-		otherwise using the map provided by spi::Configurator::configurationProperties.
+		otherwise using the map provided by spi::Configurator::properties.
 		*/
 		static void setConfigurationFileName(const LogString& path);
 

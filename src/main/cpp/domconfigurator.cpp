@@ -65,7 +65,7 @@ using namespace LOG4CXX_NS::rolling;
 
 struct DOMConfigurator::DOMConfiguratorPrivate
 {
-	helpers::Properties props = Configurator::configurationProperties();
+	helpers::Properties props = Configurator::properties();
 	spi::LoggerRepositoryPtr repository;
 	spi::LoggerFactoryPtr loggerFactory;
 };

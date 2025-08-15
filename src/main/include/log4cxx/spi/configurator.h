@@ -65,7 +65,7 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 			) = 0;
 
 		/**
-		The key value pairs used when expanding varname} instances in a configuration file.
+		The key value pairs used when expanding ${varname} instances in a configuration file.
 
 		By default, the map holds the currently executing program file path
 		and the [std::filesystem::path](https://en.cppreference.com/w/cpp/filesystem/path.html)
@@ -80,7 +80,7 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		- PROGRAM_FILE_PATH.STEM
 		- PROGRAM_FILE_PATH.EXTENSION
 		*/
-		static helpers::Properties& configurationProperties();
+		static helpers::Properties& properties();
 
 	protected:
 		Configurator();

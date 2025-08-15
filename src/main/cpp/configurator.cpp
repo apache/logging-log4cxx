@@ -53,7 +53,7 @@ Configurator::Configurator()
 {
 }
 
-helpers::Properties& Configurator::configurationProperties()
+helpers::Properties& Configurator::properties()
 {
 	auto& result = getInstance().second;
 	if (result.isEmpty())

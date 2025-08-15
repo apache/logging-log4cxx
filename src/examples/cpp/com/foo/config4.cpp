@@ -36,7 +36,7 @@ auto getLogger(const std::string& name) -> LoggerPtr {
 
 			// Allow expansion of ${CURRENT_VENDOR_FOLDER} and ${CURRENT_PRODUCT_FOLDER}
 			// when loading a configuration from a file
-			auto& props = spi::Configurator::configurationProperties();
+			auto& props = spi::Configurator::properties();
 			props.setProperty(LOG4CXX_STR("CURRENT_VENDOR_FOLDER"), lsVendorFolder);
 			props.setProperty(LOG4CXX_STR("CURRENT_PRODUCT_FOLDER"), lsProductFolder);
 

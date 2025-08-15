@@ -41,7 +41,7 @@ namespace
 
 void DefaultConfigurator::setConfigurationFileName(const LogString& path)
 {
-	Configurator::configurationProperties().setProperty(CONFIGURATION_FILE_KEY, path);
+	Configurator::properties().setProperty(CONFIGURATION_FILE_KEY, path);
 }
 
 void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
@@ -49,7 +49,7 @@ void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
 	Pool p;
 	LogString strSeconds;
 	StringHelper::toString(seconds, p, strSeconds);
-	Configurator::configurationProperties().setProperty(WATCH_SECONDS_KEY, strSeconds);
+	Configurator::properties().setProperty(WATCH_SECONDS_KEY, strSeconds);
 }
 
 ConfigurationStatus DefaultConfigurator::tryConfigure()
@@ -142,7 +142,7 @@ const LogString DefaultConfigurator::getConfiguratorClass()
 
 const LogString DefaultConfigurator::getConfigurationFileName()
 {
-	auto& props = Configurator::configurationProperties();
+	auto& props = Configurator::properties();
 	LogString configurationFileName = props.getProperty(CONFIGURATION_FILE_KEY);
 	if (configurationFileName.empty())
 		configurationFileName = System::getProperty(CONFIGURATION_FILE_KEY);
@@ -152,7 +152,7 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 
 int DefaultConfigurator::getConfigurationWatchDelay()
 {
-	LogString optionStr = Configurator::configurationProperties().getProperty(WATCH_SECONDS_KEY);
+	LogString optionStr = Configurator::properties().getProperty(WATCH_SECONDS_KEY);
 	if (optionStr.empty())
 		optionStr = System::getProperty(WATCH_SECONDS_KEY);
 	int milliseconds = 0;
