@@ -40,6 +40,9 @@ auto getLogger(const std::string& name) -> LoggerPtr {
 			props.setProperty(LOG4CXX_STR("CURRENT_VENDOR_FOLDER"), lsVendorFolder);
 			props.setProperty(LOG4CXX_STR("CURRENT_PRODUCT_FOLDER"), lsProductFolder);
 
+			// Check every 5 seconds for configuration file changes
+			DefaultConfigurator::setConfigurationWatchSeconds(5);
+
 			// Use a configuration file in the current working directory
 			DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.xml"));
 			if (DefaultConfigurator::tryConfigure() == spi::ConfigurationStatus::NotConfigured)
