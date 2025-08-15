@@ -355,7 +355,7 @@ private:
 
 	std::string GetExecutableFileName()
 	{
-		auto lsProgramFilePath = spi::Configurator::configurationProperties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH"));
+		auto lsProgramFilePath = spi::Configurator::properties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH"));
 		LOG4CXX_ENCODE_CHAR(programFilePath, lsProgramFilePath);
 		return programFilePath;
 	}
