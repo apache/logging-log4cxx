@@ -113,7 +113,7 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure
 	auto hierarchy = repository ? repository : LogManager::getLoggerRepository();
 	hierarchy->setConfigured(true);
 
-	Properties props;
+	Properties props = Configurator::configurationProperties();
 
 	try
 	{

@@ -17,13 +17,24 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/system.h>
+#include <log4cxx/helpers/filesystempath.h>
 
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/properties.h>
+#include <log4cxx/helpers/loglog.h>
 #include <apr_file_io.h>
 #include <apr_user.h>
 #include <apr_env.h>
 
+#ifdef _WIN32
+#include <windows.h>
+#elif __APPLE__
+#include <mach-o/dyld.h>
+#elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
+#include <unistd.h> // getpid
+#endif
+#include <sstream>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -120,3 +131,52 @@ LogString System::getProperty(const LogString& lkey)
 	return rv;
 }
 
+void System::addProgramFilePathComponents(Properties& props)
+{
+	// Find the executable file name
+	static const int bufSize = 4096;
+	char buf[bufSize+1] = {0}, pathSepar = '/';
+	uint32_t bufCount = 0;
+#if defined(_WIN32)
+	GetModuleFileName(NULL, buf, bufSize);
+	pathSepar = '\\';
+#elif defined(__APPLE__)
+	_NSGetExecutablePath(buf, &bufCount);
+#elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
+	std::ostringstream exeLink;
+	exeLink << "/proc/" << getpid() << "/exe";
+	bufCount = readlink(exeLink.str().c_str(), buf, bufSize);
+	if (0 < bufCount)
+		buf[bufCount] = 0;
+#else
+	return;
+#endif
+
+	// Add the path to the properties
+	std::string programFileName(buf);
+	LOG4CXX_DECODE_CHAR(lsProgramFileName, programFileName);
+	LogString prefix{ LOG4CXX_STR("PROGRAM_FILE_PATH") };
+	props.setProperty(prefix, lsProgramFileName);
+
+#if LOG4CXX_HAS_FILESYSTEM_PATH
+	// Add the path components to the properties
+	prefix += '.';
+	Path programPath(programFileName);
+	LOG4CXX_DECODE_CHAR(root_name, programPath.root_name().string());
+	props.setProperty(prefix + LOG4CXX_STR("ROOT_NAME"), root_name);
+	LOG4CXX_DECODE_CHAR(root_directory, programPath.root_directory().string());
+	props.setProperty(LOG4CXX_STR("ROOT_DIRECTORY"),root_directory);
+	LOG4CXX_DECODE_CHAR(root_path, programPath.root_path().string());
+	props.setProperty(prefix + LOG4CXX_STR("ROOT_PATH"), root_path);
+	LOG4CXX_DECODE_CHAR(relative_path, programPath.relative_path().string());
+	props.setProperty(prefix + LOG4CXX_STR("RELATIVE_PATH"), relative_path);
+	LOG4CXX_DECODE_CHAR(parent_path, programPath.parent_path().string());
+	props.setProperty(prefix + LOG4CXX_STR("PARENT_PATH"), parent_path);
+	LOG4CXX_DECODE_CHAR(filename, programPath.filename().string());
+	props.setProperty(prefix + LOG4CXX_STR("FILENAME"), filename);
+	LOG4CXX_DECODE_CHAR(stem, programPath.stem().string());
+	props.setProperty(prefix + LOG4CXX_STR("STEM"), stem);
+	LOG4CXX_DECODE_CHAR(extension, programPath.extension().string());
+	props.setProperty(prefix + LOG4CXX_STR("EXTENSION"), extension);
+#endif
+}

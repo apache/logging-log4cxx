@@ -36,12 +36,15 @@ class LOG4CXX_EXPORT DefaultConfigurator
 
 	public:
 		/**
-		Configure \c repository.
+		Configure the default repository.
 
 		If the configuration file name has not been provided by a call to setConfigurationFileName(),
-		the environment variables "LOG4CXX_CONFIGURATION" and "log4j.configuration" are examined.
+		the environment variable "LOG4CXX_CONFIGURATION" value is used,
+		with ${varname} instances expanded using the helpers::Properties object
+		provided by DefaultConfigurator::configurationProperties().
+
 		Unless a custom configurator is specified using the
-		"LOG4CXX_CONFIGURATOR_CLASS" or "log4j.configuratorClass"
+		"LOG4CXX_CONFIGURATOR_CLASS"
 		environment variable, the PropertyConfigurator will be used to
 		configure log4cxx unless the file name ends with the ".xml"
 		extension, in which case the DOMConfigurator will be used. If a
@@ -58,10 +61,19 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		a background thread is started that will periodically check for a change to the configuration file
 		and apply any configuration changes found.
 		*/
+		static spi::ConfigurationStatus tryConfigure();
+
+		/**
+		Configure \c repository.
+		*/
 		static void configure(spi::LoggerRepositoryPtr repository);
 
 		/**
 		Make \c path the configuration file used by configure().
+
+		Any ${varname} instances in the \c path value are expanded
+		using either a system environment variable value (if found)
+		otherwise using the map provided by Configurator::configurationProperties.
 		*/
 		static void setConfigurationFileName(const LogString& path);
 
@@ -96,14 +108,16 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 * @param filenames The names of the files to look for
 		 * @return The status of the configuration, and the filename loaded(if a file was found).
 		 */
-		static std::tuple<LOG4CXX_NS::spi::ConfigurationStatus,LogString> configureFromFile(const std::vector<LogString>& directories,
-																						 const std::vector<LogString>& filenames);
+		static std::tuple<spi::ConfigurationStatus,LogString> configureFromFile
+			( const std::vector<LogString>& directories
+			, const std::vector<LogString>& filenames
+			);
 
 	private:
 		static const LogString getConfigurationFileName();
 		static const LogString getConfiguratorClass();
 		static int getConfigurationWatchDelay();
-		static LOG4CXX_NS::spi::ConfigurationStatus tryLoadFile(const LogString& filename);
+		static spi::ConfigurationStatus tryLoadFile(const LogString& filename);
 
 };	 // class DefaultConfigurator
 }  // namespace log4cxx
