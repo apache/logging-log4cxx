@@ -80,7 +80,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 
 		Any ${varname} instances in the \c path value are expanded
 		using either a system environment variable value (if found)
-		otherwise using the map provided by Configurator::configurationProperties.
+		otherwise using the map provided by spi::Configurator::configurationProperties.
 		*/
 		static void setConfigurationFileName(const LogString& path);
 
@@ -91,7 +91,9 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		static void setConfigurationWatchSeconds(int seconds);
 
 		/**
-		 * Call <code>configure(LogManager::getLoggerRepository())</code> with a path composed of an entry in \c directories and an entry in \c filenames
+		 * Call configure() passing the default repository
+		 * after calling setConfigurationFileName() with a path composed of
+		 * an entry in \c directories and an entry in \c filenames
 		 * when the combination identifies an existing file.
 		 *
 		 * For example, if we want a configuration file named 'myapp-logging.xml' with the default location
