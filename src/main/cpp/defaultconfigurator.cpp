@@ -26,6 +26,10 @@
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
+#if !defined(LOG4CXX)
+	#define LOG4CXX 1
+#endif
+#include <log4cxx/private/log4cxx_private.h>
 
 
 using namespace LOG4CXX_NS;
@@ -153,11 +157,22 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 {
 	auto& props = Configurator::properties();
 	LogString configurationFileName = props.getProperty(CONFIGURATION_FILE_KEY);
+	bool isEnvVar = false;
 	if (configurationFileName.empty())
+	{
 		configurationFileName = System::getProperty(CONFIGURATION_FILE_KEY);
+		isEnvVar = true;
+	}
 #if LOG4CXX_VERSION_MAJOR <= 1
 	if (configurationFileName.empty())
+	{
 		configurationFileName = System::getProperty(LOG4J_CONFIGURATION_FILE_KEY);
+		isEnvVar = true;
+	}
+#endif
+#if !LOG4CXX_EXPAND_CONFIG_ENV_VAR
+	if (isEnvVar)
+		return configurationFileName;
 #endif
 	return OptionConverter::substVars(configurationFileName, props);
 }
