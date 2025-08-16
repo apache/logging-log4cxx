@@ -95,7 +95,6 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 
 	if (configuration.exists(pool))
 	{
-		repository->setConfigured(true);
 		if (LogLog::isDebugEnabled())
 		{
 			LogString msg(LOG4CXX_STR("Using configuration file ["));
