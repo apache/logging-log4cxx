@@ -20,6 +20,7 @@
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <vector>
 
 namespace com { namespace foo {
 
@@ -49,7 +50,7 @@ auto getLogger(const std::string& name) -> LoggerPtr {
 				( { ".", "${PROGRAM_FILE_PATH.PARENT_PATH}" }
 				, { "${PROGRAM_FILE_PATH.STEM}.xml", "${PROGRAM_FILE_PATH.STEM}.properties" }
 				);
-			if (get<0>(configStatus) == spi::ConfigurationStatus::NotConfigured)
+			if (std::get<0>(configStatus) == spi::ConfigurationStatus::NotConfigured)
 				BasicConfigurator::configure(); // Send events to the console
 		}
 		~log4cxx_initializer() {
