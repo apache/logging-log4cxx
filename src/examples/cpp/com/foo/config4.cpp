@@ -46,13 +46,13 @@ auto getLogger(const std::string& name) -> LoggerPtr {
 
 			// Look for a configuration file in the current working directory
 			// and the same directory as the program
-			std::vector<std::string> paths
-				{ "."
-				, "${PROGRAM_FILE_PATH.PARENT_PATH}"
+			std::vector<LogString> paths
+				{ LOG4CXX_STR(".")
+				, LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}")
 				};
-			std::vector<std::string> names
-				{ "${PROGRAM_FILE_PATH.STEM}.xml"
-				, "${PROGRAM_FILE_PATH.STEM}.properties"
+			std::vector<LogString> names
+				{ LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.xml")
+				, LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
 				};
 			auto status       = spi::ConfigurationStatus::NotConfigured;
 			auto selectedPath = LogString();
