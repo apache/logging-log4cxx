@@ -149,11 +149,18 @@ void System::addProgramFilePathComponents(Properties& props)
 	if (0 < bufCount)
 		buf[bufCount] = 0;
 #else
+	LogLog::warn(LOG4CXX_STR("Unable to determine the name of the executable file on this system"));
 	return;
 #endif
 
 	// Add the path to the properties
 	std::string programFileName(buf);
+	if (programFileName.empty())
+	{
+		LogLog::warn(LOG4CXX_STR("Current executable's file name is empty"));
+		return;
+	}
+		
 	LOG4CXX_DECODE_CHAR(lsProgramFileName, programFileName);
 	LogString prefix{ LOG4CXX_STR("PROGRAM_FILE_PATH") };
 	props.setProperty(prefix, lsProgramFileName);
