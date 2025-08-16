@@ -162,6 +162,24 @@ void System::addProgramFilePathComponents(Properties& props)
 	// Add the path components to the properties
 	prefix += '.';
 	Path programPath(programFileName);
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+	auto root_name = programPath.root_name().wstring();
+	props.setProperty(prefix + LOG4CXX_STR("ROOT_NAME"), root_name);
+	auto root_directory = programPath.root_directory().wstring();
+	props.setProperty(LOG4CXX_STR("ROOT_DIRECTORY"),root_directory);
+	auto root_path = programPath.root_path().wstring();
+	props.setProperty(prefix + LOG4CXX_STR("ROOT_PATH"), root_path);
+	auto relative_path = programPath.relative_path().wstring();
+	props.setProperty(prefix + LOG4CXX_STR("RELATIVE_PATH"), relative_path);
+	auto parent_path = programPath.parent_path().wstring();
+	props.setProperty(prefix + LOG4CXX_STR("PARENT_PATH"), parent_path);
+	auto filename = programPath.filename().wstring();
+	props.setProperty(prefix + LOG4CXX_STR("FILENAME"), filename);
+	auto stem = programPath.stem().wstring();
+	props.setProperty(prefix + LOG4CXX_STR("STEM"), stem);
+	auto extension = programPath.extension().wstring();
+	props.setProperty(prefix + LOG4CXX_STR("EXTENSION"), extension);
+#else
 	LOG4CXX_DECODE_CHAR(root_name, programPath.root_name().string());
 	props.setProperty(prefix + LOG4CXX_STR("ROOT_NAME"), root_name);
 	LOG4CXX_DECODE_CHAR(root_directory, programPath.root_directory().string());
@@ -179,4 +197,5 @@ void System::addProgramFilePathComponents(Properties& props)
 	LOG4CXX_DECODE_CHAR(extension, programPath.extension().string());
 	props.setProperty(prefix + LOG4CXX_STR("EXTENSION"), extension);
 #endif
+#endif // LOG4CXX_HAS_FILESYSTEM_PATH
 }
