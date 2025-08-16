@@ -109,7 +109,7 @@ else()
     set(ENABLE_FMT_LAYOUT "OFF")
 endif()
 
-option(LOG4CXX_CONFIG_VAR_EXPANSION "Expand ${varname} instances in LOG4CXX_CONFIGURATION" ON)
+option(LOG4CXX_CONFIG_VAR_EXPANSION "Expand \${varname} instances in LOG4CXX_CONFIGURATION" ON)
 if(LOG4CXX_CONFIG_VAR_EXPANSION)
     set(EXPAND_CONFIG_ENV_VAR 1)
 else()
