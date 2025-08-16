@@ -46,11 +46,18 @@ auto getLogger(const std::string& name) -> LoggerPtr {
 
 			// Look for a configuration file in the current working directory
 			// and the same directory as the program
-			auto configStatus = DefaultConfigurator::configureFromFile
-				( { ".", "${PROGRAM_FILE_PATH.PARENT_PATH}" }
-				, { "${PROGRAM_FILE_PATH.STEM}.xml", "${PROGRAM_FILE_PATH.STEM}.properties" }
-				);
-			if (std::get<0>(configStatus) == spi::ConfigurationStatus::NotConfigured)
+			std::vector<std::string> paths
+				{ "."
+				, "${PROGRAM_FILE_PATH.PARENT_PATH}"
+				};
+			std::vector<std::string> names
+				{ "${PROGRAM_FILE_PATH.STEM}.xml"
+				, "${PROGRAM_FILE_PATH.STEM}.properties"
+				};
+			auto status       = spi::ConfigurationStatus::NotConfigured;
+			auto selectedPath = std::string();
+			std::tie(status, selectedPath) = DefaultConfigurator::configureFromFile(paths, names);
+			if (status == spi::ConfigurationStatus::NotConfigured)
 				BasicConfigurator::configure(); // Send events to the console
 		}
 		~log4cxx_initializer() {
