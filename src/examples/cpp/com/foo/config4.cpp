@@ -43,15 +43,14 @@ auto getLogger(const std::string& name) -> LoggerPtr {
 			// Check every 5 seconds for configuration file changes
 			DefaultConfigurator::setConfigurationWatchSeconds(5);
 
-			// Use a configuration file in the current working directory
-			DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.xml"));
+			// Look for a configuration file in the current working directory
+			// and the same directory as the program
+			DefaultConfigurator::configureFromFile
+				( { ".", "${PROGRAM_FILE_PATH.PARENT_PATH}" }
+				, { "${PROGRAM_FILE_PATH.STEM}.xml", "${PROGRAM_FILE_PATH.STEM}.properties" }
+				);
 			if (DefaultConfigurator::tryConfigure() == spi::ConfigurationStatus::NotConfigured)
-			{
-				// Use a configuration file in the same directory as the program
-				DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"));
-				if (DefaultConfigurator::tryConfigure() == spi::ConfigurationStatus::NotConfigured)
-					BasicConfigurator::configure(); // Send events to the console
-			}
+				BasicConfigurator::configure(); // Send events to the console
 		}
 		~log4cxx_initializer() {
 			LogManager::shutdown();

@@ -183,23 +183,24 @@ std::tuple<ConfigurationStatus,LogString>
 DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories, const std::vector<LogString>& filenames)
 {
 	using ResultType = std::tuple<ConfigurationStatus, LogString>;
+	auto r = LogManager::getLoggerRepository();
 	Pool pool;
 
 	for (auto& dir : directories )
 	{
 		for (auto& fname : filenames )
 		{
-			auto candidate_str = dir + LOG4CXX_STR("/") + fname;
+			setConfigurationFileName(dir + LOG4CXX_STR("/") + fname);
+			auto candidate_str = getConfigurationFileName();
 			File candidate(candidate_str);
 
 			if (LogLog::isDebugEnabled())
 				LogLog::debug(LOG4CXX_STR("Checking file ") + candidate_str);
 			if (candidate.exists(pool))
 			{
-				setConfigurationFileName(candidate_str);
-				auto configStatus = tryConfigure();
-				if( configStatus == ConfigurationStatus::Configured )
-					return ResultType{configStatus, candidate_str};
+				configure(r);
+				if (r->isConfigured())
+					return ResultType{ConfigurationStatus::Configured, candidate_str};
 				LogLog::warn(LOG4CXX_STR("Unable to load: ") + candidate_str);
 			}
 		}
