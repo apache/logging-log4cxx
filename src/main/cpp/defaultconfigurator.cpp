@@ -200,8 +200,7 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 				auto configStatus = tryConfigure();
 				if( configStatus == ConfigurationStatus::Configured )
 					return ResultType{configStatus, candidate_str};
-				if (LogLog::isDebugEnabled())
-					LogLog::warn(LOG4CXX_STR("Unable to load: ") + candidate_str);
+				LogLog::warn(LOG4CXX_STR("Unable to load: ") + candidate_str);
 			}
 		}
 	}
