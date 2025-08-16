@@ -141,6 +141,7 @@ void System::addProgramFilePathComponents(Properties& props)
 	GetModuleFileName(NULL, buf, bufSize);
 	pathSepar = '\\';
 #elif defined(__APPLE__)
+	bufCount = bufSize;
 	_NSGetExecutablePath(buf, &bufCount);
 #elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
 	std::ostringstream exeLink;
