@@ -3,7 +3,7 @@
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n"/>
+      <param name="ConversionPattern" value="${CURRENT_VENDOR_FOLDER}.${CURRENT_PRODUCT_FOLDER}: [%d{yyyy-MM-dd HH:mm:ss}]  %c %-5p - %m%n"/>
     </layout>
   </appender>
 

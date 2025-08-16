@@ -109,6 +109,13 @@ else()
     set(ENABLE_FMT_LAYOUT "OFF")
 endif()
 
+option(LOG4CXX_CONFIG_VAR_EXPANSION "Expand \${varname} instances in LOG4CXX_CONFIGURATION" ON)
+if(LOG4CXX_CONFIG_VAR_EXPANSION)
+    set(EXPAND_CONFIG_ENV_VAR 1)
+else()
+    set(EXPAND_CONFIG_ENV_VAR 0)
+endif(LOG4CXX_CONFIG_VAR_EXPANSION)
+
 # Request C++20, if available
 # This *should* fallback to an older standard if it is not available
 if( NOT "${CMAKE_CXX_STANDARD}")

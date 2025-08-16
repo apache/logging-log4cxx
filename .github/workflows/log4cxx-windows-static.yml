@@ -50,7 +50,7 @@ jobs:
       with:
         repository: microsoft/vcpkg
         path: vcpkg
-        ref: 2024.01.12
+        ref: 2025.07.25
 
     - name: 'Configure Dependencies'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'

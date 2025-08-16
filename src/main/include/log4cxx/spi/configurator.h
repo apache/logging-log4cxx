@@ -19,6 +19,7 @@
 #define _LOG4CXX_SPI_CONFIGURATOR_H
 
 #include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/helpers/properties.h>
 
 namespace LOG4CXX_NS
 {
@@ -62,6 +63,24 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
 #endif
 			) = 0;
+
+		/**
+		The key value pairs used when expanding ${varname} instances in a configuration file.
+
+		By default, the map holds the currently executing program file path
+		and the [std::filesystem::path](https://en.cppreference.com/w/cpp/filesystem/path.html)
+		decomposition of the currently executing program file path, using the variable names:
+		- PROGRAM_FILE_PATH
+		- PROGRAM_FILE_PATH.ROOT_NAME
+		- PROGRAM_FILE_PATH.ROOT_DIRECTORY
+		- PROGRAM_FILE_PATH.ROOT_PATH
+		- PROGRAM_FILE_PATH.RELATIVE_PATH
+		- PROGRAM_FILE_PATH.PARENT_PATH
+		- PROGRAM_FILE_PATH.FILENAME
+		- PROGRAM_FILE_PATH.STEM
+		- PROGRAM_FILE_PATH.EXTENSION
+		*/
+		static helpers::Properties& properties();
 
 	protected:
 		Configurator();

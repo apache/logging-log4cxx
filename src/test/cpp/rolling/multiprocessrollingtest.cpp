@@ -32,16 +32,6 @@
 #include <fstream>
 #include <apr_thread_proc.h>
 
-#ifdef _WIN32
-#include <windows.h> // GetModuleFileName
-#elif __APPLE__
-#include <mach-o/dyld.h> // _NSGetExecutablePath
-#elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
-#include <unistd.h> // getpid
-#else
-#include <cstring> // strncpy
-#endif
-
 using namespace LOG4CXX_NS;
 
 auto getLogger(const std::string& name) -> LoggerPtr {
@@ -365,23 +355,9 @@ private:
 
 	std::string GetExecutableFileName()
 	{
-		static const int bufSize = 4096;
-		char buf[bufSize+1] = {0};
-		[[maybe_unused]] uint32_t bufCount = bufSize;
-#if defined(_WIN32)
-		GetModuleFileName(NULL, buf, bufSize);  // TODO handle failure, e.g. ERROR_INSUFFICIENT_BUFFER
-#elif defined(__APPLE__)
-		_NSGetExecutablePath(buf, &bufCount);  // TODO handle failure
-#elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
-		std::ostringstream exeLink;
-		exeLink << "/proc/" << getpid() << "/exe";
-		bufCount = readlink(exeLink.str().c_str(), buf, bufSize);
-		if (0 < bufCount)
-			buf[bufCount] = 0;
-#else
-		strncpy(buf, "multiprocessrollingtest", bufSize);
-#endif
-		return std::string(buf);
+		auto lsProgramFilePath = spi::Configurator::properties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH"));
+		LOG4CXX_ENCODE_CHAR(programFilePath, lsProgramFilePath);
+		return programFilePath;
 	}
 #ifdef _DEBUG
 	struct Fixture

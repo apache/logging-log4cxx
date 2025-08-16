@@ -399,6 +399,18 @@ Properties::Properties() : properties(new PropertyMap())
 {
 }
 
+Properties::Properties(const Properties& other)
+	: properties(new PropertyMap(*other.properties))
+{
+}
+
+Properties& Properties::operator=(const Properties& other)
+{
+	delete this->properties;
+	this->properties = new PropertyMap(*other.properties);
+	return *this;
+}
+
 Properties::~Properties()
 {
 	delete properties;
@@ -451,3 +463,7 @@ std::vector<LogString> Properties::propertyNames() const
 	return names;
 }
 
+bool Properties::isEmpty() const
+{
+	return properties->empty();
+}

@@ -34,18 +34,26 @@ class LOG4CXX_EXPORT Properties
 	private:
 		typedef std::map<LogString, LogString> PropertyMap;
 		PropertyMap* properties;
-		Properties(const Properties&);
-		Properties& operator=(const Properties&);
 
-	public:
+	public: // ...structors
 		/**
 		 *  Create new instance.
 		 */
 		Properties();
+		Properties(const Properties&);
+		Properties(const Properties&&) = delete;
+		Properties& operator=(const Properties&);
+		Properties& operator=(const Properties&&) = delete;
 		/**
 		 * Destructor.
 		 */
 		~Properties();
+
+	public: // Methods
+		/** Does this contain any key-value pairs?
+		 */
+		bool isEmpty() const;
+
 		/**
 		Reads a property list (key and element pairs) from the input stream.
 		The stream is assumed to be using the ISO 8859-1 character encoding.

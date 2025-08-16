@@ -115,7 +115,7 @@ This version of *config.cpp* instructs [PropertyConfigurator](@ref log4cxx.Prope
 to use the *MyApp.properties* file to configure Log4cxx.
 A more realistic approach would (for example)
 use the current module name to select the configuration file
-(see the \ref com/foo/config3.cpp file for how to do this).
+(see the \ref com/foo/config4.cpp file for how to do this).
 
 Here is a sample *MyApp.properties* configuration file that results in exactly same output
 as the previous [BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure) based example.
@@ -196,3 +196,6 @@ This file is a simplified example of encapsulated Log4cxx configuration.
 
 \example com/foo/config3.cpp
 This file is an example of how to use the current module name to select the Log4cxx configuration file.
+
+\example com/foo/config4.cpp
+This file is a simpler example of how to use the current module name to select the Log4cxx configuration file.

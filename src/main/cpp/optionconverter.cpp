@@ -228,7 +228,7 @@ LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
 LogString OptionConverter::substVars(const LogString& val, Properties& props)
 {
 	LogString sbuf;
-	const logchar delimStartArray[] = { 0x24, 0x7B, 0 };
+	const logchar delimStartArray[] = { 0x24, 0x7B, 0 }; // '$', '{'
 	const LogString delimStart(delimStartArray);
 	const logchar delimStop = 0x7D; // '}';
 	const size_t DELIM_START_LEN = 2;
