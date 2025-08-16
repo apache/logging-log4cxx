@@ -55,7 +55,7 @@ auto getLogger(const std::string& name) -> LoggerPtr {
 				, "${PROGRAM_FILE_PATH.STEM}.properties"
 				};
 			auto status       = spi::ConfigurationStatus::NotConfigured;
-			auto selectedPath = std::string();
+			auto selectedPath = LogString();
 			std::tie(status, selectedPath) = DefaultConfigurator::configureFromFile(paths, names);
 			if (status == spi::ConfigurationStatus::NotConfigured)
 				BasicConfigurator::configure(); // Send events to the console
