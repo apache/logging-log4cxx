@@ -119,23 +119,36 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 *
 		 \usage
 		 ~~~{.cpp}
-		 DefaultConfigurator::configureFromFile( { "/usr/local/etc/myapp", "/etc/myapp" }, { "myapp-logging.xml" );
+		 std::vector<LogString> directories
+		     { LOG4CXX_STR(".")
+		     , LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}")
+		     };
+		 std::vector<LogString> filenames
+		     { LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.xml")
+		     , LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
+		     };
+		 DefaultConfigurator::configureFromFile(directories, filenames);
 		 ~~~
 		 *
-		 * This will then search for files in the following order:
+		 * Given a "myapp" executable file name
+		 * run from the "/opt/com.foo/bin" directory,
+		 * locations are checked in the following order:
 		 *
 		 * <pre>
-		 * /usr/local/etc/myapp/myapp-logging.xml
-		 * /etc/myapp/myapp-logging.xml
+		 * ./myapp.xml
+		 * ./myapp.properties
+		 * /opt/com.foo/bin/myapp.xml
+		 * /opt/com.foo/bin/myapp.properties
 		 * </pre>
 		 *
-		 * The status of configuring Log4cxx as well as the eventual filename used is returned.  If a file exists
-		 * but it is not able to be used to configure Log4cxx, the next file in the list will be tried until
-		 * a valid configuration file is found or the end of the list is reached.
+		 * If a file exists but it is not able to be used to configure Log4cxx,
+		 * the next file in the combinatorial set will be tried until
+		 * a valid configuration file is found or
+		 * all values in the combinatorial set have been tried.
 		 *
 		 * @param directories The directories to look in.
 		 * @param filenames The names of the files to look for
-		 * @return The status of the configuration, and the filename loaded(if a file was found).
+		 * @return a success indicator and the configuration file path that was used (if found).
 		 */
 		static std::tuple<spi::ConfigurationStatus,LogString> configureFromFile
 			( const std::vector<LogString>& directories
