@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <thread>
@@ -53,11 +54,8 @@ using namespace log4cxx;
 LOGUNIT_CLASS(AutoConfigureTestCase)
 {
 	LOGUNIT_TEST_SUITE(AutoConfigureTestCase);
-	LOGUNIT_TEST(copyPropertyFile);
-	LOGUNIT_TEST_THREADS(test1, 4);
+	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
-	LOGUNIT_TEST(test3);
-	LOGUNIT_TEST(shutdown);
 	LOGUNIT_TEST_SUITE_END();
 #ifdef _DEBUG
 	struct Fixture
@@ -66,53 +64,62 @@ LOGUNIT_CLASS(AutoConfigureTestCase)
 			helpers::LogLog::setInternalDebugging(true);
 		}
 	} suiteFixture;
-	apr_time_t m_initTime = apr_time_now();
 #endif
 	helpers::Pool m_pool;
 	char m_buf[2048];
-	LogString m_configFile = LOG4CXX_STR("autoconfiguretestcase.properties");
+	LogString m_configFile;
+	spi::ConfigurationStatus m_status;
 public:
 
 	void copyPropertyFile()
 	{
-		LOGUNIT_ASSERT(File(LOG4CXX_STR("input/autoConfigureTest.properties")).exists(m_pool));
-		LOGUNIT_ASSERT(apr_file_copy
-			( "input/autoConfigureTest.properties"
-			, "autoconfiguretestcase.properties"
-			, APR_FPROT_UREAD | APR_FPROT_UWRITE
-			, m_pool.getAPRPool()
-			) == APR_SUCCESS);
-
-		DefaultConfigurator::setConfigurationFileName(m_configFile);
-		DefaultConfigurator::setConfigurationWatchSeconds(1);
-		LOGUNIT_ASSERT(File(m_configFile).exists(m_pool));
+		auto lsTempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
+		LOG4CXX_DECODE_CHAR(tempDir, lsTempDir);
+		apr_file_copy
+		   ( "input/autoConfigureTest.properties"
+		   , (tempDir + "/autoconfiguretestcase.properties").c_str()
+		   , APR_FPROT_UREAD | APR_FPROT_UWRITE
+		   , m_pool.getAPRPool()
+		   );
 	}
 
-	void shutdown()
+	void setUp()
+	{
+		copyPropertyFile();
+		DefaultConfigurator::setConfigurationWatchSeconds(1);
+		std::vector<LogString> paths
+			{ helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"))
+			};
+		std::vector<LogString> names
+			{ LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
+			};
+
+		std::tie(m_status, m_configFile) = DefaultConfigurator::configureFromFile(paths, names);
+	}
+
+	void tearDown()
 	{
 		LogManager::shutdown();
-		LOGUNIT_ASSERT(apr_file_remove("autoconfiguretestcase.properties", m_pool.getAPRPool()) == APR_SUCCESS);
+		LOG4CXX_DECODE_CHAR(configFile, m_configFile);
+		apr_file_remove(configFile.c_str(), m_pool.getAPRPool());
 	}
 
 	void test1()	
 	{
-		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test1"));
-		LOGUNIT_ASSERT(debugLogger);
-		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
-		auto rep = LogManager::getLoggerRepository();
-		LOGUNIT_ASSERT(rep);
-		LOGUNIT_ASSERT(rep->isConfigured());
+		LOGUNIT_ASSERT_EQUAL(m_status, spi::ConfigurationStatus::Configured);
+		LOGUNIT_ASSERT(File(m_configFile).exists(m_pool));
+		auto debugLogger1 = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test1"));
+		LOGUNIT_ASSERT(debugLogger1);
+		LOGUNIT_ASSERT(!debugLogger1->isDebugEnabled());
+		auto debugLogger2 = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test2"));
+		LOGUNIT_ASSERT(debugLogger2);
+		LOGUNIT_ASSERT(debugLogger2->isDebugEnabled());
 	}
 
 	void test2()
 	{
-		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test2"));
-		LOGUNIT_ASSERT(debugLogger);
-		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
-	}
-
-	void test3()
-	{
+		LOGUNIT_ASSERT_EQUAL(m_status, spi::ConfigurationStatus::Configured);
+		LOGUNIT_ASSERT(File(m_configFile).exists(m_pool));
 		// wait 2 sec to ensure the modification time is different to that held in the WatchDog
 		apr_sleep(2000000);
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));
