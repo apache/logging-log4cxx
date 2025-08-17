@@ -74,7 +74,7 @@ public:
 	void copyPropertyFile()
 	{
 		auto lsTempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
-		LOG4CXX_DECODE_CHAR(tempDir, lsTempDir);
+		LOG4CXX_ENCODE_CHAR(tempDir, lsTempDir);
 		apr_file_copy
 		   ( "input/autoConfigureTest.properties"
 		   , (tempDir + "/autoconfiguretestcase.properties").c_str()
@@ -91,7 +91,7 @@ public:
 			{ helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"))
 			};
 		std::vector<LogString> names
-			{ LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
+			{ LOG4CXX_STR("autoconfiguretestcase.properties")
 			};
 
 		std::tie(m_status, m_configFile) = DefaultConfigurator::configureFromFile(paths, names);
@@ -100,7 +100,7 @@ public:
 	void tearDown()
 	{
 		LogManager::shutdown();
-		LOG4CXX_DECODE_CHAR(configFile, m_configFile);
+		LOG4CXX_ENCODE_CHAR(configFile, m_configFile);
 		apr_file_remove(configFile.c_str(), m_pool.getAPRPool());
 	}
 
