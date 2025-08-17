@@ -113,10 +113,6 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 * an entry in \c directories and an entry in \c filenames
 		 * when the combination identifies an existing file.
 		 *
-		 * For example, if we want a configuration file named 'myapp-logging.xml' with the default location
-		 * for this file in /etc/myapp, but to have this overriden by a file in /usr/local/etc/myapp, we would
-		 * call this function as follows:
-		 *
 		 \usage
 		 ~~~{.cpp}
 		 std::vector<LogString> directories
@@ -130,7 +126,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 DefaultConfigurator::configureFromFile(directories, filenames);
 		 ~~~
 		 *
-		 * Given a "myapp" executable file name
+		 * For example, given a "myapp" executable file name
 		 * run from the "/opt/com.foo/bin" directory,
 		 * locations are checked in the following order:
 		 *
