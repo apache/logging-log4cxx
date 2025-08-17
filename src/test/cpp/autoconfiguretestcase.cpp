@@ -27,6 +27,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/filesystempath.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <thread>
 #include <apr_file_io.h>
 #include <apr_file_info.h>
@@ -84,7 +85,7 @@ public:
 		   , m_pool.getAPRPool()
 		   );
 		if (APR_SUCCESS != status)
-		   helpers::LogLog::warn(helpers::Exception::makeMessage(lsDestDir + '/' + lsFileName + LOG4CXX_STR(".properties"), status));
+		   helpers::LogLog::warn(helpers::Exception::makeMessage(lsDestDir + LOG4CXX_STR("/") + lsFileName + LOG4CXX_STR(".properties"), status));
 	}
 
 	void setUp()
