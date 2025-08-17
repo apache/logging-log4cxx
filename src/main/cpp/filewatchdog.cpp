@@ -167,4 +167,5 @@ void FileWatchdog::setDelay(long delay1){
 void FileWatchdog::setFile(const File& filename)
 {
     m_priv->file = filename;
+	m_priv->lastModif = 0;
 }
