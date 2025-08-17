@@ -129,13 +129,10 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 * For example, given a "myapp" executable file name
 		 * run from the "/opt/com.foo/bin" directory,
 		 * locations are checked in the following order:
-		 *
-		 * <pre>
-		 * ./myapp.xml
-		 * ./myapp.properties
-		 * /opt/com.foo/bin/myapp.xml
-		 * /opt/com.foo/bin/myapp.properties
-		 * </pre>
+		 * -# "./myapp.xml"
+		 * -# "./myapp.properties"
+		 * -# "/opt/com.foo/bin/myapp.xml"
+		 * -# "/opt/com.foo/bin/myapp.properties"
 		 *
 		 * If a file exists but it is not able to be used to configure Log4cxx,
 		 * the next file in the combinatorial set will be tried until
