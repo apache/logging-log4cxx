@@ -182,7 +182,8 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 std::tuple<ConfigurationStatus,LogString>
 DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories, const std::vector<LogString>& filenames)
 {
-	using ResultType = std::tuple<ConfigurationStatus, LogString>;
+	auto result = std::tuple<ConfigurationStatus, LogString>
+		{ ConfigurationStatus::NotConfigured, LogString() };
 	auto r = LogManager::getLoggerRepository();
 	Pool pool;
 
@@ -198,16 +199,16 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 				LogLog::debug(LOG4CXX_STR("Checking file ") + candidate_str);
 			if (candidate.exists(pool))
 			{
+				std::get<1>(result) = candidate_str;
 				configure(r);
 				if (r->isConfigured())
-					return ResultType{ConfigurationStatus::Configured, candidate_str};
+				{
+					std::get<0>(result) = ConfigurationStatus::Configured;
+					return result;
+				}
 				LogLog::warn(LOG4CXX_STR("Unable to load: ") + candidate_str);
 			}
 		}
 	}
-
-	return ResultType{ConfigurationStatus::NotConfigured, LogString()};
+	return result;
 }
-
-
-
