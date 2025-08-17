@@ -19,12 +19,14 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/filesystempath.h>
 #include <thread>
 #include <apr_file_io.h>
 #include <apr_file_info.h>
@@ -71,29 +73,40 @@ LOGUNIT_CLASS(AutoConfigureTestCase)
 	spi::ConfigurationStatus m_status;
 public:
 
-	void copyPropertyFile()
+	void copyPropertyFile(const LogString& lsDestDir, const LogString& lsFileName)
 	{
-		auto lsTempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
-		LOG4CXX_ENCODE_CHAR(tempDir, lsTempDir);
-		apr_file_copy
+		LOG4CXX_ENCODE_CHAR(destDir, lsDestDir);
+		LOG4CXX_ENCODE_CHAR(fileName, lsFileName);
+		auto status = apr_file_copy
 		   ( "input/autoConfigureTest.properties"
-		   , (tempDir + "/autoconfiguretestcase.properties").c_str()
+		   , (destDir + "/" + fileName + ".properties").c_str()
 		   , APR_FPROT_UREAD | APR_FPROT_UWRITE
 		   , m_pool.getAPRPool()
 		   );
+		if (APR_SUCCESS != status)
+		   helpers::LogLog::warn(helpers::Exception::makeMessage(lsDestDir + '/' + lsFileName + LOG4CXX_STR(".properties"), status));
 	}
 
 	void setUp()
 	{
-		copyPropertyFile();
+#if LOG4CXX_HAS_FILESYSTEM_PATH
+		auto fileName = spi::Configurator::properties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.STEM"));
+#else
+		LogString fileName = LOG4CXX_STR("autoconfiguretestcase");
+#endif
+		auto lsTempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
+		copyPropertyFile(lsTempDir, fileName);
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
 		std::vector<LogString> paths
-			{ helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"))
+			{ lsTempDir
 			};
 		std::vector<LogString> names
+#if LOG4CXX_HAS_FILESYSTEM_PATH
+			{ LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
+#else
 			{ LOG4CXX_STR("autoconfiguretestcase.properties")
+#endif
 			};
-
 		std::tie(m_status, m_configFile) = DefaultConfigurator::configureFromFile(paths, names);
 	}
 
@@ -102,6 +115,8 @@ public:
 		LogManager::shutdown();
 		LOG4CXX_ENCODE_CHAR(configFile, m_configFile);
 		apr_file_remove(configFile.c_str(), m_pool.getAPRPool());
+		// wait 0.2 sec to ensure the file is really gone on Windows
+		apr_sleep(200000);
 	}
 
 	void test1()	
