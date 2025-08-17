@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #include "config.h"
-#include "product_version.h"
+#include "product_version.h" // Provides getVendorFolder() and getProductFolder()
 #include <log4cxx/logmanager.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/basicconfigurator.h>
