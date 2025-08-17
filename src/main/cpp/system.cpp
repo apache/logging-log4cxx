@@ -169,7 +169,7 @@ void System::addProgramFilePathComponents(Properties& props)
 #if LOG4CXX_HAS_FILESYSTEM_PATH
 	// Add the path components to the properties
 	prefix += '.';
-	Path programPath(programFileName);
+	FilesystemPath programPath(programFileName);
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	auto root_name = programPath.root_name().wstring();
 	props.setProperty(prefix + LOG4CXX_STR("ROOT_NAME"), root_name);

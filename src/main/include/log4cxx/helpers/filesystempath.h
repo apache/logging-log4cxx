@@ -22,7 +22,7 @@
 #  if __has_include(<filesystem>)              // Check for a standard version
 #    include <filesystem>
 #    if defined(__cpp_lib_filesystem)          // C++ >= 17
-namespace LOG4CXX_NS { using Path = std::filesystem::path; }
+namespace LOG4CXX_NS { using FilesystemPath = std::filesystem::path; }
 #define LOG4CXX_HAS_FILESYSTEM_PATH 1
 #    endif
 #  else                                        // Not found at all
