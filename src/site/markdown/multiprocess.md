@@ -21,7 +21,7 @@ Logging With Multiple Processes {#multiprocess-logging}
  limitations under the License.
 -->
 
-Log4cxx supports multiple processes logging the same file,
+Log4cxx supports multiple processes logging to the same file,
 providing you do <b>not</b> set the "Append" option
 to "false" (see log4cxx::FileAppender::setOption).
 
@@ -34,7 +34,7 @@ during which the file pointer is moved the end of the file.
 
 To coordinate rollover across multiple applications
 Log4cxx provides the log4cxx::rolling::MultiprocessRollingFileAppender.
-This appender ensure that only one of the Log4cxx using processes
+This appender ensures that only one of the Log4cxx-using processes
 performs the rollover process when the log file
 reaches its size limit.
 
