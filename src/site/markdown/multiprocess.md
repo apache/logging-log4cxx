@@ -21,11 +21,22 @@ Logging With Multiple Processes {#multiprocess-logging}
  limitations under the License.
 -->
 
-If you have multiple applications that all log to the same file, it is often
-desirable that the file that these applications write to will roll over when
-required.  In order for that to happen, Log4cxx provides the
-log4cxx::rolling::MultiprocessRollingFileAppender that will check the size of the file when
-writing to the file and roll it over appropriately.
+Log4cxx supports multiple processes logging the same file,
+providing you do <b>not</b> set the "Append" option
+to "false" (see log4cxx::FileAppender::setOption).
+
+When the "Append" option is "true",
+each logging event (or buffered set of logging events)
+will be separate and contiguous in the log file.
+This is achieved by using "apr_file_write" which
+implements an OS dependent lock/write/unlock sequence
+during which the file pointer is moved the end of the file.
+
+To coordinate rollover across multiple applications
+Log4cxx provides the log4cxx::rolling::MultiprocessRollingFileAppender.
+This appender ensure that only one of the Log4cxx using processes
+performs the rollover process when the log file
+reaches its size limit.
 
 Coordinating with other processes adds significant overhead compared to log4cxx::rolling::RollingFileAppender.
 Benchmark measurements show the overhead of this appender is more than 3 and 10 times
