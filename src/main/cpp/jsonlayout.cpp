@@ -141,8 +141,7 @@ void JSONLayout::format(LogString& output,
 		output.append(m_priv->ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, LOG4CXX_STR("timestamp"));
-	output.append(LOG4CXX_STR(": \""));
+	output.append(LOG4CXX_STR("\"timestamp\": \""));
 	m_priv->dateFormat.format(output, event->getTimeStamp(), p);
 	output.append(LOG4CXX_STR("\","));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
@@ -165,8 +164,7 @@ void JSONLayout::format(LogString& output,
 		output.append(m_priv->ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, LOG4CXX_STR("level"));
-	output.append(LOG4CXX_STR(": "));
+	output.append(LOG4CXX_STR("\"level\": "));
 	LogString level;
 	event->getLevel()->toString(level);
 	appendQuotedEscapedString(output, level);
@@ -178,8 +176,7 @@ void JSONLayout::format(LogString& output,
 		output.append(m_priv->ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, LOG4CXX_STR("logger"));
-	output.append(LOG4CXX_STR(": "));
+	output.append(LOG4CXX_STR("\"logger\": "));
 	appendQuotedEscapedString(output, event->getLoggerName());
 	output.append(LOG4CXX_STR(","));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
@@ -189,8 +186,7 @@ void JSONLayout::format(LogString& output,
 		output.append(m_priv->ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, LOG4CXX_STR("message"));
-	output.append(LOG4CXX_STR(": "));
+	output.append(LOG4CXX_STR("\"message\": "));
 	appendQuotedEscapedString(output, event->getMessage());
 
 	appendSerializedMDC(output, event);
