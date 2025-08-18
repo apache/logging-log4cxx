@@ -34,18 +34,33 @@ class LOG4CXX_EXPORT System
 {
 	public:
 
+
 		/**
-		Gets the system property indicated by the specified key.
+		Add to \c props the currently executing program file path
+		and the [std::filesystem::path](https://en.cppreference.com/w/cpp/filesystem/path.html)
+		decomposition of the currently executing program file path, using the variable names:
+		- PROGRAM_FILE_PATH
+		- PROGRAM_FILE_PATH.ROOT_NAME
+		- PROGRAM_FILE_PATH.ROOT_DIRECTORY
+		- PROGRAM_FILE_PATH.ROOT_PATH
+		- PROGRAM_FILE_PATH.RELATIVE_PATH
+		- PROGRAM_FILE_PATH.PARENT_PATH
+		- PROGRAM_FILE_PATH.FILENAME
+		- PROGRAM_FILE_PATH.STEM
+		- PROGRAM_FILE_PATH.EXTENSION
+		*/
+		static void addProgramFilePathComponents(Properties& props);
+
+		/**
+		The value of the system property associated with \c key.
 
 		@param key the name of the system property.
 
-		@return the string value of the system property, or the default value if
-		there is no property with that key.
+		@return the string value of the system property.
 
 		@throws IllegalArgumentException if key is empty.
 		*/
 		static LogString getProperty(const LogString& key);
-
 };
 } // namespace helpers
 } //  namespace log4cxx

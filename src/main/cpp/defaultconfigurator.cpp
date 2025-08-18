@@ -16,46 +16,49 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/defaultconfigurator.h>
+#include <log4cxx/logmanager.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/system.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
+#if !defined(LOG4CXX)
+	#define LOG4CXX 1
+#endif
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::spi;
-using namespace LOG4CXX_NS::helpers;
-
-namespace
-{
-	LogString DefaultConfiguratorPath;
-	int DefaultConfiguratorWatchSeconds = 0;
-}
+using namespace spi;
+using namespace helpers;
 
 void DefaultConfigurator::setConfigurationFileName(const LogString& path)
 {
-	DefaultConfiguratorPath = path;
+	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"), path);
 }
-
 
 void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
 {
-	DefaultConfiguratorWatchSeconds = seconds;
+	Pool p;
+	LogString strSeconds;
+	StringHelper::toString(seconds, p, strSeconds);
+	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"), strSeconds);
 }
 
-static const int MillisecondsPerSecond = 1000;
+ConfigurationStatus DefaultConfigurator::tryConfigure()
+{
+	auto r = LogManager::getLoggerRepository();
+	configure(r);
+	return r->isConfigured() ? ConfigurationStatus::Configured : ConfigurationStatus::NotConfigured;
+}
 
 void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 {
-	repository->setConfigured(true);
-	const LogString configuratorClassName(getConfiguratorClass());
 
-	LogString configurationFileName = DefaultConfiguratorPath;
-	if (configurationFileName.empty())
-		configurationFileName = getConfigurationFileName();
+	LogString configurationFileName = getConfigurationFileName();
 	Pool pool;
 	File configuration;
 
@@ -103,12 +106,11 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 		LoggerRepositoryPtr repo(repository);
 		OptionConverter::selectAndConfigure(
 			configuration,
-			configuratorClassName,
+			getConfiguratorClass(),
 			repo,
-			0 < DefaultConfiguratorWatchSeconds
-				? DefaultConfiguratorWatchSeconds * MillisecondsPerSecond
-				: getConfigurationWatchDelay()
+			getConfigurationWatchDelay()
 			);
+		// TBD: Report a failure
 	}
 	else if (LogLog::isDebugEnabled())
 	{
@@ -129,83 +131,84 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 
 const LogString DefaultConfigurator::getConfiguratorClass()
 {
-
-	// Use automatic configration to configure the default hierarchy
-	const LogString log4jConfiguratorClassName(
-		OptionConverter::getSystemProperty(LOG4CXX_STR("log4j.configuratorClass"), LOG4CXX_STR("")));
-	const LogString configuratorClassName(
-		OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"),
-			log4jConfiguratorClassName));
-	return configuratorClassName;
+	auto result = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"));
+#if LOG4CXX_VERSION_MAJOR <= 1
+	if (result.empty())
+		result = System::getProperty(LOG4CXX_STR("log4j.configuratorClass"));
+#endif
+	return result;
 }
 
 
 const LogString DefaultConfigurator::getConfigurationFileName()
 {
-	static const WideLife<LogString> LOG4CXX_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
-	static const WideLife<LogString> LOG4J_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("log4j.configuration"));
-	const LogString log4jConfigurationFileName(
-		OptionConverter::getSystemProperty(LOG4J_DEFAULT_CONFIGURATION_KEY, LOG4CXX_STR("")));
-	const LogString configurationFileName(
-		OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_KEY,
-			log4jConfigurationFileName));
-	return configurationFileName;
+	auto& props = Configurator::properties();
+	LogString configurationFileName = props.getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
+	bool isEnvVar = false;
+	if (configurationFileName.empty())
+	{
+		configurationFileName = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
+		isEnvVar = true;
+	}
+#if LOG4CXX_VERSION_MAJOR <= 1
+	if (configurationFileName.empty())
+	{
+		configurationFileName = System::getProperty(LOG4CXX_STR("log4j.configuration"));
+		isEnvVar = true;
+	}
+#endif
+#if !LOG4CXX_EXPAND_CONFIG_ENV_VAR
+	if (isEnvVar)
+		return configurationFileName;
+#endif
+	return OptionConverter::substVars(configurationFileName, props);
 }
 
 
 int DefaultConfigurator::getConfigurationWatchDelay()
 {
-	static const WideLife<LogString> LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
-	LogString optionStr = OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY, LogString());
+	LogString optionStr = Configurator::properties().getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
+	if (optionStr.empty())
+		optionStr = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
 	int milliseconds = 0;
 	if (!optionStr.empty())
+	{
+		static const int MillisecondsPerSecond = 1000;
 		milliseconds = StringHelper::toInt(optionStr) * MillisecondsPerSecond;
+	}
 	return milliseconds;
 }
 
-LOG4CXX_NS::spi::ConfigurationStatus DefaultConfigurator::tryLoadFile(const LogString& filename){
-#if LOG4CXX_HAS_DOMCONFIGURATOR
-	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".xml"))){
-		return LOG4CXX_NS::xml::DOMConfigurator::configure(filename);
-	}
-#endif
-	if(helpers::StringHelper::endsWith(filename, LOG4CXX_STR(".properties"))){
-		return LOG4CXX_NS::PropertyConfigurator::configure(filename);
-	}
+std::tuple<ConfigurationStatus,LogString>
+DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories, const std::vector<LogString>& filenames)
+{
+	auto result = std::tuple<ConfigurationStatus, LogString>
+		{ ConfigurationStatus::NotConfigured, LogString() };
+	auto r = LogManager::getLoggerRepository();
+	Pool pool;
 
-	return LOG4CXX_NS::spi::ConfigurationStatus::NotConfigured;
-}
-
-std::tuple<LOG4CXX_NS::spi::ConfigurationStatus,LogString>
-DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories, const std::vector<LogString>& filenames){
-	using ResultType = std::tuple<LOG4CXX_NS::spi::ConfigurationStatus, LogString>;
-	LOG4CXX_NS::helpers::Pool pool;
-
-	for( LogString dir : directories ){
-		for( LogString fname : filenames ){
-			LogString canidate_str = dir + LOG4CXX_STR("/") + fname;
-			File candidate(canidate_str);
+	for (auto& dir : directories )
+	{
+		for (auto& fname : filenames )
+		{
+			setConfigurationFileName(dir + LOG4CXX_STR("/") + fname);
+			auto candidate_str = getConfigurationFileName();
+			File candidate(candidate_str);
 
 			if (LogLog::isDebugEnabled())
-			{
-				LogString debugMsg = LOG4CXX_STR("Checking file ");
-				debugMsg.append(canidate_str);
-				LogLog::debug(debugMsg);
-			}
+				LogLog::debug(LOG4CXX_STR("Checking file ") + candidate_str);
 			if (candidate.exists(pool))
 			{
-				LOG4CXX_NS::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
-				if( configStatus == LOG4CXX_NS::spi::ConfigurationStatus::Configured ){
-					return ResultType{configStatus, canidate_str};
+				std::get<1>(result) = candidate_str;
+				configure(r);
+				if (r->isConfigured())
+				{
+					std::get<0>(result) = ConfigurationStatus::Configured;
+					return result;
 				}
-				if (LogLog::isDebugEnabled())
-					LogLog::debug(LOG4CXX_STR("Unable to load file: trying next"));
+				LogLog::warn(LOG4CXX_STR("Unable to load: ") + candidate_str);
 			}
 		}
 	}
-
-	return ResultType{LOG4CXX_NS::spi::ConfigurationStatus::NotConfigured, LogString()};
+	return result;
 }
-
-
-

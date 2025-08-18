@@ -25,6 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
+| [1.6.0](#rel_1_6_0) | 2025-XX-XX | Maintenance release  |
 | [1.5.0](#rel_1_5_0) | 2025-08-03 | Maintenance release  |
 | [1.4.0](#rel_1_4_0) | 2025-03-01 | Maintenance release  |
 | [1.3.1](#rel_1_3_1) | 2024-11-30 | Bugfix release       |
@@ -48,6 +49,21 @@ Change Log {#changelog}
 | [0.1.1](#rel_1_1)   | 2003-07-09 |                      |
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
+
+## Release 1.6.0 - 2025-XX-XX {#rel_1_6_0}
+
+Release 1.6.0 includes the following new features:
+
+Release 1.6.0 includes the following new features:
+
+* Configuration ${varname} values can be set programatically prior to loading a configuration file (see \ref com/foo/config4.cpp)
+   \[[#520](https://github.com/apache/logging-log4cxx/pull/520)\]
+* The current executable's file name and its components are available for use in a configuration file
+and the LOG4CXX_CONFIGURATION environment variable (see log4cxx::spi::Configurator::properties).
+   \[[#520](https://github.com/apache/logging-log4cxx/pull/520)\]
+
+The following issues have been addressed:
+
 
 ## Release 1.5.0 - 2025-08-03 {#rel_1_5_0}
 
