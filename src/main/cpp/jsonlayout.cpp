@@ -48,8 +48,8 @@ struct JSONLayout::JSONLayoutPrivate
 	bool prettyPrint; //= false
 
 	pattern::CachedDateFormat dateFormat
-		{ std::make_shared<helpers::SimpleDateFormat>("yyyy-MM-dd HH:mm:ss,SSS")
-		, pattern::CachedDateFormat::getMaximumCacheValidity("yyyy-MM-dd HH:mm:ss,SSS")
+		{ std::make_shared<helpers::SimpleDateFormat>(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS"))
+		, pattern::CachedDateFormat::getMaximumCacheValidity(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS"))
 		};
 
 	LogString ppIndentL1;
