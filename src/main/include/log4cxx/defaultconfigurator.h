@@ -39,7 +39,16 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		Configure \c repository.
 
 		If the configuration file name has not been provided by a call to setConfigurationFileName(),
-		the environment variables "LOG4CXX_CONFIGURATION" and "log4j.configuration" are examined.
+		the environment variable "LOG4CXX_CONFIGURATION" or "log4j.configuration" value is used,
+		with ${varname} instances using either a system environment variable value (if found)
+		otherwise using the helpers::Properties object
+		provided by spi::Configurator::properties.
+
+		\usage
+		~~~
+		setenv LOG4CXX_CONFIGURATION="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"
+		~~~
+
 		Unless a custom configurator is specified using the
 		"LOG4CXX_CONFIGURATOR_CLASS" or "log4j.configuratorClass"
 		environment variable, the PropertyConfigurator will be used to
@@ -57,53 +66,95 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		or the environment variables "LOG4CXX_CONFIGURATION_WATCH_SECONDS" contains a positive number
 		a background thread is started that will periodically check for a change to the configuration file
 		and apply any configuration changes found.
+
+		Call the spi::LoggerRepository::isConfigured \c repository member function
+		to determine whether a configuration file was found.
 		*/
 		static void configure(spi::LoggerRepositoryPtr repository);
 
 		/**
+		Attempt configuration by calling configure() passing the default repository.
+
+		See configure() for how the configuration file name is determined.
+
+		@return a success indicator.
+		*/
+		static spi::ConfigurationStatus tryConfigure();
+
+		/**
 		Make \c path the configuration file used by configure().
+
+		Any ${varname} instances in the \c path value are expanded
+		using either a system environment variable value (if found)
+		otherwise using the map provided by spi::Configurator::properties.
+
+		\usage
+		~~~{.cpp}
+		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"))
+		~~~
+
 		*/
 		static void setConfigurationFileName(const LogString& path);
 
 		/**
 		Make \c seconds the time a background thread will delay before checking
 		for a change to the configuration file used by configure().
+
+		\usage
+		~~~{.cpp}
+		DefaultConfigurator::setConfigurationWatchSeconds(1);
+		~~~
 		*/
 		static void setConfigurationWatchSeconds(int seconds);
 
 		/**
-		 * Configure Log4cxx from a file.  This method will attempt to load the configuration files in the
-		 * directories given.
+		 * Call configure() passing the default repository
+		 * after calling setConfigurationFileName() with a path composed of
+		 * an entry in \c directories and an entry in \c filenames
+		 * when the combination identifies an existing file.
 		 *
-		 * For example, if we want a configuration file named 'myapp-logging.xml' with the default location
-		 * for this file in /etc/myapp, but to have this overriden by a file in /usr/local/etc/myapp, we would
-		 * call this function as follows:
+		 \usage
+		 ~~~{.cpp}
+		 std::vector<LogString> directories
+		     { LOG4CXX_STR(".")
+		     , LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}")
+		     };
+		 std::vector<LogString> filenames
+		     { LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.xml")
+		     , LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
+		     , LOG4CXX_STR("log4cxx.xml")
+		     };
+		 DefaultConfigurator::configureFromFile(directories, filenames);
+		 ~~~
 		 *
-		 * configureFromFile( { "/usr/local/etc/myapp", "/etc/myapp" }, { "myapp-logging.xml" );
+		 * Using the above example and an executable file named "myapp"
+		 * installed in the  directory "/opt/com.foo/bin",
+		 * locations are checked in the following order:
+		 * -# "./myapp.xml"
+		 * -# "./myapp.properties"
+		 * -# "./log4cxx.xml"
+		 * -# "/opt/com.foo/bin/myapp.xml"
+		 * -# "/opt/com.foo/bin/myapp.properties"
+		 * -# "/opt/com.foo/bin/log4cxx.xml"
 		 *
-		 * This will then search for files in the following order:
-		 *
-		 * <pre>
-		 * /usr/local/etc/myapp/myapp-logging.xml
-		 * /etc/myapp/myapp-logging.xml
-		 * </pre>
-		 *
-		 * The status of configuring Log4cxx as well as the eventual filename used is returned.  If a file exists
-		 * but it is not able to be used to configure Log4cxx, the next file in the list will be tried until
-		 * a valid configuration file is found or the end of the list is reached.
+		 * If a file exists but it is not able to be used to configure Log4cxx,
+		 * the next file in the combinatorial set will be tried until
+		 * a valid configuration file is found or
+		 * all values in the combinatorial set have been tried.
 		 *
 		 * @param directories The directories to look in.
 		 * @param filenames The names of the files to look for
-		 * @return The status of the configuration, and the filename loaded(if a file was found).
+		 * @return a success indicator and the configuration file path that was used (if found).
 		 */
-		static std::tuple<LOG4CXX_NS::spi::ConfigurationStatus,LogString> configureFromFile(const std::vector<LogString>& directories,
-																						 const std::vector<LogString>& filenames);
+		static std::tuple<spi::ConfigurationStatus,LogString> configureFromFile
+			( const std::vector<LogString>& directories
+			, const std::vector<LogString>& filenames
+			);
 
 	private:
 		static const LogString getConfigurationFileName();
 		static const LogString getConfiguratorClass();
 		static int getConfigurationWatchDelay();
-		static LOG4CXX_NS::spi::ConfigurationStatus tryLoadFile(const LogString& filename);
 
 };	 // class DefaultConfigurator
 }  // namespace log4cxx
