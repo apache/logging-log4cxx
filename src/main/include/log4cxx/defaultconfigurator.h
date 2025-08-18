@@ -122,17 +122,20 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		 std::vector<LogString> filenames
 		     { LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.xml")
 		     , LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
+		     , LOG4CXX_STR("log4cxx.xml")
 		     };
 		 DefaultConfigurator::configureFromFile(directories, filenames);
 		 ~~~
 		 *
-		 * For example, given a "myapp" executable file name
-		 * run from the "/opt/com.foo/bin" directory,
+		 * Using the above example and an executable file named "myapp"
+		 * installed in the  directory "/opt/com.foo/bin",
 		 * locations are checked in the following order:
 		 * -# "./myapp.xml"
 		 * -# "./myapp.properties"
+		 * -# "./log4cxx.xml"
 		 * -# "/opt/com.foo/bin/myapp.xml"
 		 * -# "/opt/com.foo/bin/myapp.properties"
+		 * -# "/opt/com.foo/bin/log4cxx.xml"
 		 *
 		 * If a file exists but it is not able to be used to configure Log4cxx,
 		 * the next file in the combinatorial set will be tried until
