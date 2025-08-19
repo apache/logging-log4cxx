@@ -1,11 +1,13 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/patternlayout.h>
+#include <log4cxx/jsonlayout.h>
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/net/smtpappender.h>
+#include <log4cxx/net/xmlsocketappender.h>
 #include <log4cxx/fileappender.h>
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 #include <log4cxx/rolling/multiprocessrollingfileappender.h>
@@ -21,6 +23,8 @@
 #include <thread>
 #include <cstdlib>
 #include <iomanip>
+
+#define LOCALHOST_HAS_FLUENT_BIT_RUNNING_ON_PORT_5170 0
 
 using namespace log4cxx;
 
@@ -69,6 +73,37 @@ public:
 	}
 };
 
+class BenchmarkJSONFileAppender : public FileAppender
+{
+public:
+	BenchmarkJSONFileAppender()
+	{
+		setLayout(std::make_shared<JSONLayout>());
+		auto tempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
+		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("benchmark.json"));
+		setAppend(false);
+		setBufferedIO(true);
+		helpers::Pool p;
+		activateOptions(p);
+	}
+};
+
+#if LOCALHOST_HAS_FLUENT_BIT_RUNNING_ON_PORT_5170
+class BenchmarkFluentbitAppender : public net::XMLSocketAppender
+{
+public:
+	BenchmarkFluentbitAppender()
+	{
+		setName(LOG4CXX_STR("FluentbitAppender"));
+		setLayout(std::make_shared<JSONLayout>());
+		setRemoteHost(LOG4CXX_STR("localhost"));
+		setPort(5170);
+		helpers::Pool p;
+		activateOptions(p);
+	}
+};
+#endif
+
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 class BenchmarkMultiprocessFileAppender : public rolling::MultiprocessRollingFileAppender
 {
@@ -100,6 +135,10 @@ public: // Attributes
 	LoggerPtr m_logger = getLogger();
 	LoggerPtr m_asyncLogger = getAsyncLogger();
 	LoggerPtr m_fileLogger = getFileLogger();
+	LoggerPtr m_JSONLogger = getJSONFileLogger();
+#if LOCALHOST_HAS_FLUENT_BIT_RUNNING_ON_PORT_5170
+	LoggerPtr m_socketLogger = getFluentbitLogger();
+#endif
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 	LoggerPtr m_multiprocessLogger = getMultiprocessLogger();
 #endif
@@ -201,6 +240,46 @@ public: // Class methods
 		}
 		return result;
 	}
+
+	static LoggerPtr getJSONFileLogger()
+	{
+		LogString name = LOG4CXX_STR("benchmark.fixture.JSONfile");
+		auto r = LogManager::getLoggerRepository();
+		LoggerPtr result;
+		if (!(result = r->exists(name)))
+		{
+			result = r->getLogger(name);
+			result->setAdditivity(false);
+			result->setLevel(Level::getInfo());
+			auto writer = std::make_shared<BenchmarkJSONFileAppender>();
+			writer->setName(LOG4CXX_STR("JSONFileAppender"));
+			writer->setBufferedIO(true);
+			helpers::Pool p;
+			writer->activateOptions(p);
+			result->addAppender(writer);
+		}
+		return result;
+	}
+
+#if LOCALHOST_HAS_FLUENT_BIT_RUNNING_ON_PORT_5170
+	static LoggerPtr getFluentbitLogger()
+	{
+		LogString name = LOG4CXX_STR("benchmark.fixture.Fluentbit");
+		auto r = LogManager::getLoggerRepository();
+		LoggerPtr result;
+		if (!(result = r->exists(name)))
+		{
+			result = r->getLogger(name);
+			result->setAdditivity(false);
+			result->setLevel(Level::getInfo());
+			auto writer = std::make_shared<BenchmarkFluentbitAppender>();
+			helpers::Pool p;
+			writer->activateOptions(p);
+			result->addAppender(writer);
+		}
+		return result;
+	}
+#endif
 
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 	static LoggerPtr getMultiprocessLogger()
@@ -356,6 +435,34 @@ BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBuffer)(benchmark::S
 }
 BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBuffer)->Name("Logging int+float using MessageBuffer, pattern: %d %m%n");
 BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBuffer)->Name("Logging int+float using MessageBuffer, pattern: %d %m%n")->Threads(benchmarker::threadCount());
+
+BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBufferJSON)(benchmark::State& state)
+{
+	int x = 0;
+	for (auto _ : state)
+	{
+		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		LOG4CXX_INFO( m_JSONLogger, "Hello: message number " << ++x
+			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBufferJSON)->Name("Logging int+float using MessageBuffer, JSON");
+BENCHMARK_REGISTER_F(benchmarker, fileIntPlusFloatValueMessageBufferJSON)->Name("Logging int+float using MessageBuffer, JSON")->Threads(benchmarker::threadCount());
+
+#if LOCALHOST_HAS_FLUENT_BIT_RUNNING_ON_PORT_5170
+BENCHMARK_DEFINE_F(benchmarker, socketIntPlusFloatValueMessageBufferJSON)(benchmark::State& state)
+{
+	int x = 0;
+	for (auto _ : state)
+	{
+		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+		LOG4CXX_INFO( m_socketLogger, "Hello: message number " << ++x
+			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, socketIntPlusFloatValueMessageBufferJSON)->Name("Sending int+float using MessageBuffer, JSON");
+BENCHMARK_REGISTER_F(benchmarker, socketIntPlusFloatValueMessageBufferJSON)->Name("Sending int+float using MessageBuffer, JSON")->Threads(benchmarker::threadCount());
+#endif
 
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 BENCHMARK_DEFINE_F(benchmarker, multiprocessFileIntPlusFloatValueMessageBuffer)(benchmark::State& state)

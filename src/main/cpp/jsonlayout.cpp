@@ -20,7 +20,8 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/optionconverter.h>
-#include <log4cxx/helpers/iso8601dateformat.h>
+#include <log4cxx/helpers/cacheddateformat.h>
+#include <log4cxx/helpers/simpledateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 
@@ -37,7 +38,6 @@ struct JSONLayout::JSONLayoutPrivate
 	JSONLayoutPrivate() :
 		locationInfo(false),
 		prettyPrint(false),
-		dateFormat(),
 		ppIndentL1(LOG4CXX_STR("  ")),
 		ppIndentL2(LOG4CXX_STR("    ")),
 		expectedPatternLength(100),
@@ -47,7 +47,10 @@ struct JSONLayout::JSONLayoutPrivate
 	bool locationInfo; //= false
 	bool prettyPrint; //= false
 
-	helpers::ISO8601DateFormat dateFormat;
+	pattern::CachedDateFormat dateFormat
+		{ std::make_shared<helpers::SimpleDateFormat>(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS"))
+		, pattern::CachedDateFormat::getMaximumCacheValidity(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS"))
+		};
 
 	LogString ppIndentL1;
 	LogString ppIndentL2;
@@ -138,12 +141,9 @@ void JSONLayout::format(LogString& output,
 		output.append(m_priv->ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, LOG4CXX_STR("timestamp"));
-	output.append(LOG4CXX_STR(": "));
-	LogString timestamp;
-	m_priv->dateFormat.format(timestamp, event->getTimeStamp(), p);
-	appendQuotedEscapedString(output, timestamp);
-	output.append(LOG4CXX_STR(","));
+	output.append(LOG4CXX_STR("\"timestamp\": \""));
+	m_priv->dateFormat.format(output, event->getTimeStamp(), p);
+	output.append(LOG4CXX_STR("\","));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (m_priv->threadInfo)
@@ -164,8 +164,7 @@ void JSONLayout::format(LogString& output,
 		output.append(m_priv->ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, LOG4CXX_STR("level"));
-	output.append(LOG4CXX_STR(": "));
+	output.append(LOG4CXX_STR("\"level\": "));
 	LogString level;
 	event->getLevel()->toString(level);
 	appendQuotedEscapedString(output, level);
@@ -177,8 +176,7 @@ void JSONLayout::format(LogString& output,
 		output.append(m_priv->ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, LOG4CXX_STR("logger"));
-	output.append(LOG4CXX_STR(": "));
+	output.append(LOG4CXX_STR("\"logger\": "));
 	appendQuotedEscapedString(output, event->getLoggerName());
 	output.append(LOG4CXX_STR(","));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
@@ -188,8 +186,7 @@ void JSONLayout::format(LogString& output,
 		output.append(m_priv->ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, LOG4CXX_STR("message"));
-	output.append(LOG4CXX_STR(": "));
+	output.append(LOG4CXX_STR("\"message\": "));
 	appendQuotedEscapedString(output, event->getMessage());
 
 	appendSerializedMDC(output, event);
