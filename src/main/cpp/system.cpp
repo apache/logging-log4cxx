@@ -161,7 +161,7 @@ void System::addProgramFilePathComponents(Properties& props)
 	if ((bufCount = readlink(exeLink.str().c_str(), buf, bufSize)) <= 0)
 	{
 		LOG4CXX_DECODE_CHAR(lsExeLink, exeLink.str());
-		LogLog::error(LOG4CXX_STR("Failed to read ") + lsExeLink);
+		LogLog::warn(LOG4CXX_STR("Failed to read ") + lsExeLink);
 		return;
 	}
 	if (bufSize < bufCount)
