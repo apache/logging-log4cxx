@@ -146,8 +146,15 @@ void System::addProgramFilePathComponents(Properties& props)
 #elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
 	std::ostringstream exeLink;
 	exeLink << "/proc/" << getpid() << "/exe";
-	bufCount = readlink(exeLink.str().c_str(), buf, bufSize);
-	if (0 < bufCount)
+	if ((bufCount = readlink(exeLink.str().c_str(), buf, bufSize)) <= 0)
+	{
+		LOG4CXX_DECODE_CHAR(lsExeLink, exeLink.str());
+		LogLog::error(LOG4CXX_STR("Failed to read ") + lsExeLink);
+		return;
+	}
+	if (bufSize < bufCount)
+		buf[bufSize] = 0;
+	else
 		buf[bufCount] = 0;
 #else
 	LogLog::warn(LOG4CXX_STR("Unable to determine the name of the executable file on this system"));
