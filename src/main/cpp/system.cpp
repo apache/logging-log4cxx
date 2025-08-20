@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <apr_file_io.h>
 #include <apr_user.h>
 #include <apr_env.h>
@@ -138,11 +139,22 @@ void System::addProgramFilePathComponents(Properties& props)
 	char buf[bufSize+1] = {0}, pathSepar = '/';
 	uint32_t bufCount = 0;
 #if defined(_WIN32)
-	GetModuleFileName(NULL, buf, bufSize);
+	if (0 == GetModuleFileName(NULL, buf, bufSize))
+	{
+		Pool p;
+		LogString lsErrorCode;
+		StringHelper::toString((int)GetLastError(), p, lsErrorCode);
+		LogLog::warn(LOG4CXX_STR("GetModuleFileName error ") + lsErrorCode);
+		return;
+	}
 	pathSepar = '\\';
 #elif defined(__APPLE__)
 	bufCount = bufSize;
-	_NSGetExecutablePath(buf, &bufCount);
+	if (0 != _NSGetExecutablePath(buf, &bufCount))
+	{
+		LogLog::warn(LOG4CXX_STR("_NSGetExecutablePath failed"));
+		return;
+	}
 #elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
 	std::ostringstream exeLink;
 	exeLink << "/proc/" << getpid() << "/exe";
