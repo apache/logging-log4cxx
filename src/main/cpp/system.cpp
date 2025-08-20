@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <apr_file_io.h>
 #include <apr_user.h>
 #include <apr_env.h>
@@ -136,18 +137,36 @@ void System::addProgramFilePathComponents(Properties& props)
 	// Find the executable file name
 	static const int bufSize = 4096;
 	char buf[bufSize+1] = {0}, pathSepar = '/';
-	uint32_t bufCount = 0;
 #if defined(_WIN32)
-	GetModuleFileName(NULL, buf, bufSize);
+	if (0 == GetModuleFileName(NULL, buf, bufSize))
+	{
+		Pool p;
+		LogString lsErrorCode;
+		StringHelper::toString((int)GetLastError(), p, lsErrorCode);
+		LogLog::warn(LOG4CXX_STR("GetModuleFileName error ") + lsErrorCode);
+		return;
+	}
 	pathSepar = '\\';
 #elif defined(__APPLE__)
-	bufCount = bufSize;
-	_NSGetExecutablePath(buf, &bufCount);
+	uint32_t bufCount = bufSize;
+	if (0 != _NSGetExecutablePath(buf, &bufCount))
+	{
+		LogLog::warn(LOG4CXX_STR("_NSGetExecutablePath failed"));
+		return;
+	}
 #elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
+	int bufCount = 0;
 	std::ostringstream exeLink;
 	exeLink << "/proc/" << getpid() << "/exe";
-	bufCount = readlink(exeLink.str().c_str(), buf, bufSize);
-	if (0 < bufCount)
+	if ((bufCount = readlink(exeLink.str().c_str(), buf, bufSize)) <= 0)
+	{
+		LOG4CXX_DECODE_CHAR(lsExeLink, exeLink.str());
+		LogLog::warn(LOG4CXX_STR("Failed to read ") + lsExeLink);
+		return;
+	}
+	if (bufSize < bufCount)
+		buf[bufSize] = 0;
+	else
 		buf[bufCount] = 0;
 #else
 	LogLog::warn(LOG4CXX_STR("Unable to determine the name of the executable file on this system"));
