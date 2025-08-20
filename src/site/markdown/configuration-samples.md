@@ -54,7 +54,7 @@ log4j.rootCategory=INFO, A1
 log4j.appender.A1=org.apache.log4j.RollingFileAppender
 log4j.appender.A1.MaxFileSize=5MB
 log4j.appender.A1.MaxBackupIndex=12
-log4j.appender.A1.File=${TEMP}/URControlTests.log
+log4j.appender.A1.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/URControlTests.log
 log4j.appender.A1.Append=true
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %.30c - %m%n
@@ -64,7 +64,7 @@ log4j.appender.console.layout=org.apache.log4j.PatternLayout
 log4j.appender.console.layout.ConversionPattern=%.30c - %m%n
 
 log4j.appender.csvData=org.apache.log4j.FileAppender
-log4j.appender.csvData.File=${TEMP}/MessageData.csvData
+log4j.appender.csvData.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/MessageData.csv
 log4j.appender.csvData.Append=false
 log4j.appender.csvData.layout=org.apache.log4j.PatternLayout
 log4j.appender.csvData.layout.ConversionPattern=%m,%d{yyyy-MM-dd,HH:mm,ss.SSS}%n
