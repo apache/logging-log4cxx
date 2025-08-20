@@ -137,7 +137,6 @@ void System::addProgramFilePathComponents(Properties& props)
 	// Find the executable file name
 	static const int bufSize = 4096;
 	char buf[bufSize+1] = {0}, pathSepar = '/';
-	int bufCount = 0;
 #if defined(_WIN32)
 	if (0 == GetModuleFileName(NULL, buf, bufSize))
 	{
@@ -149,13 +148,14 @@ void System::addProgramFilePathComponents(Properties& props)
 	}
 	pathSepar = '\\';
 #elif defined(__APPLE__)
-	bufCount = bufSize;
+	uint32_t bufCount = bufSize;
 	if (0 != _NSGetExecutablePath(buf, &bufCount))
 	{
 		LogLog::warn(LOG4CXX_STR("_NSGetExecutablePath failed"));
 		return;
 	}
 #elif (defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 500) || (defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L)
+	int bufCount = 0;
 	std::ostringstream exeLink;
 	exeLink << "/proc/" << getpid() << "/exe";
 	if ((bufCount = readlink(exeLink.str().c_str(), buf, bufSize)) <= 0)
