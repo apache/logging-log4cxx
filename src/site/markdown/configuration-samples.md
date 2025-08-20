@@ -40,12 +40,57 @@ of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
 
 To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
-A full example can be seen in the \ref com/foo/config3.cpp file.
+A full example can be seen in the \ref com/foo/config4.cpp file.
+
+# Properties Files {#properties}
+
+Log4cxx may be configured using a Java properties (key=value) type file.
+
+The following is an example of a properties file.
+~~~
+# Uncomment a line to enable debugging for a category
+log4j.rootCategory=INFO, A1
+
+log4j.appender.A1=org.apache.log4j.RollingFileAppender
+log4j.appender.A1.MaxFileSize=5MB
+log4j.appender.A1.MaxBackupIndex=12
+log4j.appender.A1.File=${TEMP}/URControlTests.log
+log4j.appender.A1.Append=true
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %.30c - %m%n
+
+log4j.appender.console=org.apache.log4j.ConsoleAppender
+log4j.appender.console.layout=org.apache.log4j.PatternLayout
+log4j.appender.console.layout.ConversionPattern=%.30c - %m%n
+
+log4j.appender.csvData=org.apache.log4j.FileAppender
+log4j.appender.csvData.File=${TEMP}/MessageData.csvData
+log4j.appender.csvData.Append=false
+log4j.appender.csvData.layout=org.apache.log4j.PatternLayout
+log4j.appender.csvData.layout.ConversionPattern=%m,%d{yyyy-MM-dd,HH:mm,ss.SSS}%n
+
+#log4j.logger.csv.URCommunicationPort=DEBUG, csvData
+#log4j.logger.csv.URCommunicationPort.additivity=false
+
+# UnitTests
+#log4j.logger.MockArmTests=DEBUG
+#log4j.logger.RTDEMessageTests=DEBUG
+#log4j.logger.RTDEMessagePortTests=DEBUG
+#log4j.logger.URCommunicationPortTests=DEBUG
+
+# URControl classes
+#log4j.logger.Dashboard=DEBUG
+#log4j.logger.RTDEMessage=DEBUG
+#log4j.logger.RTDEMessagePort=DEBUG
+#log4j.logger.MockArm=DEBUG
+#log4j.logger.MockURController=DEBUG
+#log4j.logger.URCommunicationPort=DEBUG
+~~~
 
 # XML Files {#xmlfiles}
 
-One way of configuring Log4cxx is with XML files.  The following are some examples
-on various ways of using an XML file to configure the logging.
+Another way of configuring Log4cxx is with an XML file.
+The following are some XML configuration examples.
 
 ## XML Example 1 {#xml-example-1}
 
