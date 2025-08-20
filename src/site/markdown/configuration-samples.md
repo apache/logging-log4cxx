@@ -54,7 +54,7 @@ log4j.rootCategory=INFO, A1
 log4j.appender.A1=org.apache.log4j.RollingFileAppender
 log4j.appender.A1.MaxFileSize=5MB
 log4j.appender.A1.MaxBackupIndex=12
-log4j.appender.A1.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/URControlTests.log
+log4j.appender.A1.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log
 log4j.appender.A1.Append=true
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %.30c - %m%n
@@ -139,7 +139,7 @@ With this configuration the "example.log" file will be created in our working di
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="example.log" />
+    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
     </layout>
@@ -194,7 +194,7 @@ The "example.log" file will be created in our temporary directory.
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="${TMP}/example.log" />
+    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
     </layout>
