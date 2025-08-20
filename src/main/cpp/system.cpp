@@ -137,7 +137,7 @@ void System::addProgramFilePathComponents(Properties& props)
 	// Find the executable file name
 	static const int bufSize = 4096;
 	char buf[bufSize+1] = {0}, pathSepar = '/';
-	uint32_t bufCount = 0;
+	int bufCount = 0;
 #if defined(_WIN32)
 	if (0 == GetModuleFileName(NULL, buf, bufSize))
 	{
