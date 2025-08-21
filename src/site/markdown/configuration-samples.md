@@ -67,7 +67,8 @@ The variable names are [documented here](@ref log4cxx.spi.Configurator.propertie
 
 Log4cxx may be configured using a Java properties (key=value) type file.
 
-The following is an example of a Log4cxx 1.6 properties file.
+The following Log4cxx 1.6 properties file uses
+the variables added in the \ref com/foo/config4.cpp example.
 ~~~
 # Uncomment a line to enable debugging for a category
 log4j.rootCategory=INFO, A1
@@ -146,6 +147,7 @@ Hello there!
 ## XML Example 2 {#xml-example-2}
 
 This example sends data to both stdout, as well as to a file.
+
 With this configuration the "example.log" file will be created in our working directory.
 
 ~~~{.xml}
@@ -160,7 +162,7 @@ With this configuration the "example.log" file will be created in our working di
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log" />
+    <param name="file" value="example.log" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
     </layout>
@@ -201,7 +203,11 @@ Assume that our loggers are in our code as such:
 For this configuration, we have set any logger that is at the `com` level or below
 to be debug.  However, we have also set the logger `com.example` to have a more
 verbose `trace` level to see more information from that particular logger.
-The "example.log" file will be created in our temporary directory.
+The log file will be created in a program data directory
+where the path uses the program vendor and product name.
+
+The following Log4cxx 1.6 properties file uses
+the variables added in the \ref com/foo/config4.cpp example.
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
