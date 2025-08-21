@@ -310,6 +310,11 @@ the only messages that we saw were the ones with "specific" in them.
 
 \example auto-configured.cpp
 This is an example of logging in static initialization code and
-using the current module name to select the Log4cxx configuration file.
-Log4cxx is configured during the call to <code>com::foo::getLogger()</code>
-which is implemented in the \ref com/foo/config4.cpp file.
+using the current module name (auto-configured) to select the Log4cxx configuration file.
+In this example Log4cxx is configured by loading \ref auto-configured.xml.
+The function <code>com::foo::getLogger()</code>, which is called during initialization,
+is implemented in the \ref com/foo/config4.cpp file.
+
+
+
+\example auto-configured.xml
