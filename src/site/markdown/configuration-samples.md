@@ -116,9 +116,9 @@ The following are some XML configuration examples.
 
 ## XML Example 1 {#xml-example-1}
 
-This simple example simply writes messages to stdout.
-If you want to send messages to stderr instead, simply change the 'Target' value
-to `System.err`.
+This simple example writes messages to stdout.
+If you want to send messages to stderr instead,
+change the 'Target' value to `System.err`.
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
