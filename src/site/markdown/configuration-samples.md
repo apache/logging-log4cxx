@@ -42,11 +42,32 @@ To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
 A full example can be seen in the \ref com/foo/config4.cpp file.
 
+# Runtime Property Values {#runtime-property-values}
+
+The value of an enviroment variable can be used in a property value.
+Instances of the form <b>${VarName}</b> will be replaced
+with the value of the environment variable <b>VarName</b>.
+
+As of version 1.6, Log4cxx allows you to define configuration variables programmatically.
+Extra key value pairs may be added prior to loading a configuration file using code such as:
+~~~{.cpp}
+auto& props = log4cxx::spi::Configurator::properties();
+props.setProperty(LOG4CXX_STR("VarName"), LOG4CXX_STR("my-varname-value"));
+~~~
+
+Also available in Log4cxx 1.6 are variables that hold the currently executing program file path
+and the [std::filesystem::path](https://en.cppreference.com/w/cpp/filesystem/path.html)
+decomposition of the currently executing program file path.
+These allow you to specify a log file location
+relative to the executable location,
+not just the current working directory.
+The variable names are [documented here](@ref log4cxx.spi.Configurator.properties).
+
 # Properties Files {#properties}
 
 Log4cxx may be configured using a Java properties (key=value) type file.
 
-The following is an example of a properties file.
+The following is an example of a Log4cxx 1.6 properties file.
 ~~~
 # Uncomment a line to enable debugging for a category
 log4j.rootCategory=INFO, A1

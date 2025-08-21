@@ -494,10 +494,10 @@ Logger::getLogger("MyLogger")->setAdditivity(false);</pre>
 <pre>log4j.logger.MyLogger=debug
 log4j.logger.MyLogger.additivity=false</pre>
 - in [an XML configuration file] using
-<pre><logger name="MyLogger" >
-   <priority value="debug"/>
-   <additivity value="false"/>
-</logger></pre>
+<pre>\<logger name="MyLogger" >
+   \<priority value="debug"/>
+   \<additivity value="false"/>
+\</logger></pre>
 
 The rules governing appender additivity are summarized below.
 
