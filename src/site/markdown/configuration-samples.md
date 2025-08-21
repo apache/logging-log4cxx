@@ -64,6 +64,9 @@ relative to the executable location,
 not just the current working directory.
 The variable names are [documented here](@ref log4cxx.spi.Configurator.properties).
 
+To check the corrent values are used when your configuration file is loaded,
+use [Log4cxx internal debugging].
+
 # Properties Files {#properties}
 
 Log4cxx may be configured using a Java properties (key=value) type file.
@@ -108,6 +111,9 @@ log4j.appender.csvData.layout.ConversionPattern=%m,%d{yyyy-MM-dd,HH:mm,ss.SSS}%n
 #log4j.logger.MockArm=DEBUG
 #log4j.logger.MockURController=DEBUG
 #log4j.logger.URCommunicationPort=DEBUG
+
+# Log4cxx internal debugging
+#log4j.debug=true
 ~~~
 
 # XML Files {#xmlfiles}
@@ -212,6 +218,7 @@ the variables added in the \ref com/foo/config4.cpp example.
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true" -->
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
@@ -316,6 +323,7 @@ In this example Log4cxx is configured by loading \ref auto-configured.xml.
 The function <code>com::foo::getLogger()</code>, which is called during initialization,
 is implemented in the \ref com/foo/config4.cpp file.
 
-
-
 \example auto-configured.xml
+This is the configuration file used by the \ref auto-configured.cpp example.
+
+[Log4cxx internal debugging]:internal-debugging.html#internal-debugging
