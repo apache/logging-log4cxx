@@ -67,7 +67,7 @@ The variable names are [documented here](@ref log4cxx.spi.Configurator.propertie
 
 Log4cxx may be configured using a Java properties (key=value) type file.
 
-The following Log4cxx 1.6 properties file uses
+The following Log4cxx 1.6 configuration file uses
 the variables added in the \ref com/foo/config4.cpp example.
 ~~~
 # Uncomment a line to enable debugging for a category
@@ -206,7 +206,7 @@ verbose `trace` level to see more information from that particular logger.
 The log file will be created in a program data directory
 where the path uses the program vendor and product name.
 
-The following Log4cxx 1.6 properties file uses
+The following Log4cxx 1.6 configuration file uses
 the variables added in the \ref com/foo/config4.cpp example.
 
 ~~~{.xml}
