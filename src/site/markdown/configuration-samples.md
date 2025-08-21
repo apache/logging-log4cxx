@@ -47,6 +47,7 @@ A full example can be seen in the \ref com/foo/config4.cpp file.
 The value of an enviroment variable can be used in a property value.
 Instances of the form <b>${VarName}</b> will be replaced
 with the value of the environment variable <b>VarName</b>.
+A warning message is output to stderr if the closing brace is absent.
 
 As of version 1.6, Log4cxx allows you to define configuration variables programmatically.
 Extra key value pairs may be added prior to loading a configuration file using code such as:

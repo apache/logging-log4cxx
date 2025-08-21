@@ -161,7 +161,15 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 	if (isEnvVar)
 		return configurationFileName;
 #endif
-	return OptionConverter::substVars(configurationFileName, props);
+	try
+	{
+		return OptionConverter::substVars(configurationFileName, props);
+	}
+	catch (IllegalArgumentException& e)
+	{
+		LogLog::warn(LOG4CXX_STR("Could not perform variable substitution."), e);
+		return configurationFileName;
+	}
 }
 
 
