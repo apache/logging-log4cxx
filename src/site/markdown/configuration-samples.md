@@ -71,9 +71,34 @@ use [Log4cxx internal debugging].
 
 Log4cxx may be configured using a Java properties (key=value) type file.
 
-The following Log4cxx 1.6 configuration file uses
-the variables added in the \ref com/foo/config4.cpp example.
+## Properties Example 1 {#properties-example-1}
+
+This simple example writes messages to stdout.
+If you want to send messages to stderr instead,
+change the 'Target' value to `System.err`.
+
+~~~{.properties}
+# Set root logger level to DEBUG and its only appender to A1.
+log4j.rootLogger=DEBUG, A1
+
+# A1 is set to be a ConsoleAppender.
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+log4j.appender.A1.Target=System.out
+
+# The color of the message text shows the logging level.
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%.30c - %Y%m%y%n
 ~~~
+
+## Properties Example 2 {#properties-example-2}
+
+The following Log4cxx 1.6 configuration file uses
+the variables added in the \ref com/foo/config4.cpp example
+to store a log file per executable in a product related logs directory:
+- Windows, "C:\ProgramData\CompanyName\ProductName\Logs"
+- Non-Windows, "/var/local/companyName/productName/Logs"
+
+~~~{.properties}
 # Uncomment a line to enable debugging for a category
 log4j.rootCategory=INFO, A1
 
@@ -87,7 +112,7 @@ log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p
 
 log4j.appender.console=org.apache.log4j.ConsoleAppender
 log4j.appender.console.layout=org.apache.log4j.PatternLayout
-log4j.appender.console.layout.ConversionPattern=%.30c - %m%n
+log4j.appender.console.layout.ConversionPattern=%.30c - %Y%m%y%n
 
 log4j.appender.csvData=org.apache.log4j.FileAppender
 log4j.appender.csvData.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/MessageData.csv
@@ -126,7 +151,7 @@ The following are some XML configuration examples.
 This simple example writes messages to stdout.
 If you want to send messages to stderr instead,
 change the 'Target' value to `System.err`.
-
+The color of the message text shows the logging level.
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
@@ -134,7 +159,7 @@ change the 'Target' value to `System.err`.
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%m%n"/>
+      <param name="ConversionPattern" value="%.30c - %Y%m%y%n"/>
     </layout>
   </appender>
 
@@ -164,14 +189,14 @@ With this configuration the "example.log" file will be created in our working di
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n"/>
+      <param name="ConversionPattern" value="%c - %Y%m%y%n"/>
     </layout>
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
     <param name="file" value="example.log" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
+      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
     </layout>
   </appender>
 
@@ -214,7 +239,10 @@ The log file will be created in a program data directory
 where the path uses the program vendor and product name.
 
 The following Log4cxx 1.6 configuration file uses
-the variables added in the \ref com/foo/config4.cpp example.
+the variables added in the \ref com/foo/config4.cpp example
+to store a log file per executable in a product related logs directory:
+- Windows, "C:\ProgramData\CompanyName\ProductName\Logs"
+- Non-Windows, "/var/local/companyName/productName/Logs"
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -224,14 +252,14 @@ the variables added in the \ref com/foo/config4.cpp example.
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n"/>
+      <param name="ConversionPattern" value="%c - %Y%m%y%n"/>
     </layout>
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
     <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
+      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
     </layout>
   </appender>
 
@@ -287,7 +315,7 @@ everything else:
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n"/>
+      <param name="ConversionPattern" value="[%c - %Y%m%y%n"/>
     </layout>
 
     <filter class="org.apache.log4j.varia.StringMatchFilter">
