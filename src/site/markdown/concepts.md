@@ -474,16 +474,30 @@ See \ref async-example.xml for a configuration file example.
 
 ## Additivity {#appender-additivity}
 
-Each enabled logging request for a given logger will be forwarded to all the appenders in
-that logger as well as the appenders higher in the hierarchy.
-In other words, appenders are inherited additively from the logger hierarchy.
+The logger used in each enabled logging request sends a logging event
+to the all the appenders attached to it.
+The logger also forwards the event to loggers higher in the hierarchy,
+and therefore the event is also sent to the appenders attached to those loggers.
 For example, if a console appender is added to the root logger, then all
 enabled logging requests will at least print on the console. If in
 addition a file appender is added to a logger, say *C*, then enabled
 logging requests for *C* and *C*'s children will print on a file *and*
-on the console. It is possible to override this default behavior so that
-appender accumulation is no longer additive by
-[setting the additivity flag](@ref log4cxx.Logger.setAdditivity) to `false`.
+on the console.
+
+It is possible to override this default behavior
+by setting the additivity flag to `false`.
+This can be done:
+- programmatically using
+<pre>Logger::getLogger("MyLogger")->setLevel(Level::getDebug());
+Logger::getLogger("MyLogger")->setAdditivity(false);</pre>
+- in [a properties configuration file] using
+<pre>log4j.logger.MyLogger=debug
+log4j.logger.MyLogger.additivity=false</pre>
+- in [an XML configuration file] using
+<pre>\<logger name="MyLogger" >
+   \<priority value="debug"/>
+   \<additivity value="false"/>
+\</logger></pre>
 
 The rules governing appender additivity are summarized below.
 
@@ -620,3 +634,5 @@ This example shows a configuration using the [asynchronous appender](@ref log4cx
 
 [Custom_levels]:faq.html#custom_levels
 [Runtime Configuration]:quick-start.html#configuration
+[an XML configuration file]:configuration-samples.html#xmlfiles
+[a properties configuration file]:configuration-samples.html#properties

@@ -18,13 +18,17 @@ Internal Debugging {#internal-debugging}
 -->
 
 Because Log4cxx is a logging library, we can't use it to output errors from
-the library itself.  There are several ways to activate internal logging:
+the library itself.
 
-1. Configure the library directly by calling the
+There are several ways to activate internal debug logging:
+-# Setting the environment variable <code>LOG4CXX_DEBUG</code> to the value <code>true</code>
+-# If using a properties file, add the line <code>log4j.debug=true</code> to your file
+-# If using an XML file, add the <code>debug="true"</code> attribute in the <code>log4j.configuration</code> element
+-# Configure the library programmatically by calling
 [LogLog::setInternalDebugging](@ref log4cxx.helpers.LogLog.setInternalDebugging)
-method
-2. If using a properties file, set the value `log4j.debug=true` in your configuration file
-3. If using an XML file, set the attribute `internalDebug=true` in the root node
-4. From the environment: `LOG4CXX_DEBUG=true`
 
-All error and warning messages are sent to stderr.
+To disable all messages, including error and warning messages,
+call [LogLog::setQuietMode(true)](@ref log4cxx.helpers.LogLog.setQuietMode).
+
+All Log4cxx internal logging messages are sent to stderr,
+with each line prefixed by <code>log4cxx:</code>.

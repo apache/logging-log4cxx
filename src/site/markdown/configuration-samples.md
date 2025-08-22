@@ -40,19 +40,118 @@ of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
 
 To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
-A full example can be seen in the \ref com/foo/config3.cpp file.
+A full example can be seen in the \ref com/foo/config4.cpp file.
+
+# Runtime Property Values {#runtime-property-values}
+
+The value of an enviroment variable can be used in a property value.
+Instances of the form <b>${VarName}</b> will be replaced
+with the value of the environment variable <b>VarName</b>.
+A warning message is output to stderr if the closing brace is absent.
+
+As of version 1.6, Log4cxx allows you to define configuration variables programmatically.
+Extra key value pairs may be added prior to loading a configuration file using code such as:
+~~~{.cpp}
+auto& props = log4cxx::spi::Configurator::properties();
+props.setProperty(LOG4CXX_STR("VarName"), LOG4CXX_STR("my-varname-value"));
+~~~
+
+Also available in Log4cxx 1.6 are variables that hold the currently executing program file path
+and the [std::filesystem::path](https://en.cppreference.com/w/cpp/filesystem/path.html)
+decomposition of the currently executing program file path.
+These allow you to specify a log file location
+relative to the executable location,
+not just the current working directory.
+The variable names are [documented here](@ref log4cxx.spi.Configurator.properties).
+
+To check the corrent values are used when your configuration file is loaded,
+use [Log4cxx internal debugging].
+
+# Properties Files {#properties}
+
+Log4cxx may be configured using a Java properties (key=value) type file.
+
+## Properties Example 1 {#properties-example-1}
+
+This simple example writes messages to stdout.
+If you want to send messages to stderr instead,
+change the 'Target' value to `System.err`.
+
+~~~{.properties}
+# Set root logger level to DEBUG and its only appender to A1.
+log4j.rootLogger=DEBUG, A1
+
+# A1 is set to be a ConsoleAppender.
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+log4j.appender.A1.Target=System.out
+
+# The color of the message text shows the logging level.
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%.30c - %Y%m%y%n
+~~~
+
+## Properties Example 2 {#properties-example-2}
+
+The following Log4cxx 1.6 configuration file uses
+the variables added in the \ref com/foo/config4.cpp example
+to store a log file per executable in a product related logs directory:
+- Windows, "C:\ProgramData\CompanyName\ProductName\Logs"
+- Non-Windows, "/var/local/companyName/productName/Logs"
+
+~~~{.properties}
+# Uncomment a line to enable debugging for a category
+log4j.rootCategory=INFO, A1
+
+log4j.appender.A1=org.apache.log4j.RollingFileAppender
+log4j.appender.A1.MaxFileSize=5MB
+log4j.appender.A1.MaxBackupIndex=12
+log4j.appender.A1.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log
+log4j.appender.A1.Append=true
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %.30c - %m%n
+
+log4j.appender.console=org.apache.log4j.ConsoleAppender
+log4j.appender.console.layout=org.apache.log4j.PatternLayout
+log4j.appender.console.layout.ConversionPattern=%.30c - %Y%m%y%n
+
+log4j.appender.csvData=org.apache.log4j.FileAppender
+log4j.appender.csvData.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/MessageData.csv
+log4j.appender.csvData.Append=false
+log4j.appender.csvData.layout=org.apache.log4j.PatternLayout
+log4j.appender.csvData.layout.ConversionPattern=%m,%d{yyyy-MM-dd,HH:mm,ss.SSS}%n
+
+#log4j.logger.csv.URCommunicationPort=DEBUG, csvData
+#log4j.logger.csv.URCommunicationPort.additivity=false
+
+# UnitTests
+#log4j.logger.MockArmTests=DEBUG
+#log4j.logger.RTDEMessageTests=DEBUG
+#log4j.logger.RTDEMessagePortTests=DEBUG
+#log4j.logger.URCommunicationPortTests=DEBUG
+
+# URControl classes
+#log4j.logger.Dashboard=DEBUG
+#log4j.logger.RTDEMessage=DEBUG
+#log4j.logger.RTDEMessagePort=DEBUG
+#log4j.logger.MockArm=DEBUG
+#log4j.logger.MockURController=DEBUG
+#log4j.logger.URCommunicationPort=DEBUG
+
+# Log4cxx internal debugging
+#log4j.debug=true
+~~~
 
 # XML Files {#xmlfiles}
 
-One way of configuring Log4cxx is with XML files.  The following are some examples
-on various ways of using an XML file to configure the logging.
+Another way of configuring Log4cxx is with an XML file.
+The following are some XML configuration examples.
 
 ## XML Example 1 {#xml-example-1}
 
-This simple example simply writes messages to stdout.
-If you want to send messages to stderr instead, simply change the 'Target' value
-to `System.err`.
-
+This simple example writes messages to stdout.
+If you want to send messages to stderr instead,
+change the 'Target' value to `System.err`.
+The color of the message text shows the logging level.
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
@@ -60,7 +159,7 @@ to `System.err`.
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%m%n"/>
+      <param name="ConversionPattern" value="%.30c - %Y%m%y%n"/>
     </layout>
   </appender>
 
@@ -80,6 +179,7 @@ Hello there!
 ## XML Example 2 {#xml-example-2}
 
 This example sends data to both stdout, as well as to a file.
+
 With this configuration the "example.log" file will be created in our working directory.
 
 ~~~{.xml}
@@ -89,14 +189,14 @@ With this configuration the "example.log" file will be created in our working di
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n"/>
+      <param name="ConversionPattern" value="%c - %Y%m%y%n"/>
     </layout>
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
     <param name="file" value="example.log" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
+      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
     </layout>
   </appender>
 
@@ -135,23 +235,31 @@ Assume that our loggers are in our code as such:
 For this configuration, we have set any logger that is at the `com` level or below
 to be debug.  However, we have also set the logger `com.example` to have a more
 verbose `trace` level to see more information from that particular logger.
-The "example.log" file will be created in our temporary directory.
+The log file will be created in a program data directory
+where the path uses the program vendor and product name.
+
+The following Log4cxx 1.6 configuration file uses
+the variables added in the \ref com/foo/config4.cpp example
+to store a log file per executable in a product related logs directory:
+- Windows, "C:\ProgramData\CompanyName\ProductName\Logs"
+- Non-Windows, "/var/local/companyName/productName/Logs"
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
+<!--log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true" -->
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n"/>
+      <param name="ConversionPattern" value="%c - %Y%m%y%n"/>
     </layout>
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="${TMP}/example.log" />
+    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n" />
+      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
     </layout>
   </appender>
 
@@ -207,7 +315,7 @@ everything else:
   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n"/>
+      <param name="ConversionPattern" value="[%c - %Y%m%y%n"/>
     </layout>
 
     <filter class="org.apache.log4j.varia.StringMatchFilter">
@@ -238,4 +346,12 @@ the only messages that we saw were the ones with "specific" in them.
 
 \example auto-configured.cpp
 This is an example of logging in static initialization code and
-using the current module name to select the Log4cxx configuration file.
+using the current module name (auto-configured) to select the Log4cxx configuration file.
+In this example Log4cxx is configured by loading \ref auto-configured.xml.
+The function <code>com::foo::getLogger()</code>, which is called during initialization,
+is implemented in the \ref com/foo/config4.cpp file.
+
+\example auto-configured.xml
+This is the configuration file used by the \ref auto-configured.cpp example.
+
+[Log4cxx internal debugging]:internal-debugging.html#internal-debugging

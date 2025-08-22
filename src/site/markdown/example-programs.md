@@ -188,6 +188,8 @@ forwarded logging events to a remote Log4cxx server, which would log
 according to local server policy, for example by forwarding the log
 event to a second Log4cxx server.
 
+For more runtime configuration examples, see [Configuration Samples].
+
 \example com/foo/config.h
 This header file is for encapsulating Log4cxx configuration.
 
@@ -199,3 +201,5 @@ This file is an example of how to use the current module name to select the Log4
 
 \example com/foo/config4.cpp
 This file is a simpler example of how to use the current module name to select the Log4cxx configuration file.
+
+[Configuration Samples]:configuration-samples.html
