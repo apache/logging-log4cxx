@@ -49,6 +49,8 @@ the [configure](@ref log4cxx.DefaultConfigurator.configure) method
 of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
 via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
 of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
+Unless the environment variable "LOG4CXX_CONFIGURATION" (or "log4j.configuration") has a value,
+the current directory is examined for a file with extension ".xml" or ".properties" with a base name "log4cxx" or "log4j".
 
 To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
