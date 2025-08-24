@@ -31,7 +31,7 @@ The configuration file parsers,
 just send the key/value pair to an instance of
 the named appender/layout/filter class.
 Refer to the [setOption method documentation](@ref log4cxx::spi::OptionHandler::setOption)
-for the names of the configurable options.
+for configurable option names and supported values.
 Note that a base class may implement some options
 while the concrete class implements others.
 Check the full class hierarchy when looking
