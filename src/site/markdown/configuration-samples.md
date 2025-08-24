@@ -91,7 +91,7 @@ Log4cxx may be configured using a Java properties (key=value) type file.
 
 ### Properties Example 1 {#properties-example-1}
 
-This simple example writes messages to stdout.
+This simple example writes colored messages (a color per logging level) to stdout.
 If you want to send messages to stderr instead,
 change the 'Target' value to `System.err`.
 
@@ -166,7 +166,7 @@ The following are some XML configuration examples.
 
 ### XML Example 1 {#xml-example-1}
 
-This simple example writes messages to stdout.
+This simple example writes colored messages (a color per logging level) to stdout.
 If you want to send messages to stderr instead,
 change the 'Target' value to `System.err`.
 The color of the message text shows the logging level.
