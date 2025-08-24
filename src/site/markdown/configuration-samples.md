@@ -24,9 +24,14 @@ Configuration Files {#configuration-files}
 [TOC]
 
 As Log4cxx was designed to be extendable,
-property names are not constrained by the core library.
+option names are not constrained by the core library.
+The configuration file parsers,
+[DOMConfigurator](@ref log4cxx.xml.DOMConfigurator) and
+[PropertyConfigurator](@ref log4cxx.PropertyConfigurator),
+just send the key/value pair to an instance of
+the named appender/layout/filter class.
 Refer to the [setOption method documentation](@ref log4cxx::spi::OptionHandler::setOption)
-for the names of the configurable properties.
+for the names of the configurable options.
 Note that a base class may implement some options
 while the concrete class implements others.
 Check the full class hierarchy when looking
