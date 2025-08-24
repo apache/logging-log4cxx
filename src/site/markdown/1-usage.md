@@ -25,7 +25,7 @@ See the following pages for usage information:
 
 * @subpage quick-start
 * @subpage concepts
-* @subpage configuration-samples
+* @subpage configuration-files
 * @subpage filters
 * @subpage extending-log4cxx
 * @subpage qt-support

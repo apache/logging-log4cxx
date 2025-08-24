@@ -1,4 +1,4 @@
-Configuration Samples {#configuration-samples}
+Configuration Files {#configuration-files}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -23,7 +23,19 @@ Configuration Samples {#configuration-samples}
 
 [TOC]
 
-The following snippets show various ways of configuring Log4cxx.
+As Log4cxx was designed to be extendable,
+option names are not constrained by the core library.
+The configuration file parsers,
+[DOMConfigurator](@ref log4cxx.xml.DOMConfigurator) and
+[PropertyConfigurator](@ref log4cxx.PropertyConfigurator),
+just send the key/value pair to an instance of
+the named appender/layout/filter class.
+Refer to the [setOption method documentation](@ref log4cxx::spi::OptionHandler::setOption)
+for configurable option names and supported values.
+Note that a base class may implement some options
+while the concrete class implements others.
+Check the full class hierarchy when looking
+for a configuration option.
 
 # Default Initialization Behaviour {#default-initialization}
 
@@ -37,6 +49,8 @@ the [configure](@ref log4cxx.DefaultConfigurator.configure) method
 of [DefaultConfigurator](@ref log4cxx.DefaultConfigurator) is called
 via [ensureIsConfigured](@ref log4cxx.spi.LoggerRepository.ensureIsConfigured) method
 of [LoggerRepository](@ref log4cxx.spi.LoggerRepository).
+Unless the environment variable "LOG4CXX_CONFIGURATION" (or "log4j.configuration") has a value,
+the current directory is examined for a file with extension ".xml" or ".properties" with a base name "log4cxx" or "log4j".
 
 To use automatic configuration with a non-standard file name
 create and use your own wrapper for [getLogger](@ref log4cxx.LogManager.getLogger).
@@ -64,16 +78,20 @@ relative to the executable location,
 not just the current working directory.
 The variable names are [documented here](@ref log4cxx.spi.Configurator.properties).
 
-To check the corrent values are used when your configuration file is loaded,
+To check the correct values are used when your configuration file is loaded,
 use [Log4cxx internal debugging].
 
-# Properties Files {#properties}
+# Configuration Samples {#configuration-samples}
+
+The following snippets show various ways of configuring Log4cxx.
+
+## Properties Files {#properties}
 
 Log4cxx may be configured using a Java properties (key=value) type file.
 
-## Properties Example 1 {#properties-example-1}
+### Properties Example 1 {#properties-example-1}
 
-This simple example writes messages to stdout.
+This simple example writes colored messages (a color per logging level) to stdout.
 If you want to send messages to stderr instead,
 change the 'Target' value to `System.err`.
 
@@ -90,7 +108,7 @@ log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%.30c - %Y%m%y%n
 ~~~
 
-## Properties Example 2 {#properties-example-2}
+### Properties Example 2 {#properties-example-2}
 
 The following Log4cxx 1.6 configuration file uses
 the variables added in the \ref com/foo/config4.cpp example
@@ -141,14 +159,14 @@ log4j.appender.csvData.layout.ConversionPattern=%m,%d{yyyy-MM-dd,HH:mm,ss.SSS}%n
 #log4j.debug=true
 ~~~
 
-# XML Files {#xmlfiles}
+## XML Files {#xmlfiles}
 
 Another way of configuring Log4cxx is with an XML file.
 The following are some XML configuration examples.
 
-## XML Example 1 {#xml-example-1}
+### XML Example 1 {#xml-example-1}
 
-This simple example writes messages to stdout.
+This simple example writes colored messages (a color per logging level) to stdout.
 If you want to send messages to stderr instead,
 change the 'Target' value to `System.err`.
 The color of the message text shows the logging level.
@@ -176,7 +194,7 @@ Sample output:
 Hello there!
 ~~~
 
-## XML Example 2 {#xml-example-2}
+### XML Example 2 {#xml-example-2}
 
 This example sends data to both stdout, as well as to a file.
 
@@ -214,7 +232,7 @@ Sample output:
 [2020-12-24 15:57:35] root INFO  - Hello there!
 ~~~
 
-## XML Example 3 {#xml-example-3}
+### XML Example 3 {#xml-example-3}
 
 This example shows how you can configure logging for a particular category.
 
@@ -289,7 +307,7 @@ Sample output:
 [2020-12-24 16:05:48] com.example TRACE - com.example trace message
 ~~~
 
-## XML Example 4 {#xml-example-4}
+### XML Example 4 {#xml-example-4}
 
 This example shows how to add a filter to an appender that will accept messages
 that match a certain string.  If our loggers are configured as such:

@@ -202,4 +202,4 @@ This file is an example of how to use the current module name to select the Log4
 \example com/foo/config4.cpp
 This file is a simpler example of how to use the current module name to select the Log4cxx configuration file.
 
-[Configuration Samples]:configuration-samples.html
+[Configuration Samples]:configuration-files.html#configuration-samples

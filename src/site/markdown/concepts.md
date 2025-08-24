@@ -634,5 +634,5 @@ This example shows a configuration using the [asynchronous appender](@ref log4cx
 
 [Custom_levels]:faq.html#custom_levels
 [Runtime Configuration]:quick-start.html#configuration
-[an XML configuration file]:configuration-samples.html#xmlfiles
-[a properties configuration file]:configuration-samples.html#properties
+[an XML configuration file]:configuration-files.html#xmlfiles
+[a properties configuration file]:configuration-files.html#properties
