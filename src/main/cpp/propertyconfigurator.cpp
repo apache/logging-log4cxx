@@ -265,14 +265,12 @@ void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
 
 	if (value.empty())
 	{
-		LogLog::debug(LOG4CXX_STR("Could not find root logger information. Is this OK?"));
+		LogLog::debug(LOG4CXX_STR("Neither 'log4j.rootLogger' or 'log4j.rootCategory' found. Is this OK?"));
 	}
 	else
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-
-		static const WideLife<LogString> INTERNAL_ROOT_NAME(LOG4CXX_STR("root"));
-		parseLogger(props, root, effectivePrefix, INTERNAL_ROOT_NAME, value, true);
+		parseLogger(props, root, effectivePrefix, LOG4CXX_STR("root"), value, true);
 	}
 }
 
