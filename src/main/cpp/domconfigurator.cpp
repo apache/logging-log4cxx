@@ -497,7 +497,7 @@ void DOMConfigurator::parseLoggerFactory(
 	else
 	{
 		auto obj = OptionConverter::instantiateByClassName
-			( StringHelper::trim(className,
+			( StringHelper::trim(className)
 			, LoggerFactory::getStaticClass()
 #if LOG4CXX_ABI_VERSION <= 15
 			, std::make_shared<DefaultLoggerFactory>()
