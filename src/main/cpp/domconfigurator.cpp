@@ -209,8 +209,8 @@ AppenderPtr DOMConfigurator::findAppenderByReference(
 
 	if (!appender)
 	{
-		LogLog::error(LOG4CXX_STR("No appender named [") +
-			appenderName + LOG4CXX_STR("] could be found."));
+		LogLog::error(LOG4CXX_STR("No ") + Appender::getStaticClass().getName()
+			+ LOG4CXX_STR(" named [") + appenderName + LOG4CXX_STR("] could be found."));
 	}
 
 	return appender;
@@ -317,21 +317,22 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 					AppenderAttachablePtr aa = LOG4CXX_NS::cast<AppenderAttachable>(appender);
 					if (LogLog::isDebugEnabled())
 					{
-						LogLog::debug(LOG4CXX_STR("Attaching appender named [") +
-							refName + LOG4CXX_STR("] to appender named [") +
-							appender->getName() + LOG4CXX_STR("]"));
+						LogLog::debug(LOG4CXX_STR("Attaching ") + Appender::getStaticClass().getName()
+							+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
+							+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
 					}
 					aa->addAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
 				}
 				else if (refName.empty())
 				{
-					LogLog::error(LOG4CXX_STR("Can't add appender with empty ref attribute"));
+					LogLog::error(LOG4CXX_STR("Can't add ") + Appender::getStaticClass().getName() + LOG4CXX_STR(" with empty ref attribute"));
 				}
 				else
 				{
-					LogLog::error(LOG4CXX_STR("Requesting attachment of appender named [") +
-						refName + LOG4CXX_STR("] to appender named [") + appender->getName() +
-						LOG4CXX_STR("] which does not implement AppenderAttachable."));
+					LogLog::error(LOG4CXX_STR("Requesting attachment of ") + Appender::getStaticClass().getName()
+						+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
+						+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]")
+						+ LOG4CXX_STR(" which does not implement ") + AppenderAttachable::getStaticClass().getName());
 				}
 			}
 		}
@@ -563,8 +564,11 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			if (appender)
 			{
 				if (LogLog::isDebugEnabled())
-					LogLog::debug(LOG4CXX_STR("Adding appender named [") + refName +
-						LOG4CXX_STR("] to logger [") + logger->getName() + LOG4CXX_STR("]"));
+				{
+					LogLog::debug(LOG4CXX_STR("Adding ") + Appender::getStaticClass().getName()
+						+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("]")
+						+ LOG4CXX_STR(" to logger [") + logger->getName() + LOG4CXX_STR("]"));
+				}
 				newappenders.push_back(appender);
 			}
 			else

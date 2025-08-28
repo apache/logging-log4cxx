@@ -421,8 +421,8 @@ void PropertyConfigurator::parseLogger(
 
 		if (LogLog::isDebugEnabled())
 		{
-			LogLog::debug(LOG4CXX_STR("Parsing appender named [")
-				+ appenderName + LOG4CXX_STR("]"));
+			LogLog::debug(LOG4CXX_STR("Parsing ") + Appender::getStaticClass().getName()
+				+ LOG4CXX_STR(" named [") + appenderName + LOG4CXX_STR("]"));
 		}
 		appender = parseAppender(props, appenderName);
 
@@ -474,8 +474,8 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 	if (!appender)
 	{
-		LogLog::error((LogString) LOG4CXX_STR("Could not instantiate appender named [")
-			+ appenderName + LOG4CXX_STR("]"));
+		LogLog::error((LogString) LOG4CXX_STR("Could not instantiate ") + Appender::getStaticClass().getName()
+			+ LOG4CXX_STR(" named [") + appenderName + LOG4CXX_STR("]"));
 		return 0;
 	}
 
@@ -498,8 +498,8 @@ AppenderPtr PropertyConfigurator::parseAppender(
 				appender->setLayout(layout);
 				if (LogLog::isDebugEnabled())
 				{
-					LogLog::debug((LogString) LOG4CXX_STR("Parsing layout options for [")
-						+ appenderName + LOG4CXX_STR("]"));
+					LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Layout::getStaticClass().getName()
+						+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
 				}
 
 				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."), p);
