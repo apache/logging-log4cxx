@@ -846,13 +846,6 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 {
 	m_priv->repository = repository ? repository : LogManager::getLoggerRepository();
 	m_priv->repository->setConfigured(true);
-	if (LogLog::isDebugEnabled())
-	{
-		LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
-		msg.append(filename.getPath());
-		msg.append(LOG4CXX_STR("..."));
-		LogLog::debug(msg);
-	}
 
 #if LOG4CXX_ABI_VERSION <= 15
 	m_priv->loggerFactory = std::make_shared<DefaultLoggerFactory>();
@@ -1060,48 +1053,32 @@ void DOMConfigurator::parse(
 
 	LogString debugAttrib = subst(getAttribute(utf8Decoder, element, INTERNAL_DEBUG_ATTR));
 
-	static const WideLife<LogString> NULL_STRING(LOG4CXX_STR("NULL"));
-	if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug(LOG4CXX_STR("debug attribute= \"") + debugAttrib + LOG4CXX_STR("\"."));
-	}
-
 	// if the log4j.dtd is not specified in the XML file, then the
 	// "debug" attribute is returned as the empty string.
-	if (!debugAttrib.empty() && debugAttrib != NULL_STRING.value())
+	if (!debugAttrib.empty() && debugAttrib != LOG4CXX_STR("NULL"))
 	{
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(debugAttrib, true));
 	}
-	else if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug(LOG4CXX_STR("Ignoring internalDebug attribute."));
-	}
-
-
-	LogString confDebug = subst(getAttribute(utf8Decoder, element, CONFIG_DEBUG_ATTR));
-
-	if (!confDebug.empty() && confDebug != NULL_STRING.value())
-	{
-		LogLog::warn(LOG4CXX_STR("The \"configDebug\" attribute is deprecated."));
-		LogLog::warn(LOG4CXX_STR("Use the \"internalDebug\" attribute instead."));
-		LogLog::setInternalDebugging(OptionConverter::toBoolean(confDebug, true));
-	}
 
 	LogString thresholdStr = subst(getAttribute(utf8Decoder, element, THRESHOLD_ATTR));
-	if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug(LOG4CXX_STR("Threshold =\"") + thresholdStr + LOG4CXX_STR("\"."));
-	}
 
-	if (!thresholdStr.empty() && thresholdStr != NULL_STRING.value())
+	if (!thresholdStr.empty() && thresholdStr != LOG4CXX_STR("NULL"))
 	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Repository threshold =[") + thresholdStr + LOG4CXX_STR("]"));
+		}
 		m_priv->repository->setThreshold(thresholdStr);
 	}
 
 	LogString threadSignalValue = subst(getAttribute(utf8Decoder, element, THREAD_CONFIG_ATTR));
 
-	if ( !threadSignalValue.empty() && threadSignalValue != NULL_STRING.value() )
+	if ( !threadSignalValue.empty() && threadSignalValue != LOG4CXX_STR("NULL") )
 	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("ThreadUtility configuration =[") + threadSignalValue + LOG4CXX_STR("]"));
+		}
 		if ( threadSignalValue == LOG4CXX_STR("NoConfiguration") )
 		{
 			helpers::ThreadUtility::configure( ThreadConfigurationType::NoConfiguration );
