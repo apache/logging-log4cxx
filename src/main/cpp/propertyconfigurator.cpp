@@ -239,10 +239,8 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 	{
 		if (LogLog::isDebugEnabled())
 		{
-			LogString msg(LOG4CXX_STR("Setting logger factory to ["));
-			msg += factoryClassName;
-			msg += LOG4CXX_STR("]");
-			LogLog::debug(msg);
+			LogLog::debug(LOG4CXX_STR("Desired ") + LoggerFactory::getStaticClass().getName()
+					+ LOG4CXX_STR(" sub-class: [") + factoryClassName + LOG4CXX_STR("]"));
 		}
 		std::shared_ptr<Object> instance = std::shared_ptr<Object>(
 				Loader::loadClass(factoryClassName).newInstance() );

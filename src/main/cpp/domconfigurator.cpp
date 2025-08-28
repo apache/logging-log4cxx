@@ -238,7 +238,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 		ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
 		AppenderPtr appender = LOG4CXX_NS::cast<Appender>(instance);
 		if(!appender){
-			LogLog::error(LOG4CXX_STR("Could not cast class of type [") + className + LOG4CXX_STR("] to appender"));
+			LogLog::error(LOG4CXX_STR("Could not cast [") + className + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName());
 			return AppenderPtr();
 		}
 		PropertySetter propSetter(appender);
@@ -344,8 +344,9 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 	    problem: we can't create an Appender */
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create an Appender. Reported error follows."),
-			oops);
+		LogLog::error(LOG4CXX_STR("Could not create a ") + Appender::getStaticClass().getName()
+					+ LOG4CXX_STR(" from [") + className
+					+ LOG4CXX_STR("]. Reported error follows."), oops);
 		return 0;
 	}
 }
@@ -637,8 +638,9 @@ LayoutPtr DOMConfigurator::parseLayout (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create the Layout. Reported error follows."),
-			oops);
+		LogLog::error(LOG4CXX_STR("Could not create a ") + Layout::getStaticClass().getName()
+					+ LOG4CXX_STR(" from [") + className
+					+ LOG4CXX_STR("]. Reported error follows."), oops);
 		return 0;
 	}
 }
@@ -694,8 +696,9 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create the TriggeringPolicy. Reported error follows."),
-			oops);
+		LogLog::error(LOG4CXX_STR("Could not create a ") + TriggeringPolicy::getStaticClass().getName()
+					+ LOG4CXX_STR(" from [") + className
+					+ LOG4CXX_STR("]. Reported error follows."), oops);
 		return 0;
 	}
 }
@@ -738,8 +741,9 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create the RollingPolicy. Reported error follows."),
-			oops);
+		LogLog::error(LOG4CXX_STR("Could not create a ") + RollingPolicy::getStaticClass().getName()
+					+ LOG4CXX_STR(" from [") + className
+					+ LOG4CXX_STR("]. Reported error follows."), oops);
 		return 0;
 	}
 }
@@ -804,17 +808,17 @@ void DOMConfigurator::parseLevel(
 			}
 			catch (Exception& oops)
 			{
-				LogLog::error(
-					LOG4CXX_STR("Could not create level [") + levelStr +
-					LOG4CXX_STR("]. Reported error follows."),
-					oops);
+				LogLog::error(LOG4CXX_STR("Could not create a ") + Level::getStaticClass().getName()
+							+ LOG4CXX_STR(" from [") + className
+							+ LOG4CXX_STR("]. Reported error follows."), oops);
 
 				return;
 			}
 			catch (...)
 			{
-				LogLog::error(
-					LOG4CXX_STR("Could not create level [") + levelStr);
+				LogLog::error(LOG4CXX_STR("Could not create a ") + Level::getStaticClass().getName()
+							+ LOG4CXX_STR(" from [") + className
+							+ LOG4CXX_STR("]"));
 
 				return;
 			}
@@ -1142,7 +1146,7 @@ LogString DOMConfigurator::subst(const LogString& value)
 	}
 	catch (IllegalArgumentException& e)
 	{
-		LogLog::warn(LOG4CXX_STR("Could not perform variable substitution."), e);
+		LogLog::warn(LOG4CXX_STR("Could not substitute variables using [") + value + LOG4CXX_STR("]"), e);
 		return value;
 	}
 }
