@@ -528,8 +528,8 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 					if (LogLog::isDebugEnabled())
 					{
-						LogLog::debug((LogString) LOG4CXX_STR("Parsing rolling policy options for [")
-							+ appenderName + LOG4CXX_STR("]"));
+						LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + RollingPolicy::getStaticClass().getName()
+							+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
 					}
 					PropertySetter::setProperties(rollingPolicy, props, rollingPolicyKey + LOG4CXX_STR("."), p);
 				}
@@ -549,8 +549,8 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 					if (LogLog::isDebugEnabled())
 					{
-						LogLog::debug((LogString) LOG4CXX_STR("Parsing triggering policy options for [")
-							+ appenderName + LOG4CXX_STR("]"));
+						LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + TriggeringPolicy::getStaticClass().getName()
+							+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
 					}
 					PropertySetter::setProperties(triggeringPolicy, props, triggeringPolicyKey + LOG4CXX_STR("."), p);
 				}
