@@ -1093,6 +1093,10 @@ void DOMConfigurator::parse(
 		{
 			helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
 		}
+		else
+		{
+			LogLog::warn(LOG4CXX_STR("threadConfiguration value [") + threadSignalValue + LOG4CXX_STR("]") + LOG4CXX_STR(" is not valid"));
+		}
 	}
 
 	apr_xml_elem* currentElement;
