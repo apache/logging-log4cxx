@@ -237,13 +237,15 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 
 	if (!factoryClassName.empty())
 	{
-		if (LogLog::isDebugEnabled())
-		{
-			LogLog::debug(LOG4CXX_STR("Desired ") + LoggerFactory::getStaticClass().getName()
-					+ LOG4CXX_STR(" sub-class: [") + factoryClassName + LOG4CXX_STR("]"));
-		}
-		std::shared_ptr<Object> instance = std::shared_ptr<Object>(
-				Loader::loadClass(factoryClassName).newInstance() );
+		auto instance = OptionConverter::instantiateByClassName
+			( StringHelper::trim(factoryClassName)
+			, LoggerFactory::getStaticClass()
+#if LOG4CXX_ABI_VERSION <= 15
+			, std::make_shared<DefaultLoggerFactory>()
+#else
+			, std::make_shared<LoggerFactory>()
+#endif
+			);
 
 		loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
 		Pool p;

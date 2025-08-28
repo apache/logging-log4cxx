@@ -400,30 +400,27 @@ ObjectPtr OptionConverter::instantiateByKey(Properties& props, const LogString& 
 ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 	const Class& superClass, const ObjectPtr& defaultValue)
 {
-	if (!className.empty())
+	if (LogLog::isDebugEnabled())
 	{
-		if (LogLog::isDebugEnabled())
-		{
-			LogLog::debug(LOG4CXX_STR("Desired ") + superClass.getName()
-				+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
-		}
-		try
-		{
-			const Class& classObj = Loader::loadClass(className);
-			ObjectPtr newObject =  ObjectPtr(classObj.newInstance());
+		LogLog::debug(LOG4CXX_STR("Desired ") + superClass.getName()
+			+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
+	}
+	try
+	{
+		const Class& classObj = Loader::loadClass(className);
+		ObjectPtr newObject =  ObjectPtr(classObj.newInstance());
 
-			if (!newObject->instanceof(superClass))
-			{
-				LogLog::error(LOG4CXX_STR("Not a ") + superClass.getName() + LOG4CXX_STR(" sub-class"));
-				return defaultValue;
-			}
-
-			return newObject;
-		}
-		catch (Exception& e)
+		if (!newObject->instanceof(superClass))
 		{
-			LogLog::error(LOG4CXX_STR("Could not create ") + superClass.getName() + LOG4CXX_STR(" sub-class"), e);
+			LogLog::error(LOG4CXX_STR("Not a ") + superClass.getName() + LOG4CXX_STR(" sub-class"));
+			return defaultValue;
 		}
+
+		return newObject;
+	}
+	catch (Exception& e)
+	{
+		LogLog::error(LOG4CXX_STR("Could not create ") + superClass.getName() + LOG4CXX_STR(" sub-class"), e);
 	}
 
 	return defaultValue;

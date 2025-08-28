@@ -496,15 +496,15 @@ void DOMConfigurator::parseLoggerFactory(
 	}
 	else
 	{
-		if (LogLog::isDebugEnabled())
-		{
-			LogLog::debug(LOG4CXX_STR("Desired ") + LoggerFactory::getStaticClass().getName()
-					+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
-		}
-		std::shared_ptr<Object> obj = OptionConverter::instantiateByClassName(
-				className,
-				LoggerFactory::getStaticClass(),
-				0);
+		auto obj = OptionConverter::instantiateByClassName
+			( StringHelper::trim(className,
+			, LoggerFactory::getStaticClass()
+#if LOG4CXX_ABI_VERSION <= 15
+			, std::make_shared<DefaultLoggerFactory>()
+#else
+			, std::make_shared<LoggerFactory>()
+#endif
+			);
 		m_priv->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>(obj);
 		PropertySetter propSetter(m_priv->loggerFactory);
 
