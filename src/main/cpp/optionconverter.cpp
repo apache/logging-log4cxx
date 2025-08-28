@@ -322,38 +322,29 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 
 	if (hashIndex == LogString::npos)
 	{
+		// no class name specified : use standard Level class
 		if (value.empty())
 		{
 			return defaultValue;
 		}
 		else
 		{
-			if (LogLog::isDebugEnabled())
-			{
-				LogLog::debug(
-					((LogString) LOG4CXX_STR("OptionConverter::toLevel: no class name specified, level=["))
-					+ value
-					+ LOG4CXX_STR("]"));
-			}
-			// no class name specified : use standard Level class
 			return Level::toLevelLS(value, defaultValue);
 		}
 	}
 
 	LogString clazz = value.substr(hashIndex + 1);
 	LogString levelName = value.substr(0, hashIndex);
-	if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug(LOG4CXX_STR("OptionConverter::toLevel: class=[")
-		+ clazz + LOG4CXX_STR("], level=[")
-		+ levelName + LOG4CXX_STR("]")
-		);
-	}
 
 	// This is degenerate case but you never know.
-	if (levelName.empty())
+	if (levelName.empty() || clazz.empty())
 	{
 		return Level::toLevelLS(value, defaultValue);
+	}
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Desired ") + Level::getStaticClass().getName()
+				+ LOG4CXX_STR(" sub-class: [") + clazz + LOG4CXX_STR("]"));
 	}
 
 	try
@@ -418,6 +409,11 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 {
 	if (!className.empty())
 	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Desired ") + superClass.getName()
+				+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
+		}
 		try
 		{
 			const Class& classObj = Loader::loadClass(className);
