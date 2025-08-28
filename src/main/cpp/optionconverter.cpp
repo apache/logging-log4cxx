@@ -358,18 +358,11 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 			dynamic_cast<const Level::LevelClass&>(Loader::loadClass(clazz));
 		return levelClass.toLevel(levelName);
 	}
-	catch (ClassNotFoundException&)
-	{
-		LogLog::warn(((LogString) LOG4CXX_STR("custom level class ["))
-			+ clazz + LOG4CXX_STR("] not found."));
-	}
 	catch (Exception& oops)
 	{
-		LogLog::warn(
-			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
-			LOG4CXX_STR("] conversion) failed."), oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + Level::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 	}
-	catch(const std::bad_cast&)
+	catch (const std::bad_cast&)
 	{
 		LogLog::warn(
 			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("] unable to be converted to "
@@ -421,6 +414,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 
 			if (!newObject->instanceof(superClass))
 			{
+				LogLog::error(LOG4CXX_STR("Not a ") + superClass.getName() + LOG4CXX_STR(" sub-class"));
 				return defaultValue;
 			}
 
@@ -428,8 +422,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 		}
 		catch (Exception& e)
 		{
-			LogLog::error(LOG4CXX_STR("Could not instantiate class [") +
-				className + LOG4CXX_STR("]."), e);
+			LogLog::error(LOG4CXX_STR("Could not create ") + superClass.getName() + LOG4CXX_STR(" sub-class"), e);
 		}
 	}
 

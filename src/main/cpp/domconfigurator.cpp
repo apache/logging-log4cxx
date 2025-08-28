@@ -344,9 +344,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 	    problem: we can't create an Appender */
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create a ") + Appender::getStaticClass().getName()
-					+ LOG4CXX_STR(" from [") + className
-					+ LOG4CXX_STR("]. Reported error follows."), oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + Appender::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
 	}
 }
@@ -638,9 +636,7 @@ LayoutPtr DOMConfigurator::parseLayout (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create a ") + Layout::getStaticClass().getName()
-					+ LOG4CXX_STR(" from [") + className
-					+ LOG4CXX_STR("]. Reported error follows."), oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + Layout::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
 	}
 }
@@ -696,9 +692,7 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create a ") + TriggeringPolicy::getStaticClass().getName()
-					+ LOG4CXX_STR(" from [") + className
-					+ LOG4CXX_STR("]. Reported error follows."), oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + TriggeringPolicy::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
 	}
 }
@@ -741,9 +735,7 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create a ") + RollingPolicy::getStaticClass().getName()
-					+ LOG4CXX_STR(" from [") + className
-					+ LOG4CXX_STR("]. Reported error follows."), oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + RollingPolicy::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
 	}
 }
@@ -808,18 +800,14 @@ void DOMConfigurator::parseLevel(
 			}
 			catch (Exception& oops)
 			{
-				LogLog::error(LOG4CXX_STR("Could not create a ") + Level::getStaticClass().getName()
-							+ LOG4CXX_STR(" from [") + className
-							+ LOG4CXX_STR("]. Reported error follows."), oops);
-
+				LogLog::error(LOG4CXX_STR("Could not create ") + Level::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 				return;
 			}
 			catch (...)
 			{
-				LogLog::error(LOG4CXX_STR("Could not create a ") + Level::getStaticClass().getName()
+				LogLog::error(LOG4CXX_STR("Could not create ") + Level::getStaticClass().getName() + LOG4CXX_STR(" sub-class")
 							+ LOG4CXX_STR(" from [") + className
 							+ LOG4CXX_STR("]"));
-
 				return;
 			}
 		}
