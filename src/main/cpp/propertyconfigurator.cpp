@@ -177,24 +177,22 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 {
 	hierarchy->setConfigured(true);
 
-	static const WideLife<LogString> DEBUG_KEY(LOG4CXX_STR("log4j.debug"));
-	LogString value(properties.getProperty(DEBUG_KEY));
+	LogString value(properties.getProperty(LOG4CXX_STR("log4j.debug")));
 
 	if (!value.empty())
 	{
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(value, true));
 	}
 
-	static const WideLife<LogString> THRESHOLD_PREFIX(LOG4CXX_STR("log4j.threshold"));
 	LogString thresholdStr =
-		OptionConverter::findAndSubst(THRESHOLD_PREFIX, properties);
+		OptionConverter::findAndSubst(LOG4CXX_STR("log4j.threshold"), properties);
 
 	if (!thresholdStr.empty())
 	{
 		hierarchy->setThreshold(OptionConverter::toLevel(thresholdStr, Level::getAll()));
 		if (LogLog::isDebugEnabled())
 		{
-			LogLog::debug(((LogString) LOG4CXX_STR("Hierarchy threshold set to ["))
+			LogLog::debug(LOG4CXX_STR("Repository threshold =[")
 				+ hierarchy->getThreshold()->toString()
 				+ LOG4CXX_STR("]"));
 		}
@@ -234,10 +232,8 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 
 void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 {
-	static const WideLife<LogString> LOGGER_FACTORY_KEY(LOG4CXX_STR("log4j.loggerFactory"));
-
 	LogString factoryClassName =
-		OptionConverter::findAndSubst(LOGGER_FACTORY_KEY, props);
+		OptionConverter::findAndSubst(LOG4CXX_STR("log4j.loggerFactory"), props);
 
 	if (!factoryClassName.empty())
 	{
@@ -252,27 +248,21 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 				Loader::loadClass(factoryClassName).newInstance() );
 
 		loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
-		static const WideLife<LogString> FACTORY_PREFIX(LOG4CXX_STR("log4j.factory."));
 		Pool p;
-		PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX, p);
+		PropertySetter::setProperties(loggerFactory, props, LOG4CXX_STR("log4j.factory."), p);
 	}
 }
 
 void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
 	spi::LoggerRepositoryPtr& hierarchy)
 {
-	static const WideLife<LogString> ROOT_CATEGORY_PREFIX(LOG4CXX_STR("log4j.rootCategory"));
-	static const WideLife<LogString> ROOT_LOGGER_PREFIX(LOG4CXX_STR("log4j.rootLogger"));
-
-
-
-	LogString effectiveFrefix(ROOT_LOGGER_PREFIX);
-	LogString value = OptionConverter::findAndSubst(ROOT_LOGGER_PREFIX, props);
+	LogString effectivePrefix(LOG4CXX_STR("log4j.rootLogger"));
+	LogString value = OptionConverter::findAndSubst(effectivePrefix, props);
 
 	if (value.empty())
 	{
-		value = OptionConverter::findAndSubst(ROOT_CATEGORY_PREFIX, props);
-		effectiveFrefix = ROOT_CATEGORY_PREFIX;
+		effectivePrefix = LOG4CXX_STR("log4j.rootCategory");
+		value = OptionConverter::findAndSubst(effectivePrefix, props);
 	}
 
 	if (value.empty())
@@ -284,35 +274,27 @@ void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
 		LoggerPtr root = hierarchy->getRootLogger();
 
 		static const WideLife<LogString> INTERNAL_ROOT_NAME(LOG4CXX_STR("root"));
-		parseLogger(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value, true);
+		parseLogger(props, root, effectivePrefix, INTERNAL_ROOT_NAME, value, true);
 	}
 }
 
 void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 	spi::LoggerRepositoryPtr& hierarchy)
 {
-	static const WideLife<LogString> CATEGORY_PREFIX(LOG4CXX_STR("log4j.category."));
-	static const WideLife<LogString> LOGGER_PREFIX(LOG4CXX_STR("log4j.logger."));
-
 	for (auto key : props.propertyNames())
 	{
-		if (key.find(CATEGORY_PREFIX) == 0 || key.find(LOGGER_PREFIX) == 0)
+		auto categoryFound = (0 == key.find(LOG4CXX_STR("log4j.category.")));
+		if (categoryFound || 0 == key.find(LOG4CXX_STR("log4j.logger.")))
 		{
-			LogString loggerName;
-
-			if (key.find(CATEGORY_PREFIX) == 0)
-			{
-				loggerName = key.substr(CATEGORY_PREFIX.value().length());
-			}
-			else if (key.find(LOGGER_PREFIX.value()) == 0)
-			{
-				loggerName = key.substr(LOGGER_PREFIX.value().length());
-			}
-
-			LogString value = OptionConverter::findAndSubst(key, props);
-			LoggerPtr logger = hierarchy->getLogger(loggerName, loggerFactory);
-
-			bool additivity = parseAdditivityForLogger(props, logger, loggerName);
+			auto prefixLength =
+				( categoryFound
+				? LogString(LOG4CXX_STR("log4j.category."))
+				: LogString(LOG4CXX_STR("log4j.logger."))
+				).length();
+			auto loggerName = key.substr(prefixLength);
+			auto value = OptionConverter::findAndSubst(key, props);
+			auto logger = hierarchy->getLogger(loggerName, loggerFactory);
+			auto additivity = parseAdditivityForLogger(props, logger, loggerName);
 			parseLogger(props, logger, key, loggerName, value, additivity);
 
 		}
@@ -322,17 +304,7 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 bool PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 	LoggerPtr& cat, const LogString& loggerName)
 {
-
-	static const WideLife<LogString> ADDITIVITY_PREFIX(LOG4CXX_STR("log4j.additivity."));
-
-
-
-	LogString value(OptionConverter::findAndSubst(ADDITIVITY_PREFIX.value() + loggerName, props));
-	if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug((LogString) LOG4CXX_STR("Handling ") + ADDITIVITY_PREFIX.value()
-			+ loggerName + LOG4CXX_STR("=[") +  value + LOG4CXX_STR("]"));
-	}
+	LogString value(OptionConverter::findAndSubst(LOG4CXX_STR("log4j.additivity.") + loggerName, props));
 	// touch additivity only if necessary
 	if (!value.empty())
 	{
@@ -451,10 +423,8 @@ AppenderPtr PropertyConfigurator::parseAppender(
 		return appender;
 	}
 
-	static const WideLife<LogString> APPENDER_PREFIX(LOG4CXX_STR("log4j.appender."));
-
 	// Appender was not previously initialized.
-	LogString prefix = APPENDER_PREFIX.value() + appenderName;
+	LogString prefix = LOG4CXX_STR("log4j.appender.") + appenderName;
 	LogString layoutPrefix = prefix + LOG4CXX_STR(".layout");
 
 	std::shared_ptr<Object> obj =

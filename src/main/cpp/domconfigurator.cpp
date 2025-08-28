@@ -1068,11 +1068,13 @@ void DOMConfigurator::parse(
 
 	if (!thresholdStr.empty() && thresholdStr != LOG4CXX_STR("NULL"))
 	{
+		m_priv->repository->setThreshold(OptionConverter::toLevel(thresholdStr, Level::getAll()));
 		if (LogLog::isDebugEnabled())
 		{
-			LogLog::debug(LOG4CXX_STR("Repository threshold =[") + thresholdStr + LOG4CXX_STR("]"));
+			LogLog::debug(LOG4CXX_STR("Repository threshold =[")
+				+ m_priv->repository->getThreshold()->toString()
+				+ LOG4CXX_STR("]"));
 		}
-		m_priv->repository->setThreshold(thresholdStr);
 	}
 
 	LogString threadSignalValue = subst(getAttribute(utf8Decoder, element, THREAD_CONFIG_ATTR));
