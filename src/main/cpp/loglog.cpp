@@ -48,6 +48,27 @@ struct LogLog::LogLogPrivate {
 	 */
 	bool quietMode;
 	std::mutex mutex;
+	LogString errorPrefix;
+	LogString warnPrefix;
+	LogString debugPrefix;
+	LogString suffix;
+	void setColorEnabled(bool newValue)
+	{
+		if (newValue)
+		{
+			this->errorPrefix = LOG4CXX_STR("\x1B[31m"); //red
+			this->warnPrefix = LOG4CXX_STR("\x1B[33m"); //yellow
+			this->debugPrefix = LOG4CXX_STR("\x1B[32m"); //green
+			this->suffix = LOG4CXX_STR("\x1B[0m"); // none
+		}
+		else
+		{
+			this->errorPrefix.clear();
+			this->warnPrefix.clear();
+			this->debugPrefix.clear();
+			this->suffix.clear();
+		}
+	}
 };
 
 LogLog::LogLog() :
@@ -55,6 +76,8 @@ LogLog::LogLog() :
 {
 	LogString log4cxxDebug = OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_DEBUG"), LOG4CXX_STR("false"));
 	m_priv->debugEnabled = OptionConverter::toBoolean(log4cxxDebug, false);
+	auto color = OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_COLOR"), LOG4CXX_STR("true"));
+	m_priv->setColorEnabled(OptionConverter::toBoolean(color, true));
 }
 
 LogLog::~LogLog()
@@ -81,6 +104,18 @@ void LogLog::setInternalDebugging(bool debugEnabled1)
 		p->debugEnabled = debugEnabled1;
 }
 
+bool LogLog::isColorEnabled()
+{
+	auto p = getInstance().m_priv.get();
+	return p && !p->errorPrefix.empty();
+}
+
+void LogLog::setColorEnabled(bool newValue)
+{
+	if (auto p = getInstance().m_priv.get())
+		p->setColorEnabled(newValue);
+}
+
 void LogLog::debug(const LogString& msg)
 {
 	auto p = getInstance().m_priv.get();
@@ -93,7 +128,7 @@ void LogLog::debug(const LogString& msg)
 
 		std::lock_guard<std::mutex> lock(p->mutex);
 
-		emit_log(msg);
+		emit_log(p->debugPrefix, msg, p->suffix);
 	}
 }
 
@@ -106,8 +141,8 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 			return;
 
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(msg);
-		emit_log(e);
+		emit_log(p->debugPrefix, msg, p->suffix);
+		emit_log(p->debugPrefix, e, p->suffix);
 	}
 }
 
@@ -119,7 +154,7 @@ void LogLog::error(const LogString& msg)
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
 
-		emit_log(msg);
+		emit_log(p->errorPrefix, msg, p->suffix);
 	}
 }
 
@@ -129,8 +164,8 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(msg);
-		emit_log(e);
+		emit_log(p->errorPrefix, msg, p->suffix);
+		emit_log(p->errorPrefix, e, p->suffix);
 	}
 }
 
@@ -148,7 +183,7 @@ void LogLog::warn(const LogString& msg)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(msg);
+		emit_log(p->warnPrefix, msg, p->suffix);
 	}
 }
 
@@ -158,24 +193,26 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(msg);
-		emit_log(e);
+		emit_log(p->warnPrefix, msg, p->suffix);
+		emit_log(p->warnPrefix, e, p->suffix);
 	}
 }
 
-void LogLog::emit_log(const LogString& msg)
+void LogLog::emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix)
 {
 	LogString out(LOG4CXX_STR("log4cxx: "));
-
+	out.append(prefix);
 	out.append(msg);
+	out.append(suffix);
 	out.append(1, (logchar) 0x0A);
 
 	SystemErrWriter::write(out);
 }
 
-void LogLog::emit_log(const std::exception& ex)
+void LogLog::emit_log(const LogString& prefix, const std::exception& ex, const LogString& suffix)
 {
 	LogString out(LOG4CXX_STR("log4cxx: "));
+	out.append(prefix);
 	const char* raw = ex.what();
 
 	if (raw != 0)
@@ -187,6 +224,7 @@ void LogLog::emit_log(const std::exception& ex)
 		out.append(LOG4CXX_STR("std::exception::what() == null"));
 	}
 
+	out.append(suffix);
 	out.append(1, (logchar) 0x0A);
 
 	SystemErrWriter::write(out);

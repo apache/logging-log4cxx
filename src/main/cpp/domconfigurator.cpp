@@ -136,6 +136,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define STRINGSTREAM_ATTR "stringstream"
 #define CONFIG_DEBUG_ATTR "configDebug"
 #define INTERNAL_DEBUG_ATTR "debug"
+#define INTERNAL_COLOR_ATTR "color"
 #define THREAD_CONFIG_ATTR "threadConfiguration"
 
 DOMConfigurator::DOMConfigurator()
@@ -647,9 +648,9 @@ LayoutPtr DOMConfigurator::parseLayout (
 ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 	LOG4CXX_NS::helpers::Pool& p,
 	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* layout_element)
+	apr_xml_elem* policy_element)
 {
-	LogString className = subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR));
+	LogString className = subst(getAttribute(utf8Decoder, policy_element, CLASS_ATTR));
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Desired ") + TriggeringPolicy::getStaticClass().getName()
@@ -661,7 +662,7 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 		ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
 		PropertySetter propSetter(instance);
 
-		for (apr_xml_elem* currentElement = layout_element->first_child;
+		for (apr_xml_elem* currentElement = policy_element->first_child;
 			currentElement;
 			currentElement = currentElement->next)
 		{
@@ -703,9 +704,9 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 	LOG4CXX_NS::helpers::Pool& p,
 	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* layout_element)
+	apr_xml_elem* policy_element)
 {
-	LogString className = subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR));
+	LogString className = subst(getAttribute(utf8Decoder, policy_element, CLASS_ATTR));
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Desired ") + RollingPolicy::getStaticClass().getName()
@@ -715,10 +716,9 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 	try
 	{
 		ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
-		RollingPolicyPtr layout = LOG4CXX_NS::cast<RollingPolicy>(instance);
-		PropertySetter propSetter(layout);
+		PropertySetter propSetter(instance);
 
-		for (apr_xml_elem* currentElement = layout_element->first_child;
+		for (apr_xml_elem* currentElement = policy_element->first_child;
 			currentElement;
 			currentElement = currentElement->next)
 		{
@@ -731,7 +731,7 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 		}
 
 		propSetter.activate(p);
-		return layout;
+		return LOG4CXX_NS::cast<RollingPolicy>(instance);
 	}
 	catch (Exception& oops)
 	{
@@ -1054,6 +1054,12 @@ void DOMConfigurator::parse(
 	if (!debugAttrib.empty() && debugAttrib != LOG4CXX_STR("NULL"))
 	{
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(debugAttrib, true));
+	}
+
+	LogString colorAttrib = subst(getAttribute(utf8Decoder, element, INTERNAL_COLOR_ATTR));
+	if (!colorAttrib.empty())
+	{
+		LogLog::setColorEnabled(OptionConverter::toBoolean(colorAttrib, true));
 	}
 
 	LogString thresholdStr = subst(getAttribute(utf8Decoder, element, THRESHOLD_ATTR));

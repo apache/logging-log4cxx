@@ -45,8 +45,9 @@ class LOG4CXX_EXPORT BasicConfigurator
 		Add a ConsoleAppender to the root logger that formats output using \c layout.
 
 		If \c layout is not provided,
-		use a PatternLayout with <code>%%r [%%t] %%p %%c %%x - %%m%%n</code>
-		as the conversion pattern.
+		use a PatternLayout with the conversion pattern:
+		- <code>%%r [%%t] %%p %%c %%x - %%Y%%m%%y%%n</code> if color is enabled (the default)
+		- <code>%%r [%%t] %%p %%c %%x - %%m%%n</code> if [color is disabled](disabling-color.html)
 		*/
 		static void configure(const LayoutPtr& layout = LayoutPtr());
 

@@ -1,9 +1,5 @@
-Use {#usage-overview}
+Disabling Console Color {#disabling-color}
 ===
-<!--
- Note: License header cannot be first, as doxygen does not generate
- cleanly if it before the '==='
--->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -21,23 +17,9 @@ Use {#usage-overview}
  limitations under the License.
 -->
 
-See the following pages for usage information:
-
-* @subpage quick-start
-* @subpage concepts
-* @subpage configuration-files
-* @subpage filters
-* @subpage extending-log4cxx
-* @subpage qt-support
-* @subpage stacktrace-support
-* @subpage threading
-* @subpage multiprocess-logging
-* @subpage environment-variables
-* @subpage macros-influencing-log4cxx
-* @subpage internal-debugging
-* @subpage disabling-color
-* @subpage performance
-* @subpage conclusions
-* @subpage faq
-* @subpage buildsystems
-* @subpage log-flow
+There are several ways to disable colored console output:
+-# Setting the environment variable <code>LOG4CXX_COLOR</code> to the value <code>false</code>
+-# If using a properties file, add the line <code>log4j.color=false</code> to your file
+-# If using an XML file, add the <code>color="false"</code> attribute in the <code>log4j.configuration</code> element
+-# Configure the library programmatically by calling
+[LogLog::setColorEnabled](@ref log4cxx.helpers.LogLog.setColorEnabled)

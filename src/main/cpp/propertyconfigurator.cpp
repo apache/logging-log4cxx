@@ -177,11 +177,16 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 {
 	hierarchy->setConfigured(true);
 
-	LogString value(properties.getProperty(LOG4CXX_STR("log4j.debug")));
-
-	if (!value.empty())
+	LogString debugValue(properties.getProperty(LOG4CXX_STR("log4j.debug")));
+	if (!debugValue.empty())
 	{
-		LogLog::setInternalDebugging(OptionConverter::toBoolean(value, true));
+		LogLog::setInternalDebugging(OptionConverter::toBoolean(debugValue, true));
+	}
+
+	LogString colorValue(properties.getProperty(LOG4CXX_STR("log4j.color")));
+	if (!colorValue.empty())
+	{
+		LogLog::setColorEnabled(OptionConverter::toBoolean(colorValue, true));
 	}
 
 	LogString thresholdStr =

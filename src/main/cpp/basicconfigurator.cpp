@@ -20,7 +20,7 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
-#include <log4cxx/helpers/widelife.h>
+#include <log4cxx/helpers/loglog.h>
 
 using namespace LOG4CXX_NS;
 
@@ -30,8 +30,12 @@ void BasicConfigurator::configure(const LayoutPtr& layoutArg)
 	auto layout = layoutArg;
 	if (!layout)
 	{
-		LogString TTCC_CONVERSION_PATTERN{LOG4CXX_STR("%r [%t] %p %c %x - %m%n")};
-		layout = std::make_shared<PatternLayout>(TTCC_CONVERSION_PATTERN);
+		auto pattern = LogString
+			{ helpers::LogLog::isColorEnabled()
+			? LOG4CXX_STR("%r [%t] %p %c %x - %Y%m%y%n")
+			: LOG4CXX_STR("%r [%t] %p %c %x - %m%n")
+			};
+		layout = std::make_shared<PatternLayout>(pattern);
 	}
 	auto appender = std::make_shared<ConsoleAppender>(layout);
 	Logger::getRootLogger()->addAppender(appender);
