@@ -209,8 +209,8 @@ AppenderPtr DOMConfigurator::findAppenderByReference(
 
 	if (!appender)
 	{
-		LogLog::error(LOG4CXX_STR("No appender named [") +
-			appenderName + LOG4CXX_STR("] could be found."));
+		LogLog::error(LOG4CXX_STR("No ") + Appender::getStaticClass().getName()
+			+ LOG4CXX_STR(" named [") + appenderName + LOG4CXX_STR("] could be found."));
 	}
 
 	return appender;
@@ -229,7 +229,8 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 	LogString className(subst(getAttribute(utf8Decoder, appenderElement, CLASS_ATTR)));
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Class name: [") + className + LOG4CXX_STR("]"));
+		LogLog::debug(LOG4CXX_STR("Desired ") + Appender::getStaticClass().getName()
+					+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
 	}
 
 	try
@@ -237,7 +238,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 		ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
 		AppenderPtr appender = LOG4CXX_NS::cast<Appender>(instance);
 		if(!appender){
-			LogLog::error(LOG4CXX_STR("Could not cast class of type [") + className + LOG4CXX_STR("] to appender"));
+			LogLog::error(LOG4CXX_STR("Could not cast [") + className + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName());
 			return AppenderPtr();
 		}
 		PropertySetter propSetter(appender);
@@ -316,21 +317,22 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 					AppenderAttachablePtr aa = LOG4CXX_NS::cast<AppenderAttachable>(appender);
 					if (LogLog::isDebugEnabled())
 					{
-						LogLog::debug(LOG4CXX_STR("Attaching appender named [") +
-							refName + LOG4CXX_STR("] to appender named [") +
-							appender->getName() + LOG4CXX_STR("]."));
+						LogLog::debug(LOG4CXX_STR("Attaching ") + Appender::getStaticClass().getName()
+							+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
+							+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
 					}
 					aa->addAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
 				}
 				else if (refName.empty())
 				{
-					LogLog::error(LOG4CXX_STR("Can't add appender with empty ref attribute"));
+					LogLog::error(LOG4CXX_STR("Can't add ") + Appender::getStaticClass().getName() + LOG4CXX_STR(" with empty ref attribute"));
 				}
 				else
 				{
-					LogLog::error(LOG4CXX_STR("Requesting attachment of appender named [") +
-						refName + LOG4CXX_STR("] to appender named [") + appender->getName() +
-						LOG4CXX_STR("] which does not implement AppenderAttachable."));
+					LogLog::error(LOG4CXX_STR("Requesting attachment of ") + Appender::getStaticClass().getName()
+						+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
+						+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]")
+						+ LOG4CXX_STR(" which does not implement ") + AppenderAttachable::getStaticClass().getName());
 				}
 			}
 		}
@@ -342,8 +344,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 	    problem: we can't create an Appender */
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create an Appender. Reported error follows."),
-			oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + Appender::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
 	}
 }
@@ -473,7 +474,7 @@ void DOMConfigurator::parseLogger(
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Setting [") + logger->getName() + LOG4CXX_STR("] additivity to [") +
-			(additivity ? LogString(LOG4CXX_STR("true")) : LogString(LOG4CXX_STR("false"))) + LOG4CXX_STR("]."));
+			(additivity ? LogString(LOG4CXX_STR("true")) : LogString(LOG4CXX_STR("false"))) + LOG4CXX_STR("]"));
 	}
 	logger->setAdditivity(additivity);
 	parseChildrenOfLoggerElement(p, utf8Decoder, loggerElement, logger, false, doc, appenders);
@@ -495,14 +496,15 @@ void DOMConfigurator::parseLoggerFactory(
 	}
 	else
 	{
-		if (LogLog::isDebugEnabled())
-		{
-			LogLog::debug(LOG4CXX_STR("Desired logger factory: [") + className + LOG4CXX_STR("]"));
-		}
-		std::shared_ptr<Object> obj = OptionConverter::instantiateByClassName(
-				className,
-				LoggerFactory::getStaticClass(),
-				0);
+		auto obj = OptionConverter::instantiateByClassName
+			( StringHelper::trim(className)
+			, LoggerFactory::getStaticClass()
+#if LOG4CXX_ABI_VERSION <= 15
+			, std::make_shared<DefaultLoggerFactory>()
+#else
+			, std::make_shared<LoggerFactory>()
+#endif
+			);
 		m_priv->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>(obj);
 		PropertySetter propSetter(m_priv->loggerFactory);
 
@@ -561,8 +563,11 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			if (appender)
 			{
 				if (LogLog::isDebugEnabled())
-					LogLog::debug(LOG4CXX_STR("Adding appender named [") + refName +
-						LOG4CXX_STR("] to logger [") + logger->getName() + LOG4CXX_STR("]."));
+				{
+					LogLog::debug(LOG4CXX_STR("Adding ") + Appender::getStaticClass().getName()
+						+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("]")
+						+ LOG4CXX_STR(" to logger [") + logger->getName() + LOG4CXX_STR("]"));
+				}
 				newappenders.push_back(appender);
 			}
 			else
@@ -604,7 +609,8 @@ LayoutPtr DOMConfigurator::parseLayout (
 	LogString className(subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR)));
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Parsing layout of class: \"") + className + LOG4CXX_STR("\""));
+		LogLog::debug(LOG4CXX_STR("Desired ") + Layout::getStaticClass().getName()
+					+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
 	}
 
 	try
@@ -630,8 +636,7 @@ LayoutPtr DOMConfigurator::parseLayout (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create the Layout. Reported error follows."),
-			oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + Layout::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
 	}
 }
@@ -647,7 +652,8 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 	LogString className = subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR));
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Parsing triggering policy of class: \"") + className + LOG4CXX_STR("\""));
+		LogLog::debug(LOG4CXX_STR("Desired ") + TriggeringPolicy::getStaticClass().getName()
+					+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
 	}
 
 	try
@@ -686,8 +692,7 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create the TriggeringPolicy. Reported error follows."),
-			oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + TriggeringPolicy::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
 	}
 }
@@ -703,7 +708,8 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 	LogString className = subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR));
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Parsing rolling policy of class: \"") + className + LOG4CXX_STR("\""));
+		LogLog::debug(LOG4CXX_STR("Desired ") + RollingPolicy::getStaticClass().getName()
+					+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
 	}
 
 	try
@@ -729,8 +735,7 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 	}
 	catch (Exception& oops)
 	{
-		LogLog::error(LOG4CXX_STR("Could not create the RollingPolicy. Reported error follows."),
-			oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + RollingPolicy::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
 	}
 }
@@ -755,7 +760,7 @@ void DOMConfigurator::parseLevel(
 	LogString levelStr(subst(getAttribute(utf8Decoder, element, VALUE_ATTR)));
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Level value for ") + loggerName + LOG4CXX_STR(" is [") + levelStr + LOG4CXX_STR("]."));
+		LogLog::debug(LOG4CXX_STR("Level value for ") + loggerName + LOG4CXX_STR(" is [") + levelStr + LOG4CXX_STR("]"));
 	}
 
 	if (StringHelper::equalsIgnoreCase(levelStr, LOG4CXX_STR("INHERITED"), LOG4CXX_STR("inherited"))
@@ -763,7 +768,7 @@ void DOMConfigurator::parseLevel(
 	{
 		if (isRoot)
 		{
-			LogLog::error(LOG4CXX_STR("Root level cannot be inherited. Ignoring directive."));
+			LogLog::error(LOG4CXX_STR("Root level cannot be ") + levelStr + LOG4CXX_STR(". Ignoring directive."));
 		}
 		else
 		{
@@ -782,7 +787,8 @@ void DOMConfigurator::parseLevel(
 		{
 			if (LogLog::isDebugEnabled())
 			{
-				LogLog::debug(LOG4CXX_STR("Desired Level sub-class: [") + className + LOG4CXX_STR("]"));
+				LogLog::debug(LOG4CXX_STR("Desired ") + Level::getStaticClass().getName()
+					+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
 			}
 
 			try
@@ -794,18 +800,14 @@ void DOMConfigurator::parseLevel(
 			}
 			catch (Exception& oops)
 			{
-				LogLog::error(
-					LOG4CXX_STR("Could not create level [") + levelStr +
-					LOG4CXX_STR("]. Reported error follows."),
-					oops);
-
+				LogLog::error(LOG4CXX_STR("Could not create ") + Level::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 				return;
 			}
 			catch (...)
 			{
-				LogLog::error(
-					LOG4CXX_STR("Could not create level [") + levelStr);
-
+				LogLog::error(LOG4CXX_STR("Could not create ") + Level::getStaticClass().getName() + LOG4CXX_STR(" sub-class")
+							+ LOG4CXX_STR(" from [") + className
+							+ LOG4CXX_STR("]"));
 				return;
 			}
 		}
@@ -840,13 +842,6 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 {
 	m_priv->repository = repository ? repository : LogManager::getLoggerRepository();
 	m_priv->repository->setConfigured(true);
-	if (LogLog::isDebugEnabled())
-	{
-		LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
-		msg.append(filename.getPath());
-		msg.append(LOG4CXX_STR("..."));
-		LogLog::debug(msg);
-	}
 
 #if LOG4CXX_ABI_VERSION <= 15
 	m_priv->loggerFactory = std::make_shared<DefaultLoggerFactory>();
@@ -880,7 +875,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		if (LogLog::isDebugEnabled())
 		{
 			LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
-					+ filename.getPath() + LOG4CXX_STR("].");
+					+ filename.getPath() + LOG4CXX_STR("]");
 			LogLog::debug(debugMsg);
 		}
 
@@ -1054,48 +1049,34 @@ void DOMConfigurator::parse(
 
 	LogString debugAttrib = subst(getAttribute(utf8Decoder, element, INTERNAL_DEBUG_ATTR));
 
-	static const WideLife<LogString> NULL_STRING(LOG4CXX_STR("NULL"));
-	if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug(LOG4CXX_STR("debug attribute= \"") + debugAttrib + LOG4CXX_STR("\"."));
-	}
-
 	// if the log4j.dtd is not specified in the XML file, then the
 	// "debug" attribute is returned as the empty string.
-	if (!debugAttrib.empty() && debugAttrib != NULL_STRING.value())
+	if (!debugAttrib.empty() && debugAttrib != LOG4CXX_STR("NULL"))
 	{
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(debugAttrib, true));
 	}
-	else if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug(LOG4CXX_STR("Ignoring internalDebug attribute."));
-	}
-
-
-	LogString confDebug = subst(getAttribute(utf8Decoder, element, CONFIG_DEBUG_ATTR));
-
-	if (!confDebug.empty() && confDebug != NULL_STRING.value())
-	{
-		LogLog::warn(LOG4CXX_STR("The \"configDebug\" attribute is deprecated."));
-		LogLog::warn(LOG4CXX_STR("Use the \"internalDebug\" attribute instead."));
-		LogLog::setInternalDebugging(OptionConverter::toBoolean(confDebug, true));
-	}
 
 	LogString thresholdStr = subst(getAttribute(utf8Decoder, element, THRESHOLD_ATTR));
-	if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug(LOG4CXX_STR("Threshold =\"") + thresholdStr + LOG4CXX_STR("\"."));
-	}
 
-	if (!thresholdStr.empty() && thresholdStr != NULL_STRING.value())
+	if (!thresholdStr.empty() && thresholdStr != LOG4CXX_STR("NULL"))
 	{
-		m_priv->repository->setThreshold(thresholdStr);
+		m_priv->repository->setThreshold(OptionConverter::toLevel(thresholdStr, Level::getAll()));
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Repository threshold =[")
+				+ m_priv->repository->getThreshold()->toString()
+				+ LOG4CXX_STR("]"));
+		}
 	}
 
 	LogString threadSignalValue = subst(getAttribute(utf8Decoder, element, THREAD_CONFIG_ATTR));
 
-	if ( !threadSignalValue.empty() && threadSignalValue != NULL_STRING.value() )
+	if ( !threadSignalValue.empty() && threadSignalValue != LOG4CXX_STR("NULL") )
 	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("ThreadUtility configuration =[") + threadSignalValue + LOG4CXX_STR("]"));
+		}
 		if ( threadSignalValue == LOG4CXX_STR("NoConfiguration") )
 		{
 			helpers::ThreadUtility::configure( ThreadConfigurationType::NoConfiguration );
@@ -1111,6 +1092,10 @@ void DOMConfigurator::parse(
 		else if ( threadSignalValue == LOG4CXX_STR("BlockSignalsAndNameThread") )
 		{
 			helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
+		}
+		else
+		{
+			LogLog::warn(LOG4CXX_STR("threadConfiguration value [") + threadSignalValue + LOG4CXX_STR("]") + LOG4CXX_STR(" is not valid"));
 		}
 	}
 
@@ -1153,7 +1138,7 @@ LogString DOMConfigurator::subst(const LogString& value)
 	}
 	catch (IllegalArgumentException& e)
 	{
-		LogLog::warn(LOG4CXX_STR("Could not perform variable substitution."), e);
+		LogLog::warn(LOG4CXX_STR("Could not substitute variables using [") + value + LOG4CXX_STR("]"), e);
 		return value;
 	}
 }

@@ -322,38 +322,29 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 
 	if (hashIndex == LogString::npos)
 	{
+		// no class name specified : use standard Level class
 		if (value.empty())
 		{
 			return defaultValue;
 		}
 		else
 		{
-			if (LogLog::isDebugEnabled())
-			{
-				LogLog::debug(
-					((LogString) LOG4CXX_STR("OptionConverter::toLevel: no class name specified, level=["))
-					+ value
-					+ LOG4CXX_STR("]"));
-			}
-			// no class name specified : use standard Level class
 			return Level::toLevelLS(value, defaultValue);
 		}
 	}
 
 	LogString clazz = value.substr(hashIndex + 1);
 	LogString levelName = value.substr(0, hashIndex);
-	if (LogLog::isDebugEnabled())
-	{
-		LogLog::debug(LOG4CXX_STR("OptionConverter::toLevel: class=[")
-		+ clazz + LOG4CXX_STR("], level=[")
-		+ levelName + LOG4CXX_STR("]")
-		);
-	}
 
 	// This is degenerate case but you never know.
-	if (levelName.empty())
+	if (levelName.empty() || clazz.empty())
 	{
 		return Level::toLevelLS(value, defaultValue);
+	}
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Desired ") + Level::getStaticClass().getName()
+				+ LOG4CXX_STR(" sub-class: [") + clazz + LOG4CXX_STR("]"));
 	}
 
 	try
@@ -367,18 +358,11 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 			dynamic_cast<const Level::LevelClass&>(Loader::loadClass(clazz));
 		return levelClass.toLevel(levelName);
 	}
-	catch (ClassNotFoundException&)
-	{
-		LogLog::warn(((LogString) LOG4CXX_STR("custom level class ["))
-			+ clazz + LOG4CXX_STR("] not found."));
-	}
 	catch (Exception& oops)
 	{
-		LogLog::warn(
-			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
-			LOG4CXX_STR("] conversion) failed."), oops);
+		LogLog::error(LOG4CXX_STR("Could not create ") + Level::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 	}
-	catch(const std::bad_cast&)
+	catch (const std::bad_cast&)
 	{
 		LogLog::warn(
 			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("] unable to be converted to "
@@ -416,25 +400,27 @@ ObjectPtr OptionConverter::instantiateByKey(Properties& props, const LogString& 
 ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 	const Class& superClass, const ObjectPtr& defaultValue)
 {
-	if (!className.empty())
+	if (LogLog::isDebugEnabled())
 	{
-		try
-		{
-			const Class& classObj = Loader::loadClass(className);
-			ObjectPtr newObject =  ObjectPtr(classObj.newInstance());
+		LogLog::debug(LOG4CXX_STR("Desired ") + superClass.getName()
+			+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
+	}
+	try
+	{
+		const Class& classObj = Loader::loadClass(className);
+		ObjectPtr newObject =  ObjectPtr(classObj.newInstance());
 
-			if (!newObject->instanceof(superClass))
-			{
-				return defaultValue;
-			}
-
-			return newObject;
-		}
-		catch (Exception& e)
+		if (!newObject->instanceof(superClass))
 		{
-			LogLog::error(LOG4CXX_STR("Could not instantiate class [") +
-				className + LOG4CXX_STR("]."), e);
+			LogLog::error(LOG4CXX_STR("Not a ") + superClass.getName() + LOG4CXX_STR(" sub-class"));
+			return defaultValue;
 		}
+
+		return newObject;
+	}
+	catch (Exception& e)
+	{
+		LogLog::error(LOG4CXX_STR("Could not create ") + superClass.getName() + LOG4CXX_STR(" sub-class"), e);
 	}
 
 	return defaultValue;
