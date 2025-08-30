@@ -492,7 +492,7 @@ This can be done:
 Logger::getLogger("MyLogger")->setAdditivity(false);</pre>
 - in [a properties configuration file] using
 <pre>log4j.logger.MyLogger=debug
-log4j.logger.MyLogger.additivity=false</pre>
+log4j.additivity.MyLogger=false</pre>
 - in [an XML configuration file] using
 <pre>\<logger name="MyLogger" >
    \<priority value="debug"/>

@@ -139,7 +139,7 @@ log4j.appender.csvData.layout=org.apache.log4j.PatternLayout
 log4j.appender.csvData.layout.ConversionPattern=%m,%d{yyyy-MM-dd,HH:mm,ss.SSS}%n
 
 #log4j.logger.csv.URCommunicationPort=DEBUG, csvData
-#log4j.logger.csv.URCommunicationPort.additivity=false
+#log4j.additivity.csv.URCommunicationPort=false
 
 # UnitTests
 #log4j.logger.MockArmTests=DEBUG
