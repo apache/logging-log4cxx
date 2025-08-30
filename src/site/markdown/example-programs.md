@@ -87,7 +87,8 @@ method creates a rather simple Log4cxx setup. This method is hardwired
 to add to the root logger a [ConsoleAppender](@ref log4cxx.ConsoleAppender).
 The output will be formatted using a
 [PatternLayout](@ref log4cxx.PatternLayout)
-set to the pattern `%%r [%%t] %%p %%c %%x - %%m%%n`.
+with either <code>%%r [%%t] %%p %%c %%x - %%Y%%m%%y%%n</code> if color is enabled (the default)
+or <code>%%r [%%t] %%p %%c %%x - %%m%%n</code> if [color is disabled](disabling-color.html).
 
 Note that by default, the root logger is assigned a *DEBUG* level.
 

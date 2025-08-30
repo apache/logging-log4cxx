@@ -54,13 +54,13 @@ Change Log {#changelog}
 
 Release 1.6.0 includes the following new features:
 
-Release 1.6.0 includes the following new features:
-
 * Configuration ${varname} values can be set programatically prior to loading a configuration file (see \ref com/foo/config4.cpp)
    \[[#520](https://github.com/apache/logging-log4cxx/pull/520)\]
 * The current executable's file name and its components are available for use in a configuration file
 and the LOG4CXX_CONFIGURATION environment variable (see log4cxx::spi::Configurator::properties).
    \[[#520](https://github.com/apache/logging-log4cxx/pull/520)\]
+* Console output (Log4cxx internal logging and BasicConfigurator) use a color per message level by default
+   \[[#529](https://github.com/apache/logging-log4cxx/pull/529)\]
 
 The following issues have been addressed:
 

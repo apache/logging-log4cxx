@@ -53,14 +53,24 @@ class LOG4CXX_EXPORT LogLog
 		~LogLog();
 
 		/**
-		 *  Is internal debugging enabled?
+		 *  Are debug messages sent to SystemErrWriter?
 		 **/
 		static bool isDebugEnabled();
 
 		/**
-		Use the value of \c enabled as the new internal debug logging state.
+		Start/stop outputing debug messages if \c newValue is true/false respectively.
 		*/
-		static void setInternalDebugging(bool enabled);
+		static void setInternalDebugging(bool newValue);
+
+		/**
+		 *  Are messages output in color?
+		 **/
+		static bool isColorEnabled();
+
+		/**
+		Start/stop coloring message text if \c newValue is true/false respectively.
+		*/
+		static void setColorEnabled(bool newValue);
 
 		/**
 		Output \c msg to SystemErrWriter if internal debug logging is enabled.
@@ -102,8 +112,8 @@ class LOG4CXX_EXPORT LogLog
 		static void warn(const LogString&  msg, const std::exception& ex);
 
 	private:
-		static void emit_log(const LogString& msg);
-		static void emit_log(const std::exception& ex);
+		static void emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix);
+		static void emit_log(const LogString& prefix, const std::exception& ex, const LogString& suffix);
 };
 }  // namespace helpers
 } // namespace log4cxx
