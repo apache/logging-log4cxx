@@ -57,7 +57,9 @@ jobs:
         if [ ${{ matrix.odbc }} == ON ]; then brew install unixodbc; fi
         if [ ${{ matrix.qt }} == ON ]; then brew install qt; fi
         if [ ${{ matrix.cxx }} == "g++-14" -a $(cmake --version | head -1 | awk '{split($3, a, "."); print a[1]}') -lt 4 ]
-        then brew install cmake ninja
+        then
+          brew uninstall cmake
+          brew install cmake ninja
         fi
 
     - name: 'configure and build'
