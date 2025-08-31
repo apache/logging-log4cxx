@@ -87,7 +87,7 @@ void SyslogAppender::initSyslogFacilityStr()
 		LogString msg(LOG4CXX_STR("\""));
 		StringHelper::toString(_priv->syslogFacility, p, msg);
 		msg.append(LOG4CXX_STR("\" is an unknown syslog facility. Defaulting to \"USER\"."));
-		LogLog::error(msg);
+		LogLog::warn(msg);
 		_priv->syslogFacility = LOG_USER;
 		_priv->facilityStr = LOG4CXX_STR("user:");
 	}
@@ -446,7 +446,7 @@ void SyslogAppender::setFacility(const LogString& facilityName)
 
 	if (_priv->syslogFacility == LOG_UNDEF)
 	{
-		LogLog::error(LOG4CXX_STR("[") + facilityName +
+		LogLog::warn(LOG4CXX_STR("[") + facilityName +
 			LOG4CXX_STR("] is an unknown syslog facility. Defaulting to [USER]."));
 		_priv->syslogFacility = LOG_USER;
 	}
