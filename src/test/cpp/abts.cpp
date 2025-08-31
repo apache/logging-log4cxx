@@ -88,7 +88,7 @@ static void update_status(void)
 	if (!quiet)
 	{
 		curr_char = (curr_char + 1) % ABTS_STAT_SIZE;
-		fprintf(stdout, "%s\b%c", infoPrefix, status[curr_char]);
+		fprintf(stdout, "\b%c", status[curr_char]);
 		fflush(stdout);
 	}
 }
@@ -259,10 +259,10 @@ static int report(abts_suite* suite)
 		if (dptr->failed.size() != 0)
 		{
 			float percent = ((float)dptr->failed.size() / (float)dptr->num_test);
-			fprintf(stdout, "%s%-35s\t\t%5d\t%4d\t%6.2f%%\n", warnPrefix, dptr->name.c_str(),
-				dptr->num_test, (int)dptr->failed.size(), percent * 100);
+			fprintf(stdout, "%s%-35s\t\t%5d\t%4d\t%6.2f%%%s\n", warnPrefix, dptr->name.c_str(),
+				dptr->num_test, (int)dptr->failed.size(), percent * 100, msgSuffix);
 			for( const char* failed_name : dptr->failed ){
-				fprintf(stdout, "%s  %s%s\n", warnPrefix, failed_name , msgSuffix);
+				fprintf(stdout, "  %s%s%s\n", warnPrefix, failed_name, msgSuffix);
 			}
 		}
 
