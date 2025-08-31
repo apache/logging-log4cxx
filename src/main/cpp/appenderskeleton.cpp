@@ -99,7 +99,7 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 {
 	if (m_priv->closed)
 	{
-		LogLog::error(((LogString) LOG4CXX_STR("Attempted to append to closed appender named ["))
+		LogLog::warn(LOG4CXX_STR("Attempted to append to closed appender named [")
 			+ m_priv->name + LOG4CXX_STR("]."));
 		return;
 	}
