@@ -178,7 +178,7 @@ void WriterAppender::closeWriter()
 		}
 		catch (IOException& e)
 		{
-			LogLog::error(LogString(LOG4CXX_STR("Could not close writer for WriterAppender named ")) + _priv->name, e);
+			LogLog::warn(LOG4CXX_STR("Could not close writer for WriterAppender named ") + _priv->name, e);
 		}
 	}
 
