@@ -252,7 +252,7 @@ static int report(abts_suite* suite)
 
 	dptr = suite->head;
 	fprintf(stdout, "%s%-35s\t\tTotal\tFail\tFailed %%%s\n", warnPrefix, "Failed Tests", msgSuffix);
-	fprintf(stdout, "=======================================================================\n");
+	fprintf(stdout, "%s=======================================================================%s\n", warnPrefix, msgSuffix);
 
 	while (dptr != NULL)
 	{
