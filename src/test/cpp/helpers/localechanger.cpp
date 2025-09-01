@@ -45,7 +45,7 @@ LocaleChanger::LocaleChanger(const char* locale)
 		LogString errorMsg;
 		errorMsg.append(lsMsg);
 		errorMsg.append(LOG4CXX_STR(" - in LocaleChanger"));
-		LogLog::error(errorMsg);
+		LogLog::warn(errorMsg);
 	}
 }
 

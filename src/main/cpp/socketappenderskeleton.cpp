@@ -105,7 +105,7 @@ void SocketAppenderSkeleton::connect(Pool& p)
 			msg += LOG4CXX_STR("].");
 
 			fireConnector(); // fire the connector thread
-			LogLog::error(msg, e);
+			LogLog::warn(msg, e);
 		}
 	}
 }
@@ -204,7 +204,7 @@ void SocketAppenderSkeleton::retryConnect()
 		}
 		catch (ConnectException& e)
 		{
-			LogLog::error(LOG4CXX_STR("Remote host ")
+			LogLog::warn(LOG4CXX_STR("Remote host ")
 				+ _priv->address->toString()
 				+ LOG4CXX_STR(" refused connection."), e);
 		}
@@ -214,7 +214,7 @@ void SocketAppenderSkeleton::retryConnect()
 				+ _priv->address->toString() + LOG4CXX_STR(":"));
 			StringHelper::toString(_priv->port, p, msg);
 			msg += LOG4CXX_STR("].");
-			LogLog::error(msg, e);
+			LogLog::warn(msg, e);
 		}
 
 		if (_priv->reconnectionDelay > 0)
