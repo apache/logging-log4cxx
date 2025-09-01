@@ -352,8 +352,8 @@ void abts_size_equal(abts_case* tc, size_t expected, size_t actual, int lineno)
 	if (verbose)
 	{
 		/* Note that the comparison is type-exact, reporting must be a best-fit */
-		fprintf(stderr, "%sLine %d: expected %lu, but saw %lu\n", warnPrefix, lineno,
-			(unsigned long)expected, (unsigned long)actual);
+		fprintf(stderr, "%sLine %d: expected %lu, but saw %lu%s\n", warnPrefix, lineno,
+			(unsigned long)expected, (unsigned long)actual, msgSuffix);
 		fflush(stderr);
 	}
 }
