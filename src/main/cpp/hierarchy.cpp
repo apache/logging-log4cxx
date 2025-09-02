@@ -64,6 +64,8 @@ struct Hierarchy::HierarchyPrivate
 	std::vector<AppenderPtr> allAppenders;
 
 	mutable std::mutex listenerMutex;
+
+	const char* alreadyTriedMethod{ NULL };
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
@@ -302,10 +304,10 @@ bool Hierarchy::isDisabled(int level) const
 void Hierarchy::ensureIsConfigured(std::function<void()> configurator)
 {
 	std::lock_guard<std::mutex> lock(m_priv->configuredMutex);
-	if (!m_priv->configured)
+	if (!m_priv->configured && m_priv->alreadyTriedMethod != configurator.target_type().name())
 	{
 		configurator();
-		m_priv->configured = true;
+		m_priv->alreadyTriedMethod = configurator.target_type().name();
 	}
 }
 
@@ -343,6 +345,7 @@ void Hierarchy::shutdown()
 void Hierarchy::shutdownInternal()
 {
 	m_priv->configured = false;
+	m_priv->alreadyTriedMethod = NULL;
 
 	// begin by closing nested appenders
 	if (m_priv->root)
