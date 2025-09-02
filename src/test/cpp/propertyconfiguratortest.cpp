@@ -41,7 +41,8 @@ public:
 		props.put(LOG4CXX_STR("log4j.logger.org.apache.log4j.PropertyConfiguratorTest"), LOG4CXX_STR("inherited,VECTOR2"));
 		props.put(LOG4CXX_STR("log4j.appender.VECTOR1"), LOG4CXX_STR("org.apache.log4j.VectorAppender"));
 		props.put(LOG4CXX_STR("log4j.appender.VECTOR2"), LOG4CXX_STR("org.apache.log4j.VectorAppender"));
-		PropertyConfigurator::configure(props);
+		auto status = PropertyConfigurator::configure(props);
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		LoggerPtr logger = Logger::getLogger("org.apache.log4j.PropertyConfiguratorTest");
 		LOGUNIT_ASSERT_EQUAL((int) Level::DEBUG_INT,
 			logger->getEffectiveLevel()->toInt());
@@ -58,7 +59,8 @@ public:
 		props.put(LOG4CXX_STR("log4j.logger.org.apache.log4j.PropertyConfiguratorTest"), LOG4CXX_STR("NuLL,VECTOR2"));
 		props.put(LOG4CXX_STR("log4j.appender.VECTOR1"), LOG4CXX_STR("org.apache.log4j.VectorAppender"));
 		props.put(LOG4CXX_STR("log4j.appender.VECTOR2"), LOG4CXX_STR("org.apache.log4j.VectorAppender"));
-		PropertyConfigurator::configure(props);
+		auto status = PropertyConfigurator::configure(props);
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		LoggerPtr logger = Logger::getLogger("org.apache.log4j.PropertyConfiguratorTest");
 		LOGUNIT_ASSERT_EQUAL((int) Level::DEBUG_INT,
 			logger->getEffectiveLevel()->toInt());
@@ -74,7 +76,8 @@ public:
 		props.put(LOG4CXX_STR("log4j.rootLogger"), LOG4CXX_STR("ALL,VECTOR1"));
 		props.put(LOG4CXX_STR("log4j.appender.VECTOR1"), LOG4CXX_STR("org.apache.log4j.VectorAppender"));
 		props.put(LOG4CXX_STR("log4j.appender.VECTOR1.threshold"), LOG4CXX_STR("WARN"));
-		PropertyConfigurator::configure(props);
+		auto status = PropertyConfigurator::configure(props);
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		LoggerPtr root(Logger::getRootLogger());
 		VectorAppenderPtr appender = log4cxx::cast<VectorAppender>(root->getAppender(LOG4CXX_STR("VECTOR1")));
 		LOGUNIT_ASSERT_EQUAL((int) Level::WARN_INT, appender->getThreshold()->toInt());

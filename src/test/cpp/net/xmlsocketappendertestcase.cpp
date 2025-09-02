@@ -48,7 +48,8 @@ class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
 
 		void test_fluent_bit()
 		{
-			xml::DOMConfigurator::configure("input/xml/fluent-bit.xml");
+			auto status = xml::DOMConfigurator::configure("input/xml/fluent-bit.xml");
+			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 			auto log = Logger::getRootLogger();
 			for (int i = 0; i < 100; ++i)
 			{

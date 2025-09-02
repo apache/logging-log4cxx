@@ -48,7 +48,8 @@ public:
 
 	void test1()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/locationdisabled.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/locationdisabled.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		LOGUNIT_ASSERT(Compare::compare(LOG4CXX_STR("output/location-disabled-test"), LOG4CXX_FILE("witness/location1-disabled")));
 	}

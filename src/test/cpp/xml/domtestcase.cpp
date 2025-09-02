@@ -17,6 +17,7 @@
 
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/defaultconfigurator.h>
 #include "../logunit.h"
 #include "../util/compare.h"
 #include "xlevel.h"
@@ -56,6 +57,7 @@ LOGUNIT_CLASS(DOMTestCase)
 	LOGUNIT_TEST(recursiveAppenderRef);
 	LOGUNIT_TEST(invalidAppender);
 	LOGUNIT_TEST(invalidLevel);
+	LOGUNIT_TEST(testAutoFallback);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
@@ -73,6 +75,7 @@ LOGUNIT_CLASS(DOMTestCase)
 public:
 	void setUp()
 	{
+		LogLog::setInternalDebugging(true);
 		root = Logger::getRootLogger();
 		logger = Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.DOMTestCase"));
 	}
@@ -89,8 +92,8 @@ public:
 
 	void test1()
 	{
-		LogLog::setInternalDebugging(true);
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase1.xml"));
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase1.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter cf1;
@@ -134,7 +137,8 @@ public:
 	//
 	void test2()
 	{
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input\\xml\\DOMTestCase2.xml"));
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input\\xml\\DOMTestCase2.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ThreadFilter threadFilter;
@@ -196,7 +200,8 @@ public:
 	 */
 	void test3()
 	{
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase3.xml"));
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase3.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		LOG4CXX_INFO(logger, "File name is expected to end with a superscript 3");
 #if LOG4CXX_LOGCHAR_IS_UTF8
 		const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, static_cast<logchar>(0xC2), static_cast<logchar>(0xB3), 0 };
@@ -216,7 +221,8 @@ public:
 	 */
 	void test4()
 	{
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase4.xml"));
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase4.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		LOG4CXX_INFO(logger, "File name is expected to end with an ideographic 4");
 #if LOG4CXX_LOGCHAR_IS_UTF8
 		const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, static_cast<logchar>(0xE3), static_cast<logchar>(0x86), static_cast<logchar>(0x95), 0 };
@@ -234,22 +240,46 @@ public:
 	void recursiveAppenderRef()
 	{
 		// Load a bad XML file, make sure that we don't crash in endless recursion
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMConfiguratorRecursive.xml"));
-  }
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMConfiguratorRecursive.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::NotConfigured);
+	}
 
 	void invalidAppender()
 	{
 		// Load an XML file that attempts to use a levelmatchfilter as an appender.
 		// We should not crash when loading this file.
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMInvalidAppender.xml"));
-  }
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMInvalidAppender.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::NotConfigured);
+	}
   
 	void invalidLevel()
 	{
 		// Load an XML file that attempts to use a filter as a level.
 		// We should not crash when loading this file.
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMInvalidLevel.xml"));
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMInvalidLevel.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 	}
+
+	void testAutoFallback()
+	{
+		LogString fileName = LOG4CXX_STR("DOMTestCase5");
+		std::vector<LogString> paths
+		{ LOG4CXX_STR("input/xml")
+		};
+		std::vector<LogString> names
+		{ LOG4CXX_STR("DOMTestCase5_bad1.xml")
+		, LOG4CXX_STR("DOMTestCase5_bad2.xml")
+		, LOG4CXX_STR("DOMTestCase5_good.xml")
+		};
+		LogString configFile;
+		spi::ConfigurationStatus status;
+		std::tie(status, configFile) = DefaultConfigurator::configureFromFile(paths, names);
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+		LOGUNIT_ASSERT(configFile.npos != configFile.find(LOG4CXX_STR("DOMTestCase5_good.xml")));
+		// Prevent "DOMTestCase5_good.xml" use in subsequent default configuration
+		DefaultConfigurator::setConfigurationFileName(LogString());
+	}
+
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(DOMTestCase);

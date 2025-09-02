@@ -60,9 +60,8 @@ public:
 	void test1()
 	{
 #if LOG4CXX_HAS_DOMCONFIGURATOR
-		log4cxx::xml::DOMConfigurator::configure(
-			"./input/rolling/filter1.xml" /*, LogManager::getLoggerRepository() */);
-
+		auto status = xml::DOMConfigurator::configure("./input/rolling/filter1.xml");
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common(LOG4CXX_STR("output/filterBased-test1"));
 #endif
 	}

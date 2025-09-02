@@ -69,7 +69,8 @@ public:
 
 	void test1()
 	{
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel1.xml"));
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel1.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		const File witness("witness/customLevel.1");
 		LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
@@ -77,7 +78,8 @@ public:
 
 	void test2()
 	{
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel2.xml"));
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel2.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		const File witness("witness/customLevel.2");
 		LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
@@ -86,6 +88,7 @@ public:
 	void test3()
 	{
 		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel3.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		const File witness("witness/customLevel.3");
 		LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
@@ -93,7 +96,8 @@ public:
 
 	void test4()
 	{
-		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel4.xml"));
+		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel4.xml"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		const File witness("witness/customLevel.4");
 		LOGUNIT_ASSERT(Compare::compare(TEMP, witness));

@@ -585,6 +585,12 @@ CharsetDecoderPtr CharsetDecoder::getDecoder(const LogString& charset)
 #endif
 }
 
+log4cxx_status_t CharsetDecoder::decode(const char* in, size_t maxByteCount, LogString& out)
+{
+	ByteBuffer buf((char*)in, strnlen_s(in, maxByteCount));
+	return decode(buf, out);
+}
+
 
 
 

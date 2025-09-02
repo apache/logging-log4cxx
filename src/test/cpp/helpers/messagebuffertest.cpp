@@ -148,7 +148,8 @@ public:
 		root = Logger::getRootLogger();
 		logger = Logger::getLogger(LOG4CXX_STR("java.org.apache.log4j.PatternLayoutTest"));
 
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/messagebuffer1.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/messagebuffer1.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 
 		int num = 220;
 		LOG4CXX_INFO(logger, "number in hex: " << std::hex << num);

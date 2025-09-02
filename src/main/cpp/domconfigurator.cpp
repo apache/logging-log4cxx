@@ -68,6 +68,7 @@ struct DOMConfigurator::DOMConfiguratorPrivate
 	helpers::Properties props = Configurator::properties();
 	spi::LoggerRepositoryPtr repository;
 	spi::LoggerFactoryPtr loggerFactory;
+	bool appenderAdded{ false };
 };
 
 namespace LOG4CXX_NS
@@ -323,6 +324,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 							+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
 					}
 					aa->addAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
+					m_priv->appenderAdded = true;
 				}
 				else if (refName.empty())
 				{
@@ -461,7 +463,7 @@ void DOMConfigurator::parseLogger(
 
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Retreiving an instance of ") + loggerName);
+		LogLog::debug(LOG4CXX_STR("Getting [") + loggerName + LOG4CXX_STR("]"));
 	}
 	LoggerPtr logger = m_priv->repository->getLogger(loggerName, m_priv->loggerFactory);
 
@@ -493,7 +495,12 @@ void DOMConfigurator::parseLoggerFactory(
 
 	if (className.empty())
 	{
-		LogLog::error(LOG4CXX_STR("Logger Factory tag class attribute not found."));
+		LogString msg(LOG4CXX_STR("["));
+		utf8Decoder->decode(factoryElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+		msg += LOG4CXX_STR("] attribute [");
+		utf8Decoder->decode(CLASS_ATTR, MAX_ATTRIBUTE_NAME_LEN, msg);
+		msg += LOG4CXX_STR("] not found");
+		LogLog::warn(msg);
 	}
 	else
 	{
@@ -561,7 +568,16 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			AppenderPtr appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders);
 			LogString refName =  subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
 
-			if (appender)
+			if (refName.empty())
+			{
+				LogString msg(LOG4CXX_STR("["));
+				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR("] attribute [");
+				utf8Decoder->decode(REF_ATTR, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR("] not found");
+				LogLog::warn(msg);
+			}
+			else if (appender)
 			{
 				if (LogLog::isDebugEnabled())
 				{
@@ -573,8 +589,8 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			}
 			else
 			{
-				LogLog::debug(LOG4CXX_STR("Appender named [") + refName +
-					LOG4CXX_STR("] not found."));
+				LogLog::warn(Appender::getStaticClass().getName()
+					+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] not found"));
 			}
 
 		}
@@ -594,8 +610,10 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 	if (newappenders.empty())
 		logger->removeAllAppenders();
 	else
+	{
 		logger->replaceAppenders(newappenders);
-
+		m_priv->appenderAdded = true;
+	}
 	propSetter.activate(p);
 }
 
@@ -760,7 +778,7 @@ void DOMConfigurator::parseLevel(
 	LogString levelStr(subst(getAttribute(utf8Decoder, element, VALUE_ATTR)));
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Level value for ") + loggerName + LOG4CXX_STR(" is [") + levelStr + LOG4CXX_STR("]"));
+		LogLog::debug(LOG4CXX_STR("Setting [") + loggerName + LOG4CXX_STR("] level to [") + levelStr + LOG4CXX_STR("]"));
 	}
 
 	if (StringHelper::equalsIgnoreCase(levelStr, LOG4CXX_STR("INHERITED"), LOG4CXX_STR("inherited"))
@@ -815,7 +833,7 @@ void DOMConfigurator::parseLevel(
 
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(loggerName + LOG4CXX_STR(" level set to ") +
+		LogLog::debug(LOG4CXX_STR("[") + loggerName + LOG4CXX_STR("] level is ") +
 			logger->getEffectiveLevel()->toString());
 	}
 }
@@ -841,7 +859,6 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 	)
 {
 	m_priv->repository = repository ? repository : LogManager::getLoggerRepository();
-	m_priv->repository->setConfigured(true);
 
 #if LOG4CXX_ABI_VERSION <= 15
 	m_priv->loggerFactory = std::make_shared<DefaultLoggerFactory>();
@@ -910,6 +927,10 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		}
 	}
 
+	if (!m_priv->appenderAdded)
+		return spi::ConfigurationStatus::NotConfigured;
+
+	m_priv->repository->setConfigured(true);
 	return spi::ConfigurationStatus::Configured;
 }
 
@@ -1042,7 +1063,12 @@ void DOMConfigurator::parse(
 		}
 		else
 		{
-			LogLog::error(LOG4CXX_STR("DOM element is - not a <configuration> element."));
+			LogString msg(LOG4CXX_STR("Root element ["));
+			utf8Decoder->decode(element->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+			msg += LOG4CXX_STR("] is not [");
+			utf8Decoder->decode(CONFIGURATION_TAG, MAX_ATTRIBUTE_NAME_LEN, msg);
+			msg += LOG4CXX_STR("]");
+			LogLog::error(msg);
 			return;
 		}
 	}
@@ -1163,8 +1189,7 @@ LogString DOMConfigurator::getAttribute(
 	{
 		if (attrName == attr->name)
 		{
-			ByteBuffer buf((char*) attr->value, strnlen_s(attr->value, MAX_ATTRIBUTE_NAME_LEN));
-			utf8Decoder->decode(buf, attrValue);
+			utf8Decoder->decode(attr->value, MAX_ATTRIBUTE_NAME_LEN, attrValue);
 		}
 	}
 

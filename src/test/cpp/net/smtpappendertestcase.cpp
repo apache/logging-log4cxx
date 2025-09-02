@@ -106,7 +106,8 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		 */
 		void testTrigger()
 		{
-			xml::DOMConfigurator::configure("input/xml/smtpAppender1.xml");
+			auto status = xml::DOMConfigurator::configure("input/xml/smtpAppender1.xml");
+			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 			auto appender = log4cxx::cast<SMTPAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("A1")));
 			LOGUNIT_ASSERT(appender);
 			auto evaluator = appender->getEvaluator();
@@ -135,7 +136,8 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 
 		void testValid()
 		{
-			xml::DOMConfigurator::configure("input/xml/smtpAppenderValid.xml");
+			auto status = xml::DOMConfigurator::configure("input/xml/smtpAppenderValid.xml");
+			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 			auto root = Logger::getRootLogger();
 			LOG4CXX_INFO(root, "Hello, World.\n\nThis paragraph should be preceeded by a blank line.");
 

@@ -77,7 +77,8 @@ public:
 
 	void test1()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/l7d1.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/l7d1.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 
 		log4cxx::helpers::Pool pool;
 

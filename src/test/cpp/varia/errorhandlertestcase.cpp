@@ -85,7 +85,8 @@ public:
 
 	void test1()
 	{
-		DOMConfigurator::configure("input/xml/fallback1.xml");
+		auto status = DOMConfigurator::configure("input/xml/fallback1.xml");
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		auto appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
 		auto primary = log4cxx::cast<FileAppender>(appender);
 		auto errHandle = primary->getErrorHandler();
@@ -127,7 +128,8 @@ public:
 
 	void test2()
 	{
-		DOMConfigurator::configure("input/xml/fallback2.xml");
+		auto status = DOMConfigurator::configure("input/xml/fallback2.xml");
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		auto appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
 		auto primary = log4cxx::cast<FileAppender>(appender);
 		auto errHandle = primary->getErrorHandler();

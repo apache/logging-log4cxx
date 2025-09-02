@@ -111,7 +111,6 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure
 	)
 {
 	auto hierarchy = repository ? repository : LogManager::getLoggerRepository();
-	hierarchy->setConfigured(true);
 
 	Properties props = Configurator::properties();
 
@@ -225,14 +224,16 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 	configureRootLogger(properties, hierarchy);
 	configureLoggerFactory(properties);
 	parseCatsAndRenderers(properties, hierarchy);
-
 	LogLog::debug(LOG4CXX_STR("Finished configuring."));
+	auto result = registry->empty()
+		? spi::ConfigurationStatus::NotConfigured
+		: spi::ConfigurationStatus::Configured;
 
 	// We don't want to hold references to appenders preventing their
 	// destruction.
 	registry->clear();
 
-	return spi::ConfigurationStatus::Configured;
+	return result;
 }
 
 void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
