@@ -86,19 +86,44 @@ class PropertyWatchdog  : public FileWatchdog
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
+using RegistryType = std::map<LogString, AppenderPtr>;
+using RegistryPtr = std::unique_ptr<RegistryType>;
+
+#if 15 < LOG4CXX_ABI_VERSION
+struct PropertyConfigurator::PrivateData
+{
+
+	/**
+	Used internally to keep track of configured appenders.
+	*/
+	RegistryPtr registry{ std::make_unique<RegistryType>() };
+
+	/**
+	Used to create new instances of logger
+	*/
+	spi::LoggerFactoryPtr loggerFactory{ std::make_shared<LoggerFactory>() };
+
+	/**
+	True if an appender was added to a logger
+	*/
+	bool appenderAdded{ false };
+};
+PropertyConfigurator::PropertyConfigurator()
+	: m_priv{ std::make_unique<PrivateData>() }
+#else
+#define m_priv this
 PropertyConfigurator::PropertyConfigurator()
 	: registry(new std::map<LogString, AppenderPtr>())
-#if LOG4CXX_ABI_VERSION <= 15
 	, loggerFactory(new DefaultLoggerFactory())
-#else
-	, loggerFactory(new LoggerFactory())
 #endif
 {
 }
 
 PropertyConfigurator::~PropertyConfigurator()
 {
+#if LOG4CXX_ABI_VERSION <= 15
 	delete registry;
+#endif
 }
 
 spi::ConfigurationStatus PropertyConfigurator::doConfigure
@@ -223,13 +248,17 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 	configureLoggerFactory(properties);
 	parseCatsAndRenderers(properties, hierarchy);
 	LogLog::debug(LOG4CXX_STR("Finished configuring."));
-	auto result = registry->empty()
+#if LOG4CXX_ABI_VERSION <= 15
+	auto result = m_priv->registry->empty()
+#else
+	auto result = !m_priv->appenderAdded
+#endif
 		? spi::ConfigurationStatus::NotConfigured
 		: spi::ConfigurationStatus::Configured;
 
 	// We don't want to hold references to appenders preventing their
 	// destruction.
-	registry->clear();
+	m_priv->registry->clear();
 
 	if (spi::ConfigurationStatus::Configured == result)
 		hierarchy->setConfigured(true);
@@ -253,9 +282,9 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 #endif
 			);
 
-		loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
+		m_priv->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
 		Pool p;
-		PropertySetter::setProperties(loggerFactory, props, LOG4CXX_STR("log4j.factory."), p);
+		PropertySetter::setProperties(m_priv->loggerFactory, props, LOG4CXX_STR("log4j.factory."), p);
 	}
 }
 
@@ -297,7 +326,7 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 				).length();
 			auto loggerName = key.substr(prefixLength);
 			auto value = OptionConverter::findAndSubst(key, props);
-			auto logger = hierarchy->getLogger(loggerName, loggerFactory);
+			auto logger = hierarchy->getLogger(loggerName, m_priv->loggerFactory);
 			auto additivity = parseAdditivityForLogger(props, logger, loggerName);
 			parseLogger(props, logger, key, loggerName, value, additivity);
 
@@ -407,7 +436,10 @@ void PropertyConfigurator::parseLogger(
 			newappenders.push_back(appender);
 		}
 	}
-
+#if 15 < LOG4CXX_ABI_VERSION
+	if (!newappenders.empty())
+		m_priv->appenderAdded = true;
+#endif
 	logger->reconfigure( newappenders, additivity );
 }
 
@@ -546,10 +578,10 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 void PropertyConfigurator::registryPut(const AppenderPtr& appender)
 {
-	(*registry)[appender->getName()] = appender;
+	(*m_priv->registry)[appender->getName()] = appender;
 }
 
 AppenderPtr PropertyConfigurator::registryGet(const LogString& name)
 {
-	return (*registry)[name];
+	return (*m_priv->registry)[name];
 }
