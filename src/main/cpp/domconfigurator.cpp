@@ -190,9 +190,19 @@ AppenderPtr DOMConfigurator::findAppenderByReference(
 	apr_xml_doc* doc,
 	AppenderMap& appenders)
 {
-	LogString appenderName(subst(getAttribute(utf8Decoder, appenderRef, REF_ATTR)));
-	AppenderMap::const_iterator match = appenders.find(appenderName);
 	AppenderPtr appender;
+	LogString appenderName(subst(getAttribute(utf8Decoder, appenderRef, REF_ATTR)));
+	if (appenderName.empty())
+	{
+		LogString msg(LOG4CXX_STR("["));
+		utf8Decoder->decode(appenderRef->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+		msg += LOG4CXX_STR("] attribute [");
+		utf8Decoder->decode(REF_ATTR, MAX_ATTRIBUTE_NAME_LEN, msg);
+		msg += LOG4CXX_STR("] not found");
+		LogLog::warn(msg);
+		return appender;
+	}
+	AppenderMap::const_iterator match = appenders.find(appenderName);
 
 	if (match != appenders.end())
 	{
@@ -311,31 +321,23 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 			}
 			else if (tagName == APPENDER_REF_TAG)
 			{
-				LogString refName = subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
-
-				if (!refName.empty() && appender->instanceof(AppenderAttachable::getStaticClass()))
+				if (appender->instanceof(AppenderAttachable::getStaticClass()))
 				{
 					AppenderAttachablePtr aa = LOG4CXX_NS::cast<AppenderAttachable>(appender);
-					if (LogLog::isDebugEnabled())
+					if (auto delegateAppender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
 					{
-						LogLog::debug(LOG4CXX_STR("Attaching ") + Appender::getStaticClass().getName()
-							+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
-							+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
+						if (LogLog::isDebugEnabled())
+						{
+							LogLog::debug(LOG4CXX_STR("Attaching ") + Appender::getStaticClass().getName()
+								+ LOG4CXX_STR(" named [") + delegateAppender->getName() + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
+								+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
+						}
+						aa->addAppender(delegateAppender);
 					}
-					if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
-					{
-						aa->addAppender(appender);
-						m_priv->appenderAdded = true;
-					}
-				}
-				else if (refName.empty())
-				{
-					LogLog::error(LOG4CXX_STR("Can't add ") + Appender::getStaticClass().getName() + LOG4CXX_STR(" with empty ref attribute"));
 				}
 				else
 				{
-					LogLog::error(LOG4CXX_STR("Requesting attachment of ") + Appender::getStaticClass().getName()
-						+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
+					LogLog::error(LOG4CXX_STR("Cannot attach to ") + Appender::getStaticClass().getName()
 						+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]")
 						+ LOG4CXX_STR(" which does not implement ") + AppenderAttachable::getStaticClass().getName());
 				}
@@ -568,23 +570,12 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 
 		if (tagName == APPENDER_REF_TAG)
 		{
-			LogString refName =  subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
-
-			if (refName.empty())
-			{
-				LogString msg(LOG4CXX_STR("["));
-				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
-				msg += LOG4CXX_STR("] attribute [");
-				utf8Decoder->decode(REF_ATTR, MAX_ATTRIBUTE_NAME_LEN, msg);
-				msg += LOG4CXX_STR("] not found");
-				LogLog::warn(msg);
-			}
-			else if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
+			if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
 			{
 				if (LogLog::isDebugEnabled())
 				{
 					LogLog::debug(LOG4CXX_STR("Adding ") + Appender::getStaticClass().getName()
-						+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("]")
+						+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]")
 						+ LOG4CXX_STR(" to logger [") + logger->getName() + LOG4CXX_STR("]"));
 				}
 				newappenders.push_back(appender);
