@@ -174,8 +174,6 @@ spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	spi::LoggerRepositoryPtr hierarchy)
 {
-	hierarchy->setConfigured(true);
-
 	LogString debugValue(properties.getProperty(LOG4CXX_STR("log4j.debug")));
 	if (!debugValue.empty())
 	{
@@ -233,6 +231,8 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 	// destruction.
 	registry->clear();
 
+	if (spi::ConfigurationStatus::Configured == result)
+		hierarchy->setConfigured(true);
 	return result;
 }
 
