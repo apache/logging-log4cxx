@@ -345,7 +345,7 @@ void Hierarchy::shutdown()
 void Hierarchy::shutdownInternal()
 {
 	m_priv->configured = false;
-	m_priv->alreadyTriedMethod = 0;
+	m_priv->alreadyTriedMethod = NULL;
 
 	// begin by closing nested appenders
 	if (m_priv->root)
