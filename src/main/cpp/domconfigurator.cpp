@@ -323,8 +323,11 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 							+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
 							+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
 					}
-					aa->addAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
-					m_priv->appenderAdded = true;
+					if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
+					{
+						aa->addAppender(appender);
+						m_priv->appenderAdded = true;
+					}
 				}
 				else if (refName.empty())
 				{
@@ -388,7 +391,8 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
 			}
 			else if (tagName == APPENDER_REF_TAG)
 			{
-				eh->setBackupAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
+				if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
+					eh->setBackupAppender(appender);
 			}
 			else if (tagName == LOGGER_REF)
 			{
@@ -565,7 +569,6 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 
 		if (tagName == APPENDER_REF_TAG)
 		{
-			AppenderPtr appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders);
 			LogString refName =  subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
 
 			if (refName.empty())
@@ -577,7 +580,7 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 				msg += LOG4CXX_STR("] not found");
 				LogLog::warn(msg);
 			}
-			else if (appender)
+			else if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
 			{
 				if (LogLog::isDebugEnabled())
 				{
@@ -587,12 +590,6 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 				}
 				newappenders.push_back(appender);
 			}
-			else
-			{
-				LogLog::warn(Appender::getStaticClass().getName()
-					+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] not found"));
-			}
-
 		}
 		else if (tagName == LEVEL_TAG)
 		{

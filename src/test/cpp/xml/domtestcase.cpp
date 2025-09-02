@@ -262,15 +262,14 @@ public:
 
 	void testAutoFallback()
 	{
-		LogString fileName = LOG4CXX_STR("DOMTestCase5");
 		std::vector<LogString> paths
-		{ LOG4CXX_STR("input/xml")
-		};
+			{ LOG4CXX_STR("input/xml")
+			};
 		std::vector<LogString> names
-		{ LOG4CXX_STR("DOMTestCase5_bad1.xml")
-		, LOG4CXX_STR("DOMTestCase5_bad2.xml")
-		, LOG4CXX_STR("DOMTestCase5_good.xml")
-		};
+			{ LOG4CXX_STR("DOMTestCase5_bad1.xml")
+			, LOG4CXX_STR("DOMTestCase5_bad2.xml")
+			, LOG4CXX_STR("DOMTestCase5_good.xml")
+			};
 		LogString configFile;
 		spi::ConfigurationStatus status;
 		std::tie(status, configFile) = DefaultConfigurator::configureFromFile(paths, names);
