@@ -29,6 +29,10 @@ static int verbose = 0;
 static int exclude = 0;
 static int quiet = 0;
 static int list_tests = 0;
+static char errorPrefix[] = {"\x1B[31m"}; // red
+static char warnPrefix[] = {"\x1B[33m"};  // yellow
+static char infoPrefix[] = {"\x1B[32m"};  // green
+static char msgSuffix[] = {"\x1B[0m"};    // none
 
 const char** testlist = NULL;
 //  defined in logunit.cpp
@@ -103,12 +107,12 @@ static void end_suite(abts_suite* suite)
 
 		if (last->failed.size() == 0)
 		{
-			fprintf(stdout, "SUCCESS\n");
+			fprintf(stdout, "%sSUCCESS%s\n", infoPrefix, msgSuffix);
 			fflush(stdout);
 		}
 		else
 		{
-			fprintf(stdout, "FAILED %d of %d\n", (int)last->failed.size(), last->num_test);
+			fprintf(stdout, "%sFAILED %d of %d%s\n", warnPrefix, (int)last->failed.size(), last->num_test, msgSuffix);
 			fflush(stdout);
 		}
 	}
@@ -148,7 +152,7 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 
 	if (p)
 	{
-		int length = p - suite_name;
+		auto length = p - suite_name;
 		subsuite->name = std::string( suite_name, length );
 	}
 	else
@@ -242,23 +246,23 @@ static int report(abts_suite* suite)
 
 	if (count == 0)
 	{
-		printf("All tests passed.\n");
+		fprintf(stdout, "%sAll tests passed.%s\n", infoPrefix, msgSuffix);
 		return 0;
 	}
 
 	dptr = suite->head;
-	fprintf(stdout, "%-35s\t\tTotal\tFail\tFailed %%\n", "Failed Tests");
-	fprintf(stdout, "=======================================================================\n");
+	fprintf(stdout, "%s%-35s\t\tTotal\tFail\tFailed %%%s\n", warnPrefix, "Failed Tests", msgSuffix);
+	fprintf(stdout, "%s=======================================================================%s\n", warnPrefix, msgSuffix);
 
 	while (dptr != NULL)
 	{
 		if (dptr->failed.size() != 0)
 		{
 			float percent = ((float)dptr->failed.size() / (float)dptr->num_test);
-			fprintf(stdout, "%-35s\t\t%5d\t%4d\t%6.2f%%\n", dptr->name.c_str(),
-				dptr->num_test, (int)dptr->failed.size(), percent * 100);
+			fprintf(stdout, "%s%-35s\t\t%5d\t%4d\t%6.2f%%%s\n", warnPrefix, dptr->name.c_str(),
+				dptr->num_test, (int)dptr->failed.size(), percent * 100, msgSuffix);
 			for( const char* failed_name : dptr->failed ){
-				fprintf(stdout, "  %s\n", failed_name );
+				fprintf(stdout, "  %s%s%s\n", warnPrefix, failed_name, msgSuffix);
 			}
 		}
 
@@ -301,7 +305,7 @@ void abts_int_equal(abts_case* tc, const int expected, const int actual, int lin
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: expected <%d>, but saw <%d>\n", lineno, expected, actual);
+		fprintf(stderr, "%sLine %d: expected <%d>, but saw <%d>%s\n", warnPrefix, lineno, expected, actual, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -324,7 +328,7 @@ void abts_int_nequal(abts_case* tc, const int expected, const int actual, int li
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: expected <%d>, but saw <%d>\n", lineno, expected, actual);
+		fprintf(stderr, "%sLine %d: expected <%d>, but saw <%d>%s\n", warnPrefix, lineno, expected, actual, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -348,8 +352,8 @@ void abts_size_equal(abts_case* tc, size_t expected, size_t actual, int lineno)
 	if (verbose)
 	{
 		/* Note that the comparison is type-exact, reporting must be a best-fit */
-		fprintf(stderr, "Line %d: expected %lu, but saw %lu\n", lineno,
-			(unsigned long)expected, (unsigned long)actual);
+		fprintf(stderr, "%sLine %d: expected %lu, but saw %lu%s\n", warnPrefix, lineno,
+			(unsigned long)expected, (unsigned long)actual, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -378,7 +382,7 @@ void abts_str_equal(abts_case* tc, const char* expected, const char* actual, int
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: expected <%s>, but saw <%s>\n", lineno, expected, actual);
+		fprintf(stderr, "%sLine %d: expected <%s>, but saw <%s>%s\n", warnPrefix, lineno, expected, actual, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -402,7 +406,7 @@ void abts_str_nequal(abts_case* tc, const char* expected, const char* actual,
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: expected <%s>, but saw <%s>\n", lineno, expected, actual);
+		fprintf(stderr, "%sLine %d: expected <%s>, but saw <%s>%s\n", warnPrefix, lineno, expected, actual, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -425,7 +429,7 @@ void abts_ptr_notnull(abts_case* tc, const void* ptr, int lineno)
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: Expected NULL, but saw <%p>\n", lineno, ptr);
+		fprintf(stderr, "%sLine %d: Expected NULL, but saw <%p>%s\n", warnPrefix, lineno, ptr, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -448,7 +452,7 @@ void abts_ptr_equal(abts_case* tc, const void* expected, const void* actual, int
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: expected <%p>, but saw <%p>\n", lineno, expected, actual);
+		fprintf(stderr, "%sLine %d: expected <%p>, but saw <%p>%s\n", warnPrefix, lineno, expected, actual, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -466,7 +470,7 @@ void abts_fail(abts_case* tc, const char* message, int lineno)
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: %s\n", lineno, message);
+		fprintf(stderr, "%sLine %d: %s%s\n", warnPrefix, lineno, message, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -489,7 +493,7 @@ void abts_assert(abts_case* tc, const char* message, int condition, int lineno)
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: %s\n", lineno, message);
+		fprintf(stderr, "%sLine %d: %s%s\n", warnPrefix, lineno, message, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -512,7 +516,7 @@ void abts_true(abts_case* tc, int condition, int lineno)
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: Condition is false, but expected true\n", lineno);
+		fprintf(stderr, "%sLine %d: Condition is false, but expected true%s\n", warnPrefix, lineno, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -525,7 +529,7 @@ void abts_not_impl(abts_case* tc, const char* message, int lineno)
 
 	if (verbose)
 	{
-		fprintf(stderr, "Line %d: %s\n", lineno, message);
+		fprintf(stderr, "%sLine %d: %s%s\n", warnPrefix, lineno, message, msgSuffix);
 		fflush(stderr);
 	}
 }
@@ -572,7 +576,7 @@ int main(int argc, const char* const argv[])
 
 		if (argv[i][0] == '-')
 		{
-			fprintf(stderr, "Invalid option: `%s'\n", argv[i]);
+			fprintf(stderr, "%sInvalid option: `%s'%s\n", errorPrefix, argv[i], msgSuffix);
 			exit(1);
 		}
 
