@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log4cxx/private/string_c11.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/appender.h>

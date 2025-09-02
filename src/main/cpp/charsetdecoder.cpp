@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #define NOMINMAX /* tell windows not to define min/max macros */
+#include <log4cxx/private/string_c11.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
