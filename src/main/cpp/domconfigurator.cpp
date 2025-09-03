@@ -878,9 +878,8 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 
 		if (LogLog::isDebugEnabled())
 		{
-			LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
-					+ filename.getPath() + LOG4CXX_STR("]");
-			LogLog::debug(debugMsg);
+			LogLog::debug(LOG4CXX_STR("Loading configuration file [")
+					+ filename.getPath() + LOG4CXX_STR("]"));
 		}
 
 		rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
@@ -915,7 +914,12 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 	}
 
 	if (!m_priv->appenderAdded)
+	{
+		LogLog::warn(LOG4CXX_STR("[") + filename.getPath()
+			+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()
+			+ LOG4CXX_STR(" to a logger"));
 		return spi::ConfigurationStatus::NotConfigured;
+	}
 
 	m_priv->repository->setConfigured(true);
 	return spi::ConfigurationStatus::Configured;

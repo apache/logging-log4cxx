@@ -135,10 +135,13 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure
 #endif
 	)
 {
-	auto hierarchy = repository ? repository : LogManager::getLoggerRepository();
-
+	auto result = spi::ConfigurationStatus::NotConfigured;
+	if (LogLog::isDebugEnabled())
+	{
+		LogLog::debug(LOG4CXX_STR("Loading configuration file [")
+			+ configFileName.getPath() + LOG4CXX_STR("]"));
+	}
 	Properties props = Configurator::properties();
-
 	try
 	{
 		InputStreamPtr inputStream = InputStreamPtr( new FileInputStream(configFileName) );
@@ -146,29 +149,32 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure
 	}
 	catch (const IOException& ex)
 	{
-		LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
-		LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
-			+ configFileName.getPath() + LOG4CXX_STR("]: ") + lsMsg);
-		return spi::ConfigurationStatus::NotConfigured;
+		LogLog::error(LOG4CXX_STR("Could not load properties from [")
+			+ configFileName.getPath() + LOG4CXX_STR("]"), ex);
+		return result;
 	}
 
 	try
 	{
-		if (LogLog::isDebugEnabled())
+		result = doConfigure(props, repository ? repository : LogManager::getLoggerRepository());
+#if LOG4CXX_ABI_VERSION <= 15
+		if (m_priv->registry->empty())
+#else
+		if (!m_priv->appenderAdded)
+#endif
 		{
-			LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
-					+ configFileName.getPath() + LOG4CXX_STR("]");
-			LogLog::debug(debugMsg);
+			LogLog::warn(LOG4CXX_STR("[") + configFileName.getPath()
+				+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()
+				+ LOG4CXX_STR(" to a logger"));
 		}
-		return doConfigure(props, hierarchy);
 	}
 	catch (const std::exception& ex)
 	{
-		LogLog::error(((LogString) LOG4CXX_STR("Could not parse configuration file ["))
+		LogLog::error(LOG4CXX_STR("Exception thrown processing [")
 			+ configFileName.getPath() + LOG4CXX_STR("]: "), ex);
 	}
 
-	return spi::ConfigurationStatus::NotConfigured;
+	return result;
 }
 
 spi::ConfigurationStatus PropertyConfigurator::configure(const File& configFilename)
@@ -255,10 +261,6 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 #endif
 		? spi::ConfigurationStatus::NotConfigured
 		: spi::ConfigurationStatus::Configured;
-
-	// We don't want to hold references to appenders preventing their
-	// destruction.
-	m_priv->registry->clear();
 
 	if (spi::ConfigurationStatus::Configured == result)
 		hierarchy->setConfigured(true);
