@@ -860,8 +860,6 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 
 	if (rv != APR_SUCCESS)
 	{
-		// There is not technically an exception thrown here, but this behavior matches
-		// what the PropertyConfigurator does
 		LogLog::error(LOG4CXX_STR("Could not open configuration file [")
 			+ filename.getPath() + LOG4CXX_STR("]")
 			, IOException(rv));
