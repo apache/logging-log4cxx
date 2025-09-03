@@ -862,13 +862,9 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 	{
 		// There is not technically an exception thrown here, but this behavior matches
 		// what the PropertyConfigurator does
-		IOException io(rv);
-		LogString msg2(LOG4CXX_STR("Could not read configuration file ["));
-		msg2.append(filename.getPath());
-		msg2.append(LOG4CXX_STR("]. "));
-		LOG4CXX_DECODE_CHAR(msg, io.what());
-		msg2.append(msg);
-		LogLog::error(msg2);
+		LogLog::error(LOG4CXX_STR("Could not open configuration file [")
+			+ filename.getPath() + LOG4CXX_STR("]")
+			, IOException(rv));
 		return spi::ConfigurationStatus::NotConfigured;
 	}
 	else
@@ -886,23 +882,24 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 
 		if (rv != APR_SUCCESS)
 		{
-			char errbuf[2000];
-			char errbufXML[2000];
-			LogString msg2(LOG4CXX_STR("Error parsing file ["));
-			msg2.append(filename.getPath());
-			msg2.append(LOG4CXX_STR("], "));
-			apr_strerror(rv, errbuf, sizeof(errbuf));
-			LOG4CXX_DECODE_CHAR(lerrbuf, std::string(errbuf));
-			msg2.append(lerrbuf);
-
+			LogString reason;
 			if (parser)
 			{
-				apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
-				LOG4CXX_DECODE_CHAR(lerrbufXML, std::string(errbufXML));
-				msg2.append(lerrbufXML);
+				char errbuf[2000];
+				apr_xml_parser_geterror(parser, errbuf, sizeof(errbuf));
+				LOG4CXX_DECODE_CHAR(lsErrbuf, std::string(errbuf));
+				reason.append(lsErrbuf);
 			}
-
-			LogLog::error(msg2);
+			else
+			{
+				char errbuf[2000];
+				apr_strerror(rv, errbuf, sizeof(errbuf));
+				LOG4CXX_DECODE_CHAR(lsErrbuf, std::string(errbuf));
+				reason.append(lsErrbuf);
+			}
+			LogLog::error(LOG4CXX_STR("Error parsing file [")
+				+ filename.getPath() + LOG4CXX_STR("]")
+				, RuntimeException(reason));
 			return spi::ConfigurationStatus::NotConfigured;
 		}
 		else

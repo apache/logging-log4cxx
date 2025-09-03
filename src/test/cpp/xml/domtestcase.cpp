@@ -269,6 +269,7 @@ public:
 			{ LOG4CXX_STR("DOMTestCase5_bad0.xml")
 			, LOG4CXX_STR("DOMTestCase5_bad1.xml")
 			, LOG4CXX_STR("DOMTestCase5_bad2.xml")
+			, LOG4CXX_STR("DOMTestCase5_bad3.xml")
 			, LOG4CXX_STR("DOMTestCase5_good.xml")
 			};
 		LogString configFile;
