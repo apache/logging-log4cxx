@@ -105,14 +105,16 @@ public:
 
 	void test1()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout1.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout1.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.1")));
 	}
 
 	void test2()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout2.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout2.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -140,7 +142,8 @@ public:
 
 	void test3()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout3.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout3.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -170,7 +173,8 @@ public:
 	// 06 avr. 2002 18:30:58,937 [12345] DEBUG atternLayoutTest - Message 0
 	void test4()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout4.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout4.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -198,7 +202,8 @@ public:
 
 	void test5()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout5.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout5.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -226,7 +231,8 @@ public:
 
 	void test6()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout6.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout6.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -254,7 +260,8 @@ public:
 
 	void test7()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout7.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout7.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -282,7 +289,8 @@ public:
 
 	void test8()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout8.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout8.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 
@@ -313,7 +321,8 @@ public:
 
 	void test9()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout9.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout9.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -339,7 +348,8 @@ public:
 
 	void test10()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout10.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout10.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -371,7 +381,8 @@ public:
 
 	void test11()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout11.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout11.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -397,7 +408,8 @@ public:
 
 	void test12()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout12.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout12.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;
@@ -427,21 +439,24 @@ public:
 
 	void test13()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout13.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout13.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.13")));
 	}
 
 	void test14()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout14.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout14.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.14")));
 	}
 
 	void testMDC1()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout.mdc.1.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout.mdc.1.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		MDC::put(LOG4CXX_TEST_STR("key1"), LOG4CXX_TEST_STR("va11"));
 		MDC::put(LOG4CXX_TEST_STR("key2"), LOG4CXX_TEST_STR("va12"));
 		logger->debug(LOG4CXX_TEST_STR("Hello World"));

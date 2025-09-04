@@ -214,7 +214,6 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 					std::get<0>(result) = ConfigurationStatus::Configured;
 					return result;
 				}
-				LogLog::warn(LOG4CXX_STR("Unable to load: ") + candidate_str);
 			}
 		}
 	}

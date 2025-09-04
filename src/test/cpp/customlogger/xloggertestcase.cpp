@@ -74,7 +74,8 @@ public:
 		std::string fn("input/xml/customLogger");
 		fn.append(number);
 		fn.append(".xml");
-		DOMConfigurator::configure(fn);
+		auto status = DOMConfigurator::configure(fn);
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 
 		int i = 0;
 		LOG4CXX_LOG(logger, log4cxx::XLevel::getTrace(), "Message " << i);

@@ -84,7 +84,8 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 //
 		void testConnectUsingDSN()
 		{
-			xml::DOMConfigurator::configure("input/xml/odbcAppenderDSN-Log4cxxTest.xml");
+			auto status = xml::DOMConfigurator::configure("input/xml/odbcAppenderDSN-Log4cxxTest.xml");
+			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 			auto odbc = Logger::getLogger("DB.UnitTest");
 			for (int i = 0; i < 100; ++i)
 			{

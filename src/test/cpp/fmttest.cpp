@@ -85,21 +85,24 @@ public:
 
 	void test1()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/fmtLayout1.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/fmtLayout1.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.1")));
 	}
 
 	void test1_expanded()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/fmtLayout1_expanded.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/fmtLayout1_expanded.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.1")));
 	}
 
 	void test10()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/fmtLayout10.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/fmtLayout10.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 
 		ControlFilter filter1;

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #define NOMINMAX /* tell windows not to define min/max macros */
+#include <log4cxx/private/string_c11.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
@@ -583,6 +584,12 @@ CharsetDecoderPtr CharsetDecoder::getDecoder(const LogString& charset)
 #else
 	throw IllegalArgumentException(charset);
 #endif
+}
+
+log4cxx_status_t CharsetDecoder::decode(const char* in, size_t maxByteCount, LogString& out)
+{
+	ByteBuffer buf((char*)in, strnlen_s(in, maxByteCount));
+	return decode(buf, out);
 }
 
 

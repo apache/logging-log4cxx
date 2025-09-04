@@ -68,7 +68,8 @@ public:
 
 	void test1()
 	{
-		PropertyConfigurator::configure(File("input/ndc/NDC1.properties"));
+		auto status = PropertyConfigurator::configure(File("input/ndc/NDC1.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		LOGUNIT_ASSERT(Compare::compare(TEMP, File("witness/ndc/NDC.1")));
 	}

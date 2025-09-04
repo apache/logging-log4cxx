@@ -77,14 +77,24 @@ class LOG4CXX_EXPORT CharsetDecoder : public Object
 
 
 		/**
-		 *  Decodes as many bytes as possible from the given
-		 *   input buffer, writing the results to the given output string.
-		 *  @param in input buffer.
-		 *  @param out output string.
+		 *  Decodes as many bytes as possible from \c in,
+		 *  appending the result onto \c out.
+		 *  @param in a null terminated string.
+		 *  @param out the string onto which characters are appended.
 		 *  @return APR_SUCCESS if not encoding errors were found.
 		 */
-		virtual log4cxx_status_t decode(ByteBuffer& in,
-			LogString& out) = 0;
+		virtual log4cxx_status_t decode(ByteBuffer& in, LogString& out) = 0;
+
+
+		/**
+		 *  Decodes up to \c maxByteCount bytes from \c in,
+		 *  appending the result onto \c out.
+		 *  @param in a null terminated string.
+		 *  @param maxByteCount the limit on the size of \c in.
+		 *  @param out the string onto which characters are appended.
+		 *  @return APR_SUCCESS if not encoding errors were found.
+		 */
+		log4cxx_status_t decode(const char* in, size_t maxByteCount, LogString& out);
 
 		/**
 		 *  Determins if status value indicates an invalid byte sequence.

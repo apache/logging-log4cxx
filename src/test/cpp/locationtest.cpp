@@ -48,7 +48,8 @@ public:
 
 	void test1()
 	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/location1.properties"));
+		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/location1.properties"));
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		common();
 		LOGUNIT_ASSERT(Compare::compare(LOG4CXX_STR("output/location-good-test"), LOG4CXX_FILE("witness/location1-good")));
 	}

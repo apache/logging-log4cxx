@@ -249,6 +249,11 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 	virtual public spi::Configurator,
 	virtual public helpers::Object
 {
+#if 15 < LOG4CXX_ABI_VERSION
+	private:
+		struct PrivateData;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(PrivateData, m_priv)
+#else
 	protected:
 
 		/**
@@ -260,7 +265,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		Used to create new instances of logger
 		*/
 		LOG4CXX_DECLARE_PRIVATE_MEMBER(spi::LoggerFactoryPtr, loggerFactory)
-
+#endif
 	public:
 		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
 		BEGIN_LOG4CXX_CAST_MAP()

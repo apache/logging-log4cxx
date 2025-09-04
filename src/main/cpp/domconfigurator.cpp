@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log4cxx/private/string_c11.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/appender.h>
@@ -68,6 +67,7 @@ struct DOMConfigurator::DOMConfiguratorPrivate
 	helpers::Properties props = Configurator::properties();
 	spi::LoggerRepositoryPtr repository;
 	spi::LoggerFactoryPtr loggerFactory;
+	bool appenderAdded{ false };
 };
 
 namespace LOG4CXX_NS
@@ -190,9 +190,19 @@ AppenderPtr DOMConfigurator::findAppenderByReference(
 	apr_xml_doc* doc,
 	AppenderMap& appenders)
 {
-	LogString appenderName(subst(getAttribute(utf8Decoder, appenderRef, REF_ATTR)));
-	AppenderMap::const_iterator match = appenders.find(appenderName);
 	AppenderPtr appender;
+	LogString appenderName(subst(getAttribute(utf8Decoder, appenderRef, REF_ATTR)));
+	if (appenderName.empty())
+	{
+		LogString msg(LOG4CXX_STR("["));
+		utf8Decoder->decode(appenderRef->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+		msg += LOG4CXX_STR("] attribute [");
+		utf8Decoder->decode(REF_ATTR, MAX_ATTRIBUTE_NAME_LEN, msg);
+		msg += LOG4CXX_STR("] not found");
+		LogLog::warn(msg);
+		return appender;
+	}
+	AppenderMap::const_iterator match = appenders.find(appenderName);
 
 	if (match != appenders.end())
 	{
@@ -311,27 +321,23 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 			}
 			else if (tagName == APPENDER_REF_TAG)
 			{
-				LogString refName = subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
-
-				if (!refName.empty() && appender->instanceof(AppenderAttachable::getStaticClass()))
+				if (appender->instanceof(AppenderAttachable::getStaticClass()))
 				{
 					AppenderAttachablePtr aa = LOG4CXX_NS::cast<AppenderAttachable>(appender);
-					if (LogLog::isDebugEnabled())
+					if (auto delegateAppender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
 					{
-						LogLog::debug(LOG4CXX_STR("Attaching ") + Appender::getStaticClass().getName()
-							+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
-							+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
+						if (LogLog::isDebugEnabled())
+						{
+							LogLog::debug(LOG4CXX_STR("Attaching ") + Appender::getStaticClass().getName()
+								+ LOG4CXX_STR(" named [") + delegateAppender->getName() + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
+								+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
+						}
+						aa->addAppender(delegateAppender);
 					}
-					aa->addAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
-				}
-				else if (refName.empty())
-				{
-					LogLog::error(LOG4CXX_STR("Can't add ") + Appender::getStaticClass().getName() + LOG4CXX_STR(" with empty ref attribute"));
 				}
 				else
 				{
-					LogLog::error(LOG4CXX_STR("Requesting attachment of ") + Appender::getStaticClass().getName()
-						+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("] to ") + Appender::getStaticClass().getName()
+					LogLog::error(LOG4CXX_STR("Cannot attach to ") + Appender::getStaticClass().getName()
 						+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]")
 						+ LOG4CXX_STR(" which does not implement ") + AppenderAttachable::getStaticClass().getName());
 				}
@@ -386,7 +392,8 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
 			}
 			else if (tagName == APPENDER_REF_TAG)
 			{
-				eh->setBackupAppender(findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders));
+				if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
+					eh->setBackupAppender(appender);
 			}
 			else if (tagName == LOGGER_REF)
 			{
@@ -461,7 +468,7 @@ void DOMConfigurator::parseLogger(
 
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Retreiving an instance of ") + loggerName);
+		LogLog::debug(LOG4CXX_STR("Getting [") + loggerName + LOG4CXX_STR("]"));
 	}
 	LoggerPtr logger = m_priv->repository->getLogger(loggerName, m_priv->loggerFactory);
 
@@ -493,7 +500,12 @@ void DOMConfigurator::parseLoggerFactory(
 
 	if (className.empty())
 	{
-		LogLog::error(LOG4CXX_STR("Logger Factory tag class attribute not found."));
+		LogString msg(LOG4CXX_STR("["));
+		utf8Decoder->decode(factoryElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+		msg += LOG4CXX_STR("] attribute [");
+		utf8Decoder->decode(CLASS_ATTR, MAX_ATTRIBUTE_NAME_LEN, msg);
+		msg += LOG4CXX_STR("] not found");
+		LogLog::warn(msg);
 	}
 	else
 	{
@@ -558,25 +570,16 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 
 		if (tagName == APPENDER_REF_TAG)
 		{
-			AppenderPtr appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders);
-			LogString refName =  subst(getAttribute(utf8Decoder, currentElement, REF_ATTR));
-
-			if (appender)
+			if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
 			{
 				if (LogLog::isDebugEnabled())
 				{
 					LogLog::debug(LOG4CXX_STR("Adding ") + Appender::getStaticClass().getName()
-						+ LOG4CXX_STR(" named [") + refName + LOG4CXX_STR("]")
+						+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]")
 						+ LOG4CXX_STR(" to logger [") + logger->getName() + LOG4CXX_STR("]"));
 				}
 				newappenders.push_back(appender);
 			}
-			else
-			{
-				LogLog::debug(LOG4CXX_STR("Appender named [") + refName +
-					LOG4CXX_STR("] not found."));
-			}
-
 		}
 		else if (tagName == LEVEL_TAG)
 		{
@@ -594,8 +597,10 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 	if (newappenders.empty())
 		logger->removeAllAppenders();
 	else
+	{
 		logger->replaceAppenders(newappenders);
-
+		m_priv->appenderAdded = true;
+	}
 	propSetter.activate(p);
 }
 
@@ -760,7 +765,7 @@ void DOMConfigurator::parseLevel(
 	LogString levelStr(subst(getAttribute(utf8Decoder, element, VALUE_ATTR)));
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(LOG4CXX_STR("Level value for ") + loggerName + LOG4CXX_STR(" is [") + levelStr + LOG4CXX_STR("]"));
+		LogLog::debug(LOG4CXX_STR("Setting [") + loggerName + LOG4CXX_STR("] level to [") + levelStr + LOG4CXX_STR("]"));
 	}
 
 	if (StringHelper::equalsIgnoreCase(levelStr, LOG4CXX_STR("INHERITED"), LOG4CXX_STR("inherited"))
@@ -815,7 +820,7 @@ void DOMConfigurator::parseLevel(
 
 	if (LogLog::isDebugEnabled())
 	{
-		LogLog::debug(loggerName + LOG4CXX_STR(" level set to ") +
+		LogLog::debug(LOG4CXX_STR("[") + loggerName + LOG4CXX_STR("] level is ") +
 			logger->getEffectiveLevel()->toString());
 	}
 }
@@ -841,7 +846,6 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 	)
 {
 	m_priv->repository = repository ? repository : LogManager::getLoggerRepository();
-	m_priv->repository->setConfigured(true);
 
 #if LOG4CXX_ABI_VERSION <= 15
 	m_priv->loggerFactory = std::make_shared<DefaultLoggerFactory>();
@@ -856,15 +860,9 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 
 	if (rv != APR_SUCCESS)
 	{
-		// There is not technically an exception thrown here, but this behavior matches
-		// what the PropertyConfigurator does
-		IOException io(rv);
-		LogString msg2(LOG4CXX_STR("Could not read configuration file ["));
-		msg2.append(filename.getPath());
-		msg2.append(LOG4CXX_STR("]. "));
-		LOG4CXX_DECODE_CHAR(msg, io.what());
-		msg2.append(msg);
-		LogLog::error(msg2);
+		LogLog::error(LOG4CXX_STR("Could not open configuration file [")
+			+ filename.getPath() + LOG4CXX_STR("]")
+			, IOException(rv));
 		return spi::ConfigurationStatus::NotConfigured;
 	}
 	else
@@ -874,32 +872,32 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 
 		if (LogLog::isDebugEnabled())
 		{
-			LogString debugMsg = LOG4CXX_STR("Loading configuration file [")
-					+ filename.getPath() + LOG4CXX_STR("]");
-			LogLog::debug(debugMsg);
+			LogLog::debug(LOG4CXX_STR("Loading configuration file [")
+					+ filename.getPath() + LOG4CXX_STR("]"));
 		}
 
 		rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
 
 		if (rv != APR_SUCCESS)
 		{
-			char errbuf[2000];
-			char errbufXML[2000];
-			LogString msg2(LOG4CXX_STR("Error parsing file ["));
-			msg2.append(filename.getPath());
-			msg2.append(LOG4CXX_STR("], "));
-			apr_strerror(rv, errbuf, sizeof(errbuf));
-			LOG4CXX_DECODE_CHAR(lerrbuf, std::string(errbuf));
-			msg2.append(lerrbuf);
-
+			LogString reason;
 			if (parser)
 			{
-				apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
-				LOG4CXX_DECODE_CHAR(lerrbufXML, std::string(errbufXML));
-				msg2.append(lerrbufXML);
+				char errbuf[2000];
+				apr_xml_parser_geterror(parser, errbuf, sizeof(errbuf));
+				LOG4CXX_DECODE_CHAR(lsErrbuf, std::string(errbuf));
+				reason.append(lsErrbuf);
 			}
-
-			LogLog::error(msg2);
+			else
+			{
+				char errbuf[2000];
+				apr_strerror(rv, errbuf, sizeof(errbuf));
+				LOG4CXX_DECODE_CHAR(lsErrbuf, std::string(errbuf));
+				reason.append(lsErrbuf);
+			}
+			LogLog::error(LOG4CXX_STR("Error parsing file [")
+				+ filename.getPath() + LOG4CXX_STR("]")
+				, RuntimeException(reason));
 			return spi::ConfigurationStatus::NotConfigured;
 		}
 		else
@@ -910,6 +908,15 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		}
 	}
 
+	if (!m_priv->appenderAdded)
+	{
+		LogLog::warn(LOG4CXX_STR("[") + filename.getPath()
+			+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()
+			+ LOG4CXX_STR(" to a logger"));
+		return spi::ConfigurationStatus::NotConfigured;
+	}
+
+	m_priv->repository->setConfigured(true);
 	return spi::ConfigurationStatus::Configured;
 }
 
@@ -1042,7 +1049,12 @@ void DOMConfigurator::parse(
 		}
 		else
 		{
-			LogLog::error(LOG4CXX_STR("DOM element is - not a <configuration> element."));
+			LogString msg(LOG4CXX_STR("Root element ["));
+			utf8Decoder->decode(element->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+			msg += LOG4CXX_STR("] is not [");
+			utf8Decoder->decode(CONFIGURATION_TAG, MAX_ATTRIBUTE_NAME_LEN, msg);
+			msg += LOG4CXX_STR("]");
+			LogLog::error(msg);
 			return;
 		}
 	}
@@ -1163,8 +1175,7 @@ LogString DOMConfigurator::getAttribute(
 	{
 		if (attrName == attr->name)
 		{
-			ByteBuffer buf((char*) attr->value, strnlen_s(attr->value, MAX_ATTRIBUTE_NAME_LEN));
-			utf8Decoder->decode(buf, attrValue);
+			utf8Decoder->decode(attr->value, MAX_ATTRIBUTE_NAME_LEN, attrValue);
 		}
 	}
 
