@@ -113,8 +113,8 @@ log4j.appender.A1.layout.ConversionPattern=%.30c - %Y%m%y%n
 The following Log4cxx 1.6 configuration file uses
 the variables added in the \ref com/foo/config4.cpp example
 to store a log file per executable in a product related logs directory:
-- Windows, "C:\ProgramData\CompanyName\ProductName\Logs"
-- Non-Windows, "/var/local/companyName/productName/Logs"
+- Windows, "C:\Users\XXXXX\AppData\Local\companyName\productName\logs"
+- Non-Windows, "/var/local/companyName/productName/logs"
 
 ~~~{.properties}
 # Uncomment a line to enable debugging for a category
@@ -123,7 +123,7 @@ log4j.rootCategory=INFO, A1
 log4j.appender.A1=org.apache.log4j.RollingFileAppender
 log4j.appender.A1.MaxFileSize=5MB
 log4j.appender.A1.MaxBackupIndex=12
-log4j.appender.A1.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log
+log4j.appender.A1.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log
 log4j.appender.A1.Append=true
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %.30c - %m%n
@@ -133,7 +133,7 @@ log4j.appender.console.layout=org.apache.log4j.PatternLayout
 log4j.appender.console.layout.ConversionPattern=%.30c - %Y%m%y%n
 
 log4j.appender.csvData=org.apache.log4j.FileAppender
-log4j.appender.csvData.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/MessageData.csv
+log4j.appender.csvData.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/GraphableData.csv
 log4j.appender.csvData.Append=false
 log4j.appender.csvData.layout=org.apache.log4j.PatternLayout
 log4j.appender.csvData.layout.ConversionPattern=%m,%d{yyyy-MM-dd,HH:mm,ss.SSS}%n
@@ -259,8 +259,8 @@ where the path uses the program vendor and product name.
 The following Log4cxx 1.6 configuration file uses
 the variables added in the \ref com/foo/config4.cpp example
 to store a log file per executable in a product related logs directory:
-- Windows, "C:\ProgramData\CompanyName\ProductName\Logs"
-- Non-Windows, "/var/local/companyName/productName/Logs"
+- Windows, "C:\Users\XXXXX\AppData\Local\companyName\productName\logs"
+- Non-Windows, "/var/local/companyName/productName/logs"
 
 ~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -275,7 +275,7 @@ to store a log file per executable in a product related logs directory:
   </appender>
 
   <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/Logs/${PROGRAM_FILE_PATH.STEM}.log" />
+    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
     </layout>
