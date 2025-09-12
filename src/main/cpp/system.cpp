@@ -191,9 +191,10 @@ void System::addProgramFilePathComponents(Properties& props)
 	FilesystemPath programPath(programFileName);
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	auto root_name = programPath.root_name().wstring();
-	props.setProperty(prefix + LOG4CXX_STR("ROOT_NAME"), root_name);
+	if (!root_name.empty())
+		props.setProperty(prefix + LOG4CXX_STR("ROOT_NAME"), root_name);
 	auto root_directory = programPath.root_directory().wstring();
-	props.setProperty(LOG4CXX_STR("ROOT_DIRECTORY"),root_directory);
+	props.setProperty(prefix + LOG4CXX_STR("ROOT_DIRECTORY"),root_directory);
 	auto root_path = programPath.root_path().wstring();
 	props.setProperty(prefix + LOG4CXX_STR("ROOT_PATH"), root_path);
 	auto relative_path = programPath.relative_path().wstring();
@@ -205,12 +206,14 @@ void System::addProgramFilePathComponents(Properties& props)
 	auto stem = programPath.stem().wstring();
 	props.setProperty(prefix + LOG4CXX_STR("STEM"), stem);
 	auto extension = programPath.extension().wstring();
-	props.setProperty(prefix + LOG4CXX_STR("EXTENSION"), extension);
+	if (!extension.empty())
+		props.setProperty(prefix + LOG4CXX_STR("EXTENSION"), extension);
 #else
 	LOG4CXX_DECODE_CHAR(root_name, programPath.root_name().string());
-	props.setProperty(prefix + LOG4CXX_STR("ROOT_NAME"), root_name);
+	if (!root_name.empty())
+		props.setProperty(prefix + LOG4CXX_STR("ROOT_NAME"), root_name);
 	LOG4CXX_DECODE_CHAR(root_directory, programPath.root_directory().string());
-	props.setProperty(LOG4CXX_STR("ROOT_DIRECTORY"),root_directory);
+	props.setProperty(prefix + LOG4CXX_STR("ROOT_DIRECTORY"),root_directory);
 	LOG4CXX_DECODE_CHAR(root_path, programPath.root_path().string());
 	props.setProperty(prefix + LOG4CXX_STR("ROOT_PATH"), root_path);
 	LOG4CXX_DECODE_CHAR(relative_path, programPath.relative_path().string());
@@ -222,7 +225,8 @@ void System::addProgramFilePathComponents(Properties& props)
 	LOG4CXX_DECODE_CHAR(stem, programPath.stem().string());
 	props.setProperty(prefix + LOG4CXX_STR("STEM"), stem);
 	LOG4CXX_DECODE_CHAR(extension, programPath.extension().string());
-	props.setProperty(prefix + LOG4CXX_STR("EXTENSION"), extension);
+	if (!extension.empty())
+		props.setProperty(prefix + LOG4CXX_STR("EXTENSION"), extension);
 #endif
 #endif // LOG4CXX_HAS_FILESYSTEM_PATH
 }
