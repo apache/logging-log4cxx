@@ -17,9 +17,9 @@
 
 std::string getVendorFolder()
 {
-  return "ApacheSoftwareFoundation";
+  return "Foo";
 }
 std::string getProductFolder()
 {
-  return "Logging";
+  return "Bar";
 }
