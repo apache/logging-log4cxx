@@ -34,7 +34,7 @@ enum class ConfigurationStatus{
 };
 
 /**
-Implemented by classes capable of configuring log4j using a URL.
+An abstract base for classes capable of configuring Log4cxx.
 */
 class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 {
@@ -47,13 +47,12 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 #endif
 
 		/**
-		Interpret a resource pointed by a URL and set up log4j accordingly.
-
-		The configuration is done relative to the <code>hierarchy</code>
-		parameter.
+		Read configuration from \c configFileName.
+		If \c repository is not provided,
+		the spi::LoggerRepository held by LogManager is used.
 
 		@param configFileName The file to parse
-		@param repository Where the Logger instances reside.
+		@param repository Holds the Logger instances.
 		*/
 		virtual ConfigurationStatus doConfigure
 			( const File&                     configFileName
