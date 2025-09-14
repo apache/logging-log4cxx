@@ -22,20 +22,25 @@ Configuration Files {#configuration-files}
 -->
 
 [TOC]
+Configuring Log4cxx by loading a file allows you to
+specify the instantiated appender/layout/filter classes and
+the properties of those class instances
+without recompiling and rebuilding.
 
 As Log4cxx was designed to be extendable,
-option names are not constrained by the core library.
+property names and values are not constrained by the core library.
 The configuration file parsers,
 [DOMConfigurator](@ref log4cxx.xml.DOMConfigurator) and
 [PropertyConfigurator](@ref log4cxx.PropertyConfigurator),
 just send the key/value pair to an instance of
 the named appender/layout/filter class.
 Refer to the [setOption method documentation](@ref log4cxx::spi::OptionHandler::setOption)
-for configurable option names and supported values.
-Note that a base class may implement some options
+for configurable property names and supported values.
+Note that a base class may implement some properties
 while the concrete class implements others.
 Check the full class hierarchy when looking
-for a configuration option.
+for the configurable property names
+and the supported values.
 
 # Default Initialization Behaviour {#default-initialization}
 
