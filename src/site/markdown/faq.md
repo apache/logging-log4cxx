@@ -93,7 +93,9 @@ behaviour and even the case when the current environment sets a locale like `en_
 ## Does Log4cxx support logging at process termination?{#atexit_events}
 
 Log4cxx must be built with -DLOG4CXX_EVENTS_AT_EXIT=ON to use logging during the application
-termination (i.e. in static destuctors and other atexit() functions) . When this option is used,
-the dynamic memory deallocation, buffer flushing and file handle closing normally done in destructors
-is not performed. Setting the "BufferedIO" option of any log4cxx::FileAppender to true is possible when using
-this option due to the forced buffers flushing during the static deinitialization phase.
+termination (i.e. in static destructors and other atexit() functions).
+When this option is used (and log4cxx::LogManager::shutdown is <b>not</b> called),
+loggers and appenders are not destroyed, files are not closed
+and [apr_terminate](https://apr.apache.org/docs/apr/1.6/group__apr__library.html) is not called in Log4cxx destructors.
+Instead the Log4cxx destructor will simply shutdown any background thread
+and flush any buffered output.
