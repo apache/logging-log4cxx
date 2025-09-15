@@ -60,7 +60,7 @@ specifying `BUILD_THROUGHPUT` with CMake when building Log4cxx.
 The benckmark tests require Google's [Benchmark](https://github.com/google/benchmark) library
 and may be built by specifying `BUILD_BENCHMARK_CHECKS` with CMake when building Log4cxx.
 
-The following table shows some timings from the tests that use Googles's benchmarking library.
+The following table shows some timing tests using Google's benchmarking library.
 
     g++ (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0
 	Run on (8 X 2328.61 MHz CPU s)
@@ -100,5 +100,5 @@ The following table shows some timings from the tests that use Googles's benchma
 | Multiprocess logging int+float using MessageBuffer, pattern: \%d \%m\%n | 3456 ns | 3456 ns | 203235 |
 
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
--# The "Async" benchmarks test AsyncAppender throughput, with logging events discarded in the background thread. 
+-# The "Async" benchmarks test AsyncAppender throughput, with logging events discarded in the background thread.
 -# The "Logging" benchmarks write to a file using buffered output. Overhead is 2-3 times more when not using buffered output.
