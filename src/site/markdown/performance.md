@@ -101,4 +101,4 @@ The following table shows some timings from the tests that use Googles's benchma
 
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
 -# The "Async" benchmarks test AsyncAppender throughput, with logging events discarded in the background thread. 
--# The "Logging" benchmarks write to a file using buffered output.
+-# The "Logging" benchmarks write to a file using buffered output. Overhead is 2-3 times more when not using buffered output.
