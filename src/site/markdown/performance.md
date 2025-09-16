@@ -61,6 +61,7 @@ The benckmark tests require Google's [Benchmark](https://github.com/google/bench
 and may be built by specifying `BUILD_BENCHMARK_CHECKS` with CMake when building Log4cxx.
 
 The following table shows some timing tests using Google's benchmarking library.
+To understand this data refer to [Google Benchmark documentation](https://google.github.io/benchmark/user_guide.html#runtime-and-reporting-considerations).
 
     g++ (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0
 	Run on (8 X 2328.61 MHz CPU s)
@@ -102,3 +103,9 @@ The following table shows some timing tests using Google's benchmarking library.
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
 -# The "Async" benchmarks test AsyncAppender throughput, with logging events discarded in the background thread.
 -# The "Logging" benchmarks write to a file using buffered output. Overhead is 2-3 times more when not using buffered output.
+
+The above table shows that the overhead of an enabled logging request
+varies greatly with the message content.
+A single operations-per-second number is not meaningful.
+Most importantly note that using buffered output
+reduces overhead more than any other detail.
