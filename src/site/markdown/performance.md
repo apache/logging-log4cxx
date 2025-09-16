@@ -111,3 +111,10 @@ varies greatly with the message content.
 A single operations-per-second number is not meaningful.
 Most importantly note that using buffered output
 reduces overhead more than any other detail.
+
+Note also that logging from multiple threads concurrently
+to a common appender results in lock contention.
+To simplify the work of an appender implementator,
+Log4cxx currently prevents multiple threads
+concurrently entering [the append method](@ref log4cxx::AppenderSkeleton::append),
+which is the method required to be implemented by a concrete appender class.
