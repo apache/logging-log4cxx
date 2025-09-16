@@ -61,7 +61,9 @@ The benckmark tests require Google's [Benchmark](https://github.com/google/bench
 and may be built by specifying `BUILD_BENCHMARK_CHECKS` with CMake when building Log4cxx.
 
 The following table shows some timing tests using Google's benchmarking library.
-To understand this data refer to [Google Benchmark documentation](https://google.github.io/benchmark/user_guide.html#runtime-and-reporting-considerations).
+The "Time" column shows the average elapsed time, i.e elapsed_time / iteration_count.
+The "CPU" column is also an average, the performance_monitoring_unit_count / iteration_count.
+The "Iterations" column derivation is explained in [Google Benchmark documentation](https://google.github.io/benchmark/user_guide.html#runtime-and-reporting-considerations).
 
     g++ (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0
 	Run on (8 X 2328.61 MHz CPU s)
