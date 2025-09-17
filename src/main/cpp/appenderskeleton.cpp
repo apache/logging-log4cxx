@@ -95,40 +95,39 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 	doAppendImpl(event, pool1);
 }
 
-void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& pool1)
+void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& pool)
 {
 	if (m_priv->closed)
 	{
 		LogLog::warn(LOG4CXX_STR("Attempted to append to closed appender named [")
 			+ m_priv->name + LOG4CXX_STR("]."));
-		return;
 	}
-
-	if (!isAsSevereAsThreshold(event->getLevel()))
+	else if (isAsSevereAsThreshold(event->getLevel()) && isAccepted(event))
 	{
-		return;
+		append(event, pool);
 	}
+}
 
+bool AppenderSkeleton::isAccepted(const spi::LoggingEventPtr& event) const
+{
 	FilterPtr f = m_priv->headFilter;
-
-
 	while (f != 0)
 	{
 		switch (f->decide(event))
 		{
 			case Filter::DENY:
-				return;
+				return false;
 
 			case Filter::ACCEPT:
 				f = nullptr;
 				break;
 
+			default:
 			case Filter::NEUTRAL:
 				f = f->getNext();
 		}
 	}
-
-	append(event, pool1);
+	return true;
 }
 
 bool AppenderSkeleton::AppenderSkeletonPrivate::checkNotClosed()
