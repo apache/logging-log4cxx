@@ -109,7 +109,7 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 The above table shows that the overhead of an enabled logging request
 varies greatly with the message content.
 A single operations-per-second number is not meaningful.
-Most importantly note that using buffered output
+Most importantly note that [using buffered output](@ref log4cxx::FileAppender::setOption)
 reduces overhead more than any other detail.
 
 Note also that logging from multiple threads concurrently
