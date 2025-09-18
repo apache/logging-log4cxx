@@ -44,13 +44,23 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		AppenderSkeleton(LOG4CXX_PRIVATE_PTR(AppenderSkeletonPrivate) priv);
 
 		/**
-		Subclasses of <code>AppenderSkeleton</code> should implement this
+		Subclasses of <code>AppenderSkeleton</code> must implement this
 		method to perform actual logging. See also AppenderSkeleton::doAppend
 		method.
 		*/
-		virtual void append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) = 0;
+		virtual void append(const spi::LoggingEventPtr& event, helpers::Pool& p) = 0;
 
-		void doAppendImpl(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& pool);
+		/**
+		* Compare \c event level against the appender threshold and check that \c event is accepted.
+		* If \c event is accepted, delegate log output to the subclass implementation of
+		* the AppenderSkeleton#append method.
+		* */
+		void doAppendImpl(const spi::LoggingEventPtr& event, helpers::Pool& pool);
+
+		/**
+		* Does no attached filter deny \c event or does an attached filter accept \c event?
+		*/
+		bool isAccepted(const spi::LoggingEventPtr& event) const;
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderSkeleton)
@@ -141,9 +151,10 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 
 
 		/**
-		* This method performs threshold checks and invokes filters before
-		* delegating actual logging to the subclasses specific
-		* AppenderSkeleton#append method.
+		* Call AppenderSkeleton#doAppendImpl after acquiring a lock
+		* that prevents other threads from concurrently executing AppenderSkeleton#doAppendImpl.
+		*
+		* Reimplement this method in your appender if you use a different concurrency control technique.
 		* */
 		void doAppend(const spi::LoggingEventPtr& event, helpers::Pool& pool) override;
 
