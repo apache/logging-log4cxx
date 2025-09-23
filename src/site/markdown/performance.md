@@ -103,7 +103,7 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 | Multiprocess logging int+float using MessageBuffer, pattern: \%d \%m\%n | 3456 ns | 3456 ns | 203235 |
 
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
--# The "Async" benchmarks test AsyncAppender throughput, with logging events discarded in the background thread.
+-# The "Async" benchmarks test [AsyncAppender](@ref log4cxx::AsyncAppender) throughput, with logging events discarded in the background thread.
 -# The "Logging" benchmarks write to a file using buffered output. Overhead is 2-3 times more when not using buffered output.
 
 The above table shows that the overhead of an enabled logging request
@@ -113,8 +113,21 @@ Most importantly note that [using buffered output](@ref log4cxx::FileAppender::s
 reduces overhead more than any other detail.
 
 Note also that logging from multiple threads concurrently
-to a common appender does not increase throughput due to lock contention.
+to a common appender generally does not increase throughput
+due to lock contention in [doAppend method](@ref log4cxx::AppenderSkeleton::doAppend).
 To simplify the work of an appender implementator,
 the [doAppend method](@ref log4cxx::AppenderSkeleton::doAppend) currently prevents multiple threads
 concurrently entering [the append method](@ref log4cxx::AppenderSkeleton::append),
 which is the method required to be implemented by a concrete appender class.
+
+The [AsyncAppender](@ref log4cxx::AsyncAppender) provides the least overhead
+when logging concurrently from multiple threads
+as it overrides the [doAppend method](@ref log4cxx::AsyncAppender::doAppend)
+and uses [std::atomic](https://en.cppreference.com/w/cpp/atomic/atomic.html)
+counters and a ring buffer to store logging events.
+A single background thread is used to extract the logging events
+from the ring bufffer and send them
+to the attached appenders.
+This moves the overhead of [the layout method](@ref log4cxx::Layout::format)
+and the blocking transfer of message data to the operating system
+from the calling thread to the background thread.

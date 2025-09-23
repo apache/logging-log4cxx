@@ -42,10 +42,11 @@ to prevent undefined behaviour when using this appender.
 
 This appender is useful when outputting to a slow event sink,
 for example, a remote SMTP server or a database.
-Attaching a FileAppender to AsyncAppender
-to reduce logging overhead is not recommended
+Note that configuring a FileAppender to use [buffered output](@ref log4cxx::FileAppender::setOption)
+usually results in lower overhead than
+attaching the FileAppender to an AsyncAppender
 as the inter-thread communication overhead
-can exceed the time to write directly to a file.
+can exceed the time to add a message to a buffer.
 
 You can attach multiple appenders to an AsyncAppender by:
 - calling AsyncAppender::addAppender repeatedly when progammatically configuring Log4cxx.
@@ -58,13 +59,13 @@ Here is a sample configuration file:
 
 ### Configurable properties
 
-When the application produces logging events faster
+\anchor BlockingProperty When the application produces logging events faster
 than the background thread is able to process,
 the bounded buffer can become full.
 In this situation AsyncAppender will either
 block until the bounded buffer has a free slot or
 discard the event.
-The <b>Blocking</b> property controls which behaviour is used.
+The [Blocking property](@ref AsyncAppender::setOption) controls which behaviour is used.
 When events are discarded,
 the logged output will indicate this
 with a log message prefixed with <i>Discarded</i>.
@@ -100,7 +101,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		AsyncAppender();
 
 		/**
-		 *  Destructor.
+		 *  If not closed, calls AsyncAppender::close.
 		 */
 		virtual ~AsyncAppender();
 
@@ -112,9 +113,17 @@ class LOG4CXX_EXPORT AsyncAppender :
 		*/
 		void addAppender(const AppenderPtr newAppender) override;
 
+		/**
+		* Call AppenderSkeleton#doAppendImpl without acquiring a lock.
+		*/
 		void doAppend(const spi::LoggingEventPtr& event,
 			helpers::Pool& pool1) override;
 
+		/**
+		* Add \c event to a ring buffer.
+		* The behaviour when the ring buffer is full
+		* is controlled by the [Blocking property](@ref BlockingProperty) value.
+		*/
 		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
 		/**
@@ -149,6 +158,8 @@ class LOG4CXX_EXPORT AsyncAppender :
 		*/
 		bool isAttached(const AppenderPtr appender) const override;
 
+		/** Return false
+		*/
 		bool requiresLayout() const override;
 
 		/**
