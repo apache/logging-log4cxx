@@ -41,6 +41,10 @@ set(APR_UTIL_RELEASE_VERSION "1.6.3")
 set(APR_UTIL_SOURCE_PACKAGE_FILE_NAME "apr-util-${APR_UTIL_RELEASE_VERSION}")
 set(APR_UTIL_SOURCE_PACKAGE_FILE_URL "${APACHE_APR_SOURCE_PACKAGE_URL}/${APR_UTIL_SOURCE_PACKAGE_FILE_NAME}")
 
+string(TIMESTAMP SITE_PUBLISHED_DATE "%a %b %d %Y" UTC)
+configure_file( "${CMAKE_CURRENT_SOURCE_DIR}/doxy/set-site-published-date.js.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/set-site-published-date.js" )
+
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/doxy/Doxyfile.in
     ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile )
 

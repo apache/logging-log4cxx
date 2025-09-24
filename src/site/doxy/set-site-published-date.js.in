@@ -1,0 +1,1 @@
+document.getElementById('site-published-date').textContent = '${SITE_PUBLISHED_DATE}';
