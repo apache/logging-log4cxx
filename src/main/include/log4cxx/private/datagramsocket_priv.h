@@ -42,7 +42,7 @@ struct DatagramSocket::DatagramSocketPriv
 	{
 	}
 
-	~DatagramSocketPriv() = default;
+	virtual ~DatagramSocketPriv() = default;
 
 	InetAddressPtr address;
 
