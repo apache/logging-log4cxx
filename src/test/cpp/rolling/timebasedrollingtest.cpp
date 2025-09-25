@@ -366,15 +366,6 @@ private:
 		//current_time++; // Need to not be at the top of a second for rollover logic to work correctly
 		current_time = 1; // Start at about unix epoch
 	}
-	static TimeBasedRollingTest* s_activeTestCase;
-
-	static log4cxx_time_t getCurrentTime()
-	{
-		log4cxx_time_t result{ std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count() };
-		if (auto p = s_activeTestCase)
-			result = p->currentTime();
-		return result;
-	}
 
 public:
 	log4cxx_time_t currentTime()
@@ -389,13 +380,12 @@ public:
 		));
 		this->logger = LogManager::getLogger("org.apache.log4j.TimeBasedRollingTest");
 		this->setUpCurrTime();
-		helpers::Date::setGetCurrentTimeFunction(&TimeBasedRollingTest::getCurrentTime);
-		s_activeTestCase = this;
+		helpers::Date::setGetCurrentTimeFunction( std::bind( &TimeBasedRollingTest::currentTime, this ) );
 	}
 
 	void tearDown()
 	{
-		s_activeTestCase = nullptr;
+		helpers::Date::setGetCurrentTimeFunction(&Date::getCurrentTimeStd);
 		LogManager::shutdown();
 	}
 
@@ -695,7 +685,5 @@ public:
 	}
 
 };
-
-TimeBasedRollingTest* TimeBasedRollingTest::s_activeTestCase{ nullptr };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(TimeBasedRollingTest);
