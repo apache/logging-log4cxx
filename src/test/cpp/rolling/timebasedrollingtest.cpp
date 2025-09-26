@@ -394,8 +394,8 @@ public:
 	 */
 	void test1()
 	{
-		Pool       pool;
-		const int  nrOfFnames(4);
+		Pool      pool;
+		const int nrOfFnames(4);
 		LogString fnames[nrOfFnames];
 
 		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
