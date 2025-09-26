@@ -18,7 +18,7 @@
 #define NOMINMAX
 #include "logunit.h"
 
-#include <log4cxx/logger.h>
+#include <log4cxx/loggerInstance.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/simplelayout.h>
 #include "vectorappender.h"
@@ -96,7 +96,24 @@ class BlockableVectorAppender : public VectorAppender
 
 };
 
-LOG4CXX_PTR_DEF(BlockableVectorAppender);
+/**
+ * An appender that adds logging events
+ */
+class LoggingBlockableVectorAppender : public BlockableVectorAppender
+{
+	LoggerInstancePtr logger{ "LoggingBlockableVectorAppender" };
+	void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
+	{
+		BlockableVectorAppender::append(event, p);
+		if (event->getMessage() == LOG4CXX_STR("Hello, World"))
+		{
+			LOG4CXX_LOGLS(logger, Level::getError(), LOG4CXX_STR("Some example error"));
+			LOG4CXX_LOGLS(logger, Level::getWarn(), LOG4CXX_STR("Some example warning"));
+			LOG4CXX_LOGLS(logger, Level::getInfo(), LOG4CXX_STR("Some information"));
+			LOG4CXX_LOGLS(logger, Level::getDebug(), LOG4CXX_STR("Some detailed data"));
+		}
+	}
+};
 
 /**
  * Tests of AsyncAppender.
@@ -116,6 +133,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testMultiThread);
 		LOGUNIT_TEST(testBadAppender);
 		LOGUNIT_TEST(testBufferOverflowBehavior);
+		LOGUNIT_TEST(testLoggingAppender);
 #if LOG4CXX_HAS_DOMCONFIGURATOR
 		LOGUNIT_TEST(testConfiguration);
 #endif
@@ -310,9 +328,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		 */
 		void testBufferOverflowBehavior()
 		{
-			BlockableVectorAppenderPtr blockableAppender = BlockableVectorAppenderPtr(new BlockableVectorAppender());
+			auto blockableAppender = std::make_shared<BlockableVectorAppender>();
 			blockableAppender->setName(LOG4CXX_STR("async-blockableVector"));
-			AsyncAppenderPtr async = AsyncAppenderPtr(new AsyncAppender());
+			auto async = std::make_shared<AsyncAppender>();
 			async->setName(LOG4CXX_STR("async-testBufferOverflowBehavior"));
 			async->addAppender(blockableAppender);
 			async->setBufferSize(5);
@@ -320,7 +338,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->setBlocking(false);
 			Pool p;
 			async->activateOptions(p);
-			LoggerPtr rootLogger = Logger::getRootLogger();
+			auto rootLogger = Logger::getRootLogger();
 			rootLogger->addAppender(async);
 			LOG4CXX_INFO(rootLogger, "Hello, World"); // This causes the dispatch thread creation
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
@@ -335,7 +353,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				LOG4CXX_ERROR(rootLogger, "That's all folks.");
 			}
 			async->close();
-			const std::vector<spi::LoggingEventPtr>& events = blockableAppender->getVector();
+			auto& events = blockableAppender->getVector();
 			LOGUNIT_ASSERT(!events.empty());
 			LOGUNIT_ASSERT(events.size() <= 142);
 			LoggingEventPtr initialEvent = events.front();
@@ -344,6 +362,41 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(discardEvent->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "));
 			LOGUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(),
 				discardEvent->getLocationInformation().getClassName());
+		}
+
+		/**
+		 * Tests behavior when the appender attached to a AsyncAppender adds logging events
+		 */
+		void testLoggingAppender()
+		{
+			auto blockableAppender = std::make_shared<LoggingBlockableVectorAppender>();
+			blockableAppender->setName(LOG4CXX_STR("logging-blockableVector"));
+			auto async = std::make_shared<AsyncAppender>();
+			async->setName(LOG4CXX_STR("async-testLoggingAppenderBehavior"));
+			async->addAppender(blockableAppender);
+			async->setBufferSize(5);
+			async->setLocationInfo(true);
+			async->setBlocking(false);
+			Pool p;
+			async->activateOptions(p);
+			auto rootLogger = Logger::getRootLogger();
+			rootLogger->addAppender(async);
+			LOG4CXX_INFO(rootLogger, "Hello, World"); // This causes the dispatch thread creation
+			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
+			{
+				std::lock_guard<std::mutex> sync(blockableAppender->getBlocker());
+
+				for (int i = 0; i < 10; i++)
+				{
+					LOG4CXX_INFO(rootLogger, "Hello, World");
+				}
+
+				LOG4CXX_ERROR(rootLogger, "That's all folks.");
+			}
+			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread take the above events
+			async->close();
+			auto& events = blockableAppender->getVector();
+			LOGUNIT_ASSERT(10 <= events.size());
 		}
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
