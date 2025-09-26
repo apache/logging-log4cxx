@@ -606,8 +606,6 @@ void AsyncAppender::dispatch()
 		StringHelper::toString(waitCount, p, msg);
 		msg += LOG4CXX_STR(" blockedCount ");
 		StringHelper::toString(blockedCount, p, msg);
-		msg += LOG4CXX_STR(" eventCount ");
-		StringHelper::toString(priv->eventCount, p, msg);
 		msg += LOG4CXX_STR(" commitCount ");
 		StringHelper::toString(priv->commitCount, p, msg);
 #endif
