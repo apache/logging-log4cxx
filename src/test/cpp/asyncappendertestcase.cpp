@@ -357,9 +357,30 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(!events.empty());
 			LOGUNIT_ASSERT(events.size() <= 142);
 			LoggingEventPtr initialEvent = events.front();
-			LoggingEventPtr discardEvent = events.back();
 			LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
-			LOGUNIT_ASSERT(discardEvent->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "));
+			int dispatchedInfoCount{ 0 };
+			int dispatchedErrorCount{ 0 };
+			int discardMessageCount{ 0 };
+			LoggingEventPtr discardEvent;
+			for (auto& e : events)
+			{
+				if (e->getLevel() == Level::getInfo())
+					++dispatchedInfoCount;
+				if (e->getLevel() == Level::getError())
+					++dispatchedErrorCount;
+				if (e->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
+				{
+					++discardMessageCount;
+					discardEvent = e;
+				}
+			}
+			// Check this test has activated the discard logic
+			LOGUNIT_ASSERT(1 <= discardMessageCount);
+			LOGUNIT_ASSERT(5 < dispatchedInfoCount);
+			// Check the discard message is the logging event of the highest level
+			LOGUNIT_ASSERT_EQUAL(dispatchedErrorCount, 1);
+			LOGUNIT_ASSERT_EQUAL(discardEvent->getLevel(), Level::getError());
+			// Check the discard message does not have location info
 			LOGUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(),
 				discardEvent->getLocationInformation().getClassName());
 		}
