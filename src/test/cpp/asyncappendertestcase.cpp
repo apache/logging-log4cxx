@@ -18,7 +18,7 @@
 #define NOMINMAX
 #include "logunit.h"
 
-#include <log4cxx/loggerInstance.h>
+#include <log4cxx/loggerinstance.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/simplelayout.h>
 #include "vectorappender.h"
