@@ -370,9 +370,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void testLoggingAppender()
 		{
 			auto blockableAppender = std::make_shared<LoggingBlockableVectorAppender>();
-			blockableAppender->setName(LOG4CXX_STR("logging-blockableVector"));
+			blockableAppender->setName(LOG4CXX_STR("loggingBlockableAppender"));
 			auto async = std::make_shared<AsyncAppender>();
-			async->setName(LOG4CXX_STR("async-testLoggingAppenderBehavior"));
+			async->setName(LOG4CXX_STR("testLoggingAppender"));
 			async->addAppender(blockableAppender);
 			async->setBufferSize(5);
 			async->setLocationInfo(true);
@@ -396,7 +396,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread take the above events
 			async->close();
 			auto& events = blockableAppender->getVector();
-			LOGUNIT_ASSERT(10 <= events.size());
+			LOGUNIT_ASSERT(12 < events.size());
 		}
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
