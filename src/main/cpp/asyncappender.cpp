@@ -543,7 +543,6 @@ void AsyncAppender::dispatch()
 		{
 			++waitCount;
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
-			blockedCount += priv->blockedCount;
 			priv->bufferNotEmpty.wait(lock, [this]() -> bool
 				{ return 0 < priv->blockedCount || priv->dispatchedCount != priv->commitCount || priv->closed; }
 			);
@@ -562,6 +561,7 @@ void AsyncAppender::dispatch()
 		priv->bufferNotFull.notify_all();
 		{
 			std::lock_guard<std::mutex> lock(priv->bufferMutex);
+			blockedCount += priv->blockedCount;
 			for (auto discardItem : priv->discardMap)
 			{
 				events.push_back(discardItem.second.createEvent(p));
