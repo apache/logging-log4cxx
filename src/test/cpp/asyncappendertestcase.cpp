@@ -87,18 +87,6 @@ class BlockableVectorAppender : public VectorAppender
 		{
 			std::lock_guard<std::mutex> lock( blocker );
 			VectorAppender::append(event, p);
-
-			//
-			//   if fatal, echo messages for testLoggingInDispatcher
-			//
-			if (event->getLevel() == Level::getInfo())
-			{
-				LoggerPtr logger = Logger::getLoggerLS(event->getLoggerName());
-				LOG4CXX_LOGLS(logger, Level::getError(), event->getMessage());
-				LOG4CXX_LOGLS(logger, Level::getWarn(), event->getMessage());
-				LOG4CXX_LOGLS(logger, Level::getInfo(), event->getMessage());
-				LOG4CXX_LOGLS(logger, Level::getDebug(), event->getMessage());
-			}
 		}
 
 		std::mutex& getBlocker()
@@ -349,6 +337,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->close();
 			const std::vector<spi::LoggingEventPtr>& events = blockableAppender->getVector();
 			LOGUNIT_ASSERT(!events.empty());
+			LOGUNIT_ASSERT(events.size() <= 142);
 			LoggingEventPtr initialEvent = events.front();
 			LoggingEventPtr discardEvent = events.back();
 			LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
