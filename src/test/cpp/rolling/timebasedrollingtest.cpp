@@ -176,13 +176,14 @@ private:
 	 * @param[in,opt]	startWith
 	 * @param[in]		waitFactor
 	 */
-	void logMsgAndSleep(
-		Pool&		pool,
-		size_t		howOften,
-		std::string	srcFunc,
-		size_t		srcLine,
-		size_t		startWith	= 0,
-		float		waitFactor	= 0.5)
+	void logMsgAndSleep
+		( Pool&              pool
+		, int                howOften
+		, const std::string& srcFunc
+		, int                srcLine
+		, int                startWith = 0
+		, float              waitFactor = 0.5
+		)
 	{
 #undef  LOG4CXX_LOCATION
 #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo( \
@@ -191,13 +192,13 @@ private:
 	srcFunc.c_str(),	\
 	srcLine)
 
-		for (size_t i = startWith; i < startWith + howOften; ++i)
+		for (int i = startWith; i < startWith + howOften; ++i)
 		{
 			std::string message("Hello---");
 			message.append(pool.itoa(i));
 
 			LOG4CXX_DEBUG(logger, message);
-			current_time += (APR_USEC_PER_SEC * waitFactor);
+			current_time += int(APR_USEC_PER_SEC * waitFactor);
 		}
 
 #undef  LOG4CXX_LOCATION
@@ -220,18 +221,19 @@ private:
 	 * We don't use a wrapper macro this time because the src line should have the same name in all
 	 * compilers and is easily to add for the caller.
 	 * </p>
-	 * @param[in,out]	pool
-	 * @param[in]		prefix
-	 * @param[in]		fname
-	 * @param[in]		witnessIdx
-	 * @param[in]		srcLine
+	 * @param[in,out] pool
+	 * @param[in]     prefix
+	 * @param[in]     fname
+	 * @param[in]     witnessIdx
+	 * @param[in]     srcLine
 	 */
-	void compareWitness(
-				Pool&		pool,
-		const	LogString&	prefix,
-		const	LogString&	fname,
-				size_t		witnessIdx,
-				size_t		srcLine)
+	void compareWitness
+			( Pool&	           pool
+			, const LogString& prefix
+			, const LogString& fname
+			, int              witnessIdx
+			, int              srcLine
+			)
 	{
 		LogString witness(LOG4CXX_STR("" DIR_PRE_WITNESS));
 		witness.append(prefix);
@@ -248,21 +250,22 @@ private:
 	 * This method is a wrapper around {@link compareWitness}, used to iterate over all files from a
 	 * given test.
 	 * </p>
-	 * @param[in,out]	pool
-	 * @param[in]		prefix
-	 * @param[in]		fnames
-	 * @param[in]		srcLine
+	 * @param[in,out] pool
+	 * @param[in]     prefix
+	 * @param[in]     fnames
+	 * @param[in]     srcLine
 	 */
 	template<size_t N>
-	void compareWitnesses(
-				Pool&		pool,
-		const	LogString&	prefix,
-				LogString	(&fnames)[N],
-				size_t		srcLine)
+	void compareWitnesses
+		( Pool&            pool
+		, const LogString& prefix
+		, const LogString (&fnames)[N]
+		, int              srcLine
+		)
 	{
-		for (int i = 0; i < N; ++i)
+		for (size_t i = 0; i < N; ++i)
 		{
-			this->compareWitness(pool, prefix, fnames[i], i, srcLine);
+			this->compareWitness(pool, prefix, fnames[i], int(i), srcLine);
 		}
 	}
 
@@ -283,14 +286,15 @@ private:
 	 * @param[in]		srcLine
 	 */
 	template<size_t N>
-	void checkFilesExist(
-				Pool&		pool,
-		const	LogString&	prefix,
-				LogString	(&fnames)[N],
-				size_t		witnessIdx,
-				size_t		srcLine)
+	void checkFilesExist
+		( Pool&            pool
+		, const	LogString& prefix
+		, const LogString  (&fnames)[N]
+		, int              witnessIdx
+		, int              srcLine
+		)
 	{
-		for (int i = 0; i < N - 1; ++i)
+		for (size_t i = 0; i < N - 1; ++i)
 		{
 			//std::wcerr << L"Check: " << fnames[i] << L"\n";
 			LOGUNIT_ASSERT_EQUAL_SRCL(true, File(fnames[i]).exists(pool), srcLine);
@@ -381,6 +385,7 @@ public:
 
 	void tearDown()
 	{
+		helpers::Date::setGetCurrentTimeFunction(&Date::getCurrentTimeStd);
 		LogManager::shutdown();
 	}
 
@@ -389,9 +394,9 @@ public:
 	 */
 	void test1()
 	{
-				Pool		pool;
-		const	size_t		nrOfFnames(4);
-				LogString	fnames[nrOfFnames];
+		Pool      pool;
+		const int nrOfFnames(4);
+		LogString fnames[nrOfFnames];
 
 		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
 		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
@@ -417,9 +422,9 @@ public:
 	 */
 	void test2()
 	{
-				Pool		pool;
-		const	size_t		nrOfFnames(4);
-				LogString	fnames[nrOfFnames];
+		Pool      pool;
+		const int nrOfFnames(4);
+		LogString fnames[nrOfFnames];
 
 		PatternLayoutPtr		layout1(new PatternLayout(PATTERN_LAYOUT));
 		RollingFileAppenderPtr	rfa1(	new RollingFileAppender());
@@ -462,9 +467,9 @@ public:
 	 */
 	void test3()
 	{
-				Pool		pool;
-		const	size_t		nrOfFnames(4);
-				LogString	fnames[nrOfFnames];
+		Pool      pool;
+		const int nrOfFnames(4);
+		LogString fnames[nrOfFnames];
 
 		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
 		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
@@ -494,10 +499,10 @@ public:
 	 */
 	void test4()
 	{
-				Pool		pool;
-		const	size_t		nrOfFnames(4);
-		const	size_t		nrOfLogMsgs(((nrOfFnames - 1) * 2) - 1);
-				LogString	fnames[nrOfFnames];
+		Pool      pool;
+		const int nrOfFnames(4);
+		const int nrOfLogMsgs(((nrOfFnames - 1) * 2) - 1);
+		LogString fnames[nrOfFnames];
 
 		PatternLayoutPtr		layout1(new PatternLayout(PATTERN_LAYOUT));
 		RollingFileAppenderPtr	rfa1(	new RollingFileAppender());
@@ -520,8 +525,8 @@ public:
 		logger->removeAppender(rfa1);
 		rfa1->close();
 
-		PatternLayoutPtr		layout2(new PatternLayout(PATTERN_LAYOUT));
-		RollingFileAppenderPtr	rfa2(	new RollingFileAppender());
+		PatternLayoutPtr        layout2(new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr rfa2(	new RollingFileAppender());
 		rfa2->setLayout(layout2);
 
 		TimeBasedRollingPolicyPtr tbrp2 = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
@@ -547,13 +552,13 @@ public:
 	 */
 	void test5()
 	{
-				Pool		pool;
-		const	size_t		nrOfFnames(4);
-		const	size_t		nrOfLogMsgs((nrOfFnames * 2) - 1);
-				LogString	fnames[nrOfFnames];
+		Pool      pool;
+		const int nrOfFnames(4);
+		const int nrOfLogMsgs((nrOfFnames * 2) - 1);
+		LogString fnames[nrOfFnames];
 
-		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
-		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
+		PatternLayoutPtr       layout(new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr rfa(new RollingFileAppender());
 		rfa->setLayout(layout);
 
 		TimeBasedRollingPolicyPtr tbrp = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
@@ -579,13 +584,13 @@ public:
 	 */
 	void test6()
 	{
-				Pool		pool;
-		const	size_t		nrOfFnames(4);
-		const	size_t		nrOfLogMsgs((nrOfFnames * 2) - 1);
-				LogString	fnames[nrOfFnames];
+		Pool      pool;
+		const int nrOfFnames(4);
+		const int nrOfLogMsgs((nrOfFnames * 2) - 1);
+		LogString fnames[nrOfFnames];
 
-		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
-		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
+		PatternLayoutPtr       layout(	new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr rfa(	new RollingFileAppender());
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
@@ -619,13 +624,12 @@ public:
 		typedef std::vector<Test> Tests;
 
 		Tests	tests(10);
-		size_t	numTest = 0;
 
 		tests.at(4) = &TimeBasedRollingTest::test4;
 		tests.at(5) = &TimeBasedRollingTest::test5;
 		tests.at(6) = &TimeBasedRollingTest::test6;
 
-		for (size_t numTest = 1; numTest < tests.size(); ++numTest)
+		for (int numTest = 1; numTest < tests.size(); ++numTest)
 		{
 			Test test(tests.at(numTest));
 			if (!test)
@@ -640,13 +644,13 @@ public:
 
 	void rollIntoDir()
 	{
-				Pool		pool;
-		const	size_t		nrOfFnames(4);
-		const	size_t		nrOfLogMsgs((nrOfFnames * 2) - 1);
-				LogString	fnames[nrOfFnames];
+		Pool      pool;
+		const int nrOfFnames(4);
+		const int nrOfLogMsgs((nrOfFnames * 2) - 1);
+		LogString fnames[nrOfFnames];
 
-		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
-		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
+		PatternLayoutPtr       layout(	new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr rfa(	new RollingFileAppender());
 		rfa->setLayout(layout);
 		rfa->setFile(LOG4CXX_STR("" DIR_PRE_OUTPUT "rollIntoDir.log"));
 
