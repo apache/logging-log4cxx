@@ -360,12 +360,12 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(events.size() <= 142);
 			LoggingEventPtr initialEvent = events.front();
 			LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
-			std::map<LevelPtr, int> dispatchedCount;
+			std::map<LevelPtr, int> levelCount;
 			int discardMessageCount{ 0 };
 			LoggingEventPtr discardEvent;
 			for (auto& e : events)
 			{
-				++dispatchedCount[e->getLevel()];
+				++levelCount[e->getLevel()];
 				if (e->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
 				{
 					++discardMessageCount;
@@ -375,7 +375,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			if (helpers::LogLog::isDebugEnabled())
 			{
 				LogString msg{ LOG4CXX_STR("messageCounts:") };
-				for (auto& item : dispatchedCount)
+				for (auto& item : levelCount)
 				{
 					msg += LOG4CXX_STR(" ");
 					msg += item.first->toString();
@@ -386,9 +386,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			}
 			// Check this test has activated the discard logic
 			LOGUNIT_ASSERT(1 <= discardMessageCount);
-			LOGUNIT_ASSERT(5 < dispatchedCount[Level::getInfo()]);
+			LOGUNIT_ASSERT(5 < levelCount[Level::getInfo()]);
 			// Check the discard message is the logging event of the highest level
-			LOGUNIT_ASSERT_EQUAL(dispatchedCount[Level::getError()], 1);
+			LOGUNIT_ASSERT_EQUAL(levelCount[Level::getError()], 1);
 			LOGUNIT_ASSERT_EQUAL(discardEvent->getLevel(), Level::getError());
 			// Check the discard message does not have location info
 			LOGUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(),
@@ -422,13 +422,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread take the above events
 			async->close();
 			auto& events = loggingAppender->getVector();
-			std::map<LevelPtr, int> dispatchedCount;
+			std::map<LevelPtr, int> levelCount;
 			for (auto& e : events)
-				++dispatchedCount[e->getLevel()];
+				++levelCount[e->getLevel()];
 			if (helpers::LogLog::isDebugEnabled())
 			{
 				LogString msg{ LOG4CXX_STR("messageCounts:") };
-				for (auto& item : dispatchedCount)
+				for (auto& item : levelCount)
 				{
 					msg += LOG4CXX_STR(" ");
 					msg += item.first->toString();
