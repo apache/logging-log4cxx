@@ -420,7 +420,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			{
 				LOG4CXX_INFO(rootLogger, "Hello, World");
 			}
-			LOG4CXX_INFO(rootLogger, "That's all folks.");
+			LOG4CXX_INFO(rootLogger, "Bye bye World");
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread take the above events
 			async->close();
 			auto& events = loggingAppender->getVector();
@@ -429,8 +429,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			for (auto& e : events)
 			{
 				++levelCount[e->getLevel()];
-				if (e->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
+				auto message = e->getMessage();
+				if (message.substr(0, 10) == LOG4CXX_STR("Discarded "))
+				{
 					++discardMessageCount;
+					auto isAppenderMessage = (message.npos == message.find(LOG4CXX_STR("World")));
+					LOGUNIT_ASSERT(isAppenderMessage);
+				}
 			}
 			if (helpers::LogLog::isDebugEnabled())
 			{
