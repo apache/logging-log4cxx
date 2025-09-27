@@ -99,12 +99,12 @@ class BlockableVectorAppender : public VectorAppender
 /**
  * An appender that adds logging events
  */
-class LoggingBlockableVectorAppender : public BlockableVectorAppender
+class LoggingVectorAppender : public VectorAppender
 {
-	LoggerInstancePtr logger{ "LoggingBlockableVectorAppender" };
+	LoggerInstancePtr logger{ "LoggingVectorAppender" };
 	void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
 	{
-		BlockableVectorAppender::append(event, p);
+		VectorAppender::append(event, p);
 		if (event->getMessage() == LOG4CXX_STR("Hello, World"))
 		{
 			LOG4CXX_LOGLS(logger, Level::getError(), LOG4CXX_STR("Some example error"));
@@ -353,32 +353,42 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				LOG4CXX_ERROR(rootLogger, "That's all folks.");
 			}
 			async->close();
+
+			// Check which messages were output
 			auto& events = blockableAppender->getVector();
 			LOGUNIT_ASSERT(!events.empty());
 			LOGUNIT_ASSERT(events.size() <= 142);
 			LoggingEventPtr initialEvent = events.front();
 			LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
-			int dispatchedInfoCount{ 0 };
-			int dispatchedErrorCount{ 0 };
+			std::map<LevelPtr, int> dispatchedCount;
 			int discardMessageCount{ 0 };
 			LoggingEventPtr discardEvent;
 			for (auto& e : events)
 			{
-				if (e->getLevel() == Level::getInfo())
-					++dispatchedInfoCount;
-				if (e->getLevel() == Level::getError())
-					++dispatchedErrorCount;
+				++dispatchedCount[e->getLevel()];
 				if (e->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
 				{
 					++discardMessageCount;
 					discardEvent = e;
 				}
 			}
+			if (helpers::LogLog::isDebugEnabled())
+			{
+				LogString msg{ LOG4CXX_STR("messageCounts:") };
+				for (auto& item : dispatchedCount)
+				{
+					msg += LOG4CXX_STR(" ");
+					msg += item.first->toString();
+					msg += LOG4CXX_STR(" ");
+					StringHelper::toString(item.second, p, msg);
+				}
+				helpers::LogLog::debug(msg);
+			}
 			// Check this test has activated the discard logic
 			LOGUNIT_ASSERT(1 <= discardMessageCount);
-			LOGUNIT_ASSERT(5 < dispatchedInfoCount);
+			LOGUNIT_ASSERT(5 < dispatchedCount[Level::getInfo()]);
 			// Check the discard message is the logging event of the highest level
-			LOGUNIT_ASSERT_EQUAL(dispatchedErrorCount, 1);
+			LOGUNIT_ASSERT_EQUAL(dispatchedCount[Level::getError()], 1);
 			LOGUNIT_ASSERT_EQUAL(discardEvent->getLevel(), Level::getError());
 			// Check the discard message does not have location info
 			LOGUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(),
@@ -390,11 +400,11 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		 */
 		void testLoggingAppender()
 		{
-			auto blockableAppender = std::make_shared<LoggingBlockableVectorAppender>();
-			blockableAppender->setName(LOG4CXX_STR("loggingBlockableAppender"));
+			auto loggingAppender = std::make_shared<LoggingVectorAppender>();
+			loggingAppender->setName(LOG4CXX_STR("loggingAppender"));
 			auto async = std::make_shared<AsyncAppender>();
-			async->setName(LOG4CXX_STR("testLoggingAppender"));
-			async->addAppender(blockableAppender);
+			async->setName(LOG4CXX_STR("withLoggingAppender"));
+			async->addAppender(loggingAppender);
 			async->setBufferSize(5);
 			async->setLocationInfo(true);
 			async->setBlocking(false);
@@ -404,19 +414,29 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			rootLogger->addAppender(async);
 			LOG4CXX_INFO(rootLogger, "Hello, World"); // This causes the dispatch thread creation
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
+			for (int i = 0; i < 10; i++)
 			{
-				std::lock_guard<std::mutex> sync(blockableAppender->getBlocker());
-
-				for (int i = 0; i < 10; i++)
-				{
-					LOG4CXX_INFO(rootLogger, "Hello, World");
-				}
-
-				LOG4CXX_ERROR(rootLogger, "That's all folks.");
+				LOG4CXX_INFO(rootLogger, "Hello, World");
 			}
+			LOG4CXX_INFO(rootLogger, "That's all folks.");
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread take the above events
 			async->close();
-			auto& events = blockableAppender->getVector();
+			auto& events = loggingAppender->getVector();
+			std::map<LevelPtr, int> dispatchedCount;
+			for (auto& e : events)
+				++dispatchedCount[e->getLevel()];
+			if (helpers::LogLog::isDebugEnabled())
+			{
+				LogString msg{ LOG4CXX_STR("messageCounts:") };
+				for (auto& item : dispatchedCount)
+				{
+					msg += LOG4CXX_STR(" ");
+					msg += item.first->toString();
+					msg += LOG4CXX_STR(" ");
+					StringHelper::toString(item.second, p, msg);
+				}
+				helpers::LogLog::debug(msg);
+			}
 			LOGUNIT_ASSERT(12 < events.size());
 		}
 
