@@ -55,7 +55,7 @@ jobs:
           sudo apt-get install -y libapr1-dev libaprutil1-dev
 
       - name: Install Build Wrapper
-        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v5.3.1
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v6.0.0
         env:
           SONAR_HOST_URL: ${{ env.SONAR_SERVER_URL }}
 
@@ -84,7 +84,7 @@ jobs:
             -o "$BaseDir/build/coverage.xml"
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5.3.1
+        uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           SONAR_HOST_URL: ${{ env.SONAR_SERVER_URL }}
