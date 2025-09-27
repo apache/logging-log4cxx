@@ -297,6 +297,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		if (!priv->dispatcher.joinable())
 			priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 	}
+	bool isDispatchThread = (priv->dispatcher.get_id() == std::this_thread::get_id());
 	while (true)
 	{
 		auto pendingCount = priv->eventCount - priv->dispatchedCount;
@@ -306,7 +307,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			auto oldEventCount = priv->eventCount++;
 			auto index = oldEventCount % priv->buffer.size();
 			// Wait for a free slot
-			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount)
+			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount && !isDispatchThread)
 				std::this_thread::yield(); // Allow the dispatch thread to free a slot
 			// Write to the ring buffer
 			priv->buffer[index] = AsyncAppenderPriv::EventData{event, pendingCount};
@@ -335,7 +336,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 		if (priv->blocking
 			&& !priv->closed
-			&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
+			&& !isDispatchThread)
 		{
 			++priv->blockedCount;
 			priv->bufferNotFull.wait(lock, [this]()
