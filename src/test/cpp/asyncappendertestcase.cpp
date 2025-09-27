@@ -382,6 +382,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 					msg += LOG4CXX_STR(" ");
 					StringHelper::toString(item.second, p, msg);
 				}
+				msg += LOG4CXX_STR(" ");
+				msg += LOG4CXX_STR("Discarded ");
+				StringHelper::toString(discardMessageCount, p, msg);
 				helpers::LogLog::debug(msg);
 			}
 			// Check this test has activated the discard logic
@@ -407,7 +410,6 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->addAppender(loggingAppender);
 			async->setBufferSize(5);
 			async->setLocationInfo(true);
-			async->setBlocking(false);
 			Pool p;
 			async->activateOptions(p);
 			auto rootLogger = Logger::getRootLogger();
@@ -423,8 +425,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->close();
 			auto& events = loggingAppender->getVector();
 			std::map<LevelPtr, int> levelCount;
+			int discardMessageCount{ 0 };
 			for (auto& e : events)
+			{
 				++levelCount[e->getLevel()];
+				if (e->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
+					++discardMessageCount;
+			}
 			if (helpers::LogLog::isDebugEnabled())
 			{
 				LogString msg{ LOG4CXX_STR("messageCounts:") };
@@ -435,6 +442,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 					msg += LOG4CXX_STR(" ");
 					StringHelper::toString(item.second, p, msg);
 				}
+				msg += LOG4CXX_STR(" ");
+				msg += LOG4CXX_STR("Discarded ");
+				StringHelper::toString(discardMessageCount, p, msg);
 				helpers::LogLog::debug(msg);
 			}
 			LOGUNIT_ASSERT(12 < events.size());
