@@ -89,7 +89,8 @@ void FMTLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	LOG4CXX_NS::helpers::Pool&) const
 {
-	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
+	auto lsMsg = event->getRenderedMessage();
+	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
 	auto locationFull = fmt::format("{}({})",
 										 event->getLocationInformation().getFileName(),
 										 event->getLocationInformation().getLineNumber());
@@ -100,7 +101,7 @@ void FMTLayout::format(LogString& output,
 	LOG4CXX_ENCODE_CHAR(sPattern, m_priv->conversionPattern);
 	LOG4CXX_ENCODE_CHAR(sLogger, event->getLoggerName());
 	LOG4CXX_ENCODE_CHAR(sLevel, event->getLevel()->toString());
-	LOG4CXX_ENCODE_CHAR(sMsg, event->getMessage());
+	LOG4CXX_ENCODE_CHAR(sMsg, lsMsg);
 	LOG4CXX_ENCODE_CHAR(sThread, event->getThreadName());
 	LOG4CXX_ENCODE_CHAR(endOfLine, LOG4CXX_EOL);
 #else
@@ -108,7 +109,7 @@ void FMTLayout::format(LogString& output,
 	auto& sPattern = m_priv->conversionPattern;
 	auto& sLogger = event->getLoggerName();
 	auto sLevel = event->getLevel()->toString();
-	auto& sMsg = event->getMessage();
+	auto& sMsg = lsMsg;
 	auto& sThread = event->getThreadName();
 	auto endOfLine = LOG4CXX_EOL;
 #endif

@@ -132,7 +132,8 @@ void JSONLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
 {
-	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
+	auto lsMsg = event->getRenderedMessage();
+	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
 	output.append(LOG4CXX_STR("{"));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
@@ -187,7 +188,7 @@ void JSONLayout::format(LogString& output,
 	}
 
 	output.append(LOG4CXX_STR("\"message\": "));
-	appendQuotedEscapedString(output, event->getMessage());
+	appendQuotedEscapedString(output, lsMsg);
 
 	appendSerializedMDC(output, event);
 	appendSerializedNDC(output, event);

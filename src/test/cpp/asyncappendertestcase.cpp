@@ -105,7 +105,8 @@ class LoggingVectorAppender : public VectorAppender
 	void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
 	{
 		VectorAppender::append(event, p);
-		if (event->getMessage() == LOG4CXX_STR("Hello, World"))
+		auto lsMsg = event->getRenderedMessage();
+		if (LogString::npos != lsMsg.find(LOG4CXX_STR("World")))
 		{
 			LOG4CXX_LOGLS(logger, Level::getError(), LOG4CXX_STR("Some example error"));
 			LOG4CXX_LOGLS(logger, Level::getWarn(), LOG4CXX_STR("Some example warning"));
@@ -347,7 +348,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 				for (int i = 0; i < 140; i++)
 				{
-					LOG4CXX_INFO(rootLogger, "Hello, World");
+					LOG4CXX2_INFO(rootLogger, "Hello, World " << i);
 				}
 
 				LOG4CXX_ERROR(rootLogger, "That's all folks.");
@@ -418,7 +419,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
 			for (int i = 0; i < 10; i++)
 			{
-				LOG4CXX_INFO(rootLogger, "Hello, World");
+				LOG4CXX2_INFO(rootLogger, "Hello, World " << i);
 			}
 			LOG4CXX_INFO(rootLogger, "Bye bye World");
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread take the above events

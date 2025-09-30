@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/messagebuffer.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/optional.h>
 
@@ -58,6 +59,23 @@ struct LoggingEvent::LoggingEventPrivate
 		locationInfo(locationInfo1),
 		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
 		pNames(p)
+	{
+	}
+
+	LoggingEventPrivate
+		( const LogString& logger1
+		, const LevelPtr& level1
+		, const LocationInfo& locationInfo1
+		, helpers::AsyncBuffer&& messageAppenderArg
+		, const ThreadSpecificData::NamePairPtr p = ThreadSpecificData::getNames()
+		)
+		: logger(logger1)
+		, level(level1)
+		, timeStamp(Date::currentTime())
+		, locationInfo(locationInfo1)
+		, chronoTimeStamp(std::chrono::microseconds(timeStamp))
+		, pNames(p)
+		, messageAppender(std::move(messageAppenderArg))
 	{
 	}
 
@@ -124,6 +142,21 @@ struct LoggingEvent::LoggingEventPrivate
 	 *  of this LoggingEvent exceeds the duration of the logging request.
 	 */
 	mutable std::unique_ptr<DiagnosticContext> dc;
+
+	/** Application supplied message builders.
+	 */
+	helpers::AsyncBuffer messageAppender;
+
+	void renderMessage()
+	{
+		if (!this->messageAppender.empty())
+		{
+			helpers::MessageBuffer buf;
+			this->messageAppender.renderMessage(buf);
+			this->message = buf.extract_str(buf);
+			this->messageAppender.clear();
+		}
+	}
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
@@ -149,6 +182,16 @@ LoggingEvent::LoggingEvent
 	, LogString&&         message
 	)
 	: m_priv(std::make_unique<LoggingEventPrivate>(logger, level, location, std::move(message)))
+{
+}
+
+LoggingEvent::LoggingEvent
+	( const LogString&    logger
+	, const LevelPtr&     level
+	, const LocationInfo& location
+	, helpers::AsyncBuffer&& messageAppender
+	)
+	: m_priv(std::make_unique<LoggingEventPrivate>(logger, level, location, std::move(messageAppender)))
 {
 }
 
@@ -273,6 +316,11 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 	return set;
 }
 
+void LoggingEvent::renderMessage()
+{
+	m_priv->renderMessage();
+}
+
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
 	if (m_priv->properties == 0)
@@ -300,6 +348,7 @@ const LogString& LoggingEvent::getMessage() const
 
 const LogString& LoggingEvent::getRenderedMessage() const
 {
+	m_priv->renderMessage();
 	return m_priv->message;
 }
 

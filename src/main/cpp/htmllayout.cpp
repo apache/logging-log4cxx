@@ -84,7 +84,8 @@ void HTMLLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
 {
-	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
+	auto lsMsg = event->getRenderedMessage();
+	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("<tr>"));
 	output.append(LOG4CXX_EOL);
@@ -152,7 +153,7 @@ void HTMLLayout::format(LogString& output,
 	}
 
 	output.append(LOG4CXX_STR("<td title=\"Message\">"));
-	Transform::appendEscapingTags(output, event->getRenderedMessage());
+	Transform::appendEscapingTags(output, lsMsg);
 	output.append(LOG4CXX_STR("</td>"));
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("</tr>"));

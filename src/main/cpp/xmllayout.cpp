@@ -78,7 +78,8 @@ void XMLLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
 {
-	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
+	auto lsMsg = event->getRenderedMessage();
+	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
 	output.append(LOG4CXX_STR("<log4j:event logger=\""));
 	Transform::appendEscapingTags(output, event->getLoggerName());
 	output.append(LOG4CXX_STR("\" timestamp=\""));
@@ -93,7 +94,7 @@ void XMLLayout::format(LogString& output,
 	output.append(LOG4CXX_STR("<log4j:message><![CDATA["));
 	// Append the rendered message. Also make sure to escape any
 	// existing CDATA sections.
-	Transform::appendEscapingCDATA(output, event->getRenderedMessage());
+	Transform::appendEscapingCDATA(output, lsMsg);
 	output.append(LOG4CXX_STR("]]></log4j:message>"));
 	output.append(LOG4CXX_EOL);
 

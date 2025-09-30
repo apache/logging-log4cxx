@@ -173,6 +173,15 @@ void Logger::closeNestedAppenders()
 	}
 }
 
+void Logger::addEvent(const LevelPtr& level, helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(messageAppender));
+	Pool p;
+	callAppenders(event, p);
+}
+
 void Logger::addEvent(const LevelPtr& level, std::string&& message, const LocationInfo& location) const
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
@@ -205,6 +214,11 @@ void Logger::addWarnEvent(std::string&& message, const LocationInfo& location) c
 void Logger::addInfoEvent(std::string&& message, const LocationInfo& location) const
 {
 	addEvent(m_priv->levelData->Info, std::move(message), location);
+}
+
+void Logger::addInfoEvent(helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData->Info, std::move(messageAppender), location);
 }
 
 void Logger::addDebugEvent(std::string&& message, const LocationInfo& location) const

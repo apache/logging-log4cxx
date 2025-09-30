@@ -498,7 +498,7 @@ LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 	LogString msg(LOG4CXX_STR("Discarded "));
 	StringHelper::toString(count, p, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer including: "));
-	msg.append(maxEvent->getMessage());
+	msg.append(maxEvent->getRenderedMessage());
 	return std::make_shared<LoggingEvent>(
 				maxEvent->getLoggerName(),
 				maxEvent->getLevel(),
