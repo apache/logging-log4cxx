@@ -78,33 +78,33 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 | --------- | -------: | --: | ---------: |
 | Testing disabled logging request | 0.472 ns | 0.472 ns | 1000000000 |
 | Testing disabled logging request/threads:6 | 0.128 ns | 0.766 ns | 816161856 |
-| Appending 5 char string using MessageBuffer, pattern: %m%n | 334 ns | 334 ns | 2094794 |
-| Appending 5 char string using MessageBuffer, pattern: %m%n/threads:6 | 434 ns | 2437 ns | 281586 |
-| Appending 49 char string using MessageBuffer, pattern: %m%n | 370 ns | 370 ns | 1886606 |
-| Appending 49 char string using MessageBuffer, pattern: %m%n/threads:6 | 499 ns | 2736 ns | 228720 |
-| Appending int value using MessageBuffer, pattern: %m%n | 509 ns | 509 ns | 1361391 |
-| Appending int value using MessageBuffer, pattern: %m%n/threads:6 | 495 ns | 2776 ns | 251646 |
-| Appending int+float using MessageBuffer, pattern: %m%n | 911 ns | 911 ns | 768870 |
-| Appending int+float using MessageBuffer, pattern: %m%n/threads:6 | 581 ns | 3370 ns | 203220 |
-| Appending int+10float using MessageBuffer, pattern: %m%n | 4579 ns | 4567 ns | 151798 |
-| Appending int+10float using MessageBuffer, pattern: %m%n/threads:6 | 1694 ns | 10092 ns | 65982 |
-| Appending int value using MessageBuffer, pattern: [%d] %m%n | 548 ns | 548 ns | 1276999 |
-| Appending int value using MessageBuffer, pattern: [%d] [%c] [%p] %m%n | 600 ns | 600 ns | 1156877 |
-| Appending 49 char string using FMT, pattern: %m%n | 346 ns | 346 ns | 2021907 |
-| Appending 49 char string using FMT, pattern: %m%n/threads:6 | 488 ns | 2672 ns | 257544 |
-| Appending int value using FMT, pattern: %m%n | 376 ns | 376 ns | 1863727 |
-| Appending int value using FMT, pattern: %m%n/threads:6 | 486 ns | 2674 ns | 258096 |
-| Appending int+float using FMT, pattern: %m%n | 508 ns | 508 ns | 1371269 |
-| Appending int+float using FMT, pattern: %m%n/threads:6 | 537 ns | 3036 ns | 212844 |
-| Appending int+10float using FMT, pattern: %m%n | 1671 ns | 1671 ns | 417402 |
-| Appending int+10float using FMT, pattern: %m%n/threads:6 | 1275 ns | 7297 ns | 96222 |
+| Appending 5 char string using MessageBuffer, pattern: \%m\%n | 334 ns | 334 ns | 2094794 |
+| Appending 5 char string using MessageBuffer, pattern: \%m\%n/threads:6 | 434 ns | 2437 ns | 281586 |
+| Appending 49 char string using MessageBuffer, pattern: \%m\%n | 370 ns | 370 ns | 1886606 |
+| Appending 49 char string using MessageBuffer, pattern: \%m\%n/threads:6 | 499 ns | 2736 ns | 228720 |
+| Appending int value using MessageBuffer, pattern: \%m\%n | 509 ns | 509 ns | 1361391 |
+| Appending int value using MessageBuffer, pattern: \%m\%n/threads:6 | 495 ns | 2776 ns | 251646 |
+| Appending int+float using MessageBuffer, pattern: \%m\%n | 911 ns | 911 ns | 768870 |
+| Appending int+float using MessageBuffer, pattern: \%m\%n/threads:6 | 581 ns | 3370 ns | 203220 |
+| Appending int+10float using MessageBuffer, pattern: \%m\%n | 4579 ns | 4567 ns | 151798 |
+| Appending int+10float using MessageBuffer, pattern: \%m\%n/threads:6 | 1694 ns | 10092 ns | 65982 |
+| Appending int value using MessageBuffer, pattern: [\%d] \%m\%n | 548 ns | 548 ns | 1276999 |
+| Appending int value using MessageBuffer, pattern: [\%d] [\%c] [\%p] \%m\%n | 600 ns | 600 ns | 1156877 |
+| Appending 49 char string using FMT, pattern: \%m\%n | 346 ns | 346 ns | 2021907 |
+| Appending 49 char string using FMT, pattern: \%m\%n/threads:6 | 488 ns | 2672 ns | 257544 |
+| Appending int value using FMT, pattern: \%m\%n | 376 ns | 376 ns | 1863727 |
+| Appending int value using FMT, pattern: \%m\%n/threads:6 | 486 ns | 2674 ns | 258096 |
+| Appending int+float using FMT, pattern: \%m\%n | 508 ns | 508 ns | 1371269 |
+| Appending int+float using FMT, pattern: \%m\%n/threads:6 | 537 ns | 3036 ns | 212844 |
+| Appending int+10float using FMT, pattern: \%m\%n | 1671 ns | 1671 ns | 417402 |
+| Appending int+10float using FMT, pattern: \%m\%n/threads:6 | 1275 ns | 7297 ns | 96222 |
 | Async, Sending int+10float using FMT | 1663 ns | 1663 ns | 421796 |
 | Async, Sending int+10float using FMT/threads:6 | 1286 ns | 7368 ns | 88308 |
-| Logging int+float using MessageBuffer, pattern: %d %m%n | 1073 ns | 1073 ns | 656652 |
-| Logging int+float using MessageBuffer, pattern: %d %m%n/threads:6 | 1083 ns | 4895 ns | 142776 |
+| Logging int+float using MessageBuffer, pattern: \%d \%m\%n | 1073 ns | 1073 ns | 656652 |
+| Logging int+float using MessageBuffer, pattern: \%d \%m\%n/threads:6 | 1083 ns | 4895 ns | 142776 |
 | Logging int+float using MessageBuffer, JSON | 1394 ns | 1394 ns | 507493 |
 | Logging int+float using MessageBuffer, JSON/threads:6 | 2110 ns | 6827 ns | 104646 |
-| Multiprocess logging int+float using MessageBuffer, pattern: %d %m%n | 3253 ns | 3253 ns | 214839 |
+| Multiprocess logging int+float using MessageBuffer, pattern: \%d \%m\%n | 3253 ns | 3253 ns | 214839 |
 
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
 -# The "Async" benchmarks test [AsyncAppender](@ref log4cxx::AsyncAppender) throughput, with logging events discarded in the background thread.
