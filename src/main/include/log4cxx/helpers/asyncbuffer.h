@@ -256,7 +256,6 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 \usage
 ~~~{.cpp}
 LOG4CXX_FATAL_ASYNC(m_log, m_renderSystem->getName() << " is not supported");
-LOG4CXX_FATAL_ASYNC(m_log, m_renderSystem->getName() << " is not supported");
 ~~~
 
 @param logger the logger to be used.
