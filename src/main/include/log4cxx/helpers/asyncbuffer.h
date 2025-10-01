@@ -93,6 +93,59 @@ private:
 } // namespace helpers
 } // namespace LOG4CXX_NS
 
+/** @addtogroup LoggingMacros Logging macros
+@{
+*/
+
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000
+/**
+Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>DEBUG</code> events.
+
+\usage
+~~~{.cpp}
+LOG4CXX_DEBUG(m_log, "AddMesh:"
+	<< " name " << meshName
+	<< " type 0x" << std:: hex << traits.Type
+	<< " materialName " << meshObject.GetMaterialName()
+	<< " visible? " << traits.IsDefaultVisible
+	<< " at " << obj->getBoundingBox().getCenter()
+	<< " +/- " << obj->getBoundingBox().getHalfSize()
+	);
+~~~
+
+@param logger the logger that has the enabled status.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
+
+*/
+#define LOG4CXX_DEBUG_ASYNC(logger, message) do { \
+		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isDebugEnabledFor(logger))) {\
+			::LOG4CXX_NS::helpers::AsyncBuffer buf; \
+			logger->addDebugEvent(std::move(buf << message), LOG4CXX_LOCATION); }} while (0)
+#else
+#define LOG4CXX_DEBUG_ASYNC(logger, message)
+#endif
+
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 5000
+/**
+Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>TRACE</code> events.
+
+\usage
+~~~{.cpp}
+    LOG4CXX_TRACE(m_log, "AddVertex:" << " at " << p << " n " << n << ' ' << color);
+~~~
+
+@param logger the logger that has the enabled status.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOG4CXX_TRACE_ASYNC(logger, message) do { \
+		if (LOG4CXX_UNLIKELY(::LOG4CXX_NS::Logger::isTraceEnabledFor(logger))) {\
+			::LOG4CXX_NS::helpers::AsyncBuffer buf; \
+			logger->addTraceEvent(std::move(buf << message), LOG4CXX_LOCATION); }} while (0)
+#else
+#define LOG4CXX_TRACE_ASYNC(logger, message)
+#endif
+
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 20000
 /**
 Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>INFO</code> events.
 
@@ -117,3 +170,90 @@ LOG4CXX_INFO_ASYNC(m_log, surface->GetName()
 
 #endif
 
+#else
+#define LOG4CXX_INFO_ASYNC(logger, message)
+#endif
+
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 30000
+/**
+Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>WARN</code> events.
+
+\usage
+~~~{.cpp}
+catch (const std::exception& ex)
+{
+    LOG4CXX_WARN(m_log, ex.what() << ": in " << m_task->GetParamFilePath());
+}
+~~~
+
+@param logger the logger to be used.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOG4CXX_WARN_ASYNC(logger, message) do { \
+		if (::LOG4CXX_NS::Logger::isWarnEnabledFor(logger)) {\
+			::LOG4CXX_NS::helpers::AsyncBuffer buf; \
+			logger->addWarnEvent(std::move(buf << message), LOG4CXX_LOCATION); }} while (0)
+#else
+#define LOG4CXX_WARN_ASYNC(logger, message)
+#endif
+
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 40000
+/**
+Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
+
+\usage
+~~~{.cpp}
+catch (std::exception& ex)
+{
+	LOG4CXX_ERROR(m_log, ex.what() << " in AddScanData");
+}
+~~~
+
+@param logger the logger to be used.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOG4CXX_ERROR_ASYNC(logger, message) do { \
+		if (::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
+			::LOG4CXX_NS::helpers::AsyncBuffer buf; \
+			logger->addErrorEvent(std::move(buf << message), LOG4CXX_LOCATION); }} while (0)
+
+/**
+If \c condition is not true, add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>ERROR</code> events.
+
+@param logger the logger to be used.
+@param condition condition
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOG4CXX_ASSERT_ASYNC(logger, condition, message) do { \
+		if (!(condition) && ::LOG4CXX_NS::Logger::isErrorEnabledFor(logger)) {\
+			::LOG4CXX_NS::helpers::AsyncBuffer buf; \
+			LOG4CXX_STACKTRACE \
+			logger->addErrorEvent(std::move(buf << message), LOG4CXX_LOCATION); }} while (0)
+
+#else
+#define LOG4CXX_ERROR_ASYNC(logger, message)
+#define LOG4CXX_ASSERT_ASYNC(logger, condition, message)
+#endif
+
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 50000
+/**
+Add a new logging event containing \c message to attached appender(s) if \c logger is enabled for <code>FATAL</code> events.
+
+\usage
+~~~{.cpp}
+LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
+~~~
+
+@param logger the logger to be used.
+@param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOG4CXX_FATAL_ASYNC(logger, message) do { \
+		if (::LOG4CXX_NS::Logger::isFatalEnabledFor(logger)) {\
+			::LOG4CXX_NS::helpers::AsyncBuffer buf; \
+			logger->addFatalEvent(std::move(buf << message), LOG4CXX_LOCATION); }} while (0)
+
+#else
+#define LOG4CXX_FATAL_ASYNC(logger, message)
+#endif
+
+/**@} Logging macro group */
