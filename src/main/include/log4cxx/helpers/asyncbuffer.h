@@ -49,13 +49,27 @@ public:
 	~AsyncBuffer();
 
 	/** Append a function to this buffer that will convert \c value to text.
-	 *   @param value must be copy-constructable or move-constructable
+	 *   @param value type must be copy-constructable
 	 *   @return this buffer.
 	 */
 	template<typename T>
 	AsyncBuffer& operator<<(const T& value)
 	{
 		append([value](LogCharMessageBuffer& msgBuf)
+			{
+				msgBuf << value;
+			});
+		return *this;
+	}
+
+	/** Append a function to this buffer that will convert \c value to text.
+	 *   @param value type must be move-constructable
+	 *   @return this buffer.
+	 */
+	template<typename T>
+	AsyncBuffer& operator<<(const T&& rvalue)
+	{
+		append([value = std::move(rvalue)](LogCharMessageBuffer& msgBuf)
 			{
 				msgBuf << value;
 			});
