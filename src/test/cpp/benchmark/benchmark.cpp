@@ -398,7 +398,7 @@ void logWithConversionPattern(benchmark::State& state, Args&&... args)
 {
     auto args_tuple = std::make_tuple(std::move(args)...);
 	LogString conversionPattern = std::get<0>(args_tuple);
-	auto logger = benchmarker::getLogger(conversionPattern);
+	auto logger = benchmarker::getNullWriter(conversionPattern);
 	int x = 0;
 	for (auto _ : state)
 	{
