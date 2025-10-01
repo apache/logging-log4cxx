@@ -61,13 +61,13 @@ public:
 class BenchmarkFileAppender : public FileAppender
 {
 public:
-	BenchmarkFileAppender(const LayoutPtr& layout)
+	BenchmarkFileAppender(const LayoutPtr& layout, bool buffered = true)
 	{
 		setLayout(layout);
 		auto tempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("benchmark.log"));
 		setAppend(false);
-		setBufferedIO(true);
+		setBufferedIO(buffered);
 		helpers::Pool p;
 		activateOptions(p);
 	}
@@ -212,7 +212,6 @@ public: // Class methods
 			writer->setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
 			auto asyncAppender = std::make_shared<AsyncAppender>();
 			asyncAppender->addAppender(writer);
-			asyncAppender->setBlocking(false);
 			result = r->getLogger(name);
 			result->setAdditivity(false);
 			result->setLevel(Level::getInfo());
@@ -233,7 +232,6 @@ public: // Class methods
 			result->setLevel(Level::getInfo());
 			auto writer = std::make_shared<BenchmarkFileAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n")));
 			writer->setName(LOG4CXX_STR("FileAppender"));
-			writer->setBufferedIO(true);
 			helpers::Pool p;
 			writer->activateOptions(p);
 			result->addAppender(writer);
@@ -360,6 +358,41 @@ BENCHMARK_DEFINE_F(benchmarker, logIntPlusFloatMessageBuffer)(benchmark::State& 
 BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatMessageBuffer)->Name("Appending int+float using MessageBuffer, pattern: %m%n");
 BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatMessageBuffer)->Name("Appending int+float using MessageBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
 
+BENCHMARK_DEFINE_F(benchmarker, logIntPlus10FloatMessageBuffer)(benchmark::State& state)
+{
+	int x = 0;
+	for (auto _ : state)
+	{
+		float f[] =
+		{ static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		};
+		LOG4CXX_INFO( m_asyncLogger, "Hello: message number " << ++x
+			<< " pseudo-random float" << std::setprecision(3) << std::fixed
+			<< ' ' << f[0]
+			<< ' ' << f[1]
+			<< ' ' << f[2]
+			<< ' ' << f[3]
+			<< ' ' << f[4]
+			<< ' ' << f[5]
+			<< ' ' << f[6]
+			<< ' ' << f[7]
+			<< ' ' << f[8]
+			<< ' ' << f[9]
+			);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, logIntPlus10FloatMessageBuffer)->Name("Appending int+10float using MessageBuffer, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, logIntPlus10FloatMessageBuffer)->Name("Appending int+10float using MessageBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
+
 template <class ...Args>
 void logWithConversionPattern(benchmark::State& state, Args&&... args)
 {
@@ -408,20 +441,77 @@ BENCHMARK_DEFINE_F(benchmarker, logIntPlusFloatValueFMT)(benchmark::State& state
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatValueFMT)->Name("Appending int+float using FMT, pattern: %m%n");
 BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatValueFMT)->Name("Appending int+float using FMT, pattern: %m%n")->Threads(benchmarker::threadCount());
-#endif
 
-BENCHMARK_DEFINE_F(benchmarker, asyncIntPlusFloatValueMessageBuffer)(benchmark::State& state)
+BENCHMARK_DEFINE_F(benchmarker, logIntPlus10FloatValueFMT)(benchmark::State& state)
 {
 	int x = 0;
 	for (auto _ : state)
 	{
-		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		LOG4CXX2_INFO( m_asyncLogger, "Hello: message number " << ++x
-			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
+		float f[] =
+		{ static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		};
+		LOG4CXX_INFO_FMT(m_logger, "Hello: msg number {} pseudo-random float {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f}"
+			, ++x
+			, f[0]
+			, f[1]
+			, f[2]
+			, f[3]
+			, f[4]
+			, f[5]
+			, f[6]
+			, f[7]
+			, f[8]
+			, f[9]
+			);
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, asyncIntPlusFloatValueMessageBuffer)->Name("Async, Sending int+float using MessageBuffer");
-BENCHMARK_REGISTER_F(benchmarker, asyncIntPlusFloatValueMessageBuffer)->Name("Async, Sending int+float using MessageBuffer")->Threads(benchmarker::threadCount());
+BENCHMARK_REGISTER_F(benchmarker, logIntPlus10FloatValueFMT)->Name("Appending int+10float using FMT, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, logIntPlus10FloatValueFMT)->Name("Appending int+10float using FMT, pattern: %m%n")->Threads(benchmarker::threadCount());
+#endif
+
+BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)(benchmark::State& state)
+{
+	int x = 0;
+	for (auto _ : state)
+	{
+		float f[] =
+		{ static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		};
+		LOG4CXX_INFO_FMT(m_logger, "Hello: msg number {} pseudo-random float {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f}"
+			, ++x
+			, f[0]
+			, f[1]
+			, f[2]
+			, f[3]
+			, f[4]
+			, f[5]
+			, f[6]
+			, f[7]
+			, f[8]
+			, f[9]
+			);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)->Name("Async, Sending int+10float using FMT");
+BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)->Name("Async, Sending int+10float using FMT")->Threads(benchmarker::threadCount());
 
 BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBuffer)(benchmark::State& state)
 {
