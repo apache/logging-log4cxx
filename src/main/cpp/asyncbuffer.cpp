@@ -54,7 +54,7 @@ bool AsyncBuffer::empty() const { return !m_priv || m_priv->data.empty(); }
 /**
 * Add text version of buffered values to \c msg
 */
-void AsyncBuffer::renderMessage(helpers::MessageBuffer& msg)
+void AsyncBuffer::renderMessage(LogCharMessageBuffer& msg)
 {
 	if (m_priv)
 		for (auto& renderer : m_priv->data)

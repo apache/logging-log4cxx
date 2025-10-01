@@ -55,7 +55,7 @@ public:
 	template<typename T>
 	AsyncBuffer& operator<<(const T& value)
 	{
-		append([value](MessageBuffer& msgBuf)
+		append([value](LogCharMessageBuffer& msgBuf)
 			{
 				msgBuf << value;
 			});
@@ -70,7 +70,7 @@ public:
 	/**
 	* Add text version of buffered values to \c msg
 	*/
-	void renderMessage(helpers::MessageBuffer& msg);
+	void renderMessage(LogCharMessageBuffer& msg);
 
 	/**
 	* Remove all message appenders
@@ -82,7 +82,7 @@ private:
 	AsyncBuffer& operator=(const AsyncBuffer&) = delete;
 
 	LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(Private, m_priv)
-	using MessageBufferAppender = std::function<void(MessageBuffer&)>;
+	using MessageBufferAppender = std::function<void(LogCharMessageBuffer&)>;
 
 	/**
 	 *   Append \c function to this buffer.

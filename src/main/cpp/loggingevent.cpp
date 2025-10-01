@@ -151,7 +151,7 @@ struct LoggingEvent::LoggingEventPrivate
 	{
 		if (!this->messageAppender.empty())
 		{
-			helpers::MessageBuffer buf;
+			helpers::LogCharMessageBuffer buf;
 			this->messageAppender.renderMessage(buf);
 			this->message = buf.extract_str(buf);
 			this->messageAppender.clear();
