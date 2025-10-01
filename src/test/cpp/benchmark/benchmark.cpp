@@ -132,7 +132,7 @@ void disableThousandSeparatorsInJSON()
 class benchmarker : public ::benchmark::Fixture
 {
 public: // Attributes
-	LoggerPtr m_logger = getLogger();
+	LoggerPtr m_appender = getNullWriter();
 	LoggerPtr m_asyncLogger = getAsyncLogger();
 	LoggerPtr m_fileLogger = getFileLogger();
 	LoggerPtr m_JSONLogger = getJSONFileLogger();
@@ -176,7 +176,7 @@ public: // Class methods
 			});
 	}
 
-	static LoggerPtr getLogger(const LogString& pattern = LogString())
+	static LoggerPtr getNullWriter(const LogString& pattern = LogString())
 	{
 		static struct initializer
 		{
@@ -303,10 +303,10 @@ public: // Class methods
 
 BENCHMARK_DEFINE_F(benchmarker, logDisabledTrace)(benchmark::State& state)
 {
-	m_logger->setLevel(Level::getDebug());
+	m_appender->setLevel(Level::getDebug());
 	for (auto _ : state)
 	{
-		LOG4CXX_TRACE( m_logger, LOG4CXX_STR("Hello: static string message"));
+		LOG4CXX_TRACE( m_appender, LOG4CXX_STR("Hello: static string message"));
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Testing disabled logging request")->MinWarmUpTime(benchmarker::warmUpSeconds());
@@ -314,10 +314,10 @@ BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Testing disabled logg
 
 BENCHMARK_DEFINE_F(benchmarker, logShortString)(benchmark::State& state)
 {
-	m_logger->setLevel(Level::getInfo());
+	m_appender->setLevel(Level::getInfo());
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO(m_logger, LOG4CXX_STR("Hello"));
+		LOG4CXX_INFO(m_appender, LOG4CXX_STR("Hello"));
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logShortString)->Name("Appending 5 char string using MessageBuffer, pattern: %m%n");
@@ -325,10 +325,10 @@ BENCHMARK_REGISTER_F(benchmarker, logShortString)->Name("Appending 5 char string
 
 BENCHMARK_DEFINE_F(benchmarker, logLongString)(benchmark::State& state)
 {
-	m_logger->setLevel(Level::getInfo());
+	m_appender->setLevel(Level::getInfo());
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO( m_logger, LOG4CXX_STR("Hello: this is a long static string message"));
+		LOG4CXX_INFO( m_appender, LOG4CXX_STR("Hello: this is a long static string message"));
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logLongString)->Name("Appending 49 char string using MessageBuffer, pattern: %m%n");
@@ -339,7 +339,7 @@ BENCHMARK_DEFINE_F(benchmarker, logIntValueMessageBuffer)(benchmark::State& stat
 	int x = 0;
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO( m_logger, "Hello: message number " << ++x);
+		LOG4CXX_INFO( m_appender, "Hello: message number " << ++x);
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntValueMessageBuffer)->Name("Appending int value using MessageBuffer, pattern: %m%n");
@@ -351,7 +351,7 @@ BENCHMARK_DEFINE_F(benchmarker, logIntPlusFloatMessageBuffer)(benchmark::State& 
 	for (auto _ : state)
 	{
 		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		LOG4CXX_INFO( m_logger, "Hello: message number " << ++x
+		LOG4CXX_INFO( m_appender, "Hello: message number " << ++x
 			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
 	}
 }
@@ -413,7 +413,7 @@ BENCHMARK_DEFINE_F(benchmarker, logLongStringFMT)(benchmark::State& state)
 {
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO_FMT(m_logger, "Hello: this is a long static string message", 0);
+		LOG4CXX_INFO_FMT(m_appender, "Hello: this is a long static string message", 0);
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logLongStringFMT)->Name("Appending 49 char string using FMT, pattern: %m%n");
@@ -424,7 +424,7 @@ BENCHMARK_DEFINE_F(benchmarker, logIntValueFMT)(benchmark::State& state)
 	int x = 0;
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO_FMT(m_logger, "Hello: msg number {}", ++x);
+		LOG4CXX_INFO_FMT(m_appender, "Hello: msg number {}", ++x);
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Appending int value using FMT, pattern: %m%n");
@@ -436,7 +436,7 @@ BENCHMARK_DEFINE_F(benchmarker, logIntPlusFloatValueFMT)(benchmark::State& state
 	for (auto _ : state)
 	{
 		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		LOG4CXX_INFO_FMT(m_logger, "Hello: msg number {} pseudo-random float {:.3f}", ++x, f);
+		LOG4CXX_INFO_FMT(m_appender, "Hello: msg number {} pseudo-random float {:.3f}", ++x, f);
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntPlusFloatValueFMT)->Name("Appending int+float using FMT, pattern: %m%n");
@@ -459,7 +459,7 @@ BENCHMARK_DEFINE_F(benchmarker, logIntPlus10FloatValueFMT)(benchmark::State& sta
 		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
 		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
 		};
-		LOG4CXX_INFO_FMT(m_logger, "Hello: msg number {} pseudo-random float {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f}"
+		LOG4CXX_INFO_FMT(m_appender, "Hello: msg number {} pseudo-random float {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f}"
 			, ++x
 			, f[0]
 			, f[1]
@@ -476,7 +476,6 @@ BENCHMARK_DEFINE_F(benchmarker, logIntPlus10FloatValueFMT)(benchmark::State& sta
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntPlus10FloatValueFMT)->Name("Appending int+10float using FMT, pattern: %m%n");
 BENCHMARK_REGISTER_F(benchmarker, logIntPlus10FloatValueFMT)->Name("Appending int+10float using FMT, pattern: %m%n")->Threads(benchmarker::threadCount());
-#endif
 
 BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)(benchmark::State& state)
 {
@@ -495,7 +494,7 @@ BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)(benchmark::St
 		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
 		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
 		};
-		LOG4CXX_INFO_FMT(m_logger, "Hello: msg number {} pseudo-random float {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f}"
+		LOG4CXX_INFO_FMT(m_asyncLogger, "Hello: msg number {} pseudo-random float {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f}"
 			, ++x
 			, f[0]
 			, f[1]
@@ -512,6 +511,42 @@ BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)(benchmark::St
 }
 BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)->Name("Async, Sending int+10float using FMT");
 BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)->Name("Async, Sending int+10float using FMT")->Threads(benchmarker::threadCount());
+#endif
+
+BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatMessageBuffer)(benchmark::State& state)
+{
+	int x = 0;
+	for (auto _ : state)
+	{
+		float f[] =
+		{ static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+		};
+		LOG4CXX_INFO_ASYNC(m_asyncLogger, "Hello: message number " << ++x
+			<< " pseudo-random float" << std::setprecision(3) << std::fixed
+			<< ' ' << f[0]
+			<< ' ' << f[1]
+			<< ' ' << f[2]
+			<< ' ' << f[3]
+			<< ' ' << f[4]
+			<< ' ' << f[5]
+			<< ' ' << f[6]
+			<< ' ' << f[7]
+			<< ' ' << f[8]
+			<< ' ' << f[9]
+			);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatMessageBuffer)->Name("Async, Sending int+10float using AsyncBuffer, pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatMessageBuffer)->Name("Async, Sending int+10float using AsyncBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
 
 BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBuffer)(benchmark::State& state)
 {
@@ -519,7 +554,7 @@ BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBuffer)(benchmark::S
 	for (auto _ : state)
 	{
 		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		LOG4CXX2_INFO( m_fileLogger, "Hello: message number " << ++x
+		LOG4CXX_INFO( m_fileLogger, "Hello: message number " << ++x
 			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
 	}
 }
