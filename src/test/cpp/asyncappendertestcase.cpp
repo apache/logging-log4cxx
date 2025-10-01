@@ -348,7 +348,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 				for (int i = 0; i < 140; i++)
 				{
-					LOG4CXX2_INFO(rootLogger, "Hello, World " << i);
+					LOG4CXX_INFO_ASYNC(rootLogger, "Hello, World " << i);
 				}
 
 				LOG4CXX_ERROR(rootLogger, "That's all folks.");
@@ -419,7 +419,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
 			for (int i = 0; i < 10; i++)
 			{
-				LOG4CXX2_INFO(rootLogger, "Hello, World " << i);
+				LOG4CXX_INFO_ASYNC(rootLogger, "Hello, World " << i);
 			}
 			LOG4CXX_INFO(rootLogger, "Bye bye World");
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread take the above events

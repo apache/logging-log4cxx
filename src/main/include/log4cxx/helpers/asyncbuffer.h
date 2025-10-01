@@ -29,7 +29,7 @@ namespace helpers
 {
 
 /**
- *   This class is used by the LOG4CXX2_INFO and similar
+ *   This class is used by the LOG4CXX_INFO_ASYNC and similar
  *   macros to support insertion operators.
  *   The class is not intended for use outside of that context.
  */
@@ -98,7 +98,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 
 \usage
 ~~~{.cpp}
-LOG4CXX2_INFO(m_log, surface->GetName()
+LOG4CXX_INFO_ASYNC(m_log, surface->GetName()
 	<< " successfully planned " << std::fixed << std::setprecision(1) << ((plannedArea  / (plannedArea + unplannedArea)) * 100.0) << "%"
 	<< " planned area " << std::fixed << std::setprecision(4) << plannedArea << "m^2"
 	<< " unplanned area " << unplannedArea << "m^2"
@@ -109,7 +109,7 @@ LOG4CXX2_INFO(m_log, surface->GetName()
 @param logger the logger that has the enabled status.
 @param message a valid r-value expression of an <code>operator<<(std::ostream&. ...)</code> overload.
 */
-#define LOG4CXX2_INFO(logger, message) do { \
+#define LOG4CXX_INFO_ASYNC(logger, message) do { \
 		if (::LOG4CXX_NS::Logger::isInfoEnabledFor(logger)) {\
 			::LOG4CXX_NS::helpers::AsyncBuffer buf;\
 			logger->addInfoEvent(std::move(buf << message), LOG4CXX_LOCATION);\
