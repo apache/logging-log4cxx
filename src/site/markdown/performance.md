@@ -98,8 +98,10 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 | Appending int+float using FMT, pattern: \%m\%n/threads:6 | 537 ns | 3036 ns | 212844 |
 | Appending int+10float using FMT, pattern: \%m\%n | 1671 ns | 1671 ns | 417402 |
 | Appending int+10float using FMT, pattern: \%m\%n/threads:6 | 1275 ns | 7297 ns | 96222 |
-| Async, Sending int+10float using FMT | 1663 ns | 1663 ns | 421796 |
-| Async, Sending int+10float using FMT/threads:6 | 1286 ns | 7368 ns | 88308 |
+| Async, Sending int+10float using FMT | 2190 ns | 2190 ns | 320109 |
+| Async, Sending int+10float using FMT/threads:6 | 1363 ns | 7862 ns | 84306 |
+| Async, Sending int+10float using AsyncBuffer, pattern: %m%n | 1226 ns | 1226 ns | 571351 |
+| Async, Sending int+10float using AsyncBuffer, pattern: %m%n/threads:6 | 1398 ns | 7902 ns | 89688 |
 | Logging int+float using MessageBuffer, pattern: \%d \%m\%n | 1073 ns | 1073 ns | 656652 |
 | Logging int+float using MessageBuffer, pattern: \%d \%m\%n/threads:6 | 1083 ns | 4895 ns | 142776 |
 | Logging int+float using MessageBuffer, JSON | 1394 ns | 1394 ns | 507493 |
