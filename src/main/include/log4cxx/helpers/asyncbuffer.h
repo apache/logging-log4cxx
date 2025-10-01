@@ -117,7 +117,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 
 \usage
 ~~~{.cpp}
-LOG4CXX_DEBUG(m_log, "AddMesh:"
+LOG4CXX_DEBUG_ASYNC(m_log, "AddMesh:"
 	<< " name " << meshName
 	<< " type 0x" << std:: hex << traits.Type
 	<< " materialName " << meshObject.GetMaterialName()
@@ -145,7 +145,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 
 \usage
 ~~~{.cpp}
-    LOG4CXX_TRACE(m_log, "AddVertex:" << " at " << p << " n " << n << ' ' << color);
+    LOG4CXX_TRACE_ASYNC(m_log, "AddVertex:" << " at " << p << " n " << n << ' ' << color);
 ~~~
 
 @param logger the logger that has the enabled status.
@@ -196,7 +196,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 ~~~{.cpp}
 catch (const std::exception& ex)
 {
-    LOG4CXX_WARN(m_log, ex.what() << ": in " << m_task->GetParamFilePath());
+    LOG4CXX_WARN_ASYNC(m_log, ex.what() << ": in " << m_task->GetParamFilePath());
 }
 ~~~
 
@@ -219,7 +219,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 ~~~{.cpp}
 catch (std::exception& ex)
 {
-	LOG4CXX_ERROR(m_log, ex.what() << " in AddScanData");
+	LOG4CXX_ERROR_ASYNC(m_log, ex.what() << " in AddScanData");
 }
 ~~~
 
@@ -255,7 +255,8 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 
 \usage
 ~~~{.cpp}
-LOG4CXX_FATAL(m_log, m_renderSystem->getName() << " is not supported");
+LOG4CXX_FATAL_ASYNC(m_log, m_renderSystem->getName() << " is not supported");
+LOG4CXX_FATAL_ASYNC(m_log, m_renderSystem->getName() << " is not supported");
 ~~~
 
 @param logger the logger to be used.
