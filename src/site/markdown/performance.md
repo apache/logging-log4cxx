@@ -139,5 +139,6 @@ and the blocking transfer of message data to the operating system
 from the calling thread to the background thread.
 
 When logging floating point values from a high priority thread,
+and you cannot use a background thread to format and write the log data,
 the LOG4CXX_[level]_FMT series of macros impose the least overhead.
 
