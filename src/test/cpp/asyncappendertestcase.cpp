@@ -130,6 +130,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 		LOGUNIT_TEST(closeTest);
 		LOGUNIT_TEST(test2);
+		LOGUNIT_TEST(testAutoMessageBufferSelection);
 		LOGUNIT_TEST(testEventFlush);
 		LOGUNIT_TEST(testMultiThread);
 		LOGUNIT_TEST(testBadAppender);
@@ -204,6 +205,37 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL((size_t) 1, v.size());
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
+		}
+
+		// Test behaviour when logging with a char type that is not logchar
+		void testAutoMessageBufferSelection()
+		{
+			VectorAppenderPtr vectorAppender;
+			auto r = LogManager::getLoggerRepository();
+			r->ensureIsConfigured([r, &vectorAppender]()
+			{
+				vectorAppender = std::make_shared<VectorAppender>();
+				r->getRootLogger()->addAppender(vectorAppender);
+			});
+			auto root = r->getRootLogger();
+
+			int expectedMessageCount = 1;
+#ifdef LOG4CXX_XXXX_ASYNC_MACROS_WORK_WITH_ANY_CHAR_TYPE
+			++expectedMessageCount
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			LOG4CXX_INFO_ASYNC(root, L"Some wide string " << 42);
+#else
+			LOG4CXX_INFO_ASYNC(root, "Some narrow string " << 42);
+#endif
+#endif // LOG4CXX_XXXX_ASYNC_MACROS_WORK_WITH_ANY_CHAR_TYPE
+
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			LOG4CXX_INFO(root, L"Some wide string " << 42);
+#else
+			LOG4CXX_INFO(root, "Some narrow string " << 42);
+#endif
+			auto& v = vectorAppender->getVector();
+			LOGUNIT_ASSERT_EQUAL(expectedMessageCount, int(v.size()));
 		}
 
 		// this test checks all messages are delivered when an AsyncAppender is closed
