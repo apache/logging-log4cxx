@@ -62,6 +62,7 @@ public:
 		return *this;
 	}
 
+#ifdef __cpp_init_captures // C++ >= 14
 	/** Append a function to this buffer that will convert \c value to text.
 	 *   @param value type must be move-constructable
 	 *   @return this buffer.
@@ -75,7 +76,7 @@ public:
 			});
 		return *this;
 	}
-
+#endif
 	/**
 	* Has no item been added to this?
 	*/
