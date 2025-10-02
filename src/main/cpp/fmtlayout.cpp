@@ -89,7 +89,7 @@ void FMTLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	LOG4CXX_NS::helpers::Pool&) const
 {
-	auto lsMsg = event->getRenderedMessage();
+	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
 	auto locationFull = fmt::format("{}({})",
 										 event->getLocationInformation().getFileName(),

@@ -78,7 +78,7 @@ void XMLLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
 {
-	auto lsMsg = event->getRenderedMessage();
+	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
 	output.append(LOG4CXX_STR("<log4j:event logger=\""));
 	Transform::appendEscapingTags(output, event->getLoggerName());
