@@ -42,6 +42,7 @@ public:
 			auto asyncAppender = std::make_shared<AsyncAppender>();
 			asyncAppender->addAppender(vectorAppender);
 			r->getRootLogger()->addAppender(asyncAppender);
+			r->setConfigured(true);
 			}
 		);
 	}

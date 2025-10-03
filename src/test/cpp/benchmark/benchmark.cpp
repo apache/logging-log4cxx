@@ -173,6 +173,7 @@ public: // Class methods
 			auto writer = std::make_shared<NullWriterAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
 			writer->setName(LOG4CXX_STR("NullAppender"));
 			r->getRootLogger()->addAppender(writer);
+			r->setConfigured(true);
 			});
 	}
 

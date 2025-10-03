@@ -49,7 +49,7 @@ struct Hierarchy::HierarchyPrivate
 
 	helpers::Pool pool;
 	mutable std::recursive_mutex mutex;
-	mutable std::mutex configuredMutex;
+	mutable std::recursive_mutex configuredMutex;
 	bool configured;
 	bool emittedNoAppenderWarning;
 	bool emittedNoResourceBundleWarning;
@@ -303,7 +303,7 @@ bool Hierarchy::isDisabled(int level) const
 
 void Hierarchy::ensureIsConfigured(std::function<void()> configurator)
 {
-	std::lock_guard<std::mutex> lock(m_priv->configuredMutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->configuredMutex);
 	if (!m_priv->configured && m_priv->alreadyTriedMethod != configurator.target_type().name())
 	{
 		configurator();
@@ -446,14 +446,14 @@ void Hierarchy::updateChildren(const Logger* parent)
 
 void Hierarchy::setConfigured(bool newValue)
 {
-	std::unique_lock<std::mutex> lock(m_priv->configuredMutex, std::try_to_lock);
+	std::unique_lock<std::recursive_mutex> lock(m_priv->configuredMutex, std::try_to_lock);
 	if (lock.owns_lock()) // Not being auto-configured?
 		m_priv->configured = newValue;
 }
 
 bool Hierarchy::isConfigured()
 {
-	std::lock_guard<std::mutex> lock(m_priv->configuredMutex); // Blocks while auto-configuration is active
+	std::lock_guard<std::recursive_mutex> lock(m_priv->configuredMutex); // Blocks while auto-configuration is active
 	return m_priv->configured;
 }
 

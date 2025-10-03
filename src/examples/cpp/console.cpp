@@ -38,6 +38,7 @@ static void configure(bool err)
             , err ? ConsoleAppender::getSystemErr() : ConsoleAppender::getSystemOut()
             );
         r->getRootLogger()->addAppender(appender);
+        r->setConfigured(true);
     });
 }
 
