@@ -161,7 +161,7 @@ std::basic_string<char> CharMessageBuffer::extract_str(std::basic_ostream<char>&
 
 std::basic_string<char> CharMessageBuffer::extract_str(CharMessageBuffer&)
 {
-	return std::move(m_priv->buf);
+	return std::move(m_priv->BufFromStream());
 }
 
 const std::basic_string<char>& CharMessageBuffer::str(std::basic_ostream<char>&)
@@ -171,7 +171,7 @@ const std::basic_string<char>& CharMessageBuffer::str(std::basic_ostream<char>&)
 
 const std::basic_string<char>& CharMessageBuffer::str(CharMessageBuffer&)
 {
-	return m_priv->buf;
+	return m_priv->BufFromStream();
 }
 
 bool CharMessageBuffer::hasStream() const
@@ -306,7 +306,7 @@ std::basic_string<wchar_t> WideMessageBuffer::extract_str(std::basic_ostream<wch
 
 std::basic_string<wchar_t> WideMessageBuffer::extract_str(WideMessageBuffer&)
 {
-	return std::move(m_priv->buf);
+	return std::move(m_priv->BufFromStream());
 }
 
 const std::basic_string<wchar_t>& WideMessageBuffer::str(std::basic_ostream<wchar_t>&)
@@ -316,7 +316,7 @@ const std::basic_string<wchar_t>& WideMessageBuffer::str(std::basic_ostream<wcha
 
 const std::basic_string<wchar_t>& WideMessageBuffer::str(WideMessageBuffer&)
 {
-	return m_priv->buf;
+	return m_priv->BufFromStream();
 }
 
 bool WideMessageBuffer::hasStream() const
@@ -672,7 +672,7 @@ std::basic_string<LOG4CXX_NS::UniChar> UniCharMessageBuffer::extract_str(UniChar
 
 std::basic_string<LOG4CXX_NS::UniChar> UniCharMessageBuffer::extract_str(UniCharMessageBuffer&)
 {
-	return std::move(m_priv->buf);
+	return std::move(m_priv->BufFromStream());
 }
 
 const std::basic_string<LOG4CXX_NS::UniChar>& UniCharMessageBuffer::str(UniCharMessageBuffer::uostream&)
@@ -682,7 +682,7 @@ const std::basic_string<LOG4CXX_NS::UniChar>& UniCharMessageBuffer::str(UniCharM
 
 const std::basic_string<LOG4CXX_NS::UniChar>& UniCharMessageBuffer::str(UniCharMessageBuffer&)
 {
-	return m_priv->buf;
+	return m_priv->BufFromStream();
 }
 
 bool UniCharMessageBuffer::hasStream() const

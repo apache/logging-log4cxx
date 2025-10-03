@@ -122,7 +122,8 @@ void PatternLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& pool) const
 {
-	output.reserve(m_priv->expectedPatternLength + event->getMessage().size());
+	auto& lsMsg = event->getRenderedMessage();
+	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
 	std::vector<FormattingInfoPtr>::const_iterator formatterIter =
 		m_priv->patternFields.begin();
 

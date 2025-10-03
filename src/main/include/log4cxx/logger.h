@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/helpers/resourcebundle.h>
+#include <log4cxx/helpers/asyncbuffer.h>
 #include <log4cxx/helpers/messagebuffer.h>
 
 namespace LOG4CXX_NS
@@ -507,12 +508,30 @@ class LOG4CXX_EXPORT Logger
 			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
+		Add to attached appender(s) a new \c level LoggingEvent which was requested at \c sourceLocation where the message is built asynchronously by \c messageAppender
+		without further checks.
+		@param level The logging event level.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addEvent(const LevelPtr& level, helpers::AsyncBuffer&& messageAppender
+			, const spi::LocationInfo& sourceLocation = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
 		Add a new fatal level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
 		*/
 		void addFatalEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add to attached appender(s) a new FATAL level LoggingEvent which was requested at \c sourceLocation where the message is built asynchronously by \c messageAppender
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addFatalEvent(helpers::AsyncBuffer&& messageAppender, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
 		Add a new error level logging event containing \c message and \c location to attached appender(s)
@@ -523,12 +542,28 @@ class LOG4CXX_EXPORT Logger
 		void addErrorEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
+		Add to attached appender(s) a new ERROR level LoggingEvent which was requested at \c sourceLocation where the message is built asynchronously by \c messageAppender
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addErrorEvent(helpers::AsyncBuffer&& messageAppender, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
 		Add a new warning level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
 		*/
 		void addWarnEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add to attached appender(s) a new WARN level LoggingEvent which was requested at \c sourceLocation where the message is built asynchronously by \c messageAppender
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addWarnEvent(helpers::AsyncBuffer&& messageAppender, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
 		Add a new info level logging event containing \c message and \c location to attached appender(s)
@@ -539,6 +574,14 @@ class LOG4CXX_EXPORT Logger
 		void addInfoEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
+		Add to attached appender(s) a new INFO level LoggingEvent which was requested at \c sourceLocation where the message is built asynchronously by \c messageAppender
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addInfoEvent(helpers::AsyncBuffer&& messageAppender, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
 		Add a new debug level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
@@ -547,12 +590,28 @@ class LOG4CXX_EXPORT Logger
 		void addDebugEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
+		Add to attached appender(s) a new DEBUG level LoggingEvent which was requested at \c sourceLocation where the message is built asynchronously by \c messageAppender
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addDebugEvent(helpers::AsyncBuffer&& messageAppender, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
 		Add a new trace level logging event containing \c message and \c location to attached appender(s)
 		without further checks.
 		@param message The text to add to the logging event.
 		@param location The source code location of the logging request.
 		*/
 		void addTraceEvent(std::string&& message, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
+
+		/**
+		Add to attached appender(s) a new TRACE level LoggingEvent which was requested at \c sourceLocation where the message is built asynchronously by \c messageAppender
+		without further checks.
+		@param message The text to add to the logging event.
+		@param location The source code location of the logging request.
+		*/
+		void addTraceEvent(helpers::AsyncBuffer&& messageAppender, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s)

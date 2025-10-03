@@ -61,6 +61,8 @@ and the LOG4CXX_CONFIGURATION environment variable (see log4cxx::spi::Configurat
    \[[#520](https://github.com/apache/logging-log4cxx/pull/520)\]
 * Console output (Log4cxx internal logging and BasicConfigurator) use a color per message level by default
    \[[#529](https://github.com/apache/logging-log4cxx/pull/529)\]
+* New logging macros that defer binary-to-text conversion until used in AsyncAppender's background thread
+   \[[#548](https://github.com/apache/logging-log4cxx/pull/548)\]
 
 The following issues have been addressed:
 

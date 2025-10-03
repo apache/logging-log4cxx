@@ -173,6 +173,15 @@ void Logger::closeNestedAppenders()
 	}
 }
 
+void Logger::addEvent(const LevelPtr& level, helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level, location, std::move(messageAppender));
+	Pool p;
+	callAppenders(event, p);
+}
+
 void Logger::addEvent(const LevelPtr& level, std::string&& message, const LocationInfo& location) const
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
@@ -192,9 +201,19 @@ void Logger::addFatalEvent(std::string&& message, const LocationInfo& location) 
 	addEvent(m_priv->levelData->Fatal, std::move(message), location);
 }
 
+void Logger::addFatalEvent(helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData->Fatal, std::move(messageAppender), location);
+}
+
 void Logger::addErrorEvent(std::string&& message, const LocationInfo& location) const
 {
 	addEvent(m_priv->levelData->Error, std::move(message), location);
+}
+
+void Logger::addErrorEvent(helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData->Error, std::move(messageAppender), location);
 }
 
 void Logger::addWarnEvent(std::string&& message, const LocationInfo& location) const
@@ -202,9 +221,19 @@ void Logger::addWarnEvent(std::string&& message, const LocationInfo& location) c
 	addEvent(m_priv->levelData->Warn, std::move(message), location);
 }
 
+void Logger::addWarnEvent(helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData->Warn, std::move(messageAppender), location);
+}
+
 void Logger::addInfoEvent(std::string&& message, const LocationInfo& location) const
 {
 	addEvent(m_priv->levelData->Info, std::move(message), location);
+}
+
+void Logger::addInfoEvent(helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData->Info, std::move(messageAppender), location);
 }
 
 void Logger::addDebugEvent(std::string&& message, const LocationInfo& location) const
@@ -212,9 +241,19 @@ void Logger::addDebugEvent(std::string&& message, const LocationInfo& location) 
 	addEvent(m_priv->levelData->Debug, std::move(message), location);
 }
 
+void Logger::addDebugEvent(helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData->Debug, std::move(messageAppender), location);
+}
+
 void Logger::addTraceEvent(std::string&& message, const LocationInfo& location) const
 {
 	addEvent(m_priv->levelData->Trace, std::move(message), location);
+}
+
+void Logger::addTraceEvent(helpers::AsyncBuffer&& messageAppender, const LocationInfo& location) const
+{
+	addEvent(m_priv->levelData->Trace, std::move(messageAppender), location);
 }
 
 void Logger::forcedLog(const LevelPtr& level, const std::string& message,

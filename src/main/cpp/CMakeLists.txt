@@ -78,6 +78,7 @@ target_sources(log4cxx
   appenderskeleton.cpp
   aprinitializer.cpp
   asyncappender.cpp
+  asyncbuffer.cpp
   basicconfigurator.cpp
   bufferedwriter.cpp
   bytearrayinputstream.cpp

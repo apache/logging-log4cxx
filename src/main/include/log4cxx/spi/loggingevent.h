@@ -87,6 +87,21 @@ class LOG4CXX_EXPORT LoggingEvent :
 			, const LocationInfo& location
 			);
 
+		/**
+		An event composed using the supplied parameters.
+
+		@param logger The logger used to make the logging request.
+		@param level The severity of this event.
+		@param location The source code location of the logging request.
+		@param messageAppender  Builds the message text to add to this event.
+		*/
+		LoggingEvent
+			( const LogString& logger
+			, const LevelPtr& level
+			, const LocationInfo& location
+			, helpers::AsyncBuffer&& messageAppender
+			);
+
 		~LoggingEvent();
 
 		/** The severity level of the logging request that generated this event. */
@@ -194,6 +209,11 @@ class LOG4CXX_EXPORT LoggingEvent :
 		* Associate \c value with the property \c key.
 		*/
 		void setProperty(const LogString& key, const LogString& value);
+
+		/**
+		* Use the renderers to construct the message
+		*/
+		void renderMessage();
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LoggingEventPrivate, m_priv)

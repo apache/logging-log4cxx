@@ -104,13 +104,14 @@ class LoggingVectorAppender : public VectorAppender
 	LoggerInstancePtr logger{ "LoggingVectorAppender" };
 	void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
 	{
+		auto lsMsg = event->getRenderedMessage();
 		VectorAppender::append(event, p);
-		if (event->getMessage() == LOG4CXX_STR("Hello, World"))
+		if (LogString::npos != lsMsg.find(LOG4CXX_STR("World")))
 		{
-			LOG4CXX_LOGLS(logger, Level::getError(), LOG4CXX_STR("Some example error"));
-			LOG4CXX_LOGLS(logger, Level::getWarn(), LOG4CXX_STR("Some example warning"));
-			LOG4CXX_LOGLS(logger, Level::getInfo(), LOG4CXX_STR("Some information"));
-			LOG4CXX_LOGLS(logger, Level::getDebug(), LOG4CXX_STR("Some detailed data"));
+			LOG4CXX_LOGLS(logger, Level::getError(), LOG4CXX_STR("Some appender error"));
+			LOG4CXX_LOGLS(logger, Level::getWarn(), LOG4CXX_STR("Some appender warning"));
+			LOG4CXX_LOGLS(logger, Level::getInfo(), LOG4CXX_STR("Some appender information"));
+			LOG4CXX_LOGLS(logger, Level::getDebug(), LOG4CXX_STR("Some appender detailed data"));
 		}
 	}
 };
@@ -129,6 +130,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 		LOGUNIT_TEST(closeTest);
 		LOGUNIT_TEST(test2);
+		LOGUNIT_TEST(testAutoMessageBufferSelection);
 		LOGUNIT_TEST(testEventFlush);
 		LOGUNIT_TEST(testMultiThread);
 		LOGUNIT_TEST(testBadAppender);
@@ -205,6 +207,37 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
 
+		// Test behaviour when logging with a char type that is not logchar
+		void testAutoMessageBufferSelection()
+		{
+			VectorAppenderPtr vectorAppender;
+			auto r = LogManager::getLoggerRepository();
+			r->ensureIsConfigured([r, &vectorAppender]()
+			{
+				vectorAppender = std::make_shared<VectorAppender>();
+				r->getRootLogger()->addAppender(vectorAppender);
+			});
+			auto root = r->getRootLogger();
+
+			int expectedMessageCount = 1;
+#ifdef LOG4CXX_XXXX_ASYNC_MACROS_WORK_WITH_ANY_CHAR_TYPE
+			++expectedMessageCount
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			LOG4CXX_INFO_ASYNC(root, L"Some wide string " << 42);
+#else
+			LOG4CXX_INFO_ASYNC(root, "Some narrow string " << 42);
+#endif
+#endif // LOG4CXX_XXXX_ASYNC_MACROS_WORK_WITH_ANY_CHAR_TYPE
+
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			LOG4CXX_INFO(root, L"Some wide string " << 42);
+#else
+			LOG4CXX_INFO(root, "Some narrow string " << 42);
+#endif
+			auto& v = vectorAppender->getVector();
+			LOGUNIT_ASSERT_EQUAL(expectedMessageCount, int(v.size()));
+		}
+
 		// this test checks all messages are delivered when an AsyncAppender is closed
 		void testEventFlush()
 		{
@@ -219,7 +252,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 			for (size_t i = 0; i < LEN; i++)
 			{
-				LOG4CXX_DEBUG(root, "message" << i);
+				LOG4CXX_DEBUG_ASYNC(root, "message" << i);
 			}
 
 			asyncAppender->close();
@@ -232,7 +265,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			{
 				LogString m(LOG4CXX_STR("message"));
 				StringHelper::toString(i, p, m);
-				LOGUNIT_ASSERT(v[i]->getMessage() == m);
+				LOGUNIT_ASSERT(v[i]->getRenderedMessage() == m);
 			}
 			LOGUNIT_ASSERT_EQUAL(true, vectorAppender->isClosed());
 		}
@@ -257,7 +290,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				{
 					for (int i = 0; i < LEN; i++)
 					{
-						LOG4CXX_DEBUG(root, "message" << i);
+						LOG4CXX_DEBUG_ASYNC(root, "message" << i);
 					}
 				});
 			}
@@ -277,7 +310,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			std::vector<int> msgCount(LEN, 0);
 			for (auto m : v)
 			{
-				auto i = StringHelper::toInt(m->getMessage().substr(7));
+				auto i = StringHelper::toInt(m->getRenderedMessage().substr(7));
 				LOGUNIT_ASSERT(0 <= i);
 				LOGUNIT_ASSERT(i < LEN);
 				++msgCount[i];
@@ -340,17 +373,17 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->activateOptions(p);
 			auto rootLogger = Logger::getRootLogger();
 			rootLogger->addAppender(async);
-			LOG4CXX_INFO(rootLogger, "Hello, World"); // This causes the dispatch thread creation
+			LOG4CXX_INFO_ASYNC(rootLogger, "Hello, World"); // This causes the dispatch thread creation
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
 			{
 				std::lock_guard<std::mutex> sync(blockableAppender->getBlocker());
 
 				for (int i = 0; i < 140; i++)
 				{
-					LOG4CXX_INFO(rootLogger, "Hello, World");
+					LOG4CXX_INFO_ASYNC(rootLogger, "Hello, World " << i);
 				}
 
-				LOG4CXX_ERROR(rootLogger, "That's all folks.");
+				LOG4CXX_ERROR_ASYNC(rootLogger, "That's all folks.");
 			}
 			async->close();
 
@@ -359,14 +392,14 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(!events.empty());
 			LOGUNIT_ASSERT(events.size() <= 142);
 			LoggingEventPtr initialEvent = events.front();
-			LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
+			LOGUNIT_ASSERT(initialEvent->getRenderedMessage() == LOG4CXX_STR("Hello, World"));
 			std::map<LevelPtr, int> levelCount;
 			int discardMessageCount{ 0 };
 			LoggingEventPtr discardEvent;
 			for (auto& e : events)
 			{
 				++levelCount[e->getLevel()];
-				if (e->getMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
+				if (e->getRenderedMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
 				{
 					++discardMessageCount;
 					discardEvent = e;
@@ -414,45 +447,46 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->activateOptions(p);
 			auto rootLogger = Logger::getRootLogger();
 			rootLogger->addAppender(async);
-			LOG4CXX_INFO(rootLogger, "Hello, World"); // This causes the dispatch thread creation
+			LOG4CXX_INFO_ASYNC(rootLogger, "Hello, World"); // This causes the dispatch thread creation
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread  to be ready
 			for (int i = 0; i < 10; i++)
 			{
-				LOG4CXX_INFO(rootLogger, "Hello, World");
+				LOG4CXX_INFO_ASYNC(rootLogger, "Hello, World " << i);
 			}
-			LOG4CXX_INFO(rootLogger, "Bye bye World");
+			LOG4CXX_INFO_ASYNC(rootLogger, "Bye bye World");
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) ); // Wait for the dispatch thread take the above events
 			async->close();
 			auto& events = loggingAppender->getVector();
 			std::map<LevelPtr, int> levelCount;
 			int discardMessageCount{ 0 };
+			int eventCount[] = { 0, 0 };
 			for (auto& e : events)
 			{
 				++levelCount[e->getLevel()];
-				auto message = e->getMessage();
+				auto message = e->getRenderedMessage();
+				LogLog::debug(message);
+				auto isAppenderMessage = (message.npos == message.find(LOG4CXX_STR("World")));
+				++eventCount[isAppenderMessage];
 				if (message.substr(0, 10) == LOG4CXX_STR("Discarded "))
 				{
 					++discardMessageCount;
-					auto isAppenderMessage = (message.npos == message.find(LOG4CXX_STR("World")));
 					LOGUNIT_ASSERT(isAppenderMessage);
 				}
 			}
 			if (helpers::LogLog::isDebugEnabled())
 			{
 				LogString msg{ LOG4CXX_STR("messageCounts:") };
-				for (auto& item : levelCount)
-				{
-					msg += LOG4CXX_STR(" ");
-					msg += item.first->toString();
-					msg += LOG4CXX_STR(" ");
-					StringHelper::toString(item.second, p, msg);
-				}
-				msg += LOG4CXX_STR(" ");
-				msg += LOG4CXX_STR("Discarded ");
+				msg += LOG4CXX_STR(" nonAppender ");
+				StringHelper::toString(eventCount[0], p, msg);
+				msg += LOG4CXX_STR(" appender ");
+				StringHelper::toString(eventCount[1], p, msg);
+				msg += LOG4CXX_STR(" discard ");
 				StringHelper::toString(discardMessageCount, p, msg);
-				helpers::LogLog::debug(msg);
+				LogLog::debug(msg);
 			}
 			LOGUNIT_ASSERT(12 < events.size());
+			// A race condition in AsyncAppender can result in a lost message when the dispatch thread is logging events
+			LOGUNIT_ASSERT(10 <= eventCount[0]);
 		}
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
@@ -479,7 +513,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 			for (size_t i = 0; i < LEN; i++)
 			{
-				LOG4CXX_DEBUG(root, "message" << i);
+				LOG4CXX_DEBUG_ASYNC(root, "message" << i);
 			}
 
 			asyncAppender->close();
