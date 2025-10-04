@@ -232,18 +232,6 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 		}
 	}
 
-	auto lsAsynchronous = OptionConverter::findAndSubst(LOG4CXX_STR("log4j.asynchronous-logging"), properties);
-	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
-	{
-		(*m_priv->registry)[LOG4CXX_STR("log4j.asynchronous-logging")] = std::make_shared<AsyncAppender>();
-		if (LogLog::isDebugEnabled())
-		{
-			LogLog::debug(LOG4CXX_STR("Asynchronous logging =[")
-				+ LogString(LOG4CXX_STR("true"))
-				+ LOG4CXX_STR("]"));
-		}
-	}
-
 	LogString threadConfigurationValue(properties.getProperty(LOG4CXX_STR("log4j.threadConfiguration")));
 
 	if ( threadConfigurationValue == LOG4CXX_STR("NoConfiguration") )
@@ -426,12 +414,13 @@ void PropertyConfigurator::parseLogger(
 
 	}
 
-	std::vector<AppenderPtr> newappenders;
-	AsyncAppenderPtr async;
-	auto pAppender = m_priv->registry->find(LOG4CXX_STR("log4j.asynchronous-logging"));
-	if (m_priv->registry->end() != pAppender)
-		async = log4cxx::cast<AsyncAppender>(pAppender->second);
 
+	AsyncAppenderPtr async;
+	auto lsAsynchronous = OptionConverter::findAndSubst(LOG4CXX_STR("log4j.asynchronous-logging.") + loggerName, props);
+	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
+		async = std::make_shared<AsyncAppender>();
+
+	std::vector<AppenderPtr> newappenders;
 	while (st.hasMoreTokens())
 	{
 		auto appenderName = StringHelper::trim(st.nextToken());
@@ -459,8 +448,15 @@ void PropertyConfigurator::parseLogger(
 	if (!newappenders.empty())
 		m_priv->appenderAdded = true;
 #endif
-	if (async)
+	if (async && !newappenders.empty())
+	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Asynchronous logging for [")
+					+ loggerName + LOG4CXX_STR("] is on"));
+		}
 		logger->reconfigure( {async}, additivity );
+	}
 	else
 		logger->reconfigure( newappenders, additivity );
 }

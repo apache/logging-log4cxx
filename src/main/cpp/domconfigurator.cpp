@@ -562,14 +562,12 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 	AppenderMap& appenders)
 {
 	PropertySetter propSetter(logger);
-	std::vector<AppenderPtr> newappenders;
 	AsyncAppenderPtr async;
-	std::string sAsyncAttr{ ASYNCHRONOUS_ATTR };
-	LOG4CXX_DECODE_CHAR(lsAsyncAttr, sAsyncAttr);
-	auto pAppender = appenders.find(lsAsyncAttr);
-	if (appenders.end() != pAppender)
-		async = log4cxx::cast<AsyncAppender>(pAppender->second);
+	auto lsAsynchronous = subst(getAttribute(utf8Decoder, loggerElement, ASYNCHRONOUS_ATTR));
+	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
+		async = std::make_shared<AsyncAppender>();
 
+	std::vector<AppenderPtr> newappenders;
 	for (apr_xml_elem* currentElement = loggerElement->first_child;
 		currentElement;
 		currentElement = currentElement->next)
@@ -606,8 +604,13 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			setParameter(p, utf8Decoder, currentElement, propSetter);
 		}
 	}
-	if (async)
+	if (async && !newappenders.empty())
 	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Asynchronous logging for [")
+					+ logger->getName() + LOG4CXX_STR("] is on"));
+		}
 		logger->replaceAppenders({async});
 		m_priv->appenderAdded = true;
 	}
@@ -1100,20 +1103,6 @@ void DOMConfigurator::parse(
 		{
 			LogLog::debug(LOG4CXX_STR("Repository threshold =[")
 				+ m_priv->repository->getThreshold()->toString()
-				+ LOG4CXX_STR("]"));
-		}
-	}
-
-	std::string sAsyncAttr{ ASYNCHRONOUS_ATTR };
-	auto lsAsynchronous = subst(getAttribute(utf8Decoder, element, sAsyncAttr));
-	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
-	{
-		LOG4CXX_DECODE_CHAR(lsAsyncAttr, sAsyncAttr);
-		appenders[lsAsyncAttr] = std::make_shared<AsyncAppender>();
-		if (LogLog::isDebugEnabled())
-		{
-			LogLog::debug(LOG4CXX_STR("Asynchronous logging =[")
-				+ LogString(LOG4CXX_STR("true"))
 				+ LOG4CXX_STR("]"));
 		}
 	}
