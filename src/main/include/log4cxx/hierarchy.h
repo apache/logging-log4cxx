@@ -86,8 +86,12 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 #else
 		void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 #endif
+
 		/**
-		 * Call \c configurator if not yet configured.
+		 * Call \c configurator if not yet configured and \c configurator has not already been tried.
+		 * If \c configurator succeeds, it must call LoggerRepository::setConfigured
+		 * to ensure subsequent calls to LoggerRepository::ensureIsConfigured
+		 * from overwriting the configuration.
 		 */
 		void ensureIsConfigured(std::function<void()> configurator) override;
 

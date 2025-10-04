@@ -59,6 +59,7 @@ LoggerPtr getLogger(const LogString& name = LogString())
 	r->ensureIsConfigured([r]()
 		{
 			r->getRootLogger()->addAppender(std::make_shared<CountingAppender>());
+			r->setConfigured(true);
 		});
 	return name.empty() ? r->getRootLogger() : r->getLogger(name);
 }
@@ -110,6 +111,7 @@ public:
 	void testLevelChange()
 	{
 		auto appender = dynamic_cast<CountingAppender*>(getLogger()->getAppender(LOG4CXX_STR("counter")).get());
+		LOGUNIT_ASSERT(LogManager::getLoggerRepository()->isConfigured());
 		LOGUNIT_ASSERT(appender);
 
 		auto myLogger = getLogger(LOG4CXX_STR("Controller"));
