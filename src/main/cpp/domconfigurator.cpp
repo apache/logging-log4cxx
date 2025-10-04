@@ -564,7 +564,9 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 	PropertySetter propSetter(logger);
 	std::vector<AppenderPtr> newappenders;
 	AsyncAppenderPtr async;
-	auto pAppender = appenders.find(LOG4CXX_STR(ASYNCHRONOUS_ATTR));
+	std::string sAsyncAttr{ ASYNCHRONOUS_ATTR };
+	LOG4CXX_DECODE_CHAR(lsAsyncAttr, sAsyncAttr);
+	auto pAppender = appenders.find(lsAsyncAttr);
 	if (appenders.end() != pAppender)
 		async = log4cxx::cast<AsyncAppender>(pAppender->second);
 
@@ -1102,10 +1104,12 @@ void DOMConfigurator::parse(
 		}
 	}
 
-	auto lsAsynchronous = subst(getAttribute(utf8Decoder, element, ASYNCHRONOUS_ATTR));
+	std::string sAsyncAttr{ ASYNCHRONOUS_ATTR };
+	auto lsAsynchronous = subst(getAttribute(utf8Decoder, element, sAsyncAttr));
 	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
 	{
-		appenders[LOG4CXX_STR(ASYNCHRONOUS_ATTR)] = std::make_shared<AsyncAppender>();
+		LOG4CXX_DECODE_CHAR(lsAsyncAttr, sAsyncAttr);
+		appenders[lsAsyncAttr] = std::make_shared<AsyncAppender>();
 		if (LogLog::isDebugEnabled())
 		{
 			LogLog::debug(LOG4CXX_STR("Asynchronous logging =[")
