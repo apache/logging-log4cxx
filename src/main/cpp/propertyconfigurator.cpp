@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/asyncappender.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/exception.h>
@@ -231,6 +232,18 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 		}
 	}
 
+	auto lsAsynchronous = OptionConverter::findAndSubst(LOG4CXX_STR("log4j.asynchronous-logging"), properties);
+	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
+	{
+		(*m_priv->registry)[LOG4CXX_STR("log4j.asynchronous-logging")] = std::make_shared<AsyncAppender>();
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Asynchronous logging =[")
+				+ LogString(LOG4CXX_STR("true"))
+				+ LOG4CXX_STR("]"));
+		}
+	}
+
 	LogString threadConfigurationValue(properties.getProperty(LOG4CXX_STR("log4j.threadConfiguration")));
 
 	if ( threadConfigurationValue == LOG4CXX_STR("NoConfiguration") )
@@ -413,13 +426,15 @@ void PropertyConfigurator::parseLogger(
 
 	}
 
-	AppenderPtr appender;
-	LogString appenderName;
 	std::vector<AppenderPtr> newappenders;
+	AsyncAppenderPtr async;
+	auto pAppender = m_priv->registry->find(LOG4CXX_STR("log4j.asynchronous-logging"));
+	if (m_priv->registry->end() != pAppender)
+		async = log4cxx::cast<AsyncAppender>(pAppender->second);
 
 	while (st.hasMoreTokens())
 	{
-		appenderName = StringHelper::trim(st.nextToken());
+		auto appenderName = StringHelper::trim(st.nextToken());
 
 		if (appenderName.empty() || appenderName == LOG4CXX_STR(","))
 		{
@@ -431,18 +446,23 @@ void PropertyConfigurator::parseLogger(
 			LogLog::debug(LOG4CXX_STR("Parsing ") + Appender::getStaticClass().getName()
 				+ LOG4CXX_STR(" named [") + appenderName + LOG4CXX_STR("]"));
 		}
-		appender = parseAppender(props, appenderName);
-
-		if (appender != 0)
+		if (auto appender = parseAppender(props, appenderName))
 		{
 			newappenders.push_back(appender);
+			if (log4cxx::cast<AsyncAppender>(appender)) // An explicitly configured AsyncAppender?
+				async.reset(); // Not required
+			if (async)
+				async->addAppender(appender);
 		}
 	}
 #if 15 < LOG4CXX_ABI_VERSION
 	if (!newappenders.empty())
 		m_priv->appenderAdded = true;
 #endif
-	logger->reconfigure( newappenders, additivity );
+	if (async)
+		logger->reconfigure( {async}, additivity );
+	else
+		logger->reconfigure( newappenders, additivity );
 }
 
 AppenderPtr PropertyConfigurator::parseAppender(
