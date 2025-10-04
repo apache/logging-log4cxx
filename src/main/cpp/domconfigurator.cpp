@@ -133,7 +133,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define ERROR_HANDLER_TAG "errorHandler"
 #define REF_ATTR "ref"
 #define ADDITIVITY_ATTR "additivity"
-#define ASYNCHRONOUS_ATTR "asynchronous-logging"
+#define ASYNCHRONOUS_ATTR "asynchronous"
 #define THRESHOLD_ATTR "threshold"
 #define STRINGSTREAM_ATTR "stringstream"
 #define CONFIG_DEBUG_ATTR "configDebug"
