@@ -562,10 +562,16 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 	AppenderMap& appenders)
 {
 	PropertySetter propSetter(logger);
+	auto loggerName = m_priv->repository->getRootLogger() == logger
+					? LogString(LOG4CXX_STR("root"))
+					: logger->getName();
 	AsyncAppenderPtr async;
 	auto lsAsynchronous = subst(getAttribute(utf8Decoder, loggerElement, ASYNCHRONOUS_ATTR));
 	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
+	{
 		async = std::make_shared<AsyncAppender>();
+		async->setName(loggerName);
+	}
 
 	std::vector<AppenderPtr> newappenders;
 	for (apr_xml_elem* currentElement = loggerElement->first_child;

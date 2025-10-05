@@ -414,11 +414,13 @@ void PropertyConfigurator::parseLogger(
 
 	}
 
-
 	AsyncAppenderPtr async;
 	auto lsAsynchronous = OptionConverter::findAndSubst(LOG4CXX_STR("log4j.asynchronous.") + loggerName, props);
 	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
+	{
 		async = std::make_shared<AsyncAppender>();
+		async->setName(loggerName);
+	}
 
 	std::vector<AppenderPtr> newappenders;
 	while (st.hasMoreTokens())

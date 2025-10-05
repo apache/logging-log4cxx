@@ -599,7 +599,7 @@ void AsyncAppender::dispatch()
 	if (LogLog::isDebugEnabled())
 	{
 		Pool p;
-		LogString msg(LOG4CXX_STR("AsyncAppender"));
+		LogString msg(LOG4CXX_STR("[") + getName() + LOG4CXX_STR("] AsyncAppender"));
 #ifdef _DEBUG
 		msg += LOG4CXX_STR(" iterationCount ");
 		StringHelper::toString(iterationCount, p, msg);
