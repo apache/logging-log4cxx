@@ -321,6 +321,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	}
 	if (priv->dispatcher.get_id() == std::this_thread::get_id()) // From an appender attached to this?
 	{
+		std::unique_lock<std::mutex> lock(priv->bufferMutex);
 		auto loggerName = event->getLoggerName();
 		auto iter = priv->discardMap.find(loggerName);
 		if (priv->discardMap.end() == iter)
