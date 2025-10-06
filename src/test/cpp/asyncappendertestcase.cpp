@@ -529,8 +529,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				LogLog::debug(msg);
 			}
 			LOGUNIT_ASSERT(12 < events.size());
-			// A race condition in AsyncAppender can result in a lost message when the dispatch thread is logging events
-			LOGUNIT_ASSERT(10 <= eventCount[0]);
+			LOGUNIT_ASSERT_EQUAL(12, eventCount[0]);
 		}
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
