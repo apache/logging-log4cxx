@@ -92,6 +92,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 
 		Supported options | Supported values | Default value |
 		-------------- | ---------------- | --------------- |
+		Name      | {any} | - |
 		Threshold | Trace,Debug,Info,Warn,Error,Fatal,Off,All | All |
 		*/
 		void setOption(const LogString& option, const LogString& value) override;

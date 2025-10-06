@@ -32,6 +32,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/file.h>
 #include <thread>
 
@@ -138,8 +139,10 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testBufferOverflowBehavior);
 		LOGUNIT_TEST(testLoggingAppender);
 #if LOG4CXX_HAS_DOMCONFIGURATOR
-		LOGUNIT_TEST(testConfiguration);
+		LOGUNIT_TEST(testXMLConfiguration);
+		LOGUNIT_TEST(testAsyncLoggerXML);
 #endif
+		LOGUNIT_TEST(testAsyncLoggerProperties);
 		LOGUNIT_TEST_SUITE_END();
 
 #ifdef _DEBUG
@@ -531,7 +534,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		}
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
-		void testConfiguration()
+		void testXMLConfiguration()
 		{
 			// Configure Log4cxx
 			auto status = xml::DOMConfigurator::configure("input/xml/asyncAppender1.xml");
@@ -562,7 +565,65 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
+
+		void testAsyncLoggerXML()
+		{
+			// Configure Log4cxx
+			auto status = xml::DOMConfigurator::configure("input/xml/asyncLogger.xml");
+			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+
+			// Check configuration is as expected
+			auto  root = Logger::getRootLogger();
+			auto appenders = root->getAllAppenders();
+			LOGUNIT_ASSERT_EQUAL(1, int(appenders.size()));
+			auto asyncAppender = log4cxx::cast<AsyncAppender>(appenders.front());
+			LOGUNIT_ASSERT(asyncAppender);
+
+			// Log some messages
+			size_t LEN = 20;
+			for (size_t i = 0; i < LEN; i++)
+			{
+				LOG4CXX_INFO_ASYNC(root, "message" << i);
+			}
+			asyncAppender->close();
+
+			// Check all message were received
+			auto vectorAppender = log4cxx::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
+			LOGUNIT_ASSERT(vectorAppender);
+			auto& v = vectorAppender->getVector();
+			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			LOGUNIT_ASSERT(vectorAppender->isClosed());
+		}
 #endif
+
+		void testAsyncLoggerProperties()
+		{
+			// Configure Log4cxx
+			auto status = PropertyConfigurator::configure("input/asyncLogger.properties");
+			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+
+			// Check configuration is as expected
+			auto  root = Logger::getRootLogger();
+			auto appenders = root->getAllAppenders();
+			LOGUNIT_ASSERT_EQUAL(1, int(appenders.size()));
+			auto asyncAppender = log4cxx::cast<AsyncAppender>(appenders.front());
+			LOGUNIT_ASSERT(asyncAppender);
+
+			// Log some messages
+			size_t LEN = 20;
+			for (size_t i = 0; i < LEN; i++)
+			{
+				LOG4CXX_INFO_ASYNC(root, "message" << i);
+			}
+			asyncAppender->close();
+
+			// Check all message were received
+			auto vectorAppender = log4cxx::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
+			LOGUNIT_ASSERT(vectorAppender);
+			auto& v = vectorAppender->getVector();
+			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			LOGUNIT_ASSERT(vectorAppender->isClosed());
+		}
 
 
 };

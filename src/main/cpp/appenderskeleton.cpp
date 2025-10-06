@@ -191,6 +191,11 @@ void AppenderSkeleton::setOption(const LogString& option,
 	{
 		setThreshold(Level::toLevelLS(value));
 	}
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("NAME"), LOG4CXX_STR("name")))
+	{
+		setName(value);
+	}
 }
 
 const spi::ErrorHandlerPtr AppenderSkeleton::getErrorHandler() const

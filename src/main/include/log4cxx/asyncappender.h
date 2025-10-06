@@ -34,14 +34,21 @@ The AsyncAppender stores the logging event in a bounded buffer
 and then returns control to the application.
 A separate thread forwards events to the attached appender(s).
 
+An AsyncAppender is used when you configure a logger to be asynchronous.
+These AsyncAppender(s) use [the default values](@ref log4cxx::AsyncAppender::setOption) for all options
+and they cannot be changed using configuration file entries.
+For more control over the AsyncAppender options,
+use <b>appender-ref</b> element in the logger configuration instead. 
+
 <b>Important notes:</b>
 - Your application must call LogManager::shutdown when it exits
 to prevent undefined behaviour when using this appender.
-- Runtime configuration requires an XML configuration file
+- Runtime configuration of options requires an XML configuration file
 (see the example below).
 
 This appender is useful when outputting to a slow event sink,
-for example, a remote SMTP server or a database.
+for example, unbuffered output to a file,
+a remote SMTP server or a database.
 Note that configuring a FileAppender to use [buffered output](@ref log4cxx::FileAppender::setOption)
 usually results in lower overhead than
 attaching the FileAppender to an AsyncAppender

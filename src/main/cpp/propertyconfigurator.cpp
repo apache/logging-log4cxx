@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/asyncappender.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/exception.h>
@@ -413,13 +414,18 @@ void PropertyConfigurator::parseLogger(
 
 	}
 
-	AppenderPtr appender;
-	LogString appenderName;
-	std::vector<AppenderPtr> newappenders;
+	AsyncAppenderPtr async;
+	auto lsAsynchronous = OptionConverter::findAndSubst(LOG4CXX_STR("log4j.asynchronous.") + loggerName, props);
+	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
+	{
+		async = std::make_shared<AsyncAppender>();
+		async->setName(loggerName);
+	}
 
+	std::vector<AppenderPtr> newappenders;
 	while (st.hasMoreTokens())
 	{
-		appenderName = StringHelper::trim(st.nextToken());
+		auto appenderName = StringHelper::trim(st.nextToken());
 
 		if (appenderName.empty() || appenderName == LOG4CXX_STR(","))
 		{
@@ -431,18 +437,30 @@ void PropertyConfigurator::parseLogger(
 			LogLog::debug(LOG4CXX_STR("Parsing ") + Appender::getStaticClass().getName()
 				+ LOG4CXX_STR(" named [") + appenderName + LOG4CXX_STR("]"));
 		}
-		appender = parseAppender(props, appenderName);
-
-		if (appender != 0)
+		if (auto appender = parseAppender(props, appenderName))
 		{
 			newappenders.push_back(appender);
+			if (log4cxx::cast<AsyncAppender>(appender)) // An explicitly configured AsyncAppender?
+				async.reset(); // Not required
+			if (async)
+				async->addAppender(appender);
 		}
 	}
 #if 15 < LOG4CXX_ABI_VERSION
 	if (!newappenders.empty())
 		m_priv->appenderAdded = true;
 #endif
-	logger->reconfigure( newappenders, additivity );
+	if (async && !newappenders.empty())
+	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Asynchronous logging for [")
+					+ loggerName + LOG4CXX_STR("] is on"));
+		}
+		logger->reconfigure( {async}, additivity );
+	}
+	else
+		logger->reconfigure( newappenders, additivity );
 }
 
 AppenderPtr PropertyConfigurator::parseAppender(

@@ -86,6 +86,21 @@ The variable names are [documented here](@ref log4cxx.spi.Configurator.propertie
 To check the correct values are used when your configuration file is loaded,
 use [Log4cxx internal debugging].
 
+# Configuring a logger to use asynchronous output
+
+Log4cxx 1.6 allows you to more easily attach an [AsyncAppender](@ref log4cxx.AsyncAppender)
+to a logger using a configuration file.
+- If using a properties file, add the line <code>log4j.asynchronous.{LOGGER_NAME}=true</code> to your file
+- If using an XML file, add the <code>asynchronous="true"</code> attribute in the <code>\<logger></code> element.
+
+The "asynchronous" attribute is only relevent for a logger with attached appenders.
+The attribute is ignored if the logger does not have any directly attached appenders.
+
+The "asynchronous" attribute results in the configured appender(s)
+being attached an [AsyncAppender](@ref log4cxx.AsyncAppender)
+and it is the [AsyncAppender](@ref log4cxx.AsyncAppender)
+that is attached directly to the logger.
+
 # Configuration Samples {#configuration-samples}
 
 The following snippets show various ways of configuring Log4cxx.
@@ -124,6 +139,7 @@ to store a log file per executable in a product related logs directory:
 ~~~{.properties}
 # Uncomment a line to enable debugging for a category
 log4j.rootCategory=INFO, A1
+log4j.asynchronous.root=true
 
 log4j.appender.A1=org.apache.log4j.RollingFileAppender
 log4j.appender.A1.MaxFileSize=5MB
@@ -286,7 +302,7 @@ to store a log file per executable in a product related logs directory:
     </layout>
   </appender>
 
-  <root>
+  <root asynchronous="true" >
      <priority value="info" />
      <appender-ref ref="ConsoleAppender"/>
      <appender-ref ref="FileAppender"/>

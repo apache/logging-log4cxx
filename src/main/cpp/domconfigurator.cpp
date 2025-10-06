@@ -17,6 +17,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/appender.h>
+#include <log4cxx/asyncappender.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
@@ -132,6 +133,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define ERROR_HANDLER_TAG "errorHandler"
 #define REF_ATTR "ref"
 #define ADDITIVITY_ATTR "additivity"
+#define ASYNCHRONOUS_ATTR "asynchronous"
 #define THRESHOLD_ATTR "threshold"
 #define STRINGSTREAM_ATTR "stringstream"
 #define CONFIG_DEBUG_ATTR "configDebug"
@@ -560,8 +562,18 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 	AppenderMap& appenders)
 {
 	PropertySetter propSetter(logger);
-	std::vector<AppenderPtr> newappenders;
+	auto loggerName = m_priv->repository->getRootLogger() == logger
+					? LogString(LOG4CXX_STR("root"))
+					: logger->getName();
+	AsyncAppenderPtr async;
+	auto lsAsynchronous = subst(getAttribute(utf8Decoder, loggerElement, ASYNCHRONOUS_ATTR));
+	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
+	{
+		async = std::make_shared<AsyncAppender>();
+		async->setName(loggerName);
+	}
 
+	std::vector<AppenderPtr> newappenders;
 	for (apr_xml_elem* currentElement = loggerElement->first_child;
 		currentElement;
 		currentElement = currentElement->next)
@@ -572,6 +584,8 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 		{
 			if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
 			{
+				if (log4cxx::cast<AsyncAppender>(appender)) // An explicitly configured AsyncAppender?
+					async.reset(); // Not required
 				if (LogLog::isDebugEnabled())
 				{
 					LogLog::debug(LOG4CXX_STR("Adding ") + Appender::getStaticClass().getName()
@@ -579,6 +593,8 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 						+ LOG4CXX_STR(" to logger [") + logger->getName() + LOG4CXX_STR("]"));
 				}
 				newappenders.push_back(appender);
+				if (async)
+					async->addAppender(appender);
 			}
 		}
 		else if (tagName == LEVEL_TAG)
@@ -594,7 +610,17 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			setParameter(p, utf8Decoder, currentElement, propSetter);
 		}
 	}
-	if (newappenders.empty())
+	if (async && !newappenders.empty())
+	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Asynchronous logging for [")
+					+ logger->getName() + LOG4CXX_STR("] is on"));
+		}
+		logger->replaceAppenders({async});
+		m_priv->appenderAdded = true;
+	}
+	else if (newappenders.empty())
 		logger->removeAllAppenders();
 	else
 	{
