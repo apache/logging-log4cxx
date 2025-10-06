@@ -64,7 +64,22 @@ class DiscardSummary
 		LogString reason;
 
 	public:
-#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		 * Create new instance.
+		 *
+		 * @param event must not be null.
+		*/
+		DiscardSummary(const LoggingEventPtr& event, const LogString& reason);
+
+		/** Move values from \c src into a new instance.
+		*/
+		DiscardSummary(DiscardSummary&& src);
+#if 15 < LOG4CXX_ABI_VERSION
+		/** Copy constructor.  */
+		DiscardSummary(const DiscardSummary&) = delete;
+		/** Assignment operator. */
+		DiscardSummary& operator=(const DiscardSummary&) = delete;
+#else
 		/**
 		 * Create new instance.
 		 *
@@ -75,21 +90,8 @@ class DiscardSummary
 		DiscardSummary(const DiscardSummary& src);
 		/** Assignment operator. */
 		DiscardSummary& operator=(const DiscardSummary& src);
-#else
-		/** Copy constructor.  */
-		DiscardSummary(const DiscardSummary&) = delete;
-		/** Assignment operator. */
-		DiscardSummary& operator=(const DiscardSummary&) = delete;
 #endif
-		/**
-		 * Create new instance.
-		 *
-		 * @param event must not be null.
-		*/
-		DiscardSummary(const LoggingEventPtr& event, const LogString& reason);
 
-		/** Move constructor.  */
-		DiscardSummary(DiscardSummary&& src);
 		/**
 		 * Add discarded event to summary.
 		 *
@@ -524,7 +526,6 @@ DiscardSummary& DiscardSummary::operator=(const DiscardSummary& src)
 	return *this;
 }
 #endif
-
 
 void DiscardSummary::add(const LoggingEventPtr& event)
 {

@@ -429,8 +429,10 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LoggingEventPtr discardEvent;
 			for (auto& e : events)
 			{
+				auto message = e->getRenderedMessage();
+				LogLog::debug(message);
 				++levelCount[e->getLevel()];
-				if (e->getRenderedMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
+				if (message.substr(0, 10) == LOG4CXX_STR("Discarded "))
 				{
 					++discardMessageCount;
 					discardEvent = e;
