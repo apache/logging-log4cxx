@@ -64,19 +64,32 @@ class DiscardSummary
 		LogString reason;
 
 	public:
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		 * Create new instance.
 		 *
 		 * @param event event, may not be null.
 		*/
+		DiscardSummary(const LoggingEventPtr& event);
+		/** Copy constructor.  */
+		DiscardSummary(const DiscardSummary& src);
+		/** Assignment operator. */
+		DiscardSummary& operator=(const DiscardSummary& src);
+#else
+		/** Copy constructor.  */
+		DiscardSummary(const DiscardSummary&) = delete;
+		/** Assignment operator. */
+		DiscardSummary& operator=(const DiscardSummary&) = delete;
+#endif
+		/**
+		 * Create new instance.
+		 *
+		 * @param event must not be null.
+		*/
 		DiscardSummary(const LoggingEventPtr& event, const LogString& reason);
+
 		/** Move constructor.  */
 		DiscardSummary(DiscardSummary&& src);
-		/** Copy constructor.  */
-		DiscardSummary(const DiscardSummary& src) = delete;
-		/** Assignment operator. */
-		DiscardSummary& operator=(const DiscardSummary& src) = delete;
-
 		/**
 		 * Add discarded event to summary.
 		 *
@@ -492,6 +505,26 @@ DiscardSummary::DiscardSummary(DiscardSummary&& other)
 	, reason(std::move(other.reason))
 {
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+DiscardSummary::DiscardSummary(const LoggingEventPtr& event) :
+	maxEvent(event), count(1)
+{
+}
+
+DiscardSummary::DiscardSummary(const DiscardSummary& src) :
+	maxEvent(src.maxEvent), count(src.count)
+{
+}
+
+DiscardSummary& DiscardSummary::operator=(const DiscardSummary& src)
+{
+	maxEvent = src.maxEvent;
+	count = src.count;
+	return *this;
+}
+#endif
+
 
 void DiscardSummary::add(const LoggingEventPtr& event)
 {
