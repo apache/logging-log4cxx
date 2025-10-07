@@ -429,8 +429,10 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LoggingEventPtr discardEvent;
 			for (auto& e : events)
 			{
+				auto message = e->getRenderedMessage();
+				LogLog::debug(message);
 				++levelCount[e->getLevel()];
-				if (e->getRenderedMessage().substr(0, 10) == LOG4CXX_STR("Discarded "))
+				if (message.substr(0, 10) == LOG4CXX_STR("Discarded "))
 				{
 					++discardMessageCount;
 					discardEvent = e;
@@ -529,8 +531,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				LogLog::debug(msg);
 			}
 			LOGUNIT_ASSERT(12 < events.size());
-			// A race condition in AsyncAppender can result in a lost message when the dispatch thread is logging events
-			LOGUNIT_ASSERT(10 <= eventCount[0]);
+			LOGUNIT_ASSERT_EQUAL(12, eventCount[0]);
 		}
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR

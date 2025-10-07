@@ -58,7 +58,28 @@ class DiscardSummary
 		*/
 		int count;
 
+		/**
+		* Why created
+		*/
+		LogString reason;
+
 	public:
+		/**
+		 * Create new instance.
+		 *
+		 * @param event must not be null.
+		*/
+		DiscardSummary(const LoggingEventPtr& event, const LogString& reason);
+
+		/** Move values from \c src into a new instance.
+		*/
+		DiscardSummary(DiscardSummary&& src);
+#if 15 < LOG4CXX_ABI_VERSION
+		/** Copy constructor.  */
+		DiscardSummary(const DiscardSummary&) = delete;
+		/** Assignment operator. */
+		DiscardSummary& operator=(const DiscardSummary&) = delete;
+#else
 		/**
 		 * Create new instance.
 		 *
@@ -69,6 +90,7 @@ class DiscardSummary
 		DiscardSummary(const DiscardSummary& src);
 		/** Assignment operator. */
 		DiscardSummary& operator=(const DiscardSummary& src);
+#endif
 
 		/**
 		 * Add discarded event to summary.
@@ -297,8 +319,17 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		if (!priv->dispatcher.joinable())
 			priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 	}
-	bool isDispatchThread = (priv->dispatcher.get_id() == std::this_thread::get_id());
-	while (true)
+	if (priv->dispatcher.get_id() == std::this_thread::get_id()) // From an appender attached to this?
+	{
+		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		auto loggerName = event->getLoggerName();
+		auto iter = priv->discardMap.find(loggerName);
+		if (priv->discardMap.end() == iter)
+			priv->discardMap.emplace(loggerName, DiscardSummary{ event, LOG4CXX_STR("from an attached appender") });
+		else
+			iter->second.add(event);
+	}
+	else while (true)
 	{
 		auto pendingCount = priv->eventCount - priv->dispatchedCount;
 		if (0 <= pendingCount && pendingCount < priv->bufferSize)
@@ -307,7 +338,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			auto oldEventCount = priv->eventCount++;
 			auto index = oldEventCount % priv->buffer.size();
 			// Wait for a free slot
-			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount && !isDispatchThread)
+			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount)
 				std::this_thread::yield(); // Allow the dispatch thread to free a slot
 			// Write to the ring buffer
 			priv->buffer[index] = AsyncAppenderPriv::EventData{event, pendingCount};
@@ -335,8 +366,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		bool discard = true;
 
 		if (priv->blocking
-			&& !priv->closed
-			&& !isDispatchThread)
+			&& !priv->closed)
 		{
 			++priv->blockedCount;
 			priv->bufferNotFull.wait(lock, [this]()
@@ -358,12 +388,11 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 			if (iter == priv->discardMap.end())
 			{
-				DiscardSummary summary(event);
-				priv->discardMap.insert(DiscardMap::value_type(loggerName, summary));
+				priv->discardMap.emplace(loggerName, DiscardSummary{ event, LOG4CXX_STR("due to a full event buffer") });
 			}
 			else
 			{
-				(*iter).second.add(event);
+				iter->second.add(event);
 			}
 
 			break;
@@ -466,6 +495,21 @@ bool AsyncAppender::getBlocking() const
 	return priv->blocking;
 }
 
+DiscardSummary::DiscardSummary(const LoggingEventPtr& event, const LogString& reasonArg)
+	: maxEvent(event)
+	, count(1)
+	, reason(reasonArg)
+{
+}
+
+DiscardSummary::DiscardSummary(DiscardSummary&& other)
+	: maxEvent(std::move(other.maxEvent))
+	, count(other.count)
+	, reason(std::move(other.reason))
+{
+}
+
+#if LOG4CXX_ABI_VERSION <= 15
 DiscardSummary::DiscardSummary(const LoggingEventPtr& event) :
 	maxEvent(event), count(1)
 {
@@ -482,28 +526,27 @@ DiscardSummary& DiscardSummary::operator=(const DiscardSummary& src)
 	count = src.count;
 	return *this;
 }
+#endif
 
 void DiscardSummary::add(const LoggingEventPtr& event)
 {
-	if (event->getLevel()->toInt() > maxEvent->getLevel()->toInt())
-	{
-		maxEvent = event;
-	}
-
-	count++;
+	if (this->maxEvent->getLevel()->toInt() < event->getLevel()->toInt())
+		this->maxEvent = event;
+	++this->count;
 }
 
 LoggingEventPtr DiscardSummary::createEvent(Pool& p)
- {
+{
 	LogString msg(LOG4CXX_STR("Discarded "));
-	StringHelper::toString(count, p, msg);
-	msg.append(LOG4CXX_STR(" messages due to a full event buffer including: "));
-	msg.append(maxEvent->getRenderedMessage());
-	return std::make_shared<LoggingEvent>(
-				maxEvent->getLoggerName(),
-				maxEvent->getLevel(),
-				msg,
-				LocationInfo::getLocationUnavailable() );
+	StringHelper::toString(this->count, p, msg);
+	msg.append(LOG4CXX_STR(" messages ") + this->reason + LOG4CXX_STR(" including: "));
+	msg.append(this->maxEvent->getRenderedMessage());
+	return std::make_shared<LoggingEvent>
+		( this->maxEvent->getLoggerName()
+		, this->maxEvent->getLevel()
+		, msg
+		, LocationInfo::getLocationUnavailable()
+		);
 }
 
 #if LOG4CXX_ABI_VERSION <= 15
@@ -563,7 +606,7 @@ void AsyncAppender::dispatch()
 		{
 			std::lock_guard<std::mutex> lock(priv->bufferMutex);
 			blockedCount += priv->blockedCount;
-			for (auto discardItem : priv->discardMap)
+			for (auto& discardItem : priv->discardMap)
 			{
 				events.push_back(discardItem.second.createEvent(p));
 				discardCount += discardItem.second.getCount();
