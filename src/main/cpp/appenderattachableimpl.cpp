@@ -224,7 +224,7 @@ void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
 		}
 	}
 	else
-		m_priv = std::make_unique<AppenderAttachableImpl::priv_data>(AppenderList{newAppender});
+		m_priv = std::make_unique<priv_data>(AppenderList{newAppender});
 }
 
 int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& event, Pool& p)
@@ -354,7 +354,7 @@ void AppenderAttachableImpl::replaceAppenders(const AppenderList& newList)
 		m_priv->setAppenders(std::make_shared<AppenderList>(newList));
 	}
 	else
-		m_priv = std::make_unique<AppenderAttachableImpl::priv_data>(newList);
+		m_priv = std::make_unique<priv_data>(newList);
 }
 
 #endif // __cpp_lib_atomic_shared_ptr
