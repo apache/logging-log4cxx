@@ -23,28 +23,14 @@ using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
+#ifndef __cpp_lib_atomic_shared_ptr
+
 struct AppenderAttachableImpl::priv_data
 {
 	/** Array of appenders. */
 	AppenderList  appenderList;
 	mutable std::mutex m_mutex;
 };
-
-AppenderAttachableImpl::AppenderAttachableImpl()
-{
-}
-
-#if LOG4CXX_ABI_VERSION <= 15
-AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool)
-	: m_priv()
-{
-}
-#endif
-
-AppenderAttachableImpl::~AppenderAttachableImpl()
-{
-
-}
 
 void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
 {
@@ -198,5 +184,193 @@ void AppenderAttachableImpl::replaceAppenders(const AppenderList& newList)
 		a->close();
 	m_priv->appenderList = newList;
 }
+
+#else // __cpp_lib_atomic_shared_ptr
+
+using AppenderListPtr = std::shared_ptr<const AppenderList>;
+
+/** A vector of appender pointers. */
+struct AppenderAttachableImpl::priv_data
+{
+	std::atomic<AppenderListPtr> pAppenderList;
+
+	priv_data(const AppenderList& newList = {})
+		: pAppenderList{ std::make_shared<AppenderList>(newList) }
+	{}
+
+	AppenderListPtr getAppenders() const
+	{
+		return pAppenderList.load(std::memory_order_acquire);
+	}
+
+	void setAppenders(const AppenderListPtr& newList)
+	{
+		pAppenderList.store(newList, std::memory_order_release);
+	}
+};
+
+void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
+{
+	if (!newAppender)
+		return;
+	if (m_priv)
+	{
+		auto allAppenders = m_priv->getAppenders();
+		if (allAppenders->end() == std::find(allAppenders->begin(), allAppenders->end(), newAppender))
+		{
+			auto newAppenders = std::make_shared<AppenderList>(*allAppenders);
+			newAppenders->push_back(newAppender);
+			m_priv->setAppenders(newAppenders);
+		}
+	}
+	else
+		m_priv = std::make_unique<AppenderAttachableImpl::priv_data>(AppenderList{newAppender});
+}
+
+int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& event, Pool& p)
+{
+	int result = 0;
+	if (m_priv)
+	{
+		auto allAppenders = m_priv->getAppenders();
+		for (auto& appender : *allAppenders)
+		{
+			appender->doAppend(event, p);
+			++result;
+		}
+	}
+	return result;
+}
+
+AppenderList AppenderAttachableImpl::getAllAppenders() const
+{
+	AppenderList result;
+	if (m_priv)
+		result = *m_priv->getAppenders();
+	return result;
+}
+
+AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
+{
+	AppenderPtr result;
+	if (m_priv)
+	{
+		auto allAppenders = m_priv->getAppenders();
+		for (auto& appender : *allAppenders)
+		{
+			if (name == appender->getName())
+			{
+				result = appender;
+				break;
+			}
+		}
+	}
+	return result;
+}
+
+bool AppenderAttachableImpl::isAttached(const AppenderPtr appender) const
+{
+	bool result = false;
+	if (m_priv && appender)
+	{
+		auto allAppenders = m_priv->getAppenders();
+		result = allAppenders->end() != std::find(allAppenders->begin(), allAppenders->end(), appender);
+	}
+	return result;
+}
+
+void AppenderAttachableImpl::removeAllAppenders()
+{
+	if (m_priv)
+	{
+		auto allAppenders = m_priv->getAppenders();
+		for (auto& appender : *allAppenders)
+			appender->close();
+		m_priv->setAppenders(std::make_shared<AppenderList>());
+	}
+}
+
+void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
+{
+	if (m_priv && appender)
+	{
+		auto newAppenders = *m_priv->getAppenders();
+		auto pItem = std::find(newAppenders.begin(), newAppenders.end(), appender);
+		if (newAppenders.end() != pItem)
+		{
+			newAppenders.erase(pItem);
+			m_priv->setAppenders(std::make_shared<AppenderList>(newAppenders));
+		}
+	}
+}
+
+void AppenderAttachableImpl::removeAppender(const LogString& name)
+{
+	if (m_priv)
+	{
+		auto newAppenders = *m_priv->getAppenders();
+		auto pItem = std::find_if(newAppenders.begin(), newAppenders.end()
+			, [&name](const AppenderPtr& appender) -> bool
+			{
+				return name == appender->getName();
+			});
+		if (newAppenders.end() != pItem)
+		{
+			newAppenders.erase(pItem);
+			m_priv->setAppenders(std::make_shared<AppenderList>(newAppenders));
+		}
+	}
+}
+
+bool AppenderAttachableImpl::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender)
+{
+	bool found = false;
+	if (m_priv && oldAppender && newAppender)
+	{
+		auto name = oldAppender->getName();
+		auto newAppenders = *m_priv->getAppenders();
+		auto pItem = std::find_if(newAppenders.begin(), newAppenders.end()
+			, [&name](const AppenderPtr& appender) -> bool
+			{
+				return name == appender->getName();
+			});
+		if (newAppenders.end() != pItem)
+		{
+			*pItem = newAppender;
+			m_priv->setAppenders(std::make_shared<AppenderList>(newAppenders));
+			found = true;
+		}
+	}
+	return found;
+}
+
+void AppenderAttachableImpl::replaceAppenders(const AppenderList& newList)
+{
+	if (m_priv)
+	{
+		auto allAppenders = m_priv->getAppenders();
+		for (auto& a : *allAppenders)
+			a->close();
+		m_priv->setAppenders(std::make_shared<AppenderList>(newList));
+	}
+	else
+		m_priv = std::make_unique<AppenderAttachableImpl::priv_data>(newList);
+}
+
+#endif // __cpp_lib_atomic_shared_ptr
+
+AppenderAttachableImpl::AppenderAttachableImpl()
+{
+}
+
+AppenderAttachableImpl::~AppenderAttachableImpl()
+{
+}
+
+#if LOG4CXX_ABI_VERSION <= 15
+AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool)
+{
+}
+#endif
 
 
