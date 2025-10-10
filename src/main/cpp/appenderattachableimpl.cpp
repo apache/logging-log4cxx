@@ -192,8 +192,10 @@ using AppenderListPtr = std::shared_ptr<const AppenderList>;
 /** A vector of appender pointers. */
 struct AppenderAttachableImpl::priv_data
 {
+private:
 	std::atomic<AppenderListPtr> pAppenderList;
 
+public:
 	priv_data(const AppenderList& newList = {})
 		: pAppenderList{ std::make_shared<AppenderList>(newList) }
 	{}
@@ -203,9 +205,9 @@ struct AppenderAttachableImpl::priv_data
 		return pAppenderList.load(std::memory_order_acquire);
 	}
 
-	void setAppenders(const AppenderListPtr& newList)
+	void setAppenders(const AppenderList& newList)
 	{
-		pAppenderList.store(newList, std::memory_order_release);
+		pAppenderList.store(std::make_shared<AppenderList>(newList), std::memory_order_release);
 	}
 };
 
@@ -218,8 +220,8 @@ void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
 		auto allAppenders = m_priv->getAppenders();
 		if (allAppenders->end() == std::find(allAppenders->begin(), allAppenders->end(), newAppender))
 		{
-			auto newAppenders = std::make_shared<AppenderList>(*allAppenders);
-			newAppenders->push_back(newAppender);
+			auto newAppenders = *allAppenders;
+			newAppenders.push_back(newAppender);
 			m_priv->setAppenders(newAppenders);
 		}
 	}
@@ -286,7 +288,7 @@ void AppenderAttachableImpl::removeAllAppenders()
 		auto allAppenders = m_priv->getAppenders();
 		for (auto& appender : *allAppenders)
 			appender->close();
-		m_priv->setAppenders(std::make_shared<AppenderList>());
+		m_priv->setAppenders({});
 	}
 }
 
@@ -299,7 +301,7 @@ void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
 		if (newAppenders.end() != pItem)
 		{
 			newAppenders.erase(pItem);
-			m_priv->setAppenders(std::make_shared<AppenderList>(newAppenders));
+			m_priv->setAppenders(newAppenders);
 		}
 	}
 }
@@ -317,7 +319,7 @@ void AppenderAttachableImpl::removeAppender(const LogString& name)
 		if (newAppenders.end() != pItem)
 		{
 			newAppenders.erase(pItem);
-			m_priv->setAppenders(std::make_shared<AppenderList>(newAppenders));
+			m_priv->setAppenders(newAppenders);
 		}
 	}
 }
@@ -337,7 +339,7 @@ bool AppenderAttachableImpl::replaceAppender(const AppenderPtr& oldAppender, con
 		if (newAppenders.end() != pItem)
 		{
 			*pItem = newAppender;
-			m_priv->setAppenders(std::make_shared<AppenderList>(newAppenders));
+			m_priv->setAppenders(newAppenders);
 			found = true;
 		}
 	}
@@ -351,7 +353,7 @@ void AppenderAttachableImpl::replaceAppenders(const AppenderList& newList)
 		auto allAppenders = m_priv->getAppenders();
 		for (auto& a : *allAppenders)
 			a->close();
-		m_priv->setAppenders(std::make_shared<AppenderList>(newList));
+		m_priv->setAppenders(newList);
 	}
 	else
 		m_priv = std::make_unique<priv_data>(newList);
