@@ -38,7 +38,7 @@ private: // Attributes
 
 public: // ...structors
 	priv_data(const AppenderList& newList = {})
-		: pAppenderList{ std::make_shared<AppenderList>(newList) }
+		: pAppenderList{ std::make_shared<const AppenderList>(newList) }
 	{}
 
 public: // Accessors
@@ -59,7 +59,7 @@ public: // Modifiers
 		pAppenderList.store(std::make_shared<AppenderList>(newList), std::memory_order_release);
 #else // !defined(__cpp_lib_atomic_shared_ptr)
 		std::lock_guard<std::mutex> lock( m_mutex );
-		pAppenderList = std::make_shared<AppenderList>(newList);
+		pAppenderList = std::make_shared<const AppenderList>(newList);
 #endif // !defined(__cpp_lib_atomic_shared_ptr)
 	}
 };
