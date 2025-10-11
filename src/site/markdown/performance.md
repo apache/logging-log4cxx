@@ -32,7 +32,8 @@ The LOG4CXX_XXXX_ASYNC macros in Log4cxx 1.6
 just capture values in a buffer
 and by adding the new [asynchronous output setting] to your configuration file,
 the values are converted to text in a background thread.
-That combination prevents TRACE level logging being the dominate CPU load and
+That combination prevents TRACE level logging being the dominate CPU load
+of your application's thread and
 provides the lowest overhead logging in the history of Log4cxx.
 
 While Log4cxx can generate 2,000,000 log messages/second,
