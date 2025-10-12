@@ -103,14 +103,16 @@ public: // Modifiers
 	void clear();
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
-	using FormatStringType = fmt::basic_string_view<logchar>;
+	using StringViewType = fmt::basic_string_view<logchar>;
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	using FmtArgStore      = fmt::dynamic_format_arg_store<fmt::wformat_context>;
+	template <typename... Args>
+	void setMessage(fmt::wformat_string<Args...> fmt_str, Args&&... args)
 #else
 	using FmtArgStore      = fmt::dynamic_format_arg_store<fmt::format_context>;
-#endif
 	template <typename... Args>
 	void setMessage(fmt::format_string<Args...> fmt_str, Args&&... args)
+#endif
 	{
 		auto store = FmtArgStore();
 		( store.push_back(std::forward<Args>(args)), ...);
@@ -131,7 +133,7 @@ private:
 	void append(const MessageBufferAppender& f);
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
-	void initializeForFmt(FormatStringType&& format_string, FmtArgStore&& args);
+	void initializeForFmt(StringViewType&& format_string, FmtArgStore&& args);
 #endif
 };
 

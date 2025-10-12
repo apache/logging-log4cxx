@@ -26,54 +26,40 @@
 #include <fmt/ostream.h>
 #include <iomanip>
 
+using namespace log4cxx;
+using OutputStreamType = std::basic_ostream<logchar>;
+
 struct MyStruct {
-		int x;
+	int x;
 };
-
-std::ostream& operator<<( std::ostream& stream, const MyStruct& mystruct ){
-		stream << "[MyStruct x:" << mystruct.x << "]";
-		return stream;
-}
-
-#if LOG4CXX_USING_STD_FORMAT
-template <typename Char>
-struct basic_ostream_formatter
-	: std::formatter<std::basic_string_view<Char>, Char>
+	OutputStreamType& 
+operator<<(OutputStreamType& stream, const MyStruct& mystruct )
 {
-	template <typename T, typename OutputIt>
-	auto format(const T& value, std::basic_format_context<OutputIt, Char>& ctx) const -> OutputIt
-	{
-		std::basic_stringstream<Char> ss;
-		ss << value;
-		return std::formatter<std::basic_string_view<Char>, Char>::format(ss.view(), ctx);
-	}
-};
-template <> struct std::formatter<MyStruct> : basic_ostream_formatter<char> {};
-#elif FMT_VERSION >= (9 * 10000)
+	stream << LOG4CXX_STR("[MyStruct x: ") << mystruct.x << LOG4CXX_STR("]");
+	return stream;
+}
 template <> struct fmt::formatter<MyStruct> : ostream_formatter {};
-#endif
 
 int main()
 {
 	setlocale(LC_ALL, "");
 
-	using namespace log4cxx;
 	BasicConfigurator::configureAsync();
-	auto rootLogger = Logger::getRootLogger();
+	auto rootLogger = LogManager::getRootLogger();
 
-	LOG4CXX_INFO_FMT_ASYNC( rootLogger, "This is a {} mesage", "test" );
-	LOG4CXX_INFO_FMT_ASYNC( rootLogger, "We can also align text to the {:<10} or {:>10}", "left", "right" );
+	LOG4CXX_INFO_FMT_ASYNC( rootLogger, LOG4CXX_STR("This is a {} message"), LOG4CXX_STR("test") );
+	LOG4CXX_INFO_FMT_ASYNC( rootLogger, LOG4CXX_STR("We can also align text to the {:<10} or {:>10}"), LOG4CXX_STR("left"), LOG4CXX_STR("right") );
 
 	MyStruct mine{ 42 };
-	LOG4CXX_INFO_FMT_ASYNC( rootLogger, "This custom type {} can also be logged, since it implements operator<<", mine );
+	//LOG4CXX_INFO_FMT_ASYNC( rootLogger, LOG4CXX_STR("This custom type {} can also be logged, since it implements operator<<"), mine );
 
-	LOG4CXX_INFO_ASYNC( rootLogger, "Numbers can be formatted with excessive operator<<: "
+	LOG4CXX_INFO_ASYNC( rootLogger, LOG4CXX_STR("Numbers can be formatted with excessive operator<<: ")
 				  << std::setprecision(3) << 22.456
-				  << " And as hex: "
+				  << LOG4CXX_STR(" And as hex: ")
 				  << std::setbase( 16 ) << 123 );
-	LOG4CXX_INFO_FMT_ASYNC( rootLogger, "Numbers can be formatted with a format string {:.1f} and as hex: {:x}", 22.456, 123 );
+	LOG4CXX_INFO_FMT_ASYNC( rootLogger, LOG4CXX_STR("Numbers can be formatted with a format string {:.1f} and as hex: {:x}"), 22.456, 123 );
 	// Uncomment the next line to verify that compile time type checking works
-	//LOG4CXX_INFO_FMT_ASYNC( rootLogger, "Numbers can be formatted with a format string {:.1f} and as hex: {:x}", "wrong type", 123 );
+	//LOG4CXX_INFO_FMT_ASYNC( rootLogger, LOG4CXX_STR("Numbers can be formatted with a format string {:.1f} and as hex: {:x}"), "wrong type", 123 );
 
 	LogManager::shutdown();
 	return 0;
