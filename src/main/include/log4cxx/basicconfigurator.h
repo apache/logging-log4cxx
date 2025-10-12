@@ -42,7 +42,7 @@ class LOG4CXX_EXPORT BasicConfigurator
 
 	public:
 		/**
-		Add a ConsoleAppender to the root logger that formats output using \c layout.
+		Add a ConsoleAppender that formats output using \c layout to the root logger.
 
 		If \c layout is not provided,
 		use a PatternLayout with the conversion pattern:
@@ -56,6 +56,22 @@ class LOG4CXX_EXPORT BasicConfigurator
 		@param appender The appender to add to the root logger.
 		*/
 		static void configure(const AppenderPtr& appender);
+
+		/**
+		Add a ConsoleAppender that formats output using \c layout to an AsyncAppender attacted the root logger.
+
+		If \c layout is not provided,
+		use a PatternLayout with the conversion pattern:
+		- <code>%%r [%%t] %%p %%c %%x - %%Y%%m%%y%%n</code> if color is enabled (the default)
+		- <code>%%r [%%t] %%p %%c %%x - %%m%%n</code> if [color is disabled](disabling-color.html)
+		*/
+		static void configureAsync(const LayoutPtr& layout = LayoutPtr());
+
+		/**
+		Add <code>appender</code> to an AsyncAppender attacted to the root logger.
+		@param appender The appender that asynchronously formats output.
+		*/
+		static void configureAsync(const AppenderPtr& appender);
 
 		/**
 		Reset the default hierarchy to its defaut. It is equivalent to

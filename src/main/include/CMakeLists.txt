@@ -164,6 +164,7 @@ foreach(varName
   HAS_PTHREAD_SIGMASK
   HAS_PTHREAD_SETNAME
   HAS_PTHREAD_GETNAME
+  ENABLE_FMT_ASYNC
   )
   if(${varName} EQUAL 0)
     continue()

@@ -26,7 +26,35 @@ namespace helpers
 struct AsyncBuffer::Private
 {
 	std::vector<MessageBufferAppender> data;
+
+	Private(const MessageBufferAppender& f)
+		: data{ f }
+	{}
+
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+	fmt::string_view                                   fmt_string;
+	fmt::dynamic_format_arg_store<fmt::format_context> fmt_args;
+
+	Private(fmt::string_view&& format_string, fmt::dynamic_format_arg_store<fmt::format_context>&& args)
+		: fmt_string{ std::move(format_string) }
+		, fmt_args{ std::move(args) }
+	{}
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+
 };
+
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+void AsyncBuffer::initializeForFmt(fmt::string_view&& format_string, fmt::dynamic_format_arg_store<fmt::format_context>&& args)
+{
+	if (!m_priv)
+		m_priv = std::make_unique<Private>(std::move(format_string), std::move(args));
+	else
+	{
+		m_priv->fmt_string = std::move(format_string);
+		m_priv->fmt_args = std::move(args);
+	}
+}
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 
 /** An empty buffer.
 */
@@ -49,16 +77,28 @@ AsyncBuffer::~AsyncBuffer()
 /**
 * Has no item been added to this?
 */
-bool AsyncBuffer::empty() const { return !m_priv || m_priv->data.empty(); }
+bool AsyncBuffer::empty() const
+{
+	bool result{ true };
+	if (m_priv)
+		result = m_priv->data.empty() && 0 == m_priv->fmt_string.size();
+	return result;
+}
 
 /**
 * Add text version of buffered values to \c msg
 */
-void AsyncBuffer::renderMessage(LogCharMessageBuffer& msg)
+void AsyncBuffer::renderMessage(LogCharMessageBuffer& msg) const
 {
 	if (m_priv)
+	{
 		for (auto& renderer : m_priv->data)
 			renderer(msg);
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+		if (0 < m_priv->fmt_string.size())
+			msg << fmt::vformat(m_priv->fmt_string, m_priv->fmt_args);
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+	}
 }
 
 /**
@@ -76,8 +116,9 @@ void AsyncBuffer::clear()
 void AsyncBuffer::append(const MessageBufferAppender& f)
 {
 	if (!m_priv)
-		m_priv = std::make_unique<Private>();
-	m_priv->data.push_back(f);
+		m_priv = std::make_unique<Private>(f);
+	else
+		m_priv->data.push_back(f);
 }
 
 } // namespace helpers

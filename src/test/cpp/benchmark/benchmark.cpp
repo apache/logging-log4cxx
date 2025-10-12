@@ -495,7 +495,7 @@ BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)(benchmark::St
 		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
 		, static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
 		};
-		LOG4CXX_INFO_FMT(m_asyncLogger, "Hello: msg number {} pseudo-random float {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f}"
+		LOG4CXX_INFO_FMT_ASYNC(m_asyncLogger, "Hello: msg number {} pseudo-random float {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f}"
 			, ++x
 			, f[0]
 			, f[1]
