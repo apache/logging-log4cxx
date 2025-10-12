@@ -25,6 +25,17 @@ One important question with a logging library is: is it fast enough?
 While Log4cxx may not be the fastest logging implementation, it is more than fast
 enough for the vast majority of cases.
 
+Using Log4cxx 1.6 you can even use microsecond timestamps
+in TRACE level logging messages to quickly get a sense of
+where your application's workload is concentrated.
+The LOG4CXX_XXXX_ASYNC macros in Log4cxx 1.6
+just capture values in a buffer
+and by adding the new [asynchronous output setting] to your configuration file,
+the values are converted to text in a background thread.
+That combination prevents TRACE level logging being the dominate CPU load
+of your application's thread and
+provides the lowest overhead logging in the history of Log4cxx.
+
 While Log4cxx can generate 2,000,000 log messages/second,
 skipping a disabled logging request requires only a few nano-seconds,
 so application performance is not affected when
@@ -142,3 +153,4 @@ When logging floating point values from a high priority thread,
 and you cannot use a background thread to format and write the log data,
 the LOG4CXX_[level]_FMT series of macros impose the least overhead.
 
+[asynchronous output setting]:configuration-files.html#asynch-output

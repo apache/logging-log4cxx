@@ -86,7 +86,7 @@ The variable names are [documented here](@ref log4cxx.spi.Configurator.propertie
 To check the correct values are used when your configuration file is loaded,
 use [Log4cxx internal debugging].
 
-# Configuring a logger to use asynchronous output
+# Configuring a logger to use asynchronous output {#asynch-output}
 
 Log4cxx 1.6 allows you to more easily attach an [AsyncAppender](@ref log4cxx.AsyncAppender)
 to a logger using a configuration file.
