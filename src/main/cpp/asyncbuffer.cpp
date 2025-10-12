@@ -81,7 +81,13 @@ bool AsyncBuffer::empty() const
 {
 	bool result{ true };
 	if (m_priv)
-		result = m_priv->data.empty() && 0 == m_priv->fmt_string.size();
+	{
+		result = m_priv->data.empty();
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+		if (result)
+			result = (0 == m_priv->fmt_string.size());
+#endif
+	}
 	return result;
 }
 
