@@ -32,10 +32,10 @@ struct AsyncBuffer::Private
 	{}
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
-	fmt::string_view                                   fmt_string;
-	fmt::dynamic_format_arg_store<fmt::format_context> fmt_args;
+	FormatStringType fmt_string;
+	FmtArgStore      fmt_args;
 
-	Private(fmt::string_view&& format_string, fmt::dynamic_format_arg_store<fmt::format_context>&& args)
+	Private(FormatStringType&& format_string, FmtArgStore&& args)
 		: fmt_string{ std::move(format_string) }
 		, fmt_args{ std::move(args) }
 	{}
@@ -44,7 +44,7 @@ struct AsyncBuffer::Private
 };
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
-void AsyncBuffer::initializeForFmt(fmt::string_view&& format_string, fmt::dynamic_format_arg_store<fmt::format_context>&& args)
+void AsyncBuffer::initializeForFmt(FormatStringType&& format_string, FmtArgStore&& args)
 {
 	if (!m_priv)
 		m_priv = std::make_unique<Private>(std::move(format_string), std::move(args));

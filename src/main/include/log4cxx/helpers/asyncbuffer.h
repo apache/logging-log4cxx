@@ -23,6 +23,9 @@
 #include <vector>
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 #include <fmt/args.h>
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+#include <fmt/xchar.h>
+#endif
 #endif
 
 namespace LOG4CXX_NS
@@ -100,10 +103,16 @@ public: // Modifiers
 	void clear();
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+	using FormatStringType = fmt::basic_string_view<logchar>;
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+	using FmtArgStore      = fmt::dynamic_format_arg_store<fmt::wformat_context>;
+#else
+	using FmtArgStore      = fmt::dynamic_format_arg_store<fmt::format_context>;
+#endif
 	template <typename... Args>
 	void setMessage(fmt::format_string<Args...> fmt_str, Args&&... args)
 	{
-		auto store = fmt::dynamic_format_arg_store<fmt::format_context>();
+		auto store = FmtArgStore();
 		( store.push_back(std::forward<Args>(args)), ...);
 		initializeForFmt(std::move(fmt_str), std::move(store));
 	}
@@ -122,7 +131,7 @@ private:
 	void append(const MessageBufferAppender& f);
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
-	void initializeForFmt(fmt::string_view&& format_string, fmt::dynamic_format_arg_store<fmt::format_context>&& args);
+	void initializeForFmt(FormatStringType&& format_string, FmtArgStore&& args);
 #endif
 };
 
