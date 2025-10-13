@@ -42,7 +42,7 @@ jobs:
           - name: ubuntu22-clang
             os: ubuntu-22.04
             cxx: clang++
-            fmt: OFF
+            fmt: ON
             qt: OFF
             qt6: OFF
             odbc: ON
