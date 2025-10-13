@@ -24,16 +24,12 @@ set(TESTING_DEPENDENCY_COMPILE_DEFINITIONS ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_
 add_library(testingFramework STATIC abts.cpp appenderskeletontestcase.cpp logunit.cpp vectorappender.cpp writerappendertestcase.cpp )
 target_compile_definitions(testingFramework PRIVATE ${TESTING_DEPENDENCY_COMPILE_DEFINITIONS} )
 target_include_directories(testingFramework PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
-if(fmt_FOUND AND MSVC)
+add_subdirectory(util)
+target_sources(testingUtilities PRIVATE xml/xlevel.cpp)
+if(ENABLE_FMT_ASYNC AND MSVC)
     # This flag tells the MSVC compiler to read all source files 
     # as encoded in UTF-8, which resolves the fmt static_assert.
     target_compile_options(testingFramework PRIVATE /utf-8)
-endif()
-add_subdirectory(util)
-target_sources(testingUtilities PRIVATE xml/xlevel.cpp)
-if(fmt_FOUND AND MSVC)
-    # This flag tells the MSVC compiler to read all source files 
-    # as encoded in UTF-8, which resolves the fmt static_assert.
     target_compile_options(testingUtilities PRIVATE /utf-8)
 endif()
 
@@ -140,9 +136,6 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     target_link_libraries(${testName} PRIVATE testingFramework testingUtilities log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads ${ODBC_LIBRARIES} )
     if(HAS_LIBESMTP)
       target_link_libraries(${testName} PRIVATE ${ESMTP_LIBRARIES})
-    endif()
-    if(fmt_FOUND AND MSVC)
-        target_compile_options(${testName} PRIVATE /utf-8)
     endif()
     add_test(NAME ${testName}
         COMMAND ${testName} -v
