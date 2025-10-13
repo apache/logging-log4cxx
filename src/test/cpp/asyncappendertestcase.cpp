@@ -670,9 +670,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				r->setConfigured(true);
 			});
 			LOGUNIT_ASSERT(async);
-			auto loggingAppender = std::make_shared<VectorAppender>();
-			loggingAppender->setName(LOG4CXX_STR("VectorAppender"));
-			async->addAppender(loggingAppender);
+			auto eventStore = std::make_shared<VectorAppender>();
+			eventStore->setName(LOG4CXX_STR("VectorAppender"));
+			async->addAppender(eventStore);
 
 			// Log some messages
 			auto rootLogger = r->getRootLogger();
@@ -685,7 +685,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->close();
 
 			// Check all parts of all messages were received
-			auto& events = loggingAppender->getVector();
+			auto& events = eventStore->getVector();
 			std::vector<int> messageCount;
 			int eventCount[] = { 0, 0 };
 			for (auto& e : events)
