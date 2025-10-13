@@ -47,7 +47,8 @@ int main()
 	BasicConfigurator::configureAsync();
 	auto rootLogger = LogManager::getRootLogger();
 
-	LOG4CXX_INFO_FMT_ASYNC( rootLogger, LOG4CXX_STR("This is a {} message"), LOG4CXX_STR("test") );
+	LOG4CXX_INFO_FMT_ASYNC( rootLogger, "This is a {} message", "char" );
+	LOG4CXX_INFO_FMT_ASYNC( rootLogger, LOG4CXX_STR("This is a {} message"), LOG4CXX_STR("LogString") );
 	LOG4CXX_INFO_FMT_ASYNC( rootLogger, LOG4CXX_STR("We can also align text to the {:<10} or {:>10}"), LOG4CXX_STR("left"), LOG4CXX_STR("right") );
 
 	MyStruct mine{ 42 };

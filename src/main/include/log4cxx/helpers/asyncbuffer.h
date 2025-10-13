@@ -23,10 +23,10 @@
 #include <vector>
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 #include <fmt/args.h>
-#if LOG4CXX_LOGCHAR_IS_WCHAR
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 #include <fmt/xchar.h>
-#endif
-#endif
+#endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 
 namespace LOG4CXX_NS
 {
@@ -103,21 +103,27 @@ public: // Modifiers
 	void clear();
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
-	using StringViewType = fmt::basic_string_view<logchar>;
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-	using FmtArgStore      = fmt::dynamic_format_arg_store<fmt::wformat_context>;
-	template <typename... Args>
-	void setMessage(fmt::wformat_string<Args...> fmt_str, Args&&... args)
-#else
-	using FmtArgStore      = fmt::dynamic_format_arg_store<fmt::format_context>;
+	using StringViewType = fmt::basic_string_view<char>;
+	using FmtArgStore    = fmt::dynamic_format_arg_store<fmt::format_context>;
 	template <typename... Args>
 	void setMessage(fmt::format_string<Args...> fmt_str, Args&&... args)
-#endif
 	{
 		auto store = FmtArgStore();
 		( store.push_back(std::forward<Args>(args)), ...);
 		initializeForFmt(std::move(fmt_str), std::move(store));
 	}
+
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+	using WideStringViewType = fmt::basic_string_view<wchar_t>;
+	using WideFmtArgStore    = fmt::dynamic_format_arg_store<fmt::wformat_context>;
+	template <typename... Args>
+	void setMessage(fmt::wformat_string<Args...> fmt_str, Args&&... args)
+	{
+		auto store = WideFmtArgStore();
+		( store.push_back(std::forward<Args>(args)), ...);
+		initializeForFmt(std::move(fmt_str), std::move(store));
+	}
+#endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 #endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 
 private:
@@ -134,7 +140,11 @@ private:
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 	void initializeForFmt(StringViewType&& format_string, FmtArgStore&& args);
-#endif
+
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+	void initializeForFmt(WideStringViewType&& format_string, WideFmtArgStore&& args);
+#endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 };
 
 } // namespace helpers
