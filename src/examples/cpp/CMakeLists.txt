@@ -74,3 +74,17 @@ if(${fmt_FOUND})
         )
     endif()
 endif(${fmt_FOUND})
+
+if(ENABLE_FMT_ASYNC)
+    add_executable( format-async format-async.cpp )
+    target_compile_definitions(format-async PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
+    target_include_directories(format-async PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
+    target_link_libraries(format-async PRIVATE log4cxx ${APR_UTIL_LIBRARIES} ${EXPAT_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} fmt::fmt)
+    if( WIN32 )
+        set_target_properties( format-async PROPERTIES
+          VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
+          VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+          FOLDER Examples
+        )
+    endif()
+endif(ENABLE_FMT_ASYNC)

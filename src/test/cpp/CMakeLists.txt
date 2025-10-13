@@ -18,12 +18,20 @@
 option(ENABLE_MULTITHREAD_TEST "Enable multithread test.  Note that this test is very unstable,
     it is mostly designed to ensure that we don't crash immediately if exit is called in a thread"  OFF)
 
+set(TESTING_DEPENDENCY_COMPILE_DEFINITIONS ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS})
+
 # Components required by all tests
 add_library(testingFramework STATIC abts.cpp appenderskeletontestcase.cpp logunit.cpp vectorappender.cpp writerappendertestcase.cpp )
-target_compile_definitions(testingFramework PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
+target_compile_definitions(testingFramework PRIVATE ${TESTING_DEPENDENCY_COMPILE_DEFINITIONS} )
 target_include_directories(testingFramework PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
 add_subdirectory(util)
 target_sources(testingUtilities PRIVATE xml/xlevel.cpp)
+if(ENABLE_FMT_ASYNC AND MSVC)
+    # This flag tells the MSVC compiler to read all source files 
+    # as encoded in UTF-8, which resolves the fmt static_assert.
+    target_compile_options(testingFramework PRIVATE /utf-8)
+    target_compile_options(testingUtilities PRIVATE /utf-8)
+endif()
 
 set( LOG4CXX_TEST_PROGRAM_PATH "" CACHE PATH "Extra path for test programs" )
 set( CMAKE_PROGRAM_PATH "${LOG4CXX_TEST_PROGRAM_PATH};${CMAKE_PROGRAM_PATH}" )
@@ -123,7 +131,7 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         target_link_libraries(${testName} PRIVATE MockCoreFoundation)
       endif()
     endif()
-    target_compile_definitions(${testName} PRIVATE ${TEST_COMPILE_DEFINITIONS} ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
+    target_compile_definitions(${testName} PRIVATE ${TEST_COMPILE_DEFINITIONS} ${TESTING_DEPENDENCY_COMPILE_DEFINITIONS} )
     target_include_directories(${testName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
     target_link_libraries(${testName} PRIVATE testingFramework testingUtilities log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads ${ODBC_LIBRARIES} )
     if(HAS_LIBESMTP)
