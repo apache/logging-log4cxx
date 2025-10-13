@@ -182,12 +182,12 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 #endif
 
 	public:
-		void setUp()
+		void setUp() override
 		{
 			AppenderSkeletonTestCase::setUp();
 		}
 
-		void tearDown()
+		void tearDown() override
 		{
 			LogManager::shutdown();
 			AppenderSkeletonTestCase::tearDown();

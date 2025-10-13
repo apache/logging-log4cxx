@@ -42,7 +42,7 @@ jobs:
           - name: ubuntu22-clang
             os: ubuntu-22.04
             cxx: clang++
-            fmt: ON
+            fmt: OFF
             qt: OFF
             qt6: OFF
             odbc: ON
@@ -55,7 +55,7 @@ jobs:
           - name: ubuntu24-gcc
             os: ubuntu-24.04
             cxx: g++
-            fmt: OFF
+            fmt: ON
             qt: ON
             qt6: ON
             odbc: OFF
