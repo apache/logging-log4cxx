@@ -39,7 +39,7 @@ operator<<(OutputStreamType& stream, const MyStruct& mystruct )
 	return stream;
 }
 #if FMT_VERSION >= (9 * 10000)
-template <> struct fmt::formatter<MyStruct> : ostream_formatter {};
+template <> struct fmt::formatter<MyStruct, logchar> : fmt::basic_ostream_formatter<logchar> {};
 #endif
 
 int main()

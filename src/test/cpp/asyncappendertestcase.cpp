@@ -26,6 +26,7 @@
 #include "appenderskeletontestcase.h"
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
 #include <apr_strings.h>
 #include "testchar.h"
@@ -34,7 +35,30 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/file.h>
+#include <ostream>
 #include <thread>
+
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+#include <fmt/core.h>
+#include <fmt/ostream.h>
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+#include <fmt/xchar.h>
+#endif
+struct MyStruct
+{
+	int value;
+};
+using OutputStreamType = std::basic_ostream<log4cxx::logchar>;
+OutputStreamType& operator<<(OutputStreamType& stream, const MyStruct& data)
+{
+	stream << LOG4CXX_STR("[MyStruct value: ") << data.value << LOG4CXX_STR("]");
+	return stream;
+}
+
+#if FMT_VERSION >= (9 * 10000)
+template <> struct fmt::formatter<MyStruct, log4cxx::logchar> : fmt::basic_ostream_formatter<log4cxx::logchar> {};
+#endif
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -143,6 +167,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testAsyncLoggerXML);
 #endif
 		LOGUNIT_TEST(testAsyncLoggerProperties);
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+		LOGUNIT_TEST(testAsyncFmtLogging);
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 		LOGUNIT_TEST_SUITE_END();
 
 #ifdef _DEBUG
@@ -626,6 +653,76 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
 
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+		/**
+		 * Tests asynchronous logging using FMT
+		 */
+		void testAsyncFmtLogging()
+		{
+			// Configure Log4cxx
+			AsyncAppenderPtr async;
+			auto r = LogManager::getLoggerRepository();
+			r->ensureIsConfigured([r, &async]()
+			{
+				async = std::make_shared<AsyncAppender>();
+				async->setName(LOG4CXX_STR("withAsyncFmtLogging"));
+				r->getRootLogger()->addAppender(async);
+				r->setConfigured(true);
+			});
+			LOGUNIT_ASSERT(async);
+			auto loggingAppender = std::make_shared<VectorAppender>();
+			loggingAppender->setName(LOG4CXX_STR("VectorAppender"));
+			async->addAppender(loggingAppender);
+
+			// Log some messages
+			auto rootLogger = r->getRootLogger();
+			LOG4CXX_INFO_FMT_ASYNC(rootLogger, LOG4CXX_STR("Hello, {}"), LOG4CXX_STR("World"));
+			for (MyStruct i = {0}; i.value < 10; ++i.value)
+			{
+				LOG4CXX_INFO_FMT_ASYNC(rootLogger, LOG4CXX_STR("Hello, {}"), i);
+			}
+			LOG4CXX_INFO_FMT_ASYNC(rootLogger, "Bye bye {}", "World");
+			async->close();
+
+			// Check all parts of all messages were received
+			auto& events = loggingAppender->getVector();
+			std::vector<int> messageCount;
+			int eventCount[] = { 0, 0 };
+			for (auto& e : events)
+			{
+				auto message = e->getRenderedMessage();
+				//LogLog::debug(message);
+				auto isNumberedMessage = (message.npos == message.find(LOG4CXX_STR("World")));
+				++eventCount[isNumberedMessage];
+				if (isNumberedMessage)
+				{
+					 auto pos = message.rfind(' ');
+					 if (message.npos != pos && pos + 1 < message.size())
+					 {
+						try
+						{
+							auto msgNumber = StringHelper::toInt(message.substr(pos));
+							if (messageCount.size() <= msgNumber)
+								messageCount.resize(msgNumber + 1);
+							++messageCount[msgNumber];
+						}
+						catch (std::exception const& ex)
+						{
+							LogString msg;
+							helpers::Transcoder::decode(ex.what(), msg);
+							msg += LOG4CXX_STR(" processing\n");
+							helpers::Transcoder::decode(message, msg);
+							helpers::LogLog::warn(msg);
+						}
+					 }
+				}
+			}
+			LOGUNIT_ASSERT_EQUAL(int(messageCount.size()), eventCount[1]);
+			for (auto& count : messageCount)
+				LOGUNIT_ASSERT_EQUAL(count, messageCount.front());
+			LOGUNIT_ASSERT_EQUAL(2, eventCount[0]);
+		}
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 
 };
 
