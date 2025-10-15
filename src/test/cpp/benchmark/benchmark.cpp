@@ -478,7 +478,7 @@ BENCHMARK_DEFINE_F(benchmarker, logIntPlus10FloatValueFMT)(benchmark::State& sta
 BENCHMARK_REGISTER_F(benchmarker, logIntPlus10FloatValueFMT)->Name("Appending int+10float using FMT, pattern: %m%n");
 BENCHMARK_REGISTER_F(benchmarker, logIntPlus10FloatValueFMT)->Name("Appending int+10float using FMT, pattern: %m%n")->Threads(benchmarker::threadCount());
 
-BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)(benchmark::State& state)
+BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatFmtAsyncBuffer)(benchmark::State& state)
 {
 	int x = 0;
 	for (auto _ : state)
@@ -510,8 +510,8 @@ BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)(benchmark::St
 			);
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)->Name("Async, Sending int+10float using FMT and AsyncBuffer");
-BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatValueFmtBuffer)->Name("Async, Sending int+10float using FMT and AsyncBuffer")->Threads(benchmarker::threadCount());
+BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatFmtAsyncBuffer)->Name("Async, Sending int+10float using FMT and AsyncBuffer");
+BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatFmtAsyncBuffer)->Name("Async, Sending int+10float using FMT and AsyncBuffer")->Threads(benchmarker::threadCount());
 #endif
 
 BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatAsyncBuffer)(benchmark::State& state)
@@ -546,8 +546,8 @@ BENCHMARK_DEFINE_F(benchmarker, asyncIntPlus10FloatAsyncBuffer)(benchmark::State
 			);
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatAsyncBuffer)->Name("Async, Sending int+10float using operator<< and AsyncBuffer, pattern: %m%n");
-BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatAsyncBuffer)->Name("Async, Sending int+10float using operator<< and AsyncBuffer, pattern: %m%n")->Threads(benchmarker::threadCount());
+BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatAsyncBuffer)->Name("Async, Sending int+10float using operator<< and AsyncBuffer");
+BENCHMARK_REGISTER_F(benchmarker, asyncIntPlus10FloatAsyncBuffer)->Name("Async, Sending int+10float using operator<< and AsyncBuffer")->Threads(benchmarker::threadCount());
 
 BENCHMARK_DEFINE_F(benchmarker, fileIntPlusFloatValueMessageBuffer)(benchmark::State& state)
 {

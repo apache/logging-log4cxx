@@ -111,8 +111,8 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 | Appending int+10float using FMT, pattern: \%m\%n/threads:6 | 1275 ns | 7297 ns | 96222 |
 | Async, Sending int+10float using FMT and AsyncBuffer | 784 ns | 783 ns | 891953 |
 | Async, Sending int+10float using FMT and AsyncBuffer/threads:6 | 1375 ns | 7692 ns | 88554 |
-| Async, Sending int+10float using operator<< and AsyncBuffer, pattern: \%m\%n | 1211 ns | 1211 ns | 578034 |
-| Async, Sending int+10float using operator<< and AsyncBuffer, pattern: \%m\%n/threads:6 | 1351 ns | 7670 ns | 90912 |
+| Async, Sending int+10float using operator<< and AsyncBuffer | 1211 ns | 1211 ns | 578034 |
+| Async, Sending int+10float using operator<< and AsyncBuffer/threads:6 | 1351 ns | 7670 ns | 90912 |
 | Logging int+float using MessageBuffer, pattern: \%d \%m\%n | 1073 ns | 1073 ns | 656652 |
 | Logging int+float using MessageBuffer, pattern: \%d \%m\%n/threads:6 | 1083 ns | 4895 ns | 142776 |
 | Logging int+float using MessageBuffer, JSON | 1394 ns | 1394 ns | 507493 |
