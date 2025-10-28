@@ -261,6 +261,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT_EQUAL(v[0]->getRenderedMessage(), v[1]->getRenderedMessage());
 			if (4 <= expectedEventCount)
 				LOGUNIT_ASSERT_EQUAL(v[2]->getRenderedMessage(), v[3]->getRenderedMessage());
+#ifdef GENERATE_THE_STATIC_ASSERT_COMPILATION_ERROR
+			struct AStruct
+			{
+				int value;
+			} data{ 43 };
+			LOG4CXX_INFO_ASYNC(root, "data.value=" << data);
+#endif
 		}
 
 		// this test checks all messages are delivered when an AsyncAppender is closed
