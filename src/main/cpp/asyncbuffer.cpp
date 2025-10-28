@@ -204,6 +204,7 @@ void AsyncBuffer::clear()
 	}
 }
 
+#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
 /**
  *   Append \c function to this buffer.
  */
@@ -215,7 +216,7 @@ void AsyncBuffer::append(const MessageBufferAppender& f)
 		m_priv->data.push_back(f);
 }
 
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts || LOG4CXX_WCHAR_T_API
+#if LOG4CXX_WCHAR_T_API
 /**
  *   Append \c function to this buffer.
  */
@@ -226,7 +227,19 @@ void AsyncBuffer::append(const WideMessageBufferAppender& f)
 	else
 		m_priv->data.push_back(f);
 }
-#endif // defined(__cpp_concepts) && 202002 <= __cpp_concepts || LOG4CXX_WCHAR_T_API
+#endif // LOG4CXX_WCHAR_T_API
+#else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts
+/**
+ *   Append \c function to this buffer.
+ */
+void AsyncBuffer::append(const MessageBufferAppender& f)
+{
+	if (!m_priv)
+		m_priv = std::make_unique<Private>(f);
+	else
+		m_priv->data.push_back(f);
+}
+#endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts
 
 } // namespace helpers
 } // namespace LOG4CXX_NS
