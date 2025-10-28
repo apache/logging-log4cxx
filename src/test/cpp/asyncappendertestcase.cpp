@@ -241,24 +241,24 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 			// Log some messages
 			auto root = r->getRootLogger();
-#if LOG4CXX_LOGCHAR_IS_UTF8
-			LOG4CXX_INFO(root, L"Some wide string " << 42);
-#else
 			LOG4CXX_INFO(root, "Some narrow string " << 42);
-#endif
-			int expectedMessageCount = 1;
-#ifdef LOG4CXX_XXXX_ASYNC_MACROS_WORK_WITH_ANY_CHAR_TYPE
-			++expectedMessageCount
-#if LOG4CXX_LOGCHAR_IS_UTF8
-			LOG4CXX_INFO_ASYNC(root, L"Some wide string " << 42);
-#else
 			LOG4CXX_INFO_ASYNC(root, "Some narrow string " << 42);
-#endif
-#endif // LOG4CXX_XXXX_ASYNC_MACROS_WORK_WITH_ANY_CHAR_TYPE
+			int expectedEventCount = 2;
+#if LOG4CXX_WCHAR_T_API
+			LOG4CXX_INFO(root, L"Some wide string " << 42);
+			LOG4CXX_INFO_ASYNC(root, L"Some wide string " << 42);
+			expectedEventCount += 2;
+#endif // LOG4CXX_WCHAR_T_API
 
 			// Check all messages were received
 			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(expectedMessageCount, int(v.size()));
+			for (auto& pEvent : v)
+				LogLog::debug(pEvent->getRenderedMessage());
+			LOGUNIT_ASSERT_EQUAL(expectedEventCount, int(v.size()));
+			LOGUNIT_ASSERT_EQUAL(v[0]->getRenderedMessage(), v[1]->getRenderedMessage());
+#if LOG4CXX_WCHAR_T_API
+			LOGUNIT_ASSERT_EQUAL(v[2]->getRenderedMessage(), v[3]->getRenderedMessage());
+#endif // LOG4CXX_WCHAR_T_API
 		}
 
 		// this test checks all messages are delivered when an AsyncAppender is closed

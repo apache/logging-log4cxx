@@ -17,6 +17,7 @@
 
 #include <log4cxx/helpers/asyncbuffer.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <variant>
 
 namespace LOG4CXX_NS
 {
@@ -26,9 +27,14 @@ namespace helpers
 
 struct AsyncBuffer::Private
 {
-	std::vector<MessageBufferAppender> data;
+#if defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API
+    using value_t = std::variant<MessageBufferAppender, WideMessageBufferAppender>;
+#else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API)
+    using value_t = MessageBufferAppender;
+#endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API)
+	std::vector<value_t> data;
 
-	Private(const MessageBufferAppender& f)
+	Private(const value_t& f)
 		: data{ f }
 	{}
 
@@ -127,7 +133,34 @@ void AsyncBuffer::renderMessage(LogCharMessageBuffer& msg) const
 	if (m_priv)
 	{
 		for (auto& renderer : m_priv->data)
+#if defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API
+		{
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			if (auto pRenderer = std::get_if<MessageBufferAppender>(&renderer))
+				(*pRenderer)(msg);
+			else
+			{
+				WideMessageBuffer wideBuf;
+				std::get<WideMessageBufferAppender>(renderer)(wideBuf);
+				LOG4CXX_DECODE_WCHAR(lsMsg, wideBuf.extract_str(wideBuf));
+				msg << lsMsg;
+			}
+#else // !LOG4CXX_LOGCHAR_IS_UTF8
+			if (auto pRenderer = std::get_if<WideMessageBufferAppender>(&renderer))
+				(*pRenderer)(msg);
+			else
+			{
+				CharMessageBuffer narrowBuf;
+				std::get<MessageBufferAppender>(renderer)(narrowBuf);
+				LOG4CXX_DECODE_CHAR(lsMsg, narrowBuf.extract_str(narrowBuf));
+				msg << lsMsg;
+			}
+#endif // !LOG4CXX_LOGCHAR_IS_UTF8
+		}
+#else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API)
 			renderer(msg);
+#endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API)
+
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 #if LOG4CXX_LOGCHAR_IS_UTF8
 		if (0 < m_priv->fmt_string.size())
@@ -181,6 +214,19 @@ void AsyncBuffer::append(const MessageBufferAppender& f)
 	else
 		m_priv->data.push_back(f);
 }
+
+#if defined(__cpp_concepts) && 202002 <= __cpp_concepts || LOG4CXX_WCHAR_T_API
+/**
+ *   Append \c function to this buffer.
+ */
+void AsyncBuffer::append(const WideMessageBufferAppender& f)
+{
+	if (!m_priv)
+		m_priv = std::make_unique<Private>(f);
+	else
+		m_priv->data.push_back(f);
+}
+#endif // defined(__cpp_concepts) && 202002 <= __cpp_concepts || LOG4CXX_WCHAR_T_API
 
 } // namespace helpers
 } // namespace LOG4CXX_NS
