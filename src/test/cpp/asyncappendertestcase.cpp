@@ -246,8 +246,11 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			int expectedEventCount = 2;
 #if LOG4CXX_WCHAR_T_API
 			LOG4CXX_INFO(root, L"Some wide string " << 42);
+			++expectedEventCount;
+#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
 			LOG4CXX_INFO_ASYNC(root, L"Some wide string " << 42);
-			expectedEventCount += 2;
+			++expectedEventCount;
+#endif // defined(__cpp_concepts) && 202002 <= __cpp_concepts
 #endif // LOG4CXX_WCHAR_T_API
 
 			// Check all messages were received
@@ -256,9 +259,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				LogLog::debug(pEvent->getRenderedMessage());
 			LOGUNIT_ASSERT_EQUAL(expectedEventCount, int(v.size()));
 			LOGUNIT_ASSERT_EQUAL(v[0]->getRenderedMessage(), v[1]->getRenderedMessage());
-#if LOG4CXX_WCHAR_T_API
-			LOGUNIT_ASSERT_EQUAL(v[2]->getRenderedMessage(), v[3]->getRenderedMessage());
-#endif // LOG4CXX_WCHAR_T_API
+			if (4 <= expectedEventCount)
+				LOGUNIT_ASSERT_EQUAL(v[2]->getRenderedMessage(), v[3]->getRenderedMessage());
 		}
 
 		// this test checks all messages are delivered when an AsyncAppender is closed
