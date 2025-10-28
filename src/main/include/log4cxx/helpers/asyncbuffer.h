@@ -66,6 +66,7 @@ public: // Operators
 	AsyncBuffer& operator<<(const T& value)
 	{
 #if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#if LOG4CXX_LOGCHAR_IS_UTF8
 		if constexpr (requires(std::ostream& buf, T v) { buf << v; })
 		{
 			append([value](CharMessageBuffer& msgBuf)
@@ -81,9 +82,27 @@ public: // Operators
 					msgBuf << value;
 				});
 		}
-#endif // LOG4CXX_WCHAR_T_API
 		else
 			static_assert(false, "operator<<(std::ostream&) overload must be provided");
+#endif // LOG4CXX_WCHAR_T_API
+#else // !LOG4CXX_LOGCHAR_IS_UTF8
+		if constexpr (requires(std::wostream& buf, T v) { buf << v; })
+		{
+			append([value](WideMessageBuffer& msgBuf)
+				{
+					msgBuf << value;
+				});
+		}
+		else if constexpr (requires(std::ostream& buf, T v) { buf << v; })
+		{
+			append([value](CharMessageBuffer& msgBuf)
+				{
+					msgBuf << value;
+				});
+		}
+		else
+			static_assert(false, "operator<<(std::wostream&) overload must be provided");
+#endif // !LOG4CXX_LOGCHAR_IS_UTF8
 #else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts)
 		append([value](LogCharMessageBuffer& msgBuf)
 			{
@@ -102,6 +121,7 @@ public: // Operators
 	AsyncBuffer& operator<<(const T&& rvalue)
 	{
 #if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#if LOG4CXX_LOGCHAR_IS_UTF8
 		if constexpr (requires(std::ostream& buf, T v) { buf << v; })
 		{
 			append([value = std::move(rvalue)](CharMessageBuffer& msgBuf)
@@ -117,9 +137,27 @@ public: // Operators
 					msgBuf << value;
 				});
 		}
-#endif // LOG4CXX_WCHAR_T_API
 		else
 			static_assert(false, "operator<<(std::ostream&) overload must be provided");
+#endif // LOG4CXX_WCHAR_T_API
+#else // !LOG4CXX_LOGCHAR_IS_UTF8
+		if constexpr (requires(std::wostream& buf, T v) { buf << v; })
+		{
+			append([value = std::move(rvalue)](WideMessageBuffer& msgBuf)
+				{
+					msgBuf << value;
+				});
+		}
+		else if constexpr (requires(std::ostream& buf, T v) { buf << v; })
+		{
+			append([value = std::move(rvalue)](CharMessageBuffer& msgBuf)
+				{
+					msgBuf << value;
+				});
+		}
+		else
+			static_assert(false, "operator<<(std::wostream&) overload must be provided");
+#endif // !LOG4CXX_LOGCHAR_IS_UTF8
 #else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts)
 		append([value = std::move(rvalue)](LogCharMessageBuffer& msgBuf)
 			{
