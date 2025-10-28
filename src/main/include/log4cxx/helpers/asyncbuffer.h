@@ -82,9 +82,9 @@ public: // Operators
 					msgBuf << value;
 				});
 		}
+#endif // LOG4CXX_WCHAR_T_API
 		else
 			static_assert(false, "operator<<(std::ostream&) overload must be provided");
-#endif // LOG4CXX_WCHAR_T_API
 #else // !LOG4CXX_LOGCHAR_IS_UTF8
 		if constexpr (requires(std::wostream& buf, T v) { buf << v; })
 		{
@@ -137,9 +137,9 @@ public: // Operators
 					msgBuf << value;
 				});
 		}
+#endif // LOG4CXX_WCHAR_T_API
 		else
 			static_assert(false, "operator<<(std::ostream&) overload must be provided");
-#endif // LOG4CXX_WCHAR_T_API
 #else // !LOG4CXX_LOGCHAR_IS_UTF8
 		if constexpr (requires(std::wostream& buf, T v) { buf << v; })
 		{
