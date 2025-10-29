@@ -238,27 +238,42 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				r->getRootLogger()->addAppender(vectorAppender);
 				r->setConfigured(true);
 			});
+			LogString logStr = LOG4CXX_STR("Some logchar string ");
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			std::wstring otherStr(L"Some non-logchar string ");
+#else // !LOG4CXX_LOGCHAR_IS_UTF8
+			std::string otherStr("Some non-logchar string ");
+#endif // !LOG4CXX_LOGCHAR_IS_UTF8
 
 			// Log some messages
 			auto root = r->getRootLogger();
-#if LOG4CXX_LOGCHAR_IS_UTF8
-			LOG4CXX_INFO(root, L"Some wide string " << 42);
-#else
-			LOG4CXX_INFO(root, "Some narrow string " << 42);
-#endif
-			int expectedMessageCount = 1;
-#ifdef LOG4CXX_XXXX_ASYNC_MACROS_WORK_WITH_ANY_CHAR_TYPE
-			++expectedMessageCount
-#if LOG4CXX_LOGCHAR_IS_UTF8
-			LOG4CXX_INFO_ASYNC(root, L"Some wide string " << 42);
-#else
-			LOG4CXX_INFO_ASYNC(root, "Some narrow string " << 42);
-#endif
-#endif // LOG4CXX_XXXX_ASYNC_MACROS_WORK_WITH_ANY_CHAR_TYPE
+			LOG4CXX_INFO(root, logStr << 42);
+			LOG4CXX_INFO_ASYNC(root, logStr << 42);
+			int expectedEventCount = 2;
+#if !LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_WCHAR_T_API
+			LOG4CXX_INFO(root, otherStr << 42);
+			++expectedEventCount;
+#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+			LOG4CXX_INFO_ASYNC(root, otherStr << 42);
+			++expectedEventCount;
+#endif // defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#endif // !LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_WCHAR_T_API
 
 			// Check all messages were received
 			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(expectedMessageCount, int(v.size()));
+			for (auto& pEvent : v)
+				LogLog::debug(pEvent->getRenderedMessage());
+			LOGUNIT_ASSERT_EQUAL(expectedEventCount, int(v.size()));
+			LOGUNIT_ASSERT_EQUAL(v[0]->getRenderedMessage(), v[1]->getRenderedMessage());
+			if (4 <= expectedEventCount)
+				LOGUNIT_ASSERT_EQUAL(v[2]->getRenderedMessage(), v[3]->getRenderedMessage());
+#ifdef GENERATE_THE_STATIC_ASSERT_COMPILATION_ERROR
+			struct AStruct
+			{
+				int value;
+			} data{ 43 };
+			LOG4CXX_INFO_ASYNC(root, "data.value=" << data);
+#endif
 		}
 
 		// this test checks all messages are delivered when an AsyncAppender is closed
