@@ -17,7 +17,9 @@
 
 #include <log4cxx/helpers/asyncbuffer.h>
 #include <log4cxx/helpers/transcoder.h>
+#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
 #include <variant>
+#endif // defined(__cpp_concepts) && 202002 <= __cpp_concepts
 
 namespace LOG4CXX_NS
 {
