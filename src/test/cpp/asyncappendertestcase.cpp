@@ -238,22 +238,26 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				r->getRootLogger()->addAppender(vectorAppender);
 				r->setConfigured(true);
 			});
-			std::string nStr("Some narrow string ");
-			std::wstring wStr(L"Some wide string ");
+			LogString logStr = LOG4CXX_STR("Some logchar string ");
+#if LOG4CXX_LOGCHAR_IS_UTF8
+			std::wstring otherStr(L"Some non-logchar string ");
+#else // !LOG4CXX_LOGCHAR_IS_UTF8
+			std::string otherStr("Some non-logchar string ");
+#endif // !LOG4CXX_LOGCHAR_IS_UTF8
 
 			// Log some messages
 			auto root = r->getRootLogger();
-			LOG4CXX_INFO(root, nStr << 42);
-			LOG4CXX_INFO_ASYNC(root, nStr << 42);
+			LOG4CXX_INFO(root, logStr << 42);
+			LOG4CXX_INFO_ASYNC(root, logStr << 42);
 			int expectedEventCount = 2;
-#if LOG4CXX_WCHAR_T_API
-			LOG4CXX_INFO(root, wStr << 42);
+#if !LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_WCHAR_T_API
+			LOG4CXX_INFO(root, otherStr << 42);
 			++expectedEventCount;
 #if defined(__cpp_concepts) && 202002 <= __cpp_concepts
-			LOG4CXX_INFO_ASYNC(root, wStr << 42);
+			LOG4CXX_INFO_ASYNC(root, otherStr << 42);
 			++expectedEventCount;
 #endif // defined(__cpp_concepts) && 202002 <= __cpp_concepts
-#endif // LOG4CXX_WCHAR_T_API
+#endif // !LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_WCHAR_T_API
 
 			// Check all messages were received
 			auto& v = vectorAppender->getVector();
