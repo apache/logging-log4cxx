@@ -824,10 +824,7 @@ void DOMConfigurator::parseLevel(
 
 			try
 			{
-				Level::LevelClass& levelClass =
-					(Level::LevelClass&)Loader::loadClass(className);
-				LevelPtr level = levelClass.toLevel(levelStr);
-				logger->setLevel(level);
+				logger->setLevel(dynamic_cast<const Level::LevelClass&>(Loader::loadClass(className)).toLevel(levelStr));
 			}
 			catch (Exception& oops)
 			{
