@@ -26,15 +26,13 @@
 
 #define DECLARE_LOG4CXX_CLAZZ_OBJECT(object)\
 	public:\
-	class Clazz##object : public helpers::Class\
+	class Clazz##object : public LOG4CXX_NS::helpers::Class\
 	{\
 		public:\
-			Clazz##object() : helpers::Class() {}\
-			virtual ~Clazz##object() {}\
-			virtual LOG4CXX_NS::LogString getName() const { return LOG4CXX_STR(#object); } \
+			LogString getName() const override { return LOG4CXX_STR(#object); }\
 	};\
-	static const helpers::Class& getStaticClass(); \
-	static const LOG4CXX_NS::helpers::ClassRegistration& registerClass();
+	static const helpers::Class& getStaticClass();\
+	static const helpers::ClassRegistration& registerClass();
 
 #define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
 	DECLARE_LOG4CXX_CLAZZ_OBJECT(object)\
@@ -42,26 +40,24 @@
 
 #define DECLARE_LOG4CXX_OBJECT(object)\
 	public:\
-	class Clazz##object : public helpers::Class\
+	class Clazz##object : public LOG4CXX_NS::helpers::Class\
 	{\
 		public:\
-			Clazz##object() : helpers::Class() {}\
-			virtual ~Clazz##object() {}\
-			virtual LOG4CXX_NS::LogString getName() const { return LOG4CXX_STR(#object); } \
-			virtual object* newInstance() const\
+			LogString getName() const override { return LOG4CXX_STR(#object); }\
+			object* newInstance() const override\
 			{\
 				return new object();\
 			}\
 	};\
 	const helpers::Class& getClass() const override;\
 	static const helpers::Class& getStaticClass(); \
-	static const LOG4CXX_NS::helpers::ClassRegistration& registerClass();
+	static const helpers::ClassRegistration& registerClass();
 
 #define DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
 	public:\
 	const helpers::Class& getClass() const override;\
 	static const helpers::Class& getStaticClass();\
-	static const LOG4CXX_NS::helpers::ClassRegistration&  registerClass();
+	static const helpers::ClassRegistration& registerClass();
 
 #define IMPLEMENT_LOG4CXX_OBJECT(object)\
 	const ::LOG4CXX_NS::helpers::Class& object::getClass() const { return getStaticClass(); }\
@@ -74,7 +70,7 @@
 		return classReg; \
 	}\
 	namespace LOG4CXX_NS { namespace classes { \
-	const ::LOG4CXX_NS::helpers::ClassRegistration& object##Registration = object::registerClass(); \
+	const helpers::ClassRegistration& object##Registration = object::registerClass(); \
 	} }
 
 
@@ -89,7 +85,7 @@
 		return classReg; \
 	}\
 	namespace LOG4CXX_NS { namespace classes { \
-	const LOG4CXX_NS::helpers::ClassRegistration& object##Registration = object::registerClass(); \
+	const helpers::ClassRegistration& object##Registration = object::registerClass(); \
 	} }
 
 namespace LOG4CXX_NS

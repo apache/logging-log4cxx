@@ -53,7 +53,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 			public:
 				LevelClass() : helpers::Class() {}
 
-				virtual LogString getName() const
+				LogString getName() const override
 				{
 					return LOG4CXX_STR("Level");
 				}
@@ -301,11 +301,10 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 	class Class##level : public Level::LevelClass\
 	{\
 		public:\
-			Class##level() : Level::LevelClass() {}\
-			virtual LogString getName() const { return LOG4CXX_STR(#level); } \
-			virtual LevelPtr toLevel(const LogString& sArg) const\
+			LogString getName() const override { return LOG4CXX_STR(#level); } \
+			LevelPtr toLevel(const LogString& sArg) const override\
 			{ return level::toLevelLS(sArg); }\
-			virtual LevelPtr toLevel(int val) const\
+			LevelPtr toLevel(int val) const override\
 			{ return level::toLevel(val); }\
 	};\
 	DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
