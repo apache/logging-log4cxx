@@ -189,7 +189,6 @@ public:
 		// start a separate instance of this to write messages are in the file
 		helpers::FileOutputStream output(LOG4CXX_STR("output/newdir/100message-writer.out"), false);
 		auto thisProgram = GetExecutableFileName();
-		helpers::LogLog::debug(LOG4CXX_STR("thisProgram: ") + thisProgram);
 		const char* args[] = {thisProgram.c_str(), "writeFinalBufferOutput", 0};
 		apr_procattr_t* attr = NULL;
 		setTestAttributes(&attr, output.getFilePtr(), p);
