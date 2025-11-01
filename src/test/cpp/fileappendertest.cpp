@@ -32,7 +32,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-auto getLogger(const std::string& name = {}) -> LoggerPtr {
+auto getLogger(const LogString& name = {}) -> LoggerPtr {
 	static struct log4cxx_initializer {
 		log4cxx_initializer() {
 			auto layout = std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n"));
@@ -186,7 +186,7 @@ public:
 	void checkFinalBufferOutput()
 	{
 		helpers::Pool p;
-		// start a separate instance of this to write messages are in the file
+		// start a separate instance of this to write messages to the file
 		helpers::FileOutputStream output(LOG4CXX_STR("output/newdir/100message-writer.out"), false);
 		auto thisProgram = GetExecutableFileName();
 		const char* args[] = {thisProgram.c_str(), "writeFinalBufferOutput", 0};
