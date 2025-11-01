@@ -169,8 +169,9 @@ public:
 		writer->setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n")));
 		writer->setFile(dir + LOG4CXX_STR("/100message.log"));
 		writer->setBufferedIO(true);
+		writer->setBufferedSeconds(1);
 		auto policy = std::make_shared<rolling::TimeBasedRollingPolicy>();
-		policy->setFileNamePattern(dir + LOG4CXX_STR("/100message-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log"));
+		policy->setFileNamePattern(dir + LOG4CXX_STR("/100message-%d{yyyy}.log"));
 		writer->setRollingPolicy(policy);
 		helpers::Pool p;
 		writer->activateOptions(p);
@@ -179,6 +180,8 @@ public:
 
 		for ( int x = 0; x < requiredMsgCount; x++ )
 		{
+			if (x % 10)
+				apr_sleep(120000); // 120 milliseconds
 			LOG4CXX_INFO( logger, "This is test message " << x );
 		}
 	}
