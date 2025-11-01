@@ -180,8 +180,6 @@ public:
 
 		for ( int x = 0; x < requiredMsgCount; x++ )
 		{
-			if (x % 10)
-				apr_sleep(120000); // 120 milliseconds
 			LOG4CXX_INFO( logger, "This is test message " << x );
 		}
 	}
