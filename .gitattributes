@@ -1,6 +1,7 @@
 * text eol=lf
 *.png binary
 *.jpg binary
+*.ods binary
 
 # This is a windows-specific file
 src/main/resources/log4cxx.rc eol=crlf
