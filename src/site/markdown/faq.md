@@ -22,6 +22,18 @@ Frequently Asked Technical Questions {#faq}
 -->
 [TOC]
 
+## Why doesn't Log4cxx use buffered asynchronous output by default?{#buffered_output}
+
+Being able to examine logged values is critically important during application development.
+Buffering output prevents the log file from containing the lastest messages in two situations:
+-# when a debugger stops the application at a break point
+-# when the application aborts abnormally
+(e.g. calls [std::terminate](https://en.cppreference.com/w/cpp/error/terminate.html)
+or the operating system detects a fault)
+
+Debugging a program becomes extremely confusing when the log file
+does not contain the most recently written logging requests.
+
 ## How do I add a custom level to Apache Log4cxx?{#custom_levels}
 
 This is a common topic for all the Apache logging frameworks and typically motivated to try to
