@@ -843,11 +843,13 @@ class LOG4CXX_EXPORT Logger
 		*/
 		virtual const LevelPtr& getEffectiveLevel() const;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		Return the the LoggerRepository where this
 		<code>Logger</code> is attached.
 		*/
 		spi::LoggerRepository* getLoggerRepository() const;
+#endif
 
 		/**
 		* Get the logger name.
@@ -897,6 +899,13 @@ class LOG4CXX_EXPORT Logger
 		@return Level - the assigned Level, can be null.
 		*/
 		const LevelPtr& getLevel() const;
+
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		The object that holds all Logger instances.
+		*/
+		static spi::LoggerRepositoryPtr getLoggerRepository();
+#endif
 
 		/**
 		* Retrieve a logger by name in current encoding.
