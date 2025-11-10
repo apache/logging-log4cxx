@@ -327,10 +327,17 @@ const LevelPtr& Logger::getEffectiveLevel() const
 #endif
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 LoggerRepository* Logger::getLoggerRepository() const
 {
 	return m_priv->repositoryRaw;
 }
+#else
+LoggerRepositoryPtr Logger::getLoggerRepository()
+{
+	return LogManager::getLoggerRepository();
+}
+#endif
 
 LoggerRepository* Logger::getHierarchy() const
 {
