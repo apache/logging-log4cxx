@@ -119,6 +119,12 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 | Logging int+float using MessageBuffer, JSON/threads:6 | 2110 ns | 6827 ns | 104646 |
 | Multiprocess logging int+float using MessageBuffer, pattern: \%d \%m\%n | 3253 ns | 3253 ns | 214839 |
 
+
+This data is shown in the graph below.  The single-threaded tests are shown in blue,
+while the multithreaded tests are shown in orange.
+
+![](images/performance-all.png)
+
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
 -# The "Async" benchmarks test [AsyncAppender](@ref log4cxx::AsyncAppender) throughput, with logging events discarded in the background thread.
 -# The "Logging" benchmarks write to a file using buffered output. Overhead is 2-3 times more when not using buffered output.
@@ -152,5 +158,20 @@ from the calling thread to the background thread.
 When logging floating point values from a high priority thread,
 and you cannot use a background thread to format and write the log data,
 the LOG4CXX_[level]_FMT series of macros impose the least overhead.
+
+The graphs below show the detailed performance results.  The first graph shows
+multithreaded performance.  As shown previously, multithreaded performance
+is generally much lower than single threaded due to locking contention:
+
+![](images/performance-multithread.png)
+
+Single thread performance is shown below:
+
+![](images/performance-singlethread.png)
+
+Note that in both instances, the content of the log message has a significant
+impact on performance.  All of the tests shown in these graphs assume that
+the message is actually being logged.  If the logger is not enabled, no messages
+are logged and performance is much better.
 
 [asynchronous output setting]:configuration-files.html#asynch-output
