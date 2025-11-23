@@ -39,7 +39,10 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
-		//LOGUNIT_TEST(testConnectUsingDSN);
+//#define DataSourceName_Log4cxxTest_Is_Valid
+#ifdef DataSourceName_Log4cxxTest_Is_Valid
+		LOGUNIT_TEST(testConnectUsingDSN);
+#endif
 		LOGUNIT_TEST_SUITE_END();
 
 
@@ -72,7 +75,7 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 //
 // CREATE TABLE [dbo].[UnitTestLog](
 //	 [Item] [bigint] IDENTITY(1,1) NOT NULL, /* auto incremented */
-//	 [Thread] [nchar](20) NULL
+//	 [Thread] [nchar](20) NULL,
 //	 [LogTime] [datetime] NOT NULL,
 //	 [LogName] [nchar](50) NULL,
 //	 [LogLevel] [nchar](10) NULL,
@@ -90,7 +93,7 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 			for (int i = 0; i < 100; ++i)
 			{
 				LOG4CXX_INFO(odbc, "Message '" << i << "'");
-				apr_sleep(30000);
+				apr_sleep(30000); // 30 milliseconds
 			}
 			LOG4CXX_INFO(odbc, "Last message");
 		}

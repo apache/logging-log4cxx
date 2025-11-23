@@ -613,6 +613,26 @@ void ODBCAppender::flushBuffer(Pool& p)
 
 void ODBCAppender::setSql(const LogString& s)
 {
+	logchar currentQuote{ 0 };
+	const logchar doubleQuote{ 0x22 };
+	const logchar singleQuote{ 0x27 };
+	const logchar semiColan{ 0x3b };
+	int charCount{ 0 };
+	for (auto ch : s)
+	{
+		++charCount;
+		if (currentQuote == ch)
+			currentQuote = 0;
+		else if (currentQuote == 0)
+		{
+			if (doubleQuote == ch || singleQuote == ch)
+				currentQuote = ch;
+			else if (semiColan == ch && s.size() != charCount)
+				throw IllegalArgumentException(LOG4CXX_STR("SQL statement cannot contain a ';'"));
+		}
+	}
+	if (0 != currentQuote)
+		throw IllegalArgumentException(LogString(LOG4CXX_STR("Unmatched ")) + currentQuote + LOG4CXX_STR(" in SQL statement"));
     _priv->sqlStatement = s;
 }
 
