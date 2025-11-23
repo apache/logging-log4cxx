@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/loglog.h>
 #include "../testchar.h"
 #include "../insertwide.h"
 #include "../logunit.h"
@@ -44,6 +45,7 @@ LOGUNIT_CLASS(OptionConverterTestCase)
 	LOGUNIT_TEST(varSubstTest3);
 	LOGUNIT_TEST(varSubstTest4);
 	LOGUNIT_TEST(varSubstTest5);
+	LOGUNIT_TEST(varSubstRecursiveReferenceTest);
 	LOGUNIT_TEST(testTmpDir);
 #if APR_HAS_USER
 	LOGUNIT_TEST(testUserHome);
@@ -142,6 +144,23 @@ public:
 		props1.setProperty(LOG4CXX_STR("p2"), LOG4CXX_STR("${p1}"));
 		LogString res = OptionConverter::substVars(LOG4CXX_STR("${p2}"), props1);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("x1"), res);
+	}
+
+	void varSubstRecursiveReferenceTest()
+	{
+		Properties props;
+		props.setProperty(LOG4CXX_STR("p1"), LOG4CXX_STR("${p2}"));
+		props.setProperty(LOG4CXX_STR("p2"), LOG4CXX_STR("${p1}"));
+		try
+		{
+			OptionConverter::substVars(LOG4CXX_STR("${p1}"), props);
+			LOGUNIT_ASSERT(false);
+		}
+		catch (IllegalArgumentException& ex)
+		{
+			LOG4CXX_ENCODE_CHAR(lsMsg, ex.what());
+			LogLog::debug(lsMsg);
+		}
 	}
 
 	void testTmpDir()
