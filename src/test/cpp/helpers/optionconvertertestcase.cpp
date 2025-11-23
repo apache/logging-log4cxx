@@ -158,7 +158,7 @@ public:
 		}
 		catch (IllegalArgumentException& ex)
 		{
-			LOG4CXX_ENCODE_CHAR(lsMsg, ex.what());
+			LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 			LogLog::debug(lsMsg);
 		}
 	}
