@@ -27,6 +27,11 @@ specify the instantiated appender/layout/filter classes and
 the properties of those class instances
 without recompiling and rebuilding.
 
+The configuration file must be protected from modification by untrusted parties.
+Use restrictive file system permissions to ensure
+untrusted parties do not have write access.
+Do not load the configuration file from an untrusted location.
+
 As Log4cxx was designed to be extendable,
 property names and values are not constrained by the core library.
 The configuration file parsers,
