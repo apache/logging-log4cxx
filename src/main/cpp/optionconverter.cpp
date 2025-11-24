@@ -44,6 +44,114 @@
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/singletonholder.h>
 
+namespace
+{
+using namespace LOG4CXX_NS;
+
+/// For recursion checking
+struct LogStringChain
+{
+	const LogString& item;
+	const LogStringChain* parent;
+};
+
+/// Is \c item referenced in \c path
+bool isRecursiveReference(const LogString& newkey, const LogStringChain* path)
+{
+	bool result = false;
+	if (path->item == newkey)
+		result = true;
+	else if (path->parent)
+		result = isRecursiveReference(newkey, path->parent);
+	return result;
+}
+
+LogString substVarsSafely(const LogString& val, helpers::Properties& props, const LogStringChain* path = 0)
+{
+	LogString sbuf;
+	const logchar delimStartArray[] = { 0x24, 0x7B, 0 }; // '$', '{'
+	const LogString delimStart(delimStartArray);
+	const logchar delimStop = 0x7D; // '}';
+	const size_t DELIM_START_LEN = 2;
+	const size_t DELIM_STOP_LEN = 1;
+
+	size_t i = 0;
+
+	while (true)
+	{
+		size_t j = val.find(delimStart, i);
+
+		if (j == val.npos)
+		{
+			// no more variables
+			if (i == 0)
+			{
+				// this is a simple string
+				return val;
+			}
+			else
+			{
+				// add the tail string which contails no variables and return the result.
+				sbuf.append(val.substr(i, val.length() - i));
+				return sbuf;
+			}
+		}
+		else
+		{
+			sbuf.append(val.substr(i, j - i));
+			size_t k = val.find(delimStop, j);
+
+			if (k == val.npos)
+			{
+				LogString msg(1, (logchar) 0x22 /* '\"' */);
+				msg.append(val);
+				msg.append(LOG4CXX_STR("\" has no closing brace. Opening brace at position "));
+				helpers::Pool p;
+				helpers::StringHelper::toString(j, p, msg);
+				msg.append(1, (logchar) 0x2E /* '.' */);
+				throw helpers::IllegalArgumentException(msg);
+			}
+			else
+			{
+				j += DELIM_START_LEN;
+				LogString key = val.substr(j, k - j);
+				if (path && isRecursiveReference(key, path))
+				{
+					LogString msg(LOG4CXX_STR("The variable ${"));
+					msg.append(key);
+					msg.append(LOG4CXX_STR("} is used recursively"));
+					throw helpers::IllegalArgumentException(msg);
+				}
+
+				// first try in System properties
+				LogString replacement(helpers::OptionConverter::getSystemProperty(key, LogString()));
+
+				// then try props parameter
+				if (replacement.empty())
+				{
+					replacement = props.getProperty(key);
+				}
+
+				if (!replacement.empty())
+				{
+					// Do variable substitution on the replacement string
+					// such that we can solve "Hello ${x2}" as "Hello p1"
+					// the where the properties are
+					// x1=p1
+					// x2=${x1}
+					LogStringChain current{ key, path };
+					LogString recursiveReplacement = substVarsSafely(replacement, props, &current);
+					sbuf.append(recursiveReplacement);
+				}
+
+				i = k + DELIM_STOP_LEN;
+			}
+		}
+	}
+}
+
+} // namespace
+
 namespace LOG4CXX_NS
 {
 
@@ -227,77 +335,7 @@ LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
 
 LogString OptionConverter::substVars(const LogString& val, Properties& props)
 {
-	LogString sbuf;
-	const logchar delimStartArray[] = { 0x24, 0x7B, 0 }; // '$', '{'
-	const LogString delimStart(delimStartArray);
-	const logchar delimStop = 0x7D; // '}';
-	const size_t DELIM_START_LEN = 2;
-	const size_t DELIM_STOP_LEN = 1;
-
-	size_t i = 0;
-
-	while (true)
-	{
-		size_t j = val.find(delimStart, i);
-
-		if (j == val.npos)
-		{
-			// no more variables
-			if (i == 0)
-			{
-				// this is a simple string
-				return val;
-			}
-			else
-			{
-				// add the tail string which contails no variables and return the result.
-				sbuf.append(val.substr(i, val.length() - i));
-				return sbuf;
-			}
-		}
-		else
-		{
-			sbuf.append(val.substr(i, j - i));
-			size_t k = val.find(delimStop, j);
-
-			if (k == val.npos)
-			{
-				LogString msg(1, (logchar) 0x22 /* '\"' */);
-				msg.append(val);
-				msg.append(LOG4CXX_STR("\" has no closing brace. Opening brace at position "));
-				Pool p;
-				StringHelper::toString(j, p, msg);
-				msg.append(1, (logchar) 0x2E /* '.' */);
-				throw IllegalArgumentException(msg);
-			}
-			else
-			{
-				j += DELIM_START_LEN;
-				LogString key = val.substr(j, k - j);
-				// first try in System properties
-				LogString replacement(getSystemProperty(key, LogString()));
-
-				// then try props parameter
-				if (replacement.empty())
-				{
-					replacement = props.getProperty(key);
-				}
-
-				if (!replacement.empty())
-				{
-					// Do variable substitution on the replacement string
-					// such that we can solve "Hello ${x2}" as "Hello p1"
-					// the where the properties are
-					// x1=p1
-					// x2=${x1}
-					LogString recursiveReplacement = substVars(replacement, props);
-					sbuf.append(recursiveReplacement);
-				}
-
-				i = k + DELIM_STOP_LEN;
-			}
-		}
-	}
+	return substVarsSafely(val, props);
 }
 
 LogString OptionConverter::getSystemProperty(const LogString& key, const LogString& def)
