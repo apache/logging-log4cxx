@@ -613,10 +613,12 @@ void ODBCAppender::flushBuffer(Pool& p)
 
 void ODBCAppender::setSql(const LogString& s)
 {
-	logchar currentQuote{ 0 };
 	const logchar doubleQuote{ 0x22 };
 	const logchar singleQuote{ 0x27 };
 	const logchar semiColan{ 0x3b };
+	// Do a basic check disallowing multiple SQL statements - for defense-in-depth security.
+	// Allow a semicolan in a quoted context or as the last character.
+	logchar currentQuote{ 0 };
 	int charCount{ 0 };
 	for (auto ch : s)
 	{
