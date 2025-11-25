@@ -125,6 +125,10 @@ while the multithreaded tests are shown in orange.
 
 ![](images/performance-all.png)
 
+@htmlonly
+<div id="main" style="width:100%;height:500px"></div>
+@endhtmlonly
+
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
 -# The "Async" benchmarks test [AsyncAppender](@ref log4cxx::AsyncAppender) throughput, with logging events discarded in the background thread.
 -# The "Logging" benchmarks write to a file using buffered output. Overhead is 2-3 times more when not using buffered output.
@@ -173,5 +177,10 @@ Note that in both instances, the content of the log message has a significant
 impact on performance.  All of the tests shown in these graphs assume that
 the message is actually being logged.  If the logger is not enabled, no messages
 are logged and performance is much better.
+
+@htmlonly
+<script src="echarts.js"></script>
+<script src="graph.js"></script>
+@endhtmlonly
 
 [asynchronous output setting]:configuration-files.html#asynch-output
