@@ -27,7 +27,17 @@
 #include <fmt/xchar.h>
 #endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 #endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+
+#if defined(__cpp_concepts) && 202002 <= __cpp_concepts && defined(__GNUC__) && __GNUC__ <= 12
+// GCC 12 has broken concepts
+#define LOG4CXX_CONCEPTS 0
+#elif defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#define LOG4CXX_CONCEPTS 1
+#else
+#define LOG4CXX_CONCEPTS 0
+#endif
+
+#if LOG4CXX_CONCEPTS
 #include <concepts>
 #endif
 
@@ -65,7 +75,7 @@ public: // Operators
 	template <typename T>
 	AsyncBuffer& operator<<(const T& value)
 	{
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#if LOG4CXX_CONCEPTS
 #if LOG4CXX_LOGCHAR_IS_UTF8
 		if constexpr (requires(std::ostream& buf, T v) { buf << v; })
 		{
@@ -103,12 +113,12 @@ public: // Operators
 		else
 			static_assert(false, "operator<<(std::wostream&) overload must be provided");
 #endif // !LOG4CXX_LOGCHAR_IS_UTF8
-#else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts)
+#else // !LOG4CXX_CONCEPTS
 		append([value](LogCharMessageBuffer& msgBuf)
 			{
 				msgBuf << value;
 			});
-#endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts)
+#endif // !LOG4CXX_CONCEPTS
 		return *this;
 	}
 
@@ -120,7 +130,7 @@ public: // Operators
 	template <typename T>
 	AsyncBuffer& operator<<(const T&& rvalue)
 	{
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#if LOG4CXX_CONCEPTS
 #if LOG4CXX_LOGCHAR_IS_UTF8
 		if constexpr (requires(std::ostream& buf, T v) { buf << v; })
 		{
@@ -158,12 +168,12 @@ public: // Operators
 		else
 			static_assert(false, "operator<<(std::wostream&) overload must be provided");
 #endif // !LOG4CXX_LOGCHAR_IS_UTF8
-#else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts)
+#else // !LOG4CXX_CONCEPTS
 		append([value = std::move(rvalue)](LogCharMessageBuffer& msgBuf)
 			{
 				msgBuf << value;
 			});
-#endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts)
+#endif // !LOG4CXX_CONCEPTS
 		return *this;
 	}
 
@@ -215,7 +225,7 @@ private:
 	AsyncBuffer& operator=(const AsyncBuffer&) = delete;
 
 	LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(Private, m_priv)
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#if LOG4CXX_CONCEPTS
 	using MessageBufferAppender = std::function<void(CharMessageBuffer&)>;
 
 	/**
@@ -231,14 +241,14 @@ private:
 	 */
 	void append(const WideMessageBufferAppender& f);
 #endif // LOG4CXX_WCHAR_T_API
-#else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts)
+#else // !LOG4CXX_CONCEPTS
 	using MessageBufferAppender = std::function<void(LogCharMessageBuffer&)>;
 
 	/**
 	 *   Append \c f to this buffer.
 	 */
 	void append(const MessageBufferAppender& f);
-#endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts)
+#endif // !LOG4CXX_CONCEPTS
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 	void initializeForFmt(StringViewType&& format_string, FmtArgStore&& args);
