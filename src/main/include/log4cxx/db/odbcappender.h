@@ -187,6 +187,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		void append(const spi::LoggingEventPtr& event, helpers::Pool&) override;
 
 	protected:
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		* To be removed.
 		*/
@@ -199,7 +200,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		* */
 		virtual void execute(const LogString& sql,
 			LOG4CXX_NS::helpers::Pool& p) /*throw(SQLException)*/;
-
+#endif
 		/**
 		* Override this to return the connection to a pool, or to clean up the
 		* resource.

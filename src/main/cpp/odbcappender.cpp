@@ -267,6 +267,7 @@ void ODBCAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers
 #endif
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) const
 {
     return LogString();
@@ -275,6 +276,7 @@ LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, LOG4C
 void ODBCAppender::execute(const LogString& sql, LOG4CXX_NS::helpers::Pool& p)
 {
 }
+#endif
 
 /* The default behavior holds a single connection open until the appender
 is closed (typically when garbage collected).*/
@@ -613,6 +615,28 @@ void ODBCAppender::flushBuffer(Pool& p)
 
 void ODBCAppender::setSql(const LogString& s)
 {
+	const logchar doubleQuote{ 0x22 };
+	const logchar singleQuote{ 0x27 };
+	const logchar semiColan{ 0x3b };
+	// A basic check which disallows multiple SQL statements - for defense-in-depth security.
+	// Allow a semicolan in a quoted context or as the last character.
+	logchar currentQuote{ 0 };
+	int charCount{ 0 };
+	for (auto ch : s)
+	{
+		++charCount;
+		if (currentQuote == ch)
+			currentQuote = 0;
+		else if (currentQuote == 0)
+		{
+			if (doubleQuote == ch || singleQuote == ch)
+				currentQuote = ch;
+			else if (semiColan == ch && s.size() != charCount)
+				throw IllegalArgumentException(LOG4CXX_STR("SQL statement cannot contain a ';'"));
+		}
+	}
+	if (0 != currentQuote)
+		throw IllegalArgumentException(LogString(LOG4CXX_STR("Unmatched ")) + currentQuote + LOG4CXX_STR(" in SQL statement"));
     _priv->sqlStatement = s;
 }
 
