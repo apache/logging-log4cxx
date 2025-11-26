@@ -54,6 +54,15 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/markdown/download.md.in
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/markdown/development/build-cmake.md.in
     ${CMAKE_CURRENT_BINARY_DIR}/markdown/development/build-cmake.md )
 
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/echarts.js
+    ${CMAKE_CURRENT_BINARY_DIR}/html/echarts.js
+    COPYONLY
+)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/generate_appending_a_log_message.js
+    ${CMAKE_CURRENT_BINARY_DIR}/html/generate_appending_a_log_message.js
+    COPYONLY
+)
+
 add_custom_target( doc_doxygen ALL
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
     WORKING_DIRECTORY ${LOG4CXX_SOURCE_DIR}
