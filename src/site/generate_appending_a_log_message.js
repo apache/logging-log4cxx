@@ -57,17 +57,17 @@ for (let i = 0; i < benchmark_data.rows.length; ++i) {
 var legend_data = [];
 var series_data = [];
 for (const [key, keyValueMap] of plot_data.entries()) {
-	var series_values = [key];
+	legend_data.push(key);
+	var series_values = [];
 	for (let i = 0; i < xAxisLabels.length; ++i) {
 		var value = keyValueMap.get(xAxisLabels[i]);
-		series_values.push(value ? value : null);
+		series_values.push(value ? parseInt(value) : null);
 	}
-
-	legend_data.push(key);
-	var series_data_item = new Map();
-	series_data_item.set('name', key);
-	series_data_item.set('type', 'line');
-	series_data_item.set('data', series_values);
+	var series_data_item = {
+		name: key,
+		type: 'line',
+		data: series_values
+	};
 	series_data.push(series_data_item);
 }
 
@@ -75,10 +75,9 @@ for (const [key, keyValueMap] of plot_data.entries()) {
 var chart_data = {
 	title: { text: 'Appending a log message' },
 	yAxis: {
-		name : 'Average elapsed time (ns)',
-		nameLocation : 'center'
+		name: 'Average elapsed time (ns)',
+		nameLocation: 'center'
 	},
-/*
 	legend: { 
 		orient: 'vertical',
 		left: 100,
@@ -86,34 +85,14 @@ var chart_data = {
 		data: legend_data
 	 },
 	xAxis: {
-		axisTick : { alignWithLabel: true },
-		axisLabel : { rotate: 30 },
-		name : 'Log message content',
-		nameLocation : 'center',
-		data: xAxisLabels
-	},
-	series: series_data
-};
-*/
-	legend: {
-		orient: "vertical",
-		left: 100,
-		top: "center",
-		data: [ "MessageBuffer", "FMT", "FMT and AsyncBuffer", "operator<< and AsyncBuffer" ]
-	},
-	xAxis: {
 		axisTick: { alignWithLabel: true },
 		axisLabel: { rotate: 30 },
 		name: 'Log message content',
 		nameLocation: 'center',
-		data: [ "5 char string", "49 char string", "int value", "int+float", "int+10float" ]
+		data: xAxisLabels
 	},
-	series: [
-		{ type: "line", name: "MessageBuffer",				data: [ 334, 370, 509, 911, 4579 ] },
-		{ type: "line", name: "FMT",						data: [ null, 346, 376, 508, 1671 ] },
-		{ type: "line", name: "FMT and AsyncBuffer",		data: [ null, null, null, null, 784 ] },
-		{ type: "line", name: "operator<< and AsyncBuffer", data: [ null, null, null, null, 1211 ] }
-	]
+	series: series_data
 };
+
 // Display the chart
 myChart.setOption(chart_data);
