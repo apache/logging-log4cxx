@@ -126,14 +126,14 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 -# The "Logging" benchmarks write to a file using buffered output. Overhead is 2-3 times more when not using buffered output.
 
 @htmlonly
-<div id="appending_a_log_message_plot" style="width: 600px;height:400px;"></div>
+<div id="appending_a_log_message_plot" style="width: 800px;height:400px;"></div>
 <script src="echarts.js"></script>
 <script src="generate_appending_a_log_message.js"></script>
 @endhtmlonly
 
 The above graph shows that the overhead of an enabled logging request
-varies greatly with the message content.
-A single operations-per-second number is not meaningful.
+varies greatly with the message content and that
+the `LOG4CXX_[level]_FMT` macros have lower overhead.
 It also shows two data points where binary to text conversion
 is moved to a background thread
 using [AsyncBuffer](@ref log4cxx::helpers::AsyncBuffer) and [AsyncAppender](@ref log4cxx::AsyncAppender).

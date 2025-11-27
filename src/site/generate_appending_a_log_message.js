@@ -30,13 +30,13 @@ const value_regex_pattern = new RegExp("([0-9]+) ns")
 // Extract the data
 var plot_data = new Map();
 var xAxisLabels = [];
-for (let i = 0; i < benchmark_data.rows.length; ++i) {
-	const columns = benchmark_data.rows[i].cells;
+for (const row of benchmark_data.rows) {
+	const columns = row.cells;
 	if (2 < columns.length) {
 		const value_match = value_regex_pattern.exec(columns[1].innerText);
 		if (value_match && 1 < value_match.length) {
-			for (let rIndex = 0; rIndex < benchmark_pattern.length; ++rIndex) {
-				const benchmark_match = benchmark_pattern[rIndex].exec(columns[0].innerText);
+			for (const pattern of benchmark_pattern) {
+				const benchmark_match = pattern.exec(columns[0].innerText);
 				if (benchmark_match && 2 < benchmark_match.length) {
 					if (!xAxisLabels.includes(benchmark_match[1])) {
 						xAxisLabels.push(benchmark_match[1]);
@@ -59,8 +59,8 @@ var series_data = [];
 for (const [key, keyValueMap] of plot_data.entries()) {
 	legend_data.push(key);
 	var series_values = [];
-	for (let i = 0; i < xAxisLabels.length; ++i) {
-		var value = keyValueMap.get(xAxisLabels[i]);
+	for (const label of xAxisLabels) {
+		var value = keyValueMap.get(label);
 		series_values.push(value ? parseInt(value) : null);
 	}
 	var series_data_item = {
@@ -80,7 +80,7 @@ var chart_data = {
 	},
 	legend: { 
 		orient: 'vertical',
-		left: 100,
+		left: 150,
 		top: 'center',
 		data: legend_data
 	 },
