@@ -134,6 +134,9 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 The above graph shows that the overhead of an enabled logging request
 varies greatly with the message content.
 A single operations-per-second number is not meaningful.
+It also shows two data points where binary to text conversion
+is moved to a background thread
+using [AsyncBuffer](@ref log4cxx::helpers::AsyncBuffer) and [AsyncAppender](@ref log4cxx::AsyncAppender).
 
 Note that logging from multiple threads concurrently
 to a common appender generally does not increase throughput
