@@ -253,10 +253,10 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 #if !LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_WCHAR_T_API
 			LOG4CXX_INFO(root, otherStr << 42);
 			++expectedEventCount;
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#if LOG4CXX_CONCEPTS
 			LOG4CXX_INFO_ASYNC(root, otherStr << 42);
 			++expectedEventCount;
-#endif // defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#endif // LOG4CXX_CONCEPTS
 #endif // !LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_WCHAR_T_API
 
 			// Check all messages were received

@@ -17,9 +17,9 @@
 
 #include <log4cxx/helpers/asyncbuffer.h>
 #include <log4cxx/helpers/transcoder.h>
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#if LOG4CXX_CONCEPTS
 #include <variant>
-#endif // defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#endif // LOG4CXX_CONCEPTS
 
 namespace LOG4CXX_NS
 {
@@ -29,7 +29,7 @@ namespace helpers
 
 struct AsyncBuffer::Private
 {
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API
+#if LOG4CXX_CONCEPTS && LOG4CXX_WCHAR_T_API
     using value_t = std::variant<MessageBufferAppender, WideMessageBufferAppender>;
 #else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API)
     using value_t = MessageBufferAppender;
@@ -135,7 +135,7 @@ void AsyncBuffer::renderMessage(LogCharMessageBuffer& msg) const
 	if (m_priv)
 	{
 		for (auto& renderer : m_priv->data)
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API
+#if LOG4CXX_CONCEPTS && LOG4CXX_WCHAR_T_API
 		{
 #if LOG4CXX_LOGCHAR_IS_UTF8
 			if (auto pRenderer = std::get_if<MessageBufferAppender>(&renderer))
@@ -159,9 +159,9 @@ void AsyncBuffer::renderMessage(LogCharMessageBuffer& msg) const
 			}
 #endif // !LOG4CXX_LOGCHAR_IS_UTF8
 		}
-#else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API)
+#else // !LOG4CXX_CONCEPTS
 			renderer(msg);
-#endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API)
+#endif // !LOG4CXX_CONCEPTS
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 #if LOG4CXX_LOGCHAR_IS_UTF8
@@ -206,7 +206,7 @@ void AsyncBuffer::clear()
 	}
 }
 
-#if defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#if LOG4CXX_CONCEPTS
 /**
  *   Append \c function to this buffer.
  */
@@ -230,7 +230,7 @@ void AsyncBuffer::append(const WideMessageBufferAppender& f)
 		m_priv->data.push_back(f);
 }
 #endif // LOG4CXX_WCHAR_T_API
-#else // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#else // !LOG4CXX_CONCEPTS
 /**
  *   Append \c function to this buffer.
  */
@@ -241,7 +241,7 @@ void AsyncBuffer::append(const MessageBufferAppender& f)
 	else
 		m_priv->data.push_back(f);
 }
-#endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts
+#endif // !LOG4CXX_CONCEPTS
 
 } // namespace helpers
 } // namespace LOG4CXX_NS
