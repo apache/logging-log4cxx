@@ -84,7 +84,9 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 	  L2 Unified 256 KiB (x4)
 	  L3 Unified 6144 KiB (x1)
 	Load Average: 0.07, 0.03, 0.01
-
+@htmlonly
+<div id="benchmark_data_marker"></div>
+@endhtmlonly
 | Benchmark |     Time | CPU | Iterations |
 | --------- | -------: | --: | ---------: |
 | Testing disabled logging request | 0.472 ns | 0.472 ns | 1000000000 |
@@ -123,19 +125,29 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 -# The "Async" benchmarks test [AsyncAppender](@ref log4cxx::AsyncAppender) throughput, with logging events discarded in the background thread.
 -# The "Logging" benchmarks write to a file using buffered output. Overhead is 2-3 times more when not using buffered output.
 
-The above table shows that the overhead of an enabled logging request
-varies greatly with the message content.
-A single operations-per-second number is not meaningful.
-Most importantly note that [using buffered output](@ref log4cxx::FileAppender::setOption)
-reduces overhead more than any other detail.
+@htmlonly
+<div id="appending_a_log_message_plot" style="width: 800px;height:400px;"></div>
+<script src="echarts.min.js"></script>
+<script src="generate_appending_a_log_message.js"></script>
+@endhtmlonly
 
-Note also that logging from multiple threads concurrently
+The above graph shows that the overhead of an enabled logging request
+varies greatly with the message content and that
+the `LOG4CXX_[level]_FMT` macros have lower overhead.
+It also shows two data points where binary to text conversion
+is moved to a background thread
+using [AsyncBuffer](@ref log4cxx::helpers::AsyncBuffer) and [AsyncAppender](@ref log4cxx::AsyncAppender).
+
+Note that logging from multiple threads concurrently
 to a common appender generally does not increase throughput
 due to lock contention in [doAppend method](@ref log4cxx::AppenderSkeleton::doAppend).
 To simplify the work of an appender implementator,
 the [doAppend method](@ref log4cxx::AppenderSkeleton::doAppend) currently prevents multiple threads
 concurrently entering [the append method](@ref log4cxx::AppenderSkeleton::append),
 which is the method required to be implemented by a concrete appender class.
+
+Note also that [using buffered output](@ref log4cxx::FileAppender::setOption)
+reduces overhead more than any other detail.
 
 The [AsyncAppender](@ref log4cxx::AsyncAppender) provides the least overhead
 when logging concurrently from multiple threads
