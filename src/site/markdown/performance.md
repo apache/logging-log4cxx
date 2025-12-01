@@ -127,7 +127,7 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 
 @htmlonly
 <div id="appending_a_log_message_plot" style="width: 800px;height:400px;"></div>
-<script src="echarts.js"></script>
+<script src="echarts.min.js"></script>
 <script src="generate_appending_a_log_message.js"></script>
 @endhtmlonly
 

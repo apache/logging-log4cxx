@@ -54,8 +54,8 @@ configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/markdown/download.md.in
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/markdown/development/build-cmake.md.in
     ${CMAKE_CURRENT_BINARY_DIR}/markdown/development/build-cmake.md )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/echarts.js
-    ${CMAKE_CURRENT_BINARY_DIR}/html/echarts.js
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/echarts.min.js
+    ${CMAKE_CURRENT_BINARY_DIR}/html/echarts.min.js
     COPYONLY
 )
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/generate_appending_a_log_message.js
