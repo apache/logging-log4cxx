@@ -2,7 +2,7 @@ var chart_data = {
 	"title": { "text": "Appending a log message" },
 	"legend": {
 		"orient": "vertical",
-		"left": 100,
+		"left": 150,
 		"top": "center",
 		"data": [ "MessageBuffer", "FMT", "FMT and AsyncBuffer", "operator<< and AsyncBuffer" ]
 	},
