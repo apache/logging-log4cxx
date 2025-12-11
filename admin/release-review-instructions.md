@@ -19,8 +19,8 @@ Additional Prerequisites (Windows only)
 * The `PATH` environment variable includes directories containing `cmake.exe` and `gpg.exe`
 * One of these environment variables is set (using / directory separators):
   - `CMAKE_TOOLCHAIN_FILE` - The full path to the `vcpkg.cmake` file (where APR-Util is installed)
-  - `CMAKE_INSTALL_PREFIX` - The full path to the directory where EXPAT, APR and APR-Util libraries are installed
-* If the programs `zip.exe`, `gzip.exe` and `sed.exe` are not in `C:/msys64/usr/bin`, the environment has a variable `LOG4CXX_TEST_PROGRAM_PATH` set to the full path containing those programs
+  - `CMAKE_INSTALL_PREFIX` - The full path to the directory where EXPAT, APR and APR-Util libraries are installed (they can be built using [these instructions](https://logging.staged.apache.org/log4cxx/1.6.0/build-cmake.html#Windows))
+* If the programs `zip.exe`, `gzip.exe` and `sed.exe` are not in `C:\msys64\usr\bin`, the environment has a variable `LOG4CXX_TEST_PROGRAM_PATH` set to the full path (using / directory separators) containing those programs
 
 Steps
 -----
