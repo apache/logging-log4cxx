@@ -25,7 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
-| [1.6.0](#rel_1_6_0) | 2025-XX-XX | Maintenance release  |
+| [1.6.0](#rel_1_6_0) | 2025-12-14 | Maintenance release  |
 | [1.5.0](#rel_1_5_0) | 2025-08-03 | Maintenance release  |
 | [1.4.0](#rel_1_4_0) | 2025-03-01 | Maintenance release  |
 | [1.3.1](#rel_1_3_1) | 2024-11-30 | Bugfix release       |
@@ -50,7 +50,7 @@ Change Log {#changelog}
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
-## Release 1.6.0 - 2025-XX-XX {#rel_1_6_0}
+## Release 1.6.0 - 2025-12-14 {#rel_1_6_0}
 
 Release 1.6.0 includes the following new features:
 
@@ -68,6 +68,9 @@ and the LOG4CXX_CONFIGURATION environment variable (see log4cxx::spi::Configurat
    \[[#550](https://github.com/apache/logging-log4cxx/pull/550)\]
 
 The following issues have been addressed:
+
+* Prevent abnormal termination when recursively defining a configuration file variable
+   \[[#565](https://github.com/apache/logging-log4cxx/pull/565)\]
 
 
 ## Release 1.5.0 - 2025-08-03 {#rel_1_5_0}
