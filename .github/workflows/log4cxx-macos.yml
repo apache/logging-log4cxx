@@ -24,20 +24,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [osx-13, osx-14]
+        name: [osx-14-clang, osx-15-clang, osx-g++]
         include:
-          - name: osx-13
-            os: macos-13
-            cxx: clang++
-            odbc: OFF
-            qt: ON
-            multiprocess: OFF
-          - name: osx-14
+          - name: osx-14-clang
             os: macos-14
             cxx: clang++
             odbc: ON
             qt: OFF
             multiprocess: ON
+          - name: osx-15-clang
+            os: macos-15
+            cxx: clang++
+            odbc: ON
+            qt: ON
+            multiprocess: OFF
           - name: osx-g++
             os: macos-latest
             cxx: g++-14
@@ -53,7 +53,7 @@ jobs:
 
     - name: 'Configure Dependencies'
       run: |
-        if [ ${{ matrix.os }} != macos-13 ]; then brew install apr-util; fi
+        brew install apr-util
         if [ ${{ matrix.odbc }} == ON ]; then brew install unixodbc; fi
         if [ ${{ matrix.qt }} == ON ]; then brew install qt; fi
         if [ ${{ matrix.cxx }} == "g++-14" -a $(cmake --version | head -1 | awk '{split($3, a, "."); print a[1]}') -lt 4 ]
