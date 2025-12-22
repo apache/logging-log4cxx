@@ -25,6 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
+| [1.6.1](#rel_1_6_1) | 2026-##-## | Maintenance release  |
 | [1.6.0](#rel_1_6_0) | 2025-12-14 | Maintenance release  |
 | [1.5.0](#rel_1_5_0) | 2025-08-03 | Maintenance release  |
 | [1.4.0](#rel_1_4_0) | 2025-03-01 | Maintenance release  |
@@ -49,6 +50,13 @@ Change Log {#changelog}
 | [0.1.1](#rel_1_1)   | 2003-07-09 |                      |
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
+
+## Release 1.6.1 - 2026-##-## {#rel_1_6_1}
+
+Release 1.6.1 includes the following new features:
+
+The following issues have been addressed:
+
 
 ## Release 1.6.0 - 2025-12-14 {#rel_1_6_0}
 
