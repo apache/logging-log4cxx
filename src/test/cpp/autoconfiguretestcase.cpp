@@ -92,11 +92,10 @@ public:
 
 	void setUp()
 	{
-#if LOG4CXX_HAS_FILESYSTEM_PATH
-		auto fileName = spi::Configurator::properties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.STEM"));
-#else
-		LogString fileName = LOG4CXX_STR("autoconfiguretestcase");
+#if !LOG4CXX_HAS_FILESYSTEM_PATH
+		spi::Configurator::properties().setProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.STEM"), LOG4CXX_STR("autoconfiguretestcase"));
 #endif
+		auto fileName = spi::Configurator::properties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.STEM"));
 		auto lsTempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
 		copyPropertyFile(lsTempDir, fileName);
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
@@ -104,11 +103,7 @@ public:
 			{ lsTempDir
 			};
 		std::vector<LogString> names
-#if LOG4CXX_HAS_FILESYSTEM_PATH
 			{ LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
-#else
-			{ LOG4CXX_STR("autoconfiguretestcase.properties")
-#endif
 			};
 		std::tie(m_status, m_configFile) = DefaultConfigurator::configureFromFile(paths, names);
 	}
