@@ -104,6 +104,8 @@ __pragma( warning( pop ) )
 
 #define LOG4CXX_NS @LOG4CXX_NS@
 
+#cmakedefine LOG4CXX_ENABLE_APR
+
 namespace LOG4CXX_NS {
 
 /**

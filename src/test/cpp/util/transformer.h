@@ -21,10 +21,6 @@
 #include "filter.h"
 #include <vector>
 
-extern "C" {
-	struct apr_pool_t;
-}
-
 namespace LOG4CXX_NS
 {
 class File;
@@ -47,8 +43,7 @@ class Transformer
 		static void copyFile(const File& in,
 			const File& out);
 		static void createSedCommandFile(const std::string& regexName,
-			const log4cxx::Filter::PatternList& patterns,
-			apr_pool_t* pool);
+            const log4cxx::Filter::PatternList& patterns);
 
 };
 }

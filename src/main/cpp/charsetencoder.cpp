@@ -18,21 +18,24 @@
 #include <log4cxx/helpers/charsetencoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
-#include <apr_xlate.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <algorithm>
-
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
-
 #include <log4cxx/private/log4cxx_private.h>
-#include <apr_portable.h>
+
 #include <mutex>
 
 #ifdef LOG4CXX_HAS_WCSTOMBS
 	#include <stdlib.h>
+#endif
+#include <string.h>
+
+#ifdef LOG4CXX_ENABLE_APR
+#include <apr_xlate.h>
+#include <apr_portable.h>
 #endif
 
 using namespace LOG4CXX_NS;
@@ -226,7 +229,7 @@ class USASCIICharsetEncoder : public CharsetEncoder
 			LogString::const_iterator& iter,
 			ByteBuffer& out)
 		{
-			log4cxx_status_t stat = APR_SUCCESS;
+            log4cxx_status_t stat = 0;
 
 			if (iter != in.end())
 			{
@@ -242,7 +245,7 @@ class USASCIICharsetEncoder : public CharsetEncoder
 					else
 					{
 						iter = prev;
-						stat = APR_BADARG;
+                        stat = 1; // APR_BADARG
 						break;
 					}
 				}
@@ -270,7 +273,7 @@ class ISOLatinCharsetEncoder : public CharsetEncoder
 			LogString::const_iterator& iter,
 			ByteBuffer& out)
 		{
-			log4cxx_status_t stat = APR_SUCCESS;
+            log4cxx_status_t stat = 0;
 
 			if (iter != in.end())
 			{
@@ -286,7 +289,7 @@ class ISOLatinCharsetEncoder : public CharsetEncoder
 					else
 					{
 						iter = prev;
-						stat = APR_BADARG;
+                        stat = 1; // APR_BADARG
 						break;
 					}
 				}
@@ -331,7 +334,7 @@ class TrivialCharsetEncoder : public CharsetEncoder
 				out.position(out.position() + requested * sizeof(logchar));
 			}
 
-			return APR_SUCCESS;
+            return 0;
 		}
 
 	private:
@@ -397,13 +400,13 @@ class UTF16BECharsetEncoder : public CharsetEncoder
 
 				if (sv == 0xFFFF)
 				{
-					return APR_BADARG;
+                    return 1; // APR_BADARG;
 				}
 
 				Transcoder::encodeUTF16BE(sv, out);
 			}
 
-			return APR_SUCCESS;
+            return 0;
 		}
 
 	private:
@@ -432,13 +435,13 @@ class UTF16LECharsetEncoder : public CharsetEncoder
 
 				if (sv == 0xFFFF)
 				{
-					return APR_BADARG;
+                    return 1; // APR_BADARG;
 				}
 
 				Transcoder::encodeUTF16LE(sv, out);
 			}
 
-			return APR_SUCCESS;
+            return 0;
 		}
 	private:
 		UTF16LECharsetEncoder(const UTF16LECharsetEncoder&);
@@ -460,7 +463,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 			, ByteBuffer&                out
 			) override
 		{
-			log4cxx_status_t result = APR_SUCCESS;
+            log4cxx_status_t result = 0;
 #if !LOG4CXX_CHARSET_EBCDIC
 			char* current = out.current();
 			size_t remain = out.remaining();
@@ -482,7 +485,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 				auto n = std::wcrtomb(current, ch, &this->state);
 				if (static_cast<std::size_t>(-1) == n) // not a valid wide character?
 				{
-					result = APR_BADARG;
+                    result = 1; // APR_BADARG
 					break;
 				}
 				remain -= n;
@@ -612,7 +615,7 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 {
 	log4cxx_status_t stat = enc->encode(src, iter, dst);
 
-	if (stat != APR_SUCCESS && iter != src.end())
+    if (stat != 0 && iter != src.end())
 	{
 #if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
 		iter++;

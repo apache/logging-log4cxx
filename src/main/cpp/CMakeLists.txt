@@ -70,6 +70,12 @@ if(${ENABLE_FMT_LAYOUT})
     )
 endif()
 
+if(${ENABLE_APR})
+    list(APPEND extra_classes
+        dbappender.cpp
+    )
+endif()
+
 target_sources(log4cxx
   PRIVATE
   action.cpp
@@ -98,7 +104,6 @@ target_sources(log4cxx
   date.cpp
   dateformat.cpp
   datepatternconverter.cpp
-  dbappender.cpp
   defaultconfigurator.cpp
   defaultloggerfactory.cpp
   defaultrepositoryselector.cpp

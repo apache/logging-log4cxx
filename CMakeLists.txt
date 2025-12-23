@@ -58,13 +58,19 @@ if(ENABLE_COVERAGE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
 endif()
 
-# Find Apache Runtime
-option(APR_STATIC "Link to the APR static library" OFF)
-find_package(APR REQUIRED)
+option(ENABLE_APR "Enable APR for cross-platform support" ON)
+if(ENABLE_APR)
+    set(LOG4CXX_ENABLE_APR 1)
+    # Find Apache Runtime
+    option(APR_STATIC "Link to the APR static library" OFF)
+    #find_package(APR REQUIRED)
 
-# Find Apache Runtime Utilities
-option(APU_STATIC "Link to the APR-Util static library" OFF)
-find_package(APR-Util REQUIRED)
+    # Find Apache Runtime Utilities
+    option(APU_STATIC "Link to the APR-Util static library" OFF)
+    #find_package(APR-Util REQUIRED)
+else()
+    set(LOG4CXX_ENABLE_APR 0)
+endif(ENABLE_APR)
 
 if(NOT MSVC)
   # The pthread library is used to name threads and mask signals

@@ -22,16 +22,19 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/loglog.h>
-#include <apr_xlate.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <locale.h>
-#include <apr_portable.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <mutex>
+
+#ifdef LOG4CXX_ENABLE_APR
+#include <apr_xlate.h>
+#include <apr_portable.h>
+#endif
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -255,7 +258,7 @@ class TrivialCharsetDecoder : public CharsetDecoder
 				in.position(in.position() + remaining);
 			}
 
-			return APR_SUCCESS;
+            return 0;
 		}
 
 
@@ -355,7 +358,7 @@ class ISOLatinCharsetDecoder : public CharsetDecoder
 				in.position(in.limit());
 			}
 
-			return APR_SUCCESS;
+            return 0;
 		}
 
 
@@ -386,7 +389,7 @@ class USASCIICharsetDecoder : public CharsetDecoder
 		virtual log4cxx_status_t decode(ByteBuffer& in,
 			LogString& out)
 		{
-			log4cxx_status_t stat = APR_SUCCESS;
+            log4cxx_status_t stat = 0;
 
 			if (in.remaining() > 0)
 			{
@@ -405,7 +408,7 @@ class USASCIICharsetDecoder : public CharsetDecoder
 					}
 					else
 					{
-						stat = APR_BADARG;
+                        stat = 1; // APR_BADARG
 						break;
 					}
 				}
@@ -434,7 +437,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 		}
 		log4cxx_status_t decode(ByteBuffer& in, LogString& out) override
 		{
-			log4cxx_status_t result = APR_SUCCESS;
+            log4cxx_status_t result = 0;
 			const char* p = in.current();
 			size_t i = in.position();
 			size_t remain = in.limit() - i;
@@ -460,7 +463,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 				}
 				if (static_cast<std::size_t>(-1) == n) // decoding error?
 				{
-					result = APR_BADARG;
+                    result = 1; // APR_BADARG
 					break;
 				}
 				if (static_cast<std::size_t>(-2) == n) // incomplete sequence?

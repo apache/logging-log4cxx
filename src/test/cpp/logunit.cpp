@@ -17,7 +17,9 @@
 
 #include "logunit.h"
 
+#ifdef LOG4CXX_TESTING_APR
 #include <apr_general.h>
+#endif
 #include <algorithm>
 #include <stdlib.h>
 #include <locale.h>
@@ -35,8 +37,9 @@ void initialize()
 	{
 		printf("LC_CTYPE: %s\n", ctype);
 	}
-
+#ifdef LOG4CXX_TESTING_APR
 	apr_initialize();
+#endif
 }
 
 extern const char** testlist;
@@ -66,8 +69,9 @@ abts_suite* abts_run_suites(abts_suite* suite)
 			suite = iter->second->run(suite);
 		}
 	}
-
+#ifdef LOG4CXX_TESTING_APR
 	apr_terminate();
+#endif
 	return suite;
 }
 

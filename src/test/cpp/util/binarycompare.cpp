@@ -15,16 +15,21 @@
  */
 
 #include "binarycompare.h"
-#include <apr_file_io.h>
 #include <log4cxx/helpers/pool.h>
 #include "../logunit.h"
+
+#ifdef LOG4CXX_TESTING_APR
+#include <apr_file_io.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
+#endif
+#include <fstream>
 
 using namespace log4cxx;
 using namespace log4cxx::util;
 using namespace log4cxx::helpers;
 
+#ifdef LOG4CXX_TESTING_APR
 void BinaryCompare::compare(const char* filename1,
 	const char* filename2)
 {
@@ -91,3 +96,60 @@ void BinaryCompare::compare(const char* filename1,
 		}
 	}
 }
+#else
+void BinaryCompare::compare(const char* filename1,
+    const char* filename2)
+{
+    Pool p;
+    std::fstream file1(filename1, std::ios_base::in | std::ios_base::binary);
+    std::fstream file2(filename2, std::ios_base::in | std::ios_base::binary);
+
+    if (!file1.is_open())
+    {
+        LOGUNIT_FAIL(std::string("Unable to open ") + filename1);
+    }
+
+    if (!file2.is_open())
+    {
+        LOGUNIT_FAIL(std::string("Unable to open ") + filename2);
+    }
+
+    constexpr int BUFFER_SIZE = 1024;
+    char contents1[BUFFER_SIZE];
+    char contents2[BUFFER_SIZE];
+    memset(contents1, 0, BUFFER_SIZE);
+    memset(contents2, 0, BUFFER_SIZE);
+
+    file1.read(contents1, BUFFER_SIZE);
+    file2.read(contents2, BUFFER_SIZE);
+
+    if (file1.fail())
+    {
+        LOGUNIT_FAIL(std::string("Unable to read ") + filename1);
+    }
+
+    if (file2.fail())
+    {
+        LOGUNIT_FAIL(std::string("Unable to read ") + filename2);
+    }
+
+    for (int i = 0; i < BUFFER_SIZE; i++)
+    {
+        if (contents1[i] != contents2[i])
+        {
+            std::string msg("Contents differ at position ");
+            msg += std::to_string(i);
+            msg += ": [";
+            msg += filename1;
+            msg += "] has ";
+            msg += std::to_string(i);
+            msg += ", [";
+            msg += filename2;
+            msg += "] has ";
+            msg += std::to_string(i);
+            msg += ".";
+            LOGUNIT_FAIL(msg);
+        }
+    }
+}
+#endif

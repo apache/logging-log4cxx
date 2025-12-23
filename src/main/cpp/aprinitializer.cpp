@@ -19,15 +19,18 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
-#include <apr_pools.h>
 #include <assert.h>
 #include <log4cxx/helpers/threadspecificdata.h>
-#include <apr_thread_proc.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/loglog.h>
 #include <vector>
 #include <algorithm>
 #include <mutex>
+
+#ifdef LOG4CXX_ENABLE_APR
+#include <apr_pools.h>
+#include <apr_thread_proc.h>
+#endif
 
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS;
@@ -81,11 +84,15 @@ struct apr_environment
 {
     apr_environment()
     {
+#ifdef LOG4CXX_ENABLE_APR
         apr_initialize();
+#endif
     }
     ~apr_environment()
     {
+#ifdef LOG4CXX_ENABLE_APR
         apr_terminate();
+#endif
     }
 };
 
@@ -95,12 +102,14 @@ struct apr_environment
 APRInitializer::APRInitializer() :
 	m_priv(std::make_unique<APRInitializerPrivate>())
 {
-	apr_pool_create(&m_priv->p, NULL);
-	m_priv->startTime = Date::currentTime();
+#ifdef LOG4CXX_ENABLE_APR
+    apr_pool_create(&m_priv->p, NULL);
 #if APR_HAS_THREADS
 	apr_status_t stat = apr_threadkey_private_create(&m_priv->tlsKey, tlsDestructImpl, m_priv->p);
 	assert(stat == APR_SUCCESS);
 #endif
+#endif
+    m_priv->startTime = Date::currentTime();
 }
 
 APRInitializer::~APRInitializer()
