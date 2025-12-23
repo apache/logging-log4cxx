@@ -442,11 +442,8 @@ LogString Properties::get(const LogString& key) const
 void Properties::load(InputStreamPtr inStream)
 {
 	Pool pool;
-	auto lineReader = std::make_shared<InputStreamReader>(inStream, CharsetDecoder::getISOLatinDecoder());
-	LogString contents = lineReader->read(pool);
-	properties->clear();
-	PropertyParser parser;
-	parser.parse(contents, *this);
+	auto contents = InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()).read(pool);
+	PropertyParser().parse(contents, *this);
 }
 
 std::vector<LogString> Properties::propertyNames() const
