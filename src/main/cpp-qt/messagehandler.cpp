@@ -40,10 +40,11 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
 			break;
 
 		case QtMsgType::QtWarningMsg:
+		default:
 			qtLogger->warn(lsMsg, location);
 			break;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
 		case QtMsgType::QtInfoMsg:
 			qtLogger->info(lsMsg, location);
 			break;
