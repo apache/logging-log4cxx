@@ -25,7 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
-| [1.6.1](#rel_1_6_1) | 2026-##-## | Maintenance release  |
+| [1.6.1](#rel_1_6_1) | 2026-##-## | Bugfix release       |
 | [1.6.0](#rel_1_6_0) | 2025-12-14 | Maintenance release  |
 | [1.5.0](#rel_1_5_0) | 2025-08-03 | Maintenance release  |
 | [1.4.0](#rel_1_4_0) | 2025-03-01 | Maintenance release  |
@@ -53,9 +53,15 @@ Change Log {#changelog}
 
 ## Release 1.6.1 - 2026-##-## {#rel_1_6_1}
 
-Release 1.6.1 includes the following new features:
+This is a minor bugfix release to fix issues found with 1.6.0.
 
-The following issues have been addressed:
+### Bug {#rel_1_6_1_bugs}
+
+* A Qt fatal type log message was not flushed when using buffered/async output
+   \[[#571](https://github.com/apache/logging-log4cxx/pull/571)\]
+
+* The currently executing program file path components could not be used in a properties configuration file
+   \[[#572](https://github.com/apache/logging-log4cxx/pull/572)\]
 
 
 ## Release 1.6.0 - 2025-12-14 {#rel_1_6_0}
