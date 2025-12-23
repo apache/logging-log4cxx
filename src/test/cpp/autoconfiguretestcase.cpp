@@ -121,11 +121,7 @@ public:
 	{
 		auto fa = LOG4CXX_NS::cast<FileAppender>(LogManager::getRootLogger()->getAppender(LOG4CXX_STR("A1")));
 		LOGUNIT_ASSERT(fa);
-#if LOG4CXX_HAS_FILESYSTEM_PATH
 		auto fileName = spi::Configurator::properties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.STEM"));
-#else
-		LogString fileName = LOG4CXX_STR("autoconfiguretestcase");
-#endif
 		File logFile(fa->getFile());
 		LOGUNIT_ASSERT_EQUAL(fileName + LOG4CXX_STR(".log"), logFile.getName());
 	}
