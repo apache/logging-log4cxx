@@ -145,10 +145,10 @@ configuration file shows one possible way of achieving this.
     log4j.appender.A1=org.apache.log4j.ConsoleAppender
     log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 
-    # Print the date in ISO 8601 format
+    # Include the date (in ISO 8601 format), the thread, logging level, logger name and message
     log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
 
-    # Print only messages of level WARN or above in the package com.foo.
+    # Output only messages of level WARN or above in the package com.foo.
     log4j.logger.com.foo=WARN
 ~~~
 
