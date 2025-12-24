@@ -165,16 +165,16 @@ file. The log statement from the *Bar::doIt* method has the level *DEBUG*,
 lower than the logger level WARN. Consequently, *doIt()* method's log
 request is suppressed.
 
-Here is another configuration file that uses multiple appenders.
+Here is a *MyApp.properties* configuration file that uses multiple appenders.
 \include MyApp.properties
 
-Calling the enhanced MyApp with the this configuration file will output
+Using the enhanced \ref MyApp.properties configuration file will output
 the following on the console.
 
 ~~~
-     INFO [12345] (MyApp.cpp:8) - Entering application.
-    DEBUG [12345] (bar.cpp:8) - Did it again!
-     INFO [12345] (MyApp.cpp:11) - Exiting application.
+    MyApp2.cpp:8 [0x00012345] - INFO Entering application.
+    bar.cpp:8 [0x00012345] - DEBUG Did it again!
+    MyApp2.cpp:11 [0x00012345] - INFO Exiting application.
 ~~~
 
 In addition, as the root logger has been allocated a second appender,
@@ -197,10 +197,18 @@ This header file is for encapsulating Log4cxx configuration.
 \example com/foo/config1.cpp
 This file is a simplified example of encapsulated Log4cxx configuration.
 
-\example com/foo/config3.cpp
-This file is an example of how to use the current module name to select the Log4cxx configuration file.
+\example MyApp.properties
+This is a configuration file that uses multiple appenders.
+
+\example MyApp2.cpp
+This example can be built with \ref com/foo/config2.cpp or \ref com/foo/config4.cpp
+to configure Log4cxx on the first call the com::foo::getLogger.
+
+\example com/foo/config2.cpp
+This file is a simplified example of encapsulated Log4cxx configuration.
 
 \example com/foo/config4.cpp
-This file is a simpler example of how to use the current module name to select the Log4cxx configuration file.
+This file is a example of how provide application specific values for use in the configuration file
+and to use the current module name to select the Log4cxx configuration file.
 
 [Configuration Samples]:configuration-files.html#configuration-samples
