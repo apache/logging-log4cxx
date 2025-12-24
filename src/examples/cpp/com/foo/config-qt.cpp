@@ -51,8 +51,6 @@ void ConfigureLogging() {
 		, QString("MyApp.properties")
 		, QString("log4cxx.xml")
 		, QString("log4cxx.properties")
-		, QString("log4j.xml")
-		, QString("log4j.properties")
 	};
 	auto status       = spi::ConfigurationStatus::NotConfigured;
 	auto selectedPath = QString();
