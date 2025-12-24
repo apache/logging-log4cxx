@@ -30,7 +30,7 @@ namespace LOG4CXX_NS
 {
 namespace qt
 {
-using LOG4CXX_NS::helpers::LogLog;
+using helpers::LogLog;
 
 static std::unique_ptr<QFileSystemWatcher> watcher;
 static QString configFilename;
@@ -40,7 +40,8 @@ static void loadXMLFile(const QString& path){
 	if(!fi.exists()){
 		return;
 	}
-	LOG4CXX_NS::xml::DOMConfigurator::configure(path.toStdString());
+	LOG4CXX_DECODE_QSTRING(lsPath, path);
+	xml::DOMConfigurator::configure(path.toStdString());
 }
 
 static void loadPropertiesFile(const QString& path){
@@ -48,7 +49,8 @@ static void loadPropertiesFile(const QString& path){
 	if(!fi.exists()){
 		return;
 	}
-	LOG4CXX_NS::PropertyConfigurator::configure(path.toStdString());
+	LOG4CXX_DECODE_QSTRING(lsPath, path);
+	PropertyConfigurator::configure(lsPath);
 }
 
 static void dirChanged(const QString&){
@@ -68,18 +70,19 @@ static void dirChanged(const QString&){
 
 Configuration::Configuration(){}
 
-LOG4CXX_NS::spi::ConfigurationStatus Configuration::tryLoadFile(const QString& filename){
-	LOG4CXX_NS::spi::ConfigurationStatus stat =LOG4CXX_NS::spi::ConfigurationStatus::NotConfigured;
-	bool isXML = false;
+spi::ConfigurationStatus Configuration::tryLoadFile(const QString& filename){
+	auto stat = spi:: ConfigurationStatus::NotConfigured;
+	auto isXML = false;
 
+	LOG4CXX_DECODE_QSTRING(lsFilename, filename);
 	if(filename.endsWith(".xml")){
-		stat = LOG4CXX_NS::xml::DOMConfigurator::configure(filename.toStdString());
+		stat = xml::DOMConfigurator::configure(lsFilename);
 		isXML = true;
 	}else if(filename.endsWith(".properties")){
-		stat = LOG4CXX_NS::PropertyConfigurator::configure(filename.toStdString());
+		stat = PropertyConfigurator::configure(lsFilename);
 	}
 
-	if( stat == LOG4CXX_NS::spi::ConfigurationStatus::Configured ){
+	if( stat == spi::ConfigurationStatus::Configured ){
 		watcher = std::make_unique<QFileSystemWatcher>();
 		configFilename = filename;
 		QFileInfo fi(filename);
@@ -100,35 +103,35 @@ LOG4CXX_NS::spi::ConfigurationStatus Configuration::tryLoadFile(const QString& f
 	return stat;
 }
 
-std::tuple<LOG4CXX_NS::spi::ConfigurationStatus,QString>
+std::tuple<spi::ConfigurationStatus,QString>
 Configuration::configureFromFileAndWatch(const QVector<QString>& directories,
 										 const QVector<QString>& filenames){
 	for( QString dir : directories ){
 		for( QString fname : filenames ){
-			QString canidate_str = dir + "/" + fname;
-			QFile candidate(canidate_str);
+			QString candidate_str = dir + "/" + fname;
+			QFile candidate(candidate_str);
 
 			if (LogLog::isDebugEnabled())
 			{
-				LOG4CXX_DECODE_QSTRING(msg, "Checking file " + canidate_str);
+				LOG4CXX_DECODE_QSTRING(msg, "Checking file " + candidate_str);
 				LogLog::debug(msg);
 			}
 			if (candidate.exists())
 			{
-				LOG4CXX_NS::spi::ConfigurationStatus configStatus = tryLoadFile(canidate_str);
-				if( configStatus == LOG4CXX_NS::spi::ConfigurationStatus::Configured ){
-					return {configStatus, canidate_str};
+				auto configStatus = tryLoadFile(candidate_str);
+				if( configStatus == spi::ConfigurationStatus::Configured ){
+					return {configStatus, candidate_str};
 				}
 				if (LogLog::isDebugEnabled())
 				{
-					LOG4CXX_DECODE_QSTRING(failmsg, "Unable to load  " + canidate_str + ": trying next");
+					LOG4CXX_DECODE_QSTRING(failmsg, "Unable to load  " + candidate_str + ": trying next");
 					LogLog::debug(failmsg);
 				}
 			}
 		}
 	}
 
-	return {LOG4CXX_NS::spi::ConfigurationStatus::NotConfigured, QString()};
+	return {spi::ConfigurationStatus::NotConfigured, QString()};
 }
 
 } //namespace helpers
