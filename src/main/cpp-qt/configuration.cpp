@@ -41,7 +41,7 @@ static void loadXMLFile(const QString& path){
 		return;
 	}
 	LOG4CXX_DECODE_QSTRING(lsPath, path);
-	xml::DOMConfigurator::configure(path.toStdString());
+	xml::DOMConfigurator::configure(lsPath);
 }
 
 static void loadPropertiesFile(const QString& path){
