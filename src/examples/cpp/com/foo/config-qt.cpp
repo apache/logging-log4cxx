@@ -18,23 +18,27 @@
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx-qt/configuration.h>
-#include <log4cxx/helpers/loglog.h>
+#include <log4cxx-qt/messagehandler.h>
 #include <QCoreApplication>
-#include <QVector>
 #include <QFileInfo>
 #include <QDir>
 
 namespace com { namespace foo {
 
+using namespace log4cxx;
+
 // Provide the name of the configuration file to Log4cxx.
 // Reload the configuration on a QFileSystemWatcher::fileChanged event.
 void ConfigureLogging() {
-	using namespace log4cxx;
-	static struct log4cxx_finalizer {
-		~log4cxx_finalizer() {
+	static struct log4cxx_initializer {
+		log4cxx_initializer() {
+			qInstallMessageHandler(qt::messageHandler);
+		}
+		~log4cxx_initializer() {
 			LogManager::shutdown();
 		}
-	} finaliser;
+	} initialiser;
+
 	QFileInfo app{QCoreApplication::applicationFilePath()};
 	QString basename{app.baseName()};
 	QVector<QString> paths =
@@ -47,12 +51,7 @@ void ConfigureLogging() {
 		, QString("MyApp.properties")
 		, QString("log4cxx.xml")
 		, QString("log4cxx.properties")
-		, QString("log4j.xml")
-		, QString("log4j.properties")
 	};
-#if defined(_DEBUG)
-	helpers::LogLog::setInternalDebugging(true);
-#endif
 	auto status       = spi::ConfigurationStatus::NotConfigured;
 	auto selectedPath = QString();
 	std::tie(status, selectedPath) = qt::Configuration::configureFromFileAndWatch(paths, names);
@@ -62,7 +61,6 @@ void ConfigureLogging() {
 
 // Retrieve the \c name logger pointer.
 auto getLogger(const QString& name) -> LoggerPtr {
-	using namespace log4cxx;
 	return name.isEmpty()
 		? LogManager::getRootLogger()
 		: LogManager::getLogger(name.toStdString());
@@ -70,7 +68,6 @@ auto getLogger(const QString& name) -> LoggerPtr {
 
 // Retrieve the \c name logger pointer.
 auto getLogger(const char* name) -> LoggerPtr {
-	using namespace log4cxx;
 	return name
 		? LogManager::getLogger(name)
 		: LogManager::getRootLogger();
