@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx-qt/configuration.h>
 #include <log4cxx-qt/transcoder.h>
 #include <apr_file_io.h>
@@ -92,7 +93,11 @@ public:
 		LOGUNIT_ASSERT(debugLogger2->isDebugEnabled());
 		LOGUNIT_ASSERT(QFileInfo(m_configFile).exists());
 		// wait 2 sec to ensure the modification time is different to that held in the WatchDog
-		apr_sleep(2000000);
+		for (auto i : {1, 2, 3, 4})
+		{
+			QCoreApplication::processEvents();
+			apr_sleep(500000); // 500 ms
+		}
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("test3"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
@@ -114,11 +119,11 @@ public:
 		of.close(m_pool);
 		helpers::LogLog::debug(LOG4CXX_STR("Updated ") + lsConfigFile);
 
-		// wait 1.5 sec for the change to be noticed
-		for (auto i : {1, 2, 3, 4, 5})
+		// wait 0.1 sec for the change to be noticed
+		for (auto i : {1, 2})
 		{
 			QCoreApplication::processEvents();
-			apr_sleep(30000); // 30 ms
+			apr_sleep(50000); // 50 ms
 		}
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
