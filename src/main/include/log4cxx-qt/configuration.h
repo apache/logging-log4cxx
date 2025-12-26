@@ -17,10 +17,10 @@
 #ifndef LOG4CXX_QT_CONFIGURATION_H
 #define LOG4CXX_QT_CONFIGURATION_H
 
+#include <log4cxx/spi/configurator.h>
 #include <QString>
 #include <QVector>
-#include <log4cxx/log4cxx.h>
-#include <log4cxx/defaultconfigurator.h>
+#include <tuple>
 
 namespace LOG4CXX_NS::qt
 {
