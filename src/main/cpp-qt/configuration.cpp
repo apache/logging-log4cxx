@@ -61,11 +61,11 @@ void Configuration::reconfigureWhenModified(const QString& filename)
 	// file whenever the directory changes.
 	// See also: https://stackoverflow.com/questions/18300376/qt-qfilesystemwatcher-signal-filechanged-gets-emited-only-once
 	watcher->addPath(fi.dir().absolutePath());
-	watcher->addPath(filename);
+	watcher->addPath(fi.absolutePath());
 	QObject::connect(watcher.get(), &QFileSystemWatcher::directoryChanged
-		, [filename](const QString&){
-			if (QFileInfo(filename).exists())
-				watcher->addPath(filename);
+		, [fi](const QString&){
+			if (fi.exists())
+				watcher->addPath(fi.absolutePath());
 		});
 	QObject::connect(watcher.get(), &QFileSystemWatcher::fileChanged
 		, [](const QString& fullPath){
