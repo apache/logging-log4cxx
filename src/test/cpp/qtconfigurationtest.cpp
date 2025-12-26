@@ -92,8 +92,8 @@ public:
 		LOGUNIT_ASSERT(debugLogger2);
 		LOGUNIT_ASSERT(debugLogger2->isDebugEnabled());
 		LOGUNIT_ASSERT(QFileInfo(m_configFile).exists());
-		// wait 2 sec to ensure the modification time is different to that held in the WatchDog
-		for (auto i : {1, 2, 3, 4})
+		// wait 1 sec to ensure the modification time is different to creation date
+		for (auto i : {1, 2})
 		{
 			QCoreApplication::processEvents();
 			apr_sleep(500000); // 500 ms
