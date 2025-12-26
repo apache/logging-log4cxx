@@ -71,11 +71,6 @@ public:
 			{ LOG4CXX_STR("qtConfigurationTest.properties")
 			};
 		std::tie(m_status, m_configFile) = qt::Configuration::configureFromFileAndWatch(paths, names);
-		if (helpers::LogLog::isDebugEnabled())
-		{
-			LOG4CXX_DECODE_QSTRING(lsConfigFile, m_configFile);
-			helpers::LogLog::debug(LOG4CXX_STR("Using ") + lsConfigFile);
-		}
 	}
 
 	void tearDown()
@@ -120,7 +115,11 @@ public:
 		helpers::LogLog::debug(LOG4CXX_STR("Updated ") + lsConfigFile);
 
 		// wait 1.5 sec for the change to be noticed
-		apr_sleep(1500000);
+		for (auto i : {1, 2, 3, 4, 5})
+		{
+			QCoreApplication::processEvents();
+			apr_sleep(30000); // 30 ms
+		}
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 };
