@@ -68,7 +68,7 @@ public:
 			{ qTempDir
 			};
 		QVector<QString> names
-			{ LOG4CXX_STR("qtConfigurationTest.properties")
+			{ QString("qtConfigurationTest.properties")
 			};
 		std::tie(m_status, m_configFile) = qt::Configuration::configureFromFileAndWatch(paths, names);
 	}
