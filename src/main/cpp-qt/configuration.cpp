@@ -60,12 +60,22 @@ void Configuration::reconfigureWhenModified(const QString& filename)
 	// the old file(thus causing Qt to remove the watch), so we need to add in the
 	// file whenever the directory changes.
 	// See also: https://stackoverflow.com/questions/18300376/qt-qfilesystemwatcher-signal-filechanged-gets-emited-only-once
-	watcher->addPath(fi.dir().absolutePath());
 	watcher->addPath(fi.absolutePath());
+	if (helpers::LogLog::isDebugEnabled())
+	{
+		LOG4CXX_DECODE_QSTRING(lsDir, fi.absolutePath());
+		helpers::LogLog::debug(LOG4CXX_STR("Watching directory ") + lsDir);
+	}
+	watcher->addPath(fi.absoluteFilePath());
+	if (helpers::LogLog::isDebugEnabled())
+	{
+		LOG4CXX_DECODE_QSTRING(lsFile, fi.absoluteFilePath());
+		helpers::LogLog::debug(LOG4CXX_STR("Watching file ") + lsFile);
+	}
 	QObject::connect(watcher.get(), &QFileSystemWatcher::directoryChanged
 		, [fi](const QString&){
 			if (fi.exists())
-				watcher->addPath(fi.absolutePath());
+				watcher->addPath(fi.absoluteFilePath());
 		});
 	QObject::connect(watcher.get(), &QFileSystemWatcher::fileChanged
 		, [](const QString& fullPath){

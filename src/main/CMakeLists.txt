@@ -16,8 +16,15 @@
 #
 add_subdirectory(include)
 add_subdirectory(cpp)
-add_subdirectory(cpp-qt)
 add_subdirectory(resources)
+
+# Log4cxx Qt support, if enabled
+if(LOG4CXX_QT_SUPPORT)
+  add_subdirectory(cpp-qt)
+  target_include_directories(log4cxx-qt PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  )
+endif(LOG4CXX_QT_SUPPORT)
 
 # setup include directories 
 include(GNUInstallDirs)
@@ -33,12 +40,6 @@ if(LOG4CXX_CFSTRING)
     add_subdirectory(mock-apple)
   endif()
 endif()
-
-if(LOG4CXX_QT_SUPPORT)
-    target_include_directories(log4cxx-qt PUBLIC
-      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    )
-endif(LOG4CXX_QT_SUPPORT)
 
 option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
 if(LOG4CXX_ABI_CHECK)
