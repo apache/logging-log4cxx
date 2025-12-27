@@ -17,33 +17,42 @@
 #ifndef LOG4CXX_QT_CONFIGURATION_H
 #define LOG4CXX_QT_CONFIGURATION_H
 
+#include <log4cxx/spi/configurator.h>
 #include <QString>
 #include <QVector>
-#include <log4cxx/log4cxx.h>
-#include <log4cxx/defaultconfigurator.h>
+#include <tuple>
 
-namespace LOG4CXX_NS {
-namespace qt {
+namespace LOG4CXX_NS::qt
+{
 
-class LOG4CXX_EXPORT Configuration {
-private:
-	Configuration();
-
-	static LOG4CXX_NS::spi::ConfigurationStatus tryLoadFile(const QString& filename);
-
+/// Configuration support methods that use the Qt event loop
+/// to reload the configuration file when it is modified.
+class LOG4CXX_EXPORT Configuration
+{
 public:
 	/**
-	 * Configure Log4cxx and watch the file for changes.  See also DefaultConfigurator::configureFromFile.
+	 * Select the file to configure Log4cxx and watch the file for changes.  See also DefaultConfigurator::configureFromFile.
 	 *
-	 * @param directories
-	 * @param filenames
-	 * @return
+	 * @param directories Each directory is checked for each entry in \c filenames
+	 * @param filenames Each file name is checked in each entry in \c directories
+	 * @return the selected file path if Log4cxx was successfully configured
 	 */
-	static std::tuple<LOG4CXX_NS::spi::ConfigurationStatus,QString> configureFromFileAndWatch(const QVector<QString>& directories,
-																						   const QVector<QString>& filenames);
+	static std::tuple<spi::ConfigurationStatus, QString> configureFromFileAndWatch
+		( const QVector<QString>& directories
+		, const QVector<QString>& filenames
+		);
+
+	/**
+	 * Set up a QFileSystemWatcher that will reconfigure Log4cxx when \c fullPath is modified.
+	 */
+	static void reconfigureWhenModified(const QString& fullPath);
+
+	/**
+	 * Set up a QFileSystemWatcher that will reconfigure Log4cxx when \c fullPath is modified.
+	 */
+	static void reconfigureWhenModified(const LogString& fullPath);
 };
 
-} /* namespace qt */
-} /* namespace log4cxx */
+} // namespace LOG4CXX_NS::qt
 
 #endif /* LOG4CXX_QT_CONFIGURATION_H */

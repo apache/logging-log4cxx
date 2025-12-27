@@ -28,8 +28,8 @@ routed to Log4cxx, a message handler for Qt must be installed.
 
 Log4cxx provides a cmake build option `LOG4CXX_QT_SUPPORT=ON`
 which adds the log4cxx::qt namespace methods
-for directing Qt messages to Log4cxx and
-using the Qt event loop to process a configuration file change.
+for [directing Qt messages to Log4cxx](@ref log4cxx::qt::messageHandler) and
+[using the Qt event loop](@ref log4cxx::qt::Configuration) to process a configuration file change.
 Use the target `log4cxx-qt` instead of `log4cxx`
 in your `target_link_libraries` cmake directive.
 Also, including `log4cxx-qt/logger.h` allows you to use QString values

@@ -17,115 +17,108 @@
 #include <log4cxx-qt/configuration.h>
 #include <log4cxx-qt/transcoder.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
-
 #include <QFileSystemWatcher>
 #include <QDir>
 #include <QFile>
 #include <memory>
 #include <QDebug>
 
-namespace LOG4CXX_NS
+namespace
 {
-namespace qt
+using namespace LOG4CXX_NS;
+
+spi::ConfigurationStatus tryLoadFile(const LogString& lsFilename)
 {
-using helpers::LogLog;
-
-static std::unique_ptr<QFileSystemWatcher> watcher;
-static QString configFilename;
-
-static void loadXMLFile(const QString& path){
-	QFileInfo fi(configFilename);
-	if(!fi.exists()){
-		return;
-	}
-	LOG4CXX_DECODE_QSTRING(lsPath, path);
-	xml::DOMConfigurator::configure(lsPath);
+	return helpers::StringHelper::endsWith(lsFilename, LOG4CXX_STR(".xml"))
+		? xml::DOMConfigurator::configure(lsFilename)
+		: PropertyConfigurator::configure(lsFilename);
 }
 
-static void loadPropertiesFile(const QString& path){
-	QFileInfo fi(configFilename);
-	if(!fi.exists()){
-		return;
-	}
-	LOG4CXX_DECODE_QSTRING(lsPath, path);
-	PropertyConfigurator::configure(lsPath);
-}
-
-static void dirChanged(const QString&){
-	QFileInfo fi(configFilename);
-	if(fi.exists()){
-		// From the Qt docs:
-		// Note that QFileSystemWatcher stops monitoring files once they have been renamed
-		// or removed from disk, and directories once they have been removed from disk.
-		//
-		// Some text editing programs will replace the file with a new one, which deletes
-		// the old file(thus causing Qt to remove the watch), so we need to add in the
-		// file whenever the directory changes.
-		// See also: https://stackoverflow.com/questions/18300376/qt-qfilesystemwatcher-signal-filechanged-gets-emited-only-once
-		watcher->addPath(configFilename);
-	}
-}
-
-Configuration::Configuration(){}
-
-spi::ConfigurationStatus Configuration::tryLoadFile(const QString& filename){
-	auto stat = spi:: ConfigurationStatus::NotConfigured;
-	auto isXML = false;
-
+spi::ConfigurationStatus tryLoadFile(const QString& filename)
+{
 	LOG4CXX_DECODE_QSTRING(lsFilename, filename);
-	if(filename.endsWith(".xml")){
-		stat = xml::DOMConfigurator::configure(lsFilename);
-		isXML = true;
-	}else if(filename.endsWith(".properties")){
-		stat = PropertyConfigurator::configure(lsFilename);
-	}
-
-	if( stat == spi::ConfigurationStatus::Configured ){
-		watcher = std::make_unique<QFileSystemWatcher>();
-		configFilename = filename;
-		QFileInfo fi(filename);
-		watcher->addPath(fi.dir().absolutePath());
-		watcher->addPath(filename);
-
-		QObject::connect(watcher.get(), &QFileSystemWatcher::directoryChanged,
-						 &dirChanged);
-		if(isXML){
-			QObject::connect(watcher.get(), &QFileSystemWatcher::fileChanged,
-							 &loadXMLFile);
-		}else{
-			QObject::connect(watcher.get(), &QFileSystemWatcher::fileChanged,
-							 &loadPropertiesFile);
-		}
-	}
-
-	return stat;
+	return tryLoadFile(lsFilename);
 }
 
-std::tuple<spi::ConfigurationStatus,QString>
-Configuration::configureFromFileAndWatch(const QVector<QString>& directories,
-										 const QVector<QString>& filenames){
-	for( QString dir : directories ){
-		for( QString fname : filenames ){
+} // namespace
+
+namespace LOG4CXX_NS::qt
+{
+
+void Configuration::reconfigureWhenModified(const QString& filename)
+{
+	static auto watcher = std::make_unique<QFileSystemWatcher>();
+	QFileInfo fi(filename);
+	// From the Qt docs:
+	// Note that QFileSystemWatcher stops monitoring files once they have been renamed
+	// or removed from disk, and directories once they have been removed from disk.
+	//
+	// Some text editing programs will replace the file with a new one, which deletes
+	// the old file(thus causing Qt to remove the watch), so we need to add in the
+	// file whenever the directory changes.
+	// See also: https://stackoverflow.com/questions/18300376/qt-qfilesystemwatcher-signal-filechanged-gets-emited-only-once
+	watcher->addPath(fi.absolutePath());
+	if (helpers::LogLog::isDebugEnabled())
+	{
+		LOG4CXX_DECODE_QSTRING(lsDir, fi.absolutePath());
+		helpers::LogLog::debug(LOG4CXX_STR("Watching directory ") + lsDir);
+	}
+	watcher->addPath(fi.absoluteFilePath());
+	if (helpers::LogLog::isDebugEnabled())
+	{
+		LOG4CXX_DECODE_QSTRING(lsFile, fi.absoluteFilePath());
+		helpers::LogLog::debug(LOG4CXX_STR("Watching file ") + lsFile);
+	}
+	QObject::connect(watcher.get(), &QFileSystemWatcher::directoryChanged
+		, [fi](const QString&){
+			if (fi.exists())
+				watcher->addPath(fi.absoluteFilePath());
+		});
+	QObject::connect(watcher.get(), &QFileSystemWatcher::fileChanged
+		, [](const QString& fullPath){
+			tryLoadFile(fullPath);
+		});
+}
+
+void Configuration::reconfigureWhenModified(const LogString& lsFilename)
+{
+	LOG4CXX_ENCODE_QSTRING(filename, lsFilename);
+	reconfigureWhenModified(filename);
+}
+
+	std::tuple<spi::ConfigurationStatus,QString>
+Configuration::configureFromFileAndWatch
+	( const QVector<QString>& directories
+	, const QVector<QString>& filenames
+	)
+{
+	for( QString dir : directories )
+	{
+		for( QString fname : filenames )
+		{
 			QString candidate_str = dir + "/" + fname;
 			QFile candidate(candidate_str);
 
-			if (LogLog::isDebugEnabled())
+			if (helpers::LogLog::isDebugEnabled())
 			{
 				LOG4CXX_DECODE_QSTRING(msg, "Checking file " + candidate_str);
-				LogLog::debug(msg);
+				helpers::LogLog::debug(msg);
 			}
 			if (candidate.exists())
 			{
 				auto configStatus = tryLoadFile(candidate_str);
-				if( configStatus == spi::ConfigurationStatus::Configured ){
+				if( configStatus == spi::ConfigurationStatus::Configured )
+				{
+					reconfigureWhenModified(candidate_str);
 					return {configStatus, candidate_str};
 				}
-				if (LogLog::isDebugEnabled())
+				if (helpers::LogLog::isDebugEnabled())
 				{
 					LOG4CXX_DECODE_QSTRING(failmsg, "Unable to load  " + candidate_str + ": trying next");
-					LogLog::debug(failmsg);
+					helpers::LogLog::debug(failmsg);
 				}
 			}
 		}
@@ -134,5 +127,4 @@ Configuration::configureFromFileAndWatch(const QVector<QString>& directories,
 	return {spi::ConfigurationStatus::NotConfigured, QString()};
 }
 
-} //namespace helpers
-} //namespace log4cxx
+} // namespace LOG4CXX_NS::qt
