@@ -32,6 +32,7 @@
 #include <apr_file_io.h>
 #include "../testchar.h"
 #include "log4cxx/helpers/loglog.h"
+#include <log4cxx/helpers/filesystempath.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -62,20 +63,17 @@ LOGUNIT_CLASS(DOMTestCase)
 
 	LoggerPtr root;
 	LoggerPtr logger;
-
-	static const File TEMP_A1;
-	static const File TEMP_A2;
-	static const File FILTERED_A1;
-	static const File FILTERED_A2;
-	static const File TEMP_A1_2;
-	static const File TEMP_A2_2;
-	static const File FILTERED_A1_2;
-	static const File FILTERED_A2_2;
+	LogString output_dir;
 
 public:
 	void setUp()
 	{
 		LogLog::setInternalDebugging(true);
+#if !LOG4CXX_HAS_FILESYSTEM_PATH
+		spi::Configurator::properties().setProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.PARENT_PATH"), LOG4CXX_STR("output"));
+#endif
+		output_dir = spi::Configurator::properties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.PARENT_PATH"));
+
 		root = Logger::getRootLogger();
 		logger = Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.DOMTestCase"));
 	}
@@ -112,6 +110,11 @@ public:
 		filters2.push_back(&cf2);
 		filters2.push_back(&threadFilter);
 		filters2.push_back(&iso8601Filter);
+
+		const File TEMP_A1{ output_dir + LOG4CXX_STR("/temp.A1") };
+		const File FILTERED_A1{ output_dir + LOG4CXX_STR("/filtered.A1") };
+		const File TEMP_A2{ output_dir + LOG4CXX_STR("/temp.A2") };
+		const File FILTERED_A2{ output_dir + LOG4CXX_STR("/filtered.A2") };
 
 		try
 		{
@@ -150,6 +153,10 @@ public:
 		filters2.push_back(&threadFilter);
 		filters2.push_back(&iso8601Filter);
 
+		const File TEMP_A1_2{ output_dir + LOG4CXX_STR("/temp.A1.2") };
+		const File TEMP_A2_2{ output_dir + LOG4CXX_STR("/temp.A2.2") };
+		const File FILTERED_A1_2{ output_dir + LOG4CXX_STR("/filtered.A1.2") };
+		const File FILTERED_A2_2{ output_dir + LOG4CXX_STR("/filtered.A2.2") };
 		try
 		{
 			Transformer::transform(TEMP_A1_2, FILTERED_A1_2, filters1);
@@ -162,11 +169,7 @@ public:
 		}
 
 		const File witness1(LOG4CXX_TEST_STR("witness/dom.A1.2"));
-		const File witness2(LOG4CXX_TEST_STR("witness/dom.A2.2"));
-		// TODO: A1 doesn't contain duplicate entries
-		//
-		// LOGUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
-		LOGUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
+		LOGUNIT_ASSERT(Compare::compare(FILTERED_A1_2, witness1));
 	}
 
 
@@ -196,7 +199,6 @@ public:
 
 	/**
 	 * Creates a output file that ends with a superscript 3.
-	 * Output file is checked by build.xml after completion.
 	 */
 	void test3()
 	{
@@ -217,7 +219,6 @@ public:
 
 	/**
 	 * Creates a output file that ends with a ideographic 4.
-	 * Output file is checked by build.xml after completion.
 	 */
 	void test4()
 	{
@@ -284,14 +285,4 @@ public:
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(DOMTestCase);
-
-const File DOMTestCase::TEMP_A1(LOG4CXX_TEST_STR("output/temp.A1"));
-const File DOMTestCase::TEMP_A2(LOG4CXX_TEST_STR("output/temp.A2"));
-const File DOMTestCase::FILTERED_A1(LOG4CXX_TEST_STR("output/filtered.A1"));
-const File DOMTestCase::FILTERED_A2(LOG4CXX_TEST_STR("output/filtered.A2"));
-
-const File DOMTestCase::TEMP_A1_2(LOG4CXX_TEST_STR("output/temp.A1.2"));
-const File DOMTestCase::TEMP_A2_2(LOG4CXX_TEST_STR("output/temp.A2.2"));
-const File DOMTestCase::FILTERED_A1_2(LOG4CXX_TEST_STR("output/filtered.A1.2"));
-const File DOMTestCase::FILTERED_A2_2(LOG4CXX_TEST_STR("output/filtered.A2.2"));
 
