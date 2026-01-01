@@ -129,9 +129,7 @@ public:
 
 		const File witness1(LOG4CXX_TEST_STR("witness/dom.A1.1"));
 		const File witness2(LOG4CXX_TEST_STR("witness/dom.A2.1"));
-		// TODO: A1 doesn't contain duplicate entries
-		//
-		// LOGUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
+		LOGUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
 		LOGUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
 	}
 
