@@ -21,7 +21,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="A1" class="org.apache.log4j.FileAppender">
 
-    <param name="File"   value="output\temp.A1.2" />
+    <param name="File"   value="${PROGRAM_FILE_PATH.PARENT_PATH}\temp.A1.2" />
     <param name="Append" value="false" />
 
     <layout class="org.apache.log4j.PatternLayout">
@@ -30,7 +30,7 @@
   </appender>
 
   <appender name="A2" class="org.apache.log4j.FileAppender">
-    <param name="File" value="output\temp.A2.2" />
+    <param name="File" value="${PROGRAM_FILE_PATH.PARENT_PATH}\temp.A2.2" />
     <param name="Append" value="false" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{ISO8601} [%t] %-5p - %m%n"/>
