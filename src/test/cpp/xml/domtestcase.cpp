@@ -33,6 +33,7 @@
 #include "../testchar.h"
 #include "log4cxx/helpers/loglog.h"
 #include <log4cxx/helpers/filesystempath.h>
+#include "log4cxx/helpers/pool.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -92,6 +93,14 @@ public:
 	{
 		auto status = DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase1.xml"));
 		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+
+		// Check that ${PROGRAM_FILE_PATH.PARENT_PATH} is expanded
+		auto fa = LOG4CXX_NS::cast<FileAppender>(root->getAppender(LOG4CXX_STR("A1")));
+		LOGUNIT_ASSERT(fa);
+		File logFile{ fa->getFile() };
+		Pool p;
+		LOGUNIT_ASSERT(!output_dir.empty());
+		LOGUNIT_ASSERT_EQUAL(output_dir, logFile.getParent(p));
 		common();
 
 		ControlFilter cf1;
