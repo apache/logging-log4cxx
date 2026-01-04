@@ -24,9 +24,9 @@ Testing coverage {#supported-systems}
 These Github provided environments are
 used in continuous integration and unit testing:
 
-* Windows - Visual Studio 2019 and 2022
-* Ubuntu 20.04 - GNU g++ 9.4.0, Clang 11.0.0
+* Windows - Visual Studio 2022
 * Ubuntu 22.04 - GNU g++ 11.4.0, Clang 14.0.0
-* MacOS 13 - AppleClang 15.0
+* Ubuntu 24.04 - GNU g++ 13.3.0, Clang 18.1.3
 * MacOS 14 - AppleClang 15.0
-* Msys2 - ucrt-x86_64/mingw-x86_64, GNU g++ 14.2.0 and Clang 18.1.8
+* MacOS 15 - AppleClang 17.0
+* Msys2 - ucrt-x86_64/mingw-x86_64, GNU g++ 15.2.0 and Clang 21.1.8
