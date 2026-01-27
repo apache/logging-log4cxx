@@ -193,6 +193,14 @@ void TelnetAppender::write(ByteBuffer& buf)
 				ByteBuffer b(buf.current(), buf.remaining());
 				item->write(b);
 			}
+			catch (InterruptedIOException&)
+			{
+                // FIX: Timeout reached (Slow Consumer).
+                // The client is stalling the connection. Drop it immediately
+                // to unblock the application.
+				item.reset();
+				_priv->activeConnections--;
+			}
 			catch (Exception&)
 			{
 				// The client has closed the connection, remove it from our list:
@@ -270,6 +278,12 @@ void TelnetAppender::acceptConnections()
 		try
 		{
 			SocketPtr newClient = _priv->serverSocket->accept();
+            
+            // FIX: Set a timeout (1000ms) to prevent Slow Consumer DoS.
+            // If the client refuses to read, write() will throw InterruptedIOException
+            // instead of blocking the logging thread forever.
+            newClient->setSoTimeout(1000);
+            
 			bool done = _priv->closed;
 
 			if (done)
