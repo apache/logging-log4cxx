@@ -473,8 +473,43 @@ void AsyncAppender::setBufferSize(int size)
 	}
 
 	std::lock_guard<std::mutex> lock(priv->bufferMutex);
-	priv->bufferSize = (size < 1) ? 1 : size;
-	priv->buffer.resize(priv->bufferSize);
+	int newSize = (size < 1) ? 1 : size;
+
+	// FIX: Re-align ring buffer data to prevent deterministic crash.
+	// We must drain pending events and reset counters to 0 to ensure
+	// the modulo logic (index % size) remains consistent with data positions.
+
+	// 1. Create a new buffer with the target size
+	std::vector<AsyncAppenderPriv::EventData> newBuffer(newSize);
+	
+	// 2. Capture snapshot of counters (relaxed is fine under lock)
+	size_t oldDispatched = priv->dispatchedCount.load();
+	size_t oldCommit = priv->commitCount.load(); // Only copy fully committed events
+	size_t count = 0;
+
+	// 3. Drain valid events into the new linear buffer
+	for (size_t i = oldDispatched; i < oldCommit; ++i)
+	{
+		if (count >= (size_t)newSize) break; // Drop if shrinking and full
+
+		size_t oldIndex = i % priv->buffer.size();
+		newBuffer[count] = std::move(priv->buffer[oldIndex]);
+		count++;
+	}
+
+	// 4. Atomic Swap & Reset
+	// We replace the buffer and reset all counters to a linear state (0 to count).
+	// This fixes the "Gap" problem where (k % oldSize) != (k % newSize).
+	priv->buffer = std::move(newBuffer);
+	priv->bufferSize = newSize;
+
+	// Reset atomics.
+	// Note: This assumes concurrent writers are paused (Quiescence).
+	// If writers are active, the Lock-Free design of append() makes ANY resize unsafe anyway.
+	priv->dispatchedCount.store(0);
+	priv->commitCount.store(count);
+	priv->eventCount.store(count);
+
 	priv->bufferNotFull.notify_all();
 }
 
