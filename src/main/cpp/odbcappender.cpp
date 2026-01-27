@@ -458,14 +458,14 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			item.paramType = SQL_C_CHAR;
 			item.paramMaxCharCount = targetMaxCharCount;
 			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char) + sizeof(char);
-			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
+			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(char));
 		}
 		else if (SQL_WCHAR == targetType || SQL_WVARCHAR == targetType || SQL_WLONGVARCHAR == targetType)
 		{
 			item.paramType = SQL_C_WCHAR;
 			item.paramMaxCharCount = targetMaxCharCount;
 			item.paramValueSize = (SQLINTEGER)(targetMaxCharCount) * sizeof(wchar_t) + sizeof(wchar_t);
-			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
+			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(wchar_t));
 		}
 		else if (SQL_TYPE_TIMESTAMP == targetType || SQL_TYPE_DATE == targetType || SQL_TYPE_TIME == targetType
 			|| SQL_DATETIME == targetType)
@@ -473,7 +473,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			item.paramType = SQL_C_TYPE_TIMESTAMP;
 			item.paramMaxCharCount = (0 <= decimalDigits) ? decimalDigits : 6;
 			item.paramValueSize = sizeof(SQL_TIMESTAMP_STRUCT);
-			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize);
+			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize);
 		}
 		else
 		{
@@ -490,11 +490,11 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 #if LOG4CXX_LOGCHAR_IS_UTF8
 			item.paramType = SQL_C_CHAR;
 			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char);
-			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(char));
+			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(char));
 #else
 			item.paramType = SQL_C_WCHAR;
 			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(wchar_t);
-			item.paramValue = (SQLPOINTER)p.palloc(item.paramValueSize + sizeof(wchar_t));
+			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(wchar_t));
 #endif
 		}
 		item.strLen_or_Ind = SQL_NTS;
