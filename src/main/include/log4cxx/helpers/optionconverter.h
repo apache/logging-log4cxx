@@ -72,8 +72,16 @@ class LOG4CXX_EXPORT OptionConverter
 		 converts the provided number respectively to kilobytes, megabytes
 		 and gigabytes. For example, the value "10KB" will be interpreted as 10240.
 		*/
-		// Use long long to ensure 64-bit capacity on Windows (LLP64) and Linux (LP64)
-                static long long toFileSize(const LogString& value, long long defaultValue);
+		/**
+		 * @deprecated Use toFileSize64 instead.
+		 */
+		static long toFileSize(const LogString& value, long defaultValue);
+
+		/**
+		 * The numeric equivalent of \c value if it is not empty, otherwise \c defaultValue.
+		 * Supports 64-bit values for file sizes > 2GB.
+		 */
+		static long long toFileSize64(const LogString& value, long long defaultValue);
 		/**
 		The Level indicated by \c value if recognised otherwise \c defaultValue.
 

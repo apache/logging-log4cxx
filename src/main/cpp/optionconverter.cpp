@@ -43,6 +43,7 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/singletonholder.h>
+#include <limits>
 
 namespace
 {
@@ -279,8 +280,18 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 	return (int) atol(cvalue.c_str());
 }
 
-// Update implementation to use long long and StringHelper::toInt64
-long long OptionConverter::toFileSize(const LogString& s, long long dEfault)
+long OptionConverter::toFileSize(const LogString& s, long dEfault)
+{
+    long long val = toFileSize64(s, dEfault);
+    
+    if (val > std::numeric_limits<long>::max()) {
+        return std::numeric_limits<long>::max();
+    }
+    
+    return (long) val;
+}
+
+long long OptionConverter::toFileSize64(const LogString& s, long long dEfault)
 {
 	if (s.empty())
 	{
@@ -288,12 +299,12 @@ long long OptionConverter::toFileSize(const LogString& s, long long dEfault)
 	}
 
 	size_t index = s.find_first_of(LOG4CXX_STR("bB"));
+
 	if (index != LogString::npos && index > 0)
 	{
 		long long multiplier = 1;
 		size_t unitIndex = index - 1;
-		
-		// Use 1024LL to force 64-bit arithmetic
+
 		if (s[unitIndex] == 'k' || s[unitIndex] == 'K')
 		{
 			multiplier = 1024LL;
