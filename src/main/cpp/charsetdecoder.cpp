@@ -107,7 +107,10 @@ class APRCharsetDecoder : public CharsetDecoder
 			}
 			else
 			{
-				while (in.remaining() > 0 && stat == APR_SUCCESS)
+				// FIX: Infinite Loop vulnerability.
+				// APR returns error (APR_BADCH) for invalid bytes but consumes 0 input.
+				// We removed "&& stat == APR_SUCCESS" from the loop condition to handle recovery manually.
+				while (in.remaining() > 0)
 				{
 					size_t inbytes_left = in.remaining();
 					size_t initial_inbytes_left = inbytes_left;
@@ -123,6 +126,33 @@ class APRCharsetDecoder : public CharsetDecoder
 					}
 					out.append(buf, (initial_outbytes_left - outbytes_left) / sizeof(logchar));
 					in.position(pos + (initial_inbytes_left - inbytes_left));
+
+					if (stat != APR_SUCCESS)
+					{
+						// If decoding failed and NO input was consumed, we are stuck on a bad byte.
+						if (inbytes_left == initial_inbytes_left)
+						{
+							// Handle partial multibyte sequences at end of buffer (not an error)
+							if (stat == APR_INCOMPLETE)
+							{
+								break; // Stop and wait for more data
+							}
+
+							// Manual Recovery: Skip the invalid byte to ensure forward progress
+							in.position(in.position() + 1);
+							
+							// Insert Replacement Character '?' (0x3F) to mark the error
+							out.append(1, (logchar)0x3F);
+							
+							// Reset status to success to continue decoding the rest of the buffer
+							stat = APR_SUCCESS;
+						}
+						else
+						{
+							// If we consumed data but still got an error (rare), let's stop.
+							break;
+						}
+					}
 				}
 			}
 
