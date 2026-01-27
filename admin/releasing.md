@@ -2,7 +2,7 @@ Releasing a Log4cxx version
 ===================
 
 This document lists the steps that must be performed to release Log4cxx
-using 1.6.1 as the example.
+using 1.6.2 as the example.
 
 Prerequisites
 ----------
@@ -27,9 +27,9 @@ Steps
     - `svn up log4cxx`
     - `cd log4cxx`
     - `svn delete *`
-    - `mkdir 1.6.1`
-    - `svn add 1.6.1`
-    - `cd 1.6.1`
+    - `mkdir 1.6.2`
+    - `svn add 1.6.2`
+    - `cd 1.6.2`
 1. Download the packaged release files from Github
     - Open https://github.com/apache/logging-log4cxx/commits/v1.6.1-RC1 in your web browser
     - Click the green tick mark on the top commit
@@ -40,11 +40,11 @@ Steps
         - The numbered steps will display
     - Click the link next to `Artifact download URL:`
         - The browser will download the file `release_files.zip` onto your system
-1. Unpack the release files using these commands (with `apache-dist-logging-dev/log4cxx/1.6.1` as the working directory)
+1. Unpack the release files using these commands (with `apache-dist-logging-dev/log4cxx/1.6.2` as the working directory)
     - `unzip "$HOME/Downloads/release_files.zip"`
-1. Send the new artifacts to svn (with `apache-dist-logging-dev/log4cxx/1.6.1` as the working directory)
+1. Send the new artifacts to svn (with `apache-dist-logging-dev/log4cxx/1.6.2` as the working directory)
     - `svn add *`
-    - `svn commit -m 'log4cxx 1.6.1'`
+    - `svn commit -m 'log4cxx 1.6.2'`
     - check https://dist.apache.org/repos/dist/dev/logging/log4cxx
 1. Raise a vote on the mailing list (dev@logging.apache.org)
    - Using [this template](MailTemplate.txt)
@@ -54,7 +54,7 @@ Steps
    - Using [this template](MailTemplate.Result.txt)
    - Enter the name of each PMC member that voted
 1. Get artifacts up to https://downloads.apache.org/logging/log4cxx/
-    - `svn move -m "Release log4cxx 1.6.1" https://dist.apache.org/repos/dist/dev/logging/log4cxx/1.6.1   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
+    - `svn move -m "Release log4cxx 1.6.2" https://dist.apache.org/repos/dist/dev/logging/log4cxx/1.6.2   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
 1. Tag the released version
     - `git checkout v1.6.1-RC1`
     - `git tag rel/v1.6.1`
