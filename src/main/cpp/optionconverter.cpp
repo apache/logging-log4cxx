@@ -279,7 +279,8 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 	return (int) atol(cvalue.c_str());
 }
 
-long OptionConverter::toFileSize(const LogString& s, long dEfault)
+// Update implementation to use long long and StringHelper::toInt64
+long long OptionConverter::toFileSize(const LogString& s, long long dEfault)
 {
 	if (s.empty())
 	{
@@ -287,29 +288,33 @@ long OptionConverter::toFileSize(const LogString& s, long dEfault)
 	}
 
 	size_t index = s.find_first_of(LOG4CXX_STR("bB"));
-
 	if (index != LogString::npos && index > 0)
 	{
-		long multiplier = 1;
-		index--;
+		long long multiplier = 1;
+		size_t unitIndex = index - 1;
+		
+		// Use 1024LL to force 64-bit arithmetic
+		if (s[unitIndex] == 'k' || s[unitIndex] == 'K')
+		{
+			multiplier = 1024LL;
+		}
+		else if (s[unitIndex] == 'm' || s[unitIndex] == 'M')
+		{
+			multiplier = 1024LL * 1024LL;
+		}
+		else if (s[unitIndex] == 'g' || s[unitIndex] == 'G')
+		{
+			multiplier = 1024LL * 1024LL * 1024LL;
+		}
+		else if (s[unitIndex] == 't' || s[unitIndex] == 'T')
+		{
+			multiplier = 1024LL * 1024LL * 1024LL * 1024LL;
+		}
 
-		if (s[index] == 0x6B /* 'k' */ || s[index] == 0x4B /* 'K' */)
-		{
-			multiplier = 1024;
-		}
-		else if (s[index] == 0x6D /* 'm' */ || s[index] == 0x4D /* 'M' */)
-		{
-			multiplier = 1024 * 1024;
-		}
-		else if (s[index] == 0x67 /* 'g'*/ || s[index] == 0x47 /* 'G' */)
-		{
-			multiplier = 1024 * 1024 * 1024;
-		}
-
-		return toInt(s.substr(0, index), 1) * multiplier;
+		return StringHelper::toInt64(s.substr(0, unitIndex)) * multiplier;
 	}
 
-	return toInt(s, 1);
+	return StringHelper::toInt64(s);
 }
 
 LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
