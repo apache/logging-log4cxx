@@ -277,14 +277,12 @@ void TelnetAppender::acceptConnections()
 	{
 		try
 		{
-			SocketPtr newClient = _priv->serverSocket->accept();
-            
-            // FIX: Set a timeout (1000ms) to prevent Slow Consumer DoS.
-            // If the client refuses to read, write() will throw InterruptedIOException
-            // instead of blocking the logging thread forever.
-            newClient->setSoTimeout(1000);
-            
-			bool done = _priv->closed;
+                        SocketPtr newClient = _priv->serverSocket->accept();
+
+                        // Note: Cannot set explicit timeout here without breaking ABI (Socket::setSoTimeout).
+                        // We rely on OS defaults or connection reset handling in write().
+
+                        bool done = _priv->closed;
 
 			if (done)
 			{

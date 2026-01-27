@@ -65,10 +65,6 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		/** Returns the value of this socket's port field. */
 		int getPort() const;
 
-                // FIX: Add timeout support to prevent DoS
-                /** Sets the SO_SNDTIMEO option to the specified timeout in milliseconds. */
-                virtual void setSoTimeout(int timeout) {}
-
 		static SocketUniquePtr create(InetAddressPtr& address, int port);
 
 	private:
