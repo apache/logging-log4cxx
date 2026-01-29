@@ -72,9 +72,7 @@ class LOG4CXX_EXPORT OptionConverter
 		 converts the provided number respectively to kilobytes, megabytes
 		 and gigabytes. For example, the value "10KB" will be interpreted as 10240.
 		*/
-		/**
-		 * @deprecated Use toFileSize64 instead.
-		 */
+		[[deprecated("Use toFileSize64 instead")]]
 		static long toFileSize(const LogString& value, long defaultValue);
 
 		/**
