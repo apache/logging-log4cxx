@@ -38,6 +38,7 @@ LOGUNIT_CLASS(CharsetDecoderTestCase)
 	LOGUNIT_TEST(decode2);
 	LOGUNIT_TEST(decode3);
 	LOGUNIT_TEST(decode4);
+	LOGUNIT_TEST(testInfiniteLoop);
 	LOGUNIT_TEST_SUITE_END();
 
 	enum { BUFSIZE = 256 };
@@ -147,6 +148,32 @@ public:
 		}
 	}
 
+	/**
+     * tests reaction to malformed input.
+     * previous APRCharsetDecoder implementation would loop infinitely on invalid bytes.
+     */
+    void testInfiniteLoop()
+    {
+        // 1. setup: "Test" + [0xFF] + "End"
+        char input[] = { 'T', 'e', 's', 't', (char)0xFF, 'E', 'n', 'd', 0 };
+        ByteBuffer in(input, 7);
+        LogString out;
+
+        // 2. decoder Selection: ISO-8859-2 forces APR usage.
+        CharsetDecoderPtr decoder;
+        try {
+             decoder = CharsetDecoder::getDecoder(LOG4CXX_STR("ISO-8859-2"));
+        } catch(IllegalArgumentException&) {
+             return;
+        }
+
+        // 3. execution:
+        log4cxx_status_t stat = decoder->decode(in, out);
+
+        // 4. verification: Expect replacement char '?'
+        LogString expected = LOG4CXX_STR("Test?End");
+        LOGUNIT_ASSERT_EQUAL(expected, out);
+    }
 
 };
 
