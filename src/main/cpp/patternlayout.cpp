@@ -132,8 +132,7 @@ void PatternLayout::format(LogString& output,
 		converterIter != m_priv->patternConverters.end();
 		converterIter++, formatterIter++)
 	{
-		// Fix integer truncation vulnerability (size_t to int cast)
-                size_t startField = output.length();
+        size_t startField = output.length();
 		(*converterIter)->format(event, output, pool);
 		(*formatterIter)->format(startField, output);
 	}
