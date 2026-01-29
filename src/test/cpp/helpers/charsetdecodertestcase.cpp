@@ -38,6 +38,9 @@ LOGUNIT_CLASS(CharsetDecoderTestCase)
 	LOGUNIT_TEST(decode2);
 	LOGUNIT_TEST(decode3);
 	LOGUNIT_TEST(decode4);
+#if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_MBSRTOWCS
+    LOGUNIT_TEST(testMbstowcsInfiniteLoop);
+#endif
 	LOGUNIT_TEST_SUITE_END();
 
 	enum { BUFSIZE = 256 };
@@ -147,7 +150,32 @@ public:
 		}
 	}
 
+#if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_MBSRTOWCS
+    /**
+     * Tests that we don't loop infinitely when mbsrtowcs refuses to consume
+     * an incomplete multibyte sequence at the end of the buffer.
+     */
+    void testMbstowcsInfiniteLoop()
+    {
+        // 1. setup: buffer ending with a partial multibyte sequence.
+        // 0xC2 is a generic start byte for a 2-byte sequence in UTF-8.
+        char input[] = { 'A', (char)0xC2, 0 }; 
+        ByteBuffer in(input, 2);
+        LogString out;
 
+        // 2. execution:
+        // this decoder is the default on WCHAR builds.
+        CharsetDecoderPtr decoder = CharsetDecoder::getDefaultDecoder();
+        
+        // without fix: infinite loop.
+        // with fix: detects the stall and breaks/returns error.
+        decoder->decode(in, out);
+        
+        // 3. verify: We survived the call.
+        LOGUNIT_ASSERT(true);
+    }
+#endif
+	
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(CharsetDecoderTestCase);
