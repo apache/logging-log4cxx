@@ -102,6 +102,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		MaxConnections | {int} | 20 |
 		Encoding | C,UTF-8,UTF-16,UTF-16BE,UTF-16LE,646,US-ASCII,ISO646-US,ANSI_X3.4-1968,ISO-8859-1,ISO-LATIN-1 | UTF-8 |
 		ReuseAddress | True,False | False |
+		NonBlocking | True,False | False |
 
 		\sa AppenderSkeleton::setOption()
 		*/
@@ -150,6 +151,15 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		\sa setOption
 		 */
 		void setReuseAddress(bool newValue);
+
+		/**
+		Use \c newValue for the behaviour when the TCP send buffer (on an accepted socket connection) is full.
+
+		When true, the socket connection is closed if the write would block.
+
+		\sa setOption
+		*/
+		void setNonBlocking(bool newValue);
 
 		/** Shutdown this appender. */
 		void close() override;
