@@ -105,7 +105,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			auto root = Logger::getRootLogger();
 
 #ifdef CONNECT_WITHOUT_READ_TEST_IS_REPEATABLE
-			apr_sleep(1000000);    // 1 second
+			apr_sleep(200000);    // 200 milliseconds
 #endif
 			for (int i = 0; i < 5000; ++i)
 			{
@@ -151,6 +151,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			setTestAttributes(&attr, output.getFilePtr(), p);
 			apr_proc_t pid;
 			startTestInstance(&pid, attr, args, p);
+			apr_sleep(100000);    // 100 milliseconds
 			auto addr = helpers::InetAddress::getByName(LOG4CXX_STR("127.0.0.1"));
 			auto s = helpers::Socket::create(addr, TEST_PORT); // Opens a connection
 			int exitCode;
@@ -191,11 +192,7 @@ private:
 
 	void startTestInstance(apr_proc_t* pid, apr_procattr_t* attr, const char** argv, helpers::Pool& p)
 	{
-		if (apr_proc_create(pid, argv[0], argv, NULL, attr, p.getAPRPool()) == APR_SUCCESS)
-		{
-			apr_sleep(100000);    // 100 milliseconds
-		}
-		else
+		if (apr_proc_create(pid, argv[0], argv, NULL, attr, p.getAPRPool()) != APR_SUCCESS)
 		{
 			LOGUNIT_FAIL("apr_proc_create");
 		}
