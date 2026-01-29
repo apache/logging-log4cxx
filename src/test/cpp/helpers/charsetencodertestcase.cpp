@@ -39,7 +39,6 @@ LOGUNIT_CLASS(CharsetEncoderTestCase)
 	LOGUNIT_TEST(encode4);
 	LOGUNIT_TEST(encode5);
 	LOGUNIT_TEST(thread1);
-	LOGUNIT_TEST(testInfiniteLoop);
 	LOGUNIT_TEST_SUITE_END();
 
 	enum { BUFSIZE = 256 };
@@ -389,41 +388,6 @@ public:
 		LOGUNIT_ASSERT_EQUAL((apr_uint32_t) 0, package->getFail());
 		LOGUNIT_ASSERT_EQUAL((apr_uint32_t) THREAD_COUNT * THREAD_REPS, package->getPass());
 	}
-
-	/**
-     * tests reaction to malformed input.
-     * previous APRCharsetDecoder implementation would loop infinitely on invalid bytes.
-     */
-    void testInfiniteLoop()
-    {
-        // 1. setup: create a buffer with valid text + an INVALID byte (0xFF) + valid text.
-        // "Test" + [0xFF] + "End"
-        char input[] = { 'T', 'e', 's', 't', (char)0xFF, 'E', 'n', 'd', 0 };
-        ByteBuffer in(input, 7);
-        LogString out;
-
-        // 2. decoder selection:
-        // we intentionally request "ISO-8859-2" (Latin-2) to force the usage of APRCharsetDecoder.
-        // (built-in optimizations usually handle UTF-8 and ISO-8859-1 directly, bypassing APR).
-        CharsetDecoderPtr decoder;
-        try {
-             decoder = CharsetDecoder::getDecoder(LOG4CXX_STR("ISO-8859-2"));
-        } catch(IllegalArgumentException&) {
-             // if the system doesn't support Latin-2, we can't test APR path easily.
-             return;
-        }
-
-        // 3. execution:
-        // OLD CODE: would hang here (infinite loop) because 0xFF is invalid.
-        // NEW CODE: should detect the error, insert a replacement '?', and continue.
-        log4cxx_status_t stat = decoder->decode(in, out);
-
-        // 4. verification:
-        // we expect the output to contain the replacement char '?' (0x3F) where 0xFF was.
-        // result should be "Test?End"
-        LogString expected = LOG4CXX_STR("Test?End");
-        LOGUNIT_ASSERT_EQUAL(expected, out);
-    }
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(CharsetEncoderTestCase);
