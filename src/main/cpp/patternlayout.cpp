@@ -132,7 +132,7 @@ void PatternLayout::format(LogString& output,
 		converterIter != m_priv->patternConverters.end();
 		converterIter++, formatterIter++)
 	{
-		int startField = (int)output.length();
+        size_t startField = output.length();
 		(*converterIter)->format(event, output, pool);
 		(*formatterIter)->format(startField, output);
 	}
