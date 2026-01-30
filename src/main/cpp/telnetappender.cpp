@@ -266,9 +266,8 @@ void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, 
 
 void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-	size_t count = _priv->activeConnections;
 	++_priv->eventCount;
-	if (count > 0)
+	if (0 < _priv->activeConnections)
 	{
 		LogString msg;
 		if (_priv->layout)

@@ -48,10 +48,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testActivateClose);
 		LOGUNIT_TEST(testActivateSleepClose);
 		LOGUNIT_TEST(testActivateWriteClose);
-#define CONNECT_WITHOUT_READ_TEST_IS_REPEATABLE
-#ifdef CONNECT_WITHOUT_READ_TEST_IS_REPEATABLE
 		LOGUNIT_TEST(testConnectNoRead);
-#endif
 		LOGUNIT_TEST(testActivateWriteNoClose);
 
 		LOGUNIT_TEST_SUITE_END();
@@ -95,25 +92,29 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 
 		void testActivateWriteClose()
 		{
+			auto internalDebugging = helpers::LogLog::isDebugEnabled();
+			if (!internalDebugging)
+				helpers::LogLog::setInternalDebugging(true);
 			auto appender = std::make_shared<TelnetAppender>();
 			appender->setLayout(createLayout());
 			appender->setPort(TEST_PORT);
+			appender->setReuseAddress(true);
 			appender->setNonBlocking(true);
 			Pool p;
 			appender->activateOptions(p);
 			BasicConfigurator::configure(appender);
 			auto root = Logger::getRootLogger();
 
-#ifdef CONNECT_WITHOUT_READ_TEST_IS_REPEATABLE
 			apr_sleep(200000);    // 200 milliseconds
-#endif
-			for (int i = 0; i < 5000; ++i)
+			for (int i = 0; i < 100000; ++i)
 			{
 				LOG4CXX_INFO(root, "Hello, World " << i);
 			}
 
 			appender->close();
 			root->removeAppender(appender);
+			if (!internalDebugging)
+				helpers::LogLog::setInternalDebugging(false);
 		}
 
 		void testActivateWriteNoClose()
@@ -138,7 +139,6 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			}
 		}
 
-#ifdef CONNECT_WITHOUT_READ_TEST_IS_REPEATABLE
 		void testConnectNoRead()
 		{
 			auto thisProgram = GetExecutableFileName();
@@ -204,7 +204,6 @@ private:
 		LOG4CXX_ENCODE_CHAR(programFilePath, lsProgramFilePath);
 		return programFilePath;
 	}
-#endif
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(TelnetAppenderTestCase);
