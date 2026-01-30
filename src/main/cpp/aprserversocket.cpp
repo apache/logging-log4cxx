@@ -33,7 +33,8 @@ namespace helpers
 struct APRServerSocket::APRServerSocketPriv : public ServerSocketPrivate {
 	Pool pool;
 	std::mutex mutex;
-	apr_socket_t* socket;
+	apr_socket_t* socket{ 0 };
+	apr_pollset_t* pSet{ 0 };
 };
 
 #if LOG4CXX_ABI_VERSION <= 15
@@ -107,6 +108,8 @@ void APRServerSocket::close()
 {
 	std::lock_guard<std::mutex> lock(_priv->mutex);
 
+	if (_priv->pSet)
+		apr_pollset_wakeup(_priv->pSet);
 	if (_priv->socket != 0)
 	{
 		apr_status_t status = apr_socket_close(_priv->socket);
@@ -136,17 +139,27 @@ SocketPtr APRServerSocket::accept()
 		throw NullPointerException(LOG4CXX_STR("socket"));
 	}
 
-	apr_pollfd_t poll;
-	poll.p = _priv->pool.getAPRPool();
-	poll.desc_type = APR_POLL_SOCKET;
-	poll.reqevents = APR_POLLIN;
-	poll.rtnevents = 0;
-	poll.desc.s = s;
-	poll.client_data = NULL;
+	if (!_priv->pSet)
+	{
+		apr_pollfd_t poll;
+		poll.p = _priv->pool.getAPRPool();
+		poll.desc_type = APR_POLL_SOCKET;
+		poll.reqevents = APR_POLLIN;
+		poll.rtnevents = 0;
+		poll.desc.s = s;
+		poll.client_data = NULL;
+		auto status = apr_pollset_create(&_priv->pSet, 1, _priv->pool.getAPRPool(), APR_POLLSET_WAKEABLE);
+		if (status != APR_SUCCESS)
+		{
+			throw SocketException(status);
+		}
+		apr_pollset_add(_priv->pSet, &poll);
+	}
 
+	const apr_pollfd_t* descriptors;
 	apr_int32_t signaled;
 	apr_interval_time_t to = _priv->timeout * 1000;
-	apr_status_t status = apr_poll(&poll, 1, &signaled, to);
+	apr_status_t status = apr_pollset_poll(_priv->pSet, to, &signaled, &descriptors);
 
 	if (APR_STATUS_IS_TIMEUP(status))
 	{
