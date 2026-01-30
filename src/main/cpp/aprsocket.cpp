@@ -143,6 +143,12 @@ size_t APRSocket::write(ByteBuffer& buf)
 	return totalWritten;
 }
 
+void APRSocket::setNonBlocking(bool newValue)
+{
+	auto status = apr_socket_opt_set(_priv->socket, APR_SO_NONBLOCK, newValue);
+	if (status != APR_SUCCESS)
+		throw SocketException(status);
+}
 
 void APRSocket::close()
 {
