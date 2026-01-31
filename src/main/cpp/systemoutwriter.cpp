@@ -37,18 +37,18 @@ SystemOutWriter::~SystemOutWriter()
 {
 }
 
-void SystemOutWriter::close(Pool& /* p */ )
+void SystemOutWriter::close()
 {
 }
 
-void SystemOutWriter::flush(Pool& /* p */ )
+void SystemOutWriter::flush()
 {
-	flush();
+    flush();
 }
 
-void SystemOutWriter::write(const LogString& str, Pool& /* p */ )
+void SystemOutWriter::write(const LogString& str)
 {
-	write(str);
+    write(str);
 }
 
 bool SystemOutWriter::isWide()
@@ -62,7 +62,7 @@ bool SystemOutWriter::isWide()
 #endif
 }
 
-void SystemOutWriter::write(const LogString& str)
+void SystemOutWriter::write_raw(const LogString& str)
 {
 #if LOG4CXX_WCHAR_T_API
 
@@ -78,7 +78,7 @@ void SystemOutWriter::write(const LogString& str)
 	fputs(msg.c_str(), stdout);
 }
 
-void SystemOutWriter::flush()
+void SystemOutWriter::flush_raw()
 {
 	fflush(stdout);
 }

@@ -55,9 +55,9 @@ class Action : public virtual LOG4CXX_NS::helpers::Object
 		 *
 		 * @return true if successful.
 		 */
-		virtual bool execute(LOG4CXX_NS::helpers::Pool& pool) const = 0;
+        virtual bool execute() const = 0;
 
-		void run(LOG4CXX_NS::helpers::Pool& pool);
+        void run();
 
 		void close();
 

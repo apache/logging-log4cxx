@@ -146,10 +146,9 @@ PatternConverterPtr DatePatternConverter::newInstance(
 
 void DatePatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& p) const
+    LogString& toAppendTo) const
 {
-	priv->df->format(toAppendTo, event->getTimeStamp(), p);
+    priv->df->format(toAppendTo, event->getTimeStamp());
 }
 
 /**
@@ -157,14 +156,13 @@ void DatePatternConverter::format(
  */
 void DatePatternConverter::format(
 	const ObjectPtr& obj,
-	LogString& toAppendTo,
-	Pool& p) const
+    LogString& toAppendTo) const
 {
 	DatePtr date = LOG4CXX_NS::cast<Date>(obj);
 
 	if (date != NULL)
 	{
-		format(date, toAppendTo, p);
+        format(date, toAppendTo);
 	}
 	else
 	{
@@ -172,7 +170,7 @@ void DatePatternConverter::format(
 
 		if (event != NULL)
 		{
-			format(event, toAppendTo, p);
+            format(event, toAppendTo);
 		}
 	}
 }
@@ -184,8 +182,7 @@ void DatePatternConverter::format(
  */
 void DatePatternConverter::format(
 	const DatePtr& date,
-	LogString& toAppendTo,
-	Pool& p) const
+    LogString& toAppendTo) const
 {
-	priv->df->format(toAppendTo, date->getTime(), p);
+    priv->df->format(toAppendTo, date->getTime());
 }

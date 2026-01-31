@@ -67,12 +67,12 @@ InputStreamReader::~InputStreamReader()
 {
 }
 
-void InputStreamReader::close(Pool& )
+void InputStreamReader::close()
 {
 	m_priv->in->close();
 }
 
-LogString InputStreamReader::read(Pool& p)
+LogString InputStreamReader::read()
 {
 	const size_t BUFSIZE = 4096;
 	ByteBuffer buf(p.pstralloc(BUFSIZE), BUFSIZE);

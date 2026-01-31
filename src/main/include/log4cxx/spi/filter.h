@@ -107,7 +107,7 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

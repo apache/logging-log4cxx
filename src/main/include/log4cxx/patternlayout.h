@@ -484,7 +484,7 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 
 		Calls createPatternParser
 		 */
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

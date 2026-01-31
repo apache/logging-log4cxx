@@ -151,7 +151,7 @@ void StringHelper::toString(bool val, LogString& dst)
 }
 
 
-void StringHelper::toString(int64_t n, Pool& pool, LogString& dst)
+void StringHelper::toString(int64_t n, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(std::to_wstring(n));
@@ -161,7 +161,7 @@ void StringHelper::toString(int64_t n, Pool& pool, LogString& dst)
 }
 
 
-void StringHelper::toString(size_t n, Pool& pool, LogString& dst)
+void StringHelper::toString(size_t n, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(std::to_wstring(n));

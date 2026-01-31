@@ -39,15 +39,15 @@ ByteArrayOutputStream::~ByteArrayOutputStream()
 {
 }
 
-void ByteArrayOutputStream::close(Pool& /* p */)
+void ByteArrayOutputStream::close()
 {
 }
 
-void ByteArrayOutputStream::flush(Pool& /* p */)
+void ByteArrayOutputStream::flush()
 {
 }
 
-void ByteArrayOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
+void ByteArrayOutputStream::write(ByteBuffer& buf)
 {
 	size_t sz = m_priv->array.size();
 	m_priv->array.resize(sz + buf.remaining());

@@ -48,19 +48,17 @@ ConsoleAppender::ConsoleAppender()
 ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
 	: WriterAppender (std::make_unique<ConsoleAppenderPriv>(getSystemOut()))
 {
-	setLayout(layout);
-	Pool p;
+    setLayout(layout);
 	setWriter(std::make_shared<SystemOutWriter>());
-	WriterAppender::activateOptions(p);
+    WriterAppender::activateOptions();
 }
 
 ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& target)
 	: WriterAppender (std::make_unique<ConsoleAppenderPriv>(target))
 {
 	setLayout(layout);
-	setTarget(target);
-	Pool p;
-	ConsoleAppender::activateOptions(p);
+    setTarget(target);
+    ConsoleAppender::activateOptions();
 }
 
 ConsoleAppender::~ConsoleAppender()
@@ -112,7 +110,7 @@ void ConsoleAppender::targetWarn(const LogString& val)
 	LogLog::warn(LOG4CXX_STR("Using previously set target, System.out by default."));
 }
 
-void ConsoleAppender::activateOptions(Pool& p)
+void ConsoleAppender::activateOptions()
 {
 	if (StringHelper::equalsIgnoreCase(_priv->target,
 			LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))
@@ -127,7 +125,7 @@ void ConsoleAppender::activateOptions(Pool& p)
 		setWriter(writer1);
 	}
 
-	WriterAppender::activateOptions(p);
+    WriterAppender::activateOptions();
 }
 
 void ConsoleAppender::setOption(const LogString& option, const LogString& value)

@@ -19,10 +19,10 @@
 #include <log4cxx/helpers/exception.h>
 #include <string.h>
 #include <string>
+#include <string.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
-#include <apr_errno.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -106,8 +106,7 @@ RuntimeException& RuntimeException::operator=(const RuntimeException& src)
 LogString RuntimeException::formatMessage(log4cxx_status_t stat)
 {
 	LogString s(LOG4CXX_STR("RuntimeException: return code = "));
-	Pool p;
-	StringHelper::toString(stat, p, s);
+    StringHelper::toString(stat, s);
 	return s;
 }
 
@@ -183,13 +182,12 @@ LogString IOException::formatMessage(log4cxx_status_t stat)
 LogString Exception::makeMessage(const LogString& type, log4cxx_status_t stat)
 {
 	LogString s = type;
-	char err_buff[1024] = {0};
-	apr_strerror(stat, err_buff, sizeof(err_buff));
-	if (0 == err_buff[0] || 0 == strncmp(err_buff, "APR does not understand", 23))
+    char err_buff[1024] = {0};
+    strerror_r(stat, err_buff, sizeof(err_buff));
+    if (0 == err_buff[0])
 	{
-		s.append(LOG4CXX_STR(": error code "));
-		Pool p;
-		StringHelper::toString(stat, p, s);
+        s.append(LOG4CXX_STR(": error code "));
+        StringHelper::toString(stat, s);
 	}
 	else
 	{
@@ -294,8 +292,7 @@ InterruptedException& InterruptedException::operator=(const InterruptedException
 LogString InterruptedException::formatMessage(log4cxx_status_t stat)
 {
 	LogString s(LOG4CXX_STR("InterruptedException: stat = "));
-	Pool p;
-	StringHelper::toString(stat, p, s);
+    StringHelper::toString(stat, s);
 	return s;
 }
 

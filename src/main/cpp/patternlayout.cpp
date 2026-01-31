@@ -105,22 +105,19 @@ Constructs a PatternLayout using the supplied conversion pattern.
 PatternLayout::PatternLayout(const LogString& pattern) :
 	m_priv(std::make_unique<PatternLayoutPrivate>(pattern))
 {
-	Pool pool;
-	activateOptions(pool);
+    activateOptions();
 }
 
 PatternLayout::~PatternLayout() {}
 
 void PatternLayout::setConversionPattern(const LogString& pattern)
 {
-	m_priv->conversionPattern = pattern;
-	Pool pool;
-	activateOptions(pool);
+    m_priv->conversionPattern = pattern;
+    activateOptions();
 }
 
 void PatternLayout::format(LogString& output,
-	const spi::LoggingEventPtr& event,
-	Pool& pool) const
+    const spi::LoggingEventPtr& event) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
@@ -133,7 +130,7 @@ void PatternLayout::format(LogString& output,
 		converterIter++, formatterIter++)
 	{
 		int startField = (int)output.length();
-		(*converterIter)->format(event, output, pool);
+        (*converterIter)->format(event, output);
 		(*formatterIter)->format(startField, output);
 	}
 
@@ -179,7 +176,7 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
 	}
 }
 
-void PatternLayout::activateOptions(Pool&)
+void PatternLayout::activateOptions()
 {
 	LogString pat(m_priv->conversionPattern);
 

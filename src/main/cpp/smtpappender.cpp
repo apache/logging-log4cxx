@@ -586,7 +586,7 @@ bool SMTPAppender::asciiCheck(const LogString& value, const LogString& field)
 /**
 Activate the specified options, such as the smtp host, the
 recipient, from, etc. */
-void SMTPAppender::activateOptions(Pool& p)
+void SMTPAppender::activateOptions()
 {
 	bool activate = true;
 
@@ -629,7 +629,7 @@ void SMTPAppender::activateOptions(Pool& p)
 
 	if (activate)
 	{
-		AppenderSkeleton::activateOptions(p);
+        AppenderSkeleton::activateOptions();
 	}
 }
 
@@ -637,7 +637,7 @@ void SMTPAppender::activateOptions(Pool& p)
 Perform SMTPAppender specific appending actions, mainly adding
 the event to a cyclic buffer and checking if the event triggers
 an e-mail to be sent. */
-void SMTPAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void SMTPAppender::append(const spi::LoggingEventPtr& event)
 {
 	if (!checkEntryConditions())
 	{
@@ -651,7 +651,7 @@ void SMTPAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if (_priv->evaluator->isTriggeringEvent(event))
 	{
-		sendBuffer(p);
+        sendBuffer();
 	}
 }
 
@@ -730,7 +730,7 @@ void SMTPAppender::setBcc(const LogString& addressStr)
 /**
 Send the contents of the cyclic buffer as an e-mail message.
 */
-void SMTPAppender::sendBuffer(Pool& p)
+void SMTPAppender::sendBuffer()
 {
 #if LOG4CXX_HAVE_LIBESMTP
 

@@ -151,11 +151,11 @@ CachedDateFormat::~CachedDateFormat() {}
  */
 int CachedDateFormat::findMillisecondStart(
 	log4cxx_time_t time, const LogString& formatted,
-	const DateFormatPtr& formatter,
-	Pool& pool)
+    const DateFormatPtr& formatter)
 {
 
-	log4cxx_time_t slotBegin = (time / 1000000) * 1000000;
+    uint64_t slotBegin = (std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()) / 1000000) * 1000000;
+    uint64_t time_u64 = std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch());
 
 	if (slotBegin > time)
 	{
@@ -175,7 +175,7 @@ int CachedDateFormat::findMillisecondStart(
 	}
 
 	LogString plusMagic;
-	formatter->format(plusMagic, slotBegin + magic, pool);
+    formatter->format(plusMagic, slotBegin + magic);
 
 	/**
 	 *   If the string lengths differ then
@@ -199,7 +199,7 @@ int CachedDateFormat::findMillisecondStart(
 				millisecondFormat(millis, formattedMillis, 0);
 
 				LogString plusZero;
-				formatter->format(plusZero, slotBegin, pool);
+                formatter->format(plusZero, slotBegin);
 
 				// Test if the next 1..3 characters match the magic string, main problem is that magic
 				// available millis in formatted can overlap. Therefore the current i is not always the
@@ -240,7 +240,7 @@ int CachedDateFormat::findMillisecondStart(
  *  @param now Number of milliseconds after midnight 1 Jan 1970 GMT.
  *  @param sbuf the string buffer to write to
  */
-void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const
+void CachedDateFormat::format(LogString& buf, log4cxx_time_t now) const
 {
 
 	//
@@ -288,7 +288,7 @@ void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const
 	//  could not use previous value.
 	//    Call underlying formatter to format date.
 	m_priv->cache.erase(m_priv->cache.begin(), m_priv->cache.end());
-	m_priv->formatter->format(m_priv->cache, now, p);
+    m_priv->formatter->format(m_priv->cache, now);
 	buf.append(m_priv->cache);
 	m_priv->previousTime = now;
 	m_priv->slotBegin = (m_priv->previousTime / 1000000) * 1000000;
@@ -304,7 +304,7 @@ void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const
 	//
 	if (m_priv->millisecondStart >= 0)
 	{
-		m_priv->millisecondStart = findMillisecondStart(now, m_priv->cache, m_priv->formatter, p);
+        m_priv->millisecondStart = findMillisecondStart(now, m_priv->cache, m_priv->formatter);
 	}
 }
 
@@ -340,9 +340,9 @@ void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone)
 
 
 
-void CachedDateFormat::numberFormat(LogString& s, int n, Pool& p) const
+void CachedDateFormat::numberFormat(LogString& s, int n) const
 {
-	m_priv->formatter->numberFormat(s, n, p);
+    m_priv->formatter->numberFormat(s, n);
 }
 
 

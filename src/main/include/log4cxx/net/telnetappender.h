@@ -89,7 +89,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 		Create the socket handler and wait for connections.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 
 		/**
@@ -157,7 +157,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 	protected:
 		/** Send \c event to each connected client.
 		*/
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+        void append(const spi::LoggingEventPtr& event) override;
 
 	private:
 		//   prevent copy and assignment statements
@@ -165,7 +165,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		TelnetAppender& operator=(const TelnetAppender&);
 
 		void write(helpers::ByteBuffer&);
-		void writeStatus(const helpers::SocketPtr& socket, const LogString& msg, helpers::Pool& p);
+        void writeStatus(const helpers::SocketPtr& socket, const LogString& msg);
 		void acceptConnections();
 
 		struct TelnetAppenderPriv;

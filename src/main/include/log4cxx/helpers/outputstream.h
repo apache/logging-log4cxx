@@ -43,9 +43,9 @@ class LOG4CXX_EXPORT OutputStream : public Object
 		virtual ~OutputStream();
 
 	public:
-		virtual void close(Pool& p) = 0;
-		virtual void flush(Pool& p) = 0;
-		virtual void write(ByteBuffer& buf, Pool& p) = 0;
+        virtual void close() = 0;
+        virtual void flush() = 0;
+        virtual void write(ByteBuffer& buf) = 0;
 
 	private:
 		OutputStream(const OutputStream&);

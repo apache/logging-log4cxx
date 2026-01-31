@@ -23,7 +23,7 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(VectorAppender)
 
-void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& /*p*/)
+void VectorAppender::append(const spi::LoggingEventPtr& event)
 {
 	if (0 < this->appendMillisecondDelay)
 		std::this_thread::sleep_for( std::chrono::milliseconds( this->appendMillisecondDelay ) );

@@ -79,8 +79,7 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 		 * Append to \c output a textual version of the timestamp in \c event.
 		 */
 		void format(const spi::LoggingEventPtr& event,
-			LogString& output,
-			helpers::Pool& p) const override;
+            LogString& output) const override;
 
 		/**
 		 * Append to \c output a textual version of the date or timestamp in \c obj.
@@ -88,15 +87,13 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 		 * Nothing is added to \c output if \c obj does not point to a Date or spi::LoggingEvent.
 		 */
 		void format(const helpers::ObjectPtr& obj,
-			LogString& output,
-			helpers::Pool& p) const override;
+            LogString& output) const override;
 
 		/**
 		 * Append to \c toAppendTo a textual version of \c date.
 		 */
 		void format(const helpers::DatePtr& date,
-			LogString& toAppendTo,
-			helpers::Pool& p) const;
+            LogString& toAppendTo) const;
 };
 
 LOG4CXX_PTR_DEF(DatePatternConverter);

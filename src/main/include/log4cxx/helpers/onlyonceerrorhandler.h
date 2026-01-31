@@ -69,7 +69,7 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

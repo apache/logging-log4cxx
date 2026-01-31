@@ -41,7 +41,7 @@ Action::~Action()
 /**
  * {@inheritDoc}
  */
-void Action::run(LOG4CXX_NS::helpers::Pool& pool1)
+void Action::run()
 {
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
 
@@ -49,7 +49,7 @@ void Action::run(LOG4CXX_NS::helpers::Pool& pool1)
 	{
 		try
 		{
-			execute(pool1);
+            execute();
 		}
 		catch (std::exception& ex)
 		{

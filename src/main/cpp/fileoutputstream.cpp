@@ -20,17 +20,16 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <apr_file_io.h>
+#include <fstream>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 struct FileOutputStream::FileOutputStreamPrivate
 {
-	FileOutputStreamPrivate() : fileptr(nullptr) {}
+    FileOutputStreamPrivate(){}
 
-	Pool pool;
-	apr_file_t* fileptr;
+    std::ofstream file_out;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
@@ -38,98 +37,58 @@ IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 FileOutputStream::FileOutputStream(const LogString& filename,
 	bool append) : m_priv(std::make_unique<FileOutputStreamPrivate>())
 {
-	m_priv->fileptr = open(filename, append, m_priv->pool);
+    open(m_priv->file_out, filename, append);
 }
 
 FileOutputStream::FileOutputStream(const logchar* filename,
 	bool append) : m_priv(std::make_unique<FileOutputStreamPrivate>())
 {
-	m_priv->fileptr = open(filename, append, m_priv->pool);
+    open(m_priv->file_out, filename, append);
 }
 
-apr_file_t* FileOutputStream::open(const LogString& filename,
-	bool append, Pool& pool)
+bool FileOutputStream::open(std::ofstream& fout, const LogString& filename,
+    bool append)
 {
-	apr_fileperms_t perm = APR_OS_DEFAULT;
-	apr_int32_t flags = APR_WRITE | APR_CREATE;
+    auto open_mode = std::ios_base::out;
+    if(!append){
+        open_mode |= std::ios_base::trunc;
+    }else{
+        open_mode |= std::ios_base::ate;
+    }
+    fout.open(filename.c_str(), open_mode);
+    if(!fout.is_open()){
+        throw IOException(filename);
+    }
 
-	if (append)
-	{
-		flags |= APR_APPEND;
-	}
-	else
-	{
-		flags |= APR_TRUNCATE;
-	}
-
-	File fn;
-	fn.setPath(filename);
-	apr_file_t* fileptr = 0;
-	apr_status_t stat = fn.open(&fileptr, flags, perm, pool);
-
-	if (stat != APR_SUCCESS)
-	{
-		throw IOException(filename, stat);
-	}
-
-	return fileptr;
+    return true;
 }
 
 FileOutputStream::~FileOutputStream()
 {
-	if (m_priv->fileptr)
+}
+
+void FileOutputStream::close()
+{
+    if (m_priv->file_out.is_open())
 	{
-		apr_file_close(m_priv->fileptr);
+        m_priv->file_out.close();
 	}
 }
 
-void FileOutputStream::close(Pool& /* p */)
+void FileOutputStream::flush()
 {
-	if (m_priv->fileptr)
-	{
-		apr_status_t stat = apr_file_close(m_priv->fileptr);
-
-		if (stat != APR_SUCCESS)
-		{
-			throw IOException(stat);
-		}
-
-		m_priv->fileptr = NULL;
-	}
+    m_priv->file_out.flush();
 }
 
-void FileOutputStream::flush(Pool& /* p */)
+void FileOutputStream::write(ByteBuffer& buf)
 {
-}
-
-void FileOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
-{
-	if (m_priv->fileptr == NULL)
-	{
-		throw NullPointerException(LOG4CXX_STR("FileOutputStream"));
-	}
-
-	size_t nbytes = buf.remaining();
-	size_t pos = buf.position();
+    size_t nbytes = buf.remaining();
 	const char* data = buf.data();
 
-	while (nbytes > 0)
-	{
-		apr_status_t stat = apr_file_write(
-				m_priv->fileptr, data + pos, &nbytes);
-
-		if (stat != APR_SUCCESS)
-		{
-			throw IOException(stat);
-		}
-
-		pos += nbytes;
-		buf.position(pos);
-		nbytes = buf.remaining();
-	}
+    m_priv->file_out.write(data, nbytes);
 }
 
-apr_file_t* FileOutputStream::getFilePtr() const{
-	return m_priv->fileptr;
+std::ofstream* FileOutputStream::getFilePtr() const{
+    return &m_priv->file_out;
 }
 

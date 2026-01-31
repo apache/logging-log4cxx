@@ -47,7 +47,7 @@ RollingPolicyBase::~RollingPolicyBase()
 {
 }
 
-void RollingPolicyBase::activateOptions(LOG4CXX_NS::helpers::Pool& /* pool */)
+void RollingPolicyBase::activateOptions()
 {
 	if (m_priv->fileNamePatternStr.length() > 0)
 	{
@@ -111,8 +111,7 @@ void RollingPolicyBase::parseFileNamePattern()
  */
 void RollingPolicyBase::formatFileName(
 	const ObjectPtr& obj,
-	LogString& toAppendTo,
-	Pool& pool) const
+    LogString& toAppendTo) const
 {
 	std::vector<FormattingInfoPtr>::const_iterator formatterIter =
 		m_priv->patternFields.begin();
@@ -123,7 +122,7 @@ void RollingPolicyBase::formatFileName(
 		converterIter++, formatterIter++)
 	{
 		auto startField = toAppendTo.length();
-		(*converterIter)->format(obj, toAppendTo, pool);
+        (*converterIter)->format(obj, toAppendTo);
 		(*formatterIter)->format((int)startField, toAppendTo);
 	}
 }

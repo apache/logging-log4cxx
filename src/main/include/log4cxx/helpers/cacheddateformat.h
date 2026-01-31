@@ -100,27 +100,23 @@ class LOG4CXX_EXPORT CachedDateFormat : public LOG4CXX_NS::helpers::DateFormat
 		 * Finds start of millisecond field in formatted time.
 		 * @param time long time, must be integral number of seconds
 		 * @param formatted String corresponding formatted string
-		 * @param formatter DateFormat date format
-		 * @param pool pool.
+         * @param formatter DateFormat date format
 		 * @return int position in string of first digit of milliseconds,
 		 *    -1 indicates no millisecond field, -2 indicates unrecognized
 		 *    field (likely RelativeTimeDateFormat)
 		 */
 		static int findMillisecondStart(
 			log4cxx_time_t time, const LogString& formatted,
-			const LOG4CXX_NS::helpers::DateFormatPtr& formatter,
-			LOG4CXX_NS::helpers::Pool& pool);
+            const LOG4CXX_NS::helpers::DateFormatPtr& formatter);
 
 		/**
 		 * Formats a Date into a date/time string.
 		 *
 		 *  @param date the date to format.
-		 *  @param sbuf the string buffer to write to.
-		 *  @param p memory pool.
+         *  @param sbuf the string buffer to write to.
 		 */
 		virtual void format(LogString& sbuf,
-			log4cxx_time_t date,
-			LOG4CXX_NS::helpers::Pool& p) const;
+            log4cxx_time_t date) const;
 
 	private:
 		/**
@@ -148,12 +144,10 @@ class LOG4CXX_EXPORT CachedDateFormat : public LOG4CXX_NS::helpers::DateFormat
 		/**
 		* Format an integer consistent with the format method.
 		* @param s string to which the numeric string is appended.
-		* @param n integer value.
-		* @param p memory pool used during formatting.
+        * @param n integer value.
 		*/
 		virtual void numberFormat(LogString& s,
-			int n,
-			LOG4CXX_NS::helpers::Pool& p) const;
+            int n) const;
 
 		/**
 		 * Gets maximum cache validity for the specified SimpleDateTime

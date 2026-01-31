@@ -17,8 +17,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/simpledateformat.h>
 
-#include <apr_time.h>
-#include <apr_strings.h>
 #include <sstream>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/stringhelper.h>
@@ -87,12 +85,10 @@ class PatternToken
 		/**
 		 * Appends the formatted content to the string.
 		 * @param s string to which format contribution is appended.
-		 * @param date exploded date/time.
-		 * @param p memory pool.
+         * @param date exploded date/time.
 		 */
 		virtual void format(LogString& s,
-			const apr_time_exp_t& date,
-			LOG4CXX_NS::helpers::Pool& p) const = 0;
+            const apr_time_exp_t& date) const = 0;
 
 	protected:
 
@@ -206,7 +202,7 @@ class LiteralToken : public PatternToken
 		{
 		}
 
-		void format( LogString& s, const apr_time_exp_t&, Pool& /* p */ ) const
+        void format( LogString& s, const apr_time_exp_t&) const
 		{
 			s.append( count, ch );
 		}
@@ -225,7 +221,7 @@ class EraToken : public PatternToken
 		{
 		}
 
-		void format(LogString& s, const apr_time_exp_t& /* tm */, Pool& /* p */ ) const
+        void format(LogString& s, const apr_time_exp_t& /* tm */) const
 		{
 			s.append(1, (logchar) 0x41 /* 'A' */);
 			s.append(1, (logchar) 0x44 /* 'D' */);
@@ -243,11 +239,11 @@ class NumericToken : public PatternToken
 
 		virtual int getField( const apr_time_exp_t& tm ) const = 0;
 
-		void format( LogString& s, const apr_time_exp_t& tm, Pool& p ) const
+        void format( LogString& s, const apr_time_exp_t& tm ) const
 		{
 			size_t initialLength = s.length();
 
-			StringHelper::toString( getField( tm ), p, s );
+            StringHelper::toString( getField( tm ), s );
 			size_t finalLength = s.length();
 
 			if ( initialLength + width > finalLength )
@@ -300,7 +296,7 @@ class AbbreviatedMonthNameToken : public PatternToken
 			renderFacet(locale, PatternToken::incrementMonth, 'b', 0x62, "%b", names);
 		}
 
-		void format(LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
+        void format(LogString& s, const apr_time_exp_t& tm) const
 		{
 			s.append( names[tm.tm_mon] );
 		}
@@ -319,7 +315,7 @@ class FullMonthNameToken : public PatternToken
 			renderFacet(locale, PatternToken::incrementMonth, 'B', 0x42, "%B", names);
 		}
 
-		void format( LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
+        void format( LogString& s, const apr_time_exp_t& tm) const
 		{
 			s.append( names[tm.tm_mon] );
 		}
@@ -413,7 +409,7 @@ class AbbreviatedDayNameToken : public PatternToken
 			renderFacet(locale, PatternToken::incrementDay, 'a', 0x61, "%a", names);
 		}
 
-		void format( LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
+        void format( LogString& s, const apr_time_exp_t& tm ) const
 		{
 			s.append( names[tm.tm_wday] );
 		}
@@ -433,7 +429,7 @@ class FullDayNameToken : public PatternToken
 			renderFacet(locale, PatternToken::incrementDay, 'A', 0x41, "%A", names);
 		}
 
-		void format( LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
+        void format( LogString& s, const apr_time_exp_t& tm) const
 		{
 			s.append( names[tm.tm_wday] );
 		}
@@ -549,7 +545,7 @@ class AMPMToken : public PatternToken
 			renderFacet(locale, PatternToken::incrementHalfDay, 'p', 0x70, "%p", names);
 		}
 
-		void format( LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
+        void format( LogString& s, const apr_time_exp_t& tm) const
 		{
 			s.append( names[tm.tm_hour / 12] );
 		}
@@ -567,7 +563,7 @@ class GeneralTimeZoneToken : public PatternToken
 		{
 		}
 
-		void format( LogString& s, const apr_time_exp_t&, Pool& /* p */ ) const
+        void format( LogString& s, const apr_time_exp_t&) const
 		{
 			s.append(timeZone->getID());
 		}
@@ -590,7 +586,7 @@ class RFC822TimeZoneToken : public PatternToken
 		{
 		}
 
-		void format( LogString& s, const apr_time_exp_t& tm, Pool& p ) const
+        void format( LogString& s, const apr_time_exp_t& tm) const
 		{
 			if ( tm.tm_gmtoff == 0 )
 			{
@@ -610,14 +606,14 @@ class RFC822TimeZoneToken : public PatternToken
 				}
 
 				LogString hours;
-				StringHelper::toString( off / 3600, p, hours );
+                StringHelper::toString( off / 3600, hours );
 				if( hours.size() == 1 ){
 					s.push_back( '0' );
 				}
 				s.append(hours);
 
 				LogString min;
-				StringHelper::toString( ( off % 3600 ) / 60, p, min );
+                StringHelper::toString( ( off % 3600 ) / 60, min );
 				if( min.size() == 1 ){
 					s.push_back( '0' );
 				}
@@ -838,7 +834,7 @@ SimpleDateFormat::~SimpleDateFormat()
 }
 
 
-void SimpleDateFormat::format( LogString& s, log4cxx_time_t time, Pool& p ) const
+void SimpleDateFormat::format( LogString& s, log4cxx_time_t time ) const
 {
 	apr_time_exp_t exploded;
 	apr_status_t stat = m_priv->timeZone->explode( & exploded, time );
@@ -847,7 +843,7 @@ void SimpleDateFormat::format( LogString& s, log4cxx_time_t time, Pool& p ) cons
 	{
 		for ( PatternTokenList::const_iterator iter = m_priv->pattern.begin(); iter != m_priv->pattern.end(); iter++ )
 		{
-			( * iter )->format( s, exploded, p );
+            ( * iter )->format( s, exploded );
 		}
 	}
 }

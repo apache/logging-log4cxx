@@ -58,7 +58,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		void activateOptions(helpers::Pool& pool) override;
+        void activateOptions() override;
 
 		/**
 		If the <b>ImmediateFlush</b> option is set to
@@ -92,7 +92,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		layout.
 
 		*/
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+        void append(const spi::LoggingEventPtr& event) override;
 
 
 	protected:
@@ -173,18 +173,18 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		 Actual writing occurs here.
 		*/
-		virtual void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p);
+        virtual void subAppend(const spi::LoggingEventPtr& event);
 
 
 		/**
 		Write a footer as produced by the embedded layout's
 		Layout#appendFooter method.  */
-		virtual void writeFooter(helpers::Pool& p);
+        virtual void writeFooter();
 
 		/**
 		Write a header as produced by the embedded layout's
 		Layout#appendHeader method.  */
-		virtual void writeHeader(helpers::Pool& p);
+        virtual void writeHeader();
 
 		/**
 		 * Set the writer.  Mutex must already be held.

@@ -43,8 +43,7 @@ class LOG4CXX_EXPORT StrftimeDateFormat : public DateFormat
 		~StrftimeDateFormat();
 
 		virtual void format(LogString& s,
-			log4cxx_time_t tm,
-			LOG4CXX_NS::helpers::Pool& p) const;
+            log4cxx_time_t tm) const;
 
 		/**
 		*    Set time zone.

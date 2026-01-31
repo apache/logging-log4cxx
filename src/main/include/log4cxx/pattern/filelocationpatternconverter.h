@@ -55,8 +55,7 @@ class LOG4CXX_EXPORT FileLocationPatternConverter
 		using LoggingEventPatternConverter::format;
 
 		void format(const spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+            LogString& toAppendTo) const override;
 };
 
 }

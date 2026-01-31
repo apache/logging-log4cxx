@@ -68,7 +68,6 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	*/
 	bool closed;
 
-	LOG4CXX_NS::helpers::Pool pool;
 	mutable std::recursive_mutex mutex;
 
 	bool warnedClosed = false;

@@ -141,13 +141,13 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		<li>a non-ascii character is detected where not permitted</li>
 		</ul>.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		/**
 		Perform SMTPAppender specific appending actions, mainly adding
 		the event to a cyclic buffer and checking if the event triggers
 		an e-mail to be sent. */
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+        void append(const spi::LoggingEventPtr& event) override;
 
 
 		void close() override;
@@ -176,7 +176,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		/**
 		Send the contents of the cyclic buffer as an e-mail message.
 		*/
-		void sendBuffer(LOG4CXX_NS::helpers::Pool& p);
+        void sendBuffer();
 
 
 		/**

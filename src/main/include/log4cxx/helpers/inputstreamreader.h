@@ -68,16 +68,14 @@ class LOG4CXX_EXPORT InputStreamReader : public Reader
 
 		/**
 		 * Closes the stream.
-		 *
-		 * @param p The memory pool associated with the reader.
 		 */
-		void close(Pool& p) override;
+        void close() override;
 
 		/**
 		 * @return The complete stream contents as a LogString.
 		 * @param p The memory pool associated with the reader.
 		 */
-		LogString read(Pool& p) override;
+        LogString read() override;
 
 		/**
 		 * @return The name of the character encoding being used by this stream.

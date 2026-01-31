@@ -28,15 +28,13 @@ using namespace log4cxx::helpers;
 
 bool Compare::compare(const File& file1, const File& file2)
 {
-	Pool pool;
 	InputStreamPtr fileIn1 = InputStreamPtr( new FileInputStream(file1) );
 	InputStreamReaderPtr reader1 = InputStreamReaderPtr( new InputStreamReader(fileIn1) );
-	LogString in1(reader1->read(pool));
+    LogString in1(reader1->read());
 
-	Pool pool2;
 	InputStreamPtr fileIn2 = InputStreamPtr( new FileInputStream(file2) );
 	InputStreamReaderPtr reader2 = InputStreamReaderPtr( new InputStreamReader(fileIn2) );
-	LogString in2(reader2->read(pool2));
+    LogString in2(reader2->read());
 
 	LogString back1(in1);
 	LogString back2(in2);
@@ -61,7 +59,7 @@ bool Compare::compare(const File& file1, const File& file2)
 			msg += LOG4CXX_STR("] and [");
 			msg += file2.getPath();
 			msg += LOG4CXX_STR("] differ on line ");
-			StringHelper::toString(lineCounter, pool, msg);
+            StringHelper::toString(lineCounter, msg);
 			msg += LOG4CXX_EOL;
 			msg += LOG4CXX_STR("One reads:  [");
 			msg += s1;
@@ -73,8 +71,8 @@ bool Compare::compare(const File& file1, const File& file2)
 			msg += LOG4CXX_EOL;
 			emit(msg);
 
-			outputFile(file1, back1, pool);
-			outputFile(file2, back2, pool);
+            outputFile(file1, back1);
+            outputFile(file2, back2);
 
 			return false;
 		}
@@ -90,8 +88,8 @@ bool Compare::compare(const File& file1, const File& file2)
 		msg += LOG4CXX_STR("].");
 		msg += LOG4CXX_EOL;
 		emit(msg);
-		outputFile(file1, back1, pool);
-		outputFile(file2, back2, pool);
+        outputFile(file1, back1);
+        outputFile(file2, back2);
 
 		return false;
 	}
@@ -100,8 +98,7 @@ bool Compare::compare(const File& file1, const File& file2)
 }
 
 void Compare::outputFile(const File& file,
-	const LogString& contents,
-	log4cxx::helpers::Pool& pool)
+    const LogString& contents)
 {
 	int lineCounter = 0;
 	emit(LOG4CXX_STR("--------------------------------"));
@@ -118,7 +115,7 @@ void Compare::outputFile(const File& file,
 	{
 		lineCounter++;
 		LogString line;
-		StringHelper::toString(lineCounter, pool, line);
+        StringHelper::toString(lineCounter, line);
 		emit(line);
 
 		if (lineCounter < 10)
@@ -145,7 +142,7 @@ void Compare::outputFile(const File& file,
 
 void Compare::emit(const LogString& s1)
 {
-	SystemOutWriter::write(s1);
+    SystemOutWriter::write_raw(s1);
 }
 
 

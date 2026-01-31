@@ -50,7 +50,7 @@ class GZCompressAction : public Action
 		 *
 		 * @return true if successful.
 		 */
-		bool execute(LOG4CXX_NS::helpers::Pool& pool) const override;
+        bool execute() const override;
 
 		/**
 		 * Set to true to throw an IOException on a fork failure.  By default, this

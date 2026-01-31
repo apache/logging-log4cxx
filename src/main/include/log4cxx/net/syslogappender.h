@@ -73,14 +73,14 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		*/
 		static int getFacility(const LogString& facilityName);
 
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+        void append(const spi::LoggingEventPtr& event) override;
 
 		/**
 		\copybrief AppenderSkeleton::activateOptions()
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		/**
 		\copybrief AppenderSkeleton::setOption()

@@ -48,16 +48,14 @@ class LOG4CXX_EXPORT Reader : public Object
 
 	public:
 		/**
-		 * Closes the stream.
-		 * @param p The memory pool associated with the reader.
+         * Closes the stream.
 		 */
-		virtual void close(Pool& p) = 0;
+        virtual void close() = 0;
 
 		/**
-		 * @return The complete stream contents as a LogString.
-		 * @param p The memory pool associated with the reader.
+         * @return The complete stream contents as a LogString.
 		 */
-		virtual LogString read(Pool& p) = 0;
+        virtual LogString read() = 0;
 
 	private:
 		Reader(const Reader&);

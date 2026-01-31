@@ -88,14 +88,14 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 	return ((level == 0) || level->isGreaterOrEqual(m_priv->threshold));
 }
 
-void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
+void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
 {
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
-	doAppendImpl(event, pool1);
+    doAppendImpl(event);
 }
 
-void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& pool)
+void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event)
 {
 	if (m_priv->closed)
 	{
@@ -104,7 +104,7 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 	}
 	else if (isAsSevereAsThreshold(event->getLevel()) && isAccepted(event))
 	{
-		append(event, pool);
+        append(event);
 	}
 }
 

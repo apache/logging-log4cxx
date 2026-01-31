@@ -26,10 +26,6 @@
 
 namespace LOG4CXX_NS
 {
-namespace helpers
-{
-class Pool;
-}
 
 /**
 *  FileAppender appends log events to a file.
@@ -123,7 +119,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		If there was already an opened file, then the previous file
 		is closed first.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		/**
 		\copybrief AppenderSkeleton::setOption()
@@ -219,7 +215,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		static LogString stripDuplicateBackslashes(const LogString& name);
 
 	protected:
-		void activateOptionsInternal(helpers::Pool& p);
+        void activateOptionsInternal();
 
 		/**
 		Sets and <i>opens</i> the file where the log output will
@@ -238,12 +234,10 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		@param append If true will append to fileName. Otherwise will
 		truncate fileName.
 		@param bufferedIO Do we do bufferedIO?
-		@param bufferSize How big should the IO buffer be?
-		@param p memory pool for operation.
+        @param bufferSize How big should the IO buffer be?
 		*/
 		void setFileInternal(const LogString& file, bool append,
-			bool bufferedIO, size_t bufferSize,
-			helpers::Pool& p);
+            bool bufferedIO, size_t bufferSize);
 
 		void setFileInternal(const LogString& file);
 

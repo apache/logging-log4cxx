@@ -20,17 +20,16 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/pool.h>
-#include <apr_file_io.h>
+#include <fstream>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 struct FileInputStream::FileInputStreamPrivate
 {
-	FileInputStreamPrivate() : fileptr(nullptr) {}
+    FileInputStreamPrivate(){}
 
-	Pool pool;
-	apr_file_t* fileptr;
+    std::fstream m_fstream;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FileInputStream)
@@ -51,13 +50,12 @@ FileInputStream::FileInputStream(const logchar* filename) :
 
 void FileInputStream::open(const LogString& filename)
 {
-	apr_fileperms_t perm = APR_OS_DEFAULT;
-	apr_int32_t flags = APR_READ;
-	apr_status_t stat = File().setPath(filename).open(&m_priv->fileptr, flags, perm, m_priv->pool);
 
-	if (stat != APR_SUCCESS)
+    bool success = File().setPath(filename).open(&m_priv->m_fstream, 0, 0);
+
+    if (!success)
 	{
-		throw IOException(filename, stat);
+        throw IOException(filename);
 	}
 }
 
@@ -65,56 +63,42 @@ void FileInputStream::open(const LogString& filename)
 FileInputStream::FileInputStream(const File& aFile) :
 	m_priv(std::make_unique<FileInputStreamPrivate>())
 {
-	apr_fileperms_t perm = APR_OS_DEFAULT;
-	apr_int32_t flags = APR_READ;
-	apr_status_t stat = aFile.open(&m_priv->fileptr, flags, perm, m_priv->pool);
+    bool success = File().setPath(aFile.getName()).open(&m_priv->m_fstream, 0, 0);
 
-	if (stat != APR_SUCCESS)
-	{
-		throw IOException(aFile.getName(), stat);
-	}
+    if (!success)
+    {
+        throw IOException(aFile.getName());
+    }
 }
 
 
 FileInputStream::~FileInputStream()
 {
-	if (m_priv->fileptr)
-	{
-		apr_file_close(m_priv->fileptr);
-	}
+    close();
 }
 
 
 void FileInputStream::close()
 {
-	apr_status_t stat = apr_file_close(m_priv->fileptr);
-
-	if (stat == APR_SUCCESS)
-	{
-		m_priv->fileptr = NULL;
-	}
-	else
-	{
-		throw IOException(stat);
-	}
+    if (m_priv->m_fstream.is_open())
+    {
+        m_priv->m_fstream.close();
+    }
 }
 
 
 int FileInputStream::read(ByteBuffer& buf)
 {
-	apr_size_t bytesRead = buf.remaining();
-	apr_status_t stat = apr_file_read(m_priv->fileptr, buf.current(), &bytesRead);
+    size_t bytesRead = buf.remaining();
+    size_t before_read = m_priv->m_fstream.tellg();
+    m_priv->m_fstream.read(buf.current(), bytesRead);
+    size_t after_read = m_priv->m_fstream.tellg();
 	int retval = -1;
 
-	if (!APR_STATUS_IS_EOF(stat))
-	{
-		if (stat != APR_SUCCESS)
-		{
-			throw IOException(stat);
-		}
-
+    if (!m_priv->m_fstream.eof())
+    {
 		buf.position(buf.position() + bytesRead);
-		retval = (int)bytesRead;
+        retval = (int)(after_read - before_read);
 	}
 
 	return retval;

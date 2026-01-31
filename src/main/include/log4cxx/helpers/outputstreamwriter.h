@@ -53,9 +53,9 @@ class LOG4CXX_EXPORT OutputStreamWriter : public Writer
 		OutputStreamWriter(LOG4CXX_16_CONST OutputStreamPtr& out, LOG4CXX_16_CONST CharsetEncoderPtr& enc);
 		~OutputStreamWriter();
 
-		void close(Pool& p) override;
-		void flush(Pool& p) override;
-		void write(const LogString& str, Pool& p) override;
+        void close() override;
+        void flush() override;
+        void write(const LogString& str) override;
 		LogString getEncoding() const;
 
 		OutputStreamPtr getOutputStreamPtr() const;

@@ -47,18 +47,17 @@ class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 		FileOutputStream(const logchar* filename, bool append = false);
 		virtual ~FileOutputStream();
 
-		void close(Pool& p) override;
-		void flush(Pool& p) override;
-		void write(ByteBuffer& buf, Pool& p) override;
+        void close() override;
+        void flush() override;
+        void write(ByteBuffer& buf) override;
 
-		apr_file_t* getFilePtr() const;
+        std::ofstream* getFilePtr() const;
 
 	private:
 		FileOutputStream(const FileOutputStream&) = delete;
 		FileOutputStream(FileOutputStream&&) = delete;
 		FileOutputStream& operator=(const FileOutputStream&) = delete;
-		static apr_file_t* open(const LogString& fn, bool append,
-			LOG4CXX_NS::helpers::Pool& p);
+        static bool open(std::ofstream& fout, const LogString& fn, bool append);
 };
 
 LOG4CXX_PTR_DEF(FileOutputStream);

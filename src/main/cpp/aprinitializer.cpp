@@ -44,7 +44,7 @@ using IdentifiedObject = std::pair<size_t, ObjectPtr>;
 struct APRInitializer::APRInitializerPrivate{
 	APRInitializerPrivate() :
 		p(0),
-		startTime(0),
+        startTime(std::chrono::system_clock::now()),
 		tlsKey(0){
 
 	}

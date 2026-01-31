@@ -40,8 +40,7 @@ WriterAppender::WriterAppender() :
 WriterAppender::WriterAppender(const LayoutPtr& layout, helpers::WriterPtr& writer)
 	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout, writer))
 {
-	Pool p;
-	activateOptions(p);
+    activateOptions();
 }
 
 WriterAppender::WriterAppender(const LayoutPtr& layout)
@@ -68,7 +67,7 @@ WriterAppender::~WriterAppender()
 	finalize();
 }
 
-void WriterAppender::activateOptions(Pool& p)
+void WriterAppender::activateOptions()
 {
 	int errors = 0;
 
@@ -96,7 +95,7 @@ void WriterAppender::activateOptions(Pool& p)
 
 
 
-void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool1)
+void WriterAppender::append(const spi::LoggingEventPtr& event)
 {
 
 	if (!checkEntryConditions())
@@ -104,7 +103,7 @@ void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool1)
 		return;
 	}
 
-	subAppend(event, pool1);
+    subAppend(event);
 }
 
 /**
@@ -172,8 +171,8 @@ void WriterAppender::closeWriter()
 			//   Using the object's pool since this is a one-shot operation
 			//    and pool is likely to be reclaimed soon when appender is destructed.
 			//
-			writeFooter(_priv->pool);
-			_priv->writer->close(_priv->pool);
+            writeFooter();
+            _priv->writer->close();
 			_priv->writer = 0;
 		}
 		catch (IOException& e)
@@ -234,10 +233,10 @@ void WriterAppender::setEncoding(const LogString& enc)
 	_priv->encoding = enc;
 }
 
-void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
+void WriterAppender::subAppend(const spi::LoggingEventPtr& event)
 {
 	LogString msg;
-	_priv->layout->format(msg, event, p);
+    _priv->layout->format(msg, event);
 
 	if (_priv->writer != NULL)
 	{
@@ -251,17 +250,17 @@ void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
 }
 
 
-void WriterAppender::writeFooter(Pool& p)
+void WriterAppender::writeFooter()
 {
 	if (_priv->layout != NULL)
 	{
 		LogString foot;
-		_priv->layout->appendFooter(foot, p);
-		_priv->writer->write(foot, p);
+        _priv->layout->appendFooter(foot);
+        _priv->writer->write(foot);
 	}
 }
 
-void WriterAppender::writeHeader(Pool& p)
+void WriterAppender::writeHeader()
 {
 	if (_priv->layout != NULL)
 	{

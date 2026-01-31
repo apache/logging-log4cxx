@@ -37,7 +37,7 @@ bool ManualTriggeringPolicy::isTriggeringEvent(Appender* /* appender */,
 	return false;
 }
 
-void ManualTriggeringPolicy::activateOptions(Pool& /* p */ )
+void ManualTriggeringPolicy::activateOptions( )
 {
 }
 

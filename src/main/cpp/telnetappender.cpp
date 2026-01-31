@@ -110,7 +110,7 @@ TelnetAppender::~TelnetAppender()
 	finalize();
 }
 
-void TelnetAppender::activateOptions(Pool& /* p */)
+void TelnetAppender::activateOptions()
 {
 	if (_priv->serverSocket == NULL)
 	{
@@ -203,7 +203,7 @@ void TelnetAppender::write(ByteBuffer& buf)
 	}
 }
 
-void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, Pool& p)
+void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg)
 {
 	size_t bytesSize = msg.size() * 2;
 	char* bytes = p.pstralloc(bytesSize);
@@ -220,7 +220,7 @@ void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, 
 	}
 }
 
-void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void TelnetAppender::append(const spi::LoggingEventPtr& event)
 {
 	size_t count = _priv->activeConnections;
 
@@ -228,7 +228,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	{
 		LogString msg;
 		if (_priv->layout)
-			_priv->layout->format(msg, event, p);
+            _priv->layout->format(msg, event);
 		else
 			msg = event->getRenderedMessage();
 		msg.append(LOG4CXX_STR("\r\n"));
@@ -273,9 +273,8 @@ void TelnetAppender::acceptConnections()
 			bool done = _priv->closed;
 
 			if (done)
-			{
-				Pool p;
-				writeStatus(newClient, LOG4CXX_STR("Log closed.\r\n"), p);
+            {
+                writeStatus(newClient, LOG4CXX_STR("Log closed.\r\n"));
 				newClient->close();
 
 				break;
@@ -284,9 +283,8 @@ void TelnetAppender::acceptConnections()
 			size_t count = _priv->activeConnections;
 
 			if (count >= _priv->connections.size())
-			{
-				Pool p;
-				writeStatus(newClient, LOG4CXX_STR("Too many connections.\r\n"), p);
+            {
+                writeStatus(newClient, LOG4CXX_STR("Too many connections.\r\n"));
 				newClient->close();
 			}
 			else
@@ -307,11 +305,10 @@ void TelnetAppender::acceptConnections()
 					}
 				}
 
-				Pool p;
 				LogString oss(LOG4CXX_STR("TelnetAppender v1.0 ("));
-				StringHelper::toString((int) count + 1, p, oss);
+                StringHelper::toString((int) count + 1, oss);
 				oss += LOG4CXX_STR(" active connections)\r\n\r\n");
-				writeStatus(newClient, oss, p);
+                writeStatus(newClient, oss);
 			}
 		}
 		catch (InterruptedIOException&)

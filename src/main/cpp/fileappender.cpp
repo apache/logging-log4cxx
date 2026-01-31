@@ -52,8 +52,7 @@ FileAppender::FileAppender
 	)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, bufferedIO1, bufferSize1))
 {
-	Pool p;
-	activateOptions(p);
+    activateOptions();
 }
 
 FileAppender::FileAppender
@@ -63,15 +62,13 @@ FileAppender::FileAppender
 	)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, false))
 {
-	Pool p;
-	activateOptions(p);
+    activateOptions();
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1))
 {
-	Pool p;
-	activateOptions(p);
+    activateOptions();
 }
 
 FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
@@ -154,13 +151,13 @@ void FileAppender::setOption(const LogString& option,
 	}
 }
 
-void FileAppender::activateOptions(Pool& p)
+void FileAppender::activateOptions()
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	activateOptionsInternal(p);
+    activateOptionsInternal();
 }
 
-void FileAppender::activateOptionsInternal(Pool& p)
+void FileAppender::activateOptionsInternal()
 {
 	int errors = 0;
 
@@ -168,7 +165,7 @@ void FileAppender::activateOptionsInternal(Pool& p)
 	{
 		try
 		{
-			setFileInternal(_priv->fileName, _priv->fileAppend, _priv->bufferedIO, _priv->bufferSize, p);
+            setFileInternal(_priv->fileName, _priv->fileAppend, _priv->bufferedIO, _priv->bufferSize);
 		}
 		catch (IOException& e)
 		{
@@ -191,7 +188,7 @@ void FileAppender::activateOptionsInternal(Pool& p)
 
 	if (errors == 0)
 	{
-		WriterAppender::activateOptions(p);
+        WriterAppender::activateOptions();
 		if (auto p = _priv->taskManager.lock())
 			p->value().removePeriodicTask(getName());
 
@@ -288,8 +285,7 @@ void FileAppender::setFileInternal(
 	const LogString& filename,
 	bool append1,
 	bool bufferedIO1,
-	size_t bufferSize1,
-	Pool& p)
+    size_t bufferSize1)
 {
 	// It does not make sense to have immediate flush and bufferedIO.
 	if (bufferedIO1)
@@ -311,7 +307,7 @@ void FileAppender::setFileInternal(
 		{
 			File outFile;
 			outFile.setPath(filename);
-			writeBOM = !outFile.exists(p);
+            writeBOM = !outFile.exists();
 		}
 		else
 		{
@@ -327,14 +323,14 @@ void FileAppender::setFileInternal(
 	}
 	catch (IOException&)
 	{
-		LogString parentName = File().setPath(filename).getParent(p);
+        LogString parentName = File().setPath(filename).getParent();
 
 		if (!parentName.empty())
 		{
 			File parentDir;
 			parentDir.setPath(parentName);
 
-			if (!parentDir.exists(p) && parentDir.mkdirs(p))
+            if (!parentDir.exists() && parentDir.mkdirs())
 			{
 				outStream = std::make_shared<FileOutputStream>(filename, append1);
 			}
@@ -373,7 +369,7 @@ void FileAppender::setFileInternal(
 	_priv->bufferedIO = bufferedIO1;
 	_priv->fileName = filename;
 	_priv->bufferSize = (int)bufferSize1;
-	writeHeader(p);
+    writeHeader();
 
 }
 

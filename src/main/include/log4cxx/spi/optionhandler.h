@@ -49,7 +49,7 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		the <code>File</code> and <b>Append</b> options both of
 		which are ambigous until the other is also set.
 		*/
-		virtual void activateOptions(helpers::Pool& p) = 0;
+        virtual void activateOptions() = 0;
 
 
 		/**

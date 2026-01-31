@@ -26,11 +26,6 @@
 namespace LOG4CXX_NS
 {
 
-namespace helpers
-{
-class Pool;
-}
-
 namespace rolling
 {
 
@@ -83,7 +78,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		 */
 		enum { MAX_WINDOW_SIZE = 12 };
 
-		bool purge(int purgeStart, int maxIndex, LOG4CXX_NS::helpers::Pool& p) const;
+        bool purge(int purgeStart, int maxIndex) const;
 
 	public:
 
@@ -97,7 +92,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 
 		\sa RollingPolicyBase::activateOptions()
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		/**
 		\copybrief RollingPolicyBase::setOption()
@@ -126,16 +121,14 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		 */
 		RolloverDescriptionPtr initialize(
 			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			helpers::Pool& pool) override;
+            const   bool                    append) override;
 
 		/**
 		 * {@inheritDoc}
 		 */
 		RolloverDescriptionPtr rollover(
 			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			helpers::Pool& pool) override;
+            const   bool                    append) override;
 
 	protected:
 		/**

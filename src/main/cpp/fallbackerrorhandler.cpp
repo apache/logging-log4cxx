@@ -132,7 +132,7 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 
 }
 
-void FallbackErrorHandler::activateOptions(Pool&)
+void FallbackErrorHandler::activateOptions()
 {
 }
 

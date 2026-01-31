@@ -56,7 +56,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
 		Connects to the specified <b>RemoteHost</b> and <b>Port</b>.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		void close() override;
 
@@ -144,16 +144,16 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 	protected:
 		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);
 
-		virtual void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, LOG4CXX_NS::helpers::Pool& p) = 0;
+        virtual void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket) = 0;
 
-		virtual void cleanUp(LOG4CXX_NS::helpers::Pool& p) = 0;
+        virtual void cleanUp(p) = 0;
 
 		virtual int getDefaultDelay() const = 0;
 
 		virtual int getDefaultPort() const = 0;
 
 	private:
-		void connect(LOG4CXX_NS::helpers::Pool& p);
+        void connect();
 		/**
 		     The Connector will reconnect when the server becomes available
 		     again.  It does this by attempting to open a new connection every

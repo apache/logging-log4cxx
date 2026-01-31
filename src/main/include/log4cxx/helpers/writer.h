@@ -43,9 +43,9 @@ class LOG4CXX_EXPORT Writer : public Object
 		virtual ~Writer();
 
 	public:
-		virtual void close(Pool& p) = 0;
-		virtual void flush(Pool& p) = 0;
-		virtual void write(const LogString& str, Pool& p) = 0;
+        virtual void close() = 0;
+        virtual void flush() = 0;
+        virtual void write(const LogString& str) = 0;
 
 	private:
 		Writer(const Writer&);

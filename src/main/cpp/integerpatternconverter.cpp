@@ -41,13 +41,12 @@ PatternConverterPtr IntegerPatternConverter::newInstance(
 
 void IntegerPatternConverter::format(
 	const ObjectPtr& obj,
-	LogString& toAppendTo,
-	Pool& p) const
+    LogString& toAppendTo) const
 {
 	IntegerPtr i = LOG4CXX_NS::cast<Integer>(obj);
 
 	if (i != NULL)
 	{
-		StringHelper::toString(i->intValue(), p, toAppendTo);
+        StringHelper::toString(i->intValue(), toAppendTo);
 	}
 }

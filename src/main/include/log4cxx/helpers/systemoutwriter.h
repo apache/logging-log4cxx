@@ -40,12 +40,12 @@ class LOG4CXX_EXPORT SystemOutWriter : public Writer
 		SystemOutWriter();
 		~SystemOutWriter();
 
-		void close(Pool& p) override;
-		void flush(Pool& p) override;
-		void write(const LogString& str, Pool& p) override;
+        void close() override;
+        void flush() override;
+        void write(const LogString& str) override;
 
-		static void write(const LogString& str);
-		static void flush();
+        static void write_raw(const LogString& str);
+        static void flush_raw();
 	private:
 		SystemOutWriter(const SystemOutWriter&);
 		SystemOutWriter& operator=(const SystemOutWriter&);

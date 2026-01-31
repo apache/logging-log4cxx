@@ -57,17 +57,14 @@ class LOG4CXX_EXPORT LoggingEventPatternConverter : public PatternConverter
 		/**
 		 * Formats an event into a string buffer.
 		 * @param event event to format, may not be null.
-		 * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
-		 * @param p pool for memory allocations needing during format.
+         * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
 		 */
 		virtual void format(
 			const spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			helpers::Pool& p) const = 0;
+            LogString& toAppendTo) const = 0;
 
 		void format(const helpers::ObjectPtr& obj,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+            LogString& toAppendTo) const override;
 
 		/**
 		 * Normally pattern converters are not meant to handle Exceptions although

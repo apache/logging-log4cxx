@@ -45,7 +45,7 @@ void Filter::setNext(const FilterPtr& newNext)
 	m_priv->next = newNext;
 }
 
-void Filter::activateOptions(Pool&)
+void Filter::activateOptions()
 {
 }
 

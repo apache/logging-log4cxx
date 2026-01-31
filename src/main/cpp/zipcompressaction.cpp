@@ -52,98 +52,98 @@ ZipCompressAction::ZipCompressAction(const File& src,
 {
 }
 
-bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
+bool ZipCompressAction::execute() const
 {
-	if (!priv->source.exists(p))
+    if (!priv->source.exists())
 	{
 		return false;
 	}
 
-	apr_pool_t* aprpool = p.getAPRPool();
-	apr_procattr_t* attr;
-	apr_status_t stat = apr_procattr_create(&attr, aprpool);
+//	apr_pool_t* aprpool = p.getAPRPool();
+//	apr_procattr_t* attr;
+//	apr_status_t stat = apr_procattr_create(&attr, aprpool);
 
-	if (stat != APR_SUCCESS)
-	{
-		throw IOException(stat);
-	}
+//	if (stat != APR_SUCCESS)
+//	{
+//		throw IOException(stat);
+//	}
 
-	stat = apr_procattr_io_set(attr, APR_NO_PIPE, APR_NO_PIPE, APR_FULL_BLOCK);
+//	stat = apr_procattr_io_set(attr, APR_NO_PIPE, APR_NO_PIPE, APR_FULL_BLOCK);
 
-	if (stat != APR_SUCCESS)
-	{
-		throw IOException(stat);
-	}
+//	if (stat != APR_SUCCESS)
+//	{
+//		throw IOException(stat);
+//	}
 
-	stat = apr_procattr_cmdtype_set(attr, APR_PROGRAM_PATH);
+//	stat = apr_procattr_cmdtype_set(attr, APR_PROGRAM_PATH);
 
-	if (stat != APR_SUCCESS)
-	{
-		throw IOException(stat);
-	}
+//	if (stat != APR_SUCCESS)
+//	{
+//		throw IOException(stat);
+//	}
 
-	//
-	// redirect the child's error stream to this processes' error stream
-	//
-	apr_file_t* child_err;
-	stat = apr_file_open_stderr(&child_err, aprpool);
+//	//
+//	// redirect the child's error stream to this processes' error stream
+//	//
+//	apr_file_t* child_err;
+//	stat = apr_file_open_stderr(&child_err, aprpool);
 
-	if (stat == APR_SUCCESS)
-	{
-		stat =  apr_procattr_child_err_set(attr, child_err, NULL);
+//	if (stat == APR_SUCCESS)
+//	{
+//		stat =  apr_procattr_child_err_set(attr, child_err, NULL);
 
-		if (stat != APR_SUCCESS)
-		{
-			throw IOException(stat);
-		}
-	}
+//		if (stat != APR_SUCCESS)
+//		{
+//			throw IOException(stat);
+//		}
+//	}
 
-	const char** args = (const char**)
-		apr_palloc(aprpool, 5 * sizeof(*args));
-	int i = 0;
+//	const char** args = (const char**)
+//		apr_palloc(aprpool, 5 * sizeof(*args));
+//	int i = 0;
 
-	args[i++] = "zip";
-	args[i++] = "-q";
-	args[i++] = Transcoder::encode(priv->destination.getPath(), p);
-	args[i++] = Transcoder::encode(priv->source.getPath(), p);
-	args[i++] = NULL;
+//	args[i++] = "zip";
+//	args[i++] = "-q";
+//	args[i++] = Transcoder::encode(priv->destination.getPath(), p);
+//	args[i++] = Transcoder::encode(priv->source.getPath(), p);
+//	args[i++] = NULL;
 
-	if (priv->destination.exists(p))
-	{
-		priv->destination.deleteFile(p);
-	}
+//    if (priv->destination.exists())
+//	{
+//        priv->destination.deleteFile();
+//	}
 
-	apr_proc_t pid;
-	stat = apr_proc_create(&pid, "zip", args, NULL, attr, aprpool);
+//	apr_proc_t pid;
+//	stat = apr_proc_create(&pid, "zip", args, NULL, attr, aprpool);
 
-	if (stat != APR_SUCCESS)
-	{
-		LogLog::warn(LOG4CXX_STR("Failed to fork zip during log rotation; leaving log file uncompressed"));
-		if (priv->throwIOExceptionOnForkFailure)
-			throw IOException(LOG4CXX_STR("zip"), stat);
-		/* If we fail here (to create the zip child process),
-		 * skip the compression and consider the rotation to be
-		 * otherwise successful. The caller has already rotated
-		 * the log file (`source` here refers to the
-		 * uncompressed, rotated path, and `destination` the
-		 * same path with `.zip` appended). Remove the empty
-		 * destination file and leave source as-is.
-		 */
-		return true;
-	}
+//	if (stat != APR_SUCCESS)
+//	{
+//		LogLog::warn(LOG4CXX_STR("Failed to fork zip during log rotation; leaving log file uncompressed"));
+//		if (priv->throwIOExceptionOnForkFailure)
+//			throw IOException(LOG4CXX_STR("zip"), stat);
+//		/* If we fail here (to create the zip child process),
+//		 * skip the compression and consider the rotation to be
+//		 * otherwise successful. The caller has already rotated
+//		 * the log file (`source` here refers to the
+//		 * uncompressed, rotated path, and `destination` the
+//		 * same path with `.zip` appended). Remove the empty
+//		 * destination file and leave source as-is.
+//		 */
+//		return true;
+//	}
 
-	int exitCode;
-	apr_proc_wait(&pid, &exitCode, NULL, APR_WAIT);
+//	int exitCode;
+//	apr_proc_wait(&pid, &exitCode, NULL, APR_WAIT);
 
-	if (exitCode != APR_SUCCESS)
-	{
-		throw IOException(exitCode);
-	}
+//	if (exitCode != APR_SUCCESS)
+//	{
+//		throw IOException(exitCode);
+//	}
 
-	if (priv->deleteSource)
-	{
-		priv->source.deleteFile(p);
-	}
+//	if (priv->deleteSource)
+//	{
+//        priv->source.deleteFile();
+//	}
 
 	return true;
 }

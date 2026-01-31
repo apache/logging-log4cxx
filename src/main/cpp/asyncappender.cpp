@@ -104,12 +104,11 @@ class DiscardSummary
 		 *
 		 * @return the new event.
 		 */
-		LoggingEventPtr createEvent(Pool& p);
+        LoggingEventPtr createEvent();
 
 #if LOG4CXX_ABI_VERSION <= 15
 		static
-		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
-			size_t discardedCount);
+        ::LOG4CXX_NS::spi::LoggingEventPtr createEvent(size_t discardedCount);
 #endif
 
 		/**
@@ -297,16 +296,16 @@ void AsyncAppender::setOption(const LogString& option,
 }
 
 
-void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
+void AsyncAppender::doAppend(const spi::LoggingEventPtr& event)
 {
-	doAppendImpl(event, pool1);
+    doAppendImpl(event);
 }
 
-void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void AsyncAppender::append(const spi::LoggingEventPtr& event)
 {
 	if (priv->bufferSize <= 0)
 	{
-		priv->appenders.appendLoopOnAppenders(event, p);
+        priv->appenders.appendLoopOnAppenders(event);
 		return;
 	}
 
@@ -535,10 +534,10 @@ void DiscardSummary::add(const LoggingEventPtr& event)
 	++this->count;
 }
 
-LoggingEventPtr DiscardSummary::createEvent(Pool& p)
+LoggingEventPtr DiscardSummary::createEvent()
 {
 	LogString msg(LOG4CXX_STR("Discarded "));
-	StringHelper::toString(this->count, p, msg);
+    StringHelper::toString(this->count, msg);
 	msg.append(LOG4CXX_STR(" messages ") + this->reason + LOG4CXX_STR(" including: "));
 	msg.append(this->maxEvent->getRenderedMessage());
 	return std::make_shared<LoggingEvent>
@@ -551,11 +550,10 @@ LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 
 #if LOG4CXX_ABI_VERSION <= 15
 ::LOG4CXX_NS::spi::LoggingEventPtr
-DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
-	size_t discardedCount)
+DiscardSummary::createEvent(size_t discardedCount)
 {
 	LogString msg(LOG4CXX_STR("Discarded "));
-	StringHelper::toString(discardedCount, p, msg);
+    StringHelper::toString(discardedCount, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer"));
 
 	return std::make_shared<LoggingEvent>(
@@ -577,8 +575,7 @@ void AsyncAppender::dispatch()
 	bool isActive = true;
 
 	while (isActive)
-	{
-		Pool p;
+    {
 		LoggingEventList events;
 		events.reserve(priv->bufferSize);
 		for (int count = 0; count < 2 && priv->dispatchedCount == priv->commitCount; ++count)
@@ -608,7 +605,7 @@ void AsyncAppender::dispatch()
 			blockedCount += priv->blockedCount;
 			for (auto& discardItem : priv->discardMap)
 			{
-				events.push_back(discardItem.second.createEvent(p));
+                events.push_back(discardItem.second.createEvent());
 				discardCount += discardItem.second.getCount();
 			}
 			priv->discardMap.clear();
@@ -618,7 +615,7 @@ void AsyncAppender::dispatch()
 		{
 			try
 			{
-				priv->appenders.appendLoopOnAppenders(item, p);
+                priv->appenders.appendLoopOnAppenders(item);
 			}
 			catch (std::exception& ex)
 			{
@@ -640,8 +637,7 @@ void AsyncAppender::dispatch()
 		++iterationCount;
 	}
 	if (LogLog::isDebugEnabled())
-	{
-		Pool p;
+    {
 		LogString msg(LOG4CXX_STR("[") + getName() + LOG4CXX_STR("] AsyncAppender"));
 #ifdef _DEBUG
 		msg += LOG4CXX_STR(" iterationCount ");
@@ -654,14 +650,14 @@ void AsyncAppender::dispatch()
 		StringHelper::toString(priv->commitCount, p, msg);
 #endif
 		msg += LOG4CXX_STR(" dispatchedCount ");
-		StringHelper::toString(priv->dispatchedCount, p, msg);
+        StringHelper::toString(priv->dispatchedCount, msg);
 		msg += LOG4CXX_STR(" discardCount ");
-		StringHelper::toString(discardCount, p, msg);
+        StringHelper::toString(discardCount, msg);
 		msg += LOG4CXX_STR(" pendingCountHistogram");
 		for (auto item : pendingCountHistogram)
 		{
 			msg += logchar(' ');
-			StringHelper::toString(item, p, msg);
+            StringHelper::toString(item,  msg);
 		}
 		LogLog::debug(msg);
 	}

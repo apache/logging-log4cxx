@@ -64,7 +64,7 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 
 		\sa RollingPolicy::activateOptions()
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 
 		/**
 		A map from a name to the object implementing the (date or index) formatting.
@@ -114,11 +114,10 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		 * Format file name.
 		 *
 		 * @param obj object to be evaluted in formatting, may not be null.
-		 * @param buf string buffer to which formatted file name is appended, may not be null.
-		 * @param p memory pool.
+         * @param buf string buffer to which formatted file name is appended, may not be null.
 		 */
 		void formatFileName(const helpers::ObjectPtr& obj,
-			LogString& buf, helpers::Pool& p) const;
+            LogString& buf) const;
 
 		LOG4CXX_NS::pattern::PatternConverterPtr getIntegerPatternConverter() const;
 		LOG4CXX_NS::pattern::PatternConverterPtr getDatePatternConverter() const;

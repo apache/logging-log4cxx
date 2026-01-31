@@ -53,7 +53,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	{
 		std::lock_guard<std::recursive_mutex> lock(mutex);
 		if (writer)
-			writer->flush(pool);
+            writer->flush();
 	}
 
 	/**

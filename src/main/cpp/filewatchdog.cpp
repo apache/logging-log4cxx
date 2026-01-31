@@ -34,7 +34,7 @@ long FileWatchdog::DEFAULT_DELAY = 60000;
 
 struct FileWatchdog::FileWatchdogPrivate{
 	FileWatchdogPrivate(const File& file1) :
-		file(file1), delay(DEFAULT_DELAY), lastModif(0),
+        file(file1), delay(DEFAULT_DELAY),
 		warnedAlready(false),
 		taskName{ LOG4CXX_STR("WatchDog_") + file1.getName() }
 	{ }
@@ -49,7 +49,7 @@ struct FileWatchdog::FileWatchdogPrivate{
 	The delay to observe between every check.
 	By default set DEFAULT_DELAY.*/
 	long delay;
-	log4cxx_time_t lastModif;
+    std::chrono::time_point<std::chrono::system_clock> lastModif;
 	bool warnedAlready;
 	LogString taskName;
 	ThreadUtility::ManagerWeakPtr taskManager;
@@ -101,10 +101,9 @@ void FileWatchdog::checkAndConfigure()
 		msg += m_priv->file.getPath();
 		msg += LOG4CXX_STR("]");
 		LogLog::debug(msg);
-	}
-	Pool pool1;
+    }
 
-	if (!m_priv->file.exists(pool1))
+    if (!m_priv->file.exists())
 	{
 		if (!m_priv->warnedAlready)
 		{
@@ -116,7 +115,7 @@ void FileWatchdog::checkAndConfigure()
 	}
 	else
 	{
-		auto thisMod = m_priv->file.lastModified(pool1);
+        auto thisMod = m_priv->file.lastModified();
 
 		if (thisMod > m_priv->lastModif)
 		{
@@ -134,12 +133,11 @@ void FileWatchdog::start()
 	if (!taskManager->value().hasPeriodicTask(m_priv->taskName))
 	{
 		if (LogLog::isDebugEnabled())
-		{
-			Pool p;
+        {
 			LogString msg(LOG4CXX_STR("Checking ["));
 			msg += m_priv->file.getPath();
 			msg += LOG4CXX_STR("] at ");
-			StringHelper::toString((int)m_priv->delay, p, msg);
+            StringHelper::toString((int)m_priv->delay, msg);
 			msg += LOG4CXX_STR(" ms interval");
 			LogLog::debug(msg);
 		}

@@ -99,9 +99,9 @@ void FixedWindowRollingPolicy::setOption(const LogString& option,
 /**
  * {@inheritDoc}
  */
-void FixedWindowRollingPolicy::activateOptions(Pool& p)
+void FixedWindowRollingPolicy::activateOptions()
 {
-	RollingPolicyBase::activateOptions(p);
+    RollingPolicyBase::activateOptions();
 
 	if (priv->maxIndex < priv->minIndex)
 	{
@@ -129,8 +129,7 @@ void FixedWindowRollingPolicy::activateOptions(Pool& p)
  */
 RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
 	const   LogString&  currentActiveFile,
-	const   bool        append,
-	Pool&       pool)
+    const   bool        append)
 {
 	LogString newActiveFile(currentActiveFile);
 	priv->explicitActiveFile = false;
@@ -145,7 +144,7 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
 	{
 		LogString buf;
 		ObjectPtr obj = std::make_shared<Integer>(priv->minIndex);
-		formatFileName(obj, buf, pool);
+        formatFileName(obj, buf);
 		newActiveFile = buf;
 	}
 
@@ -159,8 +158,7 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
  */
 RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	const   LogString&  currentActiveFile,
-	const   bool        append,
-	Pool&       pool)
+    const   bool        append)
 {
 	RolloverDescriptionPtr desc;
 
@@ -176,14 +174,14 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 		purgeStart++;
 	}
 
-	if (!purge(purgeStart, priv->maxIndex, pool))
+    if (!purge(purgeStart, priv->maxIndex))
 	{
 		return desc;
 	}
 
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Integer>(purgeStart);
-	formatFileName(obj, buf, pool);
+    formatFileName(obj, buf);
 
 	LogString renameTo(buf);
 	LogString compressedName(renameTo);
@@ -191,8 +189,8 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 
 	if(getCreateIntermediateDirectories()){
 		File compressedFile(compressedName);
-		File compressedParent (compressedFile.getParent(pool));
-		compressedParent.mkdirs(pool);
+        File compressedParent (compressedFile.getParent());
+        compressedParent.mkdirs();
 	}
 
 	if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz")))
@@ -254,7 +252,7 @@ int FixedWindowRollingPolicy::getMinIndex() const
  * index will be deleted if needed.
  * @return true if purge was successful and rollover should be attempted.
  */
-bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
+bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex) const
 {
 	int suffixLength = 0;
 
@@ -282,21 +280,21 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 		toRenameBase.setPath(lowFilename.substr(0, lowFilename.length() - suffixLength));
 		File* toRename = &toRenameCompressed;
 		bool isBase = false;
-		bool exists = toRenameCompressed.exists(p);
+        bool exists = toRenameCompressed.exists();
 
 		if (suffixLength > 0)
 		{
 			if (exists)
 			{
-				if (toRenameBase.exists(p))
+                if (toRenameBase.exists())
 				{
-					toRenameBase.deleteFile(p);
+                    toRenameBase.deleteFile();
 				}
 			}
 			else
 			{
 				toRename = &toRenameBase;
-				exists = toRenameBase.exists(p);
+                exists = toRenameBase.exists();
 				isBase = true;
 			}
 		}
@@ -309,7 +307,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 			//        if that fails then abandon purge
 			if (i == highIndex)
 			{
-				if (!toRename->deleteFile(p))
+                if (!toRename->deleteFile())
 				{
 					return false;
 				}
@@ -352,7 +350,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 
 		try
 		{
-			if (!(*iter)->execute(p))
+            if (!(*iter)->execute())
 			{
 				return false;
 			}

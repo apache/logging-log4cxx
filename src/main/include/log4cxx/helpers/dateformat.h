@@ -46,10 +46,9 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		/**
 		* Formats an log4cxx_time_t into a date/time string.
 		* @param s string to which the date/time string is appended.
-		* @param tm date to be formatted.
-		* @param p memory pool used during formatting.
+        * @param tm date to be formatted.
 		*/
-		virtual void format(LogString& s, log4cxx_time_t tm, LOG4CXX_NS::helpers::Pool& p) const = 0;
+        virtual void format(LogString& s, log4cxx_time_t tm) const = 0;
 
 		/**
 		* Sets the time zone.
@@ -60,12 +59,11 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		/**
 		* Format an integer consistent with the format method.
 		* @param s string to which the numeric string is appended.
-		* @param n integer value.
-		* @param p memory pool used during formatting.
+        * @param n integer value.
 		* @remarks This method is used by CachedDateFormat to
 		* format the milliseconds.
 		*/
-		virtual void numberFormat(LogString& s, int n, LOG4CXX_NS::helpers::Pool& p) const;
+        virtual void numberFormat(LogString& s, int n) const;
 
 
 	protected:

@@ -57,8 +57,7 @@ class LOG4CXX_EXPORT ColorStartPatternConverter
 		using LoggingEventPatternConverter::format;
 
 		void format(const spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+            LogString& toAppendTo) const override;
 
 		void setFatalColor(const LogString& color);
 		void setErrorColor(const LogString& color);

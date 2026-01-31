@@ -66,8 +66,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 Call the <code>doAppend</code> method on all attached appenders.
 		*/
-		int appendLoopOnAppenders(const spi::LoggingEventPtr& event,
-			LOG4CXX_NS::helpers::Pool& p);
+        int appendLoopOnAppenders(const spi::LoggingEventPtr& event);
 
 		/**
 		 * Get all previously added appenders as an Enumeration.

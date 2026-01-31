@@ -48,8 +48,7 @@ PatternConverterPtr ClassNamePatternConverter::newInstance(
 
 void ClassNamePatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+    LogString& toAppendTo) const
 {
 	int initialLength = (int)toAppendTo.length();
 	append(toAppendTo, event->getLocationInformation().getClassName());

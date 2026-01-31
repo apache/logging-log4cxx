@@ -84,8 +84,7 @@ class LOG4CXX_EXPORT Appender :
 		 Loggers will call the <code>doAppend</code> method of appender
 		 implementations in order to log.
 		*/
-		virtual void doAppend(const spi::LoggingEventPtr& event,
-			LOG4CXX_NS::helpers::Pool& pool) = 0;
+        virtual void doAppend(const spi::LoggingEventPtr& event) = 0;
 
 
 		/**

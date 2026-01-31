@@ -65,7 +65,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+        void activateOptions() override;
 		/**
 		\copybrief spi::OptionHandler::setOption()
 		 */

@@ -48,7 +48,7 @@ void SizeBasedTriggeringPolicy::setMaxFileSize(size_t l)
 	maxFileSize = l;
 }
 
-void SizeBasedTriggeringPolicy::activateOptions(Pool& /* p */)
+void SizeBasedTriggeringPolicy::activateOptions()
 {
 }
 

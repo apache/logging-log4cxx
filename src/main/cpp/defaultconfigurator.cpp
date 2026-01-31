@@ -42,9 +42,8 @@ void DefaultConfigurator::setConfigurationFileName(const LogString& path)
 
 void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
 {
-	Pool p;
 	LogString strSeconds;
-	StringHelper::toString(seconds, p, strSeconds);
+    StringHelper::toString(seconds, strSeconds);
 	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"), strSeconds);
 }
 
@@ -59,7 +58,6 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 {
 
 	LogString configurationFileName = getConfigurationFileName();
-	Pool pool;
 	File configuration;
 
 	if (configurationFileName.empty())
@@ -81,7 +79,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 				debugMsg.append(names[i]);
 				LogLog::debug(debugMsg);
 			}
-			if (candidate.exists(pool))
+            if (candidate.exists())
 			{
 				configuration = candidate;
 				break;
@@ -93,7 +91,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 		configuration.setPath(configurationFileName);
 	}
 
-	if (configuration.exists(pool))
+    if (configuration.exists())
 	{
 		if (LogLog::isDebugEnabled())
 		{
@@ -192,8 +190,7 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 {
 	auto result = std::tuple<ConfigurationStatus, LogString>
 		{ ConfigurationStatus::NotConfigured, LogString() };
-	auto r = LogManager::getLoggerRepository();
-	Pool pool;
+    auto r = LogManager::getLoggerRepository();
 
 	for (auto& dir : directories )
 	{
@@ -205,7 +202,7 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 
 			if (LogLog::isDebugEnabled())
 				LogLog::debug(LOG4CXX_STR("Checking file ") + candidate_str);
-			if (candidate.exists(pool))
+            if (candidate.exists())
 			{
 				std::get<1>(result) = candidate_str;
 				configure(r);

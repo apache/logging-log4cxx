@@ -49,32 +49,32 @@ BufferedWriter::~BufferedWriter()
 {
 }
 
-void BufferedWriter::close(Pool& p)
+void BufferedWriter::close()
 {
-	flush(p);
-	m_priv->out->close(p);
+    flush();
+    m_priv->out->close();
 }
 
-void BufferedWriter::flush(Pool& p)
+void BufferedWriter::flush()
 {
 	if (m_priv->buf.length() > 0)
 	{
-		m_priv->out->write(m_priv->buf, p);
+        m_priv->out->write(m_priv->buf);
 		m_priv->buf.erase(m_priv->buf.begin(), m_priv->buf.end());
 	}
 }
 
-void BufferedWriter::write(const LogString& str, Pool& p)
+void BufferedWriter::write(const LogString& str)
 {
 	if (m_priv->buf.length() + str.length() > m_priv->sz)
 	{
-		m_priv->out->write(m_priv->buf, p);
+        m_priv->out->write(m_priv->buf);
 		m_priv->buf.erase(m_priv->buf.begin(), m_priv->buf.end());
 	}
 
 	if (str.length() > m_priv->sz)
 	{
-		m_priv->out->write(str, p);
+        m_priv->out->write(str);
 	}
 	else
 	{

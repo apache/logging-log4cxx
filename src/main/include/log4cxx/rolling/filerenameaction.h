@@ -49,7 +49,7 @@ class FileRenameAction : public Action
 		 *
 		 * @return true if successful.
 		 */
-		bool execute(LOG4CXX_NS::helpers::Pool& pool) const override;
+        bool execute() const override;
 };
 
 LOG4CXX_PTR_DEF(FileRenameAction);

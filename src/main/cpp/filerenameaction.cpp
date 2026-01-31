@@ -46,7 +46,7 @@ FileRenameAction::FileRenameAction(const File& toRename,
 {
 }
 
-bool FileRenameAction::execute(LOG4CXX_NS::helpers::Pool& pool1) const
+bool FileRenameAction::execute() const
 {
-	return priv->source.renameTo(priv->destination, pool1);
+    return priv->source.renameTo(priv->destination);
 }

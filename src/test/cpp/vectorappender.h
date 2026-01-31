@@ -43,7 +43,7 @@ class VectorAppender : public AppenderSkeleton
 		This method is called by the AppenderSkeleton#doAppend
 		method.
 		*/
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override;
+        void append(const spi::LoggingEventPtr& event) override;
 
 		const std::vector<spi::LoggingEventPtr>& getVector() const
 		{

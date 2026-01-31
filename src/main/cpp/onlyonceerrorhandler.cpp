@@ -41,7 +41,7 @@ void OnlyOnceErrorHandler::setLogger(const LoggerPtr&)
 {
 }
 
-void OnlyOnceErrorHandler::activateOptions(Pool&)
+void OnlyOnceErrorHandler::activateOptions()
 {
 }
 

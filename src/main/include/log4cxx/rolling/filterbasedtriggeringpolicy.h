@@ -29,11 +29,6 @@ namespace LOG4CXX_NS
 
 class File;
 
-namespace helpers
-{
-class Pool;
-}
-
 
 namespace rolling
 {
@@ -105,7 +100,7 @@ class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy
 
 		Activates all attached filters.
 		 */
-		void activateOptions(helpers::Pool&) override;
+        void activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

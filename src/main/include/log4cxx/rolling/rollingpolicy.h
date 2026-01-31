@@ -50,16 +50,14 @@ class LOG4CXX_EXPORT RollingPolicy :
 		 * Initialize the policy and return any initial actions for rolling file appender.
 		 *
 		 * @param currentActiveFile current value of RollingFileAppender.getFile().
-		 * @param append current value of RollingFileAppender.getAppend().
-		 * @param pool pool for memory allocations during call.
+         * @param append current value of RollingFileAppender.getAppend().
 		 * @return Description of the initialization, may be null to indicate
 		 * no initialization needed.
 		 * @throws SecurityException if denied access to log files.
 		 */
 		virtual RolloverDescriptionPtr initialize(
 			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			LOG4CXX_NS::helpers::Pool& pool) = 0;
+            const   bool                    append) = 0;
 
 		/**
 		 * Prepare for a rollover.  This method is called prior to
@@ -68,16 +66,14 @@ class LOG4CXX_EXPORT RollingPolicy :
 		 * after close of current log file.
 		 *
 		 * @param currentActiveFile file name for current active log file.
-		 * @param append current value of the parent FileAppender.getAppend().
-		 * @param pool pool for memory allocations during call.
+         * @param append current value of the parent FileAppender.getAppend().
 		 * @return Description of pending rollover, may be null to indicate no rollover
 		 * at this time.
 		 * @throws SecurityException if denied access to log files.
 		 */
 		virtual RolloverDescriptionPtr rollover(
 			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			LOG4CXX_NS::helpers::Pool& pool) = 0;
+            const   bool                    append) = 0;
 };
 
 LOG4CXX_PTR_DEF(RollingPolicy);

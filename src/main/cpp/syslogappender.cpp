@@ -82,10 +82,9 @@ void SyslogAppender::initSyslogFacilityStr()
 	_priv->facilityStr = getFacilityString(_priv->syslogFacility);
 
 	if (_priv->facilityStr.empty())
-	{
-		Pool p;
+    {
 		LogString msg(LOG4CXX_STR("\""));
-		StringHelper::toString(_priv->syslogFacility, p, msg);
+        StringHelper::toString(_priv->syslogFacility, msg);
 		msg.append(LOG4CXX_STR("\" is an unknown syslog facility. Defaulting to \"USER\"."));
 		LogLog::warn(msg);
 		_priv->syslogFacility = LOG_USER;
@@ -271,7 +270,7 @@ int SyslogAppender::getFacility(
 	}
 }
 
-void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void SyslogAppender::append(const spi::LoggingEventPtr& event)
 {
 	if  (!isAsSevereAsThreshold(event->getLevel()))
 	{
@@ -280,7 +279,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	LogString msg;
 	std::string encoded;
-	_priv->layout->format(msg, event, p);
+    _priv->layout->format(msg, event);
 
 	Transcoder::encode(msg, encoded);
 
@@ -355,7 +354,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	for (auto const& item : packets)
 	{
 		LogString sbuf(1, 0x3C /* '<' */);
-		StringHelper::toString((_priv->syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
+        StringHelper::toString((_priv->syslogFacility | event->getLevel()->getSyslogEquivalent()), sbuf);
 		sbuf.append(1, (logchar) 0x3E /* '>' */);
 
 		if (_priv->facilityPrinting)
@@ -368,7 +367,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	}
 }
 
-void SyslogAppender::activateOptions(Pool&)
+void SyslogAppender::activateOptions()
 {
 }
 

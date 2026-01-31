@@ -66,8 +66,7 @@ using namespace LOG4CXX_NS::spi;
 using namespace LOG4CXX_NS::pattern;
 
 SQLException::SQLException(short fHandleType,
-	void* hInput, const char* prolog,
-	LOG4CXX_NS::helpers::Pool& p)
+    void* hInput, const char* prolog)
 	: Exception(formatMessage(fHandleType, hInput, prolog, p))
 {
 }
@@ -84,7 +83,7 @@ SQLException::SQLException(const SQLException& src)
 }
 
 const char* SQLException::formatMessage(short fHandleType,
-	void* hInput, const char* prolog, LOG4CXX_NS::helpers::Pool& p)
+    void* hInput, const char* prolog)
 {
 	std::string strReturn(prolog);
 	strReturn.append(" - ");
@@ -110,7 +109,8 @@ const char* SQLException::formatMessage(short fHandleType,
 	strReturn.append("log4cxx built without ODBC support");
 #endif
 
-	return apr_pstrdup((apr_pool_t*) p.getAPRPool(), strReturn.c_str());
+//	return apr_pstrdup((apr_pool_t*) p.getAPRPool(), strReturn.c_str());
+    return nullptr;
 }
 
 
@@ -212,7 +212,7 @@ bool ODBCAppender::requiresLayout() const
 	return false;
 }
 
-void ODBCAppender::activateOptions(LOG4CXX_NS::helpers::Pool&)
+void ODBCAppender::activateOptions()
 {
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
@@ -254,7 +254,7 @@ void ODBCAppender::activateOptions(LOG4CXX_NS::helpers::Pool&)
 }
 
 
-void ODBCAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p)
+void ODBCAppender::append(const spi::LoggingEventPtr& event)
 {
 #if LOG4CXX_HAVE_ODBC
 	_priv->buffer.push_back(event);
@@ -268,12 +268,12 @@ void ODBCAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers
 }
 
 #if LOG4CXX_ABI_VERSION <= 15
-LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) const
+LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event) const
 {
     return LogString();
 }
 
-void ODBCAppender::execute(const LogString& sql, LOG4CXX_NS::helpers::Pool& p)
+void ODBCAppender::execute(const LogString& sql)
 {
 }
 #endif

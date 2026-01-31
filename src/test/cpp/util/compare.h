@@ -34,8 +34,7 @@ class Compare
 	private:
 		/// Prints file on the console.
 		static void outputFile(const File& file,
-			const LogString& contents,
-			log4cxx::helpers::Pool& pool);
+            const LogString& contents);
 
 		static void emit(const LogString& line);
 		static bool getline(LogString& buf, LogString& line);
