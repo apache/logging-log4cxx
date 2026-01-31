@@ -33,12 +33,9 @@ LOG4CXX_PTR_DEF(Socket);
 LOG4CXX_UNIQUE_PTR_DEF(Socket);
 
 /**
-<p>This class implements client sockets (also called just "sockets"). A socket
-is an endpoint for communication between two machines.
-<p>The actual work of the socket is performed by an instance of the SocketImpl
-class. An application, by changing the socket factory that creates the socket
-implementation, can configure itself to create sockets appropriate to the
-local firewall.
+Abstract base class for an outgoing socket connection.
+A socket is an endpoint for communication between
+two network connected machines or processes.
 */
 class LOG4CXX_EXPORT Socket : public helpers::Object
 {
@@ -56,7 +53,16 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 
 		virtual size_t write(ByteBuffer&) = 0;
 
-		/** Closes this socket. */
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		Use \c newValue for the behaviour when the network buffer (on an accepted socket connection) is full.
+
+		When true, an exception is thrown if the write would block.
+		*/
+		virtual void setNonBlocking(bool newValue) = 0;
+#endif
+
+		/** Close this socket. */
 		virtual void close() = 0;
 
 		/** Returns the value of this socket's address field. */
@@ -65,6 +71,8 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		/** Returns the value of this socket's port field. */
 		int getPort() const;
 
+		/** Create a concrete instance of this class
+		*/
 		static SocketUniquePtr create(InetAddressPtr& address, int port);
 
 	private:
@@ -75,5 +83,11 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 
 } // namespace helpers
 } // namespace log4cxx
+
+#if 15 < LOG4CXX_ABI_VERSION
+#define LOG4CXX_16_VIRTUAL_SPECIFIER override
+#else
+#define LOG4CXX_16_VIRTUAL_SPECIFIER
+#endif
 
 #endif // _LOG4CXX_HELPERS_SOCKET_H

@@ -36,10 +36,12 @@ class LOG4CXX_EXPORT APRSocket : public helpers::Socket
 		APRSocket(InetAddressPtr& address, int port);
 		APRSocket(apr_socket_t*, apr_pool_t* pool);
 
-		virtual size_t write(ByteBuffer&);
+		size_t write(ByteBuffer&) override;
+
+		void setNonBlocking(bool newValue) LOG4CXX_16_VIRTUAL_SPECIFIER;
 
 		/** Closes this socket. */
-		virtual void close();
+		void close() override;
 
 		apr_socket_t* getSocketPtr() const;
 
