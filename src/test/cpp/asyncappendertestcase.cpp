@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -170,6 +170,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 		LOGUNIT_TEST(testAsyncFmtLogging);
 #endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+		LOGUNIT_TEST(testBufferResizeWraparound);
 		LOGUNIT_TEST_SUITE_END();
 
 #ifdef _DEBUG
@@ -739,6 +740,62 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		}
 #endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 
+		/**
+		 * Tests that resizing the buffer when data is wrapped around (index > size)
+		 * does not cause a crash or data loss.
+		 */
+		void testBufferResizeWraparound()
+		{
+			int initialSize = 10;
+			int newSize = 20;
+
+			auto asyncAppender = std::make_shared<AsyncAppender>();
+			asyncAppender->setBufferSize(initialSize);
+
+			auto vectorAppender = std::make_shared<VectorAppender>();
+			asyncAppender->addAppender(vectorAppender);
+
+			Pool p;
+			asyncAppender->activateOptions(p);
+
+			LoggerPtr root = Logger::getRootLogger();
+
+			// 1. Warmup: push 5 events and let them drain completely.
+			// This moves the internal read head (dispatchedCount) to 5.
+			for (int i = 0; i < 5; ++i) {
+				auto event = std::make_shared<spi::LoggingEvent>(
+					root->getName(), Level::getInfo(), LOG4CXX_STR("Warmup"),
+					spi::LocationInfo::getLocationUnavailable());
+				asyncAppender->append(event, p);
+			}
+
+			// Simple spin-wait to ensure dispatcher caught up
+			for (int i = 0; i < 100000 && vectorAppender->getVector().size() < 5; ++i) {
+				std::this_thread::yield();
+			}
+			LOGUNIT_ASSERT_EQUAL((size_t)5, vectorAppender->getVector().size());
+
+			// 2. Wrap-around: fill the buffer (10 items).
+			// Indices [5-9] filled, then wraps to [0-4].
+			for (int i = 0; i < 10; ++i) {
+				auto event = std::make_shared<spi::LoggingEvent>(
+					root->getName(), Level::getInfo(), LOG4CXX_STR("CrashTest"),
+					spi::LocationInfo::getLocationUnavailable());
+				asyncAppender->append(event, p);
+			}
+
+			// 3. Resize while wrapped.
+			// OLD BUG: The modulo logic (index % newSize) would point to empty slots (crash).
+			// FIX: The buffer is drained and realigned linearly.
+			asyncAppender->setBufferSize(newSize);
+
+			// 4. Trigger close/drain.
+			// This forces the dispatcher to read the remaining events.
+			asyncAppender->close();
+
+			// Total should be 5 (warmup) + 10 (test) = 15
+			LOGUNIT_ASSERT_EQUAL((size_t)15, vectorAppender->getVector().size());
+		}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);
