@@ -249,7 +249,8 @@ void TelnetAppender::write(ByteBuffer& buf)
 
 void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, Pool& p)
 {
-	size_t bytesSize = msg.size() * 2;
+	// Ensure minimum buffer size to prevent infinite loop in encoder with short messages
+        size_t bytesSize = (msg.size() * 2 > 1024) ? msg.size() * 2 : 1024;
 	char* bytes = p.pstralloc(bytesSize);
 
 	LogString::const_iterator msgIter(msg.begin());
@@ -275,7 +276,8 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		else
 			msg = event->getRenderedMessage();
 		msg.append(LOG4CXX_STR("\r\n"));
-		size_t bytesSize = msg.size() * 2;
+		// Ensure minimum buffer size to prevent infinite loop in encoder with short messages
+                size_t bytesSize = (msg.size() * 2 > 1024) ? msg.size() * 2 : 1024;
 		char* bytes = p.pstralloc(bytesSize);
 
 		LogString::const_iterator msgIter(msg.begin());
