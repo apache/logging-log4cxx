@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,6 +44,7 @@
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/singletonholder.h>
 #include <limits>
+#include <cstdint>
 
 namespace
 {
@@ -282,7 +283,7 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 
 long OptionConverter::toFileSize(const LogString& s, long dEfault)
 {
-    long long val = toFileSize64(s, dEfault);
+    int64_t val = toFileSize64(s, dEfault);
     
     if (val > std::numeric_limits<long>::max()) {
         return std::numeric_limits<long>::max();
@@ -291,7 +292,7 @@ long OptionConverter::toFileSize(const LogString& s, long dEfault)
     return (long) val;
 }
 
-long long OptionConverter::toFileSize64(const LogString& s, long long dEfault)
+int64_t OptionConverter::toFileSize64(const LogString& s, int64_t dEfault)
 {
 	if (s.empty())
 	{
@@ -302,7 +303,7 @@ long long OptionConverter::toFileSize64(const LogString& s, long long dEfault)
 
 	if (index != LogString::npos && index > 0)
 	{
-		long long multiplier = 1;
+		int64_t multiplier = 1;
 		size_t unitIndex = index - 1;
 
 		if (s[unitIndex] == 'k' || s[unitIndex] == 'K')
