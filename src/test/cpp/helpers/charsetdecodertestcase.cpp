@@ -22,6 +22,7 @@
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
