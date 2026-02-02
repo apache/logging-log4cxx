@@ -20,6 +20,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
+#include <cstdint>
 
 namespace LOG4CXX_NS
 {
@@ -79,7 +80,7 @@ class LOG4CXX_EXPORT OptionConverter
 		 * The numeric equivalent of \c value if it is not empty, otherwise \c defaultValue.
 		 * Supports 64-bit values for file sizes > 2GB.
 		 */
-		static long long toFileSize64(const LogString& value, long long defaultValue);
+		static int64_t toFileSize64(const LogString& value, int64_t defaultValue);
 		/**
 		The Level indicated by \c value if recognised otherwise \c defaultValue.
 
