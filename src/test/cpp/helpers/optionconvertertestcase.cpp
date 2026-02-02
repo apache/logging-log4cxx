@@ -29,6 +29,7 @@
 #include <apr_file_io.h>
 #include <apr_user.h>
 #include <apr_env.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 
 using namespace log4cxx;
