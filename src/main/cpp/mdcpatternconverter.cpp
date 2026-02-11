@@ -37,6 +37,8 @@ MDCPatternConverter::MDCPatternConverter
 PatternConverterPtr MDCPatternConverter::newInstance(
 	const std::vector<LogString>& options)
 {
+	if (options.empty())
+		return std::make_shared<MDCPatternConverter>();
 	return std::make_shared<MDCPatternConverter>(LogString(), options.front());
 }
 
@@ -47,28 +49,35 @@ void MDCPatternConverter::format
 	) const
 {
 	size_t startIndex = toAppendTo.size();
+	auto& info = getFormattingInfo();
 	if (m_priv->name.empty()) // Full MDC required?
 	{
-		bool first = true;
-		auto& info = getFormattingInfo();
+		LogString separ = LOG4CXX_STR("{");
+		auto remainingLength = info.getMaxLength() - 1;
 		for (auto key : event->getMDCKeySet())
 		{
-			toAppendTo.append(first ? LOG4CXX_STR("{") : LOG4CXX_STR(","));
-			JSONLayout::appendItem(key, toAppendTo);
-			toAppendTo.append(LOG4CXX_STR(":"));
 			LogString value;
 			event->getMDC(key, value);
-			if (info.getMaxLength() < value.length())
-				JSONLayout::appendItem(value.substr(value.length() - info.getMaxLength()), toAppendTo);
-			else
-				JSONLayout::appendItem(value, toAppendTo);
-			first = false;
+			if (remainingLength < 2 + key.length() + value.length() )
+				break;
+			toAppendTo.append(separ);
+			JSONLayout::appendItem(key, toAppendTo);
+			toAppendTo.append(LOG4CXX_STR(":"));
+			JSONLayout::appendItem(value, toAppendTo);
+			separ = LOG4CXX_STR(",");
 		}
-		if (!first)
+		if (LOG4CXX_STR(",") == separ)
 			toAppendTo.append(LOG4CXX_STR("}"));
 	}
 	else
-		event->getMDC(m_priv->name, toAppendTo);
+	{
+		LogString value;
+		event->getMDC(m_priv->name, value);
+		if (info.getMaxLength() < value.length())
+			toAppendTo.append(value.substr(value.length() - info.getMaxLength()));
+		else
+			toAppendTo.append(value);
+	}
 	if (!m_priv->style.empty()) // In a quoted context?
 	{
 		auto quote = m_priv->style.front();
