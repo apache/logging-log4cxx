@@ -55,6 +55,7 @@ void MDCPatternConverter::format
 	if (m_priv->name.empty()) // Full MDC required?
 	{
 		bool first = true;
+		auto& info = getFormattingInfo();
 		for (auto key : event->getMDCKeySet())
 		{
 			toAppendTo.append(first ? LOG4CXX_STR("{") : LOG4CXX_STR(","));
@@ -62,7 +63,10 @@ void MDCPatternConverter::format
 			toAppendTo.append(LOG4CXX_STR(":"));
 			LogString value;
 			event->getMDC(key, value);
-			JSONLayout::appendItem(value, toAppendTo);
+			if (info.getMaxLength() < value.length())
+				JSONLayout::appendItem(value.substr(value.length() - info.getMaxLength()), toAppendTo);
+			else
+				JSONLayout::appendItem(value, toAppendTo);
 			first = false;
 		}
 		if (!first)
