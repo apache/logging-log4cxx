@@ -58,7 +58,7 @@ public:
 	{
 		std::string key("key1");
 		std::string expected("value2");
-		MDC::put(key, "value1");
+		MDC item1(key, "value1");
 		MDC::put(key, expected);
 		std::string actual(MDC::get(key));
 		LOGUNIT_ASSERT_EQUAL(expected, actual);
@@ -68,11 +68,10 @@ public:
 	void test2()
 	{
 		MDC item1("key1", "value1");
-		LogString largevalue(1000, 'E');
-		MDC item2("key2", largevalue);
+		MDC item2("key2", "value2");
 		helpers::Pool p;
 		LogString output;
-		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.200J %m") };
+		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.30J %m") };
 		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()), p);
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  MDC.LayoutTest - {\"key1\":\"value1\"} Message"), output);
 	}

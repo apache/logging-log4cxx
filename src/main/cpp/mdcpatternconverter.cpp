@@ -52,19 +52,23 @@ void MDCPatternConverter::format
 	auto& info = getFormattingInfo();
 	if (m_priv->name.empty()) // Full MDC required?
 	{
+		const size_t separCount = 2;
+		const size_t quoteCount = 2;
 		LogString separ = LOG4CXX_STR("{");
-		auto remainingLength = info.getMaxLength() - 1;
+		size_t remainingLength = info.getMaxLength() - 1;
 		for (auto key : event->getMDCKeySet())
 		{
 			LogString value;
 			event->getMDC(key, value);
-			if (remainingLength < 2 + key.length() + value.length() )
+			auto itemLength = separCount + key.length() + quoteCount + value.length() + quoteCount;
+			if (remainingLength < itemLength)
 				break;
 			toAppendTo.append(separ);
 			JSONLayout::appendItem(key, toAppendTo);
 			toAppendTo.append(LOG4CXX_STR(":"));
 			JSONLayout::appendItem(value, toAppendTo);
 			separ = LOG4CXX_STR(",");
+			remainingLength -= itemLength;
 		}
 		if (LOG4CXX_STR(",") == separ)
 			toAppendTo.append(LOG4CXX_STR("}"));
