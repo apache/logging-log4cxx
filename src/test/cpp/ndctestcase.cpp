@@ -20,6 +20,7 @@
 #include <log4cxx/file.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/patternlayout.h>
 #include "insertwide.h"
 #include "logunit.h"
 #include "util/compare.h"
@@ -37,6 +38,7 @@ LOGUNIT_CLASS(NDCTestCase)
 	LOGUNIT_TEST(testPushPop);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(testInherit);
+	LOGUNIT_TEST(testFieldPrecision);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -111,6 +113,19 @@ public:
 		LOGUNIT_ASSERT_EQUAL(expected2, NDC::pop());
 		LogString expected3;
 		LOGUNIT_ASSERT_EQUAL(expected3, NDC::pop());
+	}
+
+	/// Check NDC formatting uses to suffix when the maximum field length is exceeded.
+	void testFieldPrecision()
+	{
+		NDC item1("context1");
+		NDC item2("context2");
+		NDC item3("context3");
+		helpers::Pool p;
+		LogString output;
+		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.20x %m") };
+		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("NDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()), p);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  NDC.LayoutTest - t1 context2 context3 Message"), output);
 	}
 
 };
