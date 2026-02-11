@@ -170,20 +170,15 @@ public:
 		const PatternMap & patternMap,
 		const LogString & expected)
 	{
-		std::vector<PatternConverterPtr> converters;
-		std::vector<FormattingInfoPtr> fields;
-		PatternParser::parse(pattern, converters, fields, patternMap);
+		auto converters = PatternParser::parse(pattern, patternMap);
 		Pool p;
 		LogString actual;
-		std::vector<FormattingInfoPtr>::const_iterator fieldIter = fields.begin();
 
-		for (std::vector<PatternConverterPtr>::const_iterator converterIter = converters.begin();
-			converterIter != converters.end();
-			converterIter++, fieldIter++)
+		for (auto item : converters)
 		{
 			auto fieldStart = static_cast<int>(actual.length());
-			(*converterIter)->format(event, actual, p);
-			(*fieldIter)->format(fieldStart, actual);
+			item->format(event, actual, p);
+			item->getFormattingInfo().format(fieldStart, actual);
 		}
 
 		LOGUNIT_ASSERT_EQUAL(expected, actual);

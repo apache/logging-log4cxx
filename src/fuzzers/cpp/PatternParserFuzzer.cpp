@@ -136,9 +136,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	log4cxx::helpers::Pool p;
 	PatternMap patternMap = getFormatSpecifiers();
 	std::vector<PatternConverterPtr> converters;
-	std::vector<FormattingInfoPtr> fields;
 
-	PatternParser::parse(patternLogString, converters, fields, patternMap);
+	auto converters = PatternParser::parse(patternLogString, patternMap);
 
   	return 0;
 }

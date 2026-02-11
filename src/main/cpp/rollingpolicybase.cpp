@@ -95,12 +95,7 @@ LogString RollingPolicyBase::getFileNamePattern() const
  */
 void RollingPolicyBase::parseFileNamePattern()
 {
-	m_priv->patternConverters.erase(m_priv->patternConverters.begin(), m_priv->patternConverters.end());
-	m_priv->patternFields.erase(m_priv->patternFields.begin(), m_priv->patternFields.end());
-	PatternParser::parse(m_priv->fileNamePatternStr,
-		m_priv->patternConverters,
-		m_priv->patternFields,
-		getFormatSpecifiers());
+	m_priv->patternConverters = PatternParser::parse(m_priv->fileNamePatternStr, getFormatSpecifiers());
 }
 
 /**
@@ -114,17 +109,11 @@ void RollingPolicyBase::formatFileName(
 	LogString& toAppendTo,
 	Pool& pool) const
 {
-	std::vector<FormattingInfoPtr>::const_iterator formatterIter =
-		m_priv->patternFields.begin();
-
-	for (std::vector<PatternConverterPtr>::const_iterator
-		converterIter = m_priv->patternConverters.begin();
-		converterIter != m_priv->patternConverters.end();
-		converterIter++, formatterIter++)
+	for (auto item : m_priv->patternConverters)
 	{
 		auto startField = toAppendTo.length();
-		(*converterIter)->format(obj, toAppendTo, pool);
-		(*formatterIter)->format((int)startField, toAppendTo);
+		item->format(obj, toAppendTo, pool);
+		item->getFormattingInfo().format((int)startField, toAppendTo);
 	}
 }
 

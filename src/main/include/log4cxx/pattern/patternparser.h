@@ -33,7 +33,7 @@ namespace pattern
 
 typedef std::function<PatternConverterPtr(const std::vector<LogString>& options)> PatternConstructor;
 typedef std::map<LogString, PatternConstructor> PatternMap;
-
+LOG4CXX_LIST_DEF(PatternConverterList, PatternConverterPtr);
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
 //                 Igor E. Poteryaev <jah@mail.ru>
@@ -100,6 +100,7 @@ class LOG4CXX_EXPORT PatternParser
 			std::vector<LogString>& options);
 
 	public:
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		 * Parse a format specifier.
 		 * @param pattern pattern to parse.
@@ -112,6 +113,16 @@ class LOG4CXX_EXPORT PatternParser
 			std::vector<PatternConverterPtr>& patternConverters,
 			std::vector<FormattingInfoPtr>& formattingInfos,
 			const PatternMap& rules);
+#endif
+		/**
+		 * Convert \c pattern to converters using \c rules.
+		 * @param pattern a string specifying the conversion types and their properties.
+		 * @param rules a map of stock pattern converters keyed by name.
+		 */
+		static PatternConverterList parse
+			( const LogString&      pattern
+			, const PatternMap&     rules
+			);
 
 	private:
 		/**
@@ -148,8 +159,8 @@ class LOG4CXX_EXPORT PatternParser
 			logchar c, const LogString& pattern, size_t i,
 			LogString& currentLiteral, const FormattingInfoPtr& formattingInfo,
 			const PatternMap&  rules,
-			std::vector<PatternConverterPtr>& patternConverters,
-			std::vector<FormattingInfoPtr>&  formattingInfos);
+			PatternConverterList& patternConverter
+			);
 
 		static bool isUnicodeIdentifierStart(logchar c);
 		static bool isUnicodeIdentifierPart(logchar c);

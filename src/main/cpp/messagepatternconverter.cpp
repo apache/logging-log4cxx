@@ -84,6 +84,11 @@ void MessagePatternConverter::format
 	, helpers::Pool&           /* p */
 	) const
 {
-	toAppendTo.append(event->getRenderedMessage());
+	auto& msg = event->getRenderedMessage();
+	auto& info = getFormattingInfo();
+	if (info.getMaxLength() < msg.length())
+		toAppendTo.append(msg.substr(msg.length() - info.getMaxLength()));
+	else
+		toAppendTo.append(msg);
 }
 

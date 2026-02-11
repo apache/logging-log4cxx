@@ -36,11 +36,6 @@ struct RollingPolicyBase::RollingPolicyBasePrivate {
     PatternConverterList patternConverters;
 
     /**
-     * File name field specifiers.
-     */
-    FormattingInfoList patternFields;
-
-    /**
      * File name pattern.
      */
     LogString fileNamePatternStr;

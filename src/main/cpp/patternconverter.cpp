@@ -58,3 +58,12 @@ void PatternConverter::append(LogString& toAppendTo, const std::string& src)
 	toAppendTo.append(decoded);
 }
 
+const FormattingInfo& PatternConverter::getFormattingInfo() const
+{
+	return *m_priv->info;
+}
+
+void PatternConverter::setFormattingInfo(const FormattingInfoPtr& newValue)
+{
+	m_priv->info = newValue;
+}

@@ -21,6 +21,7 @@
 
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/logstring.h>
+#include <log4cxx/pattern/formattinginfo.h>
 #include <vector>
 
 #define DECLARE_LOG4CXX_PATTERN(cls) DECLARE_ABSTRACT_LOG4CXX_OBJECT(cls)
@@ -94,6 +95,16 @@ class LOG4CXX_EXPORT PatternConverter : public virtual helpers::Object
 		 * @return  the name of the conversion pattern
 		 */
 		virtual LogString getStyleClass(const helpers::ObjectPtr& e) const;
+
+        /**
+         * Provides a minimum width, a maximum width and the alignment
+         */
+        const FormattingInfo& getFormattingInfo() const;
+
+        /**
+         * Use \c newValue for the minimum width, a maximum width and the alignment
+         */
+        void setFormattingInfo(const FormattingInfoPtr& newValue);
 
 	protected:
 		/**
