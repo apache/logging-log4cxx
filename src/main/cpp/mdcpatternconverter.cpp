@@ -37,11 +37,6 @@ MDCPatternConverter::MDCPatternConverter
 PatternConverterPtr MDCPatternConverter::newInstance(
 	const std::vector<LogString>& options)
 {
-	if (options.empty())
-	{
-		static helpers::WideLife<PatternConverterPtr> def = std::make_shared<MDCPatternConverter>();
-		return def;
-	}
 	return std::make_shared<MDCPatternConverter>(LogString(), options.front());
 }
 

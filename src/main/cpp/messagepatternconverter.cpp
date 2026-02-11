@@ -72,8 +72,7 @@ PatternConverterPtr MessagePatternConverter::newInstance(
 {
 	if (options.empty() || options.front().empty())
 	{
-		static helpers::WideLife<PatternConverterPtr> def = std::make_shared<MessagePatternConverter>();
-		return def;
+		return std::make_shared<MessagePatternConverter>();
 	}
 	return std::make_shared<QuotedMessagePatternConverter>(options.front().front());
 }

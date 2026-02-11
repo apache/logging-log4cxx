@@ -36,8 +36,7 @@ LineSeparatorPatternConverter::LineSeparatorPatternConverter() :
 PatternConverterPtr LineSeparatorPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static WideLife<PatternConverterPtr> instance = std::make_shared<LineSeparatorPatternConverter>();
-	return instance;
+	return std::make_shared<LineSeparatorPatternConverter>();
 }
 
 void LineSeparatorPatternConverter::format(

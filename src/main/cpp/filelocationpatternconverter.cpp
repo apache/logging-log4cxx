@@ -35,8 +35,7 @@ FileLocationPatternConverter::FileLocationPatternConverter() :
 PatternConverterPtr FileLocationPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */ )
 {
-	static WideLife<PatternConverterPtr> instance = std::make_shared<FileLocationPatternConverter>();
-	return instance;
+	return std::make_shared<FileLocationPatternConverter>();
 }
 
 void FileLocationPatternConverter::format(

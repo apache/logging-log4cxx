@@ -37,12 +37,6 @@ ClassNamePatternConverter::ClassNamePatternConverter(
 PatternConverterPtr ClassNamePatternConverter::newInstance(
 	const std::vector<LogString>& options)
 {
-	if (options.size() == 0)
-	{
-		static WideLife<PatternConverterPtr> def = std::make_shared<ClassNamePatternConverter>(options);
-		return def;
-	}
-
 	return std::make_shared<ClassNamePatternConverter>(options);
 }
 
