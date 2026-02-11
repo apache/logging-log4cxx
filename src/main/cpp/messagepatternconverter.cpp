@@ -86,7 +86,7 @@ void MessagePatternConverter::format
 	auto& msg = event->getRenderedMessage();
 	auto& info = getFormattingInfo();
 	if (info.getMaxLength() < msg.length())
-		toAppendTo.append(msg.substr(msg.length() - info.getMaxLength()));
+		toAppendTo.append(&msg[msg.length() - info.getMaxLength()], info.getMaxLength());
 	else
 		toAppendTo.append(msg);
 }
