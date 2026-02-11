@@ -108,6 +108,7 @@ class LOG4CXX_EXPORT PatternParser
 		 * @param formattingInfos list to receive field specifiers corresponding to pattern converters.
 		 * @param rules map of stock pattern converters keyed by format specifier.
 		 */
+		[[ deprecated( "Parsing into two vectors is longer supported" ) ]]
 		static void parse(
 			const LogString& pattern,
 			std::vector<PatternConverterPtr>& patternConverters,
