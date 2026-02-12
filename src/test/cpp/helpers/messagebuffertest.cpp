@@ -297,7 +297,6 @@ public:
 	}
 
 	// Checks what happens with 4 concurrently active MessageBuffer objects in the same thread, each using using a std::stringstream.
-	// The Log4cxx debug output shows the partially completed message (at the 3rd level) being reset for use by the 4th level MessageBuffer.
 	void testInsertCalculatedValue()
 	{
 		MessageBuffer buf;

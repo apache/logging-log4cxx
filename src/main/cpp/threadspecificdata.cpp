@@ -33,7 +33,6 @@
 #include <thread>
 #include <mutex>
 #include <list>
-#include <array>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -56,15 +55,51 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 		int usage_count{ 0 };
 		std::basic_ostringstream<T> ss;
 	};
-	static const int max_depth = 3;
 
-	std::array<CountedStringStream<char>, max_depth> char_stringstream;
+	// Find an unused stream buffer or add a new stream buffer in the collection \c store
+	template <typename T>
+	std::basic_ostringstream<T>& getStream(std::list<CountedStringStream<T> >& store)
+	{
+		auto p = getCurrentData()->m_priv.get();
+		CountedStringStream<T>* pItem{ nullptr };
+		for (auto& item : store)
+		{
+			if (0 == item.usage_count)
+			{
+				pItem = &item;
+				break;
+			}
+		}
+		if (!pItem)
+		{
+			store.push_back({});
+			pItem = &store.back();
+		}
+		++pItem->usage_count;
+		return pItem->ss;
+	}
+
+	// Decrement the usage count associated with the stream buffer \c ss in the collection \c store
+	template <typename T>
+	void releaseStream(std::list<CountedStringStream<T> >& store, std::basic_ostringstream<T>& ss)
+	{
+		for (auto& item : store)
+		{
+			if (&item.ss == &ss)
+			{
+				--item.usage_count;
+				break;
+			}
+		}
+	}
+
+	std::list<CountedStringStream<char> > char_stringstream;
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-	std::array<CountedStringStream<wchar_t>, max_depth> wchar_stringstream;
+	std::list<CountedStringStream<wchar_t> > wchar_stringstream;
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::array<CountedStringStream<UniChar>, max_depth> unichar_stringstream;
+	std::list<CountedStringStream<UniChar> > unichar_stringstream;
 #endif
 
 	void setThreadIdName();
@@ -173,86 +208,41 @@ auto ThreadSpecificData::getNames() -> NamePairPtr
 
 std::basic_ostringstream<char>& ThreadSpecificData::getStream(const char&)
 {
-	auto p = getCurrentData()->m_priv.get();
-	auto pItem = &p->char_stringstream[0];
-	for (auto& item : p->char_stringstream)
-	{
-		pItem = &item;
-		if (0 == item.usage_count)
-			break;
-	}
-	++pItem->usage_count;
-	return pItem->ss;
+	auto p = getCurrentData();
+	return p->m_priv->getStream(p->m_priv->char_stringstream);
 }
 
 void ThreadSpecificData::releaseStream(std::basic_ostringstream<char>& ss)
 {
-	auto p = getCurrentData()->m_priv.get();
-	for (auto& item : p->char_stringstream)
-	{
-		if (&item.ss == &ss)
-		{
-			--item.usage_count;
-			break;
-		}
-	}
+	auto p = getCurrentData();
+	p->m_priv->releaseStream(p->m_priv->char_stringstream, ss);
 }
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(const wchar_t&)
 {
-	auto p = getCurrentData()->m_priv.get();
-	auto pItem = &p->wchar_stringstream[0];
-	for (auto& item : p->wchar_stringstream)
-	{
-		pItem = &item;
-		if (0 == item.usage_count)
-			break;
-	}
-	++pItem->usage_count;
-	return pItem->ss;
+	auto p = getCurrentData();
+	return p->m_priv->getStream(p->m_priv->wchar_stringstream);
 }
 
 void ThreadSpecificData::releaseStream(std::basic_ostringstream<wchar_t>& ss)
 {
-	auto p = getCurrentData()->m_priv.get();
-	for (auto& item : p->wchar_stringstream)
-	{
-		if (&item.ss == &ss)
-		{
-			--item.usage_count;
-			break;
-		}
-	}
+	auto p = getCurrentData();
+	p->m_priv->releaseStream(p->m_priv->wchar_stringstream, ss);
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
 {
-	auto p = getCurrentData()->m_priv.get();
-	auto pItem = &p->unichar_stringstream[0];
-	for (auto& item : p->unichar_stringstream)
-	{
-		pItem = &item;
-		if (0 == item.usage_count)
-			break;
-	}
-	++pItem->usage_count;
-	return pItem->ss;
+	auto p = getCurrentData();
+	return p->m_priv->getStream(p->m_priv->unichar_stringstream);
 }
 
 void ThreadSpecificData::releaseStream(std::basic_ostringstream<UniChar>& ss)
 {
-	auto p = getCurrentData()->m_priv.get();
-	for (auto& item : p->unichar_stringstream)
-	{
-		if (&item.ss == &ss)
-		{
-			--item.usage_count;
-			break;
-		}
-	}
+	auto p = getCurrentData();
+	p->m_priv->releaseStream(p->m_priv->unichar_stringstream, ss);
 }
 #endif
 
