@@ -24,6 +24,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include "util/compare.h"
+#include <cassert>
 
 #if LOG4CXX_CFSTRING_API
 	#include <CoreFoundation/CFString.h>
@@ -58,6 +59,7 @@ LOGUNIT_CLASS(MessageBufferTest)
 #if LOG4CXX_CFSTRING_API
 	LOGUNIT_TEST(testInsertCFString);
 #endif
+	LOGUNIT_TEST(testInsertCalculatedValue);
 	LOGUNIT_TEST_SUITE_END();
 
 
@@ -255,6 +257,50 @@ public:
 		LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
 	}
 #endif
+
+	// Use the Gregory-Leibniz series to approximate π
+	static double calculatePi(int terms, int level, int initialTerm = 0)
+	{
+		double pi = 0.0;
+		if (0 < level)
+		{
+			MessageBuffer buf;
+			auto& retval = buf << "level " << level << " pi " << std::setprecision(6) << (pi = calculatePi(terms * 2, level - 1, terms));
+			assert(buf.hasStream());
+			helpers::LogLog::debug(buf.str(retval));
+			pi /= 4; // Divide by 4 to get the value of the previous level
+		}
+		for (int i = initialTerm; i < terms; i++)
+		{
+			if (i % 2 == 0)
+			{
+				pi += 1.0 / (2 * i + 1); // Add for even index
+			}
+			else
+			{
+				pi -= 1.0 / (2 * i + 1); // Subtract for odd index
+			}
+			if ((i + 1) % 500 == 0)
+			{
+				MessageBuffer buf;
+				auto& retval = buf << "level " << level << " term " << i << " pi " << std::setprecision(6) << (pi * 4);
+				assert(buf.hasStream());
+				helpers::LogLog::debug(buf.str(retval));
+			}
+		}
+		return pi * 4; // Multiply by 4 to get Pi
+	}
+
+	// Checks what happens with 4 concurrently active MessageBuffer objects in the same thread, each using using a std::stringstream.
+	// The Log4cxx debug output shows the partially completed message (at the 3rd level) being reset for use by the 4th level MessageBuffer.
+	void testInsertCalculatedValue()
+	{
+		MessageBuffer buf;
+		std::string expectedValue("pi=3.142 calculated pi=3.141 using 4000 terms");
+		auto& retval = buf << "pi=" << std::setprecision(4) << 3.14159265358979323846 << " calculated pi=" << std::setprecision(4) << calculatePi(1000, 2) << " using 4000 terms";
+		LOGUNIT_ASSERT_EQUAL(true, buf.hasStream());
+		LOGUNIT_ASSERT_EQUAL(expectedValue, buf.str(retval));
+	}
 
 };
 

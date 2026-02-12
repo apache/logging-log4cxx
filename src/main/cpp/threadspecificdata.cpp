@@ -33,6 +33,7 @@
 #include <thread>
 #include <mutex>
 #include <list>
+#include <array>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -49,14 +50,21 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 
 	std::shared_ptr<NamePair> pNamePair;
 
+	template <typename T>
+	struct CountedStringStream
+	{
+		int usage_count{ 0 };
+		std::basic_ostringstream<T> ss;
+	};
+	static const int max_depth = 3;
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-	std::basic_ostringstream<logchar> logchar_stringstream;
+	std::array<CountedStringStream<logchar>, max_depth> logchar_stringstream;
 #endif
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-	std::basic_ostringstream<wchar_t> wchar_stringstream;
+	std::array<CountedStringStream<wchar_t>, max_depth> wchar_stringstream;
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::basic_ostringstream<UniChar> unichar_stringstream;
+	std::array<CountedStringStream<UniChar>, max_depth> unichar_stringstream;
 #endif
 
 	void setThreadIdName();
@@ -166,21 +174,87 @@ auto ThreadSpecificData::getNames() -> NamePairPtr
 #if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
 std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(const logchar&)
 {
-	return getCurrentData()->m_priv->logchar_stringstream;
+	auto p = getCurrentData()->m_priv.get();
+	auto pItem = &p->logchar_stringstream[0];
+	for (auto& item : p->logchar_stringstream)
+	{
+		pItem = &item;
+		if (0 == item.usage_count)
+			break;
+	}
+	++pItem->usage_count;
+	return pItem->ss;
+}
+
+void ThreadSpecificData::releaseStream(std::basic_ostringstream<logchar>& ss)
+{
+	auto p = getCurrentData()->m_priv.get();
+	for (auto& item : p->logchar_stringstream)
+	{
+		if (&item.ss == &ss)
+		{
+			--item.usage_count;
+			break;
+		}
+	}
 }
 #endif
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(const wchar_t&)
 {
-	return getCurrentData()->m_priv->wchar_stringstream;
+	auto p = getCurrentData()->m_priv.get();
+	auto pItem = &p->wchar_stringstream[0];
+	for (auto& item : p->wchar_stringstream)
+	{
+		pItem = &item;
+		if (0 == item.usage_count)
+			break;
+	}
+	++pItem->usage_count;
+	return pItem->ss;
+}
+
+void ThreadSpecificData::releaseStream(std::basic_ostringstream<wchar_t>& ss)
+{
+	auto p = getCurrentData()->m_priv.get();
+	for (auto& item : p->wchar_stringstream)
+	{
+		if (&item.ss == &ss)
+		{
+			--item.usage_count;
+			break;
+		}
+	}
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
 {
-	return getCurrentData()->m_priv->unichar_stringstream;
+	auto p = getCurrentData()->m_priv.get();
+	auto pItem = &p->unichar_stringstream[0];
+	for (auto& item : p->unichar_stringstream)
+	{
+		pItem = &item;
+		if (0 == item.usage_count)
+			break;
+	}
+	++pItem->usage_count;
+	return pItem->ss;
+}
+
+void ThreadSpecificData::releaseStream(std::basic_ostringstream<UniChar>& ss)
+{
+	auto p = getCurrentData()->m_priv.get();
+	for (auto& item : p->unichar_stringstream)
+	{
+		if (&item.ss == &ss)
+		{
+			--item.usage_count;
+			break;
+		}
+	}
 }
 #endif
 
