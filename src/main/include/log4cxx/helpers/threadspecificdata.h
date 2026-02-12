@@ -87,7 +87,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		template <typename T>
 		static void releaseStringStream(std::basic_ostringstream<T>& ss)
 		{
-			return releaseStream(ss);
+			releaseStream(ss);
 		}
 
 		/**
