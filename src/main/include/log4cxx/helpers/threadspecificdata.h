@@ -107,10 +107,9 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		 */
 		static NamePairPtr getNames();
 	private:
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-		static std::basic_ostringstream<logchar>& getStream(const logchar&);
-		static void releaseStream(std::basic_ostringstream<logchar>&);
-#endif
+		static std::basic_ostringstream<char>& getStream(const char&);
+		static void releaseStream(std::basic_ostringstream<char>&);
+
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 		static std::basic_ostringstream<wchar_t>& getStream(const wchar_t&);
 		static void releaseStream(std::basic_ostringstream<wchar_t>&);

@@ -57,9 +57,9 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 		std::basic_ostringstream<T> ss;
 	};
 	static const int max_depth = 3;
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-	std::array<CountedStringStream<logchar>, max_depth> logchar_stringstream;
-#endif
+
+	std::array<CountedStringStream<char>, max_depth> char_stringstream;
+
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 	std::array<CountedStringStream<wchar_t>, max_depth> wchar_stringstream;
 #endif
@@ -171,12 +171,11 @@ auto ThreadSpecificData::getNames() -> NamePairPtr
 	return p ? p->m_priv->pNamePair : std::make_shared<NamePair>();
 }
 
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(const logchar&)
+std::basic_ostringstream<char>& ThreadSpecificData::getStream(const char&)
 {
 	auto p = getCurrentData()->m_priv.get();
-	auto pItem = &p->logchar_stringstream[0];
-	for (auto& item : p->logchar_stringstream)
+	auto pItem = &p->char_stringstream[0];
+	for (auto& item : p->char_stringstream)
 	{
 		pItem = &item;
 		if (0 == item.usage_count)
@@ -186,10 +185,10 @@ std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(const logchar&)
 	return pItem->ss;
 }
 
-void ThreadSpecificData::releaseStream(std::basic_ostringstream<logchar>& ss)
+void ThreadSpecificData::releaseStream(std::basic_ostringstream<char>& ss)
 {
 	auto p = getCurrentData()->m_priv.get();
-	for (auto& item : p->logchar_stringstream)
+	for (auto& item : p->char_stringstream)
 	{
 		if (&item.ss == &ss)
 		{
@@ -198,7 +197,6 @@ void ThreadSpecificData::releaseStream(std::basic_ostringstream<logchar>& ss)
 		}
 	}
 }
-#endif
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(const wchar_t&)
