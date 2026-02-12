@@ -75,11 +75,6 @@ struct PatternLayout::PatternLayoutPrivate
 	 */
 	LoggingEventPatternConverterList patternConverters;
 
-	/**
-	 * Field widths and alignment corresponding to pattern converters.
-	 */
-	FormattingInfoList patternFields;
-
 	LogString m_fatalColor = LOG4CXX_STR("\\x1B[35m"); //magenta
 	LogString m_errorColor = LOG4CXX_STR("\\x1B[31m"); //red
 	LogString m_warnColor = LOG4CXX_STR("\\x1B[33m"); //yellow
@@ -124,17 +119,13 @@ void PatternLayout::format(LogString& output,
 {
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
-	std::vector<FormattingInfoPtr>::const_iterator formatterIter =
-		m_priv->patternFields.begin();
 
-	for (std::vector<LoggingEventPatternConverterPtr>::const_iterator
-		converterIter = m_priv->patternConverters.begin();
-		converterIter != m_priv->patternConverters.end();
-		converterIter++, formatterIter++)
+	for (auto item : m_priv->patternConverters)
 	{
-		int startField = (int)output.length();
-		(*converterIter)->format(event, output, pool);
-		(*formatterIter)->format(startField, output);
+		auto startField = output.length();
+		item->format(event, output, pool);
+		if (startField < INT_MAX)
+			item->getFormattingInfo().format(static_cast<int>(startField), output);
 	}
 
 }
@@ -189,12 +180,7 @@ void PatternLayout::activateOptions(Pool&)
 	}
 
 	m_priv->patternConverters.erase(m_priv->patternConverters.begin(), m_priv->patternConverters.end());
-	m_priv->patternFields.erase(m_priv->patternFields.begin(), m_priv->patternFields.end());
-	std::vector<PatternConverterPtr> converters;
-	PatternParser::parse(pat,
-		converters,
-		m_priv->patternFields,
-		getFormatSpecifiers());
+	auto converters = PatternParser::parse(pat, getFormatSpecifiers());
 
 	//
 	//   strip out any pattern converters that don't handle LoggingEvents

@@ -36,8 +36,7 @@ ThreadPatternConverter::ThreadPatternConverter() :
 PatternConverterPtr ThreadPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static WideLife<PatternConverterPtr> def = std::make_shared<ThreadPatternConverter>();
-	return def;
+	return std::make_shared<ThreadPatternConverter>();
 }
 
 void ThreadPatternConverter::format(

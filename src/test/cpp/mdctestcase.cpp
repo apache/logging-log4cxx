@@ -19,7 +19,7 @@
 #include <log4cxx/mdc.h>
 #include <log4cxx/file.h>
 #include <log4cxx/logger.h>
-#include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/patternlayout.h>
 #include "insertwide.h"
 #include "logunit.h"
 #include "util/compare.h"
@@ -32,6 +32,7 @@ LOGUNIT_CLASS(MDCTestCase)
 {
 	LOGUNIT_TEST_SUITE(MDCTestCase);
 	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -57,10 +58,22 @@ public:
 	{
 		std::string key("key1");
 		std::string expected("value2");
-		MDC::put(key, "value1");
+		MDC item1(key, "value1");
 		MDC::put(key, expected);
 		std::string actual(MDC::get(key));
 		LOGUNIT_ASSERT_EQUAL(expected, actual);
+	}
+
+	/// Check MDC formatting skips entries that exceed the maximum field length.
+	void test2()
+	{
+		MDC item1("key1", "value1");
+		MDC item2("key2", "value2");
+		helpers::Pool p;
+		LogString output;
+		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.30J %m") };
+		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()), p);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  MDC.LayoutTest - {\"key1\":\"value1\"} Message"), output);
 	}
 };
 

@@ -38,8 +38,7 @@ LevelPatternConverter::LevelPatternConverter() :
 PatternConverterPtr LevelPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static WideLife<PatternConverterPtr> def = std::make_shared<LevelPatternConverter>();
-	return def;
+	return std::make_shared<LevelPatternConverter>();
 }
 
 void LevelPatternConverter::format(

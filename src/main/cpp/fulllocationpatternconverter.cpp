@@ -37,8 +37,7 @@ FullLocationPatternConverter::FullLocationPatternConverter() :
 PatternConverterPtr FullLocationPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static WideLife<PatternConverterPtr> instance = std::make_shared<FullLocationPatternConverter>();
-	return instance;
+	return std::make_shared<FullLocationPatternConverter>();
 }
 
 void FullLocationPatternConverter::format(

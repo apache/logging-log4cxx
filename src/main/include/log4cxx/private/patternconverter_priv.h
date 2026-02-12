@@ -17,6 +17,7 @@
 #ifndef LOG4CXX_PATTERNCONVERTER_PRIVATE_H
 #define LOG4CXX_PATTERNCONVERTER_PRIVATE_H
 #include <log4cxx/pattern/patternconverter.h>
+#include <log4cxx/pattern/formattinginfo.h>
 
 namespace LOG4CXX_NS
 {
@@ -44,6 +45,11 @@ struct PatternConverter::PatternConverterPrivate
 	 * Converter style name.
 	 */
 	const LogString style;
+
+    /**
+     * Provides field size limits
+     */
+    FormattingInfoPtr info{ FormattingInfo::getDefault() };
 };
 
 }

@@ -72,8 +72,7 @@ PatternConverterPtr MessagePatternConverter::newInstance(
 {
 	if (options.empty() || options.front().empty())
 	{
-		static helpers::WideLife<PatternConverterPtr> def = std::make_shared<MessagePatternConverter>();
-		return def;
+		return std::make_shared<MessagePatternConverter>();
 	}
 	return std::make_shared<QuotedMessagePatternConverter>(options.front().front());
 }
@@ -84,6 +83,11 @@ void MessagePatternConverter::format
 	, helpers::Pool&           /* p */
 	) const
 {
-	toAppendTo.append(event->getRenderedMessage());
+	auto& msg = event->getRenderedMessage();
+	auto& info = getFormattingInfo();
+	if (info.getMaxLength() < msg.length())
+		toAppendTo.append(&msg[msg.length() - info.getMaxLength()], info.getMaxLength());
+	else
+		toAppendTo.append(msg);
 }
 

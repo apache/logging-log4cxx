@@ -79,7 +79,9 @@ FormattingInfoPtr FormattingInfo::getDefault()
  */
 void FormattingInfo::format(const int fieldStart, LogString& buffer) const
 {
-	int rawLength = int(buffer.length() - fieldStart);
+	if (INT_MAX < buffer.length())
+		return;
+	int rawLength = static_cast<int>(buffer.length()) - fieldStart;
 
 	if (rawLength > m_priv->maxLength)
 	{

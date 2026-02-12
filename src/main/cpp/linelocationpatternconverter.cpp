@@ -37,8 +37,7 @@ LineLocationPatternConverter::LineLocationPatternConverter() :
 PatternConverterPtr LineLocationPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static WideLife<PatternConverterPtr> instance = std::make_shared<LineLocationPatternConverter>();
-	return instance;
+	return std::make_shared<LineLocationPatternConverter>();
 }
 
 void LineLocationPatternConverter::format(

@@ -112,13 +112,23 @@ size_t PatternParser::extractOptions(const LogString& pattern, LogString::size_t
 	return i;
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void PatternParser::parse(
 	const LogString& pattern,
 	std::vector<PatternConverterPtr>& patternConverters,
 	std::vector<FormattingInfoPtr>& formattingInfos,
 	const PatternMap& rules)
 {
+	patternConverters = parse(pattern, rules);
+}
+#endif
 
+PatternConverterList PatternParser::parse
+	( const LogString&      pattern
+	, const PatternMap&     rules
+	)
+{
+	PatternConverterList patternConverters;
 	LogString currentLiteral;
 
 	size_t patternLength = pattern.length();
@@ -126,7 +136,7 @@ void PatternParser::parse(
 	logchar c;
 	size_t i = 0;
 	int minDigitCount{ 0 }, maxDigitCount{ 0 };
-	FormattingInfoPtr formattingInfo(FormattingInfo::getDefault());
+	auto formattingInfo = FormattingInfo::getDefault();
 
 	while (i < patternLength)
 	{
@@ -158,7 +168,6 @@ void PatternParser::parse(
 						{
 							patternConverters.push_back(
 								LiteralPatternConverter::newInstance(currentLiteral));
-							formattingInfos.push_back(FormattingInfo::getDefault());
 							currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 						}
 
@@ -205,7 +214,7 @@ void PatternParser::parse(
 						{
 							i = finalizeConverter(
 									c, pattern, i, currentLiteral, formattingInfo,
-									rules, patternConverters, formattingInfos);
+									rules, patternConverters);
 
 							// Next pattern is assumed to be a literal.
 							state = LITERAL_STATE;
@@ -239,7 +248,7 @@ void PatternParser::parse(
 				{
 					i = finalizeConverter(
 							c, pattern, i, currentLiteral, formattingInfo,
-							rules, patternConverters, formattingInfos);
+							rules, patternConverters);
 					state = LITERAL_STATE;
 					formattingInfo = FormattingInfo::getDefault();
 
@@ -285,7 +294,7 @@ void PatternParser::parse(
 				{
 					i = finalizeConverter(
 							c, pattern, i, currentLiteral, formattingInfo,
-							rules, patternConverters, formattingInfos);
+							rules, patternConverters);
 					state = LITERAL_STATE;
 					formattingInfo = FormattingInfo::getDefault();
 
@@ -304,8 +313,8 @@ void PatternParser::parse(
 	{
 		patternConverters.push_back(
 			LiteralPatternConverter::newInstance(currentLiteral));
-		formattingInfos.push_back(FormattingInfo::getDefault());
 	}
+	return patternConverters;
 }
 
 
@@ -340,8 +349,7 @@ size_t PatternParser::finalizeConverter(
 	logchar c, const LogString& pattern, size_t i,
 	LogString& currentLiteral, const FormattingInfoPtr& formattingInfo,
 	const PatternMap&  rules,
-	std::vector<PatternConverterPtr>& patternConverters,
-	std::vector<FormattingInfoPtr>&  formattingInfos)
+	PatternConverterList& patternConverters)
 {
 	LogString convBuf;
 	i = extractConverter(c, pattern, i, convBuf, currentLiteral);
@@ -351,7 +359,6 @@ size_t PatternParser::finalizeConverter(
 		LogLog::error(LOG4CXX_STR("Empty conversion specifier"));
 		patternConverters.push_back(
 			LiteralPatternConverter::newInstance(currentLiteral));
-		formattingInfos.push_back(FormattingInfo::getDefault());
 	}
 	else
 	{
@@ -372,18 +379,16 @@ size_t PatternParser::finalizeConverter(
 			LogLog::error(msg);
 			patternConverters.push_back(
 				LiteralPatternConverter::newInstance(currentLiteral));
-			formattingInfos.push_back(FormattingInfo::getDefault());
 		}
 		else
 		{
 			patternConverters.push_back(pc);
-			formattingInfos.push_back(formattingInfo);
+			pc->setFormattingInfo(formattingInfo);
 
 			if (currentLiteral.length() > 0)
 			{
 				patternConverters.push_back(
 					LiteralPatternConverter::newInstance(currentLiteral));
-				formattingInfos.push_back(FormattingInfo::getDefault());
 			}
 		}
 	}

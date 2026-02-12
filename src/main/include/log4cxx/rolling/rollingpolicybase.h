@@ -31,7 +31,6 @@ namespace LOG4CXX_NS
 namespace rolling
 {
 LOG4CXX_LIST_DEF(PatternConverterList, LOG4CXX_NS::pattern::PatternConverterPtr);
-LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
 
 /**
  * Implements methods common to most, it not all, rolling

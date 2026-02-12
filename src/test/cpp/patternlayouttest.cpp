@@ -63,6 +63,7 @@ using namespace log4cxx::helpers;
 LOGUNIT_CLASS(PatternLayoutTest)
 {
 	LOGUNIT_TEST_SUITE(PatternLayoutTest);
+	LOGUNIT_TEST(test2GbMessageFormatting);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test3);
@@ -101,6 +102,22 @@ public:
 		{
 			rep->resetConfiguration();
 		}
+	}
+
+	void test2GbMessageFormatting()
+	{
+		LogString msg(size_t(INT_MAX) + 1000, 'E');
+		msg[msg.length() - 1] = 'X';
+		Pool p;
+		LogString output1;
+		PatternLayout l1{ LOG4CXX_STR("%-5p %c{2} - %.30m") };
+		l1.format(output1, std::make_shared<spi::LoggingEvent>(logger->getName(), Level::getInfo(), msg, spi::LocationInfo::getLocationUnavailable()), p);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  log4j.PatternLayoutTest - EEEEEEEEEEEEEEEEEEEEEEEEEEEEEX"), output1);
+
+		PatternLayout l2{ LOG4CXX_STR("%p %.30m %p") };
+		LogString output2;
+		l2.format(output2, std::make_shared<spi::LoggingEvent>(logger->getName(), Level::getDebug(), msg, spi::LocationInfo::getLocationUnavailable()), p);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("DEBUG EEEEEEEEEEEEEEEEEEEEEEEEEEEEEX DEBUG"), output2);
 	}
 
 	void test1()

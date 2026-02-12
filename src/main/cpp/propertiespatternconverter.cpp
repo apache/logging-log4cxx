@@ -56,9 +56,8 @@ PatternConverterPtr PropertiesPatternConverter::newInstance(
 {
 	if (options.size() == 0)
 	{
-		static WideLife<PatternConverterPtr> def = std::make_shared<PropertiesPatternConverter>(
+		return std::make_shared<PropertiesPatternConverter>(
 				LOG4CXX_STR("Properties"), LOG4CXX_STR(""));
-		return def;
 	}
 
 	LogString converterName(LOG4CXX_STR("Property{"));
