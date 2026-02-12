@@ -21,6 +21,7 @@
 #include "../logunit.h"
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include "util/compare.h"
@@ -265,9 +266,11 @@ public:
 		if (0 < level)
 		{
 			MessageBuffer buf;
-			auto& retval = buf << "level " << level << " pi " << std::setprecision(6) << (pi = calculatePi(terms * 2, level - 1, terms));
+			auto& retval = buf << LOG4CXX_STR("level ") << level << " pi " << std::setprecision(6) << (pi = calculatePi(terms * 2, level - 1, terms));
 			assert(buf.hasStream());
-			helpers::LogLog::debug(buf.str(retval));
+			auto msg = buf.str(retval);
+			LOG4CXX_DECODE_CHAR(lsMsg, msg);
+			helpers::LogLog::debug(lsMsg);
 			pi /= 4; // Divide by 4 to get the value of the previous level
 		}
 		for (int i = initialTerm; i < terms; i++)
@@ -283,9 +286,11 @@ public:
 			if ((i + 1) % 500 == 0)
 			{
 				MessageBuffer buf;
-				auto& retval = buf << "level " << level << " term " << i << " pi " << std::setprecision(6) << (pi * 4);
+				auto& retval = buf << LOG4CXX_STR("level ") << level << " term " << i << " pi " << std::setprecision(6) << (pi * 4);
 				assert(buf.hasStream());
-				helpers::LogLog::debug(buf.str(retval));
+				auto msg = buf.str(retval);
+				LOG4CXX_DECODE_CHAR(lsMsg, msg);
+				helpers::LogLog::debug(lsMsg);
 			}
 		}
 		return pi * 4; // Multiply by 4 to get Pi
