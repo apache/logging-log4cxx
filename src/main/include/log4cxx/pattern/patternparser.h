@@ -103,6 +103,7 @@ class LOG4CXX_EXPORT PatternParser
 #if LOG4CXX_ABI_VERSION <= 15
 		/**
 		 * Parse a format specifier.
+		 * @deprecated This function is deprecated and will be removed in a future version.
 		 * @param pattern pattern to parse.
 		 * @param patternConverters list to receive pattern converters.
 		 * @param formattingInfos list to receive field specifiers corresponding to pattern converters.
