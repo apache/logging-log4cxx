@@ -60,7 +60,6 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 	template <typename T>
 	std::basic_ostringstream<T>& getStream(std::list<CountedStringStream<T> >& store)
 	{
-		auto p = getCurrentData()->m_priv.get();
 		CountedStringStream<T>* pItem{ nullptr };
 		for (auto& item : store)
 		{
@@ -72,7 +71,7 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 		}
 		if (!pItem)
 		{
-			store.push_back({});
+			store.emplace_back();
 			pItem = &store.back();
 		}
 		++pItem->usage_count;
