@@ -193,7 +193,10 @@ public:
 		auto thisProgram = GetExecutableFileName();
 		bool thisProgramExists = std::filesystem::exists(thisProgram);
 		if (!thisProgramExists && helpers::LogLog::isDebugEnabled())
-			helpers::LogLog::debug(LOG4CXX_STR("thisProgram: ") + thisProgram);
+		{
+			LOG4CXX_DECODE_CHAR(lsProgram, thisProgram);
+			helpers::LogLog::debug(LOG4CXX_STR("thisProgram: ") + lsProgram);
+		}
 		LOGUNIT_ASSERT(thisProgramExists);
 		const char* args[] = {thisProgram.c_str(), "test3", 0};
 		helpers::Pool p;

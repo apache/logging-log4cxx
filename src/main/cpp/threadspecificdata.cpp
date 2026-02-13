@@ -49,14 +49,56 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 
 	std::shared_ptr<NamePair> pNamePair;
 
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-	std::basic_ostringstream<logchar> logchar_stringstream;
-#endif
+	template <typename T>
+	struct CountedStringStream
+	{
+		int usage_count{ 0 };
+		std::basic_ostringstream<T> ss;
+	};
+
+	// Find an unused stream buffer or add a new stream buffer in the collection \c store
+	template <typename T>
+	std::basic_ostringstream<T>& getStream(std::list<CountedStringStream<T> >& store)
+	{
+		CountedStringStream<T>* pItem{ nullptr };
+		for (auto& item : store)
+		{
+			if (0 == item.usage_count)
+			{
+				pItem = &item;
+				break;
+			}
+		}
+		if (!pItem)
+		{
+			store.emplace_back();
+			pItem = &store.back();
+		}
+		++pItem->usage_count;
+		return pItem->ss;
+	}
+
+	// Decrement the usage count associated with the stream buffer \c ss in the collection \c store
+	template <typename T>
+	void releaseStream(std::list<CountedStringStream<T> >& store, std::basic_ostringstream<T>& ss)
+	{
+		for (auto& item : store)
+		{
+			if (&item.ss == &ss)
+			{
+				--item.usage_count;
+				break;
+			}
+		}
+	}
+
+	std::list<CountedStringStream<char> > char_stringstream;
+
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-	std::basic_ostringstream<wchar_t> wchar_stringstream;
+	std::list<CountedStringStream<wchar_t> > wchar_stringstream;
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::basic_ostringstream<UniChar> unichar_stringstream;
+	std::list<CountedStringStream<UniChar> > unichar_stringstream;
 #endif
 
 	void setThreadIdName();
@@ -163,24 +205,43 @@ auto ThreadSpecificData::getNames() -> NamePairPtr
 	return p ? p->m_priv->pNamePair : std::make_shared<NamePair>();
 }
 
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-std::basic_ostringstream<logchar>& ThreadSpecificData::getStream(const logchar&)
+std::basic_ostringstream<char>& ThreadSpecificData::getStream(const char&)
 {
-	return getCurrentData()->m_priv->logchar_stringstream;
+	auto p = getCurrentData();
+	return p->m_priv->getStream(p->m_priv->char_stringstream);
 }
-#endif
+
+void ThreadSpecificData::releaseStream(std::basic_ostringstream<char>& ss)
+{
+	auto p = getCurrentData();
+	p->m_priv->releaseStream(p->m_priv->char_stringstream, ss);
+}
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 std::basic_ostringstream<wchar_t>& ThreadSpecificData::getStream(const wchar_t&)
 {
-	return getCurrentData()->m_priv->wchar_stringstream;
+	auto p = getCurrentData();
+	return p->m_priv->getStream(p->m_priv->wchar_stringstream);
+}
+
+void ThreadSpecificData::releaseStream(std::basic_ostringstream<wchar_t>& ss)
+{
+	auto p = getCurrentData();
+	p->m_priv->releaseStream(p->m_priv->wchar_stringstream, ss);
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
 {
-	return getCurrentData()->m_priv->unichar_stringstream;
+	auto p = getCurrentData();
+	return p->m_priv->getStream(p->m_priv->unichar_stringstream);
+}
+
+void ThreadSpecificData::releaseStream(std::basic_ostringstream<UniChar>& ss)
+{
+	auto p = getCurrentData();
+	p->m_priv->releaseStream(p->m_priv->unichar_stringstream, ss);
 }
 #endif
 

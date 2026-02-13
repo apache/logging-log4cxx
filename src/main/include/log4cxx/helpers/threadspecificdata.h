@@ -73,12 +73,21 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		MDC::Map& getMap();
 
 		/**
-		 *  A character outpur stream only assessable to the current thread
+		 *  A character output stream only assessable to the current thread
 		 */
 		template <typename T>
 		static std::basic_ostringstream<T>& getStringStream()
 		{
 			return getStream(T());
+		}
+
+		/**
+		 *  Make \c ss available for use by the current thread
+		 */
+		template <typename T>
+		static void releaseStringStream(std::basic_ostringstream<T>& ss)
+		{
+			releaseStream(ss);
 		}
 
 		/**
@@ -98,14 +107,16 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		 */
 		static NamePairPtr getNames();
 	private:
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR && !LOG4CXX_LOGCHAR_IS_WCHAR
-		static std::basic_ostringstream<logchar>& getStream(const logchar&);
-#endif
+		static std::basic_ostringstream<char>& getStream(const char&);
+		static void releaseStream(std::basic_ostringstream<char>&);
+
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 		static std::basic_ostringstream<wchar_t>& getStream(const wchar_t&);
+		static void releaseStream(std::basic_ostringstream<wchar_t>&);
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
 		static std::basic_ostringstream<UniChar>& getStream(const UniChar&);
+		static void releaseStream(std::basic_ostringstream<UniChar>&);
 #endif
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ThreadSpecificDataPrivate, m_priv)
 };
