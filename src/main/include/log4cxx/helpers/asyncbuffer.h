@@ -231,7 +231,7 @@ private:
 	/**
 	 *   Append \c f to this buffer.
 	 */
-	void append(const MessageBufferAppender& f);
+	void append(MessageBufferAppender&& f);
 
 #if LOG4CXX_WCHAR_T_API
 	using WideMessageBufferAppender = std::function<void(WideMessageBuffer&)>;
@@ -239,7 +239,7 @@ private:
 	/**
 	 *   Append \c f to this buffer.
 	 */
-	void append(const WideMessageBufferAppender& f);
+	void append(WideMessageBufferAppender&& f);
 #endif // LOG4CXX_WCHAR_T_API
 #else // !LOG4CXX_CONCEPTS
 	using MessageBufferAppender = std::function<void(LogCharMessageBuffer&)>;
@@ -247,7 +247,7 @@ private:
 	/**
 	 *   Append \c f to this buffer.
 	 */
-	void append(const MessageBufferAppender& f);
+	void append(MessageBufferAppender&& f);
 #endif // !LOG4CXX_CONCEPTS
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
