@@ -36,8 +36,8 @@ struct AsyncBuffer::Private
 #endif // !(defined(__cpp_concepts) && 202002 <= __cpp_concepts && LOG4CXX_WCHAR_T_API)
 	std::vector<value_t> data;
 
-	Private(const value_t& f)
-		: data{ f }
+	Private(value_t&& f)
+		: data{ std::move(f) }
 	{}
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
@@ -210,36 +210,36 @@ void AsyncBuffer::clear()
 /**
  *   Append \c function to this buffer.
  */
-void AsyncBuffer::append(const MessageBufferAppender& f)
+void AsyncBuffer::append(MessageBufferAppender&& f)
 {
 	if (!m_priv)
-		m_priv = std::make_unique<Private>(f);
+		m_priv = std::make_unique<Private>(std::move(f));
 	else
-		m_priv->data.push_back(f);
+		m_priv->data.push_back(std::move(f));
 }
 
 #if LOG4CXX_WCHAR_T_API
 /**
  *   Append \c function to this buffer.
  */
-void AsyncBuffer::append(const WideMessageBufferAppender& f)
+void AsyncBuffer::append(WideMessageBufferAppender&& f)
 {
 	if (!m_priv)
-		m_priv = std::make_unique<Private>(f);
+		m_priv = std::make_unique<Private>(std::move(f));
 	else
-		m_priv->data.push_back(f);
+		m_priv->data.push_back(std::move(f));
 }
 #endif // LOG4CXX_WCHAR_T_API
 #else // !LOG4CXX_CONCEPTS
 /**
  *   Append \c function to this buffer.
  */
-void AsyncBuffer::append(const MessageBufferAppender& f)
+void AsyncBuffer::append(MessageBufferAppender&& f)
 {
 	if (!m_priv)
-		m_priv = std::make_unique<Private>(f);
+		m_priv = std::make_unique<Private>(std::move(f));
 	else
-		m_priv->data.push_back(f);
+		m_priv->data.push_back(std::move(f));
 }
 #endif // !LOG4CXX_CONCEPTS
 
