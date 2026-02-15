@@ -475,12 +475,12 @@ See \ref async-example.xml for a configuration file example.
 ## Additivity {#appender-additivity}
 
 The logger used in each enabled logging request sends a logging event
-to all the the appenders attached to it.
+to all the appenders attached to it.
 The logger also forwards the event to loggers higher in the hierarchy,
-and therefore the event is also sent to the appenders attached to those loggers.
+and therefore, the event is also sent to the appenders attached to those loggers.
 For example, if a console appender is added to the root logger, then all
-enabled logging requests will at least print on the console. If in
-addition a file appender is added to a logger, say *C*, then enabled
+enabled logging requests will at least print on the console. If, in addition,
+a file appender is added to a logger, say *C*, then enabled
 logging requests for *C* and *C*'s children will print on a file *and*
 on the console.
 
