@@ -112,7 +112,7 @@ LogString RuntimeException::formatMessage(log4cxx_status_t stat)
 }
 
 NullPointerException::NullPointerException(const LogString& msg1)
-	: RuntimeException(msg1)
+	: RuntimeException(msg1 + LOG4CXX_STR(" may not be null"))
 {
 }
 

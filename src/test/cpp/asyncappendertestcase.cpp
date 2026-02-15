@@ -77,7 +77,7 @@ class NullPointerAppender : public AppenderSkeleton
 		 */
 		void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&) override
 		{
-			throw NullPointerException(LOG4CXX_STR("Intentional NullPointerException"));
+			throw RuntimeException(LOG4CXX_STR("Intentional Exception"));
 		}
 
 		void close() override
