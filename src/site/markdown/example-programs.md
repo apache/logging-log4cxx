@@ -30,15 +30,15 @@ application *MyApp* that uses Log4cxx.
 
 # A Simple Example {#example1}
 
-In order to start using Log4cxx, a simple example program is shown below.
-This program does nothing useful, but it shows the basics of how to start using Log4cxx.
+A simple example program using Log4cxx is shown below.
+This program does nothing useful, but it exhibits basic usage of Log4cxx.
 Using the [BasicConfigurator](@ref log4cxx.BasicConfigurator) class, we are able to quickly configure the library
-to output DEBUG, INFO, etc level messages to standard output.
+to output DEBUG, INFO, etc., level messages to standard output.
 \include MyApp1.cpp
 
 The above application does nothing useful except to show how to initialize logging
 with the BasicConfigurator and do logging with different loggers.
-Note that file based configurations are also possible -
+Note that file-based configurations are also possible -
 see [DOMConfigurator](@ref log4cxx.xml.DOMConfigurator.configure)
 and [PropertyConfigurator](@ref log4cxx.PropertyConfigurator.configure).
 
@@ -186,7 +186,7 @@ Note that to obtain these different logging behaviors we did not need to
 recompile code. We could just as easily have logged to a UNIX Syslog
 daemon, redirected all *com.foo* output to an NT Event logger, or
 forwarded logging events to a remote Log4cxx server, which would log
-according to local server policy, for example by forwarding the log
+according to local server policy, for example, by forwarding the log
 event to a second Log4cxx server.
 
 For more runtime configuration examples, see [Configuration Samples].
