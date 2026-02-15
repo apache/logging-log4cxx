@@ -128,7 +128,7 @@ CachedDateFormat::CachedDateFormat(const DateFormatPtr& dateFormat,
 {
 	if (dateFormat == NULL)
 	{
-		throw IllegalArgumentException(LOG4CXX_STR("dateFormat cannot be null"));
+		throw NullPointerException(LOG4CXX_STR("dateFormat"));
 	}
 
 	if (expiration1 < 0)

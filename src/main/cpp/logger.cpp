@@ -321,7 +321,7 @@ const LevelPtr& Logger::getEffectiveLevel() const
 		}
 	}
 
-	throw NullPointerException(LOG4CXX_STR("No level specified for logger or ancestors."));
+	throw NullPointerException(LOG4CXX_STR("Logger level"));
 #if LOG4CXX_RETURN_AFTER_THROW
 	return m_priv->level;
 #endif
