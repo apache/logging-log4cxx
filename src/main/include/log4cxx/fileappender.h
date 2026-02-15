@@ -137,10 +137,10 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		ImmediateFlush | True,False | False |
 		BufferSize | (\ref fileSz1 "1") | 8 KB |
 
-		\anchor fileSz1 (1) An integer in the range 0 - 2^63.
-		 You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is
-		 interpreted being expressed respectively in kilobytes, megabytes
-		 or gigabytes. For example, the value "10KB" will be interpreted as 10240.
+		\anchor fileSz1 (1) An integer in the range 0 - 2^32.
+		 You can specify the value with the suffixes "KB" or "MB" so that the integer is
+		 interpreted being expressed respectively in kilobytes or megabytes.
+		 For example, the value "10KB" will be interpreted as 10240.
 
 		\sa AppenderSkeleton::setOption()
 		*/
@@ -149,8 +149,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/**
 		Get the value of the <b>BufferedIO</b> option.
 
-		<p>BufferedIO will significatnly increase performance on heavily
-		loaded systems.
+		<p>Using buffered output will significantly reduce logging overhead.
 
 		*/
 		bool getBufferedIO() const;

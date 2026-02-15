@@ -51,7 +51,7 @@ namespace db
  * Once you have defined the table, you must define the order in which the columns are formatted when they are inserted
  * along with the insert statement.
  *
- * Using APR, the following insert statement can be used to insert log statements: <code>INSERT INTO logs (logger, time, level, file, line_number, message) VALUES (%s, %pDa, %s, %s, %d, %s)</code>
+ * Using APR, the following insert statement can be used to insert log statements: <code>INSERT INTO logs (logger, time, level, file, line_number, message) VALUES (%%s, %%pDa, %%s, %%s, %%d, %%s)</code>
  * The values to insert must be formatted appropriately and in the correct order.  In order to do this, the parameter <code>ColumnMapping</code> must be specified as many times
  * as there are columns to insert.
  *

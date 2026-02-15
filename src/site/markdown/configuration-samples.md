@@ -68,7 +68,7 @@ A full example can be seen in the \ref com/foo/config4.cpp file.
 
 # Runtime Property Values {#runtime-property-values}
 
-The value of an enviroment variable can be used in a property value.
+The value of an environment variable can be used in a property value.
 Instances of the form <b>${VarName}</b> will be replaced
 with the value of the environment variable <b>VarName</b>.
 A warning message is output to stderr if the closing brace is absent.
@@ -88,7 +88,7 @@ relative to the executable location,
 not just the current working directory.
 The variable names are [documented here](@ref log4cxx.spi.Configurator.properties).
 
-To check the correct values are used when your configuration file is loaded,
+To check that the correct values are used when your configuration file is loaded,
 use [Log4cxx internal debugging].
 
 # Configuring a logger to use asynchronous output {#asynch-output}
@@ -98,8 +98,8 @@ to a logger using a configuration file.
 - If using a properties file, add the line <code>log4j.asynchronous.{LOGGER_NAME}=true</code> to your file
 - If using an XML file, add the <code>asynchronous="true"</code> attribute in the <code>\<logger></code> element.
 
-The "asynchronous" attribute is only relevent for a logger with attached appenders.
-The attribute is ignored if the logger does not have any directly attached appenders.
+The "asynchronous" attribute is only relevant for a logger with attached appenders.
+The attribute is ignored if the logger has no directly attached appenders.
 
 The "asynchronous" attribute results in the configured appender(s)
 being attached an [AsyncAppender](@ref log4cxx.AsyncAppender)

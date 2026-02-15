@@ -41,7 +41,7 @@ A Log4cxx category is a name and it is held by a log4cxx::Logger instance.
 The name of the class in which the logging request appears
 is a commonly used naming scheme
 but any category naming scheme may be used.
-Logging category names (or equivalently logger name)
+Logging category names (or equivalently, logger name)
 are case-sensitive.
 
 ## Naming {#naming}
@@ -53,7 +53,7 @@ a useful and straightforward method of defining loggers. As the log
 output bears the name of the generating logger, this naming strategy
 makes it easy to identify the origin of a log message. However, this is
 only one possible, albeit common, strategy for naming loggers. Log4cxx
-does not restrict the possible set of loggers. The developer is free to
+does not constrain the set of possible loggers. The developer is free to
 name the loggers as desired.
 
 Nevertheless, naming loggers after the class where they are located
@@ -70,7 +70,7 @@ named `com.foo.Bar`. Similarly, `java` is a parent of `java.util`
 and an ancestor of `java.util.Vector`. This naming scheme should be
 familiar to most developers.
 
-Sometimes a per object logger is useful.
+Sometimes a per-object logger is useful.
 When each class instance has a identifiable name
 (e.g. when it is instantiated from configuration data)
 add a member variable to hold a log4cxx::LoggerInstancePtr
@@ -140,14 +140,14 @@ For example, in
 Thus, it is possible to configure a logger and then to retrieve the same
 instance somewhere else in the code without passing around references.
 In fundamental contradiction to biological parenthood, where parents
-always preceed their children, Log4cxx loggers can be created and
+always precede their children, Log4cxx loggers can be created and
 configured in any order. In particular, a "parent" logger will find and
 link to its descendants even if it is instantiated after them.
 
 ## Requests {#requests}
 
 Logging requests are made by invoking a method of a logger instance,
-preferrably through the use of LOG4CXX\_INFO or similar macros which
+preferably through the use of LOG4CXX\_INFO or similar macros which
 support short-circuiting if the threshold is not satisfied and use of
 the insertion operator (\<\<) in the message parameter.
 
@@ -240,12 +240,12 @@ can generate thousands of log requests. Much effort was spent measuring
 and tweaking logging performance. Log4cxx claims to be fast and
 flexible: speed first, flexibility second.
 
-For performance sensitive applications, you should be aware of the following.
+For performance-sensitive applications, you should be aware of the following.
 
 1.  **Logging performance when logging is turned off.**
 
     The LOG4CXX\_DEBUG and similar macros have a
-    cost of an in-lined null pointer check plus an integer comparison
+    cost of an inlined null pointer check plus an integer comparison
     when the logger not currently enabled for that level.
     The other terms inside the macro are not evaluated.
 
@@ -263,10 +263,10 @@ For performance sensitive applications, you should be aware of the following.
 3.  **The cost of changing a logger's level.**
 
     The threshold value stored in any child logger is updated.
-    This is done iterating over the map of all known logger objects
+    This is done by iterating over the map of all known logger objects
     and walking the hierarchy of each.
 
-    There has been a serious effort to make this hierarchy walk to be as
+    There has been a serious effort to make this hierarchy walk as
     fast as possible. For example, child loggers link only to their
     existing ancestors. In the *BasicConfigurator* example shown
     earlier, the logger named *com.foo.Bar* is linked directly to the
@@ -309,7 +309,7 @@ The levels are set as follows:
 
 (1) The `LOG4CXX_ASSERT` macro is the same level as `LOG4CXX_ERROR`
 
-Note that this has no effect on other macros, such as using the
+Note that this does not effect other macros, such as the
 `LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
 
 ### Removing location information {#removing-location-information}
@@ -319,7 +319,7 @@ logging statement is captured as well through the preprocessor.  This includes
 the file name, the method name, and the line number.  If you would not like to
 include this information in your build but you still wish to keep the log
 statements, define `LOG4CXX_DISABLE_LOCATION_INFO` in your build system.  This
-will allow log messages to still be created, but the location information
+will allow log message creation, but the location information
 will be invalid.
 
 ## Levels {#levels}
@@ -475,12 +475,12 @@ See \ref async-example.xml for a configuration file example.
 ## Additivity {#appender-additivity}
 
 The logger used in each enabled logging request sends a logging event
-to the all the appenders attached to it.
+to all the appenders attached to it.
 The logger also forwards the event to loggers higher in the hierarchy,
-and therefore the event is also sent to the appenders attached to those loggers.
+and therefore, the event is also sent to the appenders attached to those loggers.
 For example, if a console appender is added to the root logger, then all
-enabled logging requests will at least print on the console. If in
-addition a file appender is added to a logger, say *C*, then enabled
+enabled logging requests will at least print on the console. If, in addition,
+a file appender is added to a logger, say *C*, then enabled
 logging requests for *C* and *C*'s children will print on a file *and*
 on the console.
 
@@ -560,7 +560,7 @@ and a sample output message.
 
 ## Pattern 1 {#pattern1}
 
-This pattern contains the date in an ISO-8601 format(without fractional seconds),
+This pattern contains the date in an ISO-8601 format (without fractional seconds),
 followed by the logger name, the level, and then the message.
 
 ~~~
