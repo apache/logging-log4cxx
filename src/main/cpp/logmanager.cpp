@@ -65,7 +65,7 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector, void
 
 	if (selector == 0)
 	{
-		throw IllegalArgumentException(LOG4CXX_STR("RepositorySelector must be non-null."));
+		throw NullPointerException(LOG4CXX_STR("RepositorySelector"));
 	}
 
 	LogManager::guard = guard1;

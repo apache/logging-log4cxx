@@ -46,7 +46,7 @@ OutputStreamWriter::OutputStreamWriter(LOG4CXX_16_CONST OutputStreamPtr& out)
 {
 	if (!out)
 	{
-		throw NullPointerException(LOG4CXX_STR("OutputStream parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("OutputStream parameter"));
 	}
 }
 
@@ -58,12 +58,12 @@ OutputStreamWriter::OutputStreamWriter
 {
 	if (!out)
 	{
-		throw NullPointerException(LOG4CXX_STR("OutputStream parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("OutputStream parameter"));
 	}
 
 	if (!enc)
 	{
-		throw NullPointerException(LOG4CXX_STR("CharsetEncoder parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("CharsetEncoder parameter"));
 	}
 }
 

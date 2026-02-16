@@ -43,23 +43,23 @@ struct InputStreamReader::InputStreamReaderPrivate{
 InputStreamReader::InputStreamReader(const InputStreamPtr& in1)
 	: m_priv(std::make_unique<InputStreamReaderPrivate>(in1))
 {
-	if (in1 == 0)
+	if (!in1)
 	{
-		throw NullPointerException(LOG4CXX_STR("in parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("InputStream parameter"));
 	}
 }
 
 InputStreamReader::InputStreamReader(const InputStreamPtr& in1, const CharsetDecoderPtr& dec1)
 	: m_priv(std::make_unique<InputStreamReaderPrivate>(in1, dec1))
 {
-	if (in1 == 0)
+	if (!in1)
 	{
-		throw NullPointerException(LOG4CXX_STR("in parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("InputStream parameter"));
 	}
 
-	if (dec1 == 0)
+	if (!dec1)
 	{
-		throw NullPointerException(LOG4CXX_STR("dec parameter may not be null."));
+		throw NullPointerException(LOG4CXX_STR("CharsetDecoder parameter"));
 	}
 }
 
