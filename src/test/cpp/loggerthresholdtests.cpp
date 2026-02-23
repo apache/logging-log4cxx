@@ -407,7 +407,7 @@ public:
 		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 
 		parent->setLevel(Level::getWarn());
-		child->setParent(parent);
+		child->changeParentTo(parent);
 
 		assertThresholdConsistent(parent);
 		assertThresholdConsistent(child);
@@ -423,11 +423,11 @@ public:
 		parent1->setLevel(Level::getDebug());
 		parent2->setLevel(Level::getError());
 
-		child->setParent(parent1);
+		child->changeParentTo(parent1);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getDebug(), child);
 
-		child->setParent(parent2);
+		child->changeParentTo(parent2);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getError(), child);
 	}
@@ -444,16 +444,16 @@ public:
 		parent1->setLevel(Level::getInfo());
 		parent2->setLevel(Level::getDebug());
 
-		child->setParent(root);
+		child->changeParentTo(root);
 		assertThresholdConsistent(child);
 
-		child->setParent(parent1);
+		child->changeParentTo(parent1);
 		assertThresholdConsistent(child);
 
-		child->setParent(parent2);
+		child->changeParentTo(parent2);
 		assertThresholdConsistent(child);
 
-		child->setParent(root);
+		child->changeParentTo(root);
 		assertThresholdConsistent(child);
 	}
 
@@ -1094,7 +1094,7 @@ public:
 		LOGUNIT_ASSERT(currentParent != nullptr);
 
 		// Set parent to same parent (should be no-op)
-		child->setParent(currentParent);
+		child->changeParentTo(currentParent);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getInfo(), child);
 	}
@@ -1190,19 +1190,19 @@ public:
 		p2->setLevel(Level::getInfo());
 		p3->setLevel(Level::getFatal());
 
-		child->setParent(p1);
+		child->changeParentTo(p1);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getTrace(), child);
 
-		child->setParent(p2);
+		child->changeParentTo(p2);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getInfo(), child);
 
-		child->setParent(p3);
+		child->changeParentTo(p3);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getFatal(), child);
 
-		child->setParent(p1);
+		child->changeParentTo(p1);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getTrace(), child);
 
@@ -1212,7 +1212,7 @@ public:
 		assertThresholdIs(Level::getWarn(), child);
 
 		// Change parent - child should keep its level
-		child->setParent(p2);
+		child->changeParentTo(p2);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getWarn(), child);
 	}
@@ -1469,7 +1469,7 @@ public:
 		assertThresholdIs(Level::getWarn(), grandchild2);
 	}
 
-	// Additional Test 43: Alternating setLevel and setParent calls
+	// Additional Test 43: Alternating setLevel and changeParentTo calls
 	void testAlternatingSetLevelAndSetParent()
 	{
 		LoggerPtr p1 = hierarchy->getLogger(LOG4CXX_STR("p1"));
@@ -1479,7 +1479,7 @@ public:
 		p1->setLevel(Level::getInfo());
 		assertThresholdConsistent(p1);
 
-		child->setParent(p1);
+		child->changeParentTo(p1);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getInfo(), child);
 
@@ -1490,7 +1490,7 @@ public:
 		p2->setLevel(Level::getWarn());
 		assertThresholdConsistent(p2);
 
-		child->setParent(p2);
+		child->changeParentTo(p2);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getDebug(), child); // Keeps own level
 
@@ -1498,7 +1498,7 @@ public:
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getWarn(), child); // Now inherits from p2
 
-		child->setParent(p1);
+		child->changeParentTo(p1);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getInfo(), child); // Now inherits from p1
 
@@ -1934,17 +1934,17 @@ public:
 		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 
 		// Set logger1 as parent
-		child->setParent(logger1);
+		child->changeParentTo(logger1);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getInfo(), child);
 
 		// Swap to logger2 as parent
-		child->setParent(logger2);
+		child->changeParentTo(logger2);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getDebug(), child);
 
 		// Swap back to logger1
-		child->setParent(logger1);
+		child->changeParentTo(logger1);
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getInfo(), child);
 
@@ -2000,15 +2000,15 @@ public:
 
 		for (int i = 0; i < 100; ++i)
 		{
-			child->setParent(p1);
+			child->changeParentTo(p1);
 			assertThresholdConsistent(child);
 			assertThresholdIs(Level::getTrace(), child);
 
-			child->setParent(p2);
+			child->changeParentTo(p2);
 			assertThresholdConsistent(child);
 			assertThresholdIs(Level::getDebug(), child);
 
-			child->setParent(p3);
+			child->changeParentTo(p3);
 			assertThresholdConsistent(child);
 			assertThresholdIs(Level::getInfo(), child);
 		}
@@ -2279,7 +2279,7 @@ public:
 		p1->setLevel(Level::getInfo());
 		p2->setLevel(Level::getError());
 
-		child->setParent(p1);
+		child->changeParentTo(p1);
 		assertThresholdConsistent(child);
 		assertThresholdConsistent(grandchild);
 		assertThresholdConsistent(greatGrandchild);
@@ -2289,7 +2289,7 @@ public:
 		assertThresholdIs(Level::getInfo(), greatGrandchild);
 
 		// Change parent - all descendants should update
-		child->setParent(p2);
+		child->changeParentTo(p2);
 		assertThresholdConsistent(child);
 		assertThresholdConsistent(grandchild);
 		assertThresholdConsistent(greatGrandchild);
@@ -2307,7 +2307,7 @@ public:
 		assertThresholdIs(Level::getDebug(), greatGrandchild);
 
 		// Change child's parent again - grandchild should keep its level
-		child->setParent(p1);
+		child->changeParentTo(p1);
 		assertThresholdConsistent(child);
 		assertThresholdConsistent(grandchild);
 		assertThresholdConsistent(greatGrandchild);

@@ -25,7 +25,6 @@
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/asyncbuffer.h>
 #include <log4cxx/helpers/messagebuffer.h>
-class LoggerThresholdConsistencyTest;
 
 namespace LOG4CXX_NS
 {
@@ -1895,8 +1894,8 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void updateThreshold();
 
-	protected: // Unit testing support methods
-		friend class LoggerThresholdConsistencyTest;
+	public: // Unit testing support methods
+		void changeParentTo(const LoggerPtr& otherLogger) { setParent(otherLogger); }
 
 		/** Is m_threshold the same as level->toInt()
 		 */
