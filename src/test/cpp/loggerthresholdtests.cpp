@@ -1900,7 +1900,7 @@ public:
 #if LOG4CXX_ABI_VERSION <= 15
 			std::make_shared<DefaultLoggerFactory>();
 #else
-			std::make_shared<LoggerFactory>();
+			std::make_shared<spi::LoggerFactory>();
 #endif
 		LoggerPtr logger1 = hierarchy->getLogger(LOG4CXX_STR("factory.test1"), factory);
 		LoggerPtr logger2 = hierarchy->getLogger(LOG4CXX_STR("factory.test2"), factory);
