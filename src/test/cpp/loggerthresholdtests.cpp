@@ -24,6 +24,7 @@
 #else
 #include <log4cxx/spi/loggerfactory.h>
 #endif
+#include <log4cxx/helpers/transcoder.h>
 
 /****
 This comprehensive test suite verifies that Logger::m_threshold always equals Logger::getEffectiveLevel()->toInt().
@@ -1002,7 +1003,8 @@ public:
 		{
 			std::ostringstream oss;
 			oss << "parent.child" << i;
-			LoggerPtr child = hierarchy->getLogger(oss.str());
+			LOG4CXX_DECODE_CHAR(category, oss.str());
+			LoggerPtr child = hierarchy->getLogger(category);
 			children.push_back(child);
 			assertThresholdConsistent(child);
 			assertThresholdIs(Level::getInfo(), child);
@@ -1613,7 +1615,8 @@ public:
 		{
 			std::ostringstream oss;
 			oss << "parent.sibling" << i;
-			LoggerPtr sibling = hierarchy->getLogger(oss.str());
+			LOG4CXX_DECODE_CHAR(category, oss.str());
+			LoggerPtr sibling = hierarchy->getLogger(category);
 			sibling->setLevel(levels[i]);
 			siblings.push_back(sibling);
 			assertThresholdConsistent(sibling);
@@ -1796,8 +1799,8 @@ public:
 			std::ostringstream oss;
 			oss << name << '.' << i;
 			name = oss.str();
-
-			LoggerPtr logger = hierarchy->getLogger(name);
+			LOG4CXX_DECODE_CHAR(category, name);
+			LoggerPtr logger = hierarchy->getLogger(category);
 			loggers.push_back(logger);
 			assertThresholdConsistent(logger);
 			assertThresholdIs(Level::getWarn(), logger);
@@ -2376,7 +2379,8 @@ public:
 				{
 					std::ostringstream oss;
 					oss << bases[i] << "." << mids[j] << "." << ends[k];
-					LoggerPtr logger = hierarchy->getLogger(oss.str());
+					LOG4CXX_DECODE_CHAR(category, oss.str());
+					LoggerPtr logger = hierarchy->getLogger(category);
 					allLoggers.push_back(logger);
 				}
 			}
