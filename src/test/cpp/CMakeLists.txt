@@ -60,6 +60,7 @@ set(ALL_LOG4CXX_TESTS
     leveltestcase
     levelchangetestcase
     loggertestcase
+    loggerthresholdtests
     mdctestcase
     minimumtestcase
     ndctestcase

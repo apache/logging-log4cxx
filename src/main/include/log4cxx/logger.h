@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/asyncbuffer.h>
 #include <log4cxx/helpers/messagebuffer.h>
+class LoggerThresholdConsistencyTest;
 
 namespace LOG4CXX_NS
 {
@@ -1876,6 +1877,7 @@ class LOG4CXX_EXPORT Logger
 
 	protected:
 		friend class Hierarchy;
+
 		/**
 		Only the Hierarchy class can remove the hierarchy of a logger.
 		*/
@@ -1892,6 +1894,21 @@ class LOG4CXX_EXPORT Logger
 		Only the Hierarchy class can change the threshold of a logger.
 		*/
 		void updateThreshold();
+
+	protected: // Unit testing support methods
+		friend class LoggerThresholdConsistencyTest;
+
+		/** Is m_threshold the same as level->toInt()
+		 */
+		bool isThresholdEqualTo(const LevelPtr& level) const;
+
+		/** Is m_threshold the same as \c other
+		 */
+		bool isThresholdEqualTo(const LoggerPtr& other) const;
+
+		/** Is m_threshold the same as getEffectiveLevel()->toInt()
+		 */
+		bool isThresholdValid() const;
 
 	private:
 		spi::LoggerRepository* getHierarchy() const;
