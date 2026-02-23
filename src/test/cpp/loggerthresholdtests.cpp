@@ -215,23 +215,25 @@ public:
 
 	void assertThresholdConsistent(const LoggerPtr& logger)
 	{
+		LOG4CXX_ENCODE_CHAR(name, logger->getName());
 		LOGUNIT_ASSERT_MESSAGE(logger->isThresholdValid()
-			, LOG4CXX_STR("threshold does not match getEffectiveLevel()->toInt() for logger: " + logger->getName())
-		);
+			, "threshold does not match getEffectiveLevel()->toInt() for logger: " + name);
 	}
 
 	void assertThresholdIs(const LevelPtr& level, const LoggerPtr& logger)
 	{
+		LOG4CXX_ENCODE_CHAR(levelName, level->toString());
+		LOG4CXX_ENCODE_CHAR(loggerName, logger->getName());
 		LOGUNIT_ASSERT_MESSAGE(logger->isThresholdEqualTo(level)
-			, LOG4CXX_STR("threshold is not ") + level->toString() + LOG4CXX_STR(" for logger: " + logger->getName())
-		);
+			, "threshold is not " + levelName + " for logger: " + loggerName);
 	}
 
 	void assertThresholdIs(const LoggerPtr& other, const LoggerPtr& logger)
 	{
+		LOG4CXX_ENCODE_CHAR(name1, other->getName());
+		LOG4CXX_ENCODE_CHAR(name2, logger->getName());
 		LOGUNIT_ASSERT_MESSAGE(logger->isThresholdEqualTo(other)
-			, LOG4CXX_STR("threshold is not the same as ") + other->getName() + LOG4CXX_STR(" for logger: " + logger->getName())
-		);
+			, "threshold is not the same as " + name1 + " for logger: " + name2);
 	}
 
 public:
@@ -1052,7 +1054,7 @@ public:
 		std::vector<LoggerPtr> loggers;
 		loggers.push_back(root);
 
-		std::string name = "a";
+		LogString name = LOG4CXX_STR("a");
 		for (int i = 0; i < 10; ++i)
 		{
 			LoggerPtr logger = hierarchy->getLogger(name);
@@ -1065,7 +1067,7 @@ public:
 			}
 
 			assertThresholdConsistent(logger);
-			name += ".b";
+			name += LOG4CXX_STR(".b");
 		}
 
 		// Verify all thresholds are consistent
@@ -2150,9 +2152,9 @@ public:
 	// Additional Test 59: Threshold with very long logger names
 	void testThresholdWithVeryLongLoggerNames()
 	{
-		std::string longName = "very.long.logger.name.with.many.segments.to.test.the.hierarchy";
-		longName += ".and.even.more.segments.to.make.it.really.long.and.complex";
-		longName += ".final.segment.at.the.end";
+		LogString longName = LOG4CXX_STR("very.long.logger.name.with.many.segments.to.test.the.hierarchy");
+		longName += LOG4CXX_STR(".and.even.more.segments.to.make.it.really.long.and.complex");
+		longName += LOG4CXX_STR(".final.segment.at.the.end");
 
 		LoggerPtr logger = hierarchy->getLogger(longName);
 		assertThresholdConsistent(logger);
