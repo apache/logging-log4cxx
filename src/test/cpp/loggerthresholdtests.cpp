@@ -244,7 +244,7 @@ public:
 	// Test 2: Single logger set level
 	void testSingleLoggerSetLevel()
 	{
-		LoggerPtr logger = hierarchy->getLogger("com.example");
+		LoggerPtr logger = hierarchy->getLogger(LOG4CXX_STR("com.example"));
 		assertThresholdConsistent(logger);
 
 		logger->setLevel(Level::getInfo());
@@ -261,7 +261,7 @@ public:
 	void testSingleLoggerInheritsFromRoot()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr logger = hierarchy->getLogger("com.example");
+		LoggerPtr logger = hierarchy->getLogger(LOG4CXX_STR("com.example"));
 
 		root->setLevel(Level::getWarn());
 		assertThresholdConsistent(logger);
@@ -273,8 +273,8 @@ public:
 	// Test 4: Two-level hierarchy - child inherits
 	void testTwoLevelHierarchyChildInherits()
 	{
-		LoggerPtr parent = hierarchy->getLogger("com");
-		LoggerPtr child = hierarchy->getLogger("com.example");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("com"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("com.example"));
 
 		parent->setLevel(Level::getInfo());
 		assertThresholdConsistent(parent);
@@ -288,8 +288,8 @@ public:
 	// Test 5: Two-level hierarchy - child overrides
 	void testTwoLevelHierarchyChildOverrides()
 	{
-		LoggerPtr parent = hierarchy->getLogger("com");
-		LoggerPtr child = hierarchy->getLogger("com.example");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("com"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("com.example"));
 
 		parent->setLevel(Level::getWarn());
 		child->setLevel(Level::getDebug());
@@ -304,8 +304,8 @@ public:
 	// Test 6: Two-level hierarchy - parent changes after child override
 	void testTwoLevelHierarchyParentChanges()
 	{
-		LoggerPtr parent = hierarchy->getLogger("com");
-		LoggerPtr child = hierarchy->getLogger("com.example");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("com"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("com.example"));
 
 		parent->setLevel(Level::getWarn());
 		child->setLevel(Level::getDebug());
@@ -322,9 +322,9 @@ public:
 	void testThreeLevelHierarchyAllInherit()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr level1 = hierarchy->getLogger("com");
-		LoggerPtr level2 = hierarchy->getLogger("com.example");
-		LoggerPtr level3 = hierarchy->getLogger("com.example.app");
+		LoggerPtr level1 = hierarchy->getLogger(LOG4CXX_STR("com"));
+		LoggerPtr level2 = hierarchy->getLogger(LOG4CXX_STR("com.example"));
+		LoggerPtr level3 = hierarchy->getLogger(LOG4CXX_STR("com.example.app"));
 
 		root->setLevel(Level::getInfo());
 		assertThresholdConsistent(root);
@@ -337,9 +337,9 @@ public:
 	void testThreeLevelHierarchyMiddleOverrides()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr level1 = hierarchy->getLogger("com");
-		LoggerPtr level2 = hierarchy->getLogger("com.example");
-		LoggerPtr level3 = hierarchy->getLogger("com.example.app");
+		LoggerPtr level1 = hierarchy->getLogger(LOG4CXX_STR("com"));
+		LoggerPtr level2 = hierarchy->getLogger(LOG4CXX_STR("com.example"));
+		LoggerPtr level3 = hierarchy->getLogger(LOG4CXX_STR("com.example.app"));
 
 		root->setLevel(Level::getError());
 		level2->setLevel(Level::getDebug());
@@ -358,9 +358,9 @@ public:
 	void testThreeLevelHierarchyLeafOverrides()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr level1 = hierarchy->getLogger("com");
-		LoggerPtr level2 = hierarchy->getLogger("com.example");
-		LoggerPtr level3 = hierarchy->getLogger("com.example.app");
+		LoggerPtr level1 = hierarchy->getLogger(LOG4CXX_STR("com"));
+		LoggerPtr level2 = hierarchy->getLogger(LOG4CXX_STR("com.example"));
+		LoggerPtr level3 = hierarchy->getLogger(LOG4CXX_STR("com.example.app"));
 
 		root->setLevel(Level::getWarn());
 		level3->setLevel(Level::getTrace());
@@ -379,10 +379,10 @@ public:
 	void testFourLevelHierarchyMixedOverrides()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr level1 = hierarchy->getLogger("org");
-		LoggerPtr level2 = hierarchy->getLogger("org.apache");
-		LoggerPtr level3 = hierarchy->getLogger("org.apache.log4cxx");
-		LoggerPtr level4 = hierarchy->getLogger("org.apache.log4cxx.test");
+		LoggerPtr level1 = hierarchy->getLogger(LOG4CXX_STR("org"));
+		LoggerPtr level2 = hierarchy->getLogger(LOG4CXX_STR("org.apache"));
+		LoggerPtr level3 = hierarchy->getLogger(LOG4CXX_STR("org.apache.log4cxx"));
+		LoggerPtr level4 = hierarchy->getLogger(LOG4CXX_STR("org.apache.log4cxx.test"));
 
 		root->setLevel(Level::getError());
 		level2->setLevel(Level::getInfo());
@@ -403,8 +403,8 @@ public:
 	// Test 11: Set parent from null to valid
 	void testSetParentFromNullToValid()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("child");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 
 		parent->setLevel(Level::getWarn());
 		child->setParent(parent);
@@ -416,9 +416,9 @@ public:
 	// Test 12: Change parent
 	void testSetParentChangeParent()
 	{
-		LoggerPtr parent1 = hierarchy->getLogger("parent1");
-		LoggerPtr parent2 = hierarchy->getLogger("parent2");
-		LoggerPtr child = hierarchy->getLogger("child");
+		LoggerPtr parent1 = hierarchy->getLogger(LOG4CXX_STR("parent1"));
+		LoggerPtr parent2 = hierarchy->getLogger(LOG4CXX_STR("parent2"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 
 		parent1->setLevel(Level::getDebug());
 		parent2->setLevel(Level::getError());
@@ -436,9 +436,9 @@ public:
 	void testSetParentMultipleTimes()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr parent1 = hierarchy->getLogger("p1");
-		LoggerPtr parent2 = hierarchy->getLogger("p2");
-		LoggerPtr child = hierarchy->getLogger("child");
+		LoggerPtr parent1 = hierarchy->getLogger(LOG4CXX_STR("p1"));
+		LoggerPtr parent2 = hierarchy->getLogger(LOG4CXX_STR("p2"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 
 		root->setLevel(Level::getFatal());
 		parent1->setLevel(Level::getInfo());
@@ -461,9 +461,9 @@ public:
 	void testRootLevelChangePropagatesToChildren()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr child1 = hierarchy->getLogger("child1");
-		LoggerPtr child2 = hierarchy->getLogger("child2");
-		LoggerPtr grandchild = hierarchy->getLogger("child1.grandchild");
+		LoggerPtr child1 = hierarchy->getLogger(LOG4CXX_STR("child1"));
+		LoggerPtr child2 = hierarchy->getLogger(LOG4CXX_STR("child2"));
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("child1.grandchild"));
 
 		root->setLevel(Level::getWarn());
 		assertThresholdConsistent(child1);
@@ -480,9 +480,9 @@ public:
 	void testParentLevelChangePropagatesToGrandchildren()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
-		LoggerPtr grandchild = hierarchy->getLogger("parent.child.grandchild");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("parent.child.grandchild"));
 
 		root->setLevel(Level::getError());
 		parent->setLevel(Level::getInfo());
@@ -499,9 +499,9 @@ public:
 	void testLevelChangeDoesNotPropagateToOverriddenChildren()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
-		LoggerPtr grandchild = hierarchy->getLogger("parent.child.grandchild");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("parent.child.grandchild"));
 
 		root->setLevel(Level::getError());
 		parent->setLevel(Level::getInfo());
@@ -528,12 +528,12 @@ public:
 	void testComplexHierarchyWithMixedLevels()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr a = hierarchy->getLogger("a");
-		LoggerPtr ab = hierarchy->getLogger("a.b");
-		LoggerPtr abc = hierarchy->getLogger("a.b.c");
-		LoggerPtr abcd = hierarchy->getLogger("a.b.c.d");
-		LoggerPtr ax = hierarchy->getLogger("a.x");
-		LoggerPtr axy = hierarchy->getLogger("a.x.y");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr ab = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr abc = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
+		LoggerPtr abcd = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
+		LoggerPtr ax = hierarchy->getLogger(LOG4CXX_STR("a.x"));
+		LoggerPtr axy = hierarchy->getLogger(LOG4CXX_STR("a.x.y"));
 
 		root->setLevel(Level::getFatal());
 		a->setLevel(Level::getError());
@@ -561,9 +561,9 @@ public:
 	void testSiblingLoggersIndependent()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr sibling1 = hierarchy->getLogger("com.example.app1");
-		LoggerPtr sibling2 = hierarchy->getLogger("com.example.app2");
-		LoggerPtr sibling3 = hierarchy->getLogger("com.example.app3");
+		LoggerPtr sibling1 = hierarchy->getLogger(LOG4CXX_STR("com.example.app1"));
+		LoggerPtr sibling2 = hierarchy->getLogger(LOG4CXX_STR("com.example.app2"));
+		LoggerPtr sibling3 = hierarchy->getLogger(LOG4CXX_STR("com.example.app3"));
 
 		root->setLevel(Level::getWarn());
 		sibling1->setLevel(Level::getDebug());
@@ -593,13 +593,13 @@ public:
 	void testDeepHierarchyInheritance()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr l1 = hierarchy->getLogger("a");
-		LoggerPtr l2 = hierarchy->getLogger("a.b");
-		LoggerPtr l3 = hierarchy->getLogger("a.b.c");
-		LoggerPtr l4 = hierarchy->getLogger("a.b.c.d");
-		LoggerPtr l5 = hierarchy->getLogger("a.b.c.d.e");
-		LoggerPtr l6 = hierarchy->getLogger("a.b.c.d.e.f");
-		LoggerPtr l7 = hierarchy->getLogger("a.b.c.d.e.f.g");
+		LoggerPtr l1 = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr l2 = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr l3 = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
+		LoggerPtr l4 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
+		LoggerPtr l5 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e"));
+		LoggerPtr l6 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e.f"));
+		LoggerPtr l7 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e.f.g"));
 
 		root->setLevel(Level::getInfo());
 
@@ -635,8 +635,8 @@ public:
 	// Test 20: Set level to null - inherits from parent
 	void testSetLevelToNullInheritsFromParent()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
 
 		parent->setLevel(Level::getWarn());
 		child->setLevel(Level::getDebug());
@@ -654,8 +654,8 @@ public:
 	// Test 21: Set level to null then back to value
 	void testSetLevelToNullThenBackToValue()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
 
 		parent->setLevel(Level::getError());
 		child->setLevel(Level::getInfo());
@@ -678,8 +678,8 @@ public:
 	// Test 22: Child set to null after parent change
 	void testChildSetToNullAfterParentChange()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
 
 		parent->setLevel(Level::getInfo());
 		child->setLevel(Level::getDebug());
@@ -707,7 +707,7 @@ public:
 	// Test 23: All standard levels
 	void testAllStandardLevels()
 	{
-		LoggerPtr logger = hierarchy->getLogger("test");
+		LoggerPtr logger = hierarchy->getLogger(LOG4CXX_STR("test"));
 
 		LevelPtr levels[] = {
 			Level::getOff(),
@@ -731,7 +731,7 @@ public:
 	// Test 24: Rapid level changes
 	void testRapidLevelChanges()
 	{
-		LoggerPtr logger = hierarchy->getLogger("rapid");
+		LoggerPtr logger = hierarchy->getLogger(LOG4CXX_STR("rapid"));
 
 		for (int i = 0; i < 100; ++i)
 		{
@@ -755,9 +755,9 @@ public:
 	// Test 25: Parent and child level changes interleaved
 	void testParentAndChildLevelChangesInterleaved()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
-		LoggerPtr grandchild = hierarchy->getLogger("parent.child.grandchild");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("parent.child.grandchild"));
 
 		parent->setLevel(Level::getInfo());
 		assertThresholdConsistent(parent);
@@ -801,9 +801,9 @@ public:
 	void testLoggerCreationOrderDoesNotMatter()
 	{
 		// Create in hierarchical order
-		LoggerPtr a1 = hierarchy->getLogger("order1");
-		LoggerPtr b1 = hierarchy->getLogger("order1.child");
-		LoggerPtr c1 = hierarchy->getLogger("order1.child.grandchild");
+		LoggerPtr a1 = hierarchy->getLogger(LOG4CXX_STR("order1"));
+		LoggerPtr b1 = hierarchy->getLogger(LOG4CXX_STR("order1.child"));
+		LoggerPtr c1 = hierarchy->getLogger(LOG4CXX_STR("order1.child.grandchild"));
 
 		a1->setLevel(Level::getWarn());
 		assertThresholdConsistent(a1);
@@ -811,9 +811,9 @@ public:
 		assertThresholdConsistent(c1);
 
 		// Create in reverse order
-		LoggerPtr c2 = hierarchy->getLogger("order2.child.grandchild");
-		LoggerPtr b2 = hierarchy->getLogger("order2.child");
-		LoggerPtr a2 = hierarchy->getLogger("order2");
+		LoggerPtr c2 = hierarchy->getLogger(LOG4CXX_STR("order2.child.grandchild"));
+		LoggerPtr b2 = hierarchy->getLogger(LOG4CXX_STR("order2.child"));
+		LoggerPtr a2 = hierarchy->getLogger(LOG4CXX_STR("order2"));
 
 		a2->setLevel(Level::getWarn());
 		assertThresholdConsistent(a2);
@@ -828,14 +828,14 @@ public:
 	void testChildCreatedBeforeParent()
 	{
 		// Create child first
-		LoggerPtr child = hierarchy->getLogger("parent.child");
-		LoggerPtr grandchild = hierarchy->getLogger("parent.child.grandchild");
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("parent.child.grandchild"));
 
 		assertThresholdConsistent(child);
 		assertThresholdConsistent(grandchild);
 
 		// Now create parent and set its level
-		LoggerPtr parent = hierarchy->getLogger("parent");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
 		parent->setLevel(Level::getInfo());
 
 		assertThresholdConsistent(parent);
@@ -860,16 +860,16 @@ public:
 	void testProvisionNodeScenario()
 	{
 		// Create grandchild before intermediate parent exists
-		LoggerPtr grandchild1 = hierarchy->getLogger("a.b.c.d");
-		LoggerPtr grandchild2 = hierarchy->getLogger("a.b.c.e");
-		LoggerPtr grandchild3 = hierarchy->getLogger("a.b.c.f");
+		LoggerPtr grandchild1 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
+		LoggerPtr grandchild2 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.e"));
+		LoggerPtr grandchild3 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.f"));
 
 		assertThresholdConsistent(grandchild1);
 		assertThresholdConsistent(grandchild2);
 		assertThresholdConsistent(grandchild3);
 
 		// Create root ancestor
-		LoggerPtr a = hierarchy->getLogger("a");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
 		a->setLevel(Level::getWarn());
 
 		assertThresholdConsistent(a);
@@ -882,7 +882,7 @@ public:
 		assertThresholdIs(Level::getWarn(), grandchild3);
 
 		// Now create intermediate parent
-		LoggerPtr abc = hierarchy->getLogger("a.b.c");
+		LoggerPtr abc = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
 		abc->setLevel(Level::getDebug());
 
 		assertThresholdConsistent(a);
@@ -917,10 +917,10 @@ public:
 	// Additional Test 29: Multiple children created before parent
 	void testMultipleChildrenBeforeParent()
 	{
-		LoggerPtr child1 = hierarchy->getLogger("base.child1");
-		LoggerPtr child2 = hierarchy->getLogger("base.child2");
-		LoggerPtr child3 = hierarchy->getLogger("base.child3");
-		LoggerPtr grandchild1 = hierarchy->getLogger("base.child1.grandchild");
+		LoggerPtr child1 = hierarchy->getLogger(LOG4CXX_STR("base.child1"));
+		LoggerPtr child2 = hierarchy->getLogger(LOG4CXX_STR("base.child2"));
+		LoggerPtr child3 = hierarchy->getLogger(LOG4CXX_STR("base.child3"));
+		LoggerPtr grandchild1 = hierarchy->getLogger(LOG4CXX_STR("base.child1.grandchild"));
 
 		assertThresholdConsistent(child1);
 		assertThresholdConsistent(child2);
@@ -928,7 +928,7 @@ public:
 		assertThresholdConsistent(grandchild1);
 
 		// Now create parent
-		LoggerPtr base = hierarchy->getLogger("base");
+		LoggerPtr base = hierarchy->getLogger(LOG4CXX_STR("base"));
 		base->setLevel(Level::getInfo());
 
 		assertThresholdConsistent(base);
@@ -949,17 +949,17 @@ public:
 		LoggerPtr root = hierarchy->getRootLogger();
 		root->setLevel(Level::getFatal());
 
-		LoggerPtr c = hierarchy->getLogger("a.b.c");
+		LoggerPtr c = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
 		assertThresholdConsistent(c);
 		assertThresholdIs(Level::getFatal(), c);
 
-		LoggerPtr a = hierarchy->getLogger("a");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
 		a->setLevel(Level::getError());
 		assertThresholdConsistent(a);
 		assertThresholdConsistent(c);
 		assertThresholdIs(Level::getError(), c);
 
-		LoggerPtr d = hierarchy->getLogger("a.b.c.d");
+		LoggerPtr d = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
 		assertThresholdConsistent(d);
 		assertThresholdIs(Level::getError(), d);
 
@@ -971,7 +971,7 @@ public:
 		assertThresholdIs(Level::getDebug(), c);
 		assertThresholdIs(Level::getDebug(), d);
 
-		LoggerPtr b = hierarchy->getLogger("a.b");
+		LoggerPtr b = hierarchy->getLogger(LOG4CXX_STR("a.b"));
 		b->setLevel(Level::getWarn());
 		assertThresholdConsistent(a);
 		assertThresholdConsistent(b);
@@ -994,7 +994,7 @@ public:
 	// Additional Test 31: Wide hierarchy (many siblings)
 	void testWideHierarchy()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
 		parent->setLevel(Level::getInfo());
 
 		std::vector<LoggerPtr> children;
@@ -1083,8 +1083,8 @@ public:
 	// Additional Test 33: Set parent to same parent (no-op)
 	void testSetParentToSameParent()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
 
 		parent->setLevel(Level::getInfo());
 		assertThresholdConsistent(parent);
@@ -1104,11 +1104,11 @@ public:
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
 
-		LoggerPtr a = hierarchy->getLogger("a");
-		LoggerPtr ab = hierarchy->getLogger("a.b");
-		LoggerPtr abc = hierarchy->getLogger("a.b.c");
-		LoggerPtr x = hierarchy->getLogger("x");
-		LoggerPtr xy = hierarchy->getLogger("x.y");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr ab = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr abc = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
+		LoggerPtr x = hierarchy->getLogger(LOG4CXX_STR("x"));
+		LoggerPtr xy = hierarchy->getLogger(LOG4CXX_STR("x.y"));
 
 		root->setLevel(Level::getWarn());
 
@@ -1145,10 +1145,10 @@ public:
 	void testMixedNullAndNonNullLevels()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr a = hierarchy->getLogger("a");
-		LoggerPtr ab = hierarchy->getLogger("a.b");
-		LoggerPtr abc = hierarchy->getLogger("a.b.c");
-		LoggerPtr abcd = hierarchy->getLogger("a.b.c.d");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr ab = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr abc = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
+		LoggerPtr abcd = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
 
 		root->setLevel(Level::getError());
 		a->setLevel(LevelPtr()); // null - should inherit from root
@@ -1181,10 +1181,10 @@ public:
 	// Additional Test 36: Verify threshold after multiple parent changes
 	void testThresholdAfterMultipleParentChanges()
 	{
-		LoggerPtr p1 = hierarchy->getLogger("parent1");
-		LoggerPtr p2 = hierarchy->getLogger("parent2");
-		LoggerPtr p3 = hierarchy->getLogger("parent3");
-		LoggerPtr child = hierarchy->getLogger("orphan");
+		LoggerPtr p1 = hierarchy->getLogger(LOG4CXX_STR("parent1"));
+		LoggerPtr p2 = hierarchy->getLogger(LOG4CXX_STR("parent2"));
+		LoggerPtr p3 = hierarchy->getLogger(LOG4CXX_STR("parent3"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("orphan"));
 
 		p1->setLevel(Level::getTrace());
 		p2->setLevel(Level::getInfo());
@@ -1220,7 +1220,7 @@ public:
 	// Additional Test 37: Grandchild created before parent and middle ancestor
 	void testGrandchildBeforeParentAndMiddle()
 	{
-		LoggerPtr grandchild = hierarchy->getLogger("a.b.c.d.e.f");
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e.f"));
 		assertThresholdConsistent(grandchild);
 
 		LoggerPtr root = hierarchy->getRootLogger();
@@ -1228,13 +1228,13 @@ public:
 		assertThresholdConsistent(grandchild);
 		assertThresholdIs(Level::getError(), grandchild);
 
-		LoggerPtr middle = hierarchy->getLogger("a.b.c");
+		LoggerPtr middle = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
 		middle->setLevel(Level::getInfo());
 		assertThresholdConsistent(middle);
 		assertThresholdConsistent(grandchild);
 		assertThresholdIs(Level::getInfo(), grandchild);
 
-		LoggerPtr top = hierarchy->getLogger("a");
+		LoggerPtr top = hierarchy->getLogger(LOG4CXX_STR("a"));
 		top->setLevel(Level::getWarn());
 		assertThresholdConsistent(top);
 		assertThresholdConsistent(middle);
@@ -1250,9 +1250,9 @@ public:
 	void testStressTestManyLevelChanges()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr parent = hierarchy->getLogger("stress.parent");
-		LoggerPtr child = hierarchy->getLogger("stress.parent.child");
-		LoggerPtr grandchild = hierarchy->getLogger("stress.parent.child.grandchild");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("stress.parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("stress.parent.child"));
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("stress.parent.child.grandchild"));
 
 		LevelPtr levels[] = {
 			Level::getTrace(),
@@ -1294,18 +1294,18 @@ public:
 	void testDifferentNamePatterns()
 	{
 		// Single segment names
-		LoggerPtr single1 = hierarchy->getLogger("logger1");
-		LoggerPtr single2 = hierarchy->getLogger("logger2");
+		LoggerPtr single1 = hierarchy->getLogger(LOG4CXX_STR("logger1"));
+		LoggerPtr single2 = hierarchy->getLogger(LOG4CXX_STR("logger2"));
 
 		// Multi-segment names
-		LoggerPtr multi1 = hierarchy->getLogger("com.example.app");
-		LoggerPtr multi2 = hierarchy->getLogger("org.apache.log4cxx");
+		LoggerPtr multi1 = hierarchy->getLogger(LOG4CXX_STR("com.example.app"));
+		LoggerPtr multi2 = hierarchy->getLogger(LOG4CXX_STR("org.apache.log4cxx"));
 
 		// Very long names
-		LoggerPtr longName = hierarchy->getLogger("a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p");
+		LoggerPtr longName = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p"));
 
 		// Names with numbers
-		LoggerPtr numbered = hierarchy->getLogger("logger.v1.module2.class3");
+		LoggerPtr numbered = hierarchy->getLogger(LOG4CXX_STR("logger.v1.module2.class3"));
 
 		LoggerPtr root = hierarchy->getRootLogger();
 		root->setLevel(Level::getInfo());
@@ -1320,7 +1320,7 @@ public:
 		single1->setLevel(Level::getDebug());
 		assertThresholdConsistent(single1);
 
-		LoggerPtr comExample = hierarchy->getLogger("com.example");
+		LoggerPtr comExample = hierarchy->getLogger(LOG4CXX_STR("com.example"));
 		comExample->setLevel(Level::getWarn());
 		assertThresholdConsistent(comExample);
 		assertThresholdConsistent(multi1);
@@ -1331,10 +1331,10 @@ public:
 	void testParentChainAllNullExceptRoot()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr a = hierarchy->getLogger("a");
-		LoggerPtr ab = hierarchy->getLogger("a.b");
-		LoggerPtr abc = hierarchy->getLogger("a.b.c");
-		LoggerPtr abcd = hierarchy->getLogger("a.b.c.d");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr ab = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr abc = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
+		LoggerPtr abcd = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
 
 		root->setLevel(Level::getWarn());
 		// All others have null level (default)
@@ -1373,14 +1373,14 @@ public:
 		root->setLevel(Level::getError());
 
 		// Branch 1: com.example.app
-		LoggerPtr com = hierarchy->getLogger("com");
-		LoggerPtr comExample = hierarchy->getLogger("com.example");
-		LoggerPtr comExampleApp = hierarchy->getLogger("com.example.app");
+		LoggerPtr com = hierarchy->getLogger(LOG4CXX_STR("com"));
+		LoggerPtr comExample = hierarchy->getLogger(LOG4CXX_STR("com.example"));
+		LoggerPtr comExampleApp = hierarchy->getLogger(LOG4CXX_STR("com.example.app"));
 
 		// Branch 2: org.apache.log4cxx
-		LoggerPtr org = hierarchy->getLogger("org");
-		LoggerPtr orgApache = hierarchy->getLogger("org.apache");
-		LoggerPtr orgApacheLog4cxx = hierarchy->getLogger("org.apache.log4cxx");
+		LoggerPtr org = hierarchy->getLogger(LOG4CXX_STR("org"));
+		LoggerPtr orgApache = hierarchy->getLogger(LOG4CXX_STR("org.apache"));
+		LoggerPtr orgApacheLog4cxx = hierarchy->getLogger(LOG4CXX_STR("org.apache.log4cxx"));
 
 		// Set different levels on branches
 		com->setLevel(Level::getInfo());
@@ -1416,11 +1416,11 @@ public:
 	// Additional Test 42: Setting level on logger with existing children
 	void testSetLevelOnLoggerWithExistingChildren()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child1 = hierarchy->getLogger("parent.child1");
-		LoggerPtr child2 = hierarchy->getLogger("parent.child2");
-		LoggerPtr grandchild1 = hierarchy->getLogger("parent.child1.grandchild");
-		LoggerPtr grandchild2 = hierarchy->getLogger("parent.child2.grandchild");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child1 = hierarchy->getLogger(LOG4CXX_STR("parent.child1"));
+		LoggerPtr child2 = hierarchy->getLogger(LOG4CXX_STR("parent.child2"));
+		LoggerPtr grandchild1 = hierarchy->getLogger(LOG4CXX_STR("parent.child1.grandchild"));
+		LoggerPtr grandchild2 = hierarchy->getLogger(LOG4CXX_STR("parent.child2.grandchild"));
 
 		// All start with root's level
 		LoggerPtr root = hierarchy->getRootLogger();
@@ -1472,9 +1472,9 @@ public:
 	// Additional Test 43: Alternating setLevel and setParent calls
 	void testAlternatingSetLevelAndSetParent()
 	{
-		LoggerPtr p1 = hierarchy->getLogger("p1");
-		LoggerPtr p2 = hierarchy->getLogger("p2");
-		LoggerPtr child = hierarchy->getLogger("child");
+		LoggerPtr p1 = hierarchy->getLogger(LOG4CXX_STR("p1"));
+		LoggerPtr p2 = hierarchy->getLogger(LOG4CXX_STR("p2"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 
 		p1->setLevel(Level::getInfo());
 		assertThresholdConsistent(p1);
@@ -1511,8 +1511,8 @@ public:
 	// Additional Test 44: Verify threshold with OFF and ALL levels
 	void testOffAndAllLevels()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
 
 		parent->setLevel(Level::getOff());
 		assertThresholdConsistent(parent);
@@ -1541,7 +1541,7 @@ public:
 	void testComplexProvisionNodeScenario()
 	{
 		// Create deep child first
-		LoggerPtr deepChild = hierarchy->getLogger("a.b.c.d.e.f.g");
+		LoggerPtr deepChild = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e.f.g"));
 		assertThresholdConsistent(deepChild);
 
 		LoggerPtr root = hierarchy->getRootLogger();
@@ -1550,13 +1550,13 @@ public:
 		assertThresholdIs(Level::getFatal(), deepChild);
 
 		// Create intermediate ancestors in random order
-		LoggerPtr c = hierarchy->getLogger("a.b.c");
+		LoggerPtr c = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
 		c->setLevel(Level::getError());
 		assertThresholdConsistent(c);
 		assertThresholdConsistent(deepChild);
 		assertThresholdIs(Level::getError(), deepChild);
 
-		LoggerPtr a = hierarchy->getLogger("a");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
 		a->setLevel(Level::getWarn());
 		assertThresholdConsistent(a);
 		assertThresholdConsistent(c);
@@ -1565,14 +1565,14 @@ public:
 		assertThresholdIs(Level::getError(), c);
 		assertThresholdIs(Level::getError(), deepChild);
 
-		LoggerPtr e = hierarchy->getLogger("a.b.c.d.e");
+		LoggerPtr e = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e"));
 		e->setLevel(Level::getDebug());
 		assertThresholdConsistent(e);
 		assertThresholdConsistent(deepChild);
 		assertThresholdIs(Level::getDebug(), e);
 		assertThresholdIs(Level::getDebug(), deepChild);
 
-		LoggerPtr b = hierarchy->getLogger("a.b");
+		LoggerPtr b = hierarchy->getLogger(LOG4CXX_STR("a.b"));
 		b->setLevel(Level::getInfo());
 		assertThresholdConsistent(b);
 		assertThresholdConsistent(c);
@@ -1595,7 +1595,7 @@ public:
 	// Additional Test 46: Multiple siblings with different levels
 	void testMultipleSiblingsWithDifferentLevels()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
 		parent->setLevel(Level::getInfo());
 
 		std::vector<LoggerPtr> siblings;
@@ -1653,8 +1653,8 @@ public:
 		root->setLevel(Level::getError());
 
 		// Create loggers with gaps in hierarchy
-		LoggerPtr level2 = hierarchy->getLogger("a.b");
-		LoggerPtr level5 = hierarchy->getLogger("a.b.c.d.e");
+		LoggerPtr level2 = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr level5 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e"));
 
 		assertThresholdConsistent(level2);
 		assertThresholdConsistent(level5);
@@ -1672,7 +1672,7 @@ public:
 		assertThresholdIs(Level::getInfo(), level5);
 
 		// Fill in a gap
-		LoggerPtr level3 = hierarchy->getLogger("a.b.c");
+		LoggerPtr level3 = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
 		level3->setLevel(Level::getDebug());
 		assertThresholdConsistent(level3);
 		assertThresholdConsistent(level5);
@@ -1681,7 +1681,7 @@ public:
 		assertThresholdIs(Level::getDebug(), level5);
 
 		// Fill in another gap
-		LoggerPtr level4 = hierarchy->getLogger("a.b.c.d");
+		LoggerPtr level4 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
 		assertThresholdConsistent(level4);
 		assertThresholdConsistent(level5);
 
@@ -1693,8 +1693,8 @@ public:
 	// Additional Test 48: Verify threshold after hierarchy reset
 	void testThresholdAfterHierarchyOperations()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
 
 		parent->setLevel(Level::getInfo());
 		child->setLevel(Level::getDebug());
@@ -1718,14 +1718,14 @@ public:
 		root->setLevel(Level::getWarn());
 
 		// Branch A
-		LoggerPtr a = hierarchy->getLogger("a");
-		LoggerPtr ab = hierarchy->getLogger("a.b");
-		LoggerPtr abc = hierarchy->getLogger("a.b.c");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr ab = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr abc = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
 
 		// Branch X
-		LoggerPtr x = hierarchy->getLogger("x");
-		LoggerPtr xy = hierarchy->getLogger("x.y");
-		LoggerPtr xyz = hierarchy->getLogger("x.y.z");
+		LoggerPtr x = hierarchy->getLogger(LOG4CXX_STR("x"));
+		LoggerPtr xy = hierarchy->getLogger(LOG4CXX_STR("x.y"));
+		LoggerPtr xyz = hierarchy->getLogger(LOG4CXX_STR("x.y.z"));
 
 		a->setLevel(Level::getInfo());
 		x->setLevel(Level::getDebug());
@@ -1873,19 +1873,19 @@ public:
 		// Get logger multiple times and verify consistency each time
 		for (int i = 0; i < 10; ++i)
 		{
-			LoggerPtr logger = hierarchy->getLogger("test.logger");
+			LoggerPtr logger = hierarchy->getLogger(LOG4CXX_STR("test.logger"));
 			assertThresholdConsistent(logger);
 			assertThresholdIs(Level::getInfo(), logger);
 		}
 
 		// Set level on the logger
-		LoggerPtr logger = hierarchy->getLogger("test.logger");
+		LoggerPtr logger = hierarchy->getLogger(LOG4CXX_STR("test.logger"));
 		logger->setLevel(Level::getDebug());
 
 		// Get it again and verify
 		for (int i = 0; i < 10; ++i)
 		{
-			LoggerPtr sameLogger = hierarchy->getLogger("test.logger");
+			LoggerPtr sameLogger = hierarchy->getLogger(LOG4CXX_STR("test.logger"));
 			assertThresholdConsistent(sameLogger);
 			assertThresholdIs(Level::getDebug(), sameLogger);
 		}
@@ -1902,8 +1902,8 @@ public:
 #else
 			std::make_shared<LoggerFactory>();
 #endif
-		LoggerPtr logger1 = hierarchy->getLogger("factory.test1", factory);
-		LoggerPtr logger2 = hierarchy->getLogger("factory.test2", factory);
+		LoggerPtr logger1 = hierarchy->getLogger(LOG4CXX_STR("factory.test1"), factory);
+		LoggerPtr logger2 = hierarchy->getLogger(LOG4CXX_STR("factory.test2"), factory);
 
 		assertThresholdConsistent(logger1);
 		assertThresholdConsistent(logger2);
@@ -1922,8 +1922,8 @@ public:
 	// Additional Test 53: Verify threshold after parent-child swap
 	void testThresholdAfterParentChildSwap()
 	{
-		LoggerPtr logger1 = hierarchy->getLogger("swap.test1");
-		LoggerPtr logger2 = hierarchy->getLogger("swap.test2");
+		LoggerPtr logger1 = hierarchy->getLogger(LOG4CXX_STR("swap.test1"));
+		LoggerPtr logger2 = hierarchy->getLogger(LOG4CXX_STR("swap.test2"));
 
 		logger1->setLevel(Level::getInfo());
 		logger2->setLevel(Level::getDebug());
@@ -1931,7 +1931,7 @@ public:
 		assertThresholdConsistent(logger1);
 		assertThresholdConsistent(logger2);
 
-		LoggerPtr child = hierarchy->getLogger("child");
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 
 		// Set logger1 as parent
 		child->setParent(logger1);
@@ -1959,9 +1959,9 @@ public:
 	void testThresholdWithAllSameLevel()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr a = hierarchy->getLogger("a");
-		LoggerPtr ab = hierarchy->getLogger("a.b");
-		LoggerPtr abc = hierarchy->getLogger("a.b.c");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr ab = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr abc = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
 
 		// Set all to same level
 		LevelPtr sameLevel = Level::getInfo();
@@ -1989,10 +1989,10 @@ public:
 	// Additional Test 55: Threshold after rapid parent reassignments
 	void testThresholdAfterRapidParentReassignments()
 	{
-		LoggerPtr p1 = hierarchy->getLogger("p1");
-		LoggerPtr p2 = hierarchy->getLogger("p2");
-		LoggerPtr p3 = hierarchy->getLogger("p3");
-		LoggerPtr child = hierarchy->getLogger("child");
+		LoggerPtr p1 = hierarchy->getLogger(LOG4CXX_STR("p1"));
+		LoggerPtr p2 = hierarchy->getLogger(LOG4CXX_STR("p2"));
+		LoggerPtr p3 = hierarchy->getLogger(LOG4CXX_STR("p3"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 
 		p1->setLevel(Level::getTrace());
 		p2->setLevel(Level::getDebug());
@@ -2018,11 +2018,11 @@ public:
 	void testThresholdWithZigzagLevelPattern()
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
-		LoggerPtr l1 = hierarchy->getLogger("a");
-		LoggerPtr l2 = hierarchy->getLogger("a.b");
-		LoggerPtr l3 = hierarchy->getLogger("a.b.c");
-		LoggerPtr l4 = hierarchy->getLogger("a.b.c.d");
-		LoggerPtr l5 = hierarchy->getLogger("a.b.c.d.e");
+		LoggerPtr l1 = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr l2 = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr l3 = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
+		LoggerPtr l4 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
+		LoggerPtr l5 = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e"));
 
 		// Set zigzag pattern: high, low, high, low, high
 		root->setLevel(Level::getError());   // high
@@ -2049,9 +2049,9 @@ public:
 	// Additional Test 57: Threshold after removing and re-adding levels
 	void testThresholdAfterRemovingAndReaddingLevels()
 	{
-		LoggerPtr parent = hierarchy->getLogger("parent");
-		LoggerPtr child = hierarchy->getLogger("parent.child");
-		LoggerPtr grandchild = hierarchy->getLogger("parent.child.grandchild");
+		LoggerPtr parent = hierarchy->getLogger(LOG4CXX_STR("parent"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("parent.child"));
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("parent.child.grandchild"));
 
 		parent->setLevel(Level::getWarn());
 		child->setLevel(Level::getDebug());
@@ -2107,10 +2107,10 @@ public:
 		root->setLevel(Level::getError());
 
 		// Create diamond pattern
-		LoggerPtr top = hierarchy->getLogger("top");
-		LoggerPtr left = hierarchy->getLogger("top.left");
-		LoggerPtr right = hierarchy->getLogger("top.right");
-		LoggerPtr bottom = hierarchy->getLogger("top.left.bottom");
+		LoggerPtr top = hierarchy->getLogger(LOG4CXX_STR("top"));
+		LoggerPtr left = hierarchy->getLogger(LOG4CXX_STR("top.left"));
+		LoggerPtr right = hierarchy->getLogger(LOG4CXX_STR("top.right"));
+		LoggerPtr bottom = hierarchy->getLogger(LOG4CXX_STR("top.left.bottom"));
 
 		// Note: bottom can only have one parent in the hierarchy
 		// It will be under "top.left" by its name
@@ -2160,7 +2160,7 @@ public:
 		assertThresholdIs(Level::getInfo(), logger);
 
 		// Set level on intermediate ancestor
-		LoggerPtr intermediate = hierarchy->getLogger("very.long.logger.name.with.many");
+		LoggerPtr intermediate = hierarchy->getLogger(LOG4CXX_STR("very.long.logger.name.with.many"));
 		intermediate->setLevel(Level::getDebug());
 		assertThresholdConsistent(intermediate);
 		assertThresholdConsistent(logger);
@@ -2175,7 +2175,7 @@ public:
 	// Additional Test 60: Threshold after setting same level multiple times
 	void testThresholdAfterSettingSameLevelMultipleTimes()
 	{
-		LoggerPtr logger = hierarchy->getLogger("test");
+		LoggerPtr logger = hierarchy->getLogger(LOG4CXX_STR("test"));
 
 		for (int i = 0; i < 50; ++i)
 		{
@@ -2203,15 +2203,15 @@ public:
 		root->setLevel(Level::getWarn());
 
 		// Create loggers in mixed order
-		LoggerPtr deep = hierarchy->getLogger("a.b.c.d.e.f");
+		LoggerPtr deep = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e.f"));
 		assertThresholdConsistent(deep);
 
-		LoggerPtr mid = hierarchy->getLogger("a.b.c");
+		LoggerPtr mid = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
 		mid->setLevel(Level::getInfo());
 		assertThresholdConsistent(mid);
 		assertThresholdConsistent(deep);
 
-		LoggerPtr top = hierarchy->getLogger("a");
+		LoggerPtr top = hierarchy->getLogger(LOG4CXX_STR("a"));
 		top->setLevel(Level::getError());
 		assertThresholdConsistent(top);
 		assertThresholdConsistent(mid);
@@ -2227,7 +2227,7 @@ public:
 		assertThresholdIs(Level::getDebug(), deep);
 
 		// Create sibling
-		LoggerPtr sibling = hierarchy->getLogger("a.b.c.d.e.g");
+		LoggerPtr sibling = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d.e.g"));
 		assertThresholdConsistent(sibling);
 		assertThresholdIs(Level::getInfo(), sibling);
 
@@ -2254,7 +2254,7 @@ public:
 		assertThresholdIs(Level::getTrace(), sibling);
 
 		// Create intermediate logger
-		LoggerPtr intermediate = hierarchy->getLogger("a.b");
+		LoggerPtr intermediate = hierarchy->getLogger(LOG4CXX_STR("a.b"));
 		intermediate->setLevel(Level::getFatal());
 		assertThresholdConsistent(intermediate);
 		assertThresholdConsistent(mid);
@@ -2270,11 +2270,11 @@ public:
 	// Additional Test 62: Threshold after parent change with grandchildren
 	void testThresholdAfterParentChangeWithGrandchildren()
 	{
-		LoggerPtr p1 = hierarchy->getLogger("p1");
-		LoggerPtr p2 = hierarchy->getLogger("p2");
-		LoggerPtr child = hierarchy->getLogger("child");
-		LoggerPtr grandchild = hierarchy->getLogger("child.grandchild");
-		LoggerPtr greatGrandchild = hierarchy->getLogger("child.grandchild.great");
+		LoggerPtr p1 = hierarchy->getLogger(LOG4CXX_STR("p1"));
+		LoggerPtr p2 = hierarchy->getLogger(LOG4CXX_STR("p2"));
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
+		LoggerPtr grandchild = hierarchy->getLogger(LOG4CXX_STR("child.grandchild"));
+		LoggerPtr greatGrandchild = hierarchy->getLogger(LOG4CXX_STR("child.grandchild.great"));
 
 		p1->setLevel(Level::getInfo());
 		p2->setLevel(Level::getError());
@@ -2326,7 +2326,7 @@ public:
 		assertThresholdConsistent(root);
 		assertThresholdIs(Level::getInfo(), root);
 
-		LoggerPtr child = hierarchy->getLogger("child");
+		LoggerPtr child = hierarchy->getLogger(LOG4CXX_STR("child"));
 		assertThresholdConsistent(child);
 		assertThresholdIs(Level::getInfo(), child);
 	}
@@ -2334,10 +2334,10 @@ public:
 	// Additional Test 64: Threshold with single character logger names
 	void testThresholdWithSingleCharacterNames()
 	{
-		LoggerPtr a = hierarchy->getLogger("a");
-		LoggerPtr ab = hierarchy->getLogger("a.b");
-		LoggerPtr abc = hierarchy->getLogger("a.b.c");
-		LoggerPtr abcd = hierarchy->getLogger("a.b.c.d");
+		LoggerPtr a = hierarchy->getLogger(LOG4CXX_STR("a"));
+		LoggerPtr ab = hierarchy->getLogger(LOG4CXX_STR("a.b"));
+		LoggerPtr abc = hierarchy->getLogger(LOG4CXX_STR("a.b.c"));
+		LoggerPtr abcd = hierarchy->getLogger(LOG4CXX_STR("a.b.c.d"));
 
 		a->setLevel(Level::getWarn());
 		assertThresholdConsistent(a);
@@ -2393,8 +2393,8 @@ public:
 		}
 
 		// Set levels on some base loggers
-		LoggerPtr com = hierarchy->getLogger("com");
-		LoggerPtr org = hierarchy->getLogger("org");
+		LoggerPtr com = hierarchy->getLogger(LOG4CXX_STR("com"));
+		LoggerPtr org = hierarchy->getLogger(LOG4CXX_STR("org"));
 		com->setLevel(Level::getInfo());
 		org->setLevel(Level::getDebug());
 
@@ -2405,8 +2405,8 @@ public:
 		}
 
 		// Set levels on some mid-level loggers
-		LoggerPtr comExample = hierarchy->getLogger("com.example");
-		LoggerPtr orgApache = hierarchy->getLogger("org.apache");
+		LoggerPtr comExample = hierarchy->getLogger(LOG4CXX_STR("com.example"));
+		LoggerPtr orgApache = hierarchy->getLogger(LOG4CXX_STR("org.apache"));
 		comExample->setLevel(Level::getTrace());
 		orgApache->setLevel(Level::getError());
 
@@ -2435,15 +2435,15 @@ public:
 		}
 
 		// Verify specific expected values
-		LoggerPtr comExampleApp = hierarchy->getLogger("com.example.app");
+		LoggerPtr comExampleApp = hierarchy->getLogger(LOG4CXX_STR("com.example.app"));
 		assertThresholdConsistent(comExampleApp);
 		assertThresholdIs(Level::getTrace(), comExampleApp);
 
-		LoggerPtr orgApacheTest = hierarchy->getLogger("org.apache.test");
+		LoggerPtr orgApacheTest = hierarchy->getLogger(LOG4CXX_STR("org.apache.test"));
 		assertThresholdConsistent(orgApacheTest);
 		assertThresholdIs(Level::getError(), orgApacheTest);
 
-		LoggerPtr netExampleApp = hierarchy->getLogger("net.example.app");
+		LoggerPtr netExampleApp = hierarchy->getLogger(LOG4CXX_STR("net.example.app"));
 		assertThresholdConsistent(netExampleApp);
 		assertThresholdIs(Level::getFatal(), netExampleApp);
 	}
