@@ -401,6 +401,21 @@ bool Logger::isAttached(const AppenderPtr appender) const
 	return m_priv->aai.isAttached(appender);
 }
 
+bool Logger::isThresholdEqualTo(const LevelPtr& level) const
+{
+	return level->toInt() == m_threshold;
+}
+
+bool Logger::isThresholdEqualTo(const LoggerPtr& other) const
+{
+	return other->m_threshold == m_threshold;
+}
+
+bool Logger::isThresholdValid() const
+{
+	return getEffectiveLevel()->toInt() == m_threshold;
+}
+
 bool Logger::isTraceEnabled() const
 {
 	auto rep = getHierarchy();
@@ -410,7 +425,7 @@ bool Logger::isTraceEnabled() const
 		return false;
 	}
 
-	return getEffectiveLevel()->toInt() <= Level::TRACE_INT;
+	return m_threshold <= Level::TRACE_INT;
 }
 
 bool Logger::isDebugEnabled() const
@@ -422,7 +437,7 @@ bool Logger::isDebugEnabled() const
 		return false;
 	}
 
-	return getEffectiveLevel()->toInt() <= Level::DEBUG_INT;
+	return m_threshold <= Level::DEBUG_INT;
 }
 
 bool Logger::isEnabledFor(const LevelPtr& level1) const
@@ -447,7 +462,7 @@ bool Logger::isInfoEnabled() const
 		return false;
 	}
 
-	return getEffectiveLevel()->toInt() <= Level::INFO_INT;
+	return m_threshold <= Level::INFO_INT;
 }
 
 bool Logger::isErrorEnabled() const
@@ -459,7 +474,7 @@ bool Logger::isErrorEnabled() const
 		return false;
 	}
 
-	return getEffectiveLevel()->toInt() <= Level::ERROR_INT;
+	return m_threshold <= Level::ERROR_INT;
 }
 
 bool Logger::isWarnEnabled() const
@@ -471,7 +486,7 @@ bool Logger::isWarnEnabled() const
 		return false;
 	}
 
-	return getEffectiveLevel()->toInt() <= Level::WARN_INT;
+	return m_threshold <= Level::WARN_INT;
 }
 
 bool Logger::isFatalEnabled() const
@@ -483,7 +498,7 @@ bool Logger::isFatalEnabled() const
 		return false;
 	}
 
-	return getEffectiveLevel()->toInt() <= Level::FATAL_INT;
+	return m_threshold <= Level::FATAL_INT;
 }
 
 /*void Logger::l7dlog(const LevelPtr& level, const String& key,
@@ -640,6 +655,8 @@ void Logger::setParent(LoggerPtr parentLogger)
 {
 	m_priv->parent = parentLogger;
 	updateThreshold();
+	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
+		rep->updateChildren(this);
 }
 
 void Logger::setLevel(const LevelPtr level1)

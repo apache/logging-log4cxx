@@ -263,6 +263,7 @@ class RegisterDisabledSuite
 
 
 #define LOGUNIT_ASSERT(     x)                                  { if (!(x)) throw LogUnit::AssertException(true, #x, __LINE__); }
+#define LOGUNIT_ASSERT_MESSAGE(x, msg)                          { if (!(x)) throw LogUnit::AssertException(msg, __LINE__); }
 #define LOGUNIT_ASSERT_SRCL(x, srcLine)                         { if (!(x)) throw LogUnit::AssertException(true, #x, srcLine);  }
 #define LOGUNIT_ASSERT_EQUAL(       expected, actual)           assertEquals(expected, actual, #expected, #actual, __LINE__)
 #define LOGUNIT_ASSERT_EQUAL_SRCL(  expected, actual, srcLine)  assertEquals(expected, actual, #expected, #actual, srcLine)
