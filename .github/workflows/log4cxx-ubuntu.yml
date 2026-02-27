@@ -140,6 +140,6 @@ jobs:
     - name: run unit tests
       shell: pwsh
       run: |
-        cd main
-        cd build
+        ROOT=`pwd`
+        cd $ROOT/build
         ctest -C Debug --output-on-failure
