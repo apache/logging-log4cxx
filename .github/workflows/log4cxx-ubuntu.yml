@@ -131,6 +131,7 @@ jobs:
         cmake --build $ROOT/MyApp-build
         if [ ${{ matrix.qt }} == ON ]; then
             cmake \
+              -DCMAKE_PREFIX_PATH=$ROOT/lib \
               -S $ROOT/main/src/examples/cpp/MyApp-qt \
               -B $ROOT/MyApp-qt-build
             cmake --build $ROOT/MyApp-qt-build
