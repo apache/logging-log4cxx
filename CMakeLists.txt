@@ -211,29 +211,42 @@ if(LOG4CXX_WITH_PKG_CONFIG)
 endif(LOG4CXX_WITH_PKG_CONFIG)
 
 # Support for find_package(log4cxx) in consuming CMake projects using
-# target_include_directories(myApplication PRIVATE $<TARGET_PROPERTY:log4cxx,INTERFACE_INCLUDE_DIRECTORIES>)
 # target_link_libraries( myApplication PRIVATE log4cxx)
 install(EXPORT ${LOG4CXX_LIB_NAME}Targets
-  FILE        ${LOG4CXX_LIB_NAME}Config.cmake
+  FILE        ${LOG4CXX_LIB_NAME}Targets.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
 )
-# Support for find_package(log4cxx 1.3) in consuming CMake projects
 include(CMakePackageConfigHelpers)
+# Support find_package(log4cxx CONFIG) in consuming CMake projects
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}Config.cmake"
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
+  NO_SET_AND_CHECK_MACRO
+)
+# Support for find_package(log4cxx 1.6) in consuming CMake projects
 write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}ConfigVersion.cmake"
   VERSION       ${PROJECT_VERSION}
   COMPATIBILITY SameMinorVersion
 )
-install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}ConfigVersion.cmake"
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}Config.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}ConfigVersion.cmake"
   DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
 )
 
 if(LOG4CXX_QT_SUPPORT)
+  # Support for find_package(log4cxx COMPONENTS qt) in consuming CMake projects
+  install(EXPORT ${LOG4CXX_LIB_NAME}-qtTargets
+    FILE        ${LOG4CXX_LIB_NAME}-qtTargets.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
+  )
+  if(${log4cxx_VERSION_MAJOR} EQUAL 1)
+    # Support for find_package(log4cxx-qt) in consuming CMake projects
     install(EXPORT ${LOG4CXX_LIB_NAME}-qtTargets
       FILE        ${LOG4CXX_LIB_NAME}-qtConfig.cmake
       DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}-qt
     )
-    # Support for find_package(log4cxx 0.11) in consuming CMake projects
-    include(CMakePackageConfigHelpers)
+    # Support for find_package(log4cxx-qt 1.6) in consuming CMake projects
     write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}-qtConfigVersion.cmake"
       VERSION       ${PROJECT_VERSION}
       COMPATIBILITY SameMinorVersion
@@ -241,6 +254,7 @@ if(LOG4CXX_QT_SUPPORT)
     install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}-qtConfigVersion.cmake"
       DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}-qt
     )
+  endif(${log4cxx_VERSION_MAJOR} 1)
 endif(LOG4CXX_QT_SUPPORT)
 
 #

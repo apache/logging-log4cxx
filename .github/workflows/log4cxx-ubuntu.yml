@@ -105,9 +105,7 @@ jobs:
 
     - name: 'run cmake - posix'
       run: |
-        cd main
-        mkdir build
-        cd build
+        ROOT=`pwd`
         cmake \
           -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
           -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
@@ -118,8 +116,25 @@ jobs:
           -DBUILD_FUZZERS=${{ matrix.fuzzers }} \
           -DLOG4CXX_CHAR=${{ matrix.logchar }} \
           -DLOG4CXX_BUILD_NEXT_ABI=${{ matrix.next_abi }} \
-          ..
-        cmake --build .
+          -DCMAKE_INSTALL_PREFIX=$ROOT/lib \
+          -S $ROOT/main \
+          -B $ROOT/build
+        cmake --build $ROOT/build --target install
+
+    - name: 'test installation'
+      run: |
+        ROOT=`pwd`
+        cmake \
+          -DCMAKE_PREFIX_PATH=$ROOT/lib \
+          -S $ROOT/main/src/examples/cpp/MyApp \
+          -B $ROOT/MyApp-build
+        cmake --build $ROOT/MyApp-build
+        if [ ${{ matrix.qt }} == ON ]; then
+            cmake \
+              -S $ROOT/main/src/examples/cpp/MyApp-qt \
+              -B $ROOT/MyApp-qt-build
+            cmake --build $ROOT/MyApp-qt-build
+        if
 
     - name: run unit tests
       shell: pwsh
