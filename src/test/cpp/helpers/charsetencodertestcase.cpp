@@ -388,7 +388,7 @@ public:
 		LOGUNIT_ASSERT_EQUAL((apr_uint32_t) 0, package->getFail());
 		LOGUNIT_ASSERT_EQUAL((apr_uint32_t) THREAD_COUNT * THREAD_REPS, package->getPass());
 	}
-
+	
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(CharsetEncoderTestCase);
