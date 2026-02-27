@@ -29,6 +29,7 @@
 #include <apr_file_io.h>
 #include <apr_user.h>
 #include <apr_env.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 
 using namespace log4cxx;
@@ -46,6 +47,7 @@ LOGUNIT_CLASS(OptionConverterTestCase)
 	LOGUNIT_TEST(varSubstTest4);
 	LOGUNIT_TEST(varSubstTest5);
 	LOGUNIT_TEST(varSubstRecursiveReferenceTest);
+	LOGUNIT_TEST(varSubstDepthLimitTest);
 	LOGUNIT_TEST(testTmpDir);
 #if APR_HAS_USER
 	LOGUNIT_TEST(testUserHome);
@@ -161,6 +163,30 @@ public:
 			LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 			LogLog::debug(lsMsg);
 		}
+	}
+
+	/**
+	 * tests that recursion stops after MAX_SUBST_DEPTH (20) to prevent Stack Overflow.
+	 */
+	void varSubstDepthLimitTest()
+	{
+		Properties props;
+		Pool p;
+		
+		// create a chain of 25 variables: p0 -> p1 -> ... -> p25
+		for(int i = 0; i < 25; ++i) {
+			LogString key = LOG4CXX_STR("p") + StringHelper::toString(i, p);
+			LogString val = LOG4CXX_STR("${p") + StringHelper::toString(i+1, p) + LOG4CXX_STR("}");
+			props.setProperty(key, val);
+		}
+		props.setProperty(LOG4CXX_STR("p25"), LOG4CXX_STR("LeafValue"));
+
+		// try to resolve p0. Should stop at p20 and return "${p21}" (graceful stop)
+		// instead of crashing or going all the way to "LeafValue".
+		LogString result = OptionConverter::substVars(LOG4CXX_STR("${p0}"), props);
+		
+		LOGUNIT_ASSERT(result != LOG4CXX_STR("LeafValue"));
+		LOGUNIT_ASSERT_EQUAL((LogString)LOG4CXX_STR("${p21}"), result);
 	}
 
 	void testTmpDir()
