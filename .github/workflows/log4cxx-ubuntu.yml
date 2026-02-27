@@ -106,6 +106,7 @@ jobs:
     - name: 'run cmake - posix'
       run: |
         ROOT=`pwd`
+        set -x
         cmake \
           -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
           -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
@@ -124,6 +125,7 @@ jobs:
     - name: 'test installation'
       run: |
         ROOT=`pwd`
+        set -x
         cmake \
           -DCMAKE_PREFIX_PATH=$ROOT/lib \
           -S $ROOT/main/src/examples/cpp/MyApp \
