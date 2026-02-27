@@ -134,7 +134,7 @@ jobs:
               -S $ROOT/main/src/examples/cpp/MyApp-qt \
               -B $ROOT/MyApp-qt-build
             cmake --build $ROOT/MyApp-qt-build
-        if
+        fi
 
     - name: run unit tests
       shell: pwsh
