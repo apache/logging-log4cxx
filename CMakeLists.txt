@@ -254,7 +254,7 @@ if(LOG4CXX_QT_SUPPORT)
     install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/${LOG4CXX_LIB_NAME}-qtConfigVersion.cmake"
       DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}-qt
     )
-  endif(${log4cxx_VERSION_MAJOR} 1)
+  endif(${log4cxx_VERSION_MAJOR} EQUAL 1)
 endif(LOG4CXX_QT_SUPPORT)
 
 #
