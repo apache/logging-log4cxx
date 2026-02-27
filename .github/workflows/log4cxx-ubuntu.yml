@@ -140,7 +140,6 @@ jobs:
         fi
 
     - name: run unit tests
-      shell: pwsh
       run: |
         ROOT=`pwd`
         cd $ROOT/build
