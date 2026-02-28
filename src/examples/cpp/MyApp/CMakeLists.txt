@@ -19,6 +19,8 @@ project(MyApp LANGUAGES CXX)
 
 # Find the required library
 find_package(log4cxx REQUIRED)
+# Optionally locate fmt::fmt
+find_package(fmt QUIET)
 
 # Build an executable that uses Log4cxx
 get_filename_component(SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" DIRECTORY)
