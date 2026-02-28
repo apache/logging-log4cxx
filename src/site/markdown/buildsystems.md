@@ -41,6 +41,8 @@ find_package(log4cxx)
 target_link_libraries( executable PRIVATE log4cxx )
 ~~~
 
+See \ref MyApp/CMakeLists.txt and \ref MyApp-qt/CMakeLists.txt for more complete examples.
+
 # How do I use Log4cxx with CMake and pkg-config? {#use_with_cmake_pkgconfig}
 
 Add the following to your CMakeLists.txt file:
@@ -77,3 +79,9 @@ LDFLAGS += $(shell pkg-config --libs liblog4cxx)
 all: main.o
         $(CXX) -o application main.o $(LDFLAGS)
 ~~~
+
+\example MyApp/CMakeLists.txt
+This example shows one way to include Log4cxx in a consuming CMake project.
+
+\example MyApp-qt/CMakeLists.txt
+This example shows how to include Qt specific Log4cxx features in a consuming CMake project.
