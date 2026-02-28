@@ -240,7 +240,7 @@ if(LOG4CXX_QT_SUPPORT)
     FILE        ${LOG4CXX_LIB_NAME}-qtTargets.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LOG4CXX_LIB_NAME}
   )
-  if(${log4cxx_VERSION_MAJOR} EQUAL 1)
+  if(${log4cxx_VERSION_MAJOR} EQUAL 1 AND NOT DEFINED VCPKG_ROOT)
     # Support for find_package(log4cxx-qt) in consuming CMake projects
     install(EXPORT ${LOG4CXX_LIB_NAME}-qtTargets
       FILE        ${LOG4CXX_LIB_NAME}-qtConfig.cmake
