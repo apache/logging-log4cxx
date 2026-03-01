@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [windows-2022, windows-2025]
+        name: [windows-2022, windows-2025-qt]
         include:
           - name: windows-2022
             os: windows-2022
