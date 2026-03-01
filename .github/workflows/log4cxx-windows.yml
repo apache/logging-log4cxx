@@ -29,9 +29,10 @@ jobs:
           - name: windows-2022
             os: windows-2022
             qt: OFF
-          - name: windows-2025
+          - name: windows-2025-qt
             os: windows-2025
-            qt: OFF
+            qt: ON
+            qt_component: qtbase
 
     steps:
     - uses: actions/checkout@v4
@@ -61,7 +62,7 @@ jobs:
       run: |
         cd vcpkg
         ./bootstrap-vcpkg.bat
-        ./vcpkg install apr apr-util fmt --triplet=x64-windows
+        ./vcpkg install apr apr-util fmt ${{ matrix.qt_component }} --triplet=x64-windows
 
     - name: 'Install zip'
       id: install-zip
