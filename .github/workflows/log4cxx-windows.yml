@@ -23,12 +23,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [windows-2022, windows-2025-qt]
+        name: [windows-x64-release, windows-2025-qt]
         include:
-          - name: windows-2022
+          - name: windows-x64-release
             os: windows-2022
             qt: OFF
-            vcpkg_install_minutes: 10
+            vcpkg_install_minutes: 20
           - name: windows-2025-qt
             os: windows-2025
             qt: ON
