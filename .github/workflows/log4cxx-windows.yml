@@ -20,7 +20,6 @@ jobs:
   job:
     name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 38
     strategy:
       fail-fast: false
       matrix:
@@ -65,7 +64,7 @@ jobs:
       run: |
         cd vcpkg
         ./bootstrap-vcpkg.bat
-        ./vcpkg install apr apr-util fmt ${{ matrix.qt_component }} --triplet=x64-windows
+        ./vcpkg install apr apr-util fmt ${{ matrix.qt_component }} --triplet=x64-windows-release
 
     - name: 'Install zip'
       id: install-zip
@@ -86,7 +85,7 @@ jobs:
            "-DLOG4CXX_QT_SUPPORT=${{ matrix.qt }}" `
            "-DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin" `
            "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-           "-DVCPKG_TARGET_TRIPLET=x64-windows" `
+           "-DVCPKG_TARGET_TRIPLET=x64-windows-release" `
            "-DCMAKE_INSTALL_PREFIX=$ROOT/Libraries" `
            -S "$ROOT/main" `
            -B "$ROOT/build"
@@ -102,7 +101,7 @@ jobs:
         cmake `
            "-DCMAKE_PREFIX_PATH=$ROOT/Libraries" `
            "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-           "-DVCPKG_TARGET_TRIPLET=x64-windows" `
+           "-DVCPKG_TARGET_TRIPLET=x64-windows-release" `
            -S "$ROOT/main/src/examples/cpp/MyApp" `
            -B "$ROOT/MyApp-build"
 
@@ -112,7 +111,7 @@ jobs:
             cmake `
                "-DCMAKE_PREFIX_PATH=$ROOT/Libraries" `
                "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-               "-DVCPKG_TARGET_TRIPLET=x64-windows" `
+               "-DVCPKG_TARGET_TRIPLET=x64-windows-release" `
                -S "$ROOT/main/src/examples/cpp/MyApp-qt" `
                -B "$ROOT/MyApp-qt-build"
 
@@ -121,6 +120,7 @@ jobs:
 
     - name: run unit tests
       shell: pwsh
+      timeout-minutes: 10
       run: |
         cd build
         ctest -C Release --output-on-failure
