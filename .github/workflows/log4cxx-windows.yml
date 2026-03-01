@@ -29,10 +29,12 @@ jobs:
           - name: windows-2022
             os: windows-2022
             qt: OFF
+            vcpkg_install_minutes: 10
           - name: windows-2025-qt
             os: windows-2025
             qt: ON
             qt_component: qtbase
+            vcpkg_install_minutes: 90
 
     steps:
     - uses: actions/checkout@v4
@@ -59,6 +61,7 @@ jobs:
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
       id: runvcpkg
       shell: pwsh
+      timeout-minutes: ${{ matrix.vcpkg_install_minutes }}
       run: |
         cd vcpkg
         ./bootstrap-vcpkg.bat
