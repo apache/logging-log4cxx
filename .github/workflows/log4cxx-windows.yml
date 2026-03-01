@@ -28,8 +28,10 @@ jobs:
         include:
           - name: windows-2022
             os: windows-2022
+            qt: OFF
           - name: windows-2025
             os: windows-2025
+            qt: OFF
 
     steps:
     - uses: actions/checkout@v4
@@ -71,16 +73,50 @@ jobs:
     - name: 'run cmake'
       shell: pwsh
       run: |
-        $THISDIR=Get-Location
-        cd main
-        mkdir build
-        cd build
-        cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DLOG4CXX_CHAR=wchar_t -DLOG4CXX_ENABLE_ODBC=on  "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
-        cmake --build .
+        $ErrorActionPreference="Stop"
+        $ROOT=Get-Location
+        Set-PSDebug -Trace 1
+        cmake `
+           -DLOG4CXX_CHAR=wchar_t `
+           -DLOG4CXX_ENABLE_ODBC=on `
+           "-DLOG4CXX_QT_SUPPORT=${{ matrix.qt }}" `
+           "-DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin" `
+           "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+           "-DVCPKG_TARGET_TRIPLET=x64-windows" `
+           "-DCMAKE_INSTALL_PREFIX=$ROOT/Libraries" `
+           -S "$ROOT/main" `
+           -B "$ROOT/build"
+
+        cmake --build "$ROOT/build" --target INSTALL --config Release
+
+    - name: 'test installation'
+      shell: pwsh
+      run: |
+        $ErrorActionPreference="Stop"
+        $ROOT=Get-Location
+        Set-PSDebug -Trace 1
+        cmake `
+           "-DCMAKE_PREFIX_PATH=$ROOT/Libraries" `
+           "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+           "-DVCPKG_TARGET_TRIPLET=x64-windows" `
+           -S "$ROOT/main/src/examples/cpp/MyApp" `
+           -B "$ROOT/MyApp-build"
+
+        cmake --build "$ROOT/MyApp-build" --config Release
+
+        if ( "${{ matrix.qt }}" -eq "ON" ) {
+            cmake `
+               "-DCMAKE_PREFIX_PATH=$ROOT/Libraries" `
+               "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+               "-DVCPKG_TARGET_TRIPLET=x64-windows" `
+               -S "$ROOT/main/src/examples/cpp/MyApp-qt" `
+               -B "$ROOT/MyApp-qt-build"
+
+            cmake --build "$ROOT/MyApp-qt-build" --config Release
+        }
 
     - name: run unit tests
       shell: pwsh
       run: |
-        cd main
         cd build
-        ctest -C Debug --output-on-failure
+        ctest -C Release --output-on-failure
