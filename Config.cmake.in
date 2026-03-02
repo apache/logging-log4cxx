@@ -1,0 +1,20 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/${CMAKE_FIND_PACKAGE_NAME}Targets.cmake")
+
+# The components that can specified in find_package
+set(_${CMAKE_FIND_PACKAGE_NAME}_supported_components qt)
+
+foreach(component ${${CMAKE_FIND_PACKAGE_NAME}_FIND_COMPONENTS})
+  # if we couldn't find the component, set the ${CMAKE_FIND_PACKAGE_NAME} library to no
+  # longer be found and notify the user about the missing component
+  if (NOT ${component} IN_LIST _${CMAKE_FIND_PACKAGE_NAME}_supported_components)
+    set(${CMAKE_FIND_PACKAGE_NAME}_FOUND False)
+    set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "Unsupported component: ${component}")
+  else()
+    include(${CMAKE_CURRENT_LIST_DIR}/${CMAKE_FIND_PACKAGE_NAME}-${component}Targets.cmake)
+    set(${CMAKE_FIND_PACKAGE_NAME}_${component}_FOUND True)
+  endif()
+endforeach()
+
+check_required_components(${CMAKE_FIND_PACKAGE_NAME})
