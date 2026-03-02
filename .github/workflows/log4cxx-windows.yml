@@ -23,9 +23,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [windows-x64-release, windows-2025-qt]
+        name: [windows-2022, windows-2025-qt]
         include:
-          - name: windows-x64-release
+          - name: windows-2022
             os: windows-2022
             qt: OFF
             vcpkg_install_minutes: 20
@@ -33,7 +33,6 @@ jobs:
             os: windows-2025
             qt: ON
             qt_component: qtbase
-            vcpkg_install_minutes: 90
 
     steps:
     - uses: actions/checkout@v4
@@ -60,11 +59,10 @@ jobs:
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
       id: runvcpkg
       shell: pwsh
-      timeout-minutes: ${{ matrix.vcpkg_install_minutes }}
       run: |
         cd vcpkg
         ./bootstrap-vcpkg.bat
-        ./vcpkg install apr apr-util fmt ${{ matrix.qt_component }} --triplet=x64-windows-release
+        ./vcpkg install apr apr-util fmt ${{ matrix.qt_component }} --triplet=x64-windows
 
     - name: 'Install zip'
       id: install-zip
@@ -85,7 +83,7 @@ jobs:
            "-DLOG4CXX_QT_SUPPORT=${{ matrix.qt }}" `
            "-DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin" `
            "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-           "-DVCPKG_TARGET_TRIPLET=x64-windows-release" `
+           "-DVCPKG_TARGET_TRIPLET=x64-windows" `
            "-DCMAKE_INSTALL_PREFIX=$ROOT/Libraries" `
            -S "$ROOT/main" `
            -B "$ROOT/build"
@@ -101,7 +99,7 @@ jobs:
         cmake `
            "-DCMAKE_PREFIX_PATH=$ROOT/Libraries" `
            "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-           "-DVCPKG_TARGET_TRIPLET=x64-windows-release" `
+           "-DVCPKG_TARGET_TRIPLET=x64-windows" `
            -S "$ROOT/main/src/examples/cpp/MyApp" `
            -B "$ROOT/MyApp-build"
 
@@ -111,7 +109,7 @@ jobs:
             cmake `
                "-DCMAKE_PREFIX_PATH=$ROOT/Libraries" `
                "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-               "-DVCPKG_TARGET_TRIPLET=x64-windows-release" `
+               "-DVCPKG_TARGET_TRIPLET=x64-windows" `
                -S "$ROOT/main/src/examples/cpp/MyApp-qt" `
                -B "$ROOT/MyApp-qt-build"
 
