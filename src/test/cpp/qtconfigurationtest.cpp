@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 #include "logunit.h"
+#include <apr_file_io.h>
+#include <apr_time.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/helpers/bytebuffer.h>
@@ -26,8 +28,6 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx-qt/configuration.h>
 #include <log4cxx-qt/transcoder.h>
-#include <apr_file_io.h>
-#include "apr_time.h"
 #include <QCoreApplication>
 #include <QFileInfo>
 
