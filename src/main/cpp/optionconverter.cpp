@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -43,6 +43,8 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/singletonholder.h>
+#include <limits>
+#include <cstdint>
 
 namespace
 {
@@ -281,6 +283,17 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 
 long OptionConverter::toFileSize(const LogString& s, long dEfault)
 {
+    int64_t val = toFileSize64(s, dEfault);
+    
+    if (val > std::numeric_limits<long>::max()) {
+        return std::numeric_limits<long>::max();
+    }
+    
+    return (long) val;
+}
+
+int64_t OptionConverter::toFileSize64(const LogString& s, int64_t dEfault)
+{
 	if (s.empty())
 	{
 		return dEfault;
@@ -290,26 +303,30 @@ long OptionConverter::toFileSize(const LogString& s, long dEfault)
 
 	if (index != LogString::npos && index > 0)
 	{
-		long multiplier = 1;
-		index--;
+		int64_t multiplier = 1;
+		size_t unitIndex = index - 1;
 
-		if (s[index] == 0x6B /* 'k' */ || s[index] == 0x4B /* 'K' */)
+		if (s[unitIndex] == 'k' || s[unitIndex] == 'K')
 		{
-			multiplier = 1024;
+			multiplier = 1024LL;
 		}
-		else if (s[index] == 0x6D /* 'm' */ || s[index] == 0x4D /* 'M' */)
+		else if (s[unitIndex] == 'm' || s[unitIndex] == 'M')
 		{
-			multiplier = 1024 * 1024;
+			multiplier = 1024LL * 1024LL;
 		}
-		else if (s[index] == 0x67 /* 'g'*/ || s[index] == 0x47 /* 'G' */)
+		else if (s[unitIndex] == 'g' || s[unitIndex] == 'G')
 		{
-			multiplier = 1024 * 1024 * 1024;
+			multiplier = 1024LL * 1024LL * 1024LL;
+		}
+		else if (s[unitIndex] == 't' || s[unitIndex] == 'T')
+		{
+			multiplier = 1024LL * 1024LL * 1024LL * 1024LL;
 		}
 
-		return toInt(s.substr(0, index), 1) * multiplier;
+		return StringHelper::toInt64(s.substr(0, unitIndex)) * multiplier;
 	}
 
-	return toInt(s, 1);
+	return StringHelper::toInt64(s);
 }
 
 LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
