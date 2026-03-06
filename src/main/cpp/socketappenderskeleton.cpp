@@ -235,7 +235,7 @@ void SocketAppenderSkeleton::retryConnect()
 
 void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::stopMonitor()
 {
-	this->closed = true;
+	this->setClosed();
 	if (this->taskName.empty())
 		;
 	else if (auto pManager = this->taskManager.lock())

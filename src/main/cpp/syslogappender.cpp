@@ -69,7 +69,7 @@ SyslogAppender::~SyslogAppender()
 /** Release any resources held by this SyslogAppender.*/
 void SyslogAppender::close()
 {
-	_priv->closed = true;
+	_priv->setClosed();
 
 	if (_priv->sw)
 	{

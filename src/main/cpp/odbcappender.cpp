@@ -392,6 +392,7 @@ void ODBCAppender::close()
 		_priv->errorHandler->error(LOG4CXX_STR("Error closing connection"),
 			e, ErrorCode::GENERIC_FAILURE);
 	}
+	_priv->setClosed();
 
 #if LOG4CXX_HAVE_ODBC
 
@@ -407,7 +408,6 @@ void ODBCAppender::close()
 	}
 
 #endif
-	_priv->closed = true;
 }
 
 #if LOG4CXX_HAVE_ODBC

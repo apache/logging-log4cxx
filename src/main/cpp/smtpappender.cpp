@@ -694,7 +694,7 @@ bool SMTPAppender::checkEntryConditions()
 
 void SMTPAppender::close()
 {
-	_priv->closed = true;
+	_priv->setClosed();
 }
 
 LogString SMTPAppender::getTo() const

@@ -76,6 +76,11 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 
 	bool warnedNoLayout = false;
 	bool checkLayout();
+
+	/**
+	@returns true if the appender was not already closed
+	*/
+	bool setClosed();
 };
 
 }

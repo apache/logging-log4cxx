@@ -82,12 +82,10 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 
 	void stopAcceptingConnections()
 	{
-		{
-			std::lock_guard<std::recursive_mutex> lock(this->mutex);
-			if (!this->serverSocket || this->closed)
-				return;
-			this->closed = true;
-		}
+		if (!this->setClosed())
+			return;
+		if (!this->serverSocket)
+			return;
 		// Interrupt accept()
 		try
 		{
