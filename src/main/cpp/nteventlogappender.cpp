@@ -133,6 +133,8 @@ NTEventLogAppender::~NTEventLogAppender()
 
 void NTEventLogAppender::close()
 {
+	priv->setClosed();
+
 	if (priv->hEventLog != NULL)
 	{
 		::DeregisterEventSource(priv->hEventLog);

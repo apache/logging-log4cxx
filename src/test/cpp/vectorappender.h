@@ -18,7 +18,6 @@
 #include <log4cxx/appenderskeleton.h>
 #include <vector>
 #include <log4cxx/spi/loggingevent.h>
-#include <log4cxx/private/appenderskeleton_priv.h>
 
 namespace LOG4CXX_NS
 {
@@ -52,10 +51,7 @@ class VectorAppender : public AppenderSkeleton
 
 		void close() override;
 
-		bool isClosed() const
-		{
-			return m_priv->closed;
-		}
+		bool isClosed() const;
 
 		bool requiresLayout() const override
 		{

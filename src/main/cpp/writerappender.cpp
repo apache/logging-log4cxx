@@ -147,14 +147,11 @@ bool WriterAppender::WriterAppenderPriv::checkWriter()
    */
 void WriterAppender::close()
 {
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-
-	if (_priv->closed)
+	if (!_priv->setClosed())
 	{
 		return;
 	}
 
-	_priv->closed = true;
 	closeWriter();
 }
 

@@ -109,7 +109,9 @@ DBAppender::~DBAppender()
     close();
 }
 
-void DBAppender::close(){
+void DBAppender::close()
+{
+    _priv->setClosed();
     if(_priv->m_driver && _priv->m_databaseHandle){
         apr_dbd_close(_priv->m_driver, _priv->m_databaseHandle);
     }

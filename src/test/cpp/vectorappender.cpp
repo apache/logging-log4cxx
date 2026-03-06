@@ -16,6 +16,7 @@
  */
 
 #include "vectorappender.h"
+#include <log4cxx/private/appenderskeleton_priv.h>
 #include <thread>
 
 using namespace log4cxx;
@@ -30,12 +31,12 @@ void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& /*p*/)
 	this->vector.push_back(event);
 }
 
+bool VectorAppender::isClosed() const
+{
+	return m_priv->closed;
+}
+
 void VectorAppender::close()
 {
-	if (m_priv->closed)
-	{
-		return;
-	}
-
 	m_priv->closed = true;
 }

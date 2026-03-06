@@ -144,6 +144,14 @@ bool AppenderSkeleton::AppenderSkeletonPrivate::checkNotClosed()
 	return true;
 }
 
+bool AppenderSkeleton::AppenderSkeletonPrivate::setClosed()
+{
+	std::lock_guard<std::recursive_mutex> lock(this->mutex);
+	bool wasOpen = !this->closed;
+	this->closed = true;
+	return wasOpen;
+}
+
 bool AppenderSkeleton::AppenderSkeletonPrivate::checkLayout()
 {
 	if (!this->layout)
