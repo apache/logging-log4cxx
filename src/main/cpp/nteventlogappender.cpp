@@ -50,6 +50,8 @@ struct NTEventLogAppender::NTEventLogAppenderPrivate : public AppenderSkeleton::
 	LogString source;
 	HANDLE hEventLog;
 	SID* pCurrentUserSID;
+
+	void close();
 };
 
 class CCtUserSIDHelper
@@ -134,17 +136,21 @@ NTEventLogAppender::~NTEventLogAppender()
 void NTEventLogAppender::close()
 {
 	priv->setClosed();
+	priv->close();
+}
 
-	if (priv->hEventLog != NULL)
+void NTEventLogAppender::NTEventLogAppenderPrivate::close()
+{
+	if (this->hEventLog != NULL)
 	{
-		::DeregisterEventSource(priv->hEventLog);
-		priv->hEventLog = NULL;
+		::DeregisterEventSource(this->hEventLog);
+		this->hEventLog = NULL;
 	}
 
-	if (priv->pCurrentUserSID != NULL)
+	if (this->pCurrentUserSID != NULL)
 	{
-		CCtUserSIDHelper::FreeSid((::SID*) priv->pCurrentUserSID);
-		priv->pCurrentUserSID = NULL;
+		CCtUserSIDHelper::FreeSid((::SID*) this->pCurrentUserSID);
+		this->pCurrentUserSID = NULL;
 	}
 }
 
@@ -183,7 +189,7 @@ void NTEventLogAppender::activateOptions(Pool&)
 		priv->log = LOG4CXX_STR("Application");
 	}
 
-	close();
+	priv->close();
 
 	// current user security identifier
 	CCtUserSIDHelper::GetCurrentUserSID((::SID**) &priv->pCurrentUserSID);
