@@ -75,7 +75,8 @@ void InputStreamReader::close()
 LogString InputStreamReader::read()
 {
 	const size_t BUFSIZE = 4096;
-	ByteBuffer buf(p.pstralloc(BUFSIZE), BUFSIZE);
+    char buffer[BUFSIZE] = {0};
+    ByteBuffer buf(buffer, BUFSIZE);
 	LogString output;
 
 	// read whole file

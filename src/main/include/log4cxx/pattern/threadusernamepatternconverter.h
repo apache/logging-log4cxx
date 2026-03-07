@@ -43,8 +43,7 @@ class LOG4CXX_EXPORT ThreadUsernamePatternConverter : public LoggingEventPattern
 	            const std::vector<LogString>& options);
 
 	    void format(const spi::LoggingEventPtr& event,
-	            LogString& toAppendTo,
-	            LOG4CXX_NS::helpers::Pool& p) const override;
+                LogString& toAppendTo) const override;
 };
 
 }

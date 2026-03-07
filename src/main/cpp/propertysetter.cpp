@@ -37,16 +37,14 @@ PropertySetter::PropertySetter(const helpers::ObjectPtr& obj1) : obj(obj1)
 
 void PropertySetter::setProperties(const helpers::ObjectPtr& obj,
 	helpers::Properties& properties,
-	const LogString& prefix,
-	Pool& p)
+    const LogString& prefix)
 {
-	PropertySetter(obj).setProperties(properties, prefix, p);
+    PropertySetter(obj).setProperties(properties, prefix);
 }
 
 
 void PropertySetter::setProperties(helpers::Properties& properties,
-	const LogString& prefix,
-	Pool& p)
+    const LogString& prefix)
 {
 	size_t len = prefix.length();
 
@@ -71,16 +69,15 @@ void PropertySetter::setProperties(helpers::Properties& properties,
 				continue;
 			}
 
-			setProperty(key, value, p);
+            setProperty(key, value);
 		}
 	}
 
-	activate(p);
+    activate();
 }
 
 void PropertySetter::setProperty(const LogString& option,
-	const LogString& value,
-	Pool&)
+    const LogString& value)
 {
 	if (value.empty())
 	{
@@ -99,11 +96,11 @@ void PropertySetter::setProperty(const LogString& option,
 	}
 }
 
-void PropertySetter::activate(Pool& p)
+void PropertySetter::activate()
 {
 	if (obj != 0 && obj->instanceof(OptionHandler::getStaticClass()))
 	{
 		OptionHandlerPtr handler = LOG4CXX_NS::cast<OptionHandler>(obj);
-		handler->activateOptions(p);
+        handler->activateOptions();
 	}
 }

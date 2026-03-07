@@ -69,17 +69,15 @@ XMLSocketAppender::XMLSocketAppender()
 XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
 	: SocketAppenderSkeleton(std::make_unique<XMLSocketAppenderPriv>(address1, port1, DEFAULT_RECONNECTION_DELAY))
 {
-	_priv->layout = std::make_shared<XMLLayout>();
-	Pool p;
-	activateOptions(p);
+    _priv->layout = std::make_shared<XMLLayout>();
+    activateOptions();
 }
 
 XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
 	: SocketAppenderSkeleton(std::make_unique<XMLSocketAppenderPriv>(host, port1, DEFAULT_RECONNECTION_DELAY))
 {
-	_priv->layout = std::make_shared<XMLLayout>();
-	Pool p;
-	activateOptions(p);
+    _priv->layout = std::make_shared<XMLLayout>();
+    activateOptions();
 }
 
 XMLSocketAppender::~XMLSocketAppender()
@@ -98,7 +96,7 @@ int XMLSocketAppender::getDefaultPort() const
 	return DEFAULT_PORT;
 }
 
-void XMLSocketAppender::setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, Pool& p)
+void XMLSocketAppender::setSocket(LOG4CXX_NS::helpers::SocketPtr& socket)
 {
 	OutputStreamPtr os = std::make_shared<SocketOutputStream>(socket);
 	CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
@@ -106,7 +104,7 @@ void XMLSocketAppender::setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, Pool& 
 	_priv->writer = std::make_shared<OutputStreamWriter>(os, charset);
 }
 
-void XMLSocketAppender::cleanUp(Pool& p)
+void XMLSocketAppender::cleanUp()
 {
 	if (_priv->writer)
 	{
@@ -121,17 +119,17 @@ void XMLSocketAppender::cleanUp(Pool& p)
 	}
 }
 
-void XMLSocketAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p)
+void XMLSocketAppender::append(const spi::LoggingEventPtr& event)
 {
 	if (_priv->writer)
 	{
 		LogString output;
-		_priv->layout->format(output, event, p);
+        _priv->layout->format(output, event);
 
 		try
 		{
-			_priv->writer->write(output, p);
-			_priv->writer->flush(p);
+            _priv->writer->write(output);
+            _priv->writer->flush();
 		}
 		catch (std::exception& e)
 		{

@@ -353,7 +353,7 @@ void FileAppender::setFileInternal(
 	{
 		char bom[] = { (char) 0xFE, (char) 0xFF };
 		ByteBuffer buf(bom, 2);
-		outStream->write(buf, p);
+        outStream->write(buf);
 	}
 
 	WriterPtr newWriter(createWriter(outStream));

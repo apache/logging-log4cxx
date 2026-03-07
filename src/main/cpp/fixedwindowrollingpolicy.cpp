@@ -259,7 +259,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex) const
 	std::vector<FileRenameActionPtr> renames;
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Integer>(lowIndex);
-	formatFileName(obj, buf, p);
+    formatFileName(obj, buf);
 
 	LogString lowFilename(buf);
 
@@ -320,7 +320,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex) const
 			//     add a rename action to the list
 			buf.erase(buf.begin(), buf.end());
 			obj = std::make_shared<Integer>(i + 1);
-			formatFileName(obj, buf, p);
+            formatFileName(obj, buf);
 
 			LogString highFilename(buf);
 			LogString renameTo(highFilename);

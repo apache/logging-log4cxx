@@ -40,7 +40,7 @@ using namespace LOG4CXX_NS::helpers;
 struct LoggingEvent::LoggingEventPrivate
 {
 	LoggingEventPrivate(const ThreadSpecificData::NamePairPtr p = ThreadSpecificData::getNames()) :
-		timeStamp(0),
+        timeStamp(),
 		pNames(p)
 	{
 	}
@@ -57,7 +57,7 @@ struct LoggingEvent::LoggingEventPrivate
 		message(std::move(message1)),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
-		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
+        chronoTimeStamp(timeStamp),
 		pNames(p)
 	{
 	}
@@ -73,7 +73,7 @@ struct LoggingEvent::LoggingEventPrivate
 		, level(level1)
 		, timeStamp(Date::currentTime())
 		, locationInfo(locationInfo1)
-		, chronoTimeStamp(std::chrono::microseconds(timeStamp))
+        , chronoTimeStamp(timeStamp)
 		, pNames(p)
 		, messageAppender(std::move(messageAppenderArg))
 	{
@@ -89,7 +89,7 @@ struct LoggingEvent::LoggingEventPrivate
 		message(message1),
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
-		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
+        chronoTimeStamp(timeStamp),
 		pNames(p)
 	{
 	}

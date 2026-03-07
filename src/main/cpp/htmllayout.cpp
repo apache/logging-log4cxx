@@ -81,8 +81,7 @@ void HTMLLayout::setOption(const LogString& option,
 }
 
 void HTMLLayout::format(LogString& output,
-	const spi::LoggingEventPtr& event,
-	Pool& p) const
+    const spi::LoggingEventPtr& event) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
@@ -91,7 +90,7 @@ void HTMLLayout::format(LogString& output,
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("<td>"));
 
-	m_priv->dateFormat.format(output, event->getTimeStamp(), p);
+    m_priv->dateFormat.format(output, event->getTimeStamp());
 
 
 	output.append(LOG4CXX_STR("</td>"));
@@ -145,7 +144,7 @@ void HTMLLayout::format(LogString& output,
 
 		if (line != 0)
 		{
-			StringHelper::toString(line, p, output);
+            StringHelper::toString(line, output);
 		}
 
 		output.append(LOG4CXX_STR("</td>"));
@@ -173,7 +172,7 @@ void HTMLLayout::format(LogString& output,
 	}
 }
 
-void HTMLLayout::appendHeader(LogString& output, Pool& p)
+void HTMLLayout::appendHeader(LogString& output)
 {
 	output.append(LOG4CXX_STR("<!DOCTYPE HTML PUBLIC "));
 	output.append(LOG4CXX_STR("\"-//W3C//DTD HTML 4.01 Transitional//EN\" "));
@@ -207,7 +206,7 @@ void HTMLLayout::appendHeader(LogString& output, Pool& p)
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("Log session start time "));
 
-	m_priv->dateFormat.format(output, Date::currentTime(), p);
+    m_priv->dateFormat.format(output, Date::currentTime());
 
 	output.append(LOG4CXX_STR("<br>"));
 	output.append(LOG4CXX_EOL);
@@ -238,7 +237,7 @@ void HTMLLayout::appendHeader(LogString& output, Pool& p)
 	output.append(LOG4CXX_EOL);
 }
 
-void HTMLLayout::appendFooter(LogString& output, Pool& /* pool */ )
+void HTMLLayout::appendFooter(LogString& output)
 {
 	output.append(LOG4CXX_STR("</table>"));
 	output.append(LOG4CXX_EOL);

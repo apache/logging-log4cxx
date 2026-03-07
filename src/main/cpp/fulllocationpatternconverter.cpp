@@ -43,13 +43,12 @@ PatternConverterPtr FullLocationPatternConverter::newInstance(
 
 void FullLocationPatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& p) const
+    LogString& toAppendTo) const
 {
 	append(toAppendTo, event->getLocationInformation().getFileName());
 	toAppendTo.append(1, (logchar) 0x28 /* '(' */);
 	StringHelper::toString(
 		event->getLocationInformation().getLineNumber(),
-		p, toAppendTo);
+        toAppendTo);
 	toAppendTo.append(1, (logchar) 0x29 /* ')' */);
 }

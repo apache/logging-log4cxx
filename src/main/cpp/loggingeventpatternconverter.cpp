@@ -41,14 +41,13 @@ LoggingEventPatternConverter::LoggingEventPatternConverter(std::unique_ptr<Patte
 }
 
 void LoggingEventPatternConverter::format(const ObjectPtr& obj,
-	LogString& output,
-	LOG4CXX_NS::helpers::Pool& p) const
+    LogString& output) const
 {
 	LoggingEventPtr le = LOG4CXX_NS::cast<LoggingEvent>(obj);
 
 	if (le != NULL)
 	{
-		format(le, output, p);
+        format(le, output);
 	}
 }
 

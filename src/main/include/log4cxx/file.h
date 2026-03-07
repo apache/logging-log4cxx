@@ -107,7 +107,7 @@ class LOG4CXX_EXPORT File
          *  Determines last modification date.
 		 *  @return length of file.
 		 */
-        log4cxx_time_t lastModified() const;
+        std::filesystem::file_time_type lastModified() const;
 		/**
 		 *  Get final portion of file path.
 		 *  @return file name.

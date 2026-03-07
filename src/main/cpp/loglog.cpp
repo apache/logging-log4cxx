@@ -206,7 +206,7 @@ void LogLog::emit_log(const LogString& prefix, const LogString& msg, const LogSt
 	out.append(suffix);
 	out.append(1, (logchar) 0x0A);
 
-	SystemErrWriter::write(out);
+    SystemErrWriter::write_raw(out);
 }
 
 void LogLog::emit_log(const LogString& prefix, const std::exception& ex, const LogString& suffix)
@@ -227,5 +227,5 @@ void LogLog::emit_log(const LogString& prefix, const std::exception& ex, const L
 	out.append(suffix);
 	out.append(1, (logchar) 0x0A);
 
-	SystemErrWriter::write(out);
+    SystemErrWriter::write_raw(out);
 }

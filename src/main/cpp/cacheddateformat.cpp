@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <limits>
 #include <log4cxx/helpers/exception.h>
+#include <chrono>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -33,7 +34,7 @@ struct CachedDateFormat::CachedDateFormatPriv
 		millisecondStart(0),
 		slotBegin(std::numeric_limits<log4cxx_time_t>::min()),
 		cache(50, 0x20),
-		expiration(expiration1),
+        expiration(std::chrono::microseconds(expiration1)),
 		previousTime(std::numeric_limits<log4cxx_time_t>::min())
 	{}
 
@@ -65,7 +66,7 @@ struct CachedDateFormat::CachedDateFormatPriv
 	 *  Typically 1, use cache for duplicate requests only, or
 	 *  1000000, use cache for requests within the same integral second.
 	 */
-	const int expiration;
+    const std::chrono::microseconds expiration;
 
 	/**
 	 *  Date requested in previous conversion.
@@ -154,15 +155,15 @@ int CachedDateFormat::findMillisecondStart(
     const DateFormatPtr& formatter)
 {
 
-    uint64_t slotBegin = (std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()) / 1000000) * 1000000;
-    uint64_t time_u64 = std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch());
+    std::chrono::milliseconds slotBegin((std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()).count() / 1000000) * 1000000);
+    std::chrono::milliseconds time_ms(std::chrono::duration_cast<std::chrono::milliseconds>(time.time_since_epoch()).count());
 
-	if (slotBegin > time)
+    if (slotBegin > time_ms)
 	{
-		slotBegin -= 1000000;
+        slotBegin -= std::chrono::milliseconds(1000000);
 	}
 
-	int millis = (int) (time - slotBegin) / 1000;
+    int millis = (time_ms - slotBegin).count() / 1000;
 
 	// the magic numbers are in microseconds
 	int magic = magic1;
@@ -175,7 +176,8 @@ int CachedDateFormat::findMillisecondStart(
 	}
 
 	LogString plusMagic;
-    formatter->format(plusMagic, slotBegin + magic);
+    std::chrono::milliseconds ms_val(slotBegin + std::chrono::milliseconds(magic));
+    formatter->format(plusMagic, log4cxx_time_t(ms_val));
 
 	/**
 	 *   If the string lengths differ then
@@ -199,7 +201,8 @@ int CachedDateFormat::findMillisecondStart(
 				millisecondFormat(millis, formattedMillis, 0);
 
 				LogString plusZero;
-                formatter->format(plusZero, slotBegin);
+                std::chrono::system_clock::time_point tp(slotBegin);
+                formatter->format(plusZero, tp);
 
 				// Test if the next 1..3 characters match the magic string, main problem is that magic
 				// available millis in formatted can overlap. Therefore the current i is not always the
@@ -264,14 +267,14 @@ void CachedDateFormat::format(LogString& buf, log4cxx_time_t now) const
 		//       as the last request and a shorter expiration was not requested.
 		if (now < m_priv->slotBegin + m_priv->expiration
 			&& now >= m_priv->slotBegin
-			&& now < m_priv->slotBegin + 1000000L)
+            && now < m_priv->slotBegin + std::chrono::microseconds(1000000L))
 		{
 			//
 			//    if there was a millisecond field then update it
 			//
 			if (m_priv->millisecondStart >= 0)
 			{
-				millisecondFormat((int) ((now - m_priv->slotBegin) / 1000), m_priv->cache, m_priv->millisecondStart);
+                millisecondFormat((int) ((now - m_priv->slotBegin) / std::chrono::milliseconds(1000)), m_priv->cache, m_priv->millisecondStart);
 			}
 
 			//
@@ -291,11 +294,12 @@ void CachedDateFormat::format(LogString& buf, log4cxx_time_t now) const
     m_priv->formatter->format(m_priv->cache, now);
 	buf.append(m_priv->cache);
 	m_priv->previousTime = now;
-	m_priv->slotBegin = (m_priv->previousTime / 1000000) * 1000000;
+    // TODO fixme
+    //m_priv->slotBegin = (m_priv->previousTime / std::chrono::nanoseconds(1000000)) * std::chrono::nanoseconds(1000000);
 
 	if (m_priv->slotBegin > m_priv->previousTime)
 	{
-		m_priv->slotBegin -= 1000000;
+        m_priv->slotBegin -= std::chrono::nanoseconds(1000000);
 	}
 
 	//

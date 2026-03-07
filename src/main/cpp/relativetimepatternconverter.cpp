@@ -43,10 +43,9 @@ PatternConverterPtr RelativeTimePatternConverter::newInstance(
 
 void RelativeTimePatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& p) const
+    LogString& toAppendTo) const
 {
-	log4cxx_time_t delta = (event->getTimeStamp() - LoggingEvent::getStartTime()) / 1000;
-	StringHelper::toString(delta, p, toAppendTo);
+    int64_t delta = std::chrono::duration_cast<std::chrono::milliseconds>(event->getTimeStamp() - LoggingEvent::getStartTime()).count();
+    StringHelper::toString(delta, toAppendTo);
 }
 

@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/log4cxx.h>
 #include <functional>
+#include <chrono>
 
 namespace LOG4CXX_NS
 {
@@ -57,8 +58,8 @@ class LOG4CXX_EXPORT Date : public Object
 		log4cxx_time_t getNextSecond() const;
 
 
-		static log4cxx_time_t getMicrosecondsPerDay();
-		static log4cxx_time_t getMicrosecondsPerSecond();
+        static std::chrono::microseconds getMicrosecondsPerDay();
+        static std::chrono::microseconds getMicrosecondsPerSecond();
 		static log4cxx_time_t getCurrentTimeStd();
 		static log4cxx_time_t currentTime();
 

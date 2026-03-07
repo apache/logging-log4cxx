@@ -48,8 +48,7 @@ PatternConverterPtr LoggerPatternConverter::newInstance(
 
 void LoggerPatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */ ) const
+    LogString& toAppendTo) const
 {
 	int initialLength = (int)toAppendTo.length();
 	toAppendTo.append(event->getLoggerName());

@@ -30,7 +30,6 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/fileappender.h>
 #include <iostream>
-#include <apr_mmap.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::rolling;
@@ -69,17 +68,17 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		/**
 		 * mmap pointer
 		 */
-		apr_mmap_t* _mmap;
+//		apr_mmap_t* _mmap;
 
 		/*
 		 * pool for mmap handler
 		 * */
-		LOG4CXX_NS::helpers::Pool _mmapPool;
+//		LOG4CXX_NS::helpers::Pool _mmapPool;
 
 		/**
 		 * mmap file descriptor
 		 */
-		apr_file_t* _file_map;
+//		apr_file_t* _file_map;
 
 		/**
 		 * mmap file name
@@ -89,7 +88,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		/*
 		 * lock file handle
 		 * */
-		apr_file_t* _lock_file;
+//		apr_file_t* _lock_file;
 
 		/**
 		 * Check nextCheck if it has already been set

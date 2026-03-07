@@ -72,7 +72,10 @@ endif()
 
 if(${ENABLE_APR})
     list(APPEND extra_classes
-        dbappender.cpp
+        dbappender.cpp        
+        inetaddress.cpp
+        odbcappender.cpp
+        pool.cpp
     )
 endif()
 
@@ -126,7 +129,6 @@ target_sources(log4cxx
   hexdump.cpp
   hierarchy.cpp
   htmllayout.cpp
-  inetaddress.cpp
   inputstream.cpp
   inputstreamreader.cpp
   integer.cpp
@@ -164,7 +166,6 @@ target_sources(log4cxx
   mdcpatternconverter.cpp
   ndcpatternconverter.cpp
   nteventlogappender.cpp
-  odbcappender.cpp
   onlyonceerrorhandler.cpp
   optionconverter.cpp
   outputdebugstringappender.cpp
@@ -173,7 +174,6 @@ target_sources(log4cxx
   patternconverter.cpp
   patternlayout.cpp
   patternparser.cpp
-  pool.cpp
   properties.cpp
   propertiespatternconverter.cpp
   propertyconfigurator.cpp

@@ -42,8 +42,7 @@ PatternConverterPtr ThreadUsernamePatternConverter::newInstance(
 
 void ThreadUsernamePatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+    LogString& toAppendTo) const
 {
 	toAppendTo.append(event->getThreadUserName());
 }

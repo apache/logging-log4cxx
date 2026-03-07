@@ -104,7 +104,7 @@ LogString JSONLayout::getContentType() const
 	return LOG4CXX_STR("application/json");
 }
 
-void JSONLayout::activateOptions(helpers::Pool& /* p */)
+void JSONLayout::activateOptions()
 {
 	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 }
@@ -129,8 +129,7 @@ void JSONLayout::setOption(const LogString& option, const LogString& value)
 }
 
 void JSONLayout::format(LogString& output,
-	const spi::LoggingEventPtr& event,
-	Pool& p) const
+    const spi::LoggingEventPtr& event) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
@@ -143,7 +142,7 @@ void JSONLayout::format(LogString& output,
 	}
 
 	output.append(LOG4CXX_STR("\"timestamp\": \""));
-	m_priv->dateFormat.format(output, event->getTimeStamp(), p);
+    m_priv->dateFormat.format(output, event->getTimeStamp());
 	output.append(LOG4CXX_STR("\","));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
@@ -197,7 +196,7 @@ void JSONLayout::format(LogString& output,
 	{
 		output.append(LOG4CXX_STR(","));
 		output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
-		appendSerializedLocationInfo(output, event, p);
+        appendSerializedLocationInfo(output, event);
 	}
 
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
@@ -397,7 +396,7 @@ void JSONLayout::appendSerializedNDC(LogString& buf,
 }
 
 void JSONLayout::appendSerializedLocationInfo(LogString& buf,
-	const LoggingEventPtr& event, Pool& p) const
+    const LoggingEventPtr& event) const
 {
 	if (m_priv->prettyPrint)
 	{
@@ -429,7 +428,7 @@ void JSONLayout::appendSerializedLocationInfo(LogString& buf,
 	appendQuotedEscapedString(buf, LOG4CXX_STR("line"));
 	buf.append(LOG4CXX_STR(": "));
 	LogString lineNumber;
-	StringHelper::toString(locInfo.getLineNumber(), p, lineNumber);
+    StringHelper::toString(locInfo.getLineNumber(), lineNumber);
 	appendQuotedEscapedString(buf, lineNumber);
 	buf.append(LOG4CXX_STR(","));
 	buf.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));

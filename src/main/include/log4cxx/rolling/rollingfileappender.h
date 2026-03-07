@@ -152,7 +152,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions(helpers::Pool& pool ) override;
+        void activateOptions() override;
 
 		/**
 		   Implements the configured roll over behaviour.
@@ -168,16 +168,16 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		   <code>File</code> is truncated with no backup files created.
 
 		 */
-		bool rollover(LOG4CXX_NS::helpers::Pool& p);
+        bool rollover();
 
 	protected:
 
 		/**
 		 Actual writing occurs here.
 		*/
-		void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+        void subAppend(const spi::LoggingEventPtr& event) override;
 
-		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p);
+        bool rolloverInternal();
 
 	public:
 		/**

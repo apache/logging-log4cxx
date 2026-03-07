@@ -47,8 +47,7 @@ PatternConverterPtr MDCPatternConverter::newInstance(
 
 void MDCPatternConverter::format
 	( const spi::LoggingEventPtr& event
-	, LogString&                  toAppendTo
-	, helpers::Pool&           /* p */
+    , LogString&                  toAppendTo
 	) const
 {
 	size_t startIndex = toAppendTo.size();

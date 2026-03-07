@@ -175,7 +175,7 @@ void RollingFileAppender::setDatePattern(const LogString& newPattern)
 /**
  * Prepare instance of use.
  */
-void RollingFileAppender::activateOptions(Pool& p)
+void RollingFileAppender::activateOptions()
 {
 	if (!_priv->rollingPolicy)
 	{
@@ -208,13 +208,13 @@ void RollingFileAppender::activateOptions(Pool& p)
 
 	{
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-		_priv->triggeringPolicy->activateOptions(p);
-		_priv->rollingPolicy->activateOptions(p);
+        _priv->triggeringPolicy->activateOptions();
+        _priv->rollingPolicy->activateOptions();
 
 		try
 		{
 			RolloverDescriptionPtr rollover1 =
-				_priv->rollingPolicy->initialize(getFile(), getAppend(), p);
+                _priv->rollingPolicy->initialize(getFile(), getAppend());
 
 			if (rollover1 != NULL)
 			{
@@ -275,13 +275,13 @@ void RollingFileAppender::activateOptions(Pool& p)
 
  * @return true if rollover performed.
  */
-bool RollingFileAppender::rollover(Pool& p)
+bool RollingFileAppender::rollover()
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	return rolloverInternal(p);
+    return rolloverInternal();
 }
 
-bool RollingFileAppender::rolloverInternal(Pool& p)
+bool RollingFileAppender::rolloverInternal()
 {
 	//
 	//   can't roll without a policy
@@ -292,7 +292,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 		{
 				try
 				{
-					RolloverDescriptionPtr rollover1(_priv->rollingPolicy->rollover(this->getFile(), this->getAppend(), p));
+                    RolloverDescriptionPtr rollover1(_priv->rollingPolicy->rollover(this->getFile(), this->getAppend()));
 
 					if (rollover1 != NULL)
 					{
@@ -308,7 +308,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 
 								try
 								{
-									success = rollover1->getSynchronous()->execute(p);
+                                    success = rollover1->getSynchronous()->execute();
 								}
 								catch (std::exception& ex)
 								{
@@ -325,7 +325,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								appendToExisting = rollover1->getAppend();
 								if (appendToExisting)
 								{
-									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
+                                    _priv->fileLength = File().setPath(rollover1->getActiveFileName()).length();
 								}
 								else
 								{
@@ -338,7 +338,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								{
 									try
 									{
-										asyncAction->execute(p);
+                                        asyncAction->execute();
 									}
 									catch (std::exception& ex)
 									{
@@ -349,14 +349,14 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 									}
 								}
 							}
-							setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize, p);
+                            setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize);
 						}
 						else
 						{
 							closeWriter();
 							setFileInternal(rollover1->getActiveFileName());
 							// Call activateOptions to create any intermediate directories(if required)
-							FileAppender::activateOptionsInternal(p);
+                            FileAppender::activateOptionsInternal();
 							OutputStreamPtr os = std::make_shared<FileOutputStream>
 									( rollover1->getActiveFileName()
 									, rollover1->getAppend()
@@ -371,7 +371,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 
 								try
 								{
-									success = rollover1->getSynchronous()->execute(p);
+                                    success = rollover1->getSynchronous()->execute();
 								}
 								catch (std::exception& ex)
 								{
@@ -386,7 +386,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 							{
 								if (rollover1->getAppend())
 								{
-									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
+                                    _priv->fileLength = File().setPath(rollover1->getActiveFileName()).length();
 								}
 								else
 								{
@@ -397,11 +397,11 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 
 								if (asyncAction != NULL)
 								{
-									asyncAction->execute(p);
+                                    asyncAction->execute();
 								}
 							}
 
-							writeHeader(p);
+                            writeHeader();
 						}
 						return true;
 					}
@@ -422,7 +422,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 /**
  * {@inheritDoc}
 */
-void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
+void RollingFileAppender::subAppend(const LoggingEventPtr& event)
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
@@ -438,7 +438,7 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 		try
 		{
 			_priv->_event = event;
-			rolloverInternal(p);
+            rolloverInternal();
 		}
 		catch (std::exception& ex)
 		{
@@ -449,7 +449,7 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 		}
 	}
 
-	FileAppender::subAppend(event, p);
+    FileAppender::subAppend(event);
 }
 
 /**
@@ -531,26 +531,26 @@ class CountingOutputStream : public OutputStream
 		/**
 		 * {@inheritDoc}
 		 */
-		void close(Pool& p) override
+        void close() override
 		{
-			os->close(p);
+            os->close();
 			rfa = 0;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		void flush(Pool& p) override
+        void flush() override
 		{
-			os->flush(p);
+            os->flush();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		void write(ByteBuffer& buf, Pool& p) override
+        void write(ByteBuffer& buf) override
 		{
-			os->write(buf, p);
+            os->write(buf);
 
 			if (rfa != 0)
 			{

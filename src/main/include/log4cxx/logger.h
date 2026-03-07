@@ -98,7 +98,7 @@ class LOG4CXX_EXPORT Logger
 		@param event the event to log.
 		@param p memory pool for any allocations needed to process request.
 		*/
-		void callAppenders(const spi::LoggingEventPtr& event, helpers::Pool& p) const;
+        void callAppenders(const spi::LoggingEventPtr& event) const;
 
 		/**
 		Close all attached appenders implementing the AppenderAttachable

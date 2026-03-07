@@ -54,8 +54,7 @@ class LOG4CXX_EXPORT MDCPatternConverter : public LoggingEventPatternConverter
 
 		void format
 			( const spi::LoggingEventPtr& event
-			, LogString&                  toAppendTo
-			, helpers::Pool&              p
+            , LogString&                  toAppendTo
 			) const override;
 };
 }

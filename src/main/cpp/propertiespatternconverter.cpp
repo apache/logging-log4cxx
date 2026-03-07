@@ -69,8 +69,7 @@ PatternConverterPtr PropertiesPatternConverter::newInstance(
 
 void PropertiesPatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+    LogString& toAppendTo) const
 {
 	if (priv->option.length() == 0)
 	{

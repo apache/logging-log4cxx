@@ -49,7 +49,7 @@ struct FileWatchdog::FileWatchdogPrivate{
 	The delay to observe between every check.
 	By default set DEFAULT_DELAY.*/
 	long delay;
-    std::chrono::time_point<std::chrono::system_clock> lastModif;
+    std::filesystem::file_time_type lastModif;
 	bool warnedAlready;
 	LogString taskName;
 	ThreadUtility::ManagerWeakPtr taskManager;
@@ -165,5 +165,5 @@ void FileWatchdog::setDelay(long delay1){
 void FileWatchdog::setFile(const File& filename)
 {
     m_priv->file = filename;
-	m_priv->lastModif = 0;
+    m_priv->lastModif = std::filesystem::file_time_type();
 }

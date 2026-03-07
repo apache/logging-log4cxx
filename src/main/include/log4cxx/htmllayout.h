@@ -83,7 +83,7 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& /* p */) override {}
+        void activateOptions() override {}
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
@@ -95,18 +95,17 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
-		void format(LogString& output,
-			const spi::LoggingEventPtr& event, helpers::Pool& pool) const override;
+        void format(LogString& output, const spi::LoggingEventPtr& event) const override;
 
 		/**
 		Append appropriate HTML headers.
 		*/
-		void appendHeader(LogString& output, helpers::Pool& pool) override;
+        void appendHeader(LogString& output) override;
 
 		/**
 		Append the appropriate HTML footers.
 		*/
-		void appendFooter(LogString& output, helpers::Pool& pool) override;
+        void appendFooter(LogString& output) override;
 
 		/**
 		The HTML layout handles the throwable contained in logging

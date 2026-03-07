@@ -44,20 +44,22 @@ Date::~Date()
 {
 }
 
-log4cxx_time_t Date::getMicrosecondsPerDay()
+std::chrono::microseconds Date::getMicrosecondsPerDay()
 {
-	return 86400000000ull;
+    auto day_duration = std::chrono::hours(24);
+    return std::chrono::duration_cast<std::chrono::microseconds>(day_duration);
 }
 
-log4cxx_time_t Date::getMicrosecondsPerSecond()
+std::chrono::microseconds Date::getMicrosecondsPerSecond()
 {
-	return LOG4CXX_USEC_PER_SEC;
+    auto day_duration = std::chrono::seconds(1);
+    return std::chrono::duration_cast<std::chrono::microseconds>(day_duration);
 }
 
 
 log4cxx_time_t Date::getNextSecond() const
 {
-	return ((time / LOG4CXX_USEC_PER_SEC) + 1) * LOG4CXX_USEC_PER_SEC;
+    return time + std::chrono::seconds(1);
 }
 
 void Date::setGetCurrentTimeFunction(GetCurrentTimeFn fn){
@@ -69,5 +71,5 @@ log4cxx_time_t Date::currentTime(){
 }
 
 log4cxx_time_t Date::getCurrentTimeStd(){
-	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    return std::chrono::system_clock::now();
 }

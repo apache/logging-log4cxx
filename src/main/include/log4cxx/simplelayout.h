@@ -50,8 +50,7 @@ class LOG4CXX_EXPORT SimpleLayout : public Layout
 		</pre>
 		*/
 		void format(LogString& output,
-			const spi::LoggingEventPtr& event,
-			helpers::Pool& pool) const override;
+            const spi::LoggingEventPtr& event) const override;
 
 		/**
 		The SimpleLayout does not handle the throwable contained within
@@ -68,7 +67,7 @@ class LOG4CXX_EXPORT SimpleLayout : public Layout
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& /* p */) override {}
+        void activateOptions() override {}
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

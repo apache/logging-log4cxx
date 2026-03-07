@@ -44,8 +44,7 @@ class QuotedMessagePatternConverter : public LoggingEventPatternConverter
 		// Duplicate any quote character in the event message
 		void format
 			( const spi::LoggingEventPtr& event
-			, LogString&                  toAppendTo
-			, helpers::Pool&              p
+            , LogString&                  toAppendTo
 			) const override
 		{
 			auto& input = event->getRenderedMessage();
@@ -80,8 +79,7 @@ PatternConverterPtr MessagePatternConverter::newInstance(
 
 void MessagePatternConverter::format
 	( const spi::LoggingEventPtr& event
-	, LogString&                  toAppendTo
-	, helpers::Pool&           /* p */
+    , LogString&                  toAppendTo
 	) const
 {
 	toAppendTo.append(event->getRenderedMessage());

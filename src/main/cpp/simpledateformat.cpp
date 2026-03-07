@@ -25,7 +25,6 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
-#include <log4cxx/helpers/pool.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;

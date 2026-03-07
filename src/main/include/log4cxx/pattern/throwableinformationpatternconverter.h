@@ -60,8 +60,7 @@ class LOG4CXX_EXPORT ThrowableInformationPatternConverter
 		using LoggingEventPatternConverter::format;
 
 		void format(const spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+            LogString& toAppendTo) const override;
 
 		/**
 		 * This converter obviously handles throwables.

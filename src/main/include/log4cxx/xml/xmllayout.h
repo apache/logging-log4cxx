@@ -102,7 +102,7 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& /* p */) override { }
+        void activateOptions() override { }
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
@@ -120,8 +120,7 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 		* in conformance with the log4cxx.dtd.
 		**/
 		void format(LogString& output,
-			const spi::LoggingEventPtr& event,
-			helpers::Pool& p) const override;
+            const spi::LoggingEventPtr& event) const override;
 
 		/**
 		The XMLLayout prints and does not ignore exceptions. Hence the

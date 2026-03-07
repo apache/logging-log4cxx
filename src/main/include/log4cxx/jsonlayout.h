@@ -40,7 +40,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		void appendSerializedNDC(LogString& buf,
 			const spi::LoggingEventPtr& event) const;
 		void appendSerializedLocationInfo(LogString& buf,
-			const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) const;
+            const spi::LoggingEventPtr& event) const;
 
 	public:
 		static void appendItem(const LogString& item, LogString& toAppendTo);
@@ -105,7 +105,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& /* p */) override;
+        void activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
@@ -119,7 +119,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		void setOption(const LogString& option, const LogString& value) override;
 
 		void format(LogString& output,
-			const spi::LoggingEventPtr& event, helpers::Pool& pool) const override;
+            const spi::LoggingEventPtr& event) const override;
 
 		/**
 		The JSON layout handles the throwable contained in logging

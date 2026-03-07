@@ -200,7 +200,7 @@ size_t File::length() const
 }
 
 
-log4cxx_time_t File::lastModified() const
+std::filesystem::file_time_type File::lastModified() const
 {
     return std::filesystem::last_write_time(m_priv->path);
 }

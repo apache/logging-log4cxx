@@ -30,9 +30,9 @@ LogString Layout::getContentType() const
 	return LOG4CXX_STR("text/plain");
 }
 
-void Layout::appendHeader(LogString&, LOG4CXX_NS::helpers::Pool&) {}
+void Layout::appendHeader(LogString&) {}
 
-void Layout::appendFooter(LogString&, LOG4CXX_NS::helpers::Pool&) {}
+void Layout::appendFooter(LogString&) {}
 
 /**
  * The expected length of a formatted event excluding the message text
@@ -45,8 +45,7 @@ size_t Layout::getFormattedEventCharacterCount() const
 		, LOG4CXX_LOCATION
 		, LogString()
 		);
-	LogString text;
-	Pool pool;
-	format(text, exampleEvent, pool);
+    LogString text;
+    format(text, exampleEvent);
 	return text.size();
 }

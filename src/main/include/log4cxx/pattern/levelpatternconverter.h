@@ -54,8 +54,7 @@ class LOG4CXX_EXPORT LevelPatternConverter : public LoggingEventPatternConverter
 		using LoggingEventPatternConverter::format;
 
 		void format(const spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+            LogString& toAppendTo) const override;
 
 		LogString getStyleClass(const 	helpers::ObjectPtr& e) const override;
 };

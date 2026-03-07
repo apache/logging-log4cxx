@@ -44,8 +44,7 @@ PatternConverterPtr LevelPatternConverter::newInstance(
 
 void LevelPatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	LOG4CXX_NS::helpers::Pool& /* p */) const
+    LogString& toAppendTo) const
 {
 	toAppendTo.append(event->getLevel()->toString());
 }

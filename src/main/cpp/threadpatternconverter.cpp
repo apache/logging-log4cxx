@@ -42,8 +42,7 @@ PatternConverterPtr ThreadPatternConverter::newInstance(
 
 void ThreadPatternConverter::format(
 	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+    LogString& toAppendTo) const
 {
 	toAppendTo.append(event->getThreadName());
 }

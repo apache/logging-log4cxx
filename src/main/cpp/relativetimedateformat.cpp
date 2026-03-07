@@ -28,9 +28,8 @@ LOG4CXX_NS::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
 
 void LOG4CXX_NS::helpers::RelativeTimeDateFormat::format(
 	LogString& s,
-	log4cxx_time_t date,
-	Pool& p) const
+    log4cxx_time_t date) const
 {
-	int64_t interval = (date - startTime) / int64_t(1000);
-	StringHelper::toString(interval, p, s);
+    int64_t interval = std::chrono::duration_cast<std::chrono::milliseconds>(date - startTime).count();
+    StringHelper::toString(interval, s);
 }

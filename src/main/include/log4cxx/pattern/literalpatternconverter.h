@@ -50,12 +50,10 @@ class LOG4CXX_EXPORT LiteralPatternConverter : public LoggingEventPatternConvert
 		using LoggingEventPatternConverter::format;
 
 		void format(const spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+            LogString& toAppendTo) const override;
 
 		void format(const helpers::ObjectPtr& obj,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+            LogString& toAppendTo) const override;
 };
 
 }

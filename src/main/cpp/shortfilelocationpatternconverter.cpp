@@ -40,7 +40,6 @@ PatternConverterPtr ShortFileLocationPatternConverter::newInstance(
 
 void ShortFileLocationPatternConverter::format(
     const LoggingEventPtr &event,
-    LogString &toAppendTo,
-    Pool & /* p */ ) const {
+    LogString &toAppendTo) const {
   append(toAppendTo, event->getLocationInformation().getShortFileName());
 }

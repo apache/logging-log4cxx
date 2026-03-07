@@ -146,7 +146,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
         virtual void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket) = 0;
 
-        virtual void cleanUp(p) = 0;
+        virtual void cleanUp() = 0;
 
 		virtual int getDefaultDelay() const = 0;
 

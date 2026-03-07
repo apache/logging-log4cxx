@@ -441,9 +441,8 @@ LogString Properties::get(const LogString& key) const
 
 void Properties::load(InputStreamPtr inStream)
 {
-	Pool pool;
 	auto lineReader = std::make_shared<InputStreamReader>(inStream, CharsetDecoder::getISOLatinDecoder());
-	LogString contents = lineReader->read(pool);
+    LogString contents = lineReader->read();
 	properties->clear();
 	PropertyParser parser;
 	parser.parse(contents, *this);

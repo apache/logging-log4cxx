@@ -161,7 +161,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 
 		\sa RollingPolicyBase::activateOptions()
 		*/
-		void activateOptions(helpers::Pool& ) override;
+        void activateOptions() override;
 
 		void setMultiprocess(bool multiprocess);
 
@@ -170,16 +170,14 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 		 */
 		RolloverDescriptionPtr initialize(
 			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			helpers::Pool& pool) override;
+            const   bool                    append) override;
 
 		/**
 		 * {@inheritDoc}
 		 */
 		RolloverDescriptionPtr rollover(
 			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			helpers::Pool& pool) override;
+            const   bool                    append) override;
 
 		/**
 		 * Determines if a rollover may be appropriate at this time.  If
@@ -232,17 +230,17 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 		/**
 		 * Generate mmap file
 		 */
-		int createMMapFile(const std::string& lastfilename, LOG4CXX_NS::helpers::Pool& pool);
+        int createMMapFile(const std::string& lastfilename);
 
 		/**
 		 *  Detect if the mmap file is empty
 		 */
-		bool isMapFileEmpty(LOG4CXX_NS::helpers::Pool& pool);
+        bool isMapFileEmpty();
 
 		/**
 		 *   init MMapFile
 		 */
-		void initMMapFile(const LogString& lastFileName, LOG4CXX_NS::helpers::Pool& pool);
+        void initMMapFile(const LogString& lastFileName);
 
 		/**
 		 *   lock MMapFile
@@ -257,7 +255,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 		/**
 		 *   create MMapFile/lockFile
 		 */
-		const std::string createFile(const std::string& filename, const std::string& suffix, LOG4CXX_NS::helpers::Pool& pool);
+        const std::string createFile(const std::string& filename, const std::string& suffix);
 
 };
 

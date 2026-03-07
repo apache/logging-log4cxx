@@ -38,7 +38,6 @@ namespace LOG4CXX_NS
 namespace helpers
 {
 class Properties;
-class Pool;
 }
 
 namespace config
@@ -80,21 +79,18 @@ class LOG4CXX_EXPORT PropertySetter
 
 		@param obj The object to configure.
 		@param properties A java.util.Properties containing keys and values.
-		@param prefix Only keys having the specified prefix will be set.
-		@param p pool to use for any allocations required during call.
+        @param prefix Only keys having the specified prefix will be set.
 		*/
 		static void setProperties(const helpers::ObjectPtr& obj,
 			helpers::Properties& properties,
-			const LogString& prefix,
-			LOG4CXX_NS::helpers::Pool& p);
+            const LogString& prefix);
 
 		/**
 		Set the properites for the object that match the
 		<code>prefix</code> passed as parameter.
 		*/
 		void setProperties(helpers::Properties& properties,
-			const LogString& prefix,
-			LOG4CXX_NS::helpers::Pool& p);
+            const LogString& prefix);
 
 		/**
 		Set a property on this PropertySetter's Object. If the underlying
@@ -102,14 +98,12 @@ class LOG4CXX_EXPORT PropertySetter
 		{@link spi::OptionHandler#setOption setOption} method is called.
 
 		@param option   name of the property
-		@param value   String value of the property
-		@param p pool to use for any allocations required during call.
+        @param value   String value of the property
 		*/
 		void setProperty(const LogString& option,
-			const LogString& value,
-			LOG4CXX_NS::helpers::Pool& p);
+            const LogString& value);
 
-		void activate(LOG4CXX_NS::helpers::Pool& p);
+        void activate();
 }; // class PropertySetter
 }  // namespace config;
 } // namespace log4cxx
