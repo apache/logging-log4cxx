@@ -144,7 +144,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		, locationInfo(false)
 		, blocking(true)
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{stopDispatcher();})
+		, atExitRegistryRaii([this]{if (setClosed()) stopDispatcher();})
 #endif
 		, eventCount(0)
 		, dispatchedCount(0)
