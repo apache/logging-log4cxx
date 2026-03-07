@@ -81,7 +81,7 @@ void SocketAppenderSkeleton::connect(Pool& p)
 	}
 	else
 	{
-		cleanUp(p);
+		_priv->close();
 
 		try
 		{
