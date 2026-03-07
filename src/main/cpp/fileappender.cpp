@@ -81,7 +81,6 @@ FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
 
 FileAppender::~FileAppender()
 {
-	finalize();
 	if (auto p = _priv->taskManager.lock())
 		p->value().removePeriodicTask(getName());
 }
@@ -297,7 +296,7 @@ void FileAppender::setFileInternal(
 		setImmediateFlush(false);
 	}
 
-	closeWriter();
+	_priv->close();
 
 	bool writeBOM = false;
 
@@ -367,13 +366,13 @@ void FileAppender::setFileInternal(
 		newWriter = std::make_shared<BufferedWriter>(newWriter, bufferSize1);
 	}
 
-	setWriterInternal(newWriter);
+	_priv->setWriter(newWriter);
 
 	_priv->fileAppend = append1;
 	_priv->bufferedIO = bufferedIO1;
 	_priv->fileName = filename;
 	_priv->bufferSize = (int)bufferSize1;
-	writeHeader(p);
+	_priv->writeHeader();
 
 }
 

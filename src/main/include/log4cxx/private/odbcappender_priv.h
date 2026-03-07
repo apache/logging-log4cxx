@@ -135,6 +135,9 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 #if LOG4CXX_EVENTS_AT_EXIT
 	helpers::AtExitRegistry::Raii atExitRegistryRaii;
 #endif
+
+	void flushBuffer(helpers::Pool& p);
+	void close();
 };
 
 }

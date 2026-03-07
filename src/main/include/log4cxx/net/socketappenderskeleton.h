@@ -146,8 +146,9 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
 		virtual void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, LOG4CXX_NS::helpers::Pool& p) = 0;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		virtual void cleanUp(LOG4CXX_NS::helpers::Pool& p) = 0;
-
+#endif
 		virtual int getDefaultDelay() const = 0;
 
 		virtual int getDefaultPort() const = 0;

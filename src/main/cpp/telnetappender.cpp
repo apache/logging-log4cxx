@@ -82,8 +82,6 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 
 	void stopAcceptingConnections()
 	{
-		if (!this->setClosed())
-			return;
 		if (!this->serverSocket)
 			return;
 		// Interrupt accept()
@@ -97,6 +95,8 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 		if (this->sh.joinable())
 			this->sh.join();
 	}
+
+	void close();
 };
 
 #define _priv static_cast<TelnetAppenderPriv*>(m_priv.get())
@@ -114,7 +114,8 @@ TelnetAppender::TelnetAppender()
 
 TelnetAppender::~TelnetAppender()
 {
-	finalize();
+	if (_priv->setClosed())
+		_priv->close();
 }
 
 void TelnetAppender::activateOptions(Pool& /* p */)
@@ -178,24 +179,30 @@ void TelnetAppender::setEncoding(const LogString& value)
 
 void TelnetAppender::close()
 {
-	_priv->stopAcceptingConnections();
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	if (_priv->eventCount && helpers::LogLog::isDebugEnabled())
+	if (_priv->setClosed())
+		_priv->close();
+}
+
+void TelnetAppender::TelnetAppenderPriv::close()
+{
+	this->stopAcceptingConnections();
+	std::lock_guard<std::recursive_mutex> lock(this->mutex);
+	if (this->eventCount && helpers::LogLog::isDebugEnabled())
 	{
 		Pool p;
 		LogString msg = LOG4CXX_STR("TelnetAppender eventCount ");
-		helpers::StringHelper::toString(_priv->eventCount, p, msg);
+		helpers::StringHelper::toString(this->eventCount, p, msg);
 		helpers::LogLog::debug(msg);
 	}
 	SocketPtr nullSocket;
 	int connectionNumber{ 0 };
-	for (auto& item : _priv->connections)
+	for (auto& item : this->connections)
 	{
 		++connectionNumber;
 		if (item.s)
 		{
 			item.s->close();
-			if (_priv->eventCount && helpers::LogLog::isDebugEnabled())
+			if (this->eventCount && helpers::LogLog::isDebugEnabled())
 			{
 				Pool p;
 				LogString msg = LOG4CXX_STR("TelnetAppender connection ");
@@ -207,7 +214,7 @@ void TelnetAppender::close()
 			item = Connection{ nullSocket, 0 };
 		}
 	}
-	_priv->activeConnections = 0;
+	this->activeConnections = 0;
 }
 
 

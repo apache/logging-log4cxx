@@ -135,6 +135,7 @@ typedef std::map<LogString, DiscardSummary> DiscardMap;
 
 struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
+	using BaseType = AppenderSkeleton::AppenderSkeletonPrivate;
 	AsyncAppenderPriv()
 		: AppenderSkeletonPrivate()
 		, buffer(DEFAULT_BUFFER_SIZE)
@@ -152,7 +153,8 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 	~AsyncAppenderPriv()
 	{
-		stopDispatcher();
+		if (setClosed())
+			close();
 	}
 
 	/**
@@ -195,7 +197,6 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 	void stopDispatcher()
 	{
-		this->setClosed();
 		bufferNotEmpty.notify_all();
 		bufferNotFull.notify_all();
 
@@ -204,6 +205,8 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 			dispatcher.join();
 		}
 	}
+
+	void close();
 
 	/**
 	 * Should location info be included in dispatched messages.
@@ -240,10 +243,10 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		return this->closed;
 	}
 
-	void setClosed()
+	bool setClosed()
 	{
 		std::lock_guard<std::mutex> lock(this->bufferMutex);
-		this->closed = true;
+		return BaseType::setClosed();
 	}
 
 	/**
@@ -264,7 +267,6 @@ AsyncAppender::AsyncAppender()
 
 AsyncAppender::~AsyncAppender()
 {
-	finalize();
 }
 
 void AsyncAppender::addAppender(const AppenderPtr newAppender)
@@ -402,8 +404,14 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void AsyncAppender::close()
 {
-	priv->stopDispatcher();
-	for (auto item : priv->appenders.getAllAppenders())
+	if (priv->setClosed())
+		priv->close();
+}
+
+void AsyncAppender::AsyncAppenderPriv::close()
+{
+	this->stopDispatcher();
+	for (auto item : this->appenders.getAllAppenders())
 	{
 		item->close();
 	}

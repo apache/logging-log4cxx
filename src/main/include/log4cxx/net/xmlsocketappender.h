@@ -137,8 +137,9 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 	protected:
 		void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, helpers::Pool& p) override;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		void cleanUp(helpers::Pool& p) override;
-
+#endif
 		int getDefaultDelay() const override;
 
 		int getDefaultPort() const override;
