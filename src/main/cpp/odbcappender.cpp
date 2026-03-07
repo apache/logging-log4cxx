@@ -379,11 +379,13 @@ void ODBCAppender::close()
 {
 	if (_priv->setClosed())
 	{
+#if LOG4CXX_HAVE_ODBC
 		if (!_priv->buffer.empty() && 0 == _priv->preparedStatement)
 		{
 			Pool p;
 			_priv->setPreparedStatement(getConnection(p), p);
 		}
+#endif
 		_priv->close();
 	}
 }
@@ -592,9 +594,11 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 
 void ODBCAppender::flushBuffer(Pool& p)
 {
+#if LOG4CXX_HAVE_ODBC
 	if (0 == _priv->preparedStatement)
 		_priv->setPreparedStatement(getConnection(p), p);
 	_priv->flushBuffer(p);
+#endif
 }
 
 void ODBCAppender::ODBCAppenderPriv::flushBuffer(Pool& p)
