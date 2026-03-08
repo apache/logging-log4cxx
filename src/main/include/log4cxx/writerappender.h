@@ -119,6 +119,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		 * Close the underlying {@link log4cxx::helpers::Writer}.
 		 * */
+		[[ deprecated( "Use WriterAppenderPriv::close" ) ]]
 		void closeWriter();
 #endif
 
@@ -166,8 +167,10 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		  @param writer An already opened Writer.
 		*/
+		[[ deprecated( "Use WriterAppenderPriv::setWriter" ) ]]
 		void setWriter(const helpers::WriterPtr& writer);
 
+		[[ deprecated( "Accessible as WriterAppenderPriv::writer" ) ]]
 		const helpers::WriterPtr getWriter() const;
 #endif
 
@@ -184,16 +187,19 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		Write a footer as produced by the embedded layout's
 		Layout#appendFooter method.  */
+		[[ deprecated( "Specialize Layout instead of Appender" ) ]]
 		virtual void writeFooter(helpers::Pool& p);
 
 		/**
 		Write a header as produced by the embedded layout's
 		Layout#appendHeader method.  */
+		[[ deprecated( "Specialize Layout instead of Appender" ) ]]
 		virtual void writeHeader(helpers::Pool& p);
 
 		/**
 		 * Set the writer.  Mutex must already be held.
 		 */
+		[[ deprecated( "Use WriterAppenderPriv::setWriter" ) ]]
 		void setWriterInternal(const helpers::WriterPtr& writer);
 #endif
 	private:
