@@ -57,7 +57,11 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 		encoder(CharsetEncoder::getUTF8Encoder()),
 		activeConnections(0)
 #if LOG4CXX_EVENTS_AT_EXIT
-		, atExitRegistryRaii([this]{stopAcceptingConnections();})
+		, atExitRegistryRaii([this]
+		{
+			if (setClosed())
+				stopAcceptingConnections();
+		})
 #endif
 	{ }
 
