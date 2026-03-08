@@ -170,7 +170,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		[[ deprecated( "Use WriterAppenderPriv::setWriter" ) ]]
 		void setWriter(const helpers::WriterPtr& writer);
 
-		[[ deprecated( "Accessible as WriterAppenderPriv::writer" ) ]]
+		[[ deprecated( "Use WriterAppenderPriv::getWriter" ) ]]
 		const helpers::WriterPtr getWriter() const;
 #endif
 

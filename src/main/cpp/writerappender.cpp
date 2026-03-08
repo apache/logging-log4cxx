@@ -279,8 +279,7 @@ void WriterAppender::WriterAppenderPriv::writeHeader()
 #if LOG4CXX_ABI_VERSION <= 15
 void WriterAppender::setWriter(const WriterPtr& newWriter)
 {
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	setWriterInternal(newWriter);
+	_priv->setWriter(newWriter);
 }
 
 void WriterAppender::setWriterInternal(const WriterPtr& newWriter)
