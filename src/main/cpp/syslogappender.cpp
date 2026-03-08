@@ -63,7 +63,7 @@ SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 
 SyslogAppender::~SyslogAppender()
 {
-	finalize();
+	_priv->setClosed();
 }
 
 /** Release any resources held by this SyslogAppender.*/

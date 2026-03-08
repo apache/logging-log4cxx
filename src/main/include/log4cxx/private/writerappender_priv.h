@@ -89,6 +89,16 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 
 	bool warnedNoWriter = false;
 	bool checkWriter();
+
+	void close();
+	void writeHeader();
+	void writeFooter();
+
+	void setWriter(const helpers::WriterPtr& newWriter)
+	{
+		std::lock_guard<std::recursive_mutex> lock(this->mutex);
+		this->writer = newWriter;
+	}
 };
 
 }

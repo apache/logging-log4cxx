@@ -46,6 +46,8 @@ struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonP
 		SocketAppenderSkeletonPriv( host, port, delay ) {}
 
 	LOG4CXX_NS::helpers::WriterPtr writer;
+
+	void close() override;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
@@ -84,7 +86,8 @@ XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
 
 XMLSocketAppender::~XMLSocketAppender()
 {
-	finalize();
+	if (_priv->setClosed())
+		_priv->close();
 }
 
 
@@ -106,14 +109,22 @@ void XMLSocketAppender::setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, Pool& 
 	_priv->writer = std::make_shared<OutputStreamWriter>(os, charset);
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void XMLSocketAppender::cleanUp(Pool& p)
 {
-	if (_priv->writer)
+	_priv->close();
+}
+#endif
+
+void XMLSocketAppender::XMLSocketAppenderPriv::close()
+{
+	SocketAppenderSkeletonPriv::close();
+	if (this->writer)
 	{
 		try
 		{
-			_priv->writer->close(p);
-			_priv->writer = nullptr;
+			this->writer->close(this->pool);
+			this->writer = nullptr;
 		}
 		catch (std::exception&)
 		{

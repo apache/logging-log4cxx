@@ -115,10 +115,12 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		void close() override;
 
 	protected:
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		 * Close the underlying {@link log4cxx::helpers::Writer}.
 		 * */
 		void closeWriter();
+#endif
 
 		/**
 		    Returns an OutputStreamWriter when passed an OutputStream.  The
@@ -153,6 +155,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		  <p>Send log output to \c writer which must be open and be writable.
 
@@ -166,6 +169,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		void setWriter(const helpers::WriterPtr& writer);
 
 		const helpers::WriterPtr getWriter() const;
+#endif
 
 		bool requiresLayout() const override;
 
@@ -176,6 +180,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		virtual void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p);
 
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		Write a footer as produced by the embedded layout's
 		Layout#appendFooter method.  */
@@ -190,7 +195,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		 * Set the writer.  Mutex must already be held.
 		 */
 		void setWriterInternal(const helpers::WriterPtr& writer);
-
+#endif
 	private:
 		//
 		//  prevent copy and assignment

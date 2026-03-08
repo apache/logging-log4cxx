@@ -58,7 +58,6 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSke
 
 SocketAppenderSkeleton::~SocketAppenderSkeleton()
 {
-	finalize();
 }
 
 void SocketAppenderSkeleton::activateOptions(Pool& p)
@@ -69,8 +68,8 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-	_priv->stopMonitor();
-	cleanUp(_priv->pool);
+	if (_priv->setClosed())
+		_priv->close();
 }
 
 void SocketAppenderSkeleton::connect(Pool& p)
@@ -82,7 +81,7 @@ void SocketAppenderSkeleton::connect(Pool& p)
 	}
 	else
 	{
-		cleanUp(p);
+		_priv->close();
 
 		try
 		{
@@ -233,9 +232,8 @@ void SocketAppenderSkeleton::retryConnect()
 	}
 }
 
-void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::stopMonitor()
+void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::close()
 {
-	this->setClosed();
 	if (this->taskName.empty())
 		;
 	else if (auto pManager = this->taskManager.lock())

@@ -129,14 +129,15 @@ NTEventLogAppender::NTEventLogAppender(const LogString& server, const LogString&
 
 NTEventLogAppender::~NTEventLogAppender()
 {
-	finalize();
+	if (priv->setClosed())
+		priv->close();
 }
 
 
 void NTEventLogAppender::close()
 {
-	priv->setClosed();
-	priv->close();
+	if (priv->setClosed())
+		priv->close();
 }
 
 void NTEventLogAppender::NTEventLogAppenderPrivate::close()

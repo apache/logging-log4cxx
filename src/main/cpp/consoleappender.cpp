@@ -50,7 +50,7 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
 {
 	setLayout(layout);
 	Pool p;
-	setWriter(std::make_shared<SystemOutWriter>());
+	_priv->setWriter(std::make_shared<SystemOutWriter>());
 	WriterAppender::activateOptions(p);
 }
 
@@ -65,7 +65,6 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& targe
 
 ConsoleAppender::~ConsoleAppender()
 {
-	finalize();
 }
 
 const LogString& ConsoleAppender::getSystemOut()
@@ -117,14 +116,12 @@ void ConsoleAppender::activateOptions(Pool& p)
 	if (StringHelper::equalsIgnoreCase(_priv->target,
 			LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))
 	{
-		WriterPtr writer1 = std::make_shared<SystemOutWriter>();
-		setWriter(writer1);
+		_priv->setWriter(std::make_shared<SystemOutWriter>());
 	}
 	else if (StringHelper::equalsIgnoreCase(_priv->target,
 			LOG4CXX_STR("SYSTEM.ERR"), LOG4CXX_STR("system.err")))
 	{
-		WriterPtr writer1 = std::make_shared<SystemErrWriter>();
-		setWriter(writer1);
+		_priv->setWriter(std::make_shared<SystemErrWriter>());
 	}
 
 	WriterAppender::activateOptions(p);

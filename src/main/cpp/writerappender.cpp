@@ -65,7 +65,8 @@ WriterAppender::WriterAppender(std::unique_ptr<WriterAppenderPriv> priv)
 
 WriterAppender::~WriterAppender()
 {
-	finalize();
+	if (_priv->setClosed())
+		_priv->close();
 }
 
 void WriterAppender::activateOptions(Pool& p)
@@ -134,33 +135,25 @@ bool WriterAppender::WriterAppenderPriv::checkWriter()
 	return true;
 }
 
-
-
-
-/**
-   Close this appender instance. The underlying stream or writer is
-   also closed.
-
-   <p>Closed appenders cannot be reused.
-
-   @see #setWriter
-   */
 void WriterAppender::close()
 {
-	if (!_priv->setClosed())
-	{
-		return;
-	}
-
-	closeWriter();
+	if (_priv->setClosed())
+		_priv->close();
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 /**
  * Close the underlying {@link java.io.Writer}.
  * */
 void WriterAppender::closeWriter()
 {
-	if (_priv->writer != NULL)
+	 _priv->close();
+}
+#endif
+
+void WriterAppender::WriterAppenderPriv::close()
+{
+	if (this->writer != NULL)
 	{
 		try
 		{
@@ -169,13 +162,13 @@ void WriterAppender::closeWriter()
 			//   Using the object's pool since this is a one-shot operation
 			//    and pool is likely to be reclaimed soon when appender is destructed.
 			//
-			writeFooter(_priv->pool);
-			_priv->writer->close(_priv->pool);
-			_priv->writer = 0;
+			this->writeFooter();
+			this->writer->close(this->pool);
+			this->writer = 0;
 		}
 		catch (IOException& e)
 		{
-			LogLog::warn(LOG4CXX_STR("Could not close writer for WriterAppender named ") + _priv->name, e);
+			LogLog::warn(LOG4CXX_STR("Could not close writer for WriterAppender named ") + this->name, e);
 		}
 	}
 
@@ -248,27 +241,42 @@ void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
 }
 
 
-void WriterAppender::writeFooter(Pool& p)
-{
-	if (_priv->layout != NULL)
-	{
-		LogString foot;
-		_priv->layout->appendFooter(foot, p);
-		_priv->writer->write(foot, p);
-	}
-}
-
+#if LOG4CXX_ABI_VERSION <= 15
 void WriterAppender::writeHeader(Pool& p)
 {
-	if (_priv->layout != NULL)
+	_priv->writeHeader();
+}
+
+void WriterAppender::writeFooter(Pool& p)
+{
+	_priv->writeFooter();
+}
+#endif
+
+void WriterAppender::WriterAppenderPriv::writeFooter()
+{
+	if (this->layout != NULL)
 	{
+		Pool p;
+		LogString foot;
+		this->layout->appendFooter(foot, p);
+		this->writer->write(foot, p);
+	}
+}
+
+void WriterAppender::WriterAppenderPriv::writeHeader()
+{
+	if (this->layout != NULL)
+	{
+		Pool p;
 		LogString header;
-		_priv->layout->appendHeader(header, p);
-		_priv->writer->write(header, p);
+		this->layout->appendHeader(header, p);
+		this->writer->write(header, p);
 	}
 }
 
 
+#if LOG4CXX_ABI_VERSION <= 15
 void WriterAppender::setWriter(const WriterPtr& newWriter)
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
@@ -279,6 +287,7 @@ void WriterAppender::setWriterInternal(const WriterPtr& newWriter)
 {
 	_priv->writer = newWriter;
 }
+#endif
 
 bool WriterAppender::requiresLayout() const
 {
@@ -308,6 +317,8 @@ bool WriterAppender::getImmediateFlush() const
 	return _priv->immediateFlush;
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 const LOG4CXX_NS::helpers::WriterPtr WriterAppender::getWriter() const{
 	return _priv->writer;
 }
+#endif
