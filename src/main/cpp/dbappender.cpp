@@ -72,6 +72,8 @@ struct DBAppender::DBAppenderPriv : public AppenderSkeleton::AppenderSkeletonPri
     std::string sqlStatement;
     Pool m_pool;
     std::vector<pattern::LoggingEventPatternConverterPtr> converters;
+
+    void close();
 };
 
 #define RULES_PUT(spec, cls) \
@@ -106,17 +108,23 @@ DBAppender::DBAppender()
 
 DBAppender::~DBAppender()
 {
-    close();
+    if (_priv->setClosed())
+        _priv->close();
 }
 
 void DBAppender::close()
 {
-    _priv->setClosed();
-    if(_priv->m_driver && _priv->m_databaseHandle){
-        apr_dbd_close(_priv->m_driver, _priv->m_databaseHandle);
+    if (_priv->setClosed())
+        _priv->close();
+}
+
+void DBAppender::DBAppenderPriv::close()
+{
+    if(this->m_driver && this->m_databaseHandle){
+        apr_dbd_close(this->m_driver, this->m_databaseHandle);
     }
-    _priv->m_driver = nullptr;
-    _priv->m_databaseHandle = nullptr;
+    this->m_driver = nullptr;
+    this->m_databaseHandle = nullptr;
 }
 
 void DBAppender::setOption(const LogString& option, const LogString& value){

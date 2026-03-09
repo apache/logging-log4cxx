@@ -56,8 +56,9 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 		locationInfo(false)
 	{ }
 
-	~SocketAppenderSkeletonPriv()
-        { stopMonitor(); }
+	virtual ~SocketAppenderSkeletonPriv()
+	{
+	}
 
 	/**
 	host name
@@ -72,7 +73,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	int port;
 	int reconnectionDelay;
 	bool locationInfo;
-	void stopMonitor();
+	virtual void close();
 
 	/**
 	Manages asynchronous reconnection attempts.

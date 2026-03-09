@@ -273,7 +273,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 			;
 		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend(), p))
 		{
-			closeWriter();
+			_priv->close();
 			if (rollover1->getActiveFileName() == fileName)
 			{
 				bool success = true; // A synchronous action is not required
@@ -326,7 +326,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 					( rollover1->getActiveFileName()
 					, rollover1->getAppend()
 					);
-				setWriterInternal(createWriter(os));
+				_priv->setWriter(createWriter(os));
 
 				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
@@ -372,7 +372,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
  */
 void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 {
-	closeWriter();
+	_priv->close();
 #if USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
 		pTimeBased->loadLastFileName();
@@ -380,7 +380,7 @@ void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 	OutputStreamPtr os = std::make_shared<FileOutputStream>(fileName, true);
 	WriterPtr newWriter(createWriter(os));
 	setFile(fileName);
-	setWriter(newWriter);
+	_priv->setWriter(newWriter);
 }
 
 /**

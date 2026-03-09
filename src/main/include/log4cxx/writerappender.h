@@ -115,10 +115,13 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		void close() override;
 
 	protected:
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		 * Close the underlying {@link log4cxx::helpers::Writer}.
 		 * */
+		[[ deprecated( "Use WriterAppenderPriv::close" ) ]]
 		void closeWriter();
+#endif
 
 		/**
 		    Returns an OutputStreamWriter when passed an OutputStream.  The
@@ -153,6 +156,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		  <p>Send log output to \c writer which must be open and be writable.
 
@@ -163,9 +167,12 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 		  @param writer An already opened Writer.
 		*/
+		[[ deprecated( "Use WriterAppenderPriv::setWriter" ) ]]
 		void setWriter(const helpers::WriterPtr& writer);
 
+		[[ deprecated( "Use WriterAppenderPriv::getWriter" ) ]]
 		const helpers::WriterPtr getWriter() const;
+#endif
 
 		bool requiresLayout() const override;
 
@@ -176,21 +183,25 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		virtual void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p);
 
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		Write a footer as produced by the embedded layout's
 		Layout#appendFooter method.  */
+		[[ deprecated( "Specialize Layout instead of Appender" ) ]]
 		virtual void writeFooter(helpers::Pool& p);
 
 		/**
 		Write a header as produced by the embedded layout's
 		Layout#appendHeader method.  */
+		[[ deprecated( "Specialize Layout instead of Appender" ) ]]
 		virtual void writeHeader(helpers::Pool& p);
 
 		/**
 		 * Set the writer.  Mutex must already be held.
 		 */
+		[[ deprecated( "Use WriterAppenderPriv::setWriter" ) ]]
 		void setWriterInternal(const helpers::WriterPtr& writer);
-
+#endif
 	private:
 		//
 		//  prevent copy and assignment

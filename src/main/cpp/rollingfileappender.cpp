@@ -298,7 +298,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 					{
 						if (rollover1->getActiveFileName() == getFile())
 						{
-							closeWriter();
+							_priv->close();
 
 							bool success = true;
 
@@ -353,7 +353,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 						}
 						else
 						{
-							closeWriter();
+							_priv->close();
 							setFileInternal(rollover1->getActiveFileName());
 							// Call activateOptions to create any intermediate directories(if required)
 							FileAppender::activateOptionsInternal(p);
@@ -361,7 +361,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 									( rollover1->getActiveFileName()
 									, rollover1->getAppend()
 									);
-							setWriterInternal(createWriter(os));
+							_priv->setWriter(createWriter(os));
 
 							bool success = true;
 
@@ -401,7 +401,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 								}
 							}
 
-							writeHeader(p);
+							_priv->writeHeader();
 						}
 						return true;
 					}

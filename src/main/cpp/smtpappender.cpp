@@ -432,7 +432,7 @@ SMTPAppender::SMTPAppender(spi::TriggeringEventEvaluatorPtr evaluator)
 
 SMTPAppender::~SMTPAppender()
 {
-	finalize();
+	_priv->setClosed();
 }
 
 bool SMTPAppender::requiresLayout() const

@@ -74,12 +74,14 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		AppenderSkeleton(const LayoutPtr& layout);
 		virtual ~AppenderSkeleton();
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		Finalize this appender by calling the derived class'
 		<code>close</code> method.
 		*/
+		[[ deprecated( "The derived appender destructor needs to implement its cleanup" ) ]]
 		void finalize();
-
+#endif
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
