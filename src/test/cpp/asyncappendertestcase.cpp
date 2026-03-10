@@ -48,7 +48,7 @@ struct MyStruct
 {
 	int value;
 };
-using OutputStreamType = std::basic_ostream<log4cxx::logchar>;
+using OutputStreamType = std::basic_ostream<LOG4CXX_NS::logchar>;
 OutputStreamType& operator<<(OutputStreamType& stream, const MyStruct& data)
 {
 	stream << LOG4CXX_STR("[MyStruct value: ") << data.value << LOG4CXX_STR("]");
@@ -56,13 +56,13 @@ OutputStreamType& operator<<(OutputStreamType& stream, const MyStruct& data)
 }
 
 #if FMT_VERSION >= (9 * 10000)
-template <> struct fmt::formatter<MyStruct, log4cxx::logchar> : fmt::basic_ostream_formatter<log4cxx::logchar> {};
+template <> struct fmt::formatter<MyStruct, LOG4CXX_NS::logchar> : fmt::basic_ostream_formatter<LOG4CXX_NS::logchar> {};
 #endif
 #endif
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::spi;
+using namespace LOG4CXX_NS;
+using namespace LOG4CXX_NS::helpers;
+using namespace LOG4CXX_NS::spi;
 
 class NullPointerAppender : public AppenderSkeleton
 {
@@ -75,7 +75,7 @@ class NullPointerAppender : public AppenderSkeleton
 		/**
 		 * @{inheritDoc}
 		 */
-		void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&) override
+		void append(const spi::LoggingEventPtr&, LOG4CXX_NS::helpers::Pool&) override
 		{
 			throw RuntimeException(LOG4CXX_STR("Intentional Exception"));
 		}
@@ -108,7 +108,7 @@ class BlockableVectorAppender : public VectorAppender
 		/**
 		 * {@inheritDoc}
 		 */
-		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
+		void append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) override
 		{
 			std::lock_guard<std::mutex> lock( blocker );
 			VectorAppender::append(event, p);
@@ -128,7 +128,7 @@ LOG4CXX_PTR_DEF(BlockableVectorAppender);
 class LoggingVectorAppender : public VectorAppender
 {
 	LoggerInstancePtr logger{ "LoggingVectorAppender" };
-	void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
+	void append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) override
 	{
 		auto& lsMsg = event->getRenderedMessage();
 		VectorAppender::append(event, p);
@@ -165,6 +165,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 #if LOG4CXX_HAS_DOMCONFIGURATOR
 		LOGUNIT_TEST(testXMLConfiguration);
 		LOGUNIT_TEST(testAsyncLoggerXML);
+		LOGUNIT_TEST(testRecursiveConfiguration);
 #endif
 		LOGUNIT_TEST(testAsyncLoggerProperties);
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
@@ -503,7 +504,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT_EQUAL(levelCount[Level::getError()], 1);
 			LOGUNIT_ASSERT_EQUAL(discardEvent->getLevel(), Level::getError());
 			// Check the discard message does not have location info
-			LOGUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(),
+			LOGUNIT_ASSERT_EQUAL(LOG4CXX_NS::spi::LocationInfo::getLocationUnavailable().getClassName(),
 				discardEvent->getLocationInformation().getClassName());
 		}
 
@@ -585,7 +586,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 			// Check configuration is as expected
 			auto  root = Logger::getRootLogger();
-			auto asyncAppender = log4cxx::cast<AsyncAppender>(root->getAppender(LOG4CXX_STR("ASYNC")));
+			auto asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(root->getAppender(LOG4CXX_STR("ASYNC")));
 			LOGUNIT_ASSERT(asyncAppender);
 			LOGUNIT_ASSERT_EQUAL(100, asyncAppender->getBufferSize());
 			LOGUNIT_ASSERT_EQUAL(false, asyncAppender->getBlocking());
@@ -602,7 +603,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->close();
 
 			// Check all message were received
-			auto vectorAppender = log4cxx::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
+			auto vectorAppender = LOG4CXX_NS::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
 			LOGUNIT_ASSERT(vectorAppender);
 			auto& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
@@ -619,7 +620,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			auto  root = Logger::getRootLogger();
 			auto appenders = root->getAllAppenders();
 			LOGUNIT_ASSERT_EQUAL(1, int(appenders.size()));
-			auto asyncAppender = log4cxx::cast<AsyncAppender>(appenders.front());
+			auto asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(appenders.front());
 			LOGUNIT_ASSERT(asyncAppender);
 
 			// Log some messages
@@ -631,8 +632,47 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->close();
 
 			// Check all message were received
-			auto vectorAppender = log4cxx::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
+			auto vectorAppender = LOG4CXX_NS::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
 			LOGUNIT_ASSERT(vectorAppender);
+			auto& v = vectorAppender->getVector();
+			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			LOGUNIT_ASSERT(vectorAppender->isClosed());
+		}
+
+		void testRecursiveConfiguration()
+		{
+			// Configure Log4cxx
+			auto status = xml::DOMConfigurator::configure("input/xml/recursiveConfig.xml");
+			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+
+			// Check configuration is as expected
+			auto  root = Logger::getRootLogger();
+			auto appenders = root->getAllAppenders();
+			LOGUNIT_ASSERT_EQUAL(1, int(appenders.size()));
+			auto asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(appenders.front());
+			LOGUNIT_ASSERT(asyncAppender);
+			VectorAppenderPtr vectorAppender;
+			for (auto attachedAppender : asyncAppender->getAllAppenders())
+			{
+				if (auto async2 = LOG4CXX_NS::cast<AsyncAppender>(attachedAppender))
+				{
+					for (auto appender : async2->getAllAppenders())
+						if (vectorAppender = LOG4CXX_NS::cast<VectorAppender>(appender))
+							break;
+				}
+			}
+			LOGUNIT_ASSERT(vectorAppender);
+
+			// Log some messages
+			size_t LEN = 20;
+			for (size_t i = 0; i < LEN; i++)
+			{
+				LOG4CXX_INFO_ASYNC(root, "message" << i);
+			}
+			std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+			asyncAppender->close();
+
+			// Check all message were received
 			auto& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
@@ -649,7 +689,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			auto  root = Logger::getRootLogger();
 			auto appenders = root->getAllAppenders();
 			LOGUNIT_ASSERT_EQUAL(1, int(appenders.size()));
-			auto asyncAppender = log4cxx::cast<AsyncAppender>(appenders.front());
+			auto asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(appenders.front());
 			LOGUNIT_ASSERT(asyncAppender);
 
 			// Log some messages
@@ -661,7 +701,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->close();
 
 			// Check all message were received
-			auto vectorAppender = log4cxx::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
+			auto vectorAppender = LOG4CXX_NS::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
 			LOGUNIT_ASSERT(vectorAppender);
 			auto& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
