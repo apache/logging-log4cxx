@@ -213,11 +213,6 @@ AppenderPtr DOMConfigurator::findAppenderByReference(
 	else if (doc)
 	{
 		appender = findAppenderByName(p, utf8Decoder, doc->root, doc, appenderName, appenders);
-
-		if (appender)
-		{
-			appenders.insert(AppenderMap::value_type(appenderName, appender));
-		}
 	}
 
 	if (!appender)
@@ -257,6 +252,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 		PropertySetter propSetter(appender);
 
 		appender->setName(subst(getAttribute(utf8Decoder, appenderElement, NAME_ATTR)));
+		appenders.emplace(appender->getName(), appender);
 
 		for (apr_xml_elem* currentElement = appenderElement->first_child;
 			currentElement;
@@ -344,6 +340,13 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 						+ LOG4CXX_STR(" which does not implement ") + AppenderAttachable::getStaticClass().getName());
 				}
 			}
+			else
+			{
+				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
+				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR("] appender element");
+				LogLog::warn(msg);
+			}
 		}
 
 		propSetter.activate(p);
@@ -408,15 +411,18 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
 				LoggerPtr root = m_priv->repository->getRootLogger();
 				eh->setLogger(root);
 			}
+			else
+			{
+				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
+				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR("] errorHandler element");
+				LogLog::warn(msg);
+			}
 		}
 
 		propSetter.activate(p);
-		std::shared_ptr<AppenderSkeleton> appSkeleton = LOG4CXX_NS::cast<AppenderSkeleton>(appender);
-
-		if (appSkeleton != 0)
-		{
+		if (auto appSkeleton = LOG4CXX_NS::cast<AppenderSkeleton>(appender))
 			appSkeleton->setErrorHandler(eh);
-		}
 	}
 }
 
@@ -447,6 +453,13 @@ void DOMConfigurator::parseFilters(Pool& p,
 			if (tagName == PARAM_TAG)
 			{
 				setParameter(p, utf8Decoder, currentElement, propSetter);
+			}
+			else
+			{
+				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
+				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR("] filter element");
+				LogLog::warn(msg);
 			}
 		}
 
@@ -609,6 +622,13 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 		{
 			setParameter(p, utf8Decoder, currentElement, propSetter);
 		}
+		else
+		{
+			LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
+			utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+			msg += LOG4CXX_STR("] logger element");
+			LogLog::warn(msg);
+		}
 	}
 	if (async && !newappenders.empty())
 	{
@@ -660,6 +680,13 @@ LayoutPtr DOMConfigurator::parseLayout (
 			if (tagName == PARAM_TAG)
 			{
 				setParameter(p, utf8Decoder, currentElement, propSetter);
+			}
+			else
+			{
+				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
+				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR("] layout element");
+				LogLog::warn(msg);
 			}
 		}
 
@@ -717,6 +744,13 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 					}
 				}
 			}
+			else
+			{
+				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
+				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR("] triggeringPolicy element");
+				LogLog::warn(msg);
+			}
 		}
 
 		propSetter.activate(p);
@@ -758,6 +792,13 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 			if (tagName == PARAM_TAG)
 			{
 				setParameter(p, utf8Decoder, currentElement, propSetter);
+			}
+			else
+			{
+				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
+				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR("] rollingPolicy element");
+				LogLog::warn(msg);
 			}
 		}
 
