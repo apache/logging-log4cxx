@@ -51,21 +51,22 @@ namespace
 	private:
 		std::recursive_mutex mutex;
 		std::map<void*, std::function<void()>> actions;
-	} s_instance;
+	};
 }
 
 AtExitRegistry& AtExitRegistry::instance()
 {
-	return s_instance;
+	static AtExitRegistryImpl impl;
+	return impl;
 }
 
 void AtExitRegistry::add(void* key, std::function<void()> action)
 {
-	return s_instance.add(key, std::move(action));
+	return static_cast<AtExitRegistryImpl&>(instance()).add(key, std::move(action));
 }
 
 void AtExitRegistry::del(void* key)
 {
-	return s_instance.del(key);
+	return static_cast<AtExitRegistryImpl&>(instance()).del(key);
 }
 
