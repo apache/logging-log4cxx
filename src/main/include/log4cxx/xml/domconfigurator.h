@@ -19,18 +19,20 @@
 #define _LOG4CXX_XML_DOM_CONFIGURATOR_H
 
 #include <log4cxx/logstring.h>
-#include <map>
+#include <log4cxx/spi/configurator.h>
+#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/helpers/properties.h>
-#include <log4cxx/spi/configurator.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/rolling/triggeringpolicy.h>
 #include <log4cxx/rolling/rollingpolicy.h>
-#include <log4cxx/file.h>
 #include <log4cxx/config/propertysetter.h>
+#include <map>
+#endif
+#include <log4cxx/file.h>
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
 
@@ -67,6 +69,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 	public:
 		~DOMConfigurator();
 
+#if LOG4CXX_ABI_VERSION <= 15
 	protected:
 		typedef std::map<LogString, AppenderPtr> AppenderMap;
 		/**
@@ -205,6 +208,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 			apr_xml_elem* element,
 			apr_xml_doc* doc,
 			AppenderMap& appenders);
+#endif // LOG4CXX_ABI_VERSION <= 15
 
 	public:
 		DOMConfigurator();
@@ -214,9 +218,9 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		LOG4CXX_CAST_ENTRY(spi::Configurator)
 		END_LOG4CXX_CAST_MAP()
 
+#if LOG4CXX_ABI_VERSION <= 15
 		DOMConfigurator(LOG4CXX_NS::helpers::Pool& p);
 
-#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		A static version of #doConfigure.
 		*/
@@ -362,6 +366,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const File& configFilename, long delay = 0);
 
+#if LOG4CXX_ABI_VERSION <= 15
 	protected:
 		static LogString getAttribute(
 			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
@@ -369,6 +374,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 			const std::string& attrName);
 
 		LogString subst(const LogString& value);
+#endif
 
 	private:
 		//   prevent assignment or copy statements
