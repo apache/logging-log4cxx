@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log4cxx/logstring.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/asyncappender.h>
@@ -63,12 +62,68 @@ using namespace LOG4CXX_NS::rolling;
 
 #define MAX_ATTRIBUTE_NAME_LEN 2000
 
-struct DOMConfigurator::DOMConfiguratorPrivate
+using FilterStore = std::vector<FilterPtr>;
+
+struct DOMConfiguratorPrivate
 {
-	helpers::Properties props = Configurator::properties();
-	spi::LoggerRepositoryPtr repository;
-	spi::LoggerFactoryPtr loggerFactory;
+public: // Types
+	struct AppenderStatus
+	{
+		AppenderPtr pAppender;
+		bool activated;
+	};
+	using AppenderMap = std::map<LogString, AppenderStatus>;
+
+public: // Attributes
+	Properties props = Configurator::properties();
+	LoggerRepositoryPtr repository;
+	LoggerFactoryPtr loggerFactory;
 	bool appenderAdded{ false };
+	AppenderMap	appenders;
+	Pool p;
+	CharsetDecoderPtr utf8Decoder{ CharsetDecoder::getUTF8Decoder() };
+	apr_xml_doc* doc{ nullptr };
+
+public: // ...structor
+	DOMConfiguratorPrivate(const LoggerRepositoryPtr& r, const LoggerFactoryPtr& f)
+		: repository(r)
+		, loggerFactory(f)
+	{}
+
+public: // Methods
+	AppenderPtr findAppenderByName(apr_xml_elem* elem, const LogString& appenderName);
+
+	AppenderPtr findAppenderByReference(apr_xml_elem* appenderRef);
+
+	AppenderPtr parseAppender(apr_xml_elem* appenderElement);
+
+	void parseErrorHandler(apr_xml_elem* element, const AppenderPtr& appender);
+
+	FilterStore parseFilters(apr_xml_elem* element);
+
+	void parseLogger(apr_xml_elem* loggerElement);
+
+	void parseLoggerFactory(apr_xml_elem* factoryElement);
+
+	ObjectPtr parseTriggeringPolicy(apr_xml_elem* factoryElement);
+
+	RollingPolicyPtr parseRollingPolicy(apr_xml_elem* factoryElement);
+
+	void parseRoot(apr_xml_elem* rootElement);
+
+	void parseChildrenOfLoggerElement(apr_xml_elem* catElement, LoggerPtr logger, bool isRoot);
+
+	LayoutPtr parseLayout(apr_xml_elem* layout_element);
+
+	void parseLevel(apr_xml_elem* element, LoggerPtr logger, bool isRoot);
+
+	void setParameter(apr_xml_elem* elem, config::PropertySetter& propSetter);
+
+	void parse(apr_xml_elem* element);
+
+	LogString getAttribute(apr_xml_elem*, const std::string& attrName);
+
+	LogString subst(const LogString& value);
 };
 
 namespace LOG4CXX_NS
@@ -141,42 +196,34 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define INTERNAL_COLOR_ATTR "color"
 #define THREAD_CONFIG_ATTR "threadConfiguration"
 
-DOMConfigurator::DOMConfigurator()
-	: m_priv(std::make_unique<DOMConfiguratorPrivate>())
-{
-}
+DOMConfigurator::DOMConfigurator() {}
 
 DOMConfigurator::~DOMConfigurator() {}
 
 /**
 Used internally to parse appenders by IDREF name.
 */
-AppenderPtr DOMConfigurator::findAppenderByName(LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	apr_xml_doc* doc,
-	const LogString& appenderName,
-	AppenderMap& appenders)
+AppenderPtr DOMConfiguratorPrivate::findAppenderByName(apr_xml_elem* element, const LogString& appenderName)
 {
 	AppenderPtr appender;
 	std::string tagName(element->name);
 
 	if (tagName == APPENDER_TAG)
 	{
-		if (appenderName == getAttribute(utf8Decoder, element, NAME_ATTR))
+		if (appenderName == getAttribute(element, NAME_ATTR))
 		{
-			appender = parseAppender(p, utf8Decoder, element, doc, appenders);
+			appender = parseAppender(element);
 		}
 	}
 
 	if (element->first_child && !appender)
 	{
-		appender = findAppenderByName(p, utf8Decoder, element->first_child, doc, appenderName, appenders);
+		appender = findAppenderByName(element->first_child, appenderName);
 	}
 
 	if (element->next && !appender)
 	{
-		appender = findAppenderByName(p, utf8Decoder, element->next, doc, appenderName, appenders);
+		appender = findAppenderByName(element->next, appenderName);
 	}
 
 	return appender;
@@ -185,15 +232,10 @@ AppenderPtr DOMConfigurator::findAppenderByName(LOG4CXX_NS::helpers::Pool& p,
 /**
  Used internally to parse appenders by IDREF element.
 */
-AppenderPtr DOMConfigurator::findAppenderByReference(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* appenderRef,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
+AppenderPtr DOMConfiguratorPrivate::findAppenderByReference(apr_xml_elem* appenderRef)
 {
 	AppenderPtr appender;
-	LogString appenderName(subst(getAttribute(utf8Decoder, appenderRef, REF_ATTR)));
+	LogString appenderName(subst(getAttribute(appenderRef, REF_ATTR)));
 	if (appenderName.empty())
 	{
 		LogString msg(LOG4CXX_STR("["));
@@ -208,11 +250,17 @@ AppenderPtr DOMConfigurator::findAppenderByReference(
 
 	if (match != appenders.end())
 	{
-		appender = match->second;
+		if (!match->second.activated)
+		{
+			LogString msg(LOG4CXX_STR("Ignoring recursive reference to [") + appenderName + LOG4CXX_STR("]"));
+			LogLog::warn(msg);
+		}
+		else
+			appender = match->second.pAppender;
 	}
 	else if (doc)
 	{
-		appender = findAppenderByName(p, utf8Decoder, doc->root, doc, appenderName, appenders);
+		appender = findAppenderByName(doc->root, appenderName);
 	}
 
 	if (!appender)
@@ -227,14 +275,10 @@ AppenderPtr DOMConfigurator::findAppenderByReference(
 /**
 Used internally to parse an appender element.
 */
-AppenderPtr DOMConfigurator::parseAppender(Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* appenderElement,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
+AppenderPtr DOMConfiguratorPrivate::parseAppender(apr_xml_elem* appenderElement)
 {
 
-	LogString className(subst(getAttribute(utf8Decoder, appenderElement, CLASS_ATTR)));
+	LogString className(subst(getAttribute(appenderElement, CLASS_ATTR)));
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Desired ") + Appender::getStaticClass().getName()
@@ -251,8 +295,8 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 		}
 		PropertySetter propSetter(appender);
 
-		appender->setName(subst(getAttribute(utf8Decoder, appenderElement, NAME_ATTR)));
-		appenders.emplace(appender->getName(), appender);
+		appender->setName(subst(getAttribute(appenderElement, NAME_ATTR)));
+		appenders.emplace(appender->getName(), AppenderStatus{appender, false});
 
 		for (apr_xml_elem* currentElement = appenderElement->first_child;
 			currentElement;
@@ -264,18 +308,17 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 			// Parse appender parameters
 			if (tagName == PARAM_TAG)
 			{
-				setParameter(p, utf8Decoder, currentElement, propSetter);
+				setParameter(currentElement, propSetter);
 			}
 			// Set appender layout
 			else if (tagName == LAYOUT_TAG)
 			{
-				appender->setLayout(parseLayout(p, utf8Decoder, currentElement));
+				appender->setLayout(parseLayout(currentElement));
 			}
 			// Add filters
 			else if (tagName == FILTER_TAG)
 			{
-				std::vector<LOG4CXX_NS::spi::FilterPtr> filters;
-				parseFilters(p, utf8Decoder, currentElement, filters);
+				auto filters = parseFilters(currentElement);
 
 				for (auto& item : filters)
 				{
@@ -284,11 +327,11 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 			}
 			else if (tagName == ERROR_HANDLER_TAG)
 			{
-				parseErrorHandler(p, utf8Decoder, currentElement, appender, doc, appenders);
+				parseErrorHandler(currentElement, appender);
 			}
 			else if (tagName == ROLLING_POLICY_TAG)
 			{
-				RollingPolicyPtr rollPolicy(parseRollingPolicy(p, utf8Decoder, currentElement));
+				auto rollPolicy = parseRollingPolicy(currentElement);
 				RollingFileAppenderPtr rfa = LOG4CXX_NS::cast<RollingFileAppender>(appender);
 
 				if (rfa != NULL)
@@ -298,7 +341,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 			}
 			else if (tagName == TRIGGERING_POLICY_TAG)
 			{
-				ObjectPtr policy(parseTriggeringPolicy(p, utf8Decoder, currentElement));
+				auto policy = parseTriggeringPolicy(currentElement);
 				RollingFileAppenderPtr rfa = LOG4CXX_NS::cast<RollingFileAppender>(appender);
 				TriggeringPolicyPtr policyPtr = LOG4CXX_NS::cast<TriggeringPolicy>(policy);
 
@@ -322,7 +365,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 				if (appender->instanceof(AppenderAttachable::getStaticClass()))
 				{
 					AppenderAttachablePtr aa = LOG4CXX_NS::cast<AppenderAttachable>(appender);
-					if (auto delegateAppender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
+					if (auto delegateAppender = findAppenderByReference(currentElement))
 					{
 						if (LogLog::isDebugEnabled())
 						{
@@ -344,12 +387,15 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 			{
 				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
 				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
-				msg += LOG4CXX_STR("] appender element");
+				msg += LOG4CXX_STR("] ");
+				utf8Decoder->decode(appenderElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR(" element");
 				LogLog::warn(msg);
 			}
 		}
 
 		propSetter.activate(p);
+		appenders[appender->getName()].activated = true;
 		return appender;
 	}
 	/* Yes, it's ugly.  But all of these exceptions point to the same
@@ -364,17 +410,12 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 /**
 Used internally to parse an {@link ErrorHandler} element.
 */
-void DOMConfigurator::parseErrorHandler(Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	AppenderPtr& appender,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
+void DOMConfiguratorPrivate::parseErrorHandler(apr_xml_elem* element, const AppenderPtr& appender)
 {
 
 	ErrorHandlerPtr eh;
 	std::shared_ptr<Object> obj = OptionConverter::instantiateByClassName(
-			subst(getAttribute(utf8Decoder, element, CLASS_ATTR)),
+			subst(getAttribute(element, CLASS_ATTR)),
 			ErrorHandler::getStaticClass(),
 			0);
 	eh = LOG4CXX_NS::cast<ErrorHandler>(obj);
@@ -393,22 +434,22 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
 
 			if (tagName == PARAM_TAG)
 			{
-				setParameter(p, utf8Decoder, currentElement, propSetter);
+				setParameter(currentElement, propSetter);
 			}
 			else if (tagName == APPENDER_REF_TAG)
 			{
-				if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
+				if (auto appender = findAppenderByReference(currentElement))
 					eh->setBackupAppender(appender);
 			}
 			else if (tagName == LOGGER_REF)
 			{
-				LogString loggerName(getAttribute(utf8Decoder, currentElement, REF_ATTR));
-				LoggerPtr logger = m_priv->repository->getLogger(loggerName, m_priv->loggerFactory);
+				LogString loggerName(getAttribute(currentElement, REF_ATTR));
+				LoggerPtr logger = this->repository->getLogger(loggerName, this->loggerFactory);
 				eh->setLogger(logger);
 			}
 			else if (tagName == ROOT_REF)
 			{
-				LoggerPtr root = m_priv->repository->getRootLogger();
+				LoggerPtr root = this->repository->getRootLogger();
 				eh->setLogger(root);
 			}
 			else
@@ -429,12 +470,10 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
 /**
  Used internally to parse a filter element.
 */
-void DOMConfigurator::parseFilters(Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	std::vector<LOG4CXX_NS::spi::FilterPtr>& filters)
+FilterStore DOMConfiguratorPrivate::parseFilters(apr_xml_elem* element)
 {
-	LogString clazz = subst(getAttribute(utf8Decoder, element, CLASS_ATTR));
+	FilterStore result;
+	LogString clazz = subst(getAttribute(element, CLASS_ATTR));
 	FilterPtr filter;
 	std::shared_ptr<Object> obj = OptionConverter::instantiateByClassName(clazz,
 			Filter::getStaticClass(), 0);
@@ -452,7 +491,7 @@ void DOMConfigurator::parseFilters(Pool& p,
 
 			if (tagName == PARAM_TAG)
 			{
-				setParameter(p, utf8Decoder, currentElement, propSetter);
+				setParameter(currentElement, propSetter);
 			}
 			else
 			{
@@ -464,34 +503,30 @@ void DOMConfigurator::parseFilters(Pool& p,
 		}
 
 		propSetter.activate(p);
-		filters.push_back(filter);
+		result.push_back(filter);
 	}
+	return result;
 }
 
 /**
 Used internally to parse an category or logger element.
 */
-void DOMConfigurator::parseLogger(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* loggerElement,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
+void DOMConfiguratorPrivate::parseLogger(apr_xml_elem* loggerElement)
 {
 	// Create a new Logger object from the <category> element.
-	LogString loggerName = subst(getAttribute(utf8Decoder, loggerElement, NAME_ATTR));
+	LogString loggerName = subst(getAttribute(loggerElement, NAME_ATTR));
 
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Getting [") + loggerName + LOG4CXX_STR("]"));
 	}
-	LoggerPtr logger = m_priv->repository->getLogger(loggerName, m_priv->loggerFactory);
+	LoggerPtr logger = this->repository->getLogger(loggerName, this->loggerFactory);
 
 	// Setting up a logger needs to be an atomic operation, in order
 	// to protect potential log operations while logger
 	// configuration is in progress.
 	bool additivity = OptionConverter::toBoolean(
-			subst(getAttribute(utf8Decoder, loggerElement, ADDITIVITY_ATTR)),
+			subst(getAttribute(loggerElement, ADDITIVITY_ATTR)),
 			true);
 
 	if (LogLog::isDebugEnabled())
@@ -500,18 +535,15 @@ void DOMConfigurator::parseLogger(
 			(additivity ? LogString(LOG4CXX_STR("true")) : LogString(LOG4CXX_STR("false"))) + LOG4CXX_STR("]"));
 	}
 	logger->setAdditivity(additivity);
-	parseChildrenOfLoggerElement(p, utf8Decoder, loggerElement, logger, false, doc, appenders);
+	parseChildrenOfLoggerElement(loggerElement, logger, false);
 }
 
 /**
  Used internally to parse the logger factory element.
 */
-void DOMConfigurator::parseLoggerFactory(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* factoryElement)
+void DOMConfiguratorPrivate::parseLoggerFactory(apr_xml_elem* factoryElement)
 {
-	LogString className(subst(getAttribute(utf8Decoder, factoryElement, CLASS_ATTR)));
+	LogString className(subst(getAttribute(factoryElement, CLASS_ATTR)));
 
 	if (className.empty())
 	{
@@ -533,8 +565,8 @@ void DOMConfigurator::parseLoggerFactory(
 			, std::make_shared<LoggerFactory>()
 #endif
 			);
-		m_priv->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>(obj);
-		PropertySetter propSetter(m_priv->loggerFactory);
+		this->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>(obj);
+		PropertySetter propSetter(this->loggerFactory);
 
 		for (apr_xml_elem* currentElement = factoryElement->first_child;
 			currentElement;
@@ -544,7 +576,7 @@ void DOMConfigurator::parseLoggerFactory(
 
 			if (tagName == PARAM_TAG)
 			{
-				setParameter(p, utf8Decoder, currentElement, propSetter);
+				setParameter(currentElement, propSetter);
 			}
 		}
 	}
@@ -553,33 +585,23 @@ void DOMConfigurator::parseLoggerFactory(
 /**
  Used internally to parse the root logger element.
 */
-void DOMConfigurator::parseRoot(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* rootElement,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
+void DOMConfiguratorPrivate::parseRoot(apr_xml_elem* rootElement)
 {
-	LoggerPtr root = m_priv->repository->getRootLogger();
-	parseChildrenOfLoggerElement(p, utf8Decoder, rootElement, root, true, doc, appenders);
+	LoggerPtr root = this->repository->getRootLogger();
+	parseChildrenOfLoggerElement(rootElement, root, true);
 }
 
 /**
  Used internally to parse the children of a logger element.
 */
-void DOMConfigurator::parseChildrenOfLoggerElement(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
+void DOMConfiguratorPrivate::parseChildrenOfLoggerElement(apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot)
 {
 	PropertySetter propSetter(logger);
-	auto loggerName = m_priv->repository->getRootLogger() == logger
+	auto loggerName = this->repository->getRootLogger() == logger
 					? LogString(LOG4CXX_STR("root"))
 					: logger->getName();
 	AsyncAppenderPtr async;
-	auto lsAsynchronous = subst(getAttribute(utf8Decoder, loggerElement, ASYNCHRONOUS_ATTR));
+	auto lsAsynchronous = subst(getAttribute(loggerElement, ASYNCHRONOUS_ATTR));
 	if (!lsAsynchronous.empty() && OptionConverter::toBoolean(lsAsynchronous, true))
 	{
 		async = std::make_shared<AsyncAppender>();
@@ -595,7 +617,7 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 
 		if (tagName == APPENDER_REF_TAG)
 		{
-			if (auto appender = findAppenderByReference(p, utf8Decoder, currentElement, doc, appenders))
+			if (auto appender = findAppenderByReference(currentElement))
 			{
 				if (log4cxx::cast<AsyncAppender>(appender)) // An explicitly configured AsyncAppender?
 					async.reset(); // Not required
@@ -612,15 +634,15 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 		}
 		else if (tagName == LEVEL_TAG)
 		{
-			parseLevel(p, utf8Decoder, currentElement, logger, isRoot);
+			parseLevel(currentElement, logger, isRoot);
 		}
 		else if (tagName == PRIORITY_TAG)
 		{
-			parseLevel(p, utf8Decoder, currentElement, logger, isRoot);
+			parseLevel(currentElement, logger, isRoot);
 		}
 		else if (tagName == PARAM_TAG)
 		{
-			setParameter(p, utf8Decoder, currentElement, propSetter);
+			setParameter(currentElement, propSetter);
 		}
 		else
 		{
@@ -638,14 +660,14 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 					+ logger->getName() + LOG4CXX_STR("] is on"));
 		}
 		logger->replaceAppenders({async});
-		m_priv->appenderAdded = true;
+		this->appenderAdded = true;
 	}
 	else if (newappenders.empty())
 		logger->removeAllAppenders();
 	else
 	{
 		logger->replaceAppenders(newappenders);
-		m_priv->appenderAdded = true;
+		this->appenderAdded = true;
 	}
 	propSetter.activate(p);
 }
@@ -653,12 +675,9 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 /**
  Used internally to parse a layout element.
 */
-LayoutPtr DOMConfigurator::parseLayout (
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* layout_element)
+LayoutPtr DOMConfiguratorPrivate::parseLayout(apr_xml_elem* layout_element)
 {
-	LogString className(subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR)));
+	LogString className(subst(getAttribute(layout_element, CLASS_ATTR)));
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Desired ") + Layout::getStaticClass().getName()
@@ -679,7 +698,7 @@ LayoutPtr DOMConfigurator::parseLayout (
 
 			if (tagName == PARAM_TAG)
 			{
-				setParameter(p, utf8Decoder, currentElement, propSetter);
+				setParameter(currentElement, propSetter);
 			}
 			else
 			{
@@ -703,12 +722,9 @@ LayoutPtr DOMConfigurator::parseLayout (
 /**
  Used internally to parse a triggering policy
 */
-ObjectPtr DOMConfigurator::parseTriggeringPolicy (
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* policy_element)
+ObjectPtr DOMConfiguratorPrivate::parseTriggeringPolicy(apr_xml_elem* policy_element)
 {
-	LogString className = subst(getAttribute(utf8Decoder, policy_element, CLASS_ATTR));
+	LogString className = subst(getAttribute(policy_element, CLASS_ATTR));
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Desired ") + TriggeringPolicy::getStaticClass().getName()
@@ -728,15 +744,12 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 
 			if (tagName == PARAM_TAG)
 			{
-				setParameter(p, utf8Decoder, currentElement, propSetter);
+				setParameter(currentElement, propSetter);
 			}
 			else if (tagName == FILTER_TAG)
 			{
-				std::vector<LOG4CXX_NS::spi::FilterPtr> filters;
-				parseFilters(p, utf8Decoder, currentElement, filters);
-				FilterBasedTriggeringPolicyPtr fbtp = LOG4CXX_NS::cast<FilterBasedTriggeringPolicy>(instance);
-
-				if (fbtp != NULL)
+				auto filters = parseFilters(currentElement);
+				if (auto fbtp = LOG4CXX_NS::cast<FilterBasedTriggeringPolicy>(instance))
 				{
 					for (auto& item : filters)
 					{
@@ -766,12 +779,9 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 /**
  Used internally to parse a triggering policy
 */
-RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* policy_element)
+RollingPolicyPtr DOMConfiguratorPrivate::parseRollingPolicy(apr_xml_elem* policy_element)
 {
-	LogString className = subst(getAttribute(utf8Decoder, policy_element, CLASS_ATTR));
+	LogString className = subst(getAttribute(policy_element, CLASS_ATTR));
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Desired ") + RollingPolicy::getStaticClass().getName()
@@ -791,7 +801,7 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 
 			if (tagName == PARAM_TAG)
 			{
-				setParameter(p, utf8Decoder, currentElement, propSetter);
+				setParameter(currentElement, propSetter);
 			}
 			else
 			{
@@ -817,10 +827,7 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 /**
  Used internally to parse a level  element.
 */
-void DOMConfigurator::parseLevel(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element, LoggerPtr logger, bool isRoot)
+void DOMConfiguratorPrivate::parseLevel(apr_xml_elem* element, LoggerPtr logger, bool isRoot)
 {
 	LogString loggerName = logger->getName();
 
@@ -829,7 +836,7 @@ void DOMConfigurator::parseLevel(
 		loggerName = LOG4CXX_STR("root");
 	}
 
-	LogString levelStr(subst(getAttribute(utf8Decoder, element, VALUE_ATTR)));
+	LogString levelStr(subst(getAttribute(element, VALUE_ATTR)));
 	if (LogLog::isDebugEnabled())
 	{
 		LogLog::debug(LOG4CXX_STR("Setting [") + loggerName + LOG4CXX_STR("] level to [") + levelStr + LOG4CXX_STR("]"));
@@ -849,7 +856,7 @@ void DOMConfigurator::parseLevel(
 	}
 	else
 	{
-		LogString className(subst(getAttribute(utf8Decoder, element, CLASS_ATTR)));
+		LogString className(subst(getAttribute(element, CLASS_ATTR)));
 
 		if (className.empty())
 		{
@@ -889,13 +896,10 @@ void DOMConfigurator::parseLevel(
 	}
 }
 
-void DOMConfigurator::setParameter(LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* elem,
-	PropertySetter& propSetter)
+void DOMConfiguratorPrivate::setParameter(apr_xml_elem* elem, PropertySetter& propSetter)
 {
-	LogString name(subst(getAttribute(utf8Decoder, elem, NAME_ATTR)));
-	LogString value(subst(getAttribute(utf8Decoder, elem, VALUE_ATTR)));
+	LogString name(subst(getAttribute(elem, NAME_ATTR)));
+	LogString value(subst(getAttribute(elem, VALUE_ATTR)));
 	value = subst(value);
 	propSetter.setProperty(name, value, p);
 }
@@ -909,18 +913,17 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 #endif
 	)
 {
-	m_priv->repository = repository ? repository : LogManager::getLoggerRepository();
-
+	DOMConfiguratorPrivate configurator
+		( repository ? repository : LogManager::getLoggerRepository()
 #if LOG4CXX_ABI_VERSION <= 15
-	m_priv->loggerFactory = std::make_shared<DefaultLoggerFactory>();
+		, std::make_shared<DefaultLoggerFactory>()
 #else
-	m_priv->loggerFactory = std::make_shared<LoggerFactory>();
+		, std::make_shared<LoggerFactory>()
 #endif
+		);
 
-	Pool p;
 	apr_file_t* fd;
-
-	log4cxx_status_t rv = filename.open(&fd, APR_READ, APR_OS_DEFAULT, p);
+	log4cxx_status_t rv = filename.open(&fd, APR_READ, APR_OS_DEFAULT, configurator.p);
 
 	if (rv != APR_SUCCESS)
 	{
@@ -931,16 +934,14 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 	}
 	else
 	{
-		apr_xml_parser* parser = NULL;
-		apr_xml_doc* doc = NULL;
-
 		if (LogLog::isDebugEnabled())
 		{
 			LogLog::debug(LOG4CXX_STR("Loading configuration file [")
 					+ filename.getPath() + LOG4CXX_STR("]"));
 		}
 
-		rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
+		apr_xml_parser* parser = NULL;
+		rv = apr_xml_parse_file(configurator.p.getAPRPool(), &parser, &configurator.doc, fd, 2000);
 
 		if (rv != APR_SUCCESS)
 		{
@@ -966,13 +967,11 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		}
 		else
 		{
-			AppenderMap appenders;
-			CharsetDecoderPtr utf8Decoder(CharsetDecoder::getUTF8Decoder());
-			parse(p, utf8Decoder, doc->root, doc, appenders);
+			configurator.parse(configurator.doc->root);
 		}
 	}
 
-	if (!m_priv->appenderAdded)
+	if (!configurator.appenderAdded)
 	{
 		LogLog::warn(LOG4CXX_STR("[") + filename.getPath()
 			+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()
@@ -980,7 +979,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		return spi::ConfigurationStatus::NotConfigured;
 	}
 
-	m_priv->repository->setConfigured(true);
+	configurator.repository->setConfigured(true);
 	return spi::ConfigurationStatus::Configured;
 }
 
@@ -1093,12 +1092,7 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& f
 #endif
 #endif // LOG4CXX_ABI_VERSION <= 15
 
-void DOMConfigurator::parse(
-	Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
+void DOMConfiguratorPrivate::parse(apr_xml_elem* element)
 {
 	std::string rootElementName(element->name);
 
@@ -1123,7 +1117,7 @@ void DOMConfigurator::parse(
 		}
 	}
 
-	LogString debugAttrib = subst(getAttribute(utf8Decoder, element, INTERNAL_DEBUG_ATTR));
+	LogString debugAttrib = subst(getAttribute(element, INTERNAL_DEBUG_ATTR));
 
 	// if the log4j.dtd is not specified in the XML file, then the
 	// "debug" attribute is returned as the empty string.
@@ -1132,26 +1126,26 @@ void DOMConfigurator::parse(
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(debugAttrib, true));
 	}
 
-	LogString colorAttrib = subst(getAttribute(utf8Decoder, element, INTERNAL_COLOR_ATTR));
+	LogString colorAttrib = subst(getAttribute(element, INTERNAL_COLOR_ATTR));
 	if (!colorAttrib.empty())
 	{
 		LogLog::setColorEnabled(OptionConverter::toBoolean(colorAttrib, true));
 	}
 
-	LogString thresholdStr = subst(getAttribute(utf8Decoder, element, THRESHOLD_ATTR));
+	LogString thresholdStr = subst(getAttribute(element, THRESHOLD_ATTR));
 
 	if (!thresholdStr.empty() && thresholdStr != LOG4CXX_STR("NULL"))
 	{
-		m_priv->repository->setThreshold(OptionConverter::toLevel(thresholdStr, Level::getAll()));
+		this->repository->setThreshold(OptionConverter::toLevel(thresholdStr, Level::getAll()));
 		if (LogLog::isDebugEnabled())
 		{
 			LogLog::debug(LOG4CXX_STR("Repository threshold =[")
-				+ m_priv->repository->getThreshold()->toString()
+				+ this->repository->getThreshold()->toString()
 				+ LOG4CXX_STR("]"));
 		}
 	}
 
-	LogString threadSignalValue = subst(getAttribute(utf8Decoder, element, THREAD_CONFIG_ATTR));
+	LogString threadSignalValue = subst(getAttribute(element, THREAD_CONFIG_ATTR));
 
 	if ( !threadSignalValue.empty() && threadSignalValue != LOG4CXX_STR("NULL") )
 	{
@@ -1191,7 +1185,7 @@ void DOMConfigurator::parse(
 
 		if (tagName == CATEGORY_FACTORY_TAG)
 		{
-			parseLoggerFactory(p, utf8Decoder, currentElement);
+			parseLoggerFactory(currentElement);
 		}
 	}
 
@@ -1203,20 +1197,20 @@ void DOMConfigurator::parse(
 
 		if (tagName == CATEGORY || tagName == LOGGER)
 		{
-			parseLogger(p, utf8Decoder, currentElement, doc, appenders);
+			parseLogger(currentElement);
 		}
 		else if (tagName == ROOT_TAG)
 		{
-			parseRoot(p, utf8Decoder, currentElement, doc, appenders);
+			parseRoot(currentElement);
 		}
 	}
 }
 
-LogString DOMConfigurator::subst(const LogString& value)
+LogString DOMConfiguratorPrivate::subst(const LogString& value)
 {
 	try
 	{
-		return OptionConverter::substVars(value, m_priv->props);
+		return OptionConverter::substVars(value, this->props);
 	}
 	catch (IllegalArgumentException& e)
 	{
@@ -1226,10 +1220,7 @@ LogString DOMConfigurator::subst(const LogString& value)
 }
 
 
-LogString DOMConfigurator::getAttribute(
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	const std::string& attrName)
+LogString DOMConfiguratorPrivate::getAttribute(apr_xml_elem* element, const std::string& attrName)
 {
 	LogString attrValue;
 
@@ -1245,3 +1236,103 @@ LogString DOMConfigurator::getAttribute(
 
 	return attrValue;
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+AppenderPtr DOMConfigurator::findAppenderByName(LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* element,
+	apr_xml_doc* doc,
+	const LogString& appenderName,
+	AppenderMap& appenders)
+{ return AppenderPtr{}; }
+AppenderPtr DOMConfigurator::findAppenderByReference(
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* appenderRef,
+	apr_xml_doc* doc,
+	AppenderMap& appenders)
+{ return AppenderPtr{}; }
+AppenderPtr DOMConfigurator::parseAppender(Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* appenderElement,
+	apr_xml_doc* doc,
+	AppenderMap& appenders)
+{ return AppenderPtr{}; }
+void DOMConfigurator::parseErrorHandler(Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* element,
+	AppenderPtr& appender,
+	apr_xml_doc* doc,
+	AppenderMap& appenders)
+{}
+void DOMConfigurator::parseFilters(Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* element,
+	std::vector<LOG4CXX_NS::spi::FilterPtr>& filters)
+{}
+void DOMConfigurator::parseLogger(
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* loggerElement,
+	apr_xml_doc* doc,
+	AppenderMap& appenders)
+{}
+void DOMConfigurator::parseLoggerFactory(
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* factoryElement)
+{}
+void DOMConfigurator::parseRoot(
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* rootElement,
+	apr_xml_doc* doc,
+	AppenderMap& appenders)
+{}
+void DOMConfigurator::parseChildrenOfLoggerElement(
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot,
+	apr_xml_doc* doc,
+	AppenderMap& appenders)
+{}
+LayoutPtr DOMConfigurator::parseLayout (
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* layout_element)
+{ return LayoutPtr{}; }
+ObjectPtr DOMConfigurator::parseTriggeringPolicy (
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* policy_element)
+{ return ObjectPtr{}; }
+RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* policy_element)
+{ return RollingPolicyPtr{}; }
+void DOMConfigurator::parseLevel(
+	LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* element, LoggerPtr logger, bool isRoot)
+{}
+void DOMConfigurator::setParameter(LOG4CXX_NS::helpers::Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* elem,
+	PropertySetter& propSetter)
+{}
+void DOMConfigurator::parse(
+	Pool& p,
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* element,
+	apr_xml_doc* doc,
+	AppenderMap& appenders)
+{}
+LogString DOMConfigurator::getAttribute(
+	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
+	apr_xml_elem* element,
+	const std::string& attrName)
+{ return LogString{}; }
+LogString DOMConfigurator::subst(const LogString& value)
+{ return LogString{}; }
+#endif
