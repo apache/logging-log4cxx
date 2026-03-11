@@ -463,7 +463,9 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseErrorHandler(apr_xml_elem* el
 			{
 				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
 				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
-				msg += LOG4CXX_STR("] errorHandler element");
+				msg += LOG4CXX_STR("] ");
+				utf8Decoder->decode(element->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR(" element");
 				LogLog::warn(msg);
 			}
 		}
@@ -504,7 +506,9 @@ FilterStore DOMConfigurator::DOMConfiguratorPrivate::parseFilters(apr_xml_elem* 
 			{
 				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
 				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
-				msg += LOG4CXX_STR("] filter element");
+				msg += LOG4CXX_STR("] ");
+				utf8Decoder->decode(element->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR(" element");
 				LogLog::warn(msg);
 			}
 		}
@@ -655,7 +659,9 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseChildrenOfLoggerElement(apr_x
 		{
 			LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
 			utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
-			msg += LOG4CXX_STR("] logger element");
+			msg += LOG4CXX_STR("] ");
+			utf8Decoder->decode(loggerElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+			msg += LOG4CXX_STR(" element");
 			LogLog::warn(msg);
 		}
 	}
@@ -711,7 +717,9 @@ LayoutPtr DOMConfigurator::DOMConfiguratorPrivate::parseLayout(apr_xml_elem* lay
 			{
 				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
 				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
-				msg += LOG4CXX_STR("] layout element");
+				msg += LOG4CXX_STR("] ");
+				utf8Decoder->decode(layout_element->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR(" element");
 				LogLog::warn(msg);
 			}
 		}
@@ -768,7 +776,9 @@ ObjectPtr DOMConfigurator::DOMConfiguratorPrivate::parseTriggeringPolicy(apr_xml
 			{
 				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
 				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
-				msg += LOG4CXX_STR("] triggeringPolicy element");
+				msg += LOG4CXX_STR("] ");
+				utf8Decoder->decode(policy_element->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR(" element");
 				LogLog::warn(msg);
 			}
 		}
@@ -814,7 +824,9 @@ RollingPolicyPtr DOMConfigurator::DOMConfiguratorPrivate::parseRollingPolicy(apr
 			{
 				LogString msg{ LOG4CXX_STR("Ignoring unknown [") };
 				utf8Decoder->decode(currentElement->name, MAX_ATTRIBUTE_NAME_LEN, msg);
-				msg += LOG4CXX_STR("] rollingPolicy element");
+				msg += LOG4CXX_STR("] ");
+				utf8Decoder->decode(policy_element->name, MAX_ATTRIBUTE_NAME_LEN, msg);
+				msg += LOG4CXX_STR(" element");
 				LogLog::warn(msg);
 			}
 		}
