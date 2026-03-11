@@ -380,6 +380,8 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		//   prevent assignment or copy statements
 		DOMConfigurator(const DOMConfigurator&);
 		DOMConfigurator& operator=(const DOMConfigurator&);
+
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(DOMConfiguratorPrivate, m_priv)
 };
 LOG4CXX_PTR_DEF(DOMConfigurator);
 }  // namespace xml
