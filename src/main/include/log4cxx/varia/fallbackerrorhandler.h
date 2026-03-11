@@ -19,10 +19,9 @@
 #define _LOG4CXX_VARIA_FALLBACK_ERROR_HANDLER_H
 
 #include <log4cxx/spi/errorhandler.h>
-#include <log4cxx/helpers/object.h>
-#include <log4cxx/appender.h>
+#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/logger.h>
-#include <vector>
+#endif
 
 namespace LOG4CXX_NS
 {
@@ -36,6 +35,9 @@ whatever reason.
 
 <p>The error message is printed on <code>System.err</code>, and
 logged in the new secondary appender.
+
+Here is a sample configuration file that installs this error handler:
+\include async-fall-back-example.xml
 */
 class LOG4CXX_EXPORT FallbackErrorHandler :
 	public virtual spi::ErrorHandler
@@ -54,11 +56,17 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		~FallbackErrorHandler();
 
 		/**
+		Add \c clx to the list of collections to search for the failed appender.
+		@param name used in log messages.
+		@param clx has a collection of appenders.
+		*/
+		void addAppenderHolder(const LogString& name, const spi::AppenderAttachablePtr& clx) LOG4CXX_16_VIRTUAL_SPECIFIER;
+
+		/**
 		<em>Adds</em> the logger passed as parameter to the list of
 		loggers that we need to search for in case of appender failure.
 		*/
 		void setLogger(const LoggerPtr& logger) override;
-
 
 		/**
 		\copybrief spi::OptionHandler::activateOptions()

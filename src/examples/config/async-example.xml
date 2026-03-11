@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="A1" class="RollingFileAppender">
-    <param name="File"   value="${TEMP}/SomeApplicationName.log" />
-    <param name="Append" value="true" />
+    <param name="File" value="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.log" />
     <layout class="PatternLayout">
       <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
     </layout>
   </appender>
   <appender name="SENDMAIL" class="SMTPAppender">
-    <param name="from"   value="service_name@example.org" />
+    <param name="from" value="${PROGRAM_FILE_PATH.STEM}@example.org" />
     <param name="to" value="some_support_group@example.org" />
-    <param name="subject" value="Service error detected" />
+    <param name="subject" value="Service error detected in ${PROGRAM_FILE_PATH.STEM}" />
     <param name="SMTPHost" value="smtp.example.com"/>
     <layout class="PatternLayout">
 		<param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>

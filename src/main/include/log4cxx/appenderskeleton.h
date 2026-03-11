@@ -189,6 +189,8 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		void setThreshold(const LevelPtr& threshold);
 
 }; // class AppenderSkeleton
+
+LOG4CXX_PTR_DEF(AppenderSkeleton);
 }  // namespace log4cxx
 
 #endif //_LOG4CXX_APPENDER_SKELETON_H
