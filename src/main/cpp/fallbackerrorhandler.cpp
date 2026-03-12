@@ -136,7 +136,8 @@ void FallbackErrorHandler::error
 		}
 	}
 	m_priv->errorReported = true;
-	backupLocked->doAppend(event, p);
+	if (event)
+		backupLocked->doAppend(event, p);
 }
 
 void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)
