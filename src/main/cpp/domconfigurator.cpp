@@ -27,7 +27,7 @@
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/config/propertysetter.h>
-#include <log4cxx/spi/errorhandler.h>
+#include <log4cxx/varia/fallbackerrorhandler.h>
 #include <log4cxx/spi/loggerfactory.h>
 #if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/defaultloggerfactory.h>
@@ -100,9 +100,13 @@ public: // ...structor
 public: // Methods
 	AppenderPtr findAppenderByName(apr_xml_elem* elem, const LogString& appenderName);
 
-	AppenderPtr findAppenderByReference(apr_xml_elem* appenderRef);
+	AppenderPtr findAppenderByReference(apr_xml_elem* appenderRef, const char* optionalAttributeName = nullptr);
 
 	AppenderPtr parseAppender(apr_xml_elem* appenderElement);
+
+	void parseFallbackAppender(apr_xml_elem* element, const LogString& holderName, const AppenderAttachablePtr& holder, const AppenderPtr& primary, const AppenderSkeletonPtr& aSkel);
+
+	void parseFallbackAppender(apr_xml_elem* element, const LoggerPtr& l, const AppenderSkeletonPtr& primary);
 
 	void parseErrorHandler(apr_xml_elem* element, const AppenderPtr& appender);
 
@@ -194,6 +198,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define FILTER_TAG "filter"
 #define ERROR_HANDLER_TAG "errorHandler"
 #define REF_ATTR "ref"
+#define FALLBACK_REF_ATTR "fallback-ref"
 #define ADDITIVITY_ATTR "additivity"
 #define ASYNCHRONOUS_ATTR "asynchronous"
 #define THRESHOLD_ATTR "threshold"
@@ -239,10 +244,12 @@ AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::findAppenderByName(apr_xml_
 /**
  Used internally to parse appenders by IDREF element.
 */
-AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::findAppenderByReference(apr_xml_elem* appenderRef)
+AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::findAppenderByReference(apr_xml_elem* appenderRef, const char* optionalAttributeName)
 {
 	AppenderPtr appender;
-	LogString appenderName(subst(getAttribute(appenderRef, REF_ATTR)));
+	LogString appenderName = subst(getAttribute(appenderRef, optionalAttributeName ? optionalAttributeName : REF_ATTR));
+	if (optionalAttributeName && appenderName.empty())
+		return appender;
 	if (appenderName.empty())
 	{
 		LogString msg(LOG4CXX_STR("["));
@@ -381,6 +388,8 @@ AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::parseAppender(apr_xml_elem*
 								+ LOG4CXX_STR(" named [") + appender->getName() + LOG4CXX_STR("]"));
 						}
 						aa->addAppender(delegateAppender);
+						if (auto appSkeleton = LOG4CXX_NS::cast<AppenderSkeleton>(appender))
+							parseFallbackAppender(currentElement, appender->getName(), aa, delegateAppender, appSkeleton);
 					}
 				}
 				else
@@ -411,6 +420,30 @@ AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::parseAppender(apr_xml_elem*
 	{
 		LogLog::error(LOG4CXX_STR("Could not create ") + Appender::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
+	}
+}
+
+void DOMConfigurator::DOMConfiguratorPrivate::parseFallbackAppender(apr_xml_elem* element, const LogString& holderName, const AppenderAttachablePtr& holder, const AppenderPtr& primary, const AppenderSkeletonPtr& aSkel)
+{
+	if (auto fallbackAppender = findAppenderByReference(element, FALLBACK_REF_ATTR))
+	{
+		auto fb = std::make_shared<varia::FallbackErrorHandler>();
+		fb->setAppender(primary);
+		fb->setBackupAppender(fallbackAppender);
+		fb->addAppenderHolder(holderName, holder);
+		aSkel->setErrorHandler(fb);
+	}
+}
+
+void DOMConfigurator::DOMConfiguratorPrivate::parseFallbackAppender(apr_xml_elem* element, const LoggerPtr& l, const AppenderSkeletonPtr& primary)
+{
+	if (auto fallbackAppender = findAppenderByReference(element, FALLBACK_REF_ATTR))
+	{
+		auto fb = std::make_shared<varia::FallbackErrorHandler>();
+		fb->setAppender(primary);
+		fb->setBackupAppender(fallbackAppender);
+		fb->setLogger(l);
+		primary->setErrorHandler(fb);
 	}
 }
 
@@ -640,7 +673,12 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseChildrenOfLoggerElement(apr_x
 				}
 				newappenders.push_back(appender);
 				if (async)
+				{
 					async->addAppender(appender);
+					parseFallbackAppender(currentElement, async->getName(), async, appender, async);
+				}
+				else if (auto appSkeleton = LOG4CXX_NS::cast<AppenderSkeleton>(appender))
+					parseFallbackAppender(currentElement, logger, appSkeleton);
 			}
 		}
 		else if (tagName == LEVEL_TAG)

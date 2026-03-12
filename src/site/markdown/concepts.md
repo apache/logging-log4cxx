@@ -462,6 +462,10 @@ Log4cxx provides appenders to write to:
 The [addAppender](@ref log4cxx.Logger.addAppender)
 method adds an appender to a given logger.
 More than one appender can be attached to a logger.
+A backup appender can be attached to an appender
+(by using [FallbackErrorHandler](@ref log4cxx.varia.FallbackErrorHandler))
+to ensure continuation of output in the event that
+the primary destination can no longer be used.
 
 If the same file receives log requests concurrently from multiple process,
 use [this appender](@ref log4cxx.rolling.MultiprocessRollingFileAppender)

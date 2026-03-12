@@ -20,7 +20,7 @@
 
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/appender.h>
+#include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/spi/loggingevent.h>
 
 namespace LOG4CXX_NS
@@ -65,6 +65,15 @@ class LOG4CXX_EXPORT ErrorHandler : public virtual OptionHandler
 		END_LOG4CXX_CAST_MAP()
 
 		virtual ~ErrorHandler() {}
+
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		Add \c clx to the list of collections to search for the failed appender.
+		@param name the collection name.
+		@param clx has a collection of appenders.
+		*/
+		virtual void addAppenderHolder(const LogString& name, const AppenderAttachablePtr& clx) {};
+#endif
 
 		/**
 		Add a reference to a logger to which the failing appender might
