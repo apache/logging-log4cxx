@@ -20,15 +20,25 @@ add_library(log4cxx)
 if(${log4cxx_ABI_VER} GREATER 15)
   set_target_properties(log4cxx PROPERTIES CXX_VISIBILITY_PRESET hidden)
 endif()
+set(PRIVATE_COMPILE_DEFINITIONS)
+set(PUBLIC_COMPILE_DEFINITIONS)
 if(BUILD_SHARED_LIBS)
-    target_compile_definitions(log4cxx PRIVATE LOG4CXX)
+    list(APPEND PRIVATE_COMPILE_DEFINITIONS LOG4CXX)
     if(UNIX AND NOT APPLE)
         # Make defined symbols non-preemptible, which can optimize relocation processing
         target_link_options(log4cxx PRIVATE "LINKER:-Bsymbolic")
     endif()
 else()
-    target_compile_definitions(log4cxx PUBLIC LOG4CXX_STATIC)
+    list(APPEND PUBLIC_COMPILE_DEFINITIONS LOG4CXX_STATIC)
 endif()
+if(LOG4CXX_TEST_ONLY_BUILD)
+    list(APPEND PRIVATE_COMPILE_DEFINITIONS "ENABLE_FAILING_APPENDER_SIMULATION_TESTING=1")
+endif()
+target_compile_definitions(log4cxx
+    PUBLIC ${PUBLIC_COMPILE_DEFINITIONS}
+    PRIVATE ${PRIVATE_COMPILE_DEFINITIONS}
+)
+
 add_dependencies(log4cxx log4cxx-include)
 
 set(extra_classes "")

@@ -226,6 +226,10 @@ void WriterAppender::setEncoding(const LogString& enc)
 
 void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
 {
+#if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
+	if (event->getRenderedMessage() == _priv->exceptionTriggeringMessage)
+		throw RuntimeException(LOG4CXX_STR("Simulated fault"));
+#endif
 	LogString msg;
 	_priv->layout->format(msg, event, p);
 

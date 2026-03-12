@@ -17,6 +17,7 @@
 
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/appenderskeleton.h>
+#include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <log4cxx/level.h>
@@ -206,6 +207,13 @@ void AppenderSkeleton::setOption(const LogString& option,
 	{
 		setName(value);
 	}
+#if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("FAILONMESSAGE"), LOG4CXX_STR("failonmessage")))
+	{
+		m_priv->exceptionTriggeringMessage = value;
+	}
+#endif
 }
 
 const spi::ErrorHandlerPtr AppenderSkeleton::getErrorHandler() const

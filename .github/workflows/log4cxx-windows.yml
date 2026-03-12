@@ -77,6 +77,7 @@ jobs:
         $ROOT=Get-Location
         Set-PSDebug -Trace 1
         cmake `
+           -DLOG4CXX_TEST_ONLY_BUILD=1 `
            -DLOG4CXX_CHAR=wchar_t `
            -DLOG4CXX_ENABLE_ODBC=on `
            "-DLOG4CXX_QT_SUPPORT=${{ matrix.qt }}" `

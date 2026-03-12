@@ -34,6 +34,7 @@
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/fileappender.h>
 #include <log4cxx/file.h>
 #include <ostream>
 #include <thread>
@@ -166,6 +167,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testXMLConfiguration);
 		LOGUNIT_TEST(testAsyncLoggerXML);
 		LOGUNIT_TEST(testRecursiveConfiguration);
+#endif
+#if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
+		LOGUNIT_TEST(testAsyncAppenderFallback);
 #endif
 		LOGUNIT_TEST(testAsyncLoggerProperties);
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
@@ -308,11 +312,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
 			Pool p;
-			for (size_t i = 0; i < LEN; i++)
+			int i{ 0 };
+			for (auto e : v)
 			{
 				LogString m(LOG4CXX_STR("message"));
 				StringHelper::toString(i, p, m);
-				LOGUNIT_ASSERT(v[i]->getRenderedMessage() == m);
+				LOGUNIT_ASSERT_EQUAL(m, e->getRenderedMessage());
+				++i;
 			}
 			LOGUNIT_ASSERT_EQUAL(true, vectorAppender->isClosed());
 		}
@@ -676,6 +682,44 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			auto& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
+		}
+#endif
+
+#if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
+		void testAsyncAppenderFallback()
+		{
+			// Configure Log4cxx
+			auto status = xml::DOMConfigurator::configure("input/xml/asyncWithFallback.xml");
+			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+
+			// Check configuration is as expected
+			auto  root = Logger::getRootLogger();
+			auto appenders = root->getAllAppenders();
+			LOGUNIT_ASSERT_EQUAL(1, int(appenders.size()));
+			auto asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(appenders.front());
+			LOGUNIT_ASSERT(asyncAppender);
+			auto asyncAppenders = asyncAppender->getAllAppenders();
+			LOGUNIT_ASSERT_EQUAL(1, int(asyncAppenders.size()));
+			auto primaryAppender = LOG4CXX_NS::cast<FileAppender>(asyncAppenders.front());
+			LOGUNIT_ASSERT(primaryAppender);
+			auto primaryFileName = primaryAppender->getFile();
+			LOGUNIT_ASSERT(11 < primaryFileName.size());
+			LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("Primary.log"), primaryFileName.substr(primaryFileName.size() - 11));
+
+			// Log some messages
+			size_t LEN = 2000;
+			for (size_t i = 0; i < LEN; i++)
+			{
+				LOG4CXX_INFO_ASYNC(root, "message " << i);
+			}
+			std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+			asyncAppenders = asyncAppender->getAllAppenders();
+			LOGUNIT_ASSERT_EQUAL(1, int(asyncAppenders.size()));
+			auto backupAppender = LOG4CXX_NS::cast<FileAppender>(asyncAppenders.front());
+			LOGUNIT_ASSERT(backupAppender);
+			auto backupFileName = backupAppender->getFile();
+			LOGUNIT_ASSERT(10 < backupFileName.size());
+			LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("Backup.log"), backupFileName.substr(backupFileName.size() - 10));
 		}
 #endif
 

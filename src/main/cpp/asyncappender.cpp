@@ -195,6 +195,42 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 */
 	std::thread dispatcher;
 
+	/**
+	 * Used to determine when to restart dispatch thread.
+	*/
+	bool dispatcherActive{ false };
+
+	/**
+	 * Used to determine whether to restart dispatch thread.
+	*/
+	int dispatcherStartCount{ 0 };
+
+	/**
+	 *  The function the dispatcher executes.
+	 */
+	void dispatch(const LogString& appenderName);
+
+	/**
+	 * Start dispatcher if not already running.
+	 */
+	void checkDispatcher(const LogString& appenderName)
+	{
+		// Restart dispatcher if it has stopped by an exception in an attached appender.
+		if (!this->dispatcherActive && this->dispatcher.joinable())
+			this->dispatcher.join();
+
+		if (!this->dispatcher.joinable() && dispatcherStartCount <= 1)
+		{
+			std::lock_guard<std::recursive_mutex> lock(this->mutex);
+			if (!this->dispatcher.joinable())
+			{
+				++this->dispatcherStartCount;
+				this->dispatcherActive = true;
+				this->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::AsyncAppenderPriv::dispatch, this, appenderName );
+			}
+		}
+	}
+
 	void stopDispatcher()
 	{
 		bufferNotEmpty.notify_all();
@@ -315,12 +351,8 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	// Get a copy of this thread's diagnostic context
 	event->LoadDC();
 
-	if (!priv->dispatcher.joinable())
-	{
-		std::lock_guard<std::recursive_mutex> lock(priv->mutex);
-		if (!priv->dispatcher.joinable())
-			priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
-	}
+	priv->checkDispatcher(getName());
+
 	if (priv->dispatcher.get_id() == std::this_thread::get_id()) // From an appender attached to this?
 	{
 		std::unique_lock<std::mutex> lock(priv->bufferMutex);
@@ -373,6 +405,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			++priv->blockedCount;
 			priv->bufferNotFull.wait(lock, [this]()
 			{
+				priv->checkDispatcher(getName());
 				return priv->eventCount - priv->dispatchedCount < priv->bufferSize;
 			});
 			--priv->blockedCount;
@@ -574,95 +607,95 @@ DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 }
 #endif
 
-
-void AsyncAppender::dispatch()
+void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 {
 	size_t discardCount = 0;
 	size_t iterationCount = 0;
 	size_t waitCount = 0;
-	size_t blockedCount = 0;
-	std::vector<size_t> pendingCountHistogram(priv->bufferSize, 0);
+	size_t producerBlockedCount = 0;
+	int failureCount = 0;
+	std::vector<size_t> pendingCountHistogram(this->bufferSize, 0);
 	bool isActive = true;
 
 	while (isActive)
 	{
 		Pool p;
 		LoggingEventList events;
-		events.reserve(priv->bufferSize);
-		for (int count = 0; count < 2 && priv->dispatchedCount == priv->commitCount; ++count)
+		events.reserve(this->bufferSize);
+		for (int count = 0; count < 2 && this->dispatchedCount == this->commitCount; ++count)
 			std::this_thread::yield(); // Wait a bit
-		if (priv->dispatchedCount == priv->commitCount)
+		if (this->dispatchedCount == this->commitCount)
 		{
 			++waitCount;
-			std::unique_lock<std::mutex> lock(priv->bufferMutex);
-			priv->bufferNotEmpty.wait(lock, [this]() -> bool
-				{ return 0 < priv->blockedCount || priv->dispatchedCount != priv->commitCount || priv->closed; }
+			std::unique_lock<std::mutex> lock(this->bufferMutex);
+			this->bufferNotEmpty.wait(lock, [this]() -> bool
+				{ return 0 < this->blockedCount || this->dispatchedCount != this->commitCount || this->closed; }
 			);
 		}
-		isActive = !priv->isClosed();
+		isActive = !this->isClosed();
 
-		while (events.size() < priv->bufferSize && priv->dispatchedCount != priv->commitCount)
+		while (events.size() < this->bufferSize && this->dispatchedCount != this->commitCount)
 		{
-			auto index = priv->dispatchedCount % priv->buffer.size();
-			const auto& data = priv->buffer[index];
+			auto index = this->dispatchedCount % this->buffer.size();
+			const auto& data = this->buffer[index];
 			events.push_back(data.event);
 			if (data.pendingCount < pendingCountHistogram.size())
 				++pendingCountHistogram[data.pendingCount];
-			++priv->dispatchedCount;
+			++this->dispatchedCount;
 		}
-		priv->bufferNotFull.notify_all();
+		this->bufferNotFull.notify_all();
 		{
-			std::lock_guard<std::mutex> lock(priv->bufferMutex);
-			blockedCount += priv->blockedCount;
-			for (auto& discardItem : priv->discardMap)
+			std::lock_guard<std::mutex> lock(this->bufferMutex);
+			producerBlockedCount += this->blockedCount;
+			for (auto& discardItem : this->discardMap)
 			{
 				events.push_back(discardItem.second.createEvent(p));
 				discardCount += discardItem.second.getCount();
 			}
-			priv->discardMap.clear();
+			this->discardMap.clear();
 		}
 
 		for (auto item : events)
 		{
 			try
 			{
-				priv->appenders.appendLoopOnAppenders(item, p);
+				this->appenders.appendLoopOnAppenders(item, p);
 			}
 			catch (std::exception& ex)
 			{
-				if (!priv->isClosed())
-				{
-					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, item);
-					isActive = false;
-				}
+				if (1 < ++failureCount)
+					break;
+				if (!this->isClosed())
+					this->errorHandler->error(LOG4CXX_STR("[") + appenderName + LOG4CXX_STR("] AsyncAppender"), ex, spi::ErrorCode::WRITE_FAILURE, item);
 			}
 			catch (...)
 			{
-				if (!priv->isClosed())
-				{
-					priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
-					isActive = false;
-				}
+				if (1 < ++failureCount)
+					break;
+				if (!this->isClosed())
+					this->errorHandler->error(LOG4CXX_STR("[") + appenderName + LOG4CXX_STR("] AsyncAppender unknown exception thrown"));
 			}
 		}
 		++iterationCount;
+		if (1 < failureCount)
+			break;
 	}
 	if (LogLog::isDebugEnabled())
 	{
 		Pool p;
-		LogString msg(LOG4CXX_STR("[") + getName() + LOG4CXX_STR("] AsyncAppender"));
+		LogString msg(LOG4CXX_STR("[") + appenderName + LOG4CXX_STR("] AsyncAppender"));
 #ifdef _DEBUG
 		msg += LOG4CXX_STR(" iterationCount ");
 		StringHelper::toString(iterationCount, p, msg);
 		msg += LOG4CXX_STR(" waitCount ");
 		StringHelper::toString(waitCount, p, msg);
-		msg += LOG4CXX_STR(" blockedCount ");
-		StringHelper::toString(blockedCount, p, msg);
+		msg += LOG4CXX_STR(" producerBlockedCount ");
+		StringHelper::toString(producerBlockedCount, p, msg);
 		msg += LOG4CXX_STR(" commitCount ");
-		StringHelper::toString(priv->commitCount, p, msg);
+		StringHelper::toString(this->commitCount, p, msg);
 #endif
 		msg += LOG4CXX_STR(" dispatchedCount ");
-		StringHelper::toString(priv->dispatchedCount, p, msg);
+		StringHelper::toString(this->dispatchedCount, p, msg);
 		msg += LOG4CXX_STR(" discardCount ");
 		StringHelper::toString(discardCount, p, msg);
 		msg += LOG4CXX_STR(" pendingCountHistogram");
@@ -673,5 +706,7 @@ void AsyncAppender::dispatch()
 		}
 		LogLog::debug(msg);
 	}
-
+	this->dispatcherActive = false;
+	if (0 < this->blockedCount) // Restart this dispatcher?
+		this->bufferNotFull.notify_all();
 }

@@ -67,19 +67,36 @@ void FallbackErrorHandler::setLogger(const LoggerPtr& logger)
 	m_priv->appenderHolders.emplace(logger->getName(), logger);
 }
 
-void FallbackErrorHandler::error(const LogString& message,
-	const std::exception& e,
-	int errorCode) const
+void FallbackErrorHandler::error(const LogString& message) const
 {
-	error(message, e, errorCode, 0);
+	LogLog::warn(message);
+	m_priv->errorReported = true;
 }
 
-void FallbackErrorHandler::error(const LogString& message,
-	const std::exception& e,
-	int, const spi::LoggingEventPtr&) const
+void FallbackErrorHandler::error
+	( const LogString& message
+	, const std::exception& ex
+	, int errorCode
+	) const
 {
+	error(message, ex, errorCode, 0);
+}
+
+void FallbackErrorHandler::error
+	( const LogString& message
+	, const std::exception& ex
+	, int errorCode
+	, const spi::LoggingEventPtr& event
+	) const
+{
+	Pool p;
 	if (LogLog::isDebugEnabled())
-		LogLog::debug(LOG4CXX_STR("FB: The following error reported: ") + message, e);
+	{
+		LogString msg{ LOG4CXX_STR("FB: error code ") };
+		StringHelper::toString(errorCode, p, msg);
+		LogLog::debug(msg);
+	}
+	LogLog::warn(message, ex);
 
 	AppenderPtr primaryLocked = m_priv->primary.lock();
 	AppenderPtr backupLocked = m_priv->backup.lock();
@@ -119,6 +136,7 @@ void FallbackErrorHandler::error(const LogString& message,
 		}
 	}
 	m_priv->errorReported = true;
+	backupLocked->doAppend(event, p);
 }
 
 void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)

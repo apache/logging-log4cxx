@@ -69,6 +69,7 @@ jobs:
         cd build
         cmake \
           -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
+          -DLOG4CXX_TEST_ONLY_BUILD=1 \
           -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
           -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=${{ matrix.multiprocess }} \
           -DLOG4CXX_CFSTRING=ON \
