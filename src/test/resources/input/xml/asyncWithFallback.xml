@@ -2,13 +2,15 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="Primary" class="FileAppender">
     <param name="File" value="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}-Primary.log" />
-	<param name="FailOnMessage" value="message 1000"/>
+    <param name="Append" value="false"/>
+    <param name="FailOnMessage" value="message 1000"/>
     <layout class="PatternLayout">
       <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
     </layout>
   </appender>
   <appender name="Backup" class="FileAppender">
     <param name="File" value="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}-Backup.log" />
+    <param name="Append" value="false"/>
     <layout class="PatternLayout">
       <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
     </layout>

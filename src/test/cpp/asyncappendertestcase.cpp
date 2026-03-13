@@ -720,6 +720,37 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			auto backupFileName = backupAppender->getFile();
 			LOGUNIT_ASSERT(10 < backupFileName.size());
 			LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("Backup.log"), backupFileName.substr(backupFileName.size() - 10));
+
+			// Check all messages were written
+			std::vector<int> messageCount;
+			for (auto const& filePath : {primaryFileName, backupFileName})
+			{
+				std::ifstream input(filePath);
+				for (std::string line; std::getline(input, line);)
+				{
+					 auto pos = line.rfind(' ');
+					 if (line.npos != pos && pos + 1 < line.size())
+					 {
+						try
+						{
+							auto msgNumber = std::stoull(line.substr(pos));
+							if (messageCount.size() <= msgNumber)
+								messageCount.resize(msgNumber + 1);
+							++messageCount[msgNumber];
+						}
+						catch (std::exception const& ex)
+						{
+							LogString msg;
+							helpers::Transcoder::decode(ex.what(), msg);
+							msg += LOG4CXX_STR(" processing\n");
+							helpers::Transcoder::decode(line, msg);
+							helpers::LogLog::warn(msg);
+						}
+					 }
+				}
+			}
+			for (auto& count : messageCount)
+				LOGUNIT_ASSERT_EQUAL(1, count);
 		}
 #endif
 
