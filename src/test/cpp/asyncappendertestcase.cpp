@@ -38,6 +38,7 @@
 #include <log4cxx/file.h>
 #include <ostream>
 #include <thread>
+#include <fstream>
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 #include <fmt/core.h>
@@ -663,8 +664,11 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				if (auto async2 = LOG4CXX_NS::cast<AsyncAppender>(attachedAppender))
 				{
 					for (auto appender : async2->getAllAppenders())
-						if (vectorAppender = LOG4CXX_NS::cast<VectorAppender>(appender))
+					{
+						vectorAppender = LOG4CXX_NS::cast<VectorAppender>(appender);
+						if (vectorAppender)
 							break;
+					}
 				}
 			}
 			LOGUNIT_ASSERT(vectorAppender);
