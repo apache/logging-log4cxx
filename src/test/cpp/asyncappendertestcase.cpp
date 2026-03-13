@@ -723,8 +723,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 			// Check all messages were written
 			std::vector<int> messageCount;
-			for (auto const& filePath : {primaryFileName, backupFileName})
+			for (auto const& filePathLS : {primaryFileName, backupFileName})
 			{
+				LOG4CXX_ENCODE_CHAR(filePath, filePathLS);
 				std::ifstream input(filePath);
 				for (std::string line; std::getline(input, line);)
 				{
