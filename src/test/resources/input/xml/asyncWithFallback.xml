@@ -1,30 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-  <appender name="Primary" class="RollingFileAppender">
-    <rollingPolicy class="TimeBasedRollingPolicy">
-      <param name="FileNamePattern" value="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log"/>
-    </rollingPolicy>
-    <triggeringPolicy class="SizeBasedTriggeringPolicy">
-      <param name="MaxFileSize" value="5MB"/>
-    </triggeringPolicy>
+  <appender name="Primary" class="FileAppender">
     <param name="File" value="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}-Primary.log" />
-	<param name="BufferedIO" value="true"/>
-	<param name="BufferedSeconds" value="1"/>
 	<param name="FailOnMessage" value="message 1000"/>
     <layout class="PatternLayout">
       <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
     </layout>
   </appender>
-  <appender name="Backup" class="RollingFileAppender">
-    <rollingPolicy class="TimeBasedRollingPolicy">
-      <param name="FileNamePattern" value="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log"/>
-    </rollingPolicy>
-    <triggeringPolicy class="SizeBasedTriggeringPolicy">
-      <param name="MaxFileSize" value="5MB"/>
-    </triggeringPolicy>
+  <appender name="Backup" class="FileAppender">
     <param name="File" value="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}-Backup.log" />
-	<param name="BufferedIO" value="true"/>
-	<param name="BufferedSeconds" value="1"/>
     <layout class="PatternLayout">
       <param name="ConversionPattern" value="%d %-5p %c{2} - %m%n"/>
     </layout>
