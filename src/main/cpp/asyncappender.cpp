@@ -219,14 +219,19 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		if (!this->dispatcherActive && this->dispatcher.joinable())
 			this->dispatcher.join();
 
-		if (!this->dispatcher.joinable() && dispatcherStartCount <= 1)
+		if (!this->dispatcher.joinable() && this->dispatcherStartCount <= 1)
 		{
 			std::lock_guard<std::recursive_mutex> lock(this->mutex);
 			if (!this->dispatcher.joinable())
 			{
 				++this->dispatcherStartCount;
 				this->dispatcherActive = true;
-				this->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::AsyncAppenderPriv::dispatch, this, appenderName );
+				this->dispatcher = ThreadUtility::instance()->createThread
+					( LOG4CXX_STR("AsyncAppender")
+					, &AsyncAppender::AsyncAppenderPriv::dispatch
+					, this
+					, appenderName
+					);
 			}
 		}
 	}

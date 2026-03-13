@@ -17,7 +17,6 @@
 
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/appenderskeleton.h>
-#include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <log4cxx/level.h>
