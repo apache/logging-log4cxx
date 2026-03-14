@@ -34,7 +34,7 @@ IMPLEMENT_LOG4CXX_OBJECT(FallbackErrorHandler)
 
 struct FallbackErrorHandler::FallbackErrorHandlerPrivate
 {
-	AppenderWeakPtr backup;
+	AppenderPtr backup;
 	AppenderWeakPtr primary;
 	std::map<LogString, spi::AppenderAttachableWeakPtr> appenderHolders;
 	bool errorReported = false;
@@ -99,9 +99,7 @@ void FallbackErrorHandler::error
 	LogLog::warn(message, ex);
 
 	AppenderPtr primaryLocked = m_priv->primary.lock();
-	AppenderPtr backupLocked = m_priv->backup.lock();
-
-	if ( !primaryLocked || !backupLocked )
+	if ( !primaryLocked || !m_priv->backup )
 	{
 		return;
 	}
@@ -115,29 +113,30 @@ void FallbackErrorHandler::error
 		{
 			LogLog::debug(LOG4CXX_STR("FB: Replacing [")
 				+ primaryLocked->getName() + LOG4CXX_STR("] with [")
-				+ backupLocked->getName() + LOG4CXX_STR("] in [")
+				+ m_priv->backup->getName() + LOG4CXX_STR("] in [")
 				+ item.first + LOG4CXX_STR("]."));
 		}
 #if LOG4CXX_ABI_VERSION <= 15
 		bool ok{ false };
 		if (auto logger = LOG4CXX_NS::cast<Logger>(holderLocked))
-			ok = logger->replaceAppender(primaryLocked, backupLocked);
+			ok = logger->replaceAppender(primaryLocked, m_priv->backup);
 		else if (auto asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(holderLocked))
-			ok = asyncAppender->replaceAppender(primaryLocked, backupLocked);
+			ok = asyncAppender->replaceAppender(primaryLocked, m_priv->backup);
 		if (!ok)
 #else
-		if (!holderLocked->replaceAppender(primaryLocked, backupLocked))
+		if (!holderLocked->replaceAppender(primaryLocked, m_priv->backup))
 #endif
 		{
 			LogLog::debug(LOG4CXX_STR("FB: Failed to replace [")
 				+ primaryLocked->getName() + LOG4CXX_STR("] with [")
-				+ backupLocked->getName() + LOG4CXX_STR("] in [")
+				+ m_priv->backup->getName() + LOG4CXX_STR("] in [")
 				+ item.first + LOG4CXX_STR("]."));
 		}
 	}
 	m_priv->errorReported = true;
 	if (event)
-		backupLocked->doAppend(event, p);
+		m_priv->backup->doAppend(event, p);
+    m_priv->backup.reset();
 }
 
 void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)
@@ -158,15 +157,6 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 			+ backup1->getName() + LOG4CXX_STR("]."));
 	}
 	m_priv->backup = backup1;
-
-	// Make sure that we keep a reference to the appender around, since otherwise
-	// the appender would be lost if it has no loggers that use it.
-	auto repository = LogManager::getLoggerRepository();
-	if (auto hierarchy = dynamic_cast<Hierarchy*>(repository.get()))
-	{
-		hierarchy->addAppender(backup1);
-	}
-
 }
 
 void FallbackErrorHandler::activateOptions(Pool&)

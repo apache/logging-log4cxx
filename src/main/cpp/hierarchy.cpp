@@ -61,8 +61,9 @@ struct Hierarchy::HierarchyPrivate
 	LoggerMap loggers;
 	ProvisionNodeMap provisionNodes;
 
+#if LOG4CXX_ABI_VERSION <= 15
 	std::vector<AppenderPtr> allAppenders;
-
+#endif
 	mutable std::mutex listenerMutex;
 
 	const char* alreadyTriedMethod{ NULL };
@@ -463,6 +464,7 @@ HierarchyPtr Hierarchy::create()
 	return ret;
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void Hierarchy::clearAppenders()
 {
 	m_priv->allAppenders.clear();
@@ -472,6 +474,7 @@ void Hierarchy::addAppender(AppenderPtr appender)
 {
 	m_priv->allAppenders.push_back(appender);
 }
+#endif
 
 bool Hierarchy::removeLogger(const LogString& name, bool ifNotUsed)
 {
