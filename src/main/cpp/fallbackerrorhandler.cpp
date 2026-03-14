@@ -24,6 +24,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/asyncappender.h>
 #endif
+#include <list>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
