@@ -99,7 +99,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		Print a the error message passed as parameter on
 		<code>System.err</code>.
 		*/
-		void error(const LogString& /* message */) const override {}
+		void error(const LogString& message) const override;
 
 		/**
 		The appender to which this error handler is attached.

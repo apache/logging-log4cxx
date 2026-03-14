@@ -251,11 +251,6 @@ class LOG4CXX_EXPORT AsyncAppender :
 		AsyncAppender(const AsyncAppender&);
 		AsyncAppender& operator=(const AsyncAppender&);
 
-		/**
-		 *  Dispatch routine.
-		 */
-		void dispatch();
-
 }; // class AsyncAppender
 LOG4CXX_PTR_DEF(AsyncAppender);
 }  //  namespace log4cxx

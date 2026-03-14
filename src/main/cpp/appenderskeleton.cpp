@@ -206,6 +206,13 @@ void AppenderSkeleton::setOption(const LogString& option,
 	{
 		setName(value);
 	}
+#if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
+	else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("FAILONMESSAGE"), LOG4CXX_STR("failonmessage")))
+	{
+		m_priv->exceptionTriggeringMessage = value;
+	}
+#endif
 }
 
 const spi::ErrorHandlerPtr AppenderSkeleton::getErrorHandler() const

@@ -81,6 +81,10 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	@returns true if the appender was not already closed
 	*/
 	bool setClosed();
+
+#if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
+	LogString exceptionTriggeringMessage;
+#endif
 };
 
 }
