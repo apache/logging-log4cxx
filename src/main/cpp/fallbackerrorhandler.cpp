@@ -34,7 +34,7 @@ IMPLEMENT_LOG4CXX_OBJECT(FallbackErrorHandler)
 
 struct FallbackErrorHandler::FallbackErrorHandlerPrivate
 {
-	AppenderPtr backup;
+	std::list<AppenderPtr> backup;
 	AppenderWeakPtr primary;
 	std::map<LogString, spi::AppenderAttachableWeakPtr> appenderHolders;
 	bool errorReported = false;
@@ -99,7 +99,14 @@ void FallbackErrorHandler::error
 	LogLog::warn(message, ex);
 
 	AppenderPtr primaryLocked = m_priv->primary.lock();
-	if ( !primaryLocked || !m_priv->backup )
+	AppenderPtr backupLocked;
+	if (!m_priv->backup.empty())
+	{
+		backupLocked = m_priv->backup.front();
+		m_priv->backup.pop_front();
+	}
+
+	if ( !primaryLocked || !backupLocked )
 	{
 		return;
 	}
@@ -113,30 +120,30 @@ void FallbackErrorHandler::error
 		{
 			LogLog::debug(LOG4CXX_STR("FB: Replacing [")
 				+ primaryLocked->getName() + LOG4CXX_STR("] with [")
-				+ m_priv->backup->getName() + LOG4CXX_STR("] in [")
+				+ backupLocked->getName() + LOG4CXX_STR("] in [")
 				+ item.first + LOG4CXX_STR("]."));
 		}
 #if LOG4CXX_ABI_VERSION <= 15
 		bool ok{ false };
 		if (auto logger = LOG4CXX_NS::cast<Logger>(holderLocked))
-			ok = logger->replaceAppender(primaryLocked, m_priv->backup);
+			ok = logger->replaceAppender(primaryLocked, backupLocked);
 		else if (auto asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(holderLocked))
-			ok = asyncAppender->replaceAppender(primaryLocked, m_priv->backup);
+			ok = asyncAppender->replaceAppender(primaryLocked, backupLocked);
 		if (!ok)
 #else
-		if (!holderLocked->replaceAppender(primaryLocked, m_priv->backup))
+		if (!holderLocked->replaceAppender(primaryLocked, backupLocked))
 #endif
 		{
 			LogLog::debug(LOG4CXX_STR("FB: Failed to replace [")
 				+ primaryLocked->getName() + LOG4CXX_STR("] with [")
-				+ m_priv->backup->getName() + LOG4CXX_STR("] in [")
+				+ backupLocked->getName() + LOG4CXX_STR("] in [")
 				+ item.first + LOG4CXX_STR("]."));
 		}
 	}
 	m_priv->errorReported = true;
 	if (event)
-		m_priv->backup->doAppend(event, p);
-    m_priv->backup.reset();
+		backupLocked->doAppend(event, p);
+	m_priv->primary = backupLocked;
 }
 
 void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)
@@ -156,7 +163,7 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 		LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting backup appender to ["))
 			+ backup1->getName() + LOG4CXX_STR("]."));
 	}
-	m_priv->backup = backup1;
+	m_priv->backup.push_back(backup1);
 }
 
 void FallbackErrorHandler::activateOptions(Pool&)
