@@ -231,10 +231,19 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		*/
 		void updateChildren(const Logger* parent);
 
+#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		 * @deprecated This function is deprecated and will be removed in a future version.
+		*/
+		[[ deprecated( "Storing appenders is longer supported" ) ]]
 		void clearAppenders();
 
+		/**
+		 * @deprecated This function is deprecated and will be removed in a future version.
+		*/
+		[[ deprecated( "Storing appenders is longer supported" ) ]]
 		void addAppender(AppenderPtr appender);
-
+#endif
 		/**
 		Remove the \c name Logger from the hierarchy.
 

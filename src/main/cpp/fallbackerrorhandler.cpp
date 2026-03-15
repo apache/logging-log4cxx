@@ -24,6 +24,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/asyncappender.h>
 #endif
+#include <list>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -34,7 +35,7 @@ IMPLEMENT_LOG4CXX_OBJECT(FallbackErrorHandler)
 
 struct FallbackErrorHandler::FallbackErrorHandlerPrivate
 {
-	AppenderWeakPtr backup;
+	std::list<AppenderPtr> backup;
 	AppenderWeakPtr primary;
 	std::map<LogString, spi::AppenderAttachableWeakPtr> appenderHolders;
 	bool errorReported = false;
@@ -99,7 +100,12 @@ void FallbackErrorHandler::error
 	LogLog::warn(message, ex);
 
 	AppenderPtr primaryLocked = m_priv->primary.lock();
-	AppenderPtr backupLocked = m_priv->backup.lock();
+	AppenderPtr backupLocked;
+	if (!m_priv->backup.empty())
+	{
+		backupLocked = m_priv->backup.front();
+		m_priv->backup.pop_front();
+	}
 
 	if ( !primaryLocked || !backupLocked )
 	{
@@ -138,6 +144,7 @@ void FallbackErrorHandler::error
 	m_priv->errorReported = true;
 	if (event)
 		backupLocked->doAppend(event, p);
+	m_priv->primary = backupLocked;
 }
 
 void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)
@@ -157,16 +164,7 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 		LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting backup appender to ["))
 			+ backup1->getName() + LOG4CXX_STR("]."));
 	}
-	m_priv->backup = backup1;
-
-	// Make sure that we keep a reference to the appender around, since otherwise
-	// the appender would be lost if it has no loggers that use it.
-	auto repository = LogManager::getLoggerRepository();
-	if (auto hierarchy = dynamic_cast<Hierarchy*>(repository.get()))
-	{
-		hierarchy->addAppender(backup1);
-	}
-
+	m_priv->backup.push_back(backup1);
 }
 
 void FallbackErrorHandler::activateOptions(Pool&)
