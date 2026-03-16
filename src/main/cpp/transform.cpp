@@ -27,27 +27,36 @@ using namespace LOG4CXX_NS::helpers;
 void Transform::appendEscapingTags(
 	LogString& buf, const LogString& input)
 {
-	//Check if the string is zero length -- if so, return
-	//what was sent in.
-
-	if (input.length() == 0 )
-	{
-		return;
-	}
-
 	logchar specials[] = { 0x22 /* " */, 0x26 /* & */, 0x3C /* < */, 0x3E /* > */, 0x00 };
 	size_t start = 0;
-	size_t special = input.find_first_of(specials, start);
-
-	while (special != LogString::npos)
+	for (size_t index = 0; index < input.size(); ++index)
 	{
-		if (special > start)
+		int ch = input[index];
+		bool cdataEnd = false;
+		// Allowable XML 1.0 characters are:
+		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+		if (0x20 <= ch && ch <= 0xD7FF)
 		{
-			buf.append(input, start, special - start);
+			auto pSpecial = &specials[0];
+			while (*pSpecial && *pSpecial != ch)
+				++pSpecial;
+			if (!*pSpecial)
+				continue;
+		}
+		else if (0x9 == ch || 0xA == ch || 0xD == ch ||
+				(0xE000 <= ch && ch <= 0xFFFD) ||
+				(0x10000 <= ch && ch <= 0x10FFFF))
+		{
+			continue;
 		}
 
-		switch (input[special])
+		if (start < index)
+			buf.append(input, start, index - start);
+		start = index + 1;
+		switch (ch)
 		{
+			case 0: // Do not output a NUL character
+				break;
 			case 0x22:
 				buf.append(LOG4CXX_STR("&quot;"));
 				break;
@@ -65,19 +74,8 @@ void Transform::appendEscapingTags(
 				break;
 
 			default:
-				buf.append(1, input[special]);
+				appendCharacterReference(buf, ch);
 				break;
-		}
-
-		start = special + 1;
-
-		if (special < input.size())
-		{
-			special = input.find_first_of(specials, start);
-		}
-		else
-		{
-			special = LogString::npos;
 		}
 	}
 
@@ -90,43 +88,76 @@ void Transform::appendEscapingTags(
 void Transform::appendEscapingCDATA(
 	LogString& buf, const LogString& input)
 {
-	static const WideLife<LogString> CDATA_END(LOG4CXX_STR("]]>"));
-	static const WideLife<LogString> CDATA_EMBEDED_END(LOG4CXX_STR("]]>]]&gt;<![CDATA["));
-
+	static const LogString CDATA_END(LOG4CXX_STR("]]>"));
 	const LogString::size_type CDATA_END_LEN = 3;
-
-
-	if (input.length() == 0 )
+	static const LogString CDATA_EMBEDED_END(LOG4CXX_STR("]]&gt;<![CDATA["));
+	size_t start = 0;
+	for (size_t index = 0; index < input.size(); ++index)
 	{
-		return;
-	}
-
-	LogString::size_type end = input.find(CDATA_END);
-
-	if (end == LogString::npos)
-	{
-		buf.append(input);
-		return;
-	}
-
-	LogString::size_type start = 0;
-
-	while (end != LogString::npos)
-	{
-		buf.append(input, start, end - start);
-		buf.append(CDATA_EMBEDED_END);
-		start = end + CDATA_END_LEN;
-
-		if (start < input.length())
+		int ch = input[index];
+		bool cdataEnd = false;
+		// Allowable XML 1.0 characters are:
+		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+		if (0x20 <= ch && ch <= 0xD7FF)
 		{
-			end = input.find(CDATA_END, start);
+			if (CDATA_END[0] == ch &&
+				index + CDATA_END_LEN <= input.size() &&
+				0 == input.compare(index, CDATA_END_LEN, CDATA_END))
+			{
+				index += CDATA_END_LEN;
+				cdataEnd = true;
+			}
+			else
+			{
+				continue;
+			}
 		}
-		else
+		else if (0x9 == ch || 0xA == ch || 0xD == ch ||
+				(0xE000 <= ch && ch <= 0xFFFD) ||
+				(0x10000 <= ch && ch <= 0x10FFFF))
 		{
-			return;
+			continue;
 		}
+
+		if (start < index)
+			buf.append(input, start, index - start);
+		if (cdataEnd)
+		{
+			buf.append(CDATA_EMBEDED_END);
+			--index;
+		}
+		else if (0 != ch)
+			appendCharacterReference(buf, ch);
+		start = index + 1;
 	}
 
-	buf.append(input, start, input.length() - start);
+	if (start < input.size())
+		buf.append(input, start, input.size() - start);
 }
 
+void Transform::appendCharacterReference(LogString& buf, int ch)
+{
+	auto toHexDigit = [](int ch) -> int
+	{
+		return (10 <= ch ? (0x61 - 10) : 0x30) + ch;
+	};
+	buf.push_back('&');
+	buf.push_back('#');
+	buf.push_back('x');
+	if (0xFFFFFFF < ch)
+		buf.push_back(toHexDigit((ch & 0x70000000) >> 28));
+	if (0xFFFFFF < ch)
+		buf.push_back(toHexDigit((ch & 0xF000000) >> 24));
+	if (0xFFFFF < ch)
+		buf.push_back(toHexDigit((ch & 0xF00000) >> 20));
+	if (0xFFFF < ch)
+		buf.push_back(toHexDigit((ch & 0xF0000) >> 16));
+	if (0xFFF < ch)
+		buf.push_back(toHexDigit((ch & 0xF000) >> 12));
+	if (0xFF < ch)
+		buf.push_back(toHexDigit((ch & 0xF00) >> 8));
+	if (0xF < ch)
+		buf.push_back(toHexDigit((ch & 0xF0) >> 4));
+	buf.push_back(toHexDigit(ch & 0xF));
+	buf.push_back(';');
+}
