@@ -32,7 +32,6 @@ void Transform::appendEscapingTags(
 	for (size_t index = 0; index < input.size(); ++index)
 	{
 		int ch = input[index];
-		bool cdataEnd = false;
 		// Allowable XML 1.0 characters are:
 		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
 		if (0x20 <= ch && ch <= 0xD7FF)
