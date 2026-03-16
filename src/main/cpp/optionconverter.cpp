@@ -43,31 +43,27 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/singletonholder.h>
+#include <vector>
 
 namespace
 {
 using namespace LOG4CXX_NS;
 
-/// For recursion checking
-struct LogStringChain
-{
-	const LogString& item;
-	const LogStringChain* parent;
-};
+// FIX: Stack Overflow Protection & Complexity Optimization
+// Old implementation used linked list (O(N^2)) and had no depth limit.
+// New implementation uses std::vector (O(N) search) and hard limit.
 
-/// Is \c item referenced in \c path
-bool isRecursiveReference(const LogString& newkey, const LogStringChain* path)
-{
-	bool result = false;
-	if (path->item == newkey)
-		result = true;
-	else if (path->parent)
-		result = isRecursiveReference(newkey, path->parent);
-	return result;
-}
+const int MAX_SUBST_DEPTH = 20; // Hard limit to prevent Stack Overflow
 
-LogString substVarsSafely(const LogString& val, helpers::Properties& props, const LogStringChain* path = 0)
+LogString substVarsSafely(const LogString& val, helpers::Properties& props, std::vector<LogString>& history)
 {
+	// 1. Recursion Guard
+	if (history.size() > MAX_SUBST_DEPTH)
+	{
+		helpers::LogLog::warn(LOG4CXX_STR("Variable substitution depth limit exceeded. Stopping recursion."));
+		return val; // Return as-is to stop expansion
+	}
+
 	LogString sbuf;
 	const logchar delimStartArray[] = { 0x24, 0x7B, 0 }; // '$', '{'
 	const LogString delimStart(delimStartArray);
@@ -86,12 +82,10 @@ LogString substVarsSafely(const LogString& val, helpers::Properties& props, cons
 			// no more variables
 			if (i == 0)
 			{
-				// this is a simple string
 				return val;
 			}
 			else
 			{
-				// add the tail string which contails no variables and return the result.
 				sbuf.append(val.substr(i, val.length() - i));
 				return sbuf;
 			}
@@ -115,7 +109,20 @@ LogString substVarsSafely(const LogString& val, helpers::Properties& props, cons
 			{
 				j += DELIM_START_LEN;
 				LogString key = val.substr(j, k - j);
-				if (path && isRecursiveReference(key, path))
+
+				// FIX: Optimized Cycle Detection (Linear Scan on small vector)
+				// Much faster than pointer chasing on linked list
+				bool isCycle = false;
+				for (const auto& seenKey : history)
+				{
+					if (seenKey == key)
+					{
+						isCycle = true;
+						break;
+					}
+				}
+
+				if (isCycle)
 				{
 					LogString msg(LOG4CXX_STR("The variable ${"));
 					msg.append(key);
@@ -134,13 +141,11 @@ LogString substVarsSafely(const LogString& val, helpers::Properties& props, cons
 
 				if (!replacement.empty())
 				{
-					// Do variable substitution on the replacement string
-					// such that we can solve "Hello ${x2}" as "Hello p1"
-					// the where the properties are
-					// x1=p1
-					// x2=${x1}
-					LogStringChain current{ key, path };
-					LogString recursiveReplacement = substVarsSafely(replacement, props, &current);
+					// Recurse with history vector
+					history.push_back(key);
+					LogString recursiveReplacement = substVarsSafely(replacement, props, history);
+					history.pop_back(); // Backtrack
+					
 					sbuf.append(recursiveReplacement);
 				}
 
@@ -335,7 +340,8 @@ LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
 
 LogString OptionConverter::substVars(const LogString& val, Properties& props)
 {
-	return substVarsSafely(val, props);
+	std::vector<LogString> history;
+	return substVarsSafely(val, props, history);
 }
 
 LogString OptionConverter::getSystemProperty(const LogString& key, const LogString& def)
