@@ -20,6 +20,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
+#include <cstdint>
 
 namespace LOG4CXX_NS
 {
@@ -72,7 +73,14 @@ class LOG4CXX_EXPORT OptionConverter
 		 converts the provided number respectively to kilobytes, megabytes
 		 and gigabytes. For example, the value "10KB" will be interpreted as 10240.
 		*/
+		[[deprecated("Use toFileSize64 instead")]]
 		static long toFileSize(const LogString& value, long defaultValue);
+
+		/**
+		 * The numeric equivalent of \c value if it is not empty, otherwise \c defaultValue.
+		 * Supports 64-bit values for file sizes > 2GB.
+		 */
+		static int64_t toFileSize64(const LogString& value, int64_t defaultValue);
 		/**
 		The Level indicated by \c value if recognised otherwise \c defaultValue.
 
