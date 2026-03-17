@@ -18,14 +18,16 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/transform.h>
 #include <log4cxx/helpers/widelife.h>
+#include <functional>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
+namespace
+{
+using CharProcessor = std::function<void(LogString&, int)>;
 
-
-void Transform::appendEscapingTags(
-	LogString& buf, const LogString& input)
+void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor handler = {})
 {
 	logchar specials[] = { 0x22 /* " */, 0x26 /* & */, 0x3C /* < */, 0x3E /* > */, 0x00 };
 	size_t start = 0;
@@ -73,7 +75,8 @@ void Transform::appendEscapingTags(
 				break;
 
 			default:
-				appendCharacterReference(buf, ch);
+				if (handler)
+					handler(buf, ch);
 				break;
 		}
 	}
@@ -83,6 +86,8 @@ void Transform::appendEscapingTags(
 		buf.append(input, start, input.size() - start);
 	}
 }
+
+} // namespace
 
 void Transform::appendEscapingCDATA(
 	LogString& buf, const LogString& input)
@@ -159,4 +164,14 @@ void Transform::appendCharacterReference(LogString& buf, int ch)
 		buf.push_back(toHexDigit((ch & 0xF0) >> 4));
 	buf.push_back(toHexDigit(ch & 0xF));
 	buf.push_back(';');
+}
+
+void Transform::appendEscapingTags(LogString& buf, const LogString& input)
+{
+	appendValidCharacters(buf, input, appendCharacterReference);
+}
+
+void Transform::appendLegalCharacters(LogString& buf, const LogString& input)
+{
+	appendValidCharacters(buf, input);
 }

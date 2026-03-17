@@ -43,14 +43,13 @@ class LOG4CXX_EXPORT Transform
 			LogString& buf, const LogString& input);
 
 		/**
-		* Add \c input to \c buf while ensuring embeded CDEnd strings (]]>)
-		* are handled properly within the message, NDC and throwable tag text.
+		* Add \c input to \c buf while ensuring embeded CDEnd strings (]]&gt;)
+		* are handled properly within the message.
+		* The initial CDStart (&lt;![CDATA[) and terminating CDEnd (]]&gt;)
+		* of the CDATA section must be added by the calling method.
 		*
-		* @param buf output stream holding the XML data to this point.  The
-		* initial CDStart (<![CDATA[) and final CDEnd (]]>) of the CDATA
-		* section are the responsibility of the calling method.
-		* @param input The String that is inserted into an existing CDATA
-		* Section within buf.
+		* @param buf Tranformed \c input text is added to this.
+		* @param input The text to be appended to \c buf
 		*/
 		static void appendEscapingCDATA(
 			LogString& buf, const LogString& input);
@@ -62,6 +61,18 @@ class LOG4CXX_EXPORT Transform
 		* @param ch the value to encode as a XML character reference
 		*/
 		static void appendCharacterReference(LogString& buf, int ch);
+
+		/**
+		* Append a transformation of \c input onto \c buf.
+		* Character values that are not permitted
+		* by the XML 1.0 specification are not copied.
+		* Any special character (&lt;, &gt;, &amp; and &quot;)
+		* is replaced with an entity reference.
+		*
+		* @param buf Tranformed \c input text is added to this.
+		* @param input The text to be transformed.
+		* */
+		static void appendLegalCharacters(LogString& buf, const LogString& input);
 }; // class Transform
 }  // namespace helpers
 } //namespace log4cxx
