@@ -35,6 +35,9 @@ class LOG4CXX_EXPORT Transform
 		* (ie, &lt;b&gt;, &lt;table&gt;, etc) to \c buf
 		* while replacing any '<' and '>' characters
 		* with respective predefined entity references.
+		* Any NUL character in \c input is not copied to \c buf.
+		* A character reference is used in place of a character
+		* whose value is not permitted by the XML 1.0 specification.
 		*
 		* @param buf output stream where to write the modified string.
 		* @param input The text to be converted.
@@ -47,6 +50,9 @@ class LOG4CXX_EXPORT Transform
 		* are handled properly within the message.
 		* The initial CDStart (&lt;![CDATA[) and terminating CDEnd (]]&gt;)
 		* of the CDATA section must be added by the calling method.
+		* Any NUL character in \c input is not copied to \c buf.
+		* A character reference is used in place of a character
+		* whose value is not permitted by the XML 1.0 specification.
 		*
 		* @param buf Tranformed \c input text is added to this.
 		* @param input The text to be appended to \c buf
@@ -64,8 +70,9 @@ class LOG4CXX_EXPORT Transform
 
 		/**
 		* Append a transformation of \c input onto \c buf.
-		* Character values that are not permitted
-		* by the XML 1.0 specification are not copied.
+		* Only the valid XML 1.0 specification characters
+		* (#x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF])
+		* are copied to \c buf.
 		* Any special character (&lt;, &gt;, &amp; and &quot;)
 		* is replaced with an entity reference.
 		*
