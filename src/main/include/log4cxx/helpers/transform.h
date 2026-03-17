@@ -46,7 +46,7 @@ class LOG4CXX_EXPORT Transform
 			LogString& buf, const LogString& input);
 
 		/**
-		* Add \c input to \c buf while ensuring embeded CDEnd strings (]]&gt;)
+		* Add \c input to \c buf while ensuring embedded CDEnd strings (]]&gt;)
 		* are handled properly within the message.
 		* The initial CDStart (&lt;![CDATA[) and terminating CDEnd (]]&gt;)
 		* of the CDATA section must be added by the calling method.
@@ -54,7 +54,7 @@ class LOG4CXX_EXPORT Transform
 		* A character reference is used in place of a character
 		* whose value is not permitted by the XML 1.0 specification.
 		*
-		* @param buf Tranformed \c input text is added to this.
+		* @param buf Transformed \c input text is added to this.
 		* @param input The text to be appended to \c buf
 		*/
 		static void appendEscapingCDATA(
@@ -76,7 +76,7 @@ class LOG4CXX_EXPORT Transform
 		* Any special character (&lt;, &gt;, &amp; and &quot;)
 		* is replaced with an entity reference.
 		*
-		* @param buf Tranformed \c input text is added to this.
+		* @param buf Transformed \c input text is added to this.
 		* @param input The text to be transformed.
 		* */
 		static void appendLegalCharacters(LogString& buf, const LogString& input);
