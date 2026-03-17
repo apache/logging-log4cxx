@@ -176,7 +176,7 @@ public:
 		LOG4CXX_TRACE(logger,
 			LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
 		LOG4CXX_DEBUG(logger,
-			LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
+			LOG4CXX_TEST_STR("Message with terminating <![CDATA[<hello>hi</hello>]]>"));
 
 		XMLTimestampFilter xmlTimestampFilter;
 		XMLThreadFilter xmlThreadFilter;
