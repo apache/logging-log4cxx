@@ -29,7 +29,13 @@ using CharProcessor = std::function<void(LogString&, int)>;
 
 void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor handler = {})
 {
-	logchar specials[] = { 0x22 /* " */, 0x26 /* & */, 0x3C /* < */, 0x3E /* > */, 0x00 };
+	static const logchar specials[] =
+		{ 0x22 /* " */
+		, 0x26 /* & */
+		, 0x3C /* < */
+		, 0x3E /* > */
+		, 0x00
+		};
 	size_t start = 0;
 	for (size_t index = 0; index < input.size(); ++index)
 	{

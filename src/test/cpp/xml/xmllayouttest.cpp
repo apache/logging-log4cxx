@@ -373,11 +373,11 @@ public:
 	 */
 	void testProblemCharacters()
 	{
-		std::string problemName = "<com.example.bar>&\"'";
+		std::string problemName = "'\"<com.example.bar>&\"'";
 		LOG4CXX_DECODE_CHAR(problemNameLS, problemName);
-		std::string problemMessage = "\001<Hello >\"'\004";
-		std::string expectedCdataValue = "&#x1;<Hello >\"'&#x4;";
-		std::string expectedAttributeValue = "<Hello >\"'"; // Control characters stripped
+		std::string problemMessage = "'\001\"<Hello >\"\004'";
+		std::string expectedCdataValue = "'&#x1;\"<Hello >\"&#x4;'";
+		std::string expectedAttributeValue = "'\"<Hello >\"'"; // Invalid characters stripped
 		LOG4CXX_DECODE_CHAR(problemMessageLS, problemMessage);
 		LevelPtr level = LevelPtr(new XLevel(6000, problemNameLS, 7));
 		NDC::push(problemName);
