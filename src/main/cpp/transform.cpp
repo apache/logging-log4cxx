@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/transform.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/widelife.h>
 #include <functional>
 
@@ -40,7 +41,7 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 	for (auto nextCodePoint = start; input.end() != nextCodePoint; )
 	{
 		auto lastCodePoint = nextCodePoint;
-		auto ch = LOG4CXX_NS::helpers::Transcoder::decode(input, nextCodePoint);
+		auto ch = Transcoder::decode(input, nextCodePoint);
 		// Allowable XML 1.0 characters are:
 		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
 		if ((0x20 <= ch && ch <= 0xD7FF) &&
@@ -108,16 +109,12 @@ void Transform::appendEscapingCDATA(
 		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
 		if (CDATA_END[0] == ch && input.end() != nextCodePoint)
 		{
+			lastCodePoint = nextCodePoint;
 			if (CDATA_END[1] != Transcoder::decode(input, nextCodePoint) ||
-				input.end() == nextCodePoint)
+				input.end() == nextCodePoint ||
+				CDATA_END[2] != Transcoder::decode(input, nextCodePoint))
 			{
-				--nextCodePoint;
-				continue;
-			}
-			if (CDATA_END[2] != Transcoder::decode(input, nextCodePoint))
-			{
-				--nextCodePoint;
-				--nextCodePoint;
+				nextCodePoint = lastCodePoint;
 				continue;
 			}
 			lastCodePoint = nextCodePoint;
