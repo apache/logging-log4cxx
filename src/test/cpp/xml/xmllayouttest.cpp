@@ -373,18 +373,22 @@ public:
 	 */
 	void testProblemCharacters()
 	{
-		std::string problemName = "'\"<com.example.bar>&\"'";
+		// '\"<räksmörgås.josefsson.org>&\"'
+		std::string problemName = "'\"\162\303\244\153\163\155\303\266\162\147\303\245\163\056\152\157\163\145\146\163\163\157\156\056\157\162\147>&\"'";
 		LOG4CXX_DECODE_CHAR(problemNameLS, problemName);
+		auto loggerNameLS = problemNameLS;
+		auto levelNameLS = problemNameLS;
+		Transcoder::encode(0xD822, problemNameLS); // Add an invalid character that should be stripped from attribute values
 		std::string problemMessage = "'\001\"<Hello >\"\004'";
 		std::string expectedCdataValue = "'&#x1;\"<Hello >\"&#x4;'";
 		std::string expectedAttributeValue = "'\"<Hello >\"'"; // Invalid characters stripped
 		LOG4CXX_DECODE_CHAR(problemMessageLS, problemMessage);
-		LevelPtr level = LevelPtr(new XLevel(6000, problemNameLS, 7));
+		LevelPtr level = LevelPtr(new XLevel(6000, levelNameLS, 7));
 		NDC::push(problemName);
 		MDC::clear();
-		MDC::put(problemName, problemMessage);
+		MDC::put(problemNameLS, problemMessageLS);
 		auto event = std::make_shared<LoggingEvent>
-				(problemNameLS, level, problemMessageLS, LOG4CXX_LOCATION);
+				(loggerNameLS, level, problemMessageLS, LOG4CXX_LOCATION);
 		XMLLayout layout;
 		layout.setProperties(true);
 		Pool p;
