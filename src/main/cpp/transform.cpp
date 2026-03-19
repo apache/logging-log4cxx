@@ -120,6 +120,7 @@ void Transform::appendEscapingCDATA(
 				--nextCodePoint;
 				continue;
 			}
+			lastCodePoint = nextCodePoint;
 			cdataEnd = true;
 		}
 		else if (0x9 == ch || 0xA == ch || 0xD == ch ||
