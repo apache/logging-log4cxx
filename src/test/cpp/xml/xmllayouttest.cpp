@@ -309,7 +309,7 @@ public:
 	void testFormatWithNDC()
 	{
 		LogString logger = LOG4CXX_STR("org.apache.log4j.xml.XMLLayoutTest");
-		NDC::push("NDC goes here");
+		NDC::push("\001NDC goes here\004");
 
 		LoggingEventPtr event = LoggingEventPtr(
 				new LoggingEvent(
@@ -337,7 +337,7 @@ public:
 			}
 			else
 			{
-				checkNDCElement(node, "NDC goes here");
+				checkNDCElement(node, "&#x1;NDC goes here&#x4;");
 			}
 		}
 
@@ -373,14 +373,18 @@ public:
 	 */
 	void testProblemCharacters()
 	{
-		std::string problemName = "com.example.bar<>&\"'";
-		LogString problemNameLS = LOG4CXX_STR("com.example.bar<>&\"'");
+		std::string problemName = "'\"<com.example.bar>&\"'";
+		LOG4CXX_DECODE_CHAR(problemNameLS, problemName);
+		std::string problemMessage = "'\001\"<Hello >\"\004'";
+		std::string expectedCdataValue = "'&#x1;\"<Hello >\"&#x4;'";
+		std::string expectedAttributeValue = "'\"<Hello >\"'"; // Invalid characters stripped
+		LOG4CXX_DECODE_CHAR(problemMessageLS, problemMessage);
 		LevelPtr level = LevelPtr(new XLevel(6000, problemNameLS, 7));
 		NDC::push(problemName);
 		MDC::clear();
-		MDC::put(problemName, problemName);
-		LoggingEventPtr event = LoggingEventPtr(
-				new LoggingEvent(problemNameLS, level, problemNameLS, LOG4CXX_LOCATION));
+		MDC::put(problemName, problemMessage);
+		auto event = std::make_shared<LoggingEvent>
+				(problemNameLS, level, problemMessageLS, LOG4CXX_LOCATION);
 		XMLLayout layout;
 		layout.setProperties(true);
 		Pool p;
@@ -402,7 +406,7 @@ public:
 			switch (childElementCount)
 			{
 				case 1:
-					checkMessageElement(node, problemName);
+					checkMessageElement(node, expectedCdataValue);
 					break;
 
 				case 2:
@@ -410,7 +414,7 @@ public:
 					break;
 
 				case 3:
-					checkPropertiesElement(node, problemName.c_str(), problemName.c_str());
+					checkPropertiesElement(node, problemName.c_str(), expectedAttributeValue.c_str());
 					break;
 
 				default:

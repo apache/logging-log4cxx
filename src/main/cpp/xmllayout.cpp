@@ -81,13 +81,13 @@ void XMLLayout::format(LogString& output,
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
 	output.append(LOG4CXX_STR("<log4j:event logger=\""));
-	Transform::appendEscapingTags(output, event->getLoggerName());
+	Transform::appendLegalCharacters(output, event->getLoggerName());
 	output.append(LOG4CXX_STR("\" timestamp=\""));
 	StringHelper::toString(event->getTimeStamp() / 1000L, p, output);
 	output.append(LOG4CXX_STR("\" level=\""));
-	Transform::appendEscapingTags(output, event->getLevel()->toString());
+	Transform::appendLegalCharacters(output, event->getLevel()->toString());
 	output.append(LOG4CXX_STR("\" thread=\""));
-	Transform::appendEscapingTags(output, event->getThreadName());
+	Transform::appendLegalCharacters(output, event->getThreadName());
 	output.append(LOG4CXX_STR("\">"));
 	output.append(LOG4CXX_EOL);
 
@@ -113,13 +113,13 @@ void XMLLayout::format(LogString& output,
 		output.append(LOG4CXX_STR("<log4j:locationInfo class=\""));
 		const LocationInfo& locInfo = event->getLocationInformation();
 		LOG4CXX_DECODE_CHAR(className, locInfo.getClassName());
-		Transform::appendEscapingTags(output, className);
+		Transform::appendLegalCharacters(output, className);
 		output.append(LOG4CXX_STR("\" method=\""));
 		LOG4CXX_DECODE_CHAR(method, locInfo.getMethodName());
-		Transform::appendEscapingTags(output, method);
+		Transform::appendLegalCharacters(output, method);
 		output.append(LOG4CXX_STR("\" file=\""));
 		LOG4CXX_DECODE_CHAR(fileName, locInfo.getFileName());
-		Transform::appendEscapingTags(output, fileName);
+		Transform::appendLegalCharacters(output, fileName);
 		output.append(LOG4CXX_STR("\" line=\""));
 		StringHelper::toString(locInfo.getLineNumber(), p, output);
 		output.append(LOG4CXX_STR("\"/>"));
@@ -143,9 +143,9 @@ void XMLLayout::format(LogString& output,
 				if (event->getMDC(key, value))
 				{
 					output.append(LOG4CXX_STR("<log4j:data name=\""));
-					Transform::appendEscapingTags(output, key);
+					Transform::appendLegalCharacters(output, key);
 					output.append(LOG4CXX_STR("\" value=\""));
-					Transform::appendEscapingTags(output, value);
+					Transform::appendLegalCharacters(output, value);
 					output.append(LOG4CXX_STR("\"/>"));
 					output.append(LOG4CXX_EOL);
 				}
@@ -158,9 +158,9 @@ void XMLLayout::format(LogString& output,
 				if (event->getProperty(key, value))
 				{
 					output.append(LOG4CXX_STR("<log4j:data name=\""));
-					Transform::appendEscapingTags(output, key);
+					Transform::appendLegalCharacters(output, key);
 					output.append(LOG4CXX_STR("\" value=\""));
-					Transform::appendEscapingTags(output, value);
+					Transform::appendLegalCharacters(output, value);
 					output.append(LOG4CXX_STR("\"/>"));
 					output.append(LOG4CXX_EOL);
 				}

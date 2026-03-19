@@ -99,7 +99,7 @@ void HTMLLayout::format(LogString& output,
 
 	output.append(LOG4CXX_STR("<td title=\""));
 	LogString threadName(event->getThreadName());
-	Transform::appendEscapingTags(output, threadName);
+	Transform::appendLegalCharacters(output, threadName);
 	output.append(LOG4CXX_STR(" thread\">"));
 	Transform::appendEscapingTags(output, threadName);
 	output.append(LOG4CXX_STR("</td>"));
@@ -128,7 +128,7 @@ void HTMLLayout::format(LogString& output,
 	output.append(LOG4CXX_EOL);
 
 	output.append(LOG4CXX_STR("<td title=\""));
-	Transform::appendEscapingTags(output, event->getLoggerName());
+	Transform::appendLegalCharacters(output, event->getLoggerName());
 	output.append(LOG4CXX_STR(" logger\">"));
 	Transform::appendEscapingTags(output, event->getLoggerName());
 	output.append(LOG4CXX_STR("</td>"));
