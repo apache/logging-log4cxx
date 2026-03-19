@@ -106,9 +106,10 @@ void Transform::appendEscapingCDATA(
 		bool cdataEnd = false;
 		// Allowable XML 1.0 characters are:
 		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-		if (CDATA_END[0] == ch)
+		if (CDATA_END[0] == ch && input.end() != nextCodePoint)
 		{
-			if (CDATA_END[1] != Transcoder::decode(input, nextCodePoint))
+			if (CDATA_END[1] != Transcoder::decode(input, nextCodePoint) ||
+				input.end() == nextCodePoint)
 			{
 				--nextCodePoint;
 				continue;
