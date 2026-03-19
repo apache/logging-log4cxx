@@ -29,7 +29,7 @@ using CharProcessor = std::function<void(LogString&, int)>;
 
 void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor handler = {})
 {
-	static const logchar specials[] =
+	static const unsigned int specials[] =
 		{ 0x22 /* " */
 		, 0x26 /* & */
 		, 0x3C /* < */
@@ -43,15 +43,15 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 		auto ch = Transcoder::decode(input, nextCodePoint);
 		// Allowable XML 1.0 characters are:
 		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-		if (0x20 <= ch && ch <= 0xD7FF)
+		if ((0x20 <= ch && ch <= 0xD7FF) &&
+			specials[0] != ch &&
+			specials[1] != ch &&
+			specials[2] != ch &&
+			specials[3] != ch)
 		{
-			auto pSpecial = &specials[0];
-			while (*pSpecial && *pSpecial != ch)
-				++pSpecial;
-			if (!*pSpecial)
-				continue;
+			continue;
 		}
-		else if (0x9 == ch || 0xA == ch || 0xD == ch ||
+		else if ((0x9 == ch || 0xA == ch || 0xD == ch) ||
 				(0xE000 <= ch && ch <= 0xFFFD) ||
 				(0x10000 <= ch && ch <= 0x10FFFF))
 		{
@@ -123,8 +123,8 @@ void Transform::appendEscapingCDATA(
 			lastCodePoint = nextCodePoint;
 			cdataEnd = true;
 		}
-		else if (0x9 == ch || 0xA == ch || 0xD == ch ||
-				(0x20 <= ch && ch <= 0xD7FF) ||
+		else if ((0x20 <= ch && ch <= 0xD7FF) ||
+				(0x9 == ch || 0xA == ch || 0xD == ch) ||
 				(0xE000 <= ch && ch <= 0xFFFD) ||
 				(0x10000 <= ch && ch <= 0x10FFFF))
 		{
