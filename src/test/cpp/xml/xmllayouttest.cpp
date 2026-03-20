@@ -380,7 +380,7 @@ public:
 		Transcoder::encode(0xD822, problemNameLS); // Add an invalid character that should be stripped from attribute values
 		auto keyLS = problemNameLS;
 		auto expectedKeyValue = problemName;
-#if LOG4CXX_LOGCHAR_IS_WCHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR && !defined(__STDC_ISO_10646__)
 		// encodeUTF16 adds 0xD822, but decodeUTF16 cannot convert 0xD822
 		// Expat translates the Unicode replacement character to the following
 		expectedKeyValue += "\xEF\xBF\xBD";
