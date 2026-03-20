@@ -379,7 +379,7 @@ void Transcoder::encode(const LogString& src, std::string& dst)
 		iter != src.end() && ((unsigned int) *iter) < 0x80;
 		iter++)
 	{
-		dst.append(1, *iter);
+		dst.append(1, static_cast<char>(*iter));
 	}
 
 #endif
@@ -478,11 +478,11 @@ static void encodeUTF16(unsigned int sv, String& dst)
 
 
 
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
 void Transcoder::decode(const std::wstring& src, LogString& dst)
 {
-#if LOG4CXX_LOGCHAR_IS_WCHAR_T
-	dst.append(src, len);
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+	dst.append(src);
 #else
 	std::wstring::const_iterator i = src.begin();
 
@@ -506,7 +506,7 @@ void Transcoder::decode(const std::wstring& src, LogString& dst)
 
 void Transcoder::encode(const LogString& src, std::wstring& dst)
 {
-#if LOG4CXX_LOGCHAR_IS_WCHAR_T
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(src);
 #else
 
@@ -530,8 +530,8 @@ void Transcoder::encode(const LogString& src, std::wstring& dst)
 
 wchar_t* Transcoder::wencode(const LogString& src, Pool& p)
 {
-#if LOG4CXX_LOGCHAR_IS_WCHAR_T
-	std::wstring& tmp = src;
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+	const std::wstring& tmp = src;
 #else
 	std::wstring tmp;
 	encode(src, tmp);

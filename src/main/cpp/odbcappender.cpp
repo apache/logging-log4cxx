@@ -536,7 +536,7 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 		{
 			LogString sbuf;
 			item.converter->format(event, sbuf, p);
-#if LOG4CXX_LOGCHAR_IS_WCHAR_T
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 			std::wstring& tmp = sbuf;
 #else
 			std::wstring tmp;
@@ -658,7 +658,7 @@ void ODBCAppender::setSql(const LogString& s)
     _priv->sqlStatement = s;
 }
 
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
 void ODBCAppender::encode(wchar_t** dest, const LogString& src, Pool& p)
 {
 	*dest = Transcoder::wencode(src, p);
