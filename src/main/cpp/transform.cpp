@@ -28,6 +28,8 @@ namespace
 {
 using CharProcessor = std::function<void(LogString&, int)>;
 
+// Allowable XML 1.0 characters are:
+// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
 void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor handler = {})
 {
 	static const unsigned int specials[] =
@@ -42,9 +44,9 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 	{
 		auto lastCodePoint = nextCodePoint;
 		auto ch = Transcoder::decode(input, nextCodePoint);
-		// Allowable XML 1.0 characters are:
-		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-		if ((0x20 <= ch && ch <= 0xD7FF) &&
+		if (nextCodePoint == lastCodePoint) // failed to decode input?
+			nextCodePoint = input.end();
+		else if ((0x20 <= ch && ch <= 0xD7FF) &&
 			specials[0] != ch &&
 			specials[1] != ch &&
 			specials[2] != ch &&
@@ -82,6 +84,10 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 				buf.append(LOG4CXX_STR("&gt;"));
 				break;
 
+			case 0xFFFF: // invalid sequence
+				Transform::appendCharacterReference(buf, 0xFFFD); // The Unicode replacement character
+				break;
+
 			default:
 				if (handler)
 					handler(buf, ch);
@@ -102,12 +108,15 @@ void Transform::appendEscapingCDATA(
 	auto start = input.begin();
 	for (auto nextCodePoint = start; input.end() != nextCodePoint; )
 	{
+		bool cdataEnd = false;
 		auto lastCodePoint = nextCodePoint;
 		auto ch = Transcoder::decode(input, nextCodePoint);
-		bool cdataEnd = false;
-		// Allowable XML 1.0 characters are:
-		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-		if (CDATA_END[0] == ch && input.end() != nextCodePoint)
+		if (nextCodePoint == lastCodePoint) // failed to decode input?
+		{
+			nextCodePoint = input.end();
+			ch = 0xFFFD; // The Unicode replacement character
+		}
+		else if (CDATA_END[0] == ch && input.end() != nextCodePoint)
 		{
 			lastCodePoint = nextCodePoint;
 			if (CDATA_END[1] != Transcoder::decode(input, nextCodePoint) ||
@@ -139,7 +148,7 @@ void Transform::appendEscapingCDATA(
 	buf.append(start, input.end());
 }
 
-void Transform::appendCharacterReference(LogString& buf, int ch)
+void Transform::appendCharacterReference(LogString& buf, unsigned int ch)
 {
 	auto toHexDigit = [](int ch) -> int
 	{
@@ -149,7 +158,7 @@ void Transform::appendCharacterReference(LogString& buf, int ch)
 	buf.push_back('#');
 	buf.push_back('x');
 	if (0xFFFFFFF < ch)
-		buf.push_back(toHexDigit((ch & 0x70000000) >> 28));
+		buf.push_back(toHexDigit((ch & 0xF0000000) >> 28));
 	if (0xFFFFFF < ch)
 		buf.push_back(toHexDigit((ch & 0xF000000) >> 24));
 	if (0xFFFFF < ch)

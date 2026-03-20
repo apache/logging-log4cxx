@@ -40,7 +40,6 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/loglog.h>
 
-
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
@@ -379,6 +378,13 @@ public:
 		auto loggerNameLS = problemNameLS;
 		auto levelNameLS = problemNameLS;
 		Transcoder::encode(0xD822, problemNameLS); // Add an invalid character that should be stripped from attribute values
+		auto keyLS = problemNameLS;
+		auto expectedKeyValue = problemName;
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+		// encodeUTF16 adds 0xD822, but decodeUTF16 cannot convert 0xD822
+		// Expat translates the Unicode replacement character to the following
+		expectedKeyValue += "\xEF\xBF\xBD";
+#endif
 		std::string problemMessage = "'\001\"<Hello >\"\004'";
 		std::string expectedCdataValue = "'&#x1;\"<Hello >\"&#x4;'";
 		std::string expectedAttributeValue = "'\"<Hello >\"'"; // Invalid characters stripped
@@ -386,7 +392,7 @@ public:
 		LevelPtr level = LevelPtr(new XLevel(6000, levelNameLS, 7));
 		NDC::push(problemName);
 		MDC::clear();
-		MDC::put(problemNameLS, problemMessageLS);
+		MDC::put(keyLS, problemMessageLS);
 		auto event = std::make_shared<LoggingEvent>
 				(loggerNameLS, level, problemMessageLS, LOG4CXX_LOCATION);
 		XMLLayout layout;
@@ -418,7 +424,7 @@ public:
 					break;
 
 				case 3:
-					checkPropertiesElement(node, problemName.c_str(), expectedAttributeValue.c_str());
+					checkPropertiesElement(node, expectedKeyValue.c_str(), expectedAttributeValue.c_str());
 					break;
 
 				default:
