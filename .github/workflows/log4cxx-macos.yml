@@ -32,18 +32,21 @@ jobs:
             odbc: ON
             qt: OFF
             multiprocess: ON
+            cfstring: OFF
           - name: osx-15-clang
             os: macos-15
             cxx: clang++
             odbc: ON
             qt: ON
             multiprocess: OFF
+            cfstring: ON
           - name: osx-g++
             os: macos-latest
             cxx: g++-14
             odbc: OFF
             qt: OFF
             multiprocess: OFF
+            cfstring: ON
 
     steps:
     - uses: actions/checkout@v4
@@ -72,7 +75,7 @@ jobs:
           -DLOG4CXX_TEST_ONLY_BUILD=1 \
           -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
           -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=${{ matrix.multiprocess }} \
-          -DLOG4CXX_CFSTRING=ON \
+          -DLOG4CXX_CFSTRING=${{ matrix.cfstring }} \
           -DCMAKE_BUILD_TYPE=Debug \
           ..
         cmake --build .
