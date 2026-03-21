@@ -268,7 +268,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 	private:
 		ODBCAppender(const ODBCAppender&);
 		ODBCAppender& operator=(const ODBCAppender&);
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
 		static void encode(wchar_t** dest, const LogString& src,
 			LOG4CXX_NS::helpers::Pool& p);
 #endif

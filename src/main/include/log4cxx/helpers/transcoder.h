@@ -105,7 +105,7 @@ class LOG4CXX_EXPORT Transcoder
 
 
 
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
 		static void decode(const std::wstring& src, LogString& dst);
 		static void encode(const LogString& src, std::wstring& dst);
 		static wchar_t* wencode(const LogString& src, LOG4CXX_NS::helpers::Pool& p);
