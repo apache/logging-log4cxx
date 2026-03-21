@@ -66,7 +66,7 @@ class LOG4CXX_EXPORT Transform
 		* @param buf output stream holding the XML data to this point.
 		* @param ch the value to encode as a XML character reference
 		*/
-		static void appendCharacterReference(LogString& buf, int ch);
+		static void appendCharacterReference(LogString& buf, unsigned int ch);
 
 		/**
 		* Append a transformation of \c input onto \c buf.

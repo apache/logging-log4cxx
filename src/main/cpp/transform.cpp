@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/transform.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/widelife.h>
 #include <functional>
 
@@ -27,39 +28,42 @@ namespace
 {
 using CharProcessor = std::function<void(LogString&, int)>;
 
+// Allowable XML 1.0 characters are:
+// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
 void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor handler = {})
 {
-	static const logchar specials[] =
+	static const unsigned int specials[] =
 		{ 0x22 /* " */
 		, 0x26 /* & */
 		, 0x3C /* < */
 		, 0x3E /* > */
 		, 0x00
 		};
-	size_t start = 0;
-	for (size_t index = 0; index < input.size(); ++index)
+	auto start = input.begin();
+	for (auto nextCodePoint = start; input.end() != nextCodePoint; )
 	{
-		int ch = input[index];
-		// Allowable XML 1.0 characters are:
-		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-		if (0x20 <= ch && ch <= 0xD7FF)
+		auto lastCodePoint = nextCodePoint;
+		auto ch = Transcoder::decode(input, nextCodePoint);
+		if (nextCodePoint == lastCodePoint) // failed to decode input?
+			nextCodePoint = input.end();
+		else if ((0x20 <= ch && ch <= 0xD7FF) &&
+			specials[0] != ch &&
+			specials[1] != ch &&
+			specials[2] != ch &&
+			specials[3] != ch)
 		{
-			auto pSpecial = &specials[0];
-			while (*pSpecial && *pSpecial != ch)
-				++pSpecial;
-			if (!*pSpecial)
-				continue;
+			continue;
 		}
-		else if (0x9 == ch || 0xA == ch || 0xD == ch ||
+		else if ((0x9 == ch || 0xA == ch || 0xD == ch) ||
 				(0xE000 <= ch && ch <= 0xFFFD) ||
 				(0x10000 <= ch && ch <= 0x10FFFF))
 		{
 			continue;
 		}
 
-		if (start < index)
-			buf.append(input, start, index - start);
-		start = index + 1;
+		if (start != lastCodePoint)
+			buf.append(start, lastCodePoint);
+		start = nextCodePoint;
 		switch (ch)
 		{
 			case 0: // Do not output a NUL character
@@ -80,17 +84,17 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 				buf.append(LOG4CXX_STR("&gt;"));
 				break;
 
+			case 0xFFFF: // invalid sequence
+				Transform::appendCharacterReference(buf, 0xFFFD); // The Unicode replacement character
+				break;
+
 			default:
 				if (handler)
 					handler(buf, ch);
 				break;
 		}
 	}
-
-	if (start < input.size())
-	{
-		buf.append(input, start, input.size() - start);
-	}
+	buf.append(start, input.end());
 }
 
 } // namespace
@@ -101,51 +105,50 @@ void Transform::appendEscapingCDATA(
 	static const LogString CDATA_END(LOG4CXX_STR("]]>"));
 	const LogString::size_type CDATA_END_LEN = 3;
 	static const LogString CDATA_EMBEDED_END(LOG4CXX_STR("]]&gt;<![CDATA["));
-	size_t start = 0;
-	for (size_t index = 0; index < input.size(); ++index)
+	auto start = input.begin();
+	for (auto nextCodePoint = start; input.end() != nextCodePoint; )
 	{
-		int ch = input[index];
 		bool cdataEnd = false;
-		// Allowable XML 1.0 characters are:
-		// #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-		if (0x20 <= ch && ch <= 0xD7FF)
+		auto lastCodePoint = nextCodePoint;
+		auto ch = Transcoder::decode(input, nextCodePoint);
+		if (nextCodePoint == lastCodePoint) // failed to decode input?
 		{
-			if (CDATA_END[0] == ch &&
-				index + CDATA_END_LEN <= input.size() &&
-				0 == input.compare(index, CDATA_END_LEN, CDATA_END))
+			nextCodePoint = input.end();
+			ch = 0xFFFD; // The Unicode replacement character
+		}
+		else if (CDATA_END[0] == ch && input.end() != nextCodePoint)
+		{
+			lastCodePoint = nextCodePoint;
+			if (CDATA_END[1] != Transcoder::decode(input, nextCodePoint) ||
+				input.end() == nextCodePoint ||
+				CDATA_END[2] != Transcoder::decode(input, nextCodePoint))
 			{
-				index += CDATA_END_LEN;
-				cdataEnd = true;
-			}
-			else
-			{
+				nextCodePoint = lastCodePoint;
 				continue;
 			}
+			lastCodePoint = nextCodePoint;
+			cdataEnd = true;
 		}
-		else if (0x9 == ch || 0xA == ch || 0xD == ch ||
+		else if ((0x20 <= ch && ch <= 0xD7FF) ||
+				(0x9 == ch || 0xA == ch || 0xD == ch) ||
 				(0xE000 <= ch && ch <= 0xFFFD) ||
 				(0x10000 <= ch && ch <= 0x10FFFF))
 		{
 			continue;
 		}
 
-		if (start < index)
-			buf.append(input, start, index - start);
+		if (start != lastCodePoint)
+			buf.append(start, lastCodePoint);
 		if (cdataEnd)
-		{
 			buf.append(CDATA_EMBEDED_END);
-			--index;
-		}
 		else if (0 != ch)
 			appendCharacterReference(buf, ch);
-		start = index + 1;
+		start = nextCodePoint;
 	}
-
-	if (start < input.size())
-		buf.append(input, start, input.size() - start);
+	buf.append(start, input.end());
 }
 
-void Transform::appendCharacterReference(LogString& buf, int ch)
+void Transform::appendCharacterReference(LogString& buf, unsigned int ch)
 {
 	auto toHexDigit = [](int ch) -> int
 	{
@@ -155,7 +158,7 @@ void Transform::appendCharacterReference(LogString& buf, int ch)
 	buf.push_back('#');
 	buf.push_back('x');
 	if (0xFFFFFFF < ch)
-		buf.push_back(toHexDigit((ch & 0x70000000) >> 28));
+		buf.push_back(toHexDigit((ch & 0xF0000000) >> 28));
 	if (0xFFFFFF < ch)
 		buf.push_back(toHexDigit((ch & 0xF000000) >> 24));
 	if (0xFFFFF < ch)
