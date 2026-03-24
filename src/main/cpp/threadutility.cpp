@@ -82,6 +82,7 @@ struct ThreadUtility::priv_data
 	bool                      terminated{ false };
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
+	bool                      threadIsActive{ false };
 
 	void doPeriodicTasks();
 
@@ -270,9 +271,15 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 		m_priv->maxDelay = delay;
 	auto currentTime = std::chrono::system_clock::now();
 	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, f, 0, false} );
+
+	// Restart thread if it has stopped.
+	if (!m_priv->threadIsActive && m_priv->thread.joinable())
+		m_priv->thread.join();
+
 	if (!m_priv->thread.joinable())
 	{
 		m_priv->terminated = false;
+		m_priv->threadIsActive = true;
 		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), std::bind(&priv_data::doPeriodicTasks, m_priv.get()));
 	}
 	else
@@ -399,6 +406,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime);
 	}
+    this->threadIsActive = false;
 }
 
 } //namespace helpers
