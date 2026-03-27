@@ -37,6 +37,7 @@ whatever reason.
 logged in the new secondary appender.
 
 Here is a sample configuration file that installs this error handler:
+\anchor fallback-ref-example
 \include async-fall-back-example.xml
 */
 class LOG4CXX_EXPORT FallbackErrorHandler :
