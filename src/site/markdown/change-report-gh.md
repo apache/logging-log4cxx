@@ -69,7 +69,8 @@ Release 1.7.0 includes the following new features:
 The following issues have been addressed:
 
 * XML output could contain characters not allowed by the XML 1.0 specification
-   \[[#609](https://github.com/apache/logging-log4cxx/pull/609)\]
+   * [#609](https://github.com/apache/logging-log4cxx/pull/609)
+   , [#610](https://github.com/apache/logging-log4cxx/pull/610)
 
 * An XML configuration file with recursive references caused program termination
    \[[#605](https://github.com/apache/logging-log4cxx/pull/605)\]
@@ -109,8 +110,8 @@ and the LOG4CXX_CONFIGURATION environment variable (see log4cxx::spi::Configurat
 * Console output (Log4cxx internal logging and BasicConfigurator) use a color per message level by default
    \[[#529](https://github.com/apache/logging-log4cxx/pull/529)\]
 * New logging macros that defer binary-to-text conversion until used in AsyncAppender's background thread
-   * \[[#548](https://github.com/apache/logging-log4cxx/pull/548)\]
-   , \[[#554](https://github.com/apache/logging-log4cxx/pull/554)\]
+   * [#548](https://github.com/apache/logging-log4cxx/pull/548)
+   , [#554](https://github.com/apache/logging-log4cxx/pull/554)
 * A simplified way to attach an AsyncAppender to a logger using a configuration file
    \[[#550](https://github.com/apache/logging-log4cxx/pull/550)\]
 
