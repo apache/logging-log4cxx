@@ -60,13 +60,10 @@ Release 1.7.0 includes the following new features:
 * Support for a 'fallback-ref' attribute in the 'appender-ref' element of a configuration file
    \[[#606](https://github.com/apache/logging-log4cxx/pull/606)\]
 
-* A TelnetAppender option to close the connection when the network buffer is full
-   \[[#591](https://github.com/apache/logging-log4cxx/pull/591)\]
-
 * Qt support can be enabled using a Log4cxx CMake find_package component (see \ref MyApp-qt/CMakeLists.txt)
    \[[#600](https://github.com/apache/logging-log4cxx/pull/600)\]
 
-* TelnetAppender option to close the connection when the network buffer is full
+* A TelnetAppender option to close the connection when the network buffer is full
    \[[#591](https://github.com/apache/logging-log4cxx/pull/591)\]
 
 The following issues have been addressed:
