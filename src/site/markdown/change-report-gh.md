@@ -25,7 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
-| [1.6.2](#rel_1_6_2) | 2026-XX-XX | Bugfix release       |
+| [1.7.0](#rel_1_7_0) | 2026-XX-XX | Maintenance release  |
 | [1.6.1](#rel_1_6_1) | 2026-01-09 | Bugfix release       |
 | [1.6.0](#rel_1_6_0) | 2025-12-14 | Maintenance release  |
 | [1.5.0](#rel_1_5_0) | 2025-08-03 | Maintenance release  |
@@ -52,11 +52,36 @@ Change Log {#changelog}
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
-## Release 1.6.2 - 2026-XX-XX {#rel_1_6_2}
 
-This is a minor bugfix release to fix issues found with 1.6.1.
+## Release 1.7.0 - 2026-XX-XX {#rel_1_7_0}
 
-### Bug {#rel_1_6_2_bugs}
+Release 1.7.0 includes the following new features:
+
+* Support for a 'fallback-ref' attribute in the 'appender-ref' element of a configuration file
+   \[[#606](https://github.com/apache/logging-log4cxx/pull/606)\]
+
+* A TelnetAppender option to close the connection when the network buffer is full
+   \[[#591](https://github.com/apache/logging-log4cxx/pull/591)\]
+
+* Qt support can be enabled using a Log4cxx CMake find_package component (see \ref MyApp-qt/CMakeLists.txt)
+   \[[#600](https://github.com/apache/logging-log4cxx/pull/600)\]
+
+* TelnetAppender option to close the connection when the network buffer is full
+   \[[#591](https://github.com/apache/logging-log4cxx/pull/591)\]
+
+The following issues have been addressed:
+
+* XML output could contain characters not allowed by the XML 1.0 specification
+   \[[#609](https://github.com/apache/logging-log4cxx/pull/609)\]
+
+* An XML configuration file with recursive references caused program termination
+   \[[#605](https://github.com/apache/logging-log4cxx/pull/605)\]
+
+* Possible undefined behavior during a configuration change
+   \[[#601](https://github.com/apache/logging-log4cxx/pull/601)\]
+
+* Message loss when the calculation of a logged value also logs
+   \[[#594](https://github.com/apache/logging-log4cxx/pull/594)\]
 
 * ODBCAppender prepared statement value buffers had incorrect lifetimes
    \[[#581](https://github.com/apache/logging-log4cxx/pull/581)\]

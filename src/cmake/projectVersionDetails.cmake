@@ -2,4 +2,4 @@
 # setting the project version. The variable name must not
 # clash with the log4cxx_VERSION* variables automatically
 # defined by the project() command.
-set(log4cxx_VER 1.6.2.0)
+set(log4cxx_VER 1.7.0.0)

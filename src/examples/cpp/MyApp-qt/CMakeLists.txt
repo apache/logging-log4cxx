@@ -20,7 +20,6 @@ project(MyApp LANGUAGES CXX)
 # Find the required libraries
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
-find_package(log4cxx REQUIRED)
 find_package(log4cxx COMPONENTS qt REQUIRED)
 # Optionally locate fmt::fmt
 find_package(fmt QUIET)
