@@ -68,6 +68,9 @@ Release 1.7.0 includes the following new features:
 
 The following issues have been addressed:
 
+* Non-ascii characters incorrectly encoded in JSON output
+   \[[#615](https://github.com/apache/logging-log4cxx/pull/615)\]
+
 * XML output could contain characters not allowed by the XML 1.0 specification
    * [#609](https://github.com/apache/logging-log4cxx/pull/609)
    , [#610](https://github.com/apache/logging-log4cxx/pull/610)
