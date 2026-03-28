@@ -500,15 +500,15 @@ public:
 	 */
 	void testAppendQuotedEscapedString()
 	{
-		std::string problemMessage = "'\001\"<Hello >\"\004'";
-		LogString expectedQuotedEscapedMessage = LOG4CXX_STR("\"'\\u0001\\\"<Hello >\\\"\\u0004'\"");
+		std::string problemMessage = "'\001\"Hello \"\004'";
+		LogString expectedQuotedEscapedMessage = LOG4CXX_STR("\"'\\u0001\\\"Hello \\\"\\u0004'\"");
 		LOG4CXX_DECODE_CHAR(problemMessageLS, problemMessage);
 		LogString quotedEscapedMessage;
 		appendQuotedEscapedString(quotedEscapedMessage, problemMessageLS);
 		LOGUNIT_ASSERT_EQUAL(expectedQuotedEscapedMessage, quotedEscapedMessage);
 
-		// '\"<räksmörgås.josefsson.org>\"'
-		std::string problemName = "'\"\162\303\244\153\163\155\303\266\162\147\303\245\163\056\152\157\163\145\146\163\163\157\156\056\157\162\147>\"'";
+		// '\"räksmörgås.josefsson.org\"'
+		std::string problemName = "'\"\162\303\244\153\163\155\303\266\162\147\303\245\163\056\152\157\163\145\146\163\163\157\156\056\157\162\147\"'";
 		LOG4CXX_DECODE_CHAR(problemNameLS, problemName);
 		LogString expectedQuotedEscapedName = LOG4CXX_STR("\"") + problemNameLS + LOG4CXX_STR("\"");
 		expectedQuotedEscapedName.insert(2, 1, 0x5c); // insert a backslash before the first double quote

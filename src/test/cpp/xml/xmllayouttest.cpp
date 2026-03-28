@@ -373,7 +373,7 @@ public:
 	void testProblemCharacters()
 	{
 		// '\"<räksmörgås.josefsson.org>&\"'
-		std::string problemName = "'\"\162\303\244\153\163\155\303\266\162\147\303\245\163\056\152\157\163\145\146\163\163\157\156\056\157\162\147>&\"'";
+		std::string problemName = "'\"<\162\303\244\153\163\155\303\266\162\147\303\245\163\056\152\157\163\145\146\163\163\157\156\056\157\162\147>&\"'";
 		LOG4CXX_DECODE_CHAR(problemNameLS, problemName);
 		auto loggerNameLS = problemNameLS;
 		auto levelNameLS = problemNameLS;
