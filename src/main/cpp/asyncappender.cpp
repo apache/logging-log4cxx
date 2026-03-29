@@ -519,6 +519,10 @@ void AsyncAppender::setBufferSize(int size)
 	}
 
 	std::lock_guard<std::mutex> lock(priv->bufferMutex);
+	if (0 < priv->eventCount)
+	{
+		throw RuntimeException(LOG4CXX_STR("AsyncAppender buffer size cannot be changed now"));
+	}
 	priv->bufferSize = (size < 1) ? 1 : size;
 	priv->buffer.resize(priv->bufferSize);
 	priv->bufferNotFull.notify_all();
