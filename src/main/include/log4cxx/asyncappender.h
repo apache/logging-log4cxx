@@ -204,11 +204,11 @@ class LOG4CXX_EXPORT AsyncAppender :
 		void setLocationInfo(bool flag);
 
 		/**
-		* The <b>BufferSize</b> option takes a non-negative integer value.
-		* This integer value determines the maximum size of the bounded
-		* buffer.
+		* Use \c newSize (a non-negative integer value) for
+		* the number of [logging events](@ref spi::LoggingEvent) the ring buffer can hold.
+		* The ring buffer size cannot be changed once the appender has received an event.
 		* */
-		void setBufferSize(int size);
+		void setBufferSize(int newSize);
 
 		/**
 		 * Gets the current buffer size.
@@ -217,19 +217,19 @@ class LOG4CXX_EXPORT AsyncAppender :
 		int getBufferSize() const;
 
 		/**
-		 * Sets whether appender should wait if there is no
-		 * space available in the event buffer or immediately return.
+		 * Use \c newValue for whether appender should block the calling thread
+		 * if there is no space in the ring buffer.
 		 *
-		 * @param value true if appender should wait until available space in buffer.
+		 * @param newValue true if appender should wait until space is available in the ring buffer.
 		 */
-		void setBlocking(bool value);
+		void setBlocking(bool newValue);
 
 		/**
-		 * Gets whether appender should block calling thread when buffer is full.
+		 * Gets whether appender should block calling thread when ring buffer is full.
 		 * If false, messages will be counted by logger and a summary
-		 * message appended after the contents of the buffer have been appended.
+		 * message added after the buffered events have been appended.
 		 *
-		 * @return true if calling thread will be blocked when buffer is full.
+		 * @return true if calling thread will be blocked when ring buffer is full.
 		 */
 		bool getBlocking() const;
 
