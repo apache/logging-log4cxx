@@ -220,23 +220,24 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 	/* add leading quote */
 	buf.push_back(0x22);
 
-	size_t start = 0;
-	size_t index = 0;
-
-	for (int ch : input)
+	auto start = input.begin();
+	for (auto nextCodePoint = start; input.end() != nextCodePoint; )
 	{
-		if (0x22 == ch || 0x5c == ch)
+		auto lastCodePoint = nextCodePoint;
+		auto ch = Transcoder::decode(input, nextCodePoint);
+		if (nextCodePoint == lastCodePoint) // failed to decode input?
+		{
+			nextCodePoint = input.end();
+			ch = 0xFFFD; // The Unicode replacement character
+		}
+		else if (0x22 == ch || 0x5c == ch) // double quote or backslash?
 			;
-		else if (0x20 <= ch)
-		{
-			++index;
+		else if (0x20 <= ch) // not a control character?
 			continue;
-		}
-		if (start < index)
-		{
-			buf.append(input, start, index - start);
-		}
 
+		if (start != lastCodePoint)
+			buf.append(start, lastCodePoint);
+		start = nextCodePoint;
 		switch (ch)
 		{
 			case 0x08:
@@ -290,13 +291,8 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 				buf.push_back(toHexDigit(ch & 0xF));
 				break;
 		}
-		start = ++index;
 	}
-
-	if (start < input.size())
-	{
-		buf.append(input, start, input.size() - start);
-	}
+	buf.append(start, input.end());
 
 	/* add trailing quote */
 	buf.push_back(0x22);

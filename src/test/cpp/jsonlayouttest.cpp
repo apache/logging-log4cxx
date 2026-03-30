@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
 
 
 using namespace log4cxx;
@@ -59,6 +60,7 @@ LOGUNIT_CLASS(JSONLayoutTest), public JSONLayout
 	LOGUNIT_TEST(testFormat);
 	LOGUNIT_TEST(testFormatWithPrettyPrint);
 	LOGUNIT_TEST(testGetSetLocationInfo);
+	LOGUNIT_TEST(testAppendQuotedEscapedString);
 	LOGUNIT_TEST_SUITE_END();
 
 
@@ -491,6 +493,44 @@ public:
 		LOGUNIT_ASSERT_EQUAL(true, layout.getPrettyPrint());
 		layout.setPrettyPrint(false);
 		LOGUNIT_ASSERT_EQUAL(false, layout.getPrettyPrint());
+	}
+
+	/**
+	 * Tests Unicode characters.
+	 */
+	void testAppendQuotedEscapedString()
+	{
+		std::string problemMessage = "'\001\"Hello \"\004'";
+		LogString expectedQuotedEscapedMessage = LOG4CXX_STR("\"'\\u0001\\\"Hello \\\"\\u0004'\"");
+		LOG4CXX_DECODE_CHAR(problemMessageLS, problemMessage);
+		LogString quotedEscapedMessage;
+		appendQuotedEscapedString(quotedEscapedMessage, problemMessageLS);
+		LOGUNIT_ASSERT_EQUAL(expectedQuotedEscapedMessage, quotedEscapedMessage);
+
+		// '\"räksmörgås.josefsson.org\"'
+		std::string problemName = "'\"\162\303\244\153\163\155\303\266\162\147\303\245\163\056\152\157\163\145\146\163\163\157\156\056\157\162\147\"'";
+		LOG4CXX_DECODE_CHAR(problemNameLS, problemName);
+		LogString expectedQuotedEscapedName = LOG4CXX_STR("\"") + problemNameLS + LOG4CXX_STR("\"");
+		expectedQuotedEscapedName.insert(2, 1, 0x5c); // insert a backslash before the first double quote
+		expectedQuotedEscapedName.insert(expectedQuotedEscapedName.size() - 3, 1, 0x5c); // insert a backslash before the last double quote
+		LogString quotedEscapedName;
+		appendQuotedEscapedString(quotedEscapedName, problemNameLS);
+		LOGUNIT_ASSERT_EQUAL(expectedQuotedEscapedName, quotedEscapedName);
+
+		Transcoder::encode(0xD822, problemNameLS); // Add a character that cannot be converted to UTF16
+#if LOG4CXX_LOGCHAR_IS_WCHAR && defined(__STDC_ISO_10646__)
+		expectedQuotedEscapedName[expectedQuotedEscapedName.size() - 1] = 0xD822;
+		expectedQuotedEscapedName += 0x22; // Add a double quote at the end
+#elif LOG4CXX_LOGCHAR_IS_WCHAR
+		// encodeUTF16 adds 0xD822, but decodeUTF16 cannot convert 0xD822
+		expectedQuotedEscapedName.insert(expectedQuotedEscapedName.size() - 1, LOG4CXX_STR("\\ufffd")); // The Unicode replacement character
+#elif LOG4CXX_LOGCHAR_IS_UTF8
+		// 0xD822 is encoded in UTF-8 as 0xED 0xA0 0xA2
+		expectedQuotedEscapedName.insert(expectedQuotedEscapedName.size() - 1, "\xED\xA0\xA2");
+#endif
+		LogString escapedQuoted0xD822Name;
+		appendQuotedEscapedString(escapedQuoted0xD822Name, problemNameLS);
+		LOGUNIT_ASSERT_EQUAL(expectedQuotedEscapedName, escapedQuoted0xD822Name);
 	}
 };
 
