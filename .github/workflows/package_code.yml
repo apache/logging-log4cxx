@@ -70,6 +70,11 @@ jobs:
         sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
         gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.zip"
 
+    - name: 'Configure Dependencies'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libapr1-dev libaprutil1-dev
+
     - name: 'test archive'
       run: |
         VERSION=`ls apache-log4cxx-*.tar.gz | sed -Ee 's/.*apache-log4cxx-([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
