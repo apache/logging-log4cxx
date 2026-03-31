@@ -19,8 +19,8 @@ Steps
 1. Tag HEAD as the release candidate
     - `git checkout master`
     - `git pull`
-    - `git tag v1.7.0-RC1`
-    - `git push origin tag v1.7.0-RC1`
+    - `git tag v1.7.0-RC2`
+    - `git push origin tag v1.7.0-RC2`
 1. Remove the old artifacts from svn
     - `svn co https://dist.apache.org/repos/dist/dev/logging -N apache-dist-logging-dev`
     - `cd apache-dist-logging-dev`
@@ -31,7 +31,7 @@ Steps
     - `svn add 1.7.0`
     - `cd 1.7.0`
 1. Download the packaged release files from Github
-    - Open https://github.com/apache/logging-log4cxx/commits/v1.7.0-RC1 in your web browser
+    - Open https://github.com/apache/logging-log4cxx/commits/v1.7.0-RC2 in your web browser
     - Click the green tick mark on the top commit
         - The `All checks have passed` pop-up window will display
     - Click the "Details" link on the row next to `Generate release files / Package code for release`
@@ -56,7 +56,7 @@ Steps
 1. Get artifacts up to https://downloads.apache.org/logging/log4cxx/
     - `svn move -m "Release log4cxx 1.7.0" https://dist.apache.org/repos/dist/dev/logging/log4cxx/1.7.0   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
 1. Tag the released version
-    - `git checkout v1.7.0-RC1`
+    - `git checkout v1.7.0-RC2`
     - `git tag rel/v1.7.0`
     - `git push origin tag rel/v1.7.0`
 1. Enter the release date in `src/site/markdown/change-report-gh.md`
