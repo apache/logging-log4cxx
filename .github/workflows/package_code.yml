@@ -59,7 +59,7 @@ jobs:
         cd clean-checkout
         rm -r src/main/abi-symbols
         VERSION=`grep 'set(log4cxx_VER ' src/cmake/projectVersionDetails.cmake|sed -Ee 's/.*log4cxx_VER ([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
-        tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," LICENSE  NOTICE  README.md  CMakeLists.txt  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in
+        tar -zcf "../apache-log4cxx-$VERSION.tar.gz" "--transform=s,^,apache-log4cxx-$VERSION/," LICENSE  NOTICE  README.md  CMakeLists.txt  Config.cmake.in  src  liblog4cxx.pc.in  liblog4cxx-qt.pc.in
         cd ..
         sha512sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha512"
         sha256sum "apache-log4cxx-$VERSION.tar.gz" > "apache-log4cxx-$VERSION.tar.gz.sha256"
@@ -69,6 +69,22 @@ jobs:
         sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
         sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
         gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.zip"
+
+    - name: 'Configure Dependencies'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libapr1-dev libaprutil1-dev
+
+    - name: 'test archive'
+      run: |
+        VERSION=`ls apache-log4cxx-*.tar.gz | sed -Ee 's/.*apache-log4cxx-([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
+        echo "Extracting files from apache-log4cxx-$VERSION.tar.gz..."
+        tar xf apache-log4cxx-$VERSION.tar.gz || exit
+
+        cmake -S apache-log4cxx-$VERSION -B test-archive || exit
+        cmake --build test-archive || exit
+        cd test-archive
+        ctest
 
     - uses: actions/upload-artifact@v4
       if: always()

@@ -1,9 +1,9 @@
 ﻿To: dev@logging.apache.org
-Subject: [VOTE] Release Apache Log4cxx 1.6.2
+Subject: [VOTE] Release Apache Log4cxx 1.7.0
 
-This is a vote to release the Apache Log4cxx 1.6.2.
+This is a vote to release the Apache Log4cxx 1.7.0.
 
-Website: https://logging.staged.apache.org/log4cxx/1.6.2/changelog.html
+Website: https://logging.staged.apache.org/log4cxx/changelog.html#rel_1_7_0
 GitHub: https://github.com/apache/logging-log4cxx
 Commit: <todo insert>
 Distribution: https://dist.apache.org/repos/dist/dev/logging/log4cxx/
@@ -15,6 +15,6 @@ Please download, test, and cast your votes on this mailing list.
 [ ] +1, release the artifacts
 [ ] -1, don't release, because ...
 
-This vote is open for 72 hours and will pass unless getting a net negative vote count.
-All votes are welcome and we encourage everyone to test the release, but only the
+This vote is open for 72 hours and will pass unless it gets a net negative vote count.
+All votes are welcome, and we encourage everyone to test the release, but only the
 Logging Services PMC votes are officially counted.

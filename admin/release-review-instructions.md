@@ -37,7 +37,7 @@ Steps
     - For success, the final output line needs to include:
         - `100% tests passed, 0 tests failed out of 63`
 1. Download the packaged release files from Github
-    - Open https://github.com/apache/logging-log4cxx/commits/v1.6.1-RC1 in your web browser
+    - Open https://github.com/apache/logging-log4cxx/commits/v1.7.0-RC2 in your web browser
     - Click the green tick mark on the top commit
         - The `All checks have passed` pop-up window will display
     - Click the "Details" link on the row next to `Generate release files / Package code for release`
