@@ -48,7 +48,7 @@ jobs:
           cxx: g++
 
     steps:
-    - uses: msys2/setup-msys2@v2
+    - uses: msys2/setup-msys2@1bb07685f08feb242756e4f3fe3cfd9bb7490cf0 # 2.31.0, Mar 23, 2026
       with:
         msystem: ${{matrix.sys}}
         update: true
