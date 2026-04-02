@@ -208,6 +208,17 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 					}
 					else
 					{
+						// FIX: Check for incomplete sequence infinite loop.
+						// If mbsrtowcs returns success (>=0) but converted 0 bytes while data remains,
+						// we are stuck (e.g. incomplete multibyte char at EOF).
+						if (converted == 0 && in.remaining() > 0)
+						{
+							LogString msg(LOG4CXX_STR("Incomplete multibyte sequence at end of buffer"));
+							LogLog::warn(msg);
+							stat = APR_BADCH;
+							break; // Break the infinite loop
+						}
+
 						wbuf[wCharCount] = 0;
 						stat = append(out, wbuf);
 					}
