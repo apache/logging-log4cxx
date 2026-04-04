@@ -25,7 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
-| [1.7.0](#rel_1_7_0) | 2026-XX-XX | Maintenance release  |
+| [1.7.0](#rel_1_7_0) | 2026-04-04 | Maintenance release  |
 | [1.6.1](#rel_1_6_1) | 2026-01-09 | Bugfix release       |
 | [1.6.0](#rel_1_6_0) | 2025-12-14 | Maintenance release  |
 | [1.5.0](#rel_1_5_0) | 2025-08-03 | Maintenance release  |
@@ -53,7 +53,7 @@ Change Log {#changelog}
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
 
-## Release 1.7.0 - 2026-XX-XX {#rel_1_7_0}
+## Release 1.7.0 - 2026-04-04 {#rel_1_7_0}
 
 Release 1.7.0 includes the following new features:
 
