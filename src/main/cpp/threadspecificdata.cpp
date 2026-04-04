@@ -266,6 +266,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 		return (ThreadSpecificData*) pData;
 #endif
 
+#if !LOG4CXX_HAS_THREAD_LOCAL
 	// Fallback implementation that is not expected to be used
 	using TaggedData = std::pair<std::thread::id, ThreadSpecificData>;
 	static std::list<TaggedData> thread_id_map;
@@ -277,6 +278,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData()
 	if (thread_id_map.end() == pThreadId)
 		pThreadId = thread_id_map.emplace(thread_id_map.begin(), threadId, ThreadSpecificData());
 	return &pThreadId->second;
+#endif
 }
 
 void ThreadSpecificData::recycle()
