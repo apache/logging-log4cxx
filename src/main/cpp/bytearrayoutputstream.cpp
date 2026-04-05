@@ -49,9 +49,16 @@ void ByteArrayOutputStream::flush(Pool& /* p */)
 
 void ByteArrayOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 {
-	size_t sz = m_priv->array.size();
-	m_priv->array.resize(sz + buf.remaining());
-	memcpy(&m_priv->array[sz], buf.current(), buf.remaining());
+	const size_t count = buf.remaining();
+	const size_t sz = m_priv->array.size();
+
+	if (count > m_priv->array.max_size() - sz)
+	{
+		throw IllegalArgumentException(LOG4CXX_STR("ByteArrayOutputStream::write overflow"));
+	}
+
+	m_priv->array.resize(sz + count);
+	memcpy(&m_priv->array[sz], buf.current(), count);
 	buf.position(buf.limit());
 }
 

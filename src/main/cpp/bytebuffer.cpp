@@ -74,6 +74,11 @@ void ByteBuffer::limit(size_t newLimit)
 	}
 
 	m_priv->lim = newLimit;
+
+	if (m_priv->pos > m_priv->lim)
+	{
+		m_priv->pos = m_priv->lim;
+	}
 }
 
 

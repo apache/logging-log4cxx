@@ -91,8 +91,16 @@ LogString InputStreamReader::read(Pool& p)
 
 		if (buf.remaining() > 0)
 		{
-			memmove(buf.data(), buf.current(), buf.remaining());
-			buf.limit(buf.remaining());
+			const size_t carry = buf.remaining();
+
+			if (carry == BUFSIZE)
+			{
+				throw IOException(LOG4CXX_STR("Decoder made no progress"));
+			}
+
+			memmove(buf.data(), buf.current(), carry);
+			buf.clear();
+			buf.position(carry);
 		}
 		else
 		{
