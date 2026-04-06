@@ -110,8 +110,7 @@ public:
 			bbuf.put(*p);
 			++sz;
 		}
-		bbuf.position(0);
-		bbuf.limit(sz);
+		bbuf.flip();
 		LOG4CXX_DECODE_QSTRING(lsConfigFile, m_configFile);
 		helpers::FileOutputStream of(lsConfigFile, true);
 		of.write(bbuf, m_pool);
