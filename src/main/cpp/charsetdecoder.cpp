@@ -122,7 +122,7 @@ class APRCharsetDecoder : public CharsetDecoder
 								&outbytes_left);
 					}
 					out.append(buf, (initial_outbytes_left - outbytes_left) / sizeof(logchar));
-					in.position(pos + (initial_inbytes_left - inbytes_left));
+					in.increment_position(initial_inbytes_left - inbytes_left);
 				}
 			}
 
