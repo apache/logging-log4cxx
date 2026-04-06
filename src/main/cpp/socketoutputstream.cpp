@@ -75,7 +75,7 @@ void SocketOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 
 		m_priv->array.resize(sz + count);
 		memcpy(&m_priv->array[sz], buf.current(), count);
-		buf.position(buf.limit());
+		buf.increment_position(count);
 	}
 }
 

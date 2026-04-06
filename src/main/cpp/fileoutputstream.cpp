@@ -110,22 +110,17 @@ void FileOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 	}
 
 	size_t nbytes = buf.remaining();
-	size_t pos = buf.position();
-	const char* data = buf.data();
-
 	while (nbytes > 0)
 	{
 		apr_status_t stat = apr_file_write(
-				m_priv->fileptr, data + pos, &nbytes);
+				m_priv->fileptr, buf.current(), &nbytes);
 
 		if (stat != APR_SUCCESS)
 		{
 			throw IOException(stat);
 		}
 
-		pos += nbytes;
-		buf.position(pos);
-		nbytes = buf.remaining();
+		nbytes = buf.increment_position(nbytes);
 	}
 }
 

@@ -111,18 +111,17 @@ class APRCharsetDecoder : public CharsetDecoder
 				{
 					size_t inbytes_left = in.remaining();
 					size_t initial_inbytes_left = inbytes_left;
-					size_t pos = in.position();
 					apr_size_t outbytes_left = initial_outbytes_left;
 					{
 						std::lock_guard<std::mutex> lock(mutex);
 						stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
-								in.data() + pos,
+								in.current(),
 								&inbytes_left,
 								(char*) buf,
 								&outbytes_left);
 					}
 					out.append(buf, (initial_outbytes_left - outbytes_left) / sizeof(logchar));
-					in.position(pos + (initial_inbytes_left - inbytes_left));
+					in.increment_position(initial_inbytes_left - inbytes_left);
 				}
 			}
 
@@ -181,7 +180,7 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 				if (*src == 0)
 				{
 					out.append(1, (logchar) 0);
-					in.position(in.position() + 1);
+					in.increment_position(1);
 				}
 				else
 				{
@@ -194,7 +193,7 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 							BUFSIZE - 1,
 							&mbstate);
 					auto converted = src - cbuf;
-					in.position(in.position() + converted);
+					in.increment_position(converted);
 
 					if (wCharCount == (size_t) -1) // Illegal byte sequence?
 					{
@@ -249,10 +248,10 @@ class TrivialCharsetDecoder : public CharsetDecoder
 
 			if ( remaining > 0)
 			{
-				const logchar* src = (const logchar*) (in.data() + in.position());
-				size_t count = remaining / sizeof(logchar);
-				out.append(src, count);
-				in.position(in.position() + remaining);
+				auto src = in.current();
+				auto count = remaining / sizeof(logchar);
+				out.append(reinterpret_cast<const logchar*>(src), count);
+				in.increment_position(remaining);
 			}
 
 			return APR_SUCCESS;
@@ -288,29 +287,28 @@ class UTF8CharsetDecoder : public CharsetDecoder
 		virtual log4cxx_status_t decode(ByteBuffer& in,
 			LogString& out)
 		{
-			if (in.remaining() > 0)
+			auto availableByteCount = in.remaining();
+			std::string tmp(in.current(), availableByteCount);
+			std::string::const_iterator nextCodePoint = tmp.begin();
+
+			while (nextCodePoint != tmp.end())
 			{
-				std::string tmp(in.current(), in.remaining());
-				std::string::const_iterator iter = tmp.begin();
+				auto lastCodePoint = nextCodePoint;
+				auto sv = Transcoder::decode(tmp, nextCodePoint);
 
-				while (iter != tmp.end())
+				if (sv == 0xFFFF || nextCodePoint == lastCodePoint)
 				{
-					unsigned int sv = Transcoder::decode(tmp, iter);
-
-					if (sv == 0xFFFF)
-					{
-						size_t offset = iter - tmp.begin();
-						in.position(in.position() + offset);
-						return APR_BADARG;
-					}
-					else
-					{
-						Transcoder::encode(sv, out);
-					}
+					size_t offset = nextCodePoint - tmp.begin();
+					in.increment_position(offset);
+					return APR_BADARG;
 				}
-
-				in.position(in.limit());
+				else
+				{
+					Transcoder::encode(sv, out);
+				}
 			}
+
+			in.increment_position(availableByteCount);
 
 			return APR_SUCCESS;
 		}
@@ -340,20 +338,16 @@ class ISOLatinCharsetDecoder : public CharsetDecoder
 		virtual log4cxx_status_t decode(ByteBuffer& in,
 			LogString& out)
 		{
-			if (in.remaining() > 0)
+			auto availableByteCount = in.remaining();
+			auto src = in.current();
+			auto srcEnd = src + availableByteCount;
+
+			while (src < srcEnd)
 			{
-
-				const unsigned char* src = (unsigned char*) in.current();
-				const unsigned char* srcEnd = src + in.remaining();
-
-				while (src < srcEnd)
-				{
-					unsigned int sv = *(src++);
-					Transcoder::encode(sv, out);
-				}
-
-				in.position(in.limit());
+				auto sv = static_cast<unsigned int>(*src++);
+				Transcoder::encode(sv, out);
 			}
+			in.increment_position(availableByteCount);
 
 			return APR_SUCCESS;
 		}
@@ -388,30 +382,26 @@ class USASCIICharsetDecoder : public CharsetDecoder
 		{
 			log4cxx_status_t stat = APR_SUCCESS;
 
-			if (in.remaining() > 0)
+			auto availableByteCount = in.remaining();
+			auto src = in.current();
+			auto srcEnd = src + availableByteCount;
+			size_t byteCount = 0;
+			while (src < srcEnd)
 			{
+				auto sv = static_cast<unsigned int>(*src++);
 
-				const unsigned char* src = (unsigned char*) in.current();
-				const unsigned char* srcEnd = src + in.remaining();
-
-				while (src < srcEnd)
+				if (sv < 0x80)
 				{
-					unsigned char sv = *src;
-
-					if (sv < 0x80)
-					{
-						src++;
-						Transcoder::encode(sv, out);
-					}
-					else
-					{
-						stat = APR_BADARG;
-						break;
-					}
+					++byteCount;
+					Transcoder::encode(sv, out);
 				}
-
-				in.position(src - (const unsigned char*) in.data());
+				else
+				{
+					stat = APR_BADARG;
+					break;
+				}
 			}
+			in.increment_position(byteCount);
 
 			return stat;
 		}
@@ -435,27 +425,27 @@ class LocaleCharsetDecoder : public CharsetDecoder
 		log4cxx_status_t decode(ByteBuffer& in, LogString& out) override
 		{
 			log4cxx_status_t result = APR_SUCCESS;
-			const char* p = in.current();
-			size_t i = in.position();
-			size_t remain = in.limit() - i;
+			auto p = in.current();
+			auto availableByteCount = in.remaining();
+			size_t byteCount = 0;
 #if !LOG4CXX_CHARSET_EBCDIC
 			if (std::mbsinit(&this->state)) // ByteBuffer not partially decoded?
 			{
 				// Copy single byte characters
-				for (; 0 < remain && ((unsigned int) *p) < 0x80; --remain, ++i, p++)
+				for (; byteCount < availableByteCount && static_cast<unsigned int>(*p) < 0x80; ++byteCount, ++p)
 				{
 					out.append(1, *p);
 				}
 			}
 #endif
 			// Decode characters that may be represented by multiple bytes
-			while (0 < remain)
+			while (byteCount < availableByteCount)
 			{
 				wchar_t ch = 0;
-				size_t n = std::mbrtowc(&ch, p, remain, &this->state);
+				size_t n = std::mbrtowc(&ch, p, availableByteCount - byteCount, &this->state);
 				if (0 == n) // NULL encountered?
 				{
-					++i;
+					++byteCount;
 					break;
 				}
 				if (static_cast<std::size_t>(-1) == n) // decoding error?
@@ -468,11 +458,10 @@ class LocaleCharsetDecoder : public CharsetDecoder
 					break;
 				}
 				Transcoder::encode(static_cast<unsigned int>(ch), out);
-				remain -= n;
-				i += n;
+				byteCount += n;
 				p += n;
 			}
-			in.position(i);
+			in.increment_position(byteCount);
 			return result;
 		}
 
