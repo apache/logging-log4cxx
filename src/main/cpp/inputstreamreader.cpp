@@ -21,9 +21,6 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/bytebuffer.h>
 
-#include <cstdio>
-#include <cstring>
-
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 

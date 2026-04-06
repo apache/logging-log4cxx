@@ -18,6 +18,7 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
+#include <cstring>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
