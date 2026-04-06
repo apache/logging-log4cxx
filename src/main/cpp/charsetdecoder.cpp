@@ -248,9 +248,9 @@ class TrivialCharsetDecoder : public CharsetDecoder
 
 			if ( remaining > 0)
 			{
-				const logchar* src = (const logchar*) (in.data() + in.position());
-				size_t count = remaining / sizeof(logchar);
-				out.append(src, count);
+				auto src = in.current();
+				auto count = remaining / sizeof(logchar);
+				out.append(reinterpret_cast<const logchar*>(src), count);
 				in.increment_position(remaining);
 			}
 
@@ -289,15 +289,16 @@ class UTF8CharsetDecoder : public CharsetDecoder
 		{
 			auto availableByteCount = in.remaining();
 			std::string tmp(in.current(), availableByteCount);
-			std::string::const_iterator iter = tmp.begin();
+			auto nextCodePoint = tmp.begin();
 
-			while (iter != tmp.end())
+			while (nextCodePoint != tmp.end())
 			{
-				unsigned int sv = Transcoder::decode(tmp, iter);
+				auto lastCodePoint = nextCodePoint;
+				auto sv = Transcoder::decode(tmp, nextCodePoint);
 
-				if (sv == 0xFFFF)
+				if (sv == 0xFFFF || nextCodePoint == lastCodePoint)
 				{
-					size_t offset = iter - tmp.begin();
+					size_t offset = nextCodePoint - tmp.begin();
 					in.increment_position(offset);
 					return APR_BADARG;
 				}
