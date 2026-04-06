@@ -74,6 +74,8 @@ class LOG4CXX_EXPORT ByteBuffer
 		/// If \c newLimit exceeds the memory capacity, an exception is thrown.
 		/// If the current cursor is currently beyond \c newLimit
 		/// the cursor is changed to be at \c newLimit.
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Use flip instead" ) ]]
 		void limit(size_t newLimit);
 #endif
 
@@ -88,6 +90,8 @@ class LOG4CXX_EXPORT ByteBuffer
 		/// Use \c newPosition as the cursor position
 		/// providing it is less than the extent to which the cursor can advance,
 		/// otherwise set the cursor to the extent to which the cursor can advance.
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Use increment_position instead" ) ]]
 		void position(size_t newPosition);
 #endif
 		/// Advance the cursor by \c byteCount
