@@ -100,7 +100,7 @@ char* Transcoder::encodeUTF8(const LogString& src, Pool& p)
 void Transcoder::encodeUTF8(unsigned int sv, ByteBuffer& dst)
 {
 	size_t bytes = encodeUTF8(sv, dst.current());
-	dst.position(dst.position() + bytes);
+	dst.increment_position(bytes);
 }
 
 
@@ -147,7 +147,7 @@ size_t Transcoder::encodeUTF8(unsigned int ch, char* dst)
 void Transcoder::encodeUTF16BE(unsigned int sv, ByteBuffer& dst)
 {
 	size_t bytes = encodeUTF16BE(sv, dst.current());
-	dst.position(dst.position() + bytes);
+	dst.increment_position(bytes);
 }
 
 
@@ -177,7 +177,7 @@ size_t Transcoder::encodeUTF16BE(unsigned int ch, char* dst)
 void Transcoder::encodeUTF16LE(unsigned int sv, ByteBuffer& dst)
 {
 	size_t bytes = encodeUTF16LE(sv, dst.current());
-	dst.position(dst.position() + bytes);
+	dst.increment_position(bytes);
 }
 
 size_t Transcoder::encodeUTF16LE(unsigned int ch, char* dst)
@@ -342,7 +342,7 @@ void Transcoder::decode(const std::string& src, LogString& dst)
 			if (CharsetDecoder::isError(stat))
 			{
 				dst.append(1, LOSSCHAR);
-				buf.position(buf.position() + 1);
+				buf.increment_position(1);
 			}
 		}
 

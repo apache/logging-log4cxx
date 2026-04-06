@@ -48,12 +48,21 @@ void ByteBuffer::clear()
 	m_priv->pos = 0;
 }
 
+void ByteBuffer::carry()
+{
+	auto available = remaining();
+	memmove(m_priv->base, current(), available);
+	m_priv->lim = m_priv->cap;
+	m_priv->pos = available;
+}
+
 void ByteBuffer::flip()
 {
 	m_priv->lim = m_priv->pos;
 	m_priv->pos = 0;
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void ByteBuffer::position(size_t newPosition)
 {
 	if (newPosition < m_priv->lim)
@@ -80,7 +89,7 @@ void ByteBuffer::limit(size_t newLimit)
 		m_priv->pos = m_priv->lim;
 	}
 }
-
+#endif
 
 bool ByteBuffer::put(char byte)
 {
@@ -128,3 +137,9 @@ size_t ByteBuffer::remaining() const
 	return m_priv->lim - m_priv->pos;
 }
 
+size_t ByteBuffer::increment_position(size_t byteCount)
+{
+    auto available = remaining();
+    m_priv->pos += byteCount < available ? byteCount : available;
+    return remaining();
+}
