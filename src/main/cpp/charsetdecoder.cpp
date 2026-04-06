@@ -289,7 +289,7 @@ class UTF8CharsetDecoder : public CharsetDecoder
 		{
 			auto availableByteCount = in.remaining();
 			std::string tmp(in.current(), availableByteCount);
-			auto nextCodePoint = tmp.begin();
+			std::string::const_iterator nextCodePoint = tmp.begin();
 
 			while (nextCodePoint != tmp.end())
 			{
