@@ -28,8 +28,11 @@ namespace helpers
 {
 
 /**
-* An area of memory, a cursor into that memory and a count of remaining bytes.
-* It does not own the memory, so does not allocate or free memory.
+* An area of memory and a cursor into that memory.
+* <p>Provides the remaining bytes available for storage or to be processed.
+* <p>The \c flip method switches its role from being space for storage
+* to being a collection of bytes to be processed.
+* <p>It does not own the memory, so does not allocate or free memory.
 * The user must ensure the lifetime of the memory exceeds the lifeime of the class instance.
 */
 class LOG4CXX_EXPORT ByteBuffer
