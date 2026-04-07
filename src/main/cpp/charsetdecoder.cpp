@@ -316,7 +316,7 @@ class UTF8CharsetDecoder : public CharsetDecoder
 				{
 					size_t offset = nextCodePoint - tmp.begin();
 					in.increment_position(offset);
-					return APR_BADARG;
+					return APR_BADCH;
 				}
 				else
 				{
@@ -413,7 +413,7 @@ class USASCIICharsetDecoder : public CharsetDecoder
 				}
 				else
 				{
-					stat = APR_BADARG;
+					stat = APR_BADCH;
 					break;
 				}
 			}
@@ -466,7 +466,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 				}
 				if (static_cast<std::size_t>(-1) == n) // decoding error?
 				{
-					result = APR_BADARG;
+					result = APR_BADCH;
 					break;
 				}
 				if (static_cast<std::size_t>(-2) == n) // incomplete sequence?
