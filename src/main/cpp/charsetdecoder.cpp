@@ -121,6 +121,11 @@ class APRCharsetDecoder : public CharsetDecoder
 								&outbytes_left);
 					}
 					out.append(buf, (initial_outbytes_left - outbytes_left) / sizeof(logchar));
+					if (inbytes_left == initial_inbytes_left && stat == APR_SUCCESS)
+					{
+						stat = APR_BADCH;
+						break;
+					}
 					in.increment_position(initial_inbytes_left - inbytes_left);
 				}
 			}
