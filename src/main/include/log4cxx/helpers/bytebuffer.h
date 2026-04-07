@@ -30,8 +30,10 @@ namespace helpers
 /**
 * An area of memory and a cursor into that memory.
 * <p>Provides the remaining bytes available for storage or to be processed.
-* <p>The \c flip method switches its role from being space for storage
+* <p>The \c flip method switches its role from being a space for storage
 * to being a collection of bytes to be processed.
+* <p>The \c carry method switches it back to being a space for storage,
+* while retaining any unprocessed bytes.
 * <p>It does not own the memory, so does not allocate or free memory.
 * The user must ensure the lifetime of the memory exceeds the lifeime of the class instance.
 */
