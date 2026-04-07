@@ -176,7 +176,12 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
-		setBufferSize((size_t)OptionConverter::toInt(value, 1));
+		int parsed = OptionConverter::toInt(value, 1);
+		if (parsed < 0)
+		{
+			parsed = 1;
+		}
+		setBufferSize((size_t) parsed);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("PASSWORD"), LOG4CXX_STR("password")))
 	{

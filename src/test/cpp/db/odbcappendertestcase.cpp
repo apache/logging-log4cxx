@@ -39,6 +39,7 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST(testNegativeBufferSizeOption);
 //#define DataSourceName_Log4cxxTest_Is_Valid
 #ifdef DataSourceName_Log4cxxTest_Is_Valid
 		LOGUNIT_TEST(testConnectUsingDSN);
@@ -57,6 +58,13 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 		void tearDown()
 		{
 			LogManager::shutdown();
+		}
+
+		void testNegativeBufferSizeOption()
+		{
+			db::ODBCAppender appender;
+			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("-10"));
+			LOGUNIT_ASSERT_EQUAL((size_t) 1, appender.getBufferSize());
 		}
 
 // 'odbcAppenderDSN-Log4cxxTest.xml' requires the data souce name 'Log4cxxTest'
