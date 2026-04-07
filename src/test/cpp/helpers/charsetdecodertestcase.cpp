@@ -22,6 +22,8 @@
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/loglog.h>
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
