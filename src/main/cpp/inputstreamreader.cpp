@@ -21,9 +21,6 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/bytebuffer.h>
 
-#include <cstdio>
-#include <cstring>
-
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
@@ -91,16 +88,11 @@ LogString InputStreamReader::read(Pool& p)
 
 		if (buf.remaining() > 0)
 		{
-			const size_t carry = buf.remaining();
-
-			if (carry == BUFSIZE)
+			if (buf.remaining() == BUFSIZE)
 			{
 				throw IOException(LOG4CXX_STR("Decoder made no progress"));
 			}
-
-			memmove(buf.data(), buf.current(), carry);
-			buf.clear();
-			buf.position(carry);
+			buf.carry();
 		}
 		else
 		{

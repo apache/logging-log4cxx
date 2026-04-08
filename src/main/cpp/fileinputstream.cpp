@@ -113,7 +113,7 @@ int FileInputStream::read(ByteBuffer& buf)
 			throw IOException(stat);
 		}
 
-		buf.position(buf.position() + bytesRead);
+		buf.increment_position(bytesRead);
 		retval = (int)bytesRead;
 	}
 

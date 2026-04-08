@@ -112,7 +112,7 @@ class APRCharsetEncoder : public CharsetEncoder
 				iter += ((initial_inbytes_left - inbytes_left) / sizeof(LogString::value_type));
 			}
 
-			out.position(out.position() + (initial_outbytes_left - outbytes_left));
+			out.increment_position((initial_outbytes_left - outbytes_left));
 			return stat;
 		}
 
@@ -188,7 +188,7 @@ class WcstombsCharsetEncoder : public CharsetEncoder
 						if (converted != (size_t) -1)
 						{
 							iter += chunkSize;
-							out.position(out.position() + converted);
+							out.increment_position(converted);
 							break;
 						}
 					}
@@ -196,7 +196,7 @@ class WcstombsCharsetEncoder : public CharsetEncoder
 				else
 				{
 					iter += chunkSize;
-					out.position(out.position() + converted);
+					out.increment_position(converted);
 				}
 			}
 
@@ -328,7 +328,7 @@ class TrivialCharsetEncoder : public CharsetEncoder
 					(const char*) in.data() + (iter - in.begin()),
 					requested * sizeof(logchar));
 				iter += requested;
-				out.position(out.position() + requested * sizeof(logchar));
+				out.increment_position(requested * sizeof(logchar));
 			}
 
 			return APR_SUCCESS;
@@ -456,39 +456,43 @@ class LocaleCharsetEncoder : public CharsetEncoder
 		}
 		log4cxx_status_t encode
 			( const LogString&           in
-			, LogString::const_iterator& iter
+			, LogString::const_iterator& nextCodePoint
 			, ByteBuffer&                out
 			) override
 		{
 			log4cxx_status_t result = APR_SUCCESS;
 #if !LOG4CXX_CHARSET_EBCDIC
 			char* current = out.current();
-			size_t remain = out.remaining();
+			size_t availableByteCount = out.remaining();
+			size_t byteCount = 0;
 			if (std::mbsinit(&this->state)) // ByteBuffer not partially encoded?
 			{
 				// Copy single byte characters
 				for (;
-					iter != in.end() && ((unsigned int) *iter) < 0x80 && 0 < remain;
-					iter++, remain--, current++)
+					nextCodePoint != in.end() && byteCount < availableByteCount && static_cast<unsigned int>(*nextCodePoint) < 0x80;
+					++nextCodePoint, ++byteCount, ++current)
 				{
-					*current = *iter;
+					*current = static_cast<char>(*nextCodePoint);
 				}
 			}
 #endif
 			// Encode characters that may require multiple bytes
-			while (iter != in.end() && MB_CUR_MAX <= remain)
+			while (nextCodePoint != in.end() && byteCount < availableByteCount && MB_CUR_MAX <= (availableByteCount - byteCount))
 			{
-				auto ch = Transcoder::decode(in, iter);
+				LogString::const_iterator lastCodePoint = nextCodePoint;
+				auto ch = Transcoder::decode(in, nextCodePoint);
+				if (nextCodePoint == lastCodePoint) // invalid input sequence?
+					nextCodePoint = in.end();
 				auto n = std::wcrtomb(current, ch, &this->state);
 				if (static_cast<std::size_t>(-1) == n) // not a valid wide character?
 				{
 					result = APR_BADARG;
 					break;
 				}
-				remain -= n;
+				byteCount += n;
 				current += n;
 			}
-			out.position(current - out.data());
+			out.increment_position(byteCount);
 			return result;
 		}
 

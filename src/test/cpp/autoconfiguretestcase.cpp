@@ -156,8 +156,7 @@ public:
 			bbuf.put(*p);
 			++sz;
 		}
-		bbuf.position(0);
-		bbuf.limit(sz);
+		bbuf.flip();
 		helpers::FileOutputStream of(m_configFile, true);
 		of.write(bbuf, m_pool);
 		of.flush(m_pool);

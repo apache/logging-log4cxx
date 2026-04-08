@@ -131,7 +131,7 @@ size_t APRSocket::write(ByteBuffer& buf)
 		apr_status_t status = apr_socket_send(_priv->socket, buf.current(), &written);
 #endif
 
-		buf.position(buf.position() + written);
+		buf.increment_position(written);
 		totalWritten += written;
 
 		if (status != APR_SUCCESS)
