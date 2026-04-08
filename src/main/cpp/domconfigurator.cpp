@@ -85,7 +85,7 @@ public: // Attributes
 	bool appenderAdded{ false };
 	AppenderMap	appenders;
 	Pool p;
-	CharsetDecoderPtr utf8Decoder{ CharsetDecoder::getUTF8Decoder() };
+	CharsetDecoderPtr utf8Decoder{ CharsetDecoder::getDecoder(LOG4CXX_STR("UTF-8")) };
 	apr_xml_doc* doc{ nullptr };
 
 public: // ...structor
