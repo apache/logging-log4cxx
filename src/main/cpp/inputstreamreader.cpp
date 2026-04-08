@@ -20,6 +20,8 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -74,22 +76,32 @@ LogString InputStreamReader::read(Pool& p)
 	const size_t BUFSIZE = 4096;
 	ByteBuffer buf(p.pstralloc(BUFSIZE), BUFSIZE);
 	LogString output;
+	log4cxx_status_t stat{ 0 };
 
 	// read whole file
 	while (m_priv->in->read(buf) >= 0)
 	{
 		buf.flip();
 		auto lastAvailableCount = buf.remaining();
-		log4cxx_status_t stat = m_priv->dec->decode(buf, output);
-
+		stat = m_priv->dec->decode(buf, output);
 		if (buf.remaining() == lastAvailableCount)
-		{
-			if (stat != 0)
-				throw IOException(LOG4CXX_STR("decode"), stat);
-			else
-				throw IOException(LOG4CXX_STR("decode made no progress"));
-		}
+			break;
 		buf.carry();
+	}
+	if (stat != 0 && 0 < buf.remaining())
+	{
+		auto toHexDigit = [](int ch) -> int
+		{
+			return (10 <= ch ? (0x61 - 10) : 0x30) + ch;
+		};
+		LogString msg(LOG4CXX_STR("Unable to decode character 0x"));
+		auto ch = static_cast<unsigned int>(*buf.current());
+		msg.push_back(toHexDigit((ch & 0xF0) >> 4));
+		msg.push_back(toHexDigit((ch & 0xF)));
+		msg += LOG4CXX_STR(" at offset ");
+		Pool p;
+		StringHelper::toString(output.size(), p, msg);
+		throw RuntimeException(msg);
 	}
 
 	return output;

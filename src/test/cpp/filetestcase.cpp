@@ -261,9 +261,16 @@ public:
 		// 0xC2 is a generic start byte for a 2-byte sequence in UTF-8.
 		char input[] = { 'A', (char)0xC2, 'B', 'C', 0 };
 		InputStreamReader reader(std::make_shared<MockInputStream>(input, 4), CharsetDecoder::getUTF8Decoder());
-		auto contentLS = reader.read(p);
-		LOG4CXX_ENCODE_CHAR(content, contentLS);
-		LOGUNIT_ASSERT_EQUAL("A", content);
+		try
+		{
+			reader.read(p);
+			LOGUNIT_ASSERT(false);
+		}
+		catch (const Exception& ex)
+		{
+			LOG4CXX_DECODE_CHAR(msg, ex.what());
+			LogLog::debug(msg);
+		}
 	}
 };
 
