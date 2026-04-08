@@ -79,25 +79,17 @@ LogString InputStreamReader::read(Pool& p)
 	while (m_priv->in->read(buf) >= 0)
 	{
 		buf.flip();
+		auto lastAvailableCount = buf.remaining();
 		log4cxx_status_t stat = m_priv->dec->decode(buf, output);
 
-		if (stat != 0)
+		if (buf.remaining() == lastAvailableCount)
 		{
-			throw IOException(LOG4CXX_STR("decode"), stat);
+			if (stat != 0)
+				throw IOException(LOG4CXX_STR("decode"), stat);
+			else
+				throw IOException(LOG4CXX_STR("decode made no progress"));
 		}
-
-		if (buf.remaining() > 0)
-		{
-			if (buf.remaining() == BUFSIZE)
-			{
-				throw IOException(LOG4CXX_STR("Decoder made no progress"));
-			}
-			buf.carry();
-		}
-		else
-		{
-			buf.clear();
-		}
+		buf.carry();
 	}
 
 	return output;

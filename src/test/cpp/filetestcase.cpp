@@ -28,6 +28,8 @@
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #if LOG4CXX_CFSTRING_API
 	#include <CoreFoundation/CFString.h>
@@ -58,6 +60,8 @@ LOGUNIT_CLASS(FileTestCase)
 	LOGUNIT_TEST(copyConstructor);
 	LOGUNIT_TEST(assignment);
 	LOGUNIT_TEST(deleteBackslashedFileName);
+	LOGUNIT_TEST(testSplitMultibyteUtf8);
+	LOGUNIT_TEST(testInvalidUtf8);
 	LOGUNIT_TEST_SUITE_END();
 
 #ifdef _DEBUG
@@ -102,6 +106,8 @@ public:
 		}
 		catch (IOException& ex)
 		{
+			LOG4CXX_DECODE_CHAR(msg, ex.what());
+			LogLog::debug(msg);
 		}
 	}
 
@@ -206,7 +212,59 @@ public:
 		Pool pool;
 		/*bool deleted = */file.deleteFile(pool);
 	}
-};
 
+	class MockInputStream : public InputStream
+	{
+		ByteBuffer m_data;
+	public:
+		MockInputStream(const char* data, size_t charCount)
+			: m_data(const_cast<char*>(data), charCount)
+		{}
+
+		int read(ByteBuffer& dst) override
+		{
+			auto availableBytes = m_data.remaining();
+			if (availableBytes < 1)
+				return -1;
+			int count = 0;
+			for (auto p = m_data.current(); count < availableBytes && dst.put(*p); ++p)
+				++count;
+			m_data.increment_position(count);
+			return count;
+		}
+
+		void close() override {}
+	};
+
+	/**
+	 * Tests behavior when a multibyte UTF-8 sequence occurs on a read boundary
+	 */
+	void testSplitMultibyteUtf8()
+	{
+		Pool p;
+		// InputStreamReader uses a buffer of size 4096
+		std::string input( 4094, 'A' );
+		// räksmörgås.josefsson.org
+		input.append("\162\303\244\153\163\155\303\266\162\147\303\245\163\056\152\157\163\145\146\163\163\157\156\056\157\162\147");
+		InputStreamReader reader(std::make_shared<MockInputStream>(input.c_str(), input.size()), CharsetDecoder::getUTF8Decoder());
+		auto contentLS = reader.read(p);
+		LOG4CXX_ENCODE_CHAR(content, contentLS);
+		LOGUNIT_ASSERT_EQUAL(input, content);
+	}
+
+	/**
+	 * Tests behavior given an incomplete multibyte UTF-8 sequence in the input
+	 */
+	void testInvalidUtf8()
+	{
+		Pool p;
+		// 0xC2 is a generic start byte for a 2-byte sequence in UTF-8.
+		char input[] = { 'A', (char)0xC2, 'B', 'C', 0 };
+		InputStreamReader reader(std::make_shared<MockInputStream>(input, 4), CharsetDecoder::getUTF8Decoder());
+		auto contentLS = reader.read(p);
+		LOG4CXX_ENCODE_CHAR(content, contentLS);
+		LOGUNIT_ASSERT_EQUAL("A", content);
+	}
+};
 
 LOGUNIT_TEST_SUITE_REGISTRATION(FileTestCase);
