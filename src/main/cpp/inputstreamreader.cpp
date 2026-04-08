@@ -20,7 +20,6 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>
 
 using namespace LOG4CXX_NS;
@@ -85,7 +84,11 @@ LogString InputStreamReader::read(Pool& p)
 		auto lastAvailableCount = buf.remaining();
 		stat = m_priv->dec->decode(buf, output);
 		if (buf.remaining() == lastAvailableCount)
+		{
+			if (stat == 0)
+				stat = -1;
 			break;
+		}
 		buf.carry();
 	}
 	if (stat != 0 && 0 < buf.remaining())
