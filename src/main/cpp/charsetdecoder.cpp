@@ -280,10 +280,6 @@ class TrivialCharsetDecoder : public CharsetDecoder
 		TrivialCharsetDecoder& operator=(const TrivialCharsetDecoder&);
 };
 
-
-#if LOG4CXX_LOGCHAR_IS_UTF8
-typedef TrivialCharsetDecoder UTF8CharsetDecoder;
-#else
 /**
 *    Converts from UTF-8 to std::wstring
 *
@@ -333,7 +329,6 @@ class UTF8CharsetDecoder : public CharsetDecoder
 		UTF8CharsetDecoder(const UTF8CharsetDecoder&);
 		UTF8CharsetDecoder& operator=(const UTF8CharsetDecoder&);
 };
-#endif
 
 /**
 *    Converts from ISO-8859-1 to LogString.
@@ -504,7 +499,11 @@ CharsetDecoder::~CharsetDecoder()
 CharsetDecoder* CharsetDecoder::createDefaultDecoder()
 {
 #if LOG4CXX_CHARSET_UTF8
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	return new TrivialCharsetDecoder();
+#else
 	return new UTF8CharsetDecoder();
+#endif
 #elif LOG4CXX_CHARSET_ISO88591 || defined(_WIN32_WCE)
 	return new ISOLatinCharsetDecoder();
 #elif LOG4CXX_CHARSET_USASCII
@@ -535,19 +534,7 @@ CharsetDecoderPtr CharsetDecoder::getDefaultDecoder()
 
 CharsetDecoderPtr CharsetDecoder::getUTF8Decoder()
 {
-	static WideLife<CharsetDecoderPtr> decoder(new UTF8CharsetDecoder());
-
-	//
-	//  if invoked after static variable destruction
-	//     (if logging is called in the destructor of a static object)
-	//     then create a new decoder.
-	//
-	if (decoder.value() == 0)
-	{
-		return std::make_shared<UTF8CharsetDecoder>();
-	}
-
-	return decoder;
+	return std::make_shared<UTF8CharsetDecoder>();
 }
 
 CharsetDecoderPtr CharsetDecoder::getISOLatinDecoder()
@@ -562,7 +549,11 @@ CharsetDecoderPtr CharsetDecoder::getDecoder(const LogString& charset)
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF8"), LOG4CXX_STR("utf8")) ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("CP65001"), LOG4CXX_STR("cp65001")))
 	{
+#if LOG4CXX_LOGCHAR_IS_UTF8
+		return std::make_shared<TrivialCharsetDecoder>();
+#else
 		return std::make_shared<UTF8CharsetDecoder>();
+#endif
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("C"), LOG4CXX_STR("c")) ||
 		charset == LOG4CXX_STR("646") ||
