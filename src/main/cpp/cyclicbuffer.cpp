@@ -64,6 +64,11 @@ Add an <code>event</code> as the last event in the buffer.
 */
 void CyclicBuffer::add(const spi::LoggingEventPtr& event)
 {
+	if (m_priv->ea.empty())
+	{
+		return;
+	}
+
 	m_priv->ea[m_priv->last] = event;
 
 	if (++m_priv->last == m_priv->maxSize)
