@@ -89,7 +89,7 @@ See AsyncAppender::setOption for details.
 */
 class LOG4CXX_EXPORT AsyncAppender :
 	public virtual spi::AppenderAttachable,
-	public virtual AppenderSkeleton
+	public AppenderSkeleton
 {
 	protected:
 		struct AsyncAppenderPriv;
