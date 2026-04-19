@@ -425,7 +425,7 @@ void JSONLayout::appendSerializedLocationInfo(LogString& buf,
 	appendQuotedEscapedString(buf, LOG4CXX_STR("line"));
 	buf.append(LOG4CXX_STR(": "));
 	LogString lineNumber;
-	StringHelper::toString(locInfo.getLineNumber(), p, lineNumber);
+	StringHelper::toString(locInfo.getLineNumber(), lineNumber);
 	appendQuotedEscapedString(buf, lineNumber);
 	buf.append(LOG4CXX_STR(","));
 	buf.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));

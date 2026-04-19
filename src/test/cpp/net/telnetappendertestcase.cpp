@@ -160,9 +160,9 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			if (exitCode != 0 && helpers::LogLog::isDebugEnabled())
 			{
 				LogString msg = LOG4CXX_STR("child exit code: ");
-				helpers::StringHelper::toString(exitCode, p, msg);
+				helpers::StringHelper::toString(exitCode, msg);
 				msg += LOG4CXX_STR("; reason: ");
-				helpers::StringHelper::toString(reason, p, msg);
+				helpers::StringHelper::toString(reason, msg);
 				helpers::LogLog::debug(msg);
 			}
 			LOGUNIT_ASSERT_EQUAL(exitCode, 0);

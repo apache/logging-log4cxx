@@ -26,7 +26,9 @@ namespace LOG4CXX_NS
 {
 namespace helpers
 {
+#if LOG4CXX_ABI_VERSION <= 15
 class Pool;
+#endif
 /**
 String manipulation routines
 */
@@ -45,10 +47,20 @@ class LOG4CXX_EXPORT StringHelper
 		static int toInt(const LogString& s);
 		static int64_t toInt64(const LogString& s);
 
-		static void toString(int i, LOG4CXX_NS::helpers::Pool& pool, LogString& dst);
-		static void toString(int64_t i, LOG4CXX_NS::helpers::Pool& pool, LogString& dst);
-		static void toString(size_t i, LOG4CXX_NS::helpers::Pool& pool, LogString& dst);
-
+#if LOG4CXX_ABI_VERSION <= 15
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		static void toString(int i, Pool& pool, LogString& dst);
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		static void toString(int64_t i, Pool& pool, LogString& dst);
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		static void toString(size_t i, Pool& pool, LogString& dst);
+#endif
+		static void toString(int i, LogString& dst);
+		static void toString(int64_t i, LogString& dst);
+		static void toString(size_t i, LogString& dst);
 		static void toString(bool val, LogString& dst);
 
 		static LogString toLowerCase(const LogString& s);

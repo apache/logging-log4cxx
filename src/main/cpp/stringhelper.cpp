@@ -129,7 +129,7 @@ int64_t StringHelper::toInt64(const LogString& s)
 #endif
 }
 
-void StringHelper::toString(int n, Pool& pool, LogString& dst)
+void StringHelper::toString(int n, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(std::to_wstring(n));
@@ -151,7 +151,7 @@ void StringHelper::toString(bool val, LogString& dst)
 }
 
 
-void StringHelper::toString(int64_t n, Pool& pool, LogString& dst)
+void StringHelper::toString(int64_t n, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(std::to_wstring(n));
@@ -161,7 +161,7 @@ void StringHelper::toString(int64_t n, Pool& pool, LogString& dst)
 }
 
 
-void StringHelper::toString(size_t n, Pool& pool, LogString& dst)
+void StringHelper::toString(size_t n, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(std::to_wstring(n));
@@ -195,3 +195,8 @@ LogString StringHelper::format(const LogString& pattern, const std::vector<LogSt
 	return result;
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
+void StringHelper::toString(int n, Pool& pool, LogString& dst) { toString(n, dst); }
+void StringHelper::toString(int64_t n, Pool& pool, LogString& dst) { toString(n, dst); }
+void StringHelper::toString(size_t n, Pool& pool, LogString& dst) { toString(n, dst); }
+#endif

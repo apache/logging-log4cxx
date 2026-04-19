@@ -90,11 +90,10 @@ void FallbackErrorHandler::error
 	, const spi::LoggingEventPtr& event
 	) const
 {
-	Pool p;
 	if (LogLog::isDebugEnabled())
 	{
 		LogString msg{ LOG4CXX_STR("FB: error code ") };
-		StringHelper::toString(errorCode, p, msg);
+		StringHelper::toString(errorCode, msg);
 		LogLog::debug(msg);
 	}
 	LogLog::warn(message, ex);
@@ -143,7 +142,10 @@ void FallbackErrorHandler::error
 	}
 	m_priv->errorReported = true;
 	if (event)
+    {
+        Pool p;
 		backupLocked->doAppend(event, p);
+    }
 	m_priv->primary = backupLocked;
 }
 

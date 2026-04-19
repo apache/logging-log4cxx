@@ -47,6 +47,6 @@ void RelativeTimePatternConverter::format(
 	Pool& p) const
 {
 	log4cxx_time_t delta = (event->getTimeStamp() - LoggingEvent::getStartTime()) / 1000;
-	StringHelper::toString(delta, p, toAppendTo);
+	StringHelper::toString(delta, toAppendTo);
 }
 

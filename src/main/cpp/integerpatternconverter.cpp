@@ -47,6 +47,6 @@ void IntegerPatternConverter::format(
 
 	if (i != NULL)
 	{
-		StringHelper::toString(i->intValue(), p, toAppendTo);
+		StringHelper::toString(i->intValue(), toAppendTo);
 	}
 }

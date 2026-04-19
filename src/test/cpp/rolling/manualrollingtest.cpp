@@ -328,7 +328,7 @@ public:
 		LogString filenamePattern = LOG4CXX_STR("output/directory-");
 
 		LogString dirNumber;
-		StringHelper::toString(dist(rng), dirNumber);
+		StringHelper::toString(static_cast<int>(dist(rng)), dirNumber);
 
 		filenamePattern.append( dirNumber );
 		LogString filenamePatternPrefix = filenamePattern;

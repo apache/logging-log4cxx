@@ -349,9 +349,8 @@ WORD NTEventLogAppender::getEventCategory(const LoggingEventPtr& event)
 
 LogString NTEventLogAppender::getErrorString(const LogString& function)
 {
-	Pool p;
 	enum { MSGSIZE = 5000 };
-
+	Pool p;
 	wchar_t* lpMsgBuf = (wchar_t*) p.palloc(MSGSIZE * sizeof(wchar_t));
 	DWORD dw = GetLastError();
 
@@ -365,7 +364,7 @@ LogString NTEventLogAppender::getErrorString(const LogString& function)
 
 	LogString msg(function);
 	msg.append(LOG4CXX_STR(" failed with error "));
-	StringHelper::toString((size_t) dw, p, msg);
+	StringHelper::toString((size_t) dw, msg);
 	msg.append(LOG4CXX_STR(": "));
 	Transcoder::decode(lpMsgBuf, msg);
 

@@ -89,7 +89,7 @@ void SocketAppenderSkeleton::connect(Pool& p)
 			{
 				LogString msg(LOG4CXX_STR("Connecting to [")
 					+ _priv->address->toString() + LOG4CXX_STR(":"));
-				StringHelper::toString(_priv->port, p, msg);
+				StringHelper::toString(_priv->port, msg);
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}
@@ -100,7 +100,7 @@ void SocketAppenderSkeleton::connect(Pool& p)
 		{
 			LogString msg = LOG4CXX_STR("Could not connect to [")
 				+ _priv->address->toString() + LOG4CXX_STR(":");
-			StringHelper::toString(_priv->port, p, msg);
+			StringHelper::toString(_priv->port, msg);
 			msg += LOG4CXX_STR("].");
 
 			fireConnector(); // fire the connector thread
@@ -138,23 +138,20 @@ void SocketAppenderSkeleton::fireConnector()
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
     if (_priv->taskName.empty())
     {
-        Pool p;
         _priv->taskName = _priv->name + LOG4CXX_STR(":")
             + _priv->address->toString() + LOG4CXX_STR(":");
-        StringHelper::toString(_priv->port, p, _priv->taskName);
+        StringHelper::toString(_priv->port, _priv->taskName);
     }
     auto taskManager = ThreadUtility::instancePtr();
     if (!taskManager->value().hasPeriodicTask(_priv->taskName))
     {
-        Pool p;
         if (LogLog::isDebugEnabled())
         {
-            Pool p;
             LogString msg(LOG4CXX_STR("Waiting "));
-            StringHelper::toString(_priv->reconnectionDelay, p, msg);
+            StringHelper::toString(_priv->reconnectionDelay, msg);
             msg += LOG4CXX_STR(" ms before retrying [")
                 + _priv->address->toString() + LOG4CXX_STR(":");
-            StringHelper::toString(_priv->port, p, msg);
+            StringHelper::toString(_priv->port, msg);
             msg += LOG4CXX_STR("].");
             LogLog::debug(msg);
         }
@@ -175,7 +172,7 @@ void SocketAppenderSkeleton::retryConnect()
 	}
 	else
 	{
-		Pool p;
+        Pool p;
 		SocketPtr socket;
 		try
 		{
@@ -183,7 +180,7 @@ void SocketAppenderSkeleton::retryConnect()
 			{
 				LogString msg(LOG4CXX_STR("Attempting connection to [")
 					+ _priv->address->toString() + LOG4CXX_STR(":"));
-				StringHelper::toString(_priv->port, p, msg);
+				StringHelper::toString(_priv->port, msg);
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}
@@ -193,7 +190,7 @@ void SocketAppenderSkeleton::retryConnect()
 			{
 				LogString msg(LOG4CXX_STR("Connection established to [")
 					+ _priv->address->toString() + LOG4CXX_STR(":"));
-				StringHelper::toString(_priv->port, p, msg);
+				StringHelper::toString(_priv->port, msg);
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}
@@ -211,7 +208,7 @@ void SocketAppenderSkeleton::retryConnect()
 		{
 			LogString msg(LOG4CXX_STR("Could not connect to [")
 				+ _priv->address->toString() + LOG4CXX_STR(":"));
-			StringHelper::toString(_priv->port, p, msg);
+			StringHelper::toString(_priv->port, msg);
 			msg += LOG4CXX_STR("].");
 			LogLog::warn(msg, e);
 		}
@@ -221,10 +218,10 @@ void SocketAppenderSkeleton::retryConnect()
 			if (LogLog::isDebugEnabled())
 			{
 				LogString msg(LOG4CXX_STR("Waiting "));
-				StringHelper::toString(_priv->reconnectionDelay, p, msg);
+				StringHelper::toString(_priv->reconnectionDelay, msg);
 				msg += LOG4CXX_STR(" ms before retrying [")
 					+ _priv->address->toString() + LOG4CXX_STR(":");
-				StringHelper::toString(_priv->port, p, msg);
+				StringHelper::toString(_priv->port, msg);
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}

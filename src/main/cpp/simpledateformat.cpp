@@ -247,7 +247,7 @@ class NumericToken : public PatternToken
 		{
 			size_t initialLength = s.length();
 
-			StringHelper::toString( getField( tm ), p, s );
+			StringHelper::toString( getField( tm ), s );
 			size_t finalLength = s.length();
 
 			if ( initialLength + width > finalLength )
@@ -610,14 +610,14 @@ class RFC822TimeZoneToken : public PatternToken
 				}
 
 				LogString hours;
-				StringHelper::toString( off / 3600, p, hours );
+				StringHelper::toString( off / 3600, hours );
 				if( hours.size() == 1 ){
 					s.push_back( '0' );
 				}
 				s.append(hours);
 
 				LogString min;
-				StringHelper::toString( ( off % 3600 ) / 60, p, min );
+				StringHelper::toString( ( off % 3600 ) / 60, min );
 				if( min.size() == 1 ){
 					s.push_back( '0' );
 				}

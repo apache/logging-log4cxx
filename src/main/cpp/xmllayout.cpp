@@ -83,7 +83,7 @@ void XMLLayout::format(LogString& output,
 	output.append(LOG4CXX_STR("<log4j:event logger=\""));
 	Transform::appendLegalCharacters(output, event->getLoggerName());
 	output.append(LOG4CXX_STR("\" timestamp=\""));
-	StringHelper::toString(event->getTimeStamp() / 1000L, p, output);
+	StringHelper::toString(event->getTimeStamp() / 1000L, output);
 	output.append(LOG4CXX_STR("\" level=\""));
 	Transform::appendLegalCharacters(output, event->getLevel()->toString());
 	output.append(LOG4CXX_STR("\" thread=\""));
@@ -121,7 +121,7 @@ void XMLLayout::format(LogString& output,
 		LOG4CXX_DECODE_CHAR(fileName, locInfo.getFileName());
 		Transform::appendLegalCharacters(output, fileName);
 		output.append(LOG4CXX_STR("\" line=\""));
-		StringHelper::toString(locInfo.getLineNumber(), p, output);
+		StringHelper::toString(locInfo.getLineNumber(), output);
 		output.append(LOG4CXX_STR("\"/>"));
 		output.append(LOG4CXX_EOL);
 	}

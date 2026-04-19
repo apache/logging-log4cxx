@@ -193,9 +193,8 @@ void TelnetAppender::TelnetAppenderPriv::close()
 	std::lock_guard<std::recursive_mutex> lock(this->mutex);
 	if (this->eventCount && helpers::LogLog::isDebugEnabled())
 	{
-		Pool p;
 		LogString msg = LOG4CXX_STR("TelnetAppender eventCount ");
-		helpers::StringHelper::toString(this->eventCount, p, msg);
+		helpers::StringHelper::toString(this->eventCount, msg);
 		helpers::LogLog::debug(msg);
 	}
 	SocketPtr nullSocket;
@@ -208,11 +207,10 @@ void TelnetAppender::TelnetAppenderPriv::close()
 			item.s->close();
 			if (this->eventCount && helpers::LogLog::isDebugEnabled())
 			{
-				Pool p;
 				LogString msg = LOG4CXX_STR("TelnetAppender connection ");
-				helpers::StringHelper::toString(connectionNumber, p, msg);
+				helpers::StringHelper::toString(connectionNumber, msg);
 				msg += LOG4CXX_STR(" sentCount ");
-				helpers::StringHelper::toString(item.sentCount, p, msg);
+				helpers::StringHelper::toString(item.sentCount, msg);
 				helpers::LogLog::debug(msg);
 			}
 			item = Connection{ nullSocket, 0 };
@@ -240,13 +238,12 @@ void TelnetAppender::write(ByteBuffer& buf)
 			{
 				if (helpers::LogLog::isDebugEnabled())
 				{
-					Pool p;
 					LogString msg(LOG4CXX_STR("TelnetAppender connection "));
-					helpers::StringHelper::toString(connectionNumber, p, msg);
+					helpers::StringHelper::toString(connectionNumber, msg);
 					msg += LOG4CXX_STR(" sentCount ");
-					helpers::StringHelper::toString(item.sentCount, p, msg);
+					helpers::StringHelper::toString(item.sentCount, msg);
 					msg += LOG4CXX_STR("/");
-					helpers::StringHelper::toString(_priv->eventCount, p, msg);
+					helpers::StringHelper::toString(_priv->eventCount, msg);
 					helpers::LogLog::warn(msg, e);
 				}
 				item.s.reset();
@@ -364,11 +361,10 @@ void TelnetAppender::acceptConnections()
 						_priv->activeConnections++;
 						if (helpers::LogLog::isDebugEnabled())
 						{
-							Pool p;
 							LogString msg = LOG4CXX_STR("TelnetAppender new connection ");
-							helpers::StringHelper::toString(connectionNumber, p, msg);
+							helpers::StringHelper::toString(connectionNumber, msg);
 							msg += LOG4CXX_STR("/");
-							helpers::StringHelper::toString(_priv->activeConnections, p, msg);
+							helpers::StringHelper::toString(_priv->activeConnections, msg);
 							helpers::LogLog::debug(msg);
 						}
 
@@ -378,7 +374,7 @@ void TelnetAppender::acceptConnections()
 
 				Pool p;
 				LogString oss(LOG4CXX_STR("TelnetAppender v1.0 ("));
-				StringHelper::toString((int) count + 1, p, oss);
+				StringHelper::toString((int) count + 1, oss);
 				oss += LOG4CXX_STR(" active connections)\r\n\r\n");
 				writeStatus(newClient, oss, p);
 			}

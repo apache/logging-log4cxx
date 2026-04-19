@@ -32,5 +32,5 @@ void LOG4CXX_NS::helpers::RelativeTimeDateFormat::format(
 	Pool& p) const
 {
 	int64_t interval = (date - startTime) / int64_t(1000);
-	StringHelper::toString(interval, p, s);
+	StringHelper::toString(interval, s);
 }

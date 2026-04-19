@@ -312,12 +312,11 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
 			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
-			Pool p;
 			int i{ 0 };
 			for (auto e : v)
 			{
 				LogString m(LOG4CXX_STR("message"));
-				StringHelper::toString(i, p, m);
+				StringHelper::toString(i, m);
 				LOGUNIT_ASSERT_EQUAL(m, e->getRenderedMessage());
 				++i;
 			}
@@ -490,18 +489,17 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			}
 			if (helpers::LogLog::isDebugEnabled())
 			{
-				Pool p;
 				LogString msg{ LOG4CXX_STR("messageCounts:") };
 				for (auto& item : levelCount)
 				{
 					msg += LOG4CXX_STR(" ");
 					msg += item.first->toString();
 					msg += LOG4CXX_STR(" ");
-					StringHelper::toString(item.second, p, msg);
+					StringHelper::toString(item.second, msg);
 				}
 				msg += LOG4CXX_STR(" ");
 				msg += LOG4CXX_STR("Discarded ");
-				StringHelper::toString(discardMessageCount, p, msg);
+				StringHelper::toString(discardMessageCount, msg);
 				helpers::LogLog::debug(msg);
 			}
 			// Check this test has activated the discard logic
@@ -570,14 +568,13 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			}
 			if (helpers::LogLog::isDebugEnabled())
 			{
-				Pool p;
 				LogString msg{ LOG4CXX_STR("messageCounts:") };
 				msg += LOG4CXX_STR(" nonAppender ");
-				StringHelper::toString(eventCount[0], p, msg);
+				StringHelper::toString(eventCount[0], msg);
 				msg += LOG4CXX_STR(" appender ");
-				StringHelper::toString(eventCount[1], p, msg);
+				StringHelper::toString(eventCount[1], msg);
 				msg += LOG4CXX_STR(" discard ");
-				StringHelper::toString(discardMessageCount, p, msg);
+				StringHelper::toString(discardMessageCount, msg);
 				LogLog::debug(msg);
 			}
 			LOGUNIT_ASSERT(12 < events.size());

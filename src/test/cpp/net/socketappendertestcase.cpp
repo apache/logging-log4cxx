@@ -169,12 +169,11 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 
 			if (helpers::LogLog::isDebugEnabled())
 			{
-				helpers::Pool p;
 				LogString msg(LOG4CXX_STR("messageCount "));
 				for (auto item : messageCount)
 				{
 					msg += logchar(' ');
-					helpers::StringHelper::toString(item, p, msg);
+					helpers::StringHelper::toString(item, msg);
 				}
 				helpers::LogLog::debug(msg);
 			}

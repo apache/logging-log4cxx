@@ -107,7 +107,7 @@ LogString substVarsSafely(const LogString& val, helpers::Properties& props, cons
 				msg.append(val);
 				msg.append(LOG4CXX_STR("\" has no closing brace. Opening brace at position "));
 				helpers::Pool p;
-				helpers::StringHelper::toString(j, p, msg);
+				helpers::StringHelper::toString(j, msg);
 				msg.append(1, (logchar) 0x2E /* '.' */);
 				throw helpers::IllegalArgumentException(msg);
 			}

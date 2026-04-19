@@ -252,9 +252,8 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString& id )
 		}
 
 		LogString s(gmt);
-		Pool p;
 		LogString hh;
-		StringHelper::toString(hours, p, hh);
+		StringHelper::toString(hours, hh);
 
 		if (sign > 0)
 		{
@@ -273,7 +272,7 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString& id )
 		s.append(hh);
 		s.append(1, (logchar) 0x3A /*' :' */);
 		LogString mm;
-		StringHelper::toString(minutes, p, mm);
+		StringHelper::toString(minutes, mm);
 
 		if (mm.length() == 1)
 		{

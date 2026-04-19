@@ -214,11 +214,11 @@ public:
 			if (exitCode != 0 && helpers::LogLog::isDebugEnabled())
 			{
 				LogString msg = LOG4CXX_STR("child: ");
-				helpers::StringHelper::toString(i, p, msg);
+				helpers::StringHelper::toString(i, msg);
 				msg += LOG4CXX_STR("; exit code: ");
-				helpers::StringHelper::toString(exitCode, p, msg);
+				helpers::StringHelper::toString(exitCode, msg);
 				msg += LOG4CXX_STR("; reason: ");
-				helpers::StringHelper::toString(reason, p, msg);
+				helpers::StringHelper::toString(reason, msg);
 				helpers::LogLog::debug(msg);
 			}
 			LOGUNIT_ASSERT_EQUAL(exitCode, 0);
@@ -228,7 +228,7 @@ public:
 			LogString msg;
 			auto currentTime = helpers::Date::currentTime();
 			msg += LOG4CXX_STR("elapsed ");
-			helpers::StringHelper::toString(currentTime - startTime, p, msg);
+			helpers::StringHelper::toString(currentTime - startTime, msg);
 			helpers::LogLog::debug(msg);
 		}
 
@@ -292,7 +292,7 @@ public:
 					for (auto item : perThreadMessageCount)
 					{
 						msg += logchar(' ');
-						helpers::StringHelper::toString(item.second - initialPerThreadMessageCount[item.first], p, msg);
+						helpers::StringHelper::toString(item.second - initialPerThreadMessageCount[item.first], msg);
 					}
 					helpers::LogLog::debug(msg);
 				}
@@ -304,7 +304,7 @@ public:
 			for (auto item : messageCount)
 			{
 				msg += logchar(' ');
-				helpers::StringHelper::toString(item, p, msg);
+				helpers::StringHelper::toString(item, msg);
 			}
 			helpers::LogLog::debug(msg);
 		}
@@ -314,7 +314,7 @@ public:
 			for (auto item : perThreadMessageCount)
 			{
 				msg += logchar(' ');
-				helpers::StringHelper::toString(item.second, p, msg);
+				helpers::StringHelper::toString(item.second, msg);
 			}
 			helpers::LogLog::debug(msg);
 		}

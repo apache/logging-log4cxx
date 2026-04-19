@@ -140,9 +140,8 @@ void System::addProgramFilePathComponents(Properties& props)
 #if defined(_WIN32)
 	if (0 == GetModuleFileName(NULL, buf, bufSize))
 	{
-		Pool p;
 		LogString lsErrorCode;
-		StringHelper::toString((int)GetLastError(), p, lsErrorCode);
+		StringHelper::toString((int)GetLastError(), lsErrorCode);
 		LogLog::warn(LOG4CXX_STR("GetModuleFileName error ") + lsErrorCode);
 		return;
 	}
