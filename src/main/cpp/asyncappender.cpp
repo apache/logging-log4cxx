@@ -588,7 +588,7 @@ void DiscardSummary::add(const LoggingEventPtr& event)
 LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 {
 	LogString msg(LOG4CXX_STR("Discarded "));
-	StringHelper::toString(this->count, p, msg);
+	StringHelper::toString(this->count, msg);
 	msg.append(LOG4CXX_STR(" messages ") + this->reason + LOG4CXX_STR(" including: "));
 	msg.append(this->maxEvent->getRenderedMessage());
 	return std::make_shared<LoggingEvent>
@@ -605,7 +605,7 @@ DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 	size_t discardedCount)
 {
 	LogString msg(LOG4CXX_STR("Discarded "));
-	StringHelper::toString(discardedCount, p, msg);
+	StringHelper::toString(discardedCount, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer"));
 
 	return std::make_shared<LoggingEvent>(
@@ -691,27 +691,26 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 	}
 	if (LogLog::isDebugEnabled())
 	{
-		Pool p;
 		LogString msg(LOG4CXX_STR("[") + appenderName + LOG4CXX_STR("] AsyncAppender"));
 #ifdef _DEBUG
 		msg += LOG4CXX_STR(" iterationCount ");
-		StringHelper::toString(iterationCount, p, msg);
+		StringHelper::toString(iterationCount, msg);
 		msg += LOG4CXX_STR(" waitCount ");
-		StringHelper::toString(waitCount, p, msg);
+		StringHelper::toString(waitCount, msg);
 		msg += LOG4CXX_STR(" producerBlockedCount ");
-		StringHelper::toString(producerBlockedCount, p, msg);
+		StringHelper::toString(producerBlockedCount, msg);
 		msg += LOG4CXX_STR(" commitCount ");
-		StringHelper::toString(this->commitCount, p, msg);
+		StringHelper::toString(this->commitCount, msg);
 #endif
 		msg += LOG4CXX_STR(" dispatchedCount ");
-		StringHelper::toString(this->dispatchedCount, p, msg);
+		StringHelper::toString(this->dispatchedCount, msg);
 		msg += LOG4CXX_STR(" discardCount ");
-		StringHelper::toString(discardCount, p, msg);
+		StringHelper::toString(discardCount, msg);
 		msg += LOG4CXX_STR(" pendingCountHistogram");
 		for (auto item : pendingCountHistogram)
 		{
 			msg += logchar(' ');
-			StringHelper::toString(item, p, msg);
+			StringHelper::toString(item, msg);
 		}
 		LogLog::debug(msg);
 	}

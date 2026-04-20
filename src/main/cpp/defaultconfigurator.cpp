@@ -42,9 +42,8 @@ void DefaultConfigurator::setConfigurationFileName(const LogString& path)
 
 void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
 {
-	Pool p;
 	LogString strSeconds;
-	StringHelper::toString(seconds, p, strSeconds);
+	StringHelper::toString(seconds, strSeconds);
 	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"), strSeconds);
 }
 

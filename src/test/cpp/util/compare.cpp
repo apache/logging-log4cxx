@@ -61,7 +61,7 @@ bool Compare::compare(const File& file1, const File& file2)
 			msg += LOG4CXX_STR("] and [");
 			msg += file2.getPath();
 			msg += LOG4CXX_STR("] differ on line ");
-			StringHelper::toString(lineCounter, pool, msg);
+			StringHelper::toString(lineCounter, msg);
 			msg += LOG4CXX_EOL;
 			msg += LOG4CXX_STR("One reads:  [");
 			msg += s1;
@@ -118,7 +118,7 @@ void Compare::outputFile(const File& file,
 	{
 		lineCounter++;
 		LogString line;
-		StringHelper::toString(lineCounter, pool, line);
+		StringHelper::toString(lineCounter, line);
 		emit(line);
 
 		if (lineCounter < 10)

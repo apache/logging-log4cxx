@@ -145,7 +145,7 @@ void HTMLLayout::format(LogString& output,
 
 		if (line != 0)
 		{
-			StringHelper::toString(line, p, output);
+			StringHelper::toString(line, output);
 		}
 
 		output.append(LOG4CXX_STR("</td>"));

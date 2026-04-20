@@ -59,7 +59,7 @@ static LogString colorToANSISequence(const LogString& color, bool isForeground, 
 	if( isForeground == false ){
 		numberToConvert += 10;
 	}
-	StringHelper::toString(numberToConvert, pool, ret);
+	StringHelper::toString(numberToConvert, ret);
 	return ret;
 }
 
@@ -86,7 +86,7 @@ static LogString graphicsModeToANSISequence(const LogString& graphicsMode, Pool&
 		return LOG4CXX_STR("");
 	}
 	LogString ret;
-	StringHelper::toString(numberToConvert, pool, ret);
+	StringHelper::toString(numberToConvert, ret);
 	return ret;
 }
 

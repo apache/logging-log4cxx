@@ -49,6 +49,6 @@ void FullLocationPatternConverter::format(
 	toAppendTo.append(1, (logchar) 0x28 /* '(' */);
 	StringHelper::toString(
 		event->getLocationInformation().getLineNumber(),
-		p, toAppendTo);
+		toAppendTo);
 	toAppendTo.append(1, (logchar) 0x29 /* ')' */);
 }

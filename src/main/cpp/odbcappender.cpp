@@ -494,9 +494,9 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			if (SQL_INTEGER != targetType)
 			{
 				LogString msg(LOG4CXX_STR("Unexpected targetType ("));
-				helpers::StringHelper::toString(targetType, p, msg);
+				helpers::StringHelper::toString(targetType, msg);
 				msg += LOG4CXX_STR(") at parameter ");
-				helpers::StringHelper::toString(parameterNumber, p, msg);
+				helpers::StringHelper::toString(parameterNumber, msg);
 				msg += LOG4CXX_STR(" while preparing SQL");
 				LogLog::warn(msg);
 			}

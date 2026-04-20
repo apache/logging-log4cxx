@@ -237,7 +237,7 @@ private:
 	{
 		LogString witness(LOG4CXX_STR("" DIR_PRE_WITNESS));
 		witness.append(prefix);
-		StringHelper::toString(witnessIdx, pool, witness);
+		StringHelper::toString(witnessIdx, witness);
 
 		//std::wcerr << L"Comparing file:    " << fname	<< L"\n";
 		//std::wcerr << L"Comparing witness: " << witness	<< L"\n";
@@ -659,7 +659,7 @@ public:
 		std::uniform_int_distribution<std::mt19937::result_type> dist(1,100000);
 		LogString filenamePattern = LOG4CXX_STR("" DIR_PRE_OUTPUT);
 		LogString dirNumber;
-		StringHelper::toString(dist(rng), dirNumber);
+		StringHelper::toString(static_cast<int>(dist(rng)), dirNumber);
 		LogString directoryName = LOG4CXX_STR("tbr-rollIntoDir-");
 		directoryName.append( dirNumber );
 		filenamePattern.append( directoryName );

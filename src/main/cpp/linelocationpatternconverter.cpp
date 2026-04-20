@@ -47,5 +47,5 @@ void LineLocationPatternConverter::format(
 {
 	StringHelper::toString(
 		event->getLocationInformation().getLineNumber(),
-		p, toAppendTo);
+		toAppendTo);
 }

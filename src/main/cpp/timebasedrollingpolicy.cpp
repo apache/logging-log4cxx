@@ -472,7 +472,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 		if (MAX_FILE_LEN - sizeof (logchar) < byteCount)
 		{
 			LogString msg(newFileName + LOG4CXX_STR(": cannot exceed "));
-			StringHelper::toString(MAX_FILE_LEN / sizeof (logchar), pool, msg);
+			StringHelper::toString(MAX_FILE_LEN / sizeof (logchar), msg);
 			msg += LOG4CXX_STR(" characters");
 			throw IllegalArgumentException(msg);
 		}

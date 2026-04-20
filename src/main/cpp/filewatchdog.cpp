@@ -135,11 +135,10 @@ void FileWatchdog::start()
 	{
 		if (LogLog::isDebugEnabled())
 		{
-			Pool p;
 			LogString msg(LOG4CXX_STR("Checking ["));
 			msg += m_priv->file.getPath();
 			msg += LOG4CXX_STR("] at ");
-			StringHelper::toString((int)m_priv->delay, p, msg);
+			StringHelper::toString((int)m_priv->delay, msg);
 			msg += LOG4CXX_STR(" ms interval");
 			LogLog::debug(msg);
 		}

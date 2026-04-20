@@ -102,8 +102,7 @@ LogString InputStreamReader::read(Pool& p)
 		msg.push_back(toHexDigit((ch & 0xF0) >> 4));
 		msg.push_back(toHexDigit((ch & 0xF)));
 		msg += LOG4CXX_STR(" at offset ");
-		Pool p;
-		StringHelper::toString(output.size(), p, msg);
+		StringHelper::toString(output.size(), msg);
 		throw RuntimeException(msg);
 	}
 

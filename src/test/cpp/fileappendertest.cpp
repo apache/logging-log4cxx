@@ -149,9 +149,9 @@ public:
 		if (helpers::LogLog::isDebugEnabled())
 		{
 			LogString msg(LOG4CXX_STR("initialLength "));
-			helpers::StringHelper::toString(initialLength, p, msg);
+			helpers::StringHelper::toString(initialLength, msg);
 			msg += LOG4CXX_STR(" flushedLength ");
-			helpers::StringHelper::toString(flushedLength, p, msg);
+			helpers::StringHelper::toString(flushedLength, msg);
 			helpers::LogLog::debug(msg);
 		}
 		LOGUNIT_ASSERT(initialLength < flushedLength);
@@ -202,9 +202,9 @@ public:
 		if (exitCode != 0)
 		{
 			LogString msg = LOG4CXX_STR("child exit code: ");
-			helpers::StringHelper::toString(exitCode, p, msg);
+			helpers::StringHelper::toString(exitCode, msg);
 			msg += LOG4CXX_STR("; reason: ");
-			helpers::StringHelper::toString(reason, p, msg);
+			helpers::StringHelper::toString(reason, msg);
 			helpers::LogLog::warn(msg);
 		}
 		LOGUNIT_ASSERT_EQUAL(exitCode, 0);
@@ -237,7 +237,7 @@ public:
 			 }
 		}
 		LogString msg = LOG4CXX_STR("lineCount: ");
-		helpers::StringHelper::toString(lineCount, p, msg);
+		helpers::StringHelper::toString(lineCount, msg);
 		helpers::LogLog::debug(msg);
 		for (auto& count : messageCount)
 			LOGUNIT_ASSERT_EQUAL(count, messageCount.front());
