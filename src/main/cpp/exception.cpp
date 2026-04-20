@@ -157,6 +157,11 @@ IOException::IOException(const LogString& type, log4cxx_status_t stat)
 }
 
 
+IOException::IOException(const char* msg1)
+	: Exception(msg1)
+{
+}
+
 IOException::IOException(const LogString& msg1)
 	: Exception(msg1)
 {
