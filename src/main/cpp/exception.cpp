@@ -156,6 +156,12 @@ IOException::IOException(const LogString& type, log4cxx_status_t stat)
 {
 }
 
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+IOException::IOException(const char* type, log4cxx_status_t stat)
+	: Exception(makeMessage(type, stat).c_str())
+{
+}
+#endif
 
 IOException::IOException(const char* msg1)
 	: Exception(msg1)
@@ -203,6 +209,25 @@ LogString Exception::makeMessage(const LogString& type, log4cxx_status_t stat)
 	return s;
 }
 
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+std::string Exception::makeMessage(const char* type, log4cxx_status_t stat)
+{
+	std::string s = type;
+	char err_buff[1024] = {0};
+	apr_strerror(stat, err_buff, sizeof(err_buff));
+	if (0 == err_buff[0] || 0 == strncmp(err_buff, "APR does not understand", 23))
+	{
+		s.append(": error code ");
+		s.append(std::to_string(stat));
+	}
+	else
+	{
+		s.append(" - ");
+		s.append(err_buff);
+	}
+	return s;
+}
+#endif
 
 MissingResourceException::MissingResourceException(const LogString& key)
 	: Exception(formatMessage(key))

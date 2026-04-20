@@ -43,6 +43,9 @@ class LOG4CXX_EXPORT Exception : public ::std::exception
 		Exception& operator=(const Exception& src);
 		const char* what() const throw();
 		static LogString makeMessage(const LogString& type, log4cxx_status_t stat);
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+		static std::string makeMessage(const char* type, log4cxx_status_t stat);
+#endif
 	private:
 		enum { MSG_SIZE = 128 };
 		char msg[MSG_SIZE + 1];
@@ -95,6 +98,9 @@ class LOG4CXX_EXPORT IOException : public Exception
 		IOException(const LogString& msg);
 		IOException(const char* msg);
 		IOException(const LogString& type, log4cxx_status_t stat);
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+		IOException(const char* msg, log4cxx_status_t stat);
+#endif
 		IOException(const IOException& src);
 		IOException& operator=(const IOException&);
 	private:
