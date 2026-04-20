@@ -29,12 +29,11 @@ struct FileInputStream::FileInputStreamPrivate
 {
 	FileInputStreamPrivate(const File& aFile)
 		: path(aFile)
-		, fileptr(nullptr)
 		{}
 
 	File path;
 	Pool pool;
-	apr_file_t* fileptr;
+	apr_file_t* fileptr{ nullptr };
 	void open();
 };
 

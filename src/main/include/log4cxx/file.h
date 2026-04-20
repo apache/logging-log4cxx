@@ -177,7 +177,7 @@ class LOG4CXX_EXPORT File
 		bool mkdirs() const;
 
 		/**
-		 * Use \c newValue for whateher the file is to be deleted when this object is destroyed.
+		 * Use \c newValue for whether the file is to be deleted when this object is destroyed.
 		 * @param autoDelete If true, delete file upon destruction.
 		 */
 		void setAutoDelete(bool newValue);

@@ -28,13 +28,12 @@ using namespace LOG4CXX_NS::helpers;
 struct FileOutputStream::FileOutputStreamPrivate
 {
 	FileOutputStreamPrivate(const LogString& filename)
-		: fileptr(nullptr)
-		, path(filename)
+		: path(filename)
 		{}
 
 	File path;
 	Pool pool;
-	apr_file_t* fileptr;
+	apr_file_t* fileptr{ nullptr };
 	void open(bool append);
 };
 
