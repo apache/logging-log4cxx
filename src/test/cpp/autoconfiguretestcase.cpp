@@ -129,7 +129,7 @@ public:
 	void test1()
 	{
 		LOGUNIT_ASSERT_EQUAL(m_status, spi::ConfigurationStatus::Configured);
-		LOGUNIT_ASSERT(File(m_configFile).exists(m_pool));
+		LOGUNIT_ASSERT(File(m_configFile).exists());
 		auto debugLogger1 = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test1"));
 		LOGUNIT_ASSERT(debugLogger1);
 		LOGUNIT_ASSERT(!debugLogger1->isDebugEnabled());
@@ -141,7 +141,7 @@ public:
 	void test2()
 	{
 		LOGUNIT_ASSERT_EQUAL(m_status, spi::ConfigurationStatus::Configured);
-		LOGUNIT_ASSERT(File(m_configFile).exists(m_pool));
+		LOGUNIT_ASSERT(File(m_configFile).exists());
 		// wait 2 sec to ensure the modification time is different to that held in the WatchDog
 		apr_sleep(2000000);
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));

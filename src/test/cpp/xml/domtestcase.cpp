@@ -98,9 +98,8 @@ public:
 		auto fa = LOG4CXX_NS::cast<FileAppender>(root->getAppender(LOG4CXX_STR("A1")));
 		LOGUNIT_ASSERT(fa);
 		File logFile{ fa->getFile() };
-		Pool p;
 		LOGUNIT_ASSERT(!output_dir.empty());
-		LOGUNIT_ASSERT_EQUAL(output_dir, logFile.getParent(p));
+		LOGUNIT_ASSERT_EQUAL(output_dir, logFile.getParent());
 		common();
 
 		ControlFilter cf1;
@@ -217,10 +216,8 @@ public:
 #else
 		const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, static_cast<logchar>(0xB3), 0 };
 #endif
-		File file;
-		file.setPath(fname);
-		Pool p;
-		bool exists = file.exists(p);
+		;
+		bool exists = File(fname).exists();
 		LOGUNIT_ASSERT(exists);
 	}
 
@@ -237,10 +234,7 @@ public:
 #else
 		const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, static_cast<logchar>(0x3195), 0 };
 #endif
-		File file;
-		file.setPath(fname);
-		Pool p;
-		bool exists = file.exists(p);
+		bool exists = File(fname).exists();
 		LOGUNIT_ASSERT(exists);
 	}
 

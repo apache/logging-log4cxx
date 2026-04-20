@@ -143,7 +143,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		{
 			auto thisProgram = GetExecutableFileName();
 			helpers::Pool p;
-			bool thisProgramExists = File(thisProgram).exists(p);
+			bool thisProgramExists = File(thisProgram).exists();
 			LOGUNIT_ASSERT(thisProgramExists);
 			const char* args[] = {thisProgram.c_str(), "testActivateWriteClose", 0};
 			apr_procattr_t* attr = NULL;

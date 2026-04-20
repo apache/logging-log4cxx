@@ -78,11 +78,11 @@ void Transformer::copyFile(const File& in, const File& out)
 	//
 	apr_file_t* child_out;
 	apr_int32_t flags = APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-	apr_status_t stat = out.open(&child_out, flags, APR_OS_DEFAULT, p);
+	apr_status_t stat = apr_file_open(&child_out, out.getAPRPath(), flags, APR_OS_DEFAULT, pool);
 	assert(stat == APR_SUCCESS);
 
 	apr_file_t* in_file;
-	stat = in.open(&in_file, APR_FOPEN_READ, APR_OS_DEFAULT, p);
+	stat = apr_file_open(&in_file, in.getAPRPath(), APR_FOPEN_READ, APR_OS_DEFAULT, pool);
 	assert(stat == APR_SUCCESS);
 	apr_size_t bufsize = 32000;
 	void* buf = apr_palloc(pool, bufsize);
@@ -221,7 +221,7 @@ void Transformer::transform(const File& in, const File& out,
 		apr_file_t* child_out;
 		apr_int32_t flags = APR_FOPEN_READ | APR_FOPEN_WRITE |
 			APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-		stat = out.open(&child_out, flags, APR_OS_DEFAULT, p);
+		stat = apr_file_open(&child_out, out.getAPRPath(), flags, APR_OS_DEFAULT, pool);
 		assert(stat == APR_SUCCESS);
 
 		stat =  apr_procattr_child_out_set(attr, child_out, NULL);

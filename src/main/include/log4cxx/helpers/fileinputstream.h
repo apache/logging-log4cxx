@@ -84,7 +84,6 @@ class LOG4CXX_EXPORT FileInputStream : public InputStream
 		FileInputStream(FileInputStream&&) = delete;
 
 		FileInputStream& operator=(const FileInputStream&) = delete;
-		void open(const LogString&);
 
 };
 

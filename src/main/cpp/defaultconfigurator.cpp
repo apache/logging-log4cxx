@@ -17,7 +17,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/logmanager.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/loglog.h>
@@ -58,7 +57,6 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 {
 
 	LogString configurationFileName = getConfigurationFileName();
-	Pool pool;
 	File configuration;
 
 	if (configurationFileName.empty())
@@ -80,7 +78,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 				debugMsg.append(names[i]);
 				LogLog::debug(debugMsg);
 			}
-			if (candidate.exists(pool))
+			if (candidate.exists())
 			{
 				configuration = candidate;
 				break;
@@ -92,7 +90,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 		configuration.setPath(configurationFileName);
 	}
 
-	if (configuration.exists(pool))
+	if (configuration.exists())
 	{
 		if (LogLog::isDebugEnabled())
 		{
@@ -192,7 +190,6 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 	auto result = std::tuple<ConfigurationStatus, LogString>
 		{ ConfigurationStatus::NotConfigured, LogString() };
 	auto r = LogManager::getLoggerRepository();
-	Pool pool;
 
 	for (auto& dir : directories )
 	{
@@ -204,7 +201,7 @@ DefaultConfigurator::configureFromFile(const std::vector<LogString>& directories
 
 			if (LogLog::isDebugEnabled())
 				LogLog::debug(LOG4CXX_STR("Checking file ") + candidate_str);
-			if (candidate.exists(pool))
+			if (candidate.exists())
 			{
 				std::get<1>(result) = candidate_str;
 				configure(r);

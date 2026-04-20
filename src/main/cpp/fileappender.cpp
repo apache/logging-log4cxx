@@ -310,7 +310,7 @@ void FileAppender::setFileInternal(
 		{
 			File outFile;
 			outFile.setPath(filename);
-			writeBOM = !outFile.exists(p);
+			writeBOM = !outFile.exists();
 		}
 		else
 		{
@@ -326,14 +326,14 @@ void FileAppender::setFileInternal(
 	}
 	catch (IOException&)
 	{
-		LogString parentName = File().setPath(filename).getParent(p);
+		LogString parentName = File().setPath(filename).getParent();
 
 		if (!parentName.empty())
 		{
 			File parentDir;
 			parentDir.setPath(parentName);
 
-			if (!parentDir.exists(p) && parentDir.mkdirs(p))
+			if (!parentDir.exists() && parentDir.mkdirs())
 			{
 				outStream = std::make_shared<FileOutputStream>(filename, append1);
 			}
