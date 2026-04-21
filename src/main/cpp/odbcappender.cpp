@@ -57,7 +57,7 @@
 #endif
 #include <cstring>
 #include <algorithm>
-
+#include <limits>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -471,14 +471,28 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 		{
 			item.paramType = SQL_C_CHAR;
 			item.paramMaxCharCount = targetMaxCharCount;
-			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char) + sizeof(char);
+			{
+				size_t max_sz = (size_t)(std::numeric_limits<SQLINTEGER>::max)();
+				size_t cnt = (size_t)(item.paramMaxCharCount);
+				size_t max_chars = (max_sz - sizeof(char)) / sizeof(char);
+				if (cnt > max_chars) cnt = max_chars;
+				size_t bytes = cnt * sizeof(char) + sizeof(char);
+				item.paramValueSize = (SQLINTEGER)bytes;
+			}
 			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(char));
 		}
 		else if (SQL_WCHAR == targetType || SQL_WVARCHAR == targetType || SQL_WLONGVARCHAR == targetType)
 		{
 			item.paramType = SQL_C_WCHAR;
 			item.paramMaxCharCount = targetMaxCharCount;
-			item.paramValueSize = (SQLINTEGER)(targetMaxCharCount) * sizeof(wchar_t) + sizeof(wchar_t);
+			{
+				size_t max_sz = (size_t)(std::numeric_limits<SQLINTEGER>::max)();
+				size_t cnt = (size_t)(targetMaxCharCount);
+				size_t max_chars = (max_sz - sizeof(wchar_t)) / sizeof(wchar_t);
+				if (cnt > max_chars) cnt = max_chars;
+				size_t bytes = cnt * sizeof(wchar_t) + sizeof(wchar_t);
+				item.paramValueSize = (SQLINTEGER)bytes;
+			}
 			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(wchar_t));
 		}
 		else if (SQL_TYPE_TIMESTAMP == targetType || SQL_TYPE_DATE == targetType || SQL_TYPE_TIME == targetType
@@ -503,12 +517,26 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			item.paramMaxCharCount = 30;
 #if LOG4CXX_LOGCHAR_IS_UTF8
 			item.paramType = SQL_C_CHAR;
-			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(char);
-			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(char));
+		{
+			size_t max_sz = (size_t)(std::numeric_limits<SQLINTEGER>::max)();
+			size_t cnt = (size_t)(item.paramMaxCharCount);
+			size_t max_chars = (max_sz - sizeof(char)) / sizeof(char);
+			if (cnt > max_chars) cnt = max_chars;
+			size_t bytes = cnt * sizeof(char) + sizeof(char);
+			item.paramValueSize = (SQLINTEGER)bytes;
+		}
+		item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(char));
 #else
 			item.paramType = SQL_C_WCHAR;
-			item.paramValueSize = (SQLINTEGER)(item.paramMaxCharCount) * sizeof(wchar_t);
-			item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(wchar_t));
+		{
+			size_t max_sz = (size_t)(std::numeric_limits<SQLINTEGER>::max)();
+			size_t cnt = (size_t)(item.paramMaxCharCount);
+			size_t max_chars = (max_sz - sizeof(wchar_t)) / sizeof(wchar_t);
+			if (cnt > max_chars) cnt = max_chars;
+			size_t bytes = cnt * sizeof(wchar_t) + sizeof(wchar_t);
+			item.paramValueSize = (SQLINTEGER)bytes;
+		}
+		item.paramValue = (SQLPOINTER)this->pool.palloc(item.paramValueSize + sizeof(wchar_t));
 #endif
 		}
 		item.strLen_or_Ind = SQL_NTS;
