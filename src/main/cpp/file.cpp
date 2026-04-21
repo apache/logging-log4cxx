@@ -28,24 +28,22 @@ using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 struct File::FilePrivate{
-	FilePrivate() :
-		autoDelete(false)
+	FilePrivate()
 	{}
 
-	FilePrivate(LogString path) :
-		path(path),
-		autoDelete(false)
+	FilePrivate(const LogString& path)
+		: path(path)
 	{}
 
-	FilePrivate(LogString path, bool autoDelete) :
-		path(path),
-		autoDelete(autoDelete)
+	FilePrivate(const LogString& path, bool autoDelete)
+		: path(path)
+		, autoDelete(autoDelete)
 	{}
 
 	LogString path;
-	bool autoDelete;
+	bool autoDelete{ false };
 	Pool p;
-	char* apr_path{0};
+	char* apr_path{ nullptr };
 	char* getPath();
 	static char* convertBackSlashes(char*);
 };
@@ -153,6 +151,7 @@ LogString File::getPath() const
 File& File::setPath(const LogString& newName)
 {
 	m_priv->path.assign(newName);
+	m_priv->apr_path = nullptr;
 	return *this;
 }
 
