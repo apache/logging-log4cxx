@@ -50,11 +50,18 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		which are ambigous until the other is also set.
 		*/
 #if LOG4CXX_ABI_VERSION <= 15
-		virtual void activateOptions(helpers::Pool& p) = 0;
 		void activateOptions();
+		/**
+		@deprecated The \c pool parameter is not required and will be removed in a future version.
+		*/
+		virtual void activateOptions(helpers::Pool& p) = 0;
 #else
-		virtual void activateOptions(helpers::Pool& );
 		virtual void activateOptions() = 0;
+		/**
+		@deprecated This function is deprecated and will be removed in a future version.
+		*/
+		[[deprecated("Override activateOptions() without parameters instead")]]
+		virtual void activateOptions(helpers::Pool& );
 #endif
 
 		/**
