@@ -20,9 +20,6 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/helpers/pool.h>
-#endif
 
 namespace LOG4CXX_NS
 {

@@ -51,6 +51,14 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout)
 AppenderSkeleton::~AppenderSkeleton() {}
 
 #if LOG4CXX_ABI_VERSION <= 15
+void AppenderSkeleton::activateOptions(helpers::Pool& /* pool */) {}
+void AppenderSkeleton::activateOptions() { helpers::Pool p; activateOptions(p); }
+#else
+void AppenderSkeleton::activateOptions(helpers::Pool& ) { activateOptions(); }
+void AppenderSkeleton::activateOptions() {};
+#endif
+
+#if LOG4CXX_ABI_VERSION <= 15
 void AppenderSkeleton::finalize()
 {
 	// An appender might be closed then garbage collected. There is no

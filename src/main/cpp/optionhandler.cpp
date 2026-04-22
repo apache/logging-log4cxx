@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 #include <log4cxx/spi/optionhandler.h>
+#if LOG4CXX_ABI_VERSION <= 15
+#include <log4cxx/helpers/pool.h>
+#endif
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
