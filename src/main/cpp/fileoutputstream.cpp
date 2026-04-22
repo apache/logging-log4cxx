@@ -27,28 +27,31 @@ using namespace LOG4CXX_NS::helpers;
 
 struct FileOutputStream::FileOutputStreamPrivate
 {
-	FileOutputStreamPrivate() : fileptr(nullptr) {}
+	FileOutputStreamPrivate(const LogString& filename)
+		: path(filename)
+		{}
 
+	File path;
 	Pool pool;
-	apr_file_t* fileptr;
+	apr_file_t* fileptr{ nullptr };
+	void open(bool append);
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 
-FileOutputStream::FileOutputStream(const LogString& filename,
-	bool append) : m_priv(std::make_unique<FileOutputStreamPrivate>())
+FileOutputStream::FileOutputStream(const LogString& filename, bool append)
+	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename))
 {
-	m_priv->fileptr = open(filename, append, m_priv->pool);
+	m_priv->open(append);
 }
 
-FileOutputStream::FileOutputStream(const logchar* filename,
-	bool append) : m_priv(std::make_unique<FileOutputStreamPrivate>())
+FileOutputStream::FileOutputStream(const logchar* filename,	bool append)
+	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename))
 {
-	m_priv->fileptr = open(filename, append, m_priv->pool);
+	m_priv->open(append);
 }
 
-apr_file_t* FileOutputStream::open(const LogString& filename,
-	bool append, Pool& pool)
+void FileOutputStream::FileOutputStreamPrivate::open(bool append)
 {
 	apr_fileperms_t perm = APR_OS_DEFAULT;
 	apr_int32_t flags = APR_WRITE | APR_CREATE;
@@ -62,17 +65,12 @@ apr_file_t* FileOutputStream::open(const LogString& filename,
 		flags |= APR_TRUNCATE;
 	}
 
-	File fn;
-	fn.setPath(filename);
-	apr_file_t* fileptr = 0;
-	apr_status_t stat = fn.open(&fileptr, flags, perm, pool);
+	apr_status_t stat = apr_file_open(&this->fileptr, this->path.getAPRPath(), flags, perm, this->pool.getAPRPool());
 
 	if (stat != APR_SUCCESS)
 	{
-		throw IOException(filename, stat);
+		throw IOException(this->path.getAPRPath(), stat);
 	}
-
-	return fileptr;
 }
 
 FileOutputStream::~FileOutputStream()

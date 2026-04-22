@@ -16,8 +16,9 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/pool.h>
+#endif
 #include <cstring>
 
 using namespace LOG4CXX_NS;

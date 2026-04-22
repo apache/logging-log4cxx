@@ -102,9 +102,8 @@ void FileWatchdog::checkAndConfigure()
 		msg += LOG4CXX_STR("]");
 		LogLog::debug(msg);
 	}
-	Pool pool1;
 
-	if (!m_priv->file.exists(pool1))
+	if (!m_priv->file.exists())
 	{
 		if (!m_priv->warnedAlready)
 		{
@@ -116,7 +115,7 @@ void FileWatchdog::checkAndConfigure()
 	}
 	else
 	{
-		auto thisMod = m_priv->file.lastModified(pool1);
+		auto thisMod = m_priv->file.lastModified();
 
 		if (thisMod > m_priv->lastModif)
 		{

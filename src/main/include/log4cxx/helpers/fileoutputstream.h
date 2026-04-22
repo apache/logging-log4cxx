@@ -57,8 +57,6 @@ class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 		FileOutputStream(const FileOutputStream&) = delete;
 		FileOutputStream(FileOutputStream&&) = delete;
 		FileOutputStream& operator=(const FileOutputStream&) = delete;
-		static apr_file_t* open(const LogString& fn, bool append,
-			LOG4CXX_NS::helpers::Pool& p);
 };
 
 LOG4CXX_PTR_DEF(FileOutputStream);

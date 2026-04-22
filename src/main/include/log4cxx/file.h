@@ -100,103 +100,127 @@ class LOG4CXX_EXPORT File
 
 		/**
 		 *  Determines if file exists.
-		 *  @param p pool.
 		 *  @return true if file exists.
 		 */
-		bool exists(LOG4CXX_NS::helpers::Pool& p) const;
+		bool exists() const;
 		/**
-		 *  Determines length of file.  May not be accurate if file is current open.
-		 *  @param p pool.
+		 *  Provides the length of the file.  May not be accurate if file is current open.
 		 *  @return length of file.
 		 */
-		size_t length(LOG4CXX_NS::helpers::Pool& p) const;
+		size_t length() const;
 		/**
-		 *  Determines last modification date.
-		 *  @param p pool.
-		 *  @return length of file.
+		 *  Provides the last modification date.
+		 *  @return the filesystem time of last modification.
 		 */
-		log4cxx_time_t lastModified(LOG4CXX_NS::helpers::Pool& p) const;
+		log4cxx_time_t lastModified() const;
 		/**
-		 *  Get final portion of file path.
+		 *  Provides the final portion of file path.
 		 *  @return file name.
 		 */
 		LogString getName() const;
 		/**
-		 *  Get file path.
+		 *  Provides the file path.
 		 *  @return file path.
 		 */
 		LogString getPath() const;
 		/**
-		 *  Set file path
+		 *  Provides the file path.
+		 *  @return file path.
 		 */
-		File& setPath(const LogString&);
-
+		const char* getAPRPath() const;
 		/**
-		 *  Open file.  See apr_file_open for details.
-		 *  @param file APR file handle.
+		 *  Use \c newValue as the file path
+		 */
+		File& setPath(const LogString& newVAlue);
+
+#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		 *  Open this file.
+		 *  See <a href="https://apr.apache.org/docs/apr/1.7/group__apr__file__io.html#gabda14cbf242fb4fe99055434213e5446">apr_file_open</a> for details.
+		 *  @param file allocated APR file handle.
 		 *  @param flags flags.
 		 *  @param perm permissions.
-		 *  @param p pool.
 		 *  @return APR_SUCCESS if successful.
+		 * @deprecated This function is deprecated and will be removed in a future version.
 		 */
-		log4cxx_status_t open(apr_file_t** file, int flags,
-			int perm, LOG4CXX_NS::helpers::Pool& p) const;
+		[[ deprecated( "open is no longer supported" ) ]]
+		log4cxx_status_t open(apr_file_t** file, int flags,	int perm, helpers::Pool& p) const;
+#endif
 
 		/**
 		 *   List files if current file is a directory.
-		 *   @param p pool.
 		 *   @return list of files in this directory, operation of non-directory returns empty list.
 		 */
-		std::vector<LogString> list(LOG4CXX_NS::helpers::Pool& p) const;
+		std::vector<LogString> list() const;
 
 		/**
-		 *   Delete file.
-		 *   @param p pool.
+		 *   Delete this file.
 		 *   @return true if file successfully deleted.
 		 */
-		bool deleteFile(LOG4CXX_NS::helpers::Pool& p) const;
+		bool deleteFile() const;
 		/**
-		 *   Rename file.
+		 *   Rename this file.
 		 *   @param dest new path for file.
-		 *   @param p pool.
 		 *   @return true if file successfully renamed.
 		 */
-		bool renameTo(const File& dest, LOG4CXX_NS::helpers::Pool& p) const;
+		bool renameTo(const File& dest) const;
 
 		/**
-		 *   Get path of parent directory.
-		 *   @param p pool.
+		 *   Provides the path of parent directory.
 		 *   @return path of parent directory.
 		 */
-		LogString getParent(LOG4CXX_NS::helpers::Pool& p) const;
+		LogString getParent() const;
 		/**
-		 *  Make directories recursively.
-		 *  @param p pool.
+		 *  Create the directories required for this file path.
 		 *  @return true if all requested directories existed or have been created.
 		 */
-		bool mkdirs(LOG4CXX_NS::helpers::Pool& p) const;
+		bool mkdirs() const;
 
 		/**
-		 * Set the file to be deleted when this object is destroyed.
-		 * @param autoDelete If true, delete file upon destruction.  If true, do not delete file.
+		 * Use \c newValue for whether the file is to be deleted when this object is destroyed.
+		 * @param autoDelete If true, delete file upon destruction.
 		 */
-		void setAutoDelete(bool autoDelete);
+		void setAutoDelete(bool newValue);
 
 		/**
-		 * Return the value of the autodelete setting.  If true, this file will be deleted when the
+		 * Provides the value of the autodelete setting.  If true, this file will be deleted when the
 		 * destructor is called.
 		 *
 		 * @return True if the file is deleted upon destruction.
 		 */
 		bool getAutoDelete() const;
 
+#if LOG4CXX_ABI_VERSION <= 15
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		bool exists(helpers::Pool& p) const;
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		size_t length(helpers::Pool& p) const;
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		log4cxx_time_t lastModified(helpers::Pool& p) const;
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		std::vector<LogString> list(helpers::Pool& p) const;
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		bool deleteFile(helpers::Pool& p) const;
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		bool renameTo(const File& dest, helpers::Pool& p) const;
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		LogString getParent(helpers::Pool& p) const;
+		/// @deprecated This function is deprecated and will be removed in a future version.
+		[[ deprecated( "Pool is no longer required" ) ]]
+		bool mkdirs(helpers::Pool& p) const;
+#endif
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilePrivate, m_priv)
-		static char* convertBackSlashes(char*);
-		char* getPath(LOG4CXX_NS::helpers::Pool& p) const;
 };
 } // namespace log4cxx
 
-#define LOG4CXX_FILE(name) LOG4CXX_NS::File(name)
+#define LOG4CXX_FILE(name) File(name)
 
 #endif // _LOG4CXX_FILE_H

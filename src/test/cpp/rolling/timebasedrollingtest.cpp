@@ -297,7 +297,7 @@ private:
 		for (size_t i = 0; i < N - 1; ++i)
 		{
 			//std::wcerr << L"Check: " << fnames[i] << L"\n";
-			LOGUNIT_ASSERT_EQUAL_SRCL(true, File(fnames[i]).exists(pool), srcLine);
+			LOGUNIT_ASSERT_EQUAL_SRCL(true, File(fnames[i]).exists(), srcLine);
 		}
 
 		this->compareWitness(pool, prefix, fnames[witnessIdx], witnessIdx, srcLine);
@@ -347,7 +347,7 @@ private:
 			Pool&		pool,
 			LogString	path)
 	{
-		File(path).deleteFile(pool);
+		File(path).deleteFile();
 	}
 
 	/**

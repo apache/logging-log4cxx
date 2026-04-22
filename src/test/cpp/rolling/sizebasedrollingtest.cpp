@@ -129,9 +129,9 @@ public:
 
 		common(logger, 0);
 
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test1.0").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test1.1").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test1.2").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test1.0").exists());
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test1.1").exists());
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test1.2").exists());
 		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sizeBased-test1.0"),
 				File("witness/rolling/sbr-test2.log")));
 		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sizeBased-test1.1"),
@@ -169,9 +169,9 @@ public:
 
 		common(logger, 0);
 
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test2.log").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test2.0").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test2.1").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test2.log").exists());
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test2.0").exists());
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test2.1").exists());
 
 		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sizeBased-test2.log"),
 				File("witness/rolling/sbr-test2.log")));
@@ -207,13 +207,13 @@ public:
 
 		common(logger, 100);
 
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test3.log").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test3.0.gz").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test3.1.gz").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test3.log").exists());
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test3.0.gz").exists());
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test3.1.gz").exists());
 
 		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sbr-test3.log"),  File("witness/rolling/sbr-test3.log")));
-		LOGUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.0.gz").length(p), File("output/sbr-test3.0.gz").length(p));
-		LOGUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.1.gz").length(p), File("output/sbr-test3.1.gz").length(p));
+		LOGUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.0.gz").length(), File("output/sbr-test3.0.gz").length());
+		LOGUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.1.gz").length(), File("output/sbr-test3.1.gz").length());
 	}
 
 	/**
@@ -248,7 +248,7 @@ public:
 
 		common(logger, 0);
 
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test4.log").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test4.log").exists());
 
 		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sizeBased-test4.log"),
 				File("witness/rolling/sbr-test4.log")));
@@ -294,16 +294,16 @@ public:
 
 		os0.close(p);
 
-		if (File("output/sizeBased-test5.3").exists(p))
+		if (File("output/sizeBased-test5.3").exists())
 		{
 			//
 			//    looks like platform where open files can be renamed
 			//
-			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.log").exists(p));
-			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.0").exists(p));
-			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.1").exists(p));
-			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.2").exists(p));
-			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.3").exists(p));
+			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.log").exists());
+			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.0").exists());
+			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.1").exists());
+			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.2").exists());
+			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.3").exists());
 
 			LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sizeBased-test5.log"),
 					File("witness/rolling/sbr-test2.log")));
@@ -320,9 +320,9 @@ public:
 			//    so initial log file should have all log content
 			//    open file should be unaffected
 			//    stray file should have only been moved one slot.
-			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.log").exists(p));
-			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.0").exists(p));
-			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.2").exists(p));
+			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.log").exists());
+			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.0").exists());
+			LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test5.2").exists());
 
 			LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sizeBased-test5.log"),
 					File("witness/rolling/sbr-test4.log")));
@@ -355,9 +355,9 @@ public:
 
 		common(logger, 100);
 
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.log").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.0.zip").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.1.zip").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.log").exists());
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.0.zip").exists());
+		LOGUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.1.zip").exists());
 
 		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sbr-test6.log"),  File("witness/rolling/sbr-test3.log")));
 	}

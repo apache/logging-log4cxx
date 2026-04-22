@@ -56,7 +56,7 @@ GZCompressAction::~GZCompressAction() {}
 
 bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 {
-	if (priv->source.exists(p))
+	if (priv->source.exists())
 	{
 		apr_pool_t* aprpool = p.getAPRPool();
 		apr_procattr_t* attr;
@@ -87,7 +87,7 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 		apr_file_t* child_out;
 		apr_int32_t flags = APR_FOPEN_READ | APR_FOPEN_WRITE |
 			APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-		stat = priv->destination.open(&child_out, flags, APR_OS_DEFAULT, p);
+		stat = apr_file_open(&child_out, priv->destination.getAPRPath(), flags, APR_OS_DEFAULT, aprpool);
 
 		if (stat != APR_SUCCESS)
 		{
@@ -159,7 +159,7 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 
 		if (priv->deleteSource)
 		{
-			priv->source.deleteFile(p);
+			priv->source.deleteFile();
 		}
 
 		return true;

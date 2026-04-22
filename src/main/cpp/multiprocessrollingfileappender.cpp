@@ -286,7 +286,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 					appendToExisting = rollover1->getAppend();
 					if (appendToExisting)
 					{
-						_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
+						_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length();
 					}
 					else
 					{
@@ -336,7 +336,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 				{
 					if (rollover1->getAppend())
 					{
-						_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length(p);
+						_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length();
 					}
 					else
 					{

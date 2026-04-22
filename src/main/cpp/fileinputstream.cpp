@@ -27,52 +27,48 @@ using namespace LOG4CXX_NS::helpers;
 
 struct FileInputStream::FileInputStreamPrivate
 {
-	FileInputStreamPrivate() : fileptr(nullptr) {}
+	FileInputStreamPrivate(const File& aFile)
+		: path(aFile)
+		{}
 
+	File path;
 	Pool pool;
-	apr_file_t* fileptr;
+	apr_file_t* fileptr{ nullptr };
+	void open();
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FileInputStream)
 
 FileInputStream::FileInputStream(const LogString& filename) :
-	m_priv(std::make_unique<FileInputStreamPrivate>())
+	m_priv(std::make_unique<FileInputStreamPrivate>(filename))
 {
-	open(filename);
+	m_priv->open();
 }
 
 FileInputStream::FileInputStream(const logchar* filename) :
-	m_priv(std::make_unique<FileInputStreamPrivate>())
+	m_priv(std::make_unique<FileInputStreamPrivate>(filename))
 {
-	LogString fn(filename);
-	open(fn);
+	m_priv->open();
 }
 
 
-void FileInputStream::open(const LogString& filename)
+void FileInputStream::FileInputStreamPrivate::open()
 {
 	apr_fileperms_t perm = APR_OS_DEFAULT;
 	apr_int32_t flags = APR_READ;
-	apr_status_t stat = File().setPath(filename).open(&m_priv->fileptr, flags, perm, m_priv->pool);
+	apr_status_t stat = apr_file_open(&this->fileptr, this->path.getAPRPath(), flags, perm, this->pool.getAPRPool());
 
 	if (stat != APR_SUCCESS)
 	{
-		throw IOException(filename, stat);
+		throw IOException(this->path.getAPRPath(), stat);
 	}
 }
 
 
 FileInputStream::FileInputStream(const File& aFile) :
-	m_priv(std::make_unique<FileInputStreamPrivate>())
+	m_priv(std::make_unique<FileInputStreamPrivate>(aFile))
 {
-	apr_fileperms_t perm = APR_OS_DEFAULT;
-	apr_int32_t flags = APR_READ;
-	apr_status_t stat = aFile.open(&m_priv->fileptr, flags, perm, m_priv->pool);
-
-	if (stat != APR_SUCCESS)
-	{
-		throw IOException(aFile.getName(), stat);
-	}
+	m_priv->open();
 }
 
 

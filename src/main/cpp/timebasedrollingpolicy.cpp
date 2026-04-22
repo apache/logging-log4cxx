@@ -335,7 +335,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 	File currentFile(currentActiveFile);
 
 	LogString buf;
-	ObjectPtr obj = std::make_shared<Date>(currentFile.exists(pool) ? currentFile.lastModified(pool) : n);
+	ObjectPtr obj = std::make_shared<Date>(currentFile.exists() ? currentFile.lastModified() : n);
 	formatFileName(obj, buf, pool);
 	m_priv->lastFileName = buf;
 
@@ -435,8 +435,8 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 	if(getCreateIntermediateDirectories()){
 		File compressedFile(m_priv->lastFileName);
-		File compressedParent (compressedFile.getParent(pool));
-		compressedParent.mkdirs(pool);
+		File compressedParent (compressedFile.getParent());
+		compressedParent.mkdirs();
 	}
 
 	//

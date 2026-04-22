@@ -87,18 +87,18 @@ public:
 	void testDirectoryCreation()
 	{
 		File newFile(LOG4CXX_STR("output/newdir/temp.log"));
-		Pool p;
-		newFile.deleteFile(p);
+		newFile.deleteFile();
 
 		File newDir(LOG4CXX_STR("output/newdir"));
-		newDir.deleteFile(p);
+		newDir.deleteFile();
 
 		FileAppenderPtr wa(new FileAppender());
 		wa->setFile(LOG4CXX_STR("output/newdir/temp.log"));
 		wa->setLayout(PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m%n"))));
+		Pool p;
 		wa->activateOptions(p);
 
-		LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists(p));
+		LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists());
 	}
 
 	/**
@@ -138,12 +138,11 @@ public:
 		auto appender = log4cxx::cast<FileAppender>(logger->getAppender(LOG4CXX_STR("FileAppender")));
 		LOGUNIT_ASSERT(appender);
 		File file(appender->getFile());
-		Pool p;
-		size_t initialLength = file.length(p);
+		size_t initialLength = file.length();
 
 		// wait 1.2 sec and check the buffer is flushed
 		apr_sleep(1200000);
-		size_t flushedLength = file.length(p);
+		size_t flushedLength = file.length();
 
 		// Check the file extended
 		if (helpers::LogLog::isDebugEnabled())

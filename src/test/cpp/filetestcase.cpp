@@ -85,8 +85,7 @@ public:
 	void defaultExists()
 	{
 		File defFile;
-		Pool pool;
-		bool exists = defFile.exists(pool);
+		bool exists = defFile.exists();
 		LOGUNIT_ASSERT_EQUAL(false, exists);
 	}
 
@@ -116,8 +115,7 @@ public:
 	void wcharConstructor()
 	{
 		File propFile(L"input/patternLayout1.properties");
-		Pool pool;
-		bool exists = propFile.exists(pool);
+		bool exists = propFile.exists();
 		LOGUNIT_ASSERT_EQUAL(true, exists);
 	}
 #endif
@@ -150,8 +148,7 @@ public:
 	{
 		File propFile("input/patternLayout1.properties");
 		File copy(propFile);
-		Pool pool;
-		bool exists = copy.exists(pool);
+		bool exists = copy.exists();
 		LOGUNIT_ASSERT_EQUAL(true, exists);
 	}
 
@@ -159,8 +156,7 @@ public:
 	{
 		File propFile("input/patternLayout1.properties");
 		File copy = propFile;
-		Pool pool;
-		bool exists = copy.exists(pool);
+		bool exists = copy.exists();
 		LOGUNIT_ASSERT_EQUAL(true, exists);
 	}
 
@@ -178,8 +174,7 @@ public:
 	void propertyExists()
 	{
 		File propFile("input/patternLayout1.properties");
-		Pool pool;
-		bool exists = propFile.exists(pool);
+		bool exists = propFile.exists();
 		LOGUNIT_ASSERT_EQUAL(true, exists);
 	}
 
@@ -209,8 +204,7 @@ public:
 	void deleteBackslashedFileName()
 	{
 		File file("output\\bogus.txt");
-		Pool pool;
-		/*bool deleted = */file.deleteFile(pool);
+		file.deleteFile();
 	}
 
 	class MockInputStream : public InputStream

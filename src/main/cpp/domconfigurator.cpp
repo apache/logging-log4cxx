@@ -975,7 +975,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		);
 
 	apr_file_t* fd;
-	log4cxx_status_t rv = filename.open(&fd, APR_READ, APR_OS_DEFAULT, m_priv->p);
+	log4cxx_status_t rv = apr_file_open(&fd, filename.getAPRPath(), APR_READ, APR_OS_DEFAULT, m_priv->p.getAPRPool());
 
 	if (rv != APR_SUCCESS)
 	{
