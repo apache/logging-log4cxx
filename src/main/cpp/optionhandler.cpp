@@ -14,26 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include <log4cxx/rolling/triggeringpolicy.h>
+#include <log4cxx/spi/optionhandler.h>
 
 using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::rolling;
 using namespace LOG4CXX_NS::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(TriggeringPolicy)
-
-TriggeringPolicy::~TriggeringPolicy()
-{
-}
-
 #if 15 < LOG4CXX_ABI_VERSION
-void TriggeringPolicy::activateOptions(Pool&)
+void spi::OptionHandler::activateOptions(Pool&)
 {
 	activateOptions();
 }
-
-void TriggeringPolicy::activateOptions()
+#else
+void spi::OptionHandler::activateOptions()
 {
+	 helpers::Pool p;
+	 activateOptions(p);
 }
 #endif

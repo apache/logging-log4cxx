@@ -20,6 +20,9 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
+#if LOG4CXX_ABI_VERSION <= 15
+#include <log4cxx/helpers/pool.h>
+#endif
 
 namespace LOG4CXX_NS
 {
@@ -49,8 +52,13 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		the <code>File</code> and <b>Append</b> options both of
 		which are ambigous until the other is also set.
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
 		virtual void activateOptions(helpers::Pool& p) = 0;
-
+		void activateOptions();
+#else
+		virtual void activateOptions(helpers::Pool& );
+		virtual void activateOptions() = 0;
+#endif
 
 		/**
 		Set <code>option</code> to <code>value</code>.

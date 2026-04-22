@@ -45,9 +45,26 @@ void Filter::setNext(const FilterPtr& newNext)
 	m_priv->next = newNext;
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void Filter::activateOptions(Pool&)
 {
 }
+
+void Filter::activateOptions()
+{
+	helpers::Pool p;
+	activateOptions(p);
+}
+#else
+void Filter::activateOptions(Pool&)
+{
+	activateOptions();
+}
+
+void Filter::activateOptions()
+{
+}
+#endif
 
 void Filter::setOption(const LogString&, const LogString&)
 {

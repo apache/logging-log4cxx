@@ -50,3 +50,14 @@ size_t Layout::getFormattedEventCharacterCount() const
 	format(text, exampleEvent, pool);
 	return text.size();
 }
+
+#if 15 < LOG4CXX_ABI_VERSION
+void Layout::activateOptions(Pool&)
+{
+	activateOptions();
+}
+
+void Layout::activateOptions()
+{
+}
+#endif

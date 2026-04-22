@@ -47,7 +47,16 @@ RollingPolicyBase::~RollingPolicyBase()
 {
 }
 
+#if 15 < LOG4CXX_ABI_VERSION
+void RollingPolicyBase::activateOptions(Pool&)
+{
+	activateOptions();
+}
+
+void RollingPolicyBase::activateOptions()
+#else
 void RollingPolicyBase::activateOptions(LOG4CXX_NS::helpers::Pool& /* pool */)
+#endif
 {
 	if (m_priv->fileNamePatternStr.length() > 0)
 	{

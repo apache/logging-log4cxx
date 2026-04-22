@@ -107,7 +107,14 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+#if LOG4CXX_ABI_VERSION <= 15
+		[[deprecated("Override activateOptions() without parameters instead")]]
+		void activateOptions(helpers::Pool& /* pool */) override;
+		void activateOptions();
+#else
+		void activateOptions(helpers::Pool& ) override;
+		void activateOptions() override;
+#endif
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

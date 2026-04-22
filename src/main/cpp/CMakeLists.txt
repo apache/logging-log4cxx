@@ -112,6 +112,7 @@ target_sources(log4cxx
   defaultconfigurator.cpp
   defaultloggerfactory.cpp
   defaultrepositoryselector.cpp
+  errorhandler.cpp
   exception.cpp
   fallbackerrorhandler.cpp
   file.cpp
@@ -172,6 +173,7 @@ target_sources(log4cxx
   odbcappender.cpp
   onlyonceerrorhandler.cpp
   optionconverter.cpp
+  optionhandler.cpp
   outputdebugstringappender.cpp
   outputstream.cpp
   outputstreamwriter.cpp

@@ -54,7 +54,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		/**
 		 * Time for next determination if time for rollover.
 		 */
-		log4cxx_time_t nextCheck;
+		log4cxx_time_t nextCheck{0};
 
 		/**
 		 * File name at last rollover.
@@ -64,7 +64,7 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 		/**
 		 * Length of any file type suffix (.gz, .zip).
 		 */
-		int suffixLength;
+		int suffixLength{0};
 
 		/**
 		 * mmap pointer
@@ -266,6 +266,14 @@ TimeBasedRollingPolicy::TimeBasedRollingPolicy() :
 }
 
 TimeBasedRollingPolicy::~TimeBasedRollingPolicy(){}
+
+#if 15 < LOG4CXX_ABI_VERSION
+void TimeBasedRollingPolicy::activateOptions()
+{
+	Pool p;
+	activateOptions(p);
+}
+#endif
 
 void TimeBasedRollingPolicy::activateOptions(LOG4CXX_NS::helpers::Pool& pool)
 {
