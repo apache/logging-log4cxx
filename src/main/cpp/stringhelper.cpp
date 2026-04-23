@@ -24,24 +24,36 @@
 #include <iterator>
 #include <algorithm>
 #include <cctype>
+#include <string>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 bool StringHelper::equalsIgnoreCase(const LogString& s1, const logchar* upper, const logchar* lower)
 {
+	const size_t len_upper = std::char_traits<logchar>::length(upper);
+	if (s1.length() != len_upper)
+	{
+		return false;
+	}
+
+	size_t i = 0;
 	for (const auto& item : s1)
 	{
-		if (0 == item || // OSS-Fuzz makes strings with embedded NUL characters
-			(item != *upper && item != *lower))
+		if (item == 0) // OSS-Fuzz makes strings with embedded NUL characters
 		{
 			return false;
 		}
-		++upper;
-		++lower;
+
+		if (item != upper[i] && item != lower[i])
+		{
+			return false;
+		}
+
+		++i;
 	}
 
-	return 0 == *upper;
+	return true;
 }
 
 bool StringHelper::equalsIgnoreCase(const LogString& s1, const LogString& upper, const LogString& lower)
