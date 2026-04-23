@@ -91,12 +91,6 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		@deprecated The \c pool parameter is not required and will be removed in a future version.
 		*/
 		void activateOptions(helpers::Pool& pool) override;
-		/**
-		\copybrief spi::OptionHandler::activateOptions()
-
-		No action is performed in this implementation.
-		*/
-		void activateOptions();
 #else
 		/**
 		\copybrief spi::OptionHandler::activateOptions()

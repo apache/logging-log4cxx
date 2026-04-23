@@ -54,10 +54,12 @@ size_t Layout::getFormattedEventCharacterCount() const
 #if 15 < LOG4CXX_ABI_VERSION
 void Layout::activateOptions(Pool&)
 {
-	activateOptions();
 }
 
 void Layout::activateOptions()
 {
+	// Ensure any ABI 15 overriden activateOptions is invoked
+	Pool p;
+	activateOptions(p);
 }
 #endif

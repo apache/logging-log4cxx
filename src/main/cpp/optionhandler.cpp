@@ -15,22 +15,19 @@
  * limitations under the License.
  */
 #include <log4cxx/spi/optionhandler.h>
-#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/helpers/pool.h>
-#endif
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
-#if 15 < LOG4CXX_ABI_VERSION
 void spi::OptionHandler::activateOptions(Pool&)
 {
-	activateOptions();
 }
-#else
+
 void spi::OptionHandler::activateOptions()
 {
+	// Ensure any ABI 15 overriden activateOptions is invoked
 	 helpers::Pool p;
 	 activateOptions(p);
 }
-#endif
+

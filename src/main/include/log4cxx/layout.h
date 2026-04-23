@@ -82,8 +82,16 @@ class LOG4CXX_EXPORT Layout :
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& ) override;
 		void activateOptions() override;
+
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
+		@deprecated This function is deprecated and will be removed in a future version.
+		*/
+		[[deprecated("Override activateOptions() without parameters instead")]]
+		void activateOptions(helpers::Pool& ) override;
 #endif
 
 	protected:

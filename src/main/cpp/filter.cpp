@@ -45,24 +45,16 @@ void Filter::setNext(const FilterPtr& newNext)
 	m_priv->next = newNext;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
 void Filter::activateOptions(Pool&)
 {
 }
 
+#if 15 < LOG4CXX_ABI_VERSION
 void Filter::activateOptions()
 {
+	// Ensure any ABI 15 overriden activateOptions is invoked
 	helpers::Pool p;
 	activateOptions(p);
-}
-#else
-void Filter::activateOptions(Pool&)
-{
-	activateOptions();
-}
-
-void Filter::activateOptions()
-{
 }
 #endif
 

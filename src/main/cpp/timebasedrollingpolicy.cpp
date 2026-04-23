@@ -270,6 +270,7 @@ TimeBasedRollingPolicy::~TimeBasedRollingPolicy(){}
 #if 15 < LOG4CXX_ABI_VERSION
 void TimeBasedRollingPolicy::activateOptions()
 {
+	// Ensure any ABI 15 overriden activateOptions is invoked
 	Pool p;
 	activateOptions(p);
 }

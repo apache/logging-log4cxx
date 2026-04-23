@@ -111,13 +111,14 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 		@deprecated The \c pool parameter is not required and will be removed in a future version.
 		*/
 		void activateOptions(helpers::Pool& /* pool */) override;
+#else
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions();
-#else
+		void activateOptions() override;
+
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
@@ -127,13 +128,6 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 		*/
 		[[deprecated("Override activateOptions() without parameters instead")]]
 		void activateOptions(helpers::Pool& ) override;
-
-		/**
-		\copybrief spi::OptionHandler::activateOptions()
-
-		No action is performed in this implementation.
-		*/
-		void activateOptions() override;
 #endif
 
 		/**
