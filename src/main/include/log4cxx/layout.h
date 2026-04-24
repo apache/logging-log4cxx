@@ -76,6 +76,7 @@ class LOG4CXX_EXPORT Layout :
 		*/
 		virtual bool ignoresThrowable() const = 0;
 
+#if 15 < LOG4CXX_ABI_VERSION
 		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
@@ -83,7 +84,7 @@ class LOG4CXX_EXPORT Layout :
 		No action is performed in this implementation.
 		*/
 		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
-
+#endif
 	protected:
 		/**
 		 * The expected length of a formatted event excluding the message text

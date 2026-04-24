@@ -75,7 +75,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 
 		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
-#if 15 < LOG4CXX_ABI_VERSION
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		\copybrief AppenderSkeleton::activateOptions()
 

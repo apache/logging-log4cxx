@@ -51,6 +51,8 @@ size_t Layout::getFormattedEventCharacterCount() const
 	return text.size();
 }
 
+#if 15 < LOG4CXX_ABI_VERSION
 void Layout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 }
+#endif

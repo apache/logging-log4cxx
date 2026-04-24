@@ -137,7 +137,7 @@ namespace rolling
  * the {@link #activateOptions} method of the owning
  * <code>RollingFileAppender</code>.
  */
-class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
+class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 	public virtual TriggeringPolicy
 {
 		DECLARE_LOG4CXX_OBJECT(TimeBasedRollingPolicy)

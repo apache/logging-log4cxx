@@ -128,7 +128,6 @@ class LOG4CXX_EXPORT ErrorHandler : public virtual OptionHandler
 		Has an error been reported?
 		*/
 		virtual bool errorReported() const = 0;
-#endif
 
 		using OptionHandler::activateOptions;
 		/**
@@ -137,6 +136,7 @@ class LOG4CXX_EXPORT ErrorHandler : public virtual OptionHandler
 		No action is performed in this implementation.
 		*/
 		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+#endif
 
 };
 

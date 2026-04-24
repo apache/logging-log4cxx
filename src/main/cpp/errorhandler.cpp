@@ -19,6 +19,8 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
+#if 15 < LOG4CXX_ABI_VERSION
 void spi::ErrorHandler::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 }
+#endif
