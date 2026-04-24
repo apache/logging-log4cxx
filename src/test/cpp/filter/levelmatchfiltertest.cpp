@@ -52,8 +52,7 @@ public:
 				LOG4CXX_LOCATION));
 		LevelMatchFilterPtr filter(new LevelMatchFilter());
 		filter->setLevelToMatch(LOG4CXX_STR("info"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -71,8 +70,7 @@ public:
 		LevelMatchFilterPtr filter(new LevelMatchFilter());
 		filter->setLevelToMatch(LOG4CXX_STR("info"));
 		filter->setAcceptOnMatch(false);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
 	}
 
@@ -88,8 +86,7 @@ public:
 				LOG4CXX_STR("Hello, World"),
 				LOG4CXX_LOCATION));
 		LevelMatchFilterPtr filter(new LevelMatchFilter());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -106,8 +103,7 @@ public:
 				LOG4CXX_LOCATION));
 		LevelMatchFilterPtr filter(new LevelMatchFilter());
 		filter->setLevelToMatch(LOG4CXX_STR("debug"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -124,8 +120,7 @@ public:
 				LOG4CXX_LOCATION));
 		LevelMatchFilterPtr filter(new LevelMatchFilter());
 		filter->setLevelToMatch(LOG4CXX_STR("warn"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 };

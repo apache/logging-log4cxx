@@ -100,8 +100,7 @@ Constructs a PatternLayout using the supplied conversion pattern.
 PatternLayout::PatternLayout(const LogString& pattern) :
 	m_priv(std::make_unique<PatternLayoutPrivate>(pattern))
 {
-	Pool pool;
-	activateOptions(pool);
+	activateOptions();
 }
 
 PatternLayout::~PatternLayout() {}
@@ -109,8 +108,7 @@ PatternLayout::~PatternLayout() {}
 void PatternLayout::setConversionPattern(const LogString& pattern)
 {
 	m_priv->conversionPattern = pattern;
-	Pool pool;
-	activateOptions(pool);
+	activateOptions();
 }
 
 void PatternLayout::format(LogString& output,
@@ -170,7 +168,7 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
 	}
 }
 
-void PatternLayout::activateOptions(Pool&)
+void PatternLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 	LogString pat(m_priv->conversionPattern);
 

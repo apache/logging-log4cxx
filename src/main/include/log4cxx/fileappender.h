@@ -114,8 +114,9 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/** Returns the value of the <b>File</b> option. */
 		LogString getFile() const;
 
+		using WriterAppender::activateOptions;
 		/**
-		\copybrief AppenderSkeleton::activateOptions()
+		\copybrief WriterAppender::activateOptions()
 
 		Sets and <i>opens</i> the file where the log output will
 		go. The specified file must be writable.
@@ -123,7 +124,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		If there was already an opened file, then the previous file
 		is closed first.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		/**
 		\copybrief AppenderSkeleton::setOption()
@@ -218,7 +219,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		static LogString stripDuplicateBackslashes(const LogString& name);
 
 	protected:
-		void activateOptionsInternal(helpers::Pool& p);
+		void activateOptionsInternal();
 
 		/**
 		Sets and <i>opens</i> the file where the log output will
@@ -238,14 +239,18 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		truncate fileName.
 		@param bufferedIO Do we do bufferedIO?
 		@param bufferSize How big should the IO buffer be?
-		@param p memory pool for operation.
 		*/
 		void setFileInternal(const LogString& file, bool append,
-			bool bufferedIO, size_t bufferSize,
-			helpers::Pool& p);
+			bool bufferedIO, size_t bufferSize);
 
 		void setFileInternal(const LogString& file);
 
+#if LOG4CXX_ABI_VERSION <= 15
+		void activateOptionsInternal(helpers::Pool& p);
+		void setFileInternal(const LogString& file, bool append,
+			bool bufferedIO, size_t bufferSize,
+			helpers::Pool& p);
+#endif
 	private:
 		FileAppender(const FileAppender&);
 		FileAppender& operator=(const FileAppender&);

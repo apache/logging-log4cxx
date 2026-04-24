@@ -479,12 +479,13 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		 */
 		LogString getConversionPattern() const;
 
+		using Layout::activateOptions;
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
 		Calls createPatternParser
 		 */
-		void activateOptions(helpers::Pool& p) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

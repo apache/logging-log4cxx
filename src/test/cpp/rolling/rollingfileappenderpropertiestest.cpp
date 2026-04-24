@@ -117,8 +117,7 @@ public:
 		rfa->setOption(LOG4CXX_STR("append"), LOG4CXX_STR("false"));
 		rfa->setMaximumFileSize(100);
 		rfa->setFile(LOG4CXX_STR("output/obsoleteRFA-test2.log"));
-		Pool p;
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		auto root = Logger::getRootLogger();
 		root->addAppender(rfa);
 
@@ -184,8 +183,7 @@ public:
 		rfa->setAppend(false);
 		rfa->setFile(LOG4CXX_STR("output/obsoleteDRFA-test2.log"));
 		rfa->setDatePattern(LOG4CXX_STR("'.'yyyy-MM-dd-HH_mm_ss"));
-		Pool p;
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		LoggerPtr root(Logger::getRootLogger());
 		root->addAppender(rfa);
 		LoggerPtr logger(Logger::getLogger("ObsoleteDailyRollingAppenderTest"));

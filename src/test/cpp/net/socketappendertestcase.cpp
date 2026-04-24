@@ -72,8 +72,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setRemoteHost(LOG4CXX_STR("localhost"));
 			appender->setReconnectionDelay(50); // milliseconds
 			appender->setPort(tcpPort);
-			helpers::Pool pool;
-			appender->activateOptions(pool);
+			appender->activateOptions();
 
 			BasicConfigurator::configure(appender);
 

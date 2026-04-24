@@ -52,8 +52,7 @@ WriterAppender::WriterAppender(const LayoutPtr& layout)
 WriterAppender::WriterAppender(const LayoutPtr& layout, const helpers::WriterPtr& writer)
 	: AppenderSkeleton(std::make_unique<WriterAppenderPriv>(layout, writer))
 {
-	Pool p;
-	activateOptions(p);
+	activateOptions();
 }
 #endif
 
@@ -69,33 +68,25 @@ WriterAppender::~WriterAppender()
 		_priv->close();
 }
 
-void WriterAppender::activateOptions(Pool& p)
+void WriterAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-	int errors = 0;
-
-	if (_priv->layout == 0)
-	{
-		_priv->errorHandler->error(
-			((LogString) LOG4CXX_STR("No layout set for the appender named ["))
-			+ _priv->name + LOG4CXX_STR("]."));
-		errors++;
-	}
-
-	if (_priv->writer == 0)
-	{
-		_priv->errorHandler->error(
-			((LogString) LOG4CXX_STR("No writer set for the appender named ["))
-			+ _priv->name + LOG4CXX_STR("]."));
-		errors++;
-	}
-
-	if (errors == 0)
-	{
-		AppenderSkeleton::activateOptions(p);
-	}
+	_priv->activateOptions();
 }
 
+void WriterAppender::WriterAppenderPriv::activateOptions()
+{
+	if (this->layout == 0)
+	{
+		this->errorHandler->error(LOG4CXX_STR("No layout set for the appender named [")
+			+ this->name + LOG4CXX_STR("]."));
+	}
 
+	if (this->writer == 0)
+	{
+		this->errorHandler->error(LOG4CXX_STR("No writer set for the appender named [")
+			+ this->name + LOG4CXX_STR("]."));
+	}
+}
 
 void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool1)
 {

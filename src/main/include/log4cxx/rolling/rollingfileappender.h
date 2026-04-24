@@ -147,12 +147,13 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		*/
 		void setOption( const LogString& option, const LogString& value ) override;
 
+		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief FileAppender::activateOptions()
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions(helpers::Pool& pool ) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		/**
 		   Implements the configured roll over behaviour.

@@ -47,8 +47,7 @@ public:
 				LOG4CXX_STR("Hello, World"),
 				LOG4CXX_LOCATION));
 		FilterPtr filter(new DenyAllFilter());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
 	}
 

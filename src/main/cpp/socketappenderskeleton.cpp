@@ -60,10 +60,10 @@ SocketAppenderSkeleton::~SocketAppenderSkeleton()
 {
 }
 
-void SocketAppenderSkeleton::activateOptions(Pool& p)
+void SocketAppenderSkeleton::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-	AppenderSkeleton::activateOptions(p);
-	connect(p);
+	Pool my_pool;
+	connect(my_pool);
 }
 
 void SocketAppenderSkeleton::close()

@@ -402,7 +402,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				asyncAppender->setName(LOG4CXX_STR("async-testBadAppender"));
 				asyncAppender->addAppender(std::make_shared<NullPointerAppender>());
 				Pool p;
-				asyncAppender->activateOptions(p);
+				asyncAppender->activateOptions();
 				r->getRootLogger()->addAppender(asyncAppender);
 				r->setConfigured(true);
 			});
@@ -442,7 +442,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				async->setBufferSize(5);
 				async->setBlocking(false);
 				Pool p;
-				async->activateOptions(p);
+				async->activateOptions();
 				r->getRootLogger()->addAppender(async);
 				r->setConfigured(true);
 			});
@@ -527,7 +527,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				async->setName(LOG4CXX_STR("withLoggingAppender"));
 				async->setBufferSize(5);
 				Pool p;
-				async->activateOptions(p);
+				async->activateOptions();
 				r->getRootLogger()->addAppender(async);
 				r->setConfigured(true);
 			});

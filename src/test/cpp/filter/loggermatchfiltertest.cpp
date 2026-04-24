@@ -51,8 +51,7 @@ public:
 				LOG4CXX_STR("Hello, World"),
 				LOG4CXX_LOCATION));
 		FilterPtr filter(new LoggerMatchFilter());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -69,8 +68,7 @@ public:
 				LOG4CXX_LOCATION));
 		LoggerMatchFilterPtr filter(new LoggerMatchFilter());
 		filter->setAcceptOnMatch(false);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
 	}
 
@@ -86,8 +84,7 @@ public:
 				LOG4CXX_STR("Hello, World"),
 				LOG4CXX_LOCATION));
 		FilterPtr filter(new LoggerMatchFilter());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -104,8 +101,7 @@ public:
 				LOG4CXX_LOCATION));
 		LoggerMatchFilterPtr filter(new LoggerMatchFilter());
 		filter->setLoggerToMatch(LOG4CXX_STR("org.apache.log4j.filter.LoggerMatchFilterTest"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 

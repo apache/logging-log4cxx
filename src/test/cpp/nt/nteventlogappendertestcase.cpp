@@ -83,7 +83,7 @@ class NTEventLogAppenderTestCase : public AppenderSkeletonTestCase
 				appender->setSource(LOG4CXX_STR("log4cxx_test"));
 				LayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c - %m%n")));
 				appender->setLayout(layout);
-				appender->activateOptions(p);
+				appender->activateOptions();
 
 				LoggingEventPtr event(new LoggingEvent(
 						LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));

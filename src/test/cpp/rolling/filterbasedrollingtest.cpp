@@ -84,19 +84,18 @@ public:
 		rf->setLevelMin(Level::getInfo());
 		fbtp->addFilter(rf);
 
-		Pool p;
-		fbtp->activateOptions(p);
+		fbtp->activateOptions();
 
 		swrp->setMinIndex(0);
 		rfa->setFile(LOG4CXX_STR("output/filterBased-test2.log"));
 		rfa->setAppend(false);
 
 		swrp->setFileNamePattern(LOG4CXX_STR("output/filterBased-test2.%i"));
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
 		rfa->setTriggeringPolicy(fbtp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		Logger::getRootLogger()->addAppender(rfa);
 		Logger::getRootLogger()->setLevel(Level::getDebug());
 

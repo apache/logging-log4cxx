@@ -394,7 +394,6 @@ public:
 	 */
 	void test1()
 	{
-		Pool      pool;
 		const int nrOfFnames(4);
 		LogString fnames[nrOfFnames];
 
@@ -405,11 +404,12 @@ public:
 
 		TimeBasedRollingPolicyPtr tbrp(new TimeBasedRollingPolicy());
 		tbrp->setFileNamePattern(LOG4CXX_STR("" DIR_PRE_OUTPUT "test1-%d{" DATE_PATTERN "}"));
-		tbrp->activateOptions(pool);
+		tbrp->activateOptions();
 		rfa->setRollingPolicy(tbrp);
-		rfa->activateOptions(pool);
+		rfa->activateOptions();
 		logger->addAppender(rfa);
 
+		Pool      pool;
 		this->buildTsFnames<4>(pool, LOG4CXX_STR("test1-"), fnames);
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(	pool, nrOfFnames + 1, __LOG4CXX_FUNC__, __LINE__);
@@ -422,7 +422,6 @@ public:
 	 */
 	void test2()
 	{
-		Pool      pool;
 		const int nrOfFnames(4);
 		LogString fnames[nrOfFnames];
 
@@ -433,11 +432,12 @@ public:
 
 		TimeBasedRollingPolicyPtr tbrp1(new TimeBasedRollingPolicy());
 		tbrp1->setFileNamePattern(LOG4CXX_STR("" DIR_PRE_OUTPUT "test2-%d{" DATE_PATTERN "}"));
-		tbrp1->activateOptions(pool);
+		tbrp1->activateOptions();
 		rfa1->setRollingPolicy(tbrp1);
-		rfa1->activateOptions(pool);
+		rfa1->activateOptions();
 		logger->addAppender(rfa1);
 
+		Pool      pool;
 		this->buildTsFnames<4>(pool, LOG4CXX_STR("test2-"), fnames);
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(pool, 3, __LOG4CXX_FUNC__, __LINE__);
@@ -451,9 +451,9 @@ public:
 
 		TimeBasedRollingPolicyPtr tbrp2 = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp2->setFileNamePattern(LOG4CXX_STR("" DIR_PRE_OUTPUT "test2-%d{" DATE_PATTERN "}"));
-		tbrp2->activateOptions(pool);
+		tbrp2->activateOptions();
 		rfa2->setRollingPolicy(tbrp2);
-		rfa2->activateOptions(pool);
+		rfa2->activateOptions();
 		rfa2->setAppend(false);
 		logger->addAppender(rfa2);
 
@@ -467,7 +467,6 @@ public:
 	 */
 	void test3()
 	{
-		Pool      pool;
 		const int nrOfFnames(4);
 		LogString fnames[nrOfFnames];
 
@@ -478,11 +477,12 @@ public:
 
 		TimeBasedRollingPolicyPtr tbrp = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp->setFileNamePattern(LogString(LOG4CXX_STR("" DIR_PRE_OUTPUT "test3-%d{" DATE_PATTERN "}.gz")));
-		tbrp->activateOptions(pool);
+		tbrp->activateOptions();
 		rfa->setRollingPolicy(tbrp);
-		rfa->activateOptions(pool);
+		rfa->activateOptions();
 		logger->addAppender(rfa);
 
+		Pool pool;
 		this->buildTsFnames<4>(pool, LOG4CXX_STR("test3-"), fnames, true);
 		fnames[nrOfFnames - 1].resize(fnames[nrOfFnames - 1].size() - 3);
 		this->delayUntilNextSecondWithMsg();
@@ -499,7 +499,6 @@ public:
 	 */
 	void test4()
 	{
-		Pool      pool;
 		const int nrOfFnames(4);
 		const int nrOfLogMsgs(((nrOfFnames - 1) * 2) - 1);
 		LogString fnames[nrOfFnames];
@@ -510,12 +509,13 @@ public:
 
 		TimeBasedRollingPolicyPtr tbrp1 = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp1->setFileNamePattern(LOG4CXX_STR("" DIR_PRE_OUTPUT "test4-%d{" DATE_PATTERN "}"));
-		tbrp1->activateOptions(pool);
+		tbrp1->activateOptions();
 		rfa1->setFile(LOG4CXX_STR("" DIR_PRE_OUTPUT "test4.log"));
 		rfa1->setRollingPolicy(tbrp1);
-		rfa1->activateOptions(pool);
+		rfa1->activateOptions();
 		logger->addAppender(rfa1);
 
+		Pool pool;
 		this->delGenericLogFile(pool, rfa1->getFile());
 		this->buildTsFnames<4>(pool, LOG4CXX_STR("test4-"), fnames);
 		fnames[0].assign(rfa1->getFile());
@@ -531,10 +531,10 @@ public:
 
 		TimeBasedRollingPolicyPtr tbrp2 = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp2->setFileNamePattern(LOG4CXX_STR("" DIR_PRE_OUTPUT "test4-%d{" DATE_PATTERN "}"));
-		tbrp2->activateOptions(pool);
+		tbrp2->activateOptions();
 		rfa2->setFile(rfa1->getFile());
 		rfa2->setRollingPolicy(tbrp2);
-		rfa2->activateOptions(pool);
+		rfa2->activateOptions();
 		logger->addAppender(rfa2);
 
 		// The one file not checked is the active file from the old appender reused by the new one
@@ -552,7 +552,6 @@ public:
 	 */
 	void test5()
 	{
-		Pool      pool;
 		const int nrOfFnames(4);
 		const int nrOfLogMsgs((nrOfFnames * 2) - 1);
 		LogString fnames[nrOfFnames];
@@ -565,11 +564,12 @@ public:
 		tbrp->setFileNamePattern(LOG4CXX_STR("" DIR_PRE_OUTPUT "test5-%d{" DATE_PATTERN "}"));
 		rfa->setFile(LOG4CXX_STR("" DIR_PRE_OUTPUT "test5.log"));
 
-		tbrp->activateOptions(pool);
+		tbrp->activateOptions();
 		rfa->setRollingPolicy(tbrp);
-		rfa->activateOptions(pool);
+		rfa->activateOptions();
 		logger->addAppender(rfa);
 
+		Pool pool;
 		this->delGenericLogFile(pool, rfa->getFile());
 		this->buildTsFnames<4>(pool, LOG4CXX_STR("test5-"), fnames);
 		fnames[0].assign(rfa->getFile());
@@ -584,7 +584,6 @@ public:
 	 */
 	void test6()
 	{
-		Pool      pool;
 		const int nrOfFnames(4);
 		const int nrOfLogMsgs((nrOfFnames * 2) - 1);
 		LogString fnames[nrOfFnames];
@@ -597,11 +596,12 @@ public:
 		TimeBasedRollingPolicyPtr tbrp = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp->setFileNamePattern(LogString(LOG4CXX_STR("" DIR_PRE_OUTPUT "test6-%d{" DATE_PATTERN "}.gz")));
 		rfa->setFile(LOG4CXX_STR("" DIR_PRE_OUTPUT "test6.log"));
-		tbrp->activateOptions(pool);
+		tbrp->activateOptions();
 		rfa->setRollingPolicy(tbrp);
-		rfa->activateOptions(pool);
+		rfa->activateOptions();
 		logger->addAppender(rfa);
 
+		Pool pool;
 		this->delGenericLogFile(pool, rfa->getFile());
 		this->buildTsFnames<4>(pool, LOG4CXX_STR("test6-"), fnames, true);
 		fnames[0].assign(rfa->getFile());
@@ -644,7 +644,6 @@ public:
 
 	void rollIntoDir()
 	{
-		Pool      pool;
 		const int nrOfFnames(4);
 		const int nrOfLogMsgs((nrOfFnames * 2) - 1);
 		LogString fnames[nrOfFnames];
@@ -668,13 +667,14 @@ public:
 
 		TimeBasedRollingPolicyPtr tbrp(new TimeBasedRollingPolicy());
 		tbrp->setFileNamePattern(filenamePattern);
-		tbrp->activateOptions(pool);
+		tbrp->activateOptions();
 		rfa->setRollingPolicy(tbrp);
-		rfa->activateOptions(pool);
+		rfa->activateOptions();
 		logger->addAppender(rfa);
 
 		const logchar* prefix = directoryName.append(LOG4CXX_STR("/file-")).data();
 
+		Pool pool;
 		this->delGenericLogFile(pool, rfa->getFile());
 		this->buildTsFnames<4>(pool, prefix, fnames);
 		fnames[0].assign(rfa->getFile());

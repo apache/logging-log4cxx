@@ -154,7 +154,8 @@ void DBAppender::setOption(const LogString& option, const LogString& value){
     }
 }
 
-void DBAppender::activateOptions(helpers::Pool& p){
+void DBAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+{
     apr_status_t stat = apr_dbd_get_driver(_priv->m_pool.getAPRPool(),
                                            _priv->driverName.c_str(),
 #if 15 < LOG4CXX_ABI_VERSION

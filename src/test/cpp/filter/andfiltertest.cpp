@@ -58,8 +58,7 @@ public:
 				LOG4CXX_STR("Hello, World"),
 				LOG4CXX_LOCATION));
 		FilterPtr filter(new AndFilter());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -77,10 +76,9 @@ public:
 		AndFilterPtr filter(new AndFilter());
 		LevelMatchFilterPtr filter1(new LevelMatchFilter());
 		filter1->setLevelToMatch(LOG4CXX_STR("info"));
-		Pool p;
-		filter1->activateOptions(p);
+		filter1->activateOptions();
 		filter->addFilter(filter1);
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -98,14 +96,13 @@ public:
 		AndFilterPtr filter(new AndFilter());
 		LevelMatchFilterPtr filter1(new LevelMatchFilter());
 		filter1->setLevelToMatch(LOG4CXX_STR("info"));
-		Pool p;
-		filter1->activateOptions(p);
+		filter1->activateOptions();
 		filter->addFilter(filter1);
 		LevelMatchFilterPtr filter2(new LevelMatchFilter());
 		filter2->setLevelToMatch(LOG4CXX_STR("info"));
-		filter2->activateOptions(p);
+		filter2->activateOptions();
 		filter->addFilter(filter2);
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -124,11 +121,10 @@ public:
 		AndFilterPtr filter(new AndFilter());
 		LevelMatchFilterPtr filter1(new LevelMatchFilter());
 		filter1->setLevelToMatch(LOG4CXX_STR("info"));
-		Pool p;
-		filter1->activateOptions(p);
+		filter1->activateOptions();
 		filter->addFilter(filter1);
 		filter->setAcceptOnMatch(false);
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
 	}
 
@@ -146,13 +142,12 @@ public:
 		AndFilterPtr filter(new AndFilter());
 		LevelMatchFilterPtr filter1(new LevelMatchFilter());
 		filter1->setLevelToMatch(LOG4CXX_STR("info"));
-		Pool p;
-		filter1->activateOptions(p);
+		filter1->activateOptions();
 		filter->addFilter(filter1);
 		FilterPtr filter2(new DenyAllFilter());
-		filter2->activateOptions(p);
+		filter2->activateOptions();
 		filter->addFilter(filter2);
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -170,13 +165,12 @@ public:
 		AndFilterPtr filter(new AndFilter());
 		LevelMatchFilterPtr filter1(new LevelMatchFilter());
 		filter1->setLevelToMatch(LOG4CXX_STR("info"));
-		Pool p;
-		filter1->activateOptions(p);
+		filter1->activateOptions();
 		filter->addFilter(filter1);
 		FilterPtr filter2(new StringMatchFilter());
-		filter2->activateOptions(p);
+		filter2->activateOptions();
 		filter->addFilter(filter2);
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 };

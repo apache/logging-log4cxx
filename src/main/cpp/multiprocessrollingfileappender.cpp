@@ -150,9 +150,12 @@ MultiprocessRollingFileAppender::MultiprocessRollingFileAppender()
 /**
  * Prepare instance of use.
  */
-void MultiprocessRollingFileAppender::activateOptions(Pool& p)
+void MultiprocessRollingFileAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-	RollingFileAppender::activateOptions(p);
+	if (_priv->activateOptions())
+	{
+		FileAppender::activateOptionsInternal();
+	}
 
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
 		pTimeBased->setMultiprocess(true);
@@ -315,13 +318,13 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 					msg.append(LOG4CXX_STR("] failed"));
 					_priv->errorHandler->error(msg);
 				}
-				setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize, p);
+				setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize);
 			}
 			else
 			{
 				setFileInternal(rollover1->getActiveFileName());
 				// Call activateOptions to create any intermediate directories(if required)
-				FileAppender::activateOptionsInternal(p);
+				FileAppender::activateOptionsInternal();
 				OutputStreamPtr os = std::make_shared<FileOutputStream>
 					( rollover1->getActiveFileName()
 					, rollover1->getAppend()

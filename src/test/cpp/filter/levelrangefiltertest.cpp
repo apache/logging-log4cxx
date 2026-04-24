@@ -54,8 +54,7 @@ public:
 				LOG4CXX_LOCATION));
 		LevelRangeFilterPtr filter(new LevelRangeFilter());
 		filter->setLevelMin(Level::getWarn());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
 	}
 
@@ -72,8 +71,7 @@ public:
 				LOG4CXX_LOCATION));
 		LevelRangeFilterPtr filter(new LevelRangeFilter());
 		filter->setLevelMax(Level::getDebug());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
 	}
 
@@ -91,8 +89,7 @@ public:
 		LevelRangeFilterPtr filter(new LevelRangeFilter());
 		filter->setLevelMin(Level::getDebug());
 		filter->setAcceptOnMatch(true);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -110,8 +107,7 @@ public:
 		LevelRangeFilterPtr filter(new LevelRangeFilter());
 		filter->setLevelMax(Level::getError());
 		filter->setAcceptOnMatch(true);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -128,8 +124,7 @@ public:
 				LOG4CXX_LOCATION));
 		LevelRangeFilterPtr filter(new LevelRangeFilter());
 		filter->setLevelMin(Level::getDebug());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -146,8 +141,7 @@ public:
 				LOG4CXX_LOCATION));
 		LevelRangeFilterPtr filter(new LevelRangeFilter());
 		filter->setLevelMax(Level::getError());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 };

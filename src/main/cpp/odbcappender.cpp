@@ -218,7 +218,7 @@ bool ODBCAppender::requiresLayout() const
 	return false;
 }
 
-void ODBCAppender::activateOptions(LOG4CXX_NS::helpers::Pool&)
+void ODBCAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));

@@ -82,7 +82,8 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		[[ deprecated( "The derived appender destructor needs to implement its cleanup" ) ]]
 		void finalize();
 #endif
-#if LOG4CXX_ABI_VERSION <= 15
+
+		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
@@ -90,24 +91,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 
 		@deprecated The \c pool parameter is not required and will be removed in a future version.
 		*/
-		void activateOptions(helpers::Pool& pool) override;
-#else
-		/**
-		\copybrief spi::OptionHandler::activateOptions()
-
-		No action is performed in this implementation.
-
-		@deprecated This function is deprecated and will be removed in a future version.
-		*/
-		[[deprecated("Override activateOptions() without parameters instead")]]
-		void activateOptions(helpers::Pool& ) override;
-		/**
-		\copybrief spi::OptionHandler::activateOptions()
-
-		No action is performed in this implementation.
-		*/
-		void activateOptions() override;
-#endif
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

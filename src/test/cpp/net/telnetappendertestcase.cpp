@@ -74,8 +74,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			TelnetAppenderPtr appender(new TelnetAppender());
 			appender->setLayout(createLayout());
 			appender->setPort(TEST_PORT);
-			Pool p;
-			appender->activateOptions(p);
+			appender->activateOptions();
 			appender->close();
 		}
 
@@ -84,8 +83,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			TelnetAppenderPtr appender(new TelnetAppender());
 			appender->setLayout(createLayout());
 			appender->setPort(TEST_PORT);
-			Pool p;
-			appender->activateOptions(p);
+			appender->activateOptions();
 			apr_sleep(100000);    // 100 milliseconds
 			appender->close();
 		}
@@ -100,8 +98,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setPort(TEST_PORT);
 			appender->setReuseAddress(true);
 			appender->setNonBlocking(true);
-			Pool p;
-			appender->activateOptions(p);
+			appender->activateOptions();
 			BasicConfigurator::configure(appender);
 			auto root = Logger::getRootLogger();
 
@@ -124,8 +121,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setMaxConnections(1);
 			appender->setReuseAddress(true);
 			appender->setHostname(LOG4CXX_STR("127.0.0.1"));
-			Pool p;
-			appender->activateOptions(p);
+			appender->activateOptions();
 			BasicConfigurator::configure(appender);
 			auto root = Logger::getRootLogger();
 

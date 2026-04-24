@@ -51,12 +51,13 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		*/
 		SocketAppenderSkeleton(const LogString& host, int port, int reconnectionDelay);
 
+		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief AppenderSkeleton::activateOptions()
 
 		Connects to the specified <b>RemoteHost</b> and <b>Port</b>.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		void close() override;
 

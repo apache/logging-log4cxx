@@ -56,23 +56,13 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		RollingPolicyBase();
 		virtual ~RollingPolicyBase();
 
-		/**
-		\copybrief RollingPolicy::activateOptions()
-
-		Logs a warning if FileNamePattern is not set.
-
-		\sa RollingPolicy::activateOptions()
-		*/
-
-#if 15 < LOG4CXX_ABI_VERSION
+		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
-		No action is performed in this implementation.
+		Converts the file name pattern to a collection of formaters.
 		*/
-		void activateOptions() override;
-#endif
-		void activateOptions(helpers::Pool& p) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS  ) override;
 
 		/**
 		A map from a name to the object implementing the (date or index) formatting.

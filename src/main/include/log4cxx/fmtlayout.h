@@ -255,12 +255,13 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
 			return true;
 		}
 
+		using Layout::activateOptions;
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
-		No action is performed in this implementation.
+		Calculates the length of the formtted output.
 		*/
-		void activateOptions(helpers::Pool& /* p */) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

@@ -26,16 +26,3 @@ IMPLEMENT_LOG4CXX_OBJECT(TriggeringPolicy)
 TriggeringPolicy::~TriggeringPolicy()
 {
 }
-
-#if 15 < LOG4CXX_ABI_VERSION
-void TriggeringPolicy::activateOptions(Pool&)
-{
-}
-
-void TriggeringPolicy::activateOptions()
-{
-	// Ensure any ABI 15 overriden activateOptions is invoked
-	 helpers::Pool p;
-	 activateOptions(p);
-}
-#endif

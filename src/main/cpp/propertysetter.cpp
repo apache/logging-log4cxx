@@ -104,6 +104,6 @@ void PropertySetter::activate(Pool& p)
 	if (obj != 0 && obj->instanceof(OptionHandler::getStaticClass()))
 	{
 		OptionHandlerPtr handler = LOG4CXX_NS::cast<OptionHandler>(obj);
-		handler->activateOptions(p);
+		handler->activateOptions();
 	}
 }

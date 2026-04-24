@@ -45,18 +45,9 @@ void Filter::setNext(const FilterPtr& newNext)
 	m_priv->next = newNext;
 }
 
-void Filter::activateOptions(Pool&)
+void Filter::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 }
-
-#if 15 < LOG4CXX_ABI_VERSION
-void Filter::activateOptions()
-{
-	// Ensure any ABI 15 overriden activateOptions is invoked
-	helpers::Pool p;
-	activateOptions(p);
-}
-#endif
 
 void Filter::setOption(const LogString&, const LogString&)
 {

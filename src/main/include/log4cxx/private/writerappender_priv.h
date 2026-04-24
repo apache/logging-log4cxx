@@ -105,6 +105,8 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 		std::lock_guard<std::recursive_mutex> lock(this->mutex);
 		this->writer = newWriter;
 	}
+
+	void activateOptions();
 };
 
 }

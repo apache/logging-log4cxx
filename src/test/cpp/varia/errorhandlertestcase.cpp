@@ -94,8 +94,7 @@ public:
 		LOGUNIT_ASSERT(eh != 0);
 
 		primary->setOption(LOG4CXX_STR("FILE"), BadPath);
-		Pool p;
-		primary->activateOptions(p);
+		primary->activateOptions();
 		LOGUNIT_ASSERT(eh->errorReported());
 
 		common();
@@ -140,8 +139,7 @@ public:
 		eh->setLogger(logger);
 
 		primary->setOption(LOG4CXX_STR("FILE"), BadPath);
-		Pool p;
-		primary->activateOptions(p);
+		primary->activateOptions();
 		LOGUNIT_ASSERT(eh->errorReported());
 
 		common();

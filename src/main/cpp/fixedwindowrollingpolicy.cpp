@@ -99,9 +99,9 @@ void FixedWindowRollingPolicy::setOption(const LogString& option,
 /**
  * {@inheritDoc}
  */
-void FixedWindowRollingPolicy::activateOptions(Pool& p)
+void FixedWindowRollingPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-	RollingPolicyBase::activateOptions(p);
+	priv->activateOptions(getFormatSpecifiers());
 
 	if (priv->maxIndex < priv->minIndex)
 	{

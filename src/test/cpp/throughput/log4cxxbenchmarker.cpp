@@ -51,11 +51,6 @@ class NullWriterAppender : public log4cxx::AppenderSkeleton
 			// This gets called whenever there is a valid event for our appender.
 		}
 
-		void activateOptions(log4cxx::helpers::Pool& /* pool */) override
-		{
-			// Given all of our options, do something useful(e.g. open a file)
-		}
-
 		void setOption(const LogString& option, const LogString& value) override
 		{
 		}

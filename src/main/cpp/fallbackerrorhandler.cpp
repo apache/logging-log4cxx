@@ -169,9 +169,11 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 	m_priv->backup.push_back(backup1);
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void FallbackErrorHandler::activateOptions(Pool&)
 {
 }
+#endif
 
 void FallbackErrorHandler::setOption(const LogString&, const LogString&)
 {

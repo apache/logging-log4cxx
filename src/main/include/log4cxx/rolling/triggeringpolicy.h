@@ -70,15 +70,6 @@ class LOG4CXX_EXPORT TriggeringPolicy :
 			const LogString& filename,
 			size_t fileLength) = 0;
 
-#if 15 < LOG4CXX_ABI_VERSION
-		/**
-		\copybrief spi::OptionHandler::activateOptions()
-
-		No action is performed in this implementation.
-		*/
-		void activateOptions(helpers::Pool& ) override;
-		void activateOptions() override;
-#endif
 };
 
 LOG4CXX_PTR_DEF(TriggeringPolicy);

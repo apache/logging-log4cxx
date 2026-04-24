@@ -16,18 +16,20 @@
  */
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
 
-void spi::OptionHandler::activateOptions(Pool&)
-{
-}
-
+#if LOG4CXX_ABI_VERSION <= 15
 void spi::OptionHandler::activateOptions()
 {
 	// Ensure any ABI 15 overriden activateOptions is invoked
-	 helpers::Pool p;
-	 activateOptions(p);
+	helpers::Pool p;
+	activateOptions(p);
 }
-
+#else
+void spi::OptionHandler::activateOptions(helpers::Pool&)
+{
+	throw helpers::Exception("Missing activateOptions() override implementation");
+}
+#endif

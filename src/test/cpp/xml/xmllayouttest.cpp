@@ -361,9 +361,8 @@ public:
 	 */
 	void testActivateOptions()
 	{
-		Pool p;
 		XMLLayout layout;
-		layout.activateOptions(p);
+		layout.activateOptions();
 	}
 
 	/**

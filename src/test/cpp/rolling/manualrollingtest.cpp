@@ -120,14 +120,13 @@ public:
 		swrp->setMinIndex(0);
 
 		swrp->setFileNamePattern(LOG4CXX_STR("output/manual-test1.%i"));
-		Pool p;
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
-
+		Pool p;
 		common(rfa, p, logger);
 
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test1.0").exists());
@@ -153,10 +152,10 @@ public:
 		rfa->setLayout(layout);
 		rfa->setFile(LOG4CXX_STR("output/manual-test2.log"));
 
-		Pool p;
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
+		Pool p;
 		common(rfa, p, logger);
 
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log").exists());
@@ -187,9 +186,9 @@ public:
 		rfa->setFile(LOG4CXX_STR("output/manual-test3.log"));
 		fwrp->setFileNamePattern(LOG4CXX_STR("output/sbr-test3.%i.gz"));
 		Pool p;
-		fwrp->activateOptions(p);
+		fwrp->activateOptions();
 		rfa->setRollingPolicy(fwrp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 		common(rfa, p, logger);
@@ -224,10 +223,10 @@ public:
 		//
 		swrp->setFileNamePattern(LOG4CXX_STR("output/test4/manual-test4.%i"));
 		Pool p;
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 		common(rfa, p, logger);
@@ -256,15 +255,15 @@ public:
 		swrp->setMinIndex(0);
 
 		swrp->setFileNamePattern(LOG4CXX_STR("output/manual-test5.%i"));
-		Pool p;
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 		//
 		//   put stray file about locked file
+		Pool p;
 		FileOutputStream os1(LOG4CXX_STR("output/manual-test5.1"), false);
 		os1.close(p);
 
@@ -334,14 +333,14 @@ public:
 		LogString filenamePatternPrefix = filenamePattern;
 		filenamePattern.append( LOG4CXX_STR("/file-%i.gz") );
 		swrp->setFileNamePattern(filenamePattern);
-		Pool p;
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 
+		Pool p;
 		common(rfa, p, logger);
 
 		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + LOG4CXX_STR("/file-0.gz")).exists());

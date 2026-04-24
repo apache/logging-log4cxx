@@ -67,12 +67,13 @@ class LOG4CXX_EXPORT ManualTriggeringPolicy : public TriggeringPolicy
 			const LogString& filename,
 			size_t fileLength) override;
 
+		using TriggeringPolicy::activateOptions;
 		/**
-		\copybrief spi::OptionHandler::activateOptions()
+		\copybrief TriggeringPolicy::activateOptions()
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool&) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
