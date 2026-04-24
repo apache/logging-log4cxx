@@ -42,6 +42,9 @@ LOGUNIT_CLASS(StringHelperTestCase)
 	LOGUNIT_TEST( testEndsWith3 );
 	LOGUNIT_TEST( testEndsWith4 );
 	LOGUNIT_TEST( testEndsWith5 );
+	LOGUNIT_TEST( testEqualsIgnoreCaseMatchesCase );
+	LOGUNIT_TEST( testEqualsIgnoreCaseLengthMismatch );
+	LOGUNIT_TEST( testEqualsIgnoreCaseEmbeddedNull );
 	LOGUNIT_TEST_SUITE_END();
 
 
@@ -127,6 +130,34 @@ public:
 	void testEndsWith5()
 	{
 		LOGUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("abc")));
+	}
+
+	/**
+	 * Check that equalsIgnoreCase("foo", "FOO", "foo") returns true.
+	 */
+	void testEqualsIgnoreCaseMatchesCase()
+	{
+		LOGUNIT_ASSERT_EQUAL(true, StringHelper::equalsIgnoreCase(LOG4CXX_STR("foo"), LOG4CXX_STR("FOO").c_str(), LOG4CXX_STR("foo").c_str()));
+	}
+
+	/**
+	 * Check that equalsIgnoreCase("foo", "FOO", "fo") returns false for length mismatch.
+	 */
+	void testEqualsIgnoreCaseLengthMismatch()
+	{
+		LOGUNIT_ASSERT_EQUAL(false, StringHelper::equalsIgnoreCase(LOG4CXX_STR("foo"), LOG4CXX_STR("FOO").c_str(), LOG4CXX_STR("fo").c_str()));
+	}
+
+	/**
+	 * Check that equalsIgnoreCase returns false when s1 contains an embedded NUL.
+	 */
+	void testEqualsIgnoreCaseEmbeddedNull()
+	{
+		LogString s1;
+		s1.append(1, 'f');
+		s1.append(1, 0);
+		s1.append(1, 'o');
+		LOGUNIT_ASSERT_EQUAL(false, StringHelper::equalsIgnoreCase(s1, LOG4CXX_STR("FOO").c_str(), LOG4CXX_STR("foo").c_str()));
 	}
 
 
