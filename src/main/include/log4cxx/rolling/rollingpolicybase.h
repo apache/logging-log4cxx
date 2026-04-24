@@ -63,6 +63,15 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 
 		\sa RollingPolicy::activateOptions()
 		*/
+
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
+		*/
+		void activateOptions() override;
+#endif
 		void activateOptions(helpers::Pool& p) override;
 
 		/**

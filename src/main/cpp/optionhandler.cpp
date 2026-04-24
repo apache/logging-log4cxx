@@ -14,51 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include <log4cxx/logstring.h>
-#include <log4cxx/spi/filter.h>
-#include <log4cxx/private/filter_priv.h>
+#include <log4cxx/spi/optionhandler.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::spi;
 using namespace LOG4CXX_NS::helpers;
 
-Filter::Filter() : m_priv(std::make_unique<FilterPrivate>())
+void spi::OptionHandler::activateOptions(Pool&)
 {
 }
 
-Filter::Filter(std::unique_ptr<FilterPrivate> priv) :
-	m_priv(std::move(priv))
-{
-
-}
-
-Filter::~Filter() {}
-
-FilterPtr Filter::getNext() const
-{
-	return m_priv->next;
-}
-
-void Filter::setNext(const FilterPtr& newNext)
-{
-	m_priv->next = newNext;
-}
-
-void Filter::activateOptions(Pool&)
-{
-}
-
-#if 15 < LOG4CXX_ABI_VERSION
-void Filter::activateOptions()
+void spi::OptionHandler::activateOptions()
 {
 	// Ensure any ABI 15 overriden activateOptions is invoked
-	helpers::Pool p;
-	activateOptions(p);
-}
-#endif
-
-void Filter::setOption(const LogString&, const LogString&)
-{
+	 helpers::Pool p;
+	 activateOptions(p);
 }
 

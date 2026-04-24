@@ -161,6 +161,9 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public virtual RollingPolicyBase,
 
 		\sa RollingPolicyBase::activateOptions()
 		*/
+#if 15 < LOG4CXX_ABI_VERSION
+		void activateOptions() override;
+#endif
 		void activateOptions(helpers::Pool& ) override;
 
 		void setMultiprocess(bool multiprocess);

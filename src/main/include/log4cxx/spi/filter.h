@@ -102,12 +102,33 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler
 
 		};
 
+#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
+
+		@deprecated The \c pool parameter is not required and will be removed in a future version.
+		*/
+		void activateOptions(helpers::Pool& /* pool */) override;
+#else
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+		void activateOptions() override;
+
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
+
+		@deprecated This function is deprecated and will be removed in a future version.
+		*/
+		[[deprecated("Override activateOptions() without parameters instead")]]
+		void activateOptions(helpers::Pool& ) override;
+#endif
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

@@ -128,6 +128,14 @@ class LOG4CXX_EXPORT ErrorHandler : public virtual OptionHandler
 		Has an error been reported?
 		*/
 		virtual bool errorReported() const = 0;
+
+		/**
+		\copybrief spi::OptionHandler::activateOptions()
+
+		No action is performed in this implementation.
+		*/
+		void activateOptions(helpers::Pool& ) override;
+		void activateOptions() override;
 #endif
 };
 
