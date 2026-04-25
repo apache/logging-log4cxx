@@ -157,11 +157,7 @@ public:
 		helpers::Pool p;
 		ABI_15_Specialized_Appender a15s;
 		a15s.activateOptions(p);
-#if LOG4CXX_ABI_VERSION <= 15
 		LOGUNIT_ASSERT(a15s.isActivated());
-#else
-		LOGUNIT_ASSERT(!a15s.isActivated());
-#endif
 	}
 
 #if 15 < LOG4CXX_ABI_VERSION
