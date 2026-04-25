@@ -54,18 +54,20 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 #define LOG4CXX_ACTIVATE_OPTIONS_PARAMETER p
 		void activateOptions();
 		/**
-		@deprecated The \c pool parameter is not required and will be removed in a future version.
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to activateOptions() without parameters.
 		*/
-		virtual void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) = 0;
+		virtual void activateOptions(helpers::Pool&) = 0;
 #else
 #define LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS
 #define LOG4CXX_ACTIVATE_OPTIONS_PARAMETER
 		virtual void activateOptions() = 0;
 		/**
 		@deprecated This function is deprecated and will be removed in a future version.
+		Call activateOptions() without parameters instead.
 		*/
-		[[deprecated("Override activateOptions() without parameters instead")]]
-		virtual void activateOptions(helpers::Pool& );
+		[[deprecated("Use activateOptions() without parameters instead")]]
+		void activateOptions(helpers::Pool&) { activateOptions(); }
 #endif
 
 		/**

@@ -43,8 +43,9 @@ public:
 		return false;
 	}
 
-	void activateOptions(helpers::Pool& p) override
+	void activateOptions(helpers::Pool& p)
 	{
+		AppenderSkeleton::activateOptions(p);
 		m_activated = true;
 	}
 
@@ -55,6 +56,7 @@ public:
 private:
 	bool m_activated{ false };
 };
+
 
 class BaseAppender : public AppenderSkeleton
 {
@@ -89,9 +91,11 @@ private:
 class ABI_15_Specialized_Appender : public BaseAppender
 {
 public:
-	void activateOptions(helpers::Pool& p) override
+	// void activateOptions(helpers::Pool& p) override --> compiler error: 'ABI_15_Specialized_Appender::activateOptions': method with override specifier 'override' did not override any base class methods
+	//                                                                     'log4cxx::spi::OptionHandler::activateOptions': Use activateOptions() without parameters instead
+	void activateOptions(helpers::Pool& p)
 	{
-		BaseAppender::activateOptions(p);
+		BaseAppender::activateOptions(p); // --> compiler warning: 'log4cxx::spi::OptionHandler::activateOptions': Use activateOptions() without parameters instead
 		m_activated = true;
 	}
 
@@ -151,24 +155,12 @@ public:
 	void ABI_15_Specialized_AppenderTest()
 	{
 		helpers::Pool p;
-#if 15 < LOG4CXX_ABI_VERSION
-		try
-		{
-			ABI_15_Specialized_Appender a15;
-			a15.activateOptions(p);
-			LOGUNIT_ASSERT(false);
-		}
-		catch (const helpers::Exception& ex)
-		{
-			LogString msg;
-			helpers::Transcoder::decode(ex.what(), msg);
-			helpers::LogLog::debug(msg);
-			LOGUNIT_ASSERT(true);
-		}
+		ABI_15_Specialized_Appender a15s;
+		a15s.activateOptions(p);
+#if LOG4CXX_ABI_VERSION <= 15
+		LOGUNIT_ASSERT(a15s.isActivated());
 #else
-		ABI_15_Specialized_Appender a15;
-		a15.activateOptions(p);
-		LOGUNIT_ASSERT(a15.isActivated());
+		LOGUNIT_ASSERT(!a15s.isActivated());
 #endif
 	}
 

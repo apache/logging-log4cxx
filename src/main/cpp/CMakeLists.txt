@@ -173,7 +173,6 @@ target_sources(log4cxx
   odbcappender.cpp
   onlyonceerrorhandler.cpp
   optionconverter.cpp
-  optionhandler.cpp
   outputdebugstringappender.cpp
   outputstream.cpp
   outputstreamwriter.cpp
