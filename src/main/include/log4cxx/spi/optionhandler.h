@@ -67,7 +67,7 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		Call activateOptions() without parameters instead.
 		*/
 		[[deprecated("Use activateOptions() without parameters instead")]]
-		void activateOptions(helpers::Pool&) { activateOptions(); }
+		void activateOptions(helpers::Pool&);
 #endif
 
 		/**
