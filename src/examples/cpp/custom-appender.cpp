@@ -44,7 +44,11 @@ public:
 		// This gets called whenever there is a valid event for our appender.
 	}
 
+#if LOG4CXX_ABI_VERSION <= 15
 	void activateOptions(helpers::Pool& /* pool */) override {
+#else
+	void activateOptions() override {
+#endif
 		// Given all of our options, do something useful(e.g. open a file)
 	}
 
