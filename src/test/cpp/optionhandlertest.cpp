@@ -36,6 +36,7 @@ public:
 
 	void append(const spi::LoggingEventPtr& /*event*/, helpers::Pool& /*p*/) override
 	{
+		helpers::LogLog::debug(LOG4CXX_STR("ABI_15_Appender::append"));
 	}
 
 	bool requiresLayout() const override
@@ -45,6 +46,7 @@ public:
 
 	void activateOptions(helpers::Pool& p)
 	{
+		helpers::LogLog::debug(LOG4CXX_STR("ABI_15_Appender::activateOptions"));
 		AppenderSkeleton::activateOptions(p);
 		m_activated = true;
 	}
@@ -66,6 +68,7 @@ public:
 
 	void append(const spi::LoggingEventPtr& /*event*/, helpers::Pool& /*p*/) override
 	{
+		helpers::LogLog::debug(LOG4CXX_STR("BaseAppender::append"));
 	}
 
 	bool requiresLayout() const override
@@ -76,6 +79,7 @@ public:
 	using AppenderSkeleton::activateOptions;
 	void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override
 	{
+		helpers::LogLog::debug(LOG4CXX_STR("BaseAppender::activateOptions"));
 		AppenderSkeleton::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_PARAMETER );
 		m_activated = true;
 	}
@@ -95,6 +99,7 @@ public:
 	//                                                                     'log4cxx::spi::OptionHandler::activateOptions': Use activateOptions() without parameters instead
 	void activateOptions(helpers::Pool& p)
 	{
+		helpers::LogLog::debug(LOG4CXX_STR("ABI_15_Specialized_Appender::activateOptions"));
 		BaseAppender::activateOptions(p); // --> compiler warning: 'log4cxx::spi::OptionHandler::activateOptions': Use activateOptions() without parameters instead
 		m_activated = true;
 	}
@@ -113,6 +118,7 @@ class ABI_16_Appender : public BaseAppender
 public:
 	void activateOptions() override
 	{
+		helpers::LogLog::debug(LOG4CXX_STR("ABI_16_Appender::activateOptions"));
 		BaseAppender::activateOptions();
 		m_activated = true;
 	}
