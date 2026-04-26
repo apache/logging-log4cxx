@@ -34,7 +34,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     FuzzedDataProvider fdp(data, size);
 
     // Set up logger
-    Pool            pool;
     PatternLayoutPtr         layout( new PatternLayout(PATTERN_LAYOUT));
     RollingFileAppenderPtr  rfa(    new RollingFileAppender());
     rfa->setAppend(fdp.ConsumeBool());
@@ -49,15 +48,16 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     }
     rfa->setFile(LOG4CXX_STR("test.log"));
     
-    tbrp->activateOptions(pool);
+    tbrp->activateOptions();
     rfa->setRollingPolicy(tbrp);
-    rfa->activateOptions(pool);
+    rfa->activateOptions();
     rfa->setBufferedSeconds(fdp.ConsumeIntegral<int>());
-    rfa->activateOptions(pool);
+    rfa->activateOptions();
     LoggerPtr logger = LogManager::getLogger("org.apache.log4j.TimeBasedRollingTest");
     logger->addAppender(rfa);
     
     // Log and rollover
+    Pool pool;
     for (int i = 0; i < 10; i++)
     {
             if (i == 4 || i == 9)

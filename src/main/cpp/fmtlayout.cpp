@@ -80,7 +80,7 @@ void FMTLayout::setOption(const LogString& option, const LogString& value)
 	}
 }
 
-void FMTLayout::activateOptions(helpers::Pool&)
+void FMTLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 }

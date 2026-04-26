@@ -141,7 +141,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		<li>a non-ascii character is detected where not permitted</li>
 		</ul>.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		/**
 		Perform SMTPAppender specific appending actions, mainly adding

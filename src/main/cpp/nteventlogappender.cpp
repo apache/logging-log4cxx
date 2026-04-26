@@ -120,11 +120,10 @@ NTEventLogAppender::NTEventLogAppender() :
 NTEventLogAppender::NTEventLogAppender(const LogString& server, const LogString& log, const LogString& source, const LayoutPtr& layout)
 	:	AppenderSkeleton(std::make_unique<NTEventLogAppenderPrivate>(layout))
 {
-	Pool pool;
 	priv->server = server;
 	priv->log = log;
 	priv->source = source;
-	activateOptions(pool);
+	activateOptions();
 }
 
 NTEventLogAppender::~NTEventLogAppender()
@@ -175,7 +174,7 @@ void NTEventLogAppender::setOption(const LogString& option, const LogString& val
 	}
 }
 
-void NTEventLogAppender::activateOptions(Pool&)
+void NTEventLogAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 	if (priv->source.empty())
 	{

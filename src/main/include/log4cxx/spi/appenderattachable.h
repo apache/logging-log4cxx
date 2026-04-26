@@ -93,10 +93,4 @@ LOG4CXX_PTR_DEF(AppenderAttachable);
 }
 }
 
-#if 15 < LOG4CXX_ABI_VERSION
-#define LOG4CXX_16_VIRTUAL_SPECIFIER override
-#else
-#define LOG4CXX_16_VIRTUAL_SPECIFIER 
-#endif
-
 #endif //_LOG4CXX_SPI_APPENDER_ATTACHABLE_H_

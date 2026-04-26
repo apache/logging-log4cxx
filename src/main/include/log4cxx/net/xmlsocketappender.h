@@ -133,6 +133,7 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		*/
 		XMLSocketAppender(const LogString& host, int port);
 
+		using SocketAppenderSkeleton::activateOptions;
 
 	protected:
 		void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, helpers::Pool& p) override;

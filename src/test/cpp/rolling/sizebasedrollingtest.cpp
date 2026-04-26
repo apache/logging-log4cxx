@@ -118,12 +118,11 @@ public:
 		swrp->setMinIndex(0);
 
 		swrp->setFileNamePattern(LOG4CXX_STR("output/sizeBased-test1.%i"));
-		Pool p;
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
 		rfa->setTriggeringPolicy(sbtp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 
@@ -159,12 +158,11 @@ public:
 		swrp->setMinIndex(0);
 
 		swrp->setFileNamePattern(LOG4CXX_STR("output/sizeBased-test2.%i"));
-		Pool p;
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
 		rfa->setTriggeringPolicy(sbtp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 		common(logger, 0);
@@ -198,11 +196,10 @@ public:
 		fwrp->setMinIndex(0);
 		rfa->setFile(LOG4CXX_STR("output/sbr-test3.log"));
 		fwrp->setFileNamePattern(LOG4CXX_STR("output/sbr-test3.%i.gz"));
-		Pool p;
-		fwrp->activateOptions(p);
+		fwrp->activateOptions();
 		rfa->setRollingPolicy(fwrp);
 		rfa->setTriggeringPolicy(sbtp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 		common(logger, 100);
@@ -238,12 +235,11 @@ public:
 		//   test4 directory should not exists.  Should cause all rollover attempts to fail.
 		//
 		swrp->setFileNamePattern(LOG4CXX_STR("output/test4/sizeBased-test4.%i"));
-		Pool p;
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
 		rfa->setTriggeringPolicy(sbtp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 		common(logger, 0);
@@ -274,16 +270,16 @@ public:
 		swrp->setMinIndex(0);
 
 		swrp->setFileNamePattern(LOG4CXX_STR("output/sizeBased-test5.%i"));
-		Pool p;
-		swrp->activateOptions(p);
+		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
 		rfa->setTriggeringPolicy(sbtp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 		//
 		//   put stray file about locked file
+		Pool p;
 		FileOutputStream os1(LOG4CXX_STR("output/sizeBased-test5.1"), false);
 		os1.close(p);
 
@@ -346,11 +342,10 @@ public:
 		fwrp->setMinIndex(0);
 		rfa->setFile(LOG4CXX_STR("output/sbr-test6.log"));
 		fwrp->setFileNamePattern(LOG4CXX_STR("output/sbr-test6.%i.zip"));
-		Pool p;
-		fwrp->activateOptions(p);
+		fwrp->activateOptions();
 		rfa->setRollingPolicy(fwrp);
 		rfa->setTriggeringPolicy(sbtp);
-		rfa->activateOptions(p);
+		rfa->activateOptions();
 		root->addAppender(rfa);
 
 		common(logger, 100);

@@ -51,6 +51,8 @@ struct RollingFileAppender::RollingFileAppenderPriv : public FileAppenderPriv
 	 *  save the loggingevent
 	 */
 	spi::LoggingEventPtr _event;
+
+	bool activateOptions();
 };
 
 } // namespace rolling

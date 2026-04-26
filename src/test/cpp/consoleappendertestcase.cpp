@@ -46,9 +46,8 @@ class ConsoleAppenderTestCase : public WriterAppenderTestCase
 
 		void testNoLayout()
 		{
-			Pool p;
 			ConsoleAppenderPtr appender(new ConsoleAppender());
-			appender->activateOptions(p);
+			appender->activateOptions();
 			LoggerPtr logger(Logger::getRootLogger());
 			logger->addAppender(appender);
 			LOG4CXX_INFO(logger, "No layout specified for ConsoleAppender");

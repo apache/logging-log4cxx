@@ -64,6 +64,7 @@ set(ALL_LOG4CXX_TESTS
     mdctestcase
     minimumtestcase
     ndctestcase
+    optionhandlertest
     patternlayouttest
     propertyconfiguratortest
     rollingfileappendertestcase

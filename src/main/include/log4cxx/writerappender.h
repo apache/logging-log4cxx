@@ -54,11 +54,12 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 	public:
 		~WriterAppender();
 
+		using AppenderSkeleton::activateOptions;
 		/**
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		void activateOptions(helpers::Pool& pool) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS  ) override;
 
 		/**
 		If the <b>ImmediateFlush</b> option is set to

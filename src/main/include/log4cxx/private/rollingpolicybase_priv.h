@@ -41,6 +41,10 @@ struct RollingPolicyBase::RollingPolicyBasePrivate {
     LogString fileNamePatternStr;
 
 	bool createIntermediateDirectories = true;
+
+	void activateOptions(const pattern::PatternMap& map);
+
+	void parseFileNamePattern(const pattern::PatternMap& map);
 };
 
 }

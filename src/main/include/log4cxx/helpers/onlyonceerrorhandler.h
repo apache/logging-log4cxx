@@ -64,13 +64,14 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		void setLogger(const LoggerPtr& logger) override;
 
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
 		No action is performed in this implementation.
 		*/
 		void activateOptions(helpers::Pool& p) override;
-
+#endif
 		/**
 		\copybrief spi::OptionHandler::setOption()
 

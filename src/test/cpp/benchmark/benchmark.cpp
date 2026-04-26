@@ -49,10 +49,6 @@ public:
 		m_priv->layout->format(buf, event, p);
 	}
 
-	void activateOptions(helpers::Pool& /* pool */) override
-	{
-	}
-
 	void setOption(const LogString& option, const LogString& value) override
 	{
 	}

@@ -78,13 +78,14 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		*/
 		LogString getContentType() const override;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& /* p */) override {}
-
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override {}
+#endif
 		/**
 		\copybrief spi::OptionHandler::setOption()
 

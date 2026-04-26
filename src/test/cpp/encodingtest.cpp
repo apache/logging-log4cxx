@@ -170,16 +170,15 @@ private:
 	{
 		FileAppenderPtr  appender(new FileAppender());
 		PatternLayoutPtr layout(new PatternLayout());
-		Pool             p;
 
 		layout->setConversionPattern(LOG4CXX_STR("%p - %m\n"));
-		layout->activateOptions(p);
+		layout->activateOptions();
 
 		appender->setAppend(false);
 		appender->setEncoding(encoding);
 		appender->setFile(filename);
 		appender->setLayout(layout);
-		appender->activateOptions(p);
+		appender->activateOptions();
 
 		logger->addAppender(appender);
 		logger->setLevel(Level::getInfo());

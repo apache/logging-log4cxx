@@ -267,16 +267,7 @@ TimeBasedRollingPolicy::TimeBasedRollingPolicy() :
 
 TimeBasedRollingPolicy::~TimeBasedRollingPolicy(){}
 
-#if 15 < LOG4CXX_ABI_VERSION
-void TimeBasedRollingPolicy::activateOptions()
-{
-	// Ensure any ABI 15 overriden activateOptions is invoked
-	Pool p;
-	activateOptions(p);
-}
-#endif
-
-void TimeBasedRollingPolicy::activateOptions(LOG4CXX_NS::helpers::Pool& pool)
+void TimeBasedRollingPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 	// find out period from the filename pattern
 	if (getFileNamePattern().length() > 0)
@@ -297,6 +288,7 @@ void TimeBasedRollingPolicy::activateOptions(LOG4CXX_NS::helpers::Pool& pool)
 		throw NullPointerException(LOG4CXX_STR("DatePatternConverter"));
 	}
 
+	Pool pool;
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Date>();
 	formatFileName(obj, buf, pool);

@@ -47,20 +47,16 @@ RollingPolicyBase::~RollingPolicyBase()
 {
 }
 
-#if 15 < LOG4CXX_ABI_VERSION
-void RollingPolicyBase::activateOptions()
+void RollingPolicyBase::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS  )
 {
-	// Ensure any ABI 15 overriden activateOptions is invoked
-	 helpers::Pool p;
-	 activateOptions(p);
+	m_priv->activateOptions(getFormatSpecifiers());
 }
-#endif
 
-void RollingPolicyBase::activateOptions(LOG4CXX_NS::helpers::Pool& /* pool */)
+void RollingPolicyBase::RollingPolicyBasePrivate::activateOptions(const pattern::PatternMap& map)
 {
-	if (m_priv->fileNamePatternStr.length() > 0)
+	if (this->fileNamePatternStr.length() > 0)
 	{
-		parseFileNamePattern();
+		this->parseFileNamePattern(map);
 	}
 	else
 	{
@@ -104,7 +100,12 @@ LogString RollingPolicyBase::getFileNamePattern() const
  */
 void RollingPolicyBase::parseFileNamePattern()
 {
-	m_priv->patternConverters = PatternParser::parse(m_priv->fileNamePatternStr, getFormatSpecifiers());
+	m_priv->parseFileNamePattern(getFormatSpecifiers());
+}
+
+void RollingPolicyBase::RollingPolicyBasePrivate::parseFileNamePattern(const pattern::PatternMap& map)
+{
+	this->patternConverters = PatternParser::parse(this->fileNamePatternStr, map);
 }
 
 /**

@@ -52,8 +52,7 @@ public:
 				LOG4CXX_STR("Hello, World"),
 				LOG4CXX_LOCATION));
 		FilterPtr filter(new StringMatchFilter());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -70,8 +69,7 @@ public:
 				LOG4CXX_LOCATION));
 		StringMatchFilterPtr filter(new StringMatchFilter());
 		filter->setStringToMatch(LOG4CXX_STR("Monde"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -88,8 +86,7 @@ public:
 				LOG4CXX_LOCATION));
 		StringMatchFilterPtr filter(new StringMatchFilter());
 		filter->setStringToMatch(LOG4CXX_STR("World"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -108,8 +105,7 @@ public:
 		StringMatchFilterPtr filter(new StringMatchFilter());
 		filter->setStringToMatch(LOG4CXX_STR("World"));
 		filter->setAcceptOnMatch(false);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
 	}
 
@@ -126,8 +122,7 @@ public:
 				LOG4CXX_LOCATION));
 		StringMatchFilterPtr filter(new StringMatchFilter());
 		filter->setStringToMatch(LOG4CXX_STR("world"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 

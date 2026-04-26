@@ -129,14 +129,15 @@ class LOG4CXX_EXPORT ErrorHandler : public virtual OptionHandler
 		*/
 		virtual bool errorReported() const = 0;
 
+		using OptionHandler::activateOptions;
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& ) override;
-		void activateOptions() override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 #endif
+
 };
 
 LOG4CXX_PTR_DEF(ErrorHandler);

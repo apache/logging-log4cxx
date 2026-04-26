@@ -42,12 +42,13 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 
 		virtual ~NTEventLogAppender();
 
+		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief AppenderSkeleton::activateOptions()
 
 		Calls <a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-registereventsourcew">RegisterEventSource</a>.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 		void close() override;
 
 		/**

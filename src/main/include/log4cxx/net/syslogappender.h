@@ -75,13 +75,14 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 
 		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		\copybrief AppenderSkeleton::activateOptions()
 
 		No action is performed in this implementation.
 		*/
 		void activateOptions(helpers::Pool& p) override;
-
+#endif
 		/**
 		\copybrief AppenderSkeleton::setOption()
 

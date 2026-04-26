@@ -43,25 +43,31 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 
 		<p>This allows to defer activiation of the options until all
 		options have been set. This is required for components which have
-		related options that remain ambigous until all are set.
+		related options that remain ambiguous until all are set.
 
 		<p>For example, the FileAppender has
 		the <code>File</code> and <b>Append</b> options both of
-		which are ambigous until the other is also set.
+		which are ambiguous until the other is also set.
 		*/
 #if LOG4CXX_ABI_VERSION <= 15
+#define LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS helpers::Pool& p
+#define LOG4CXX_ACTIVATE_OPTIONS_PARAMETER p
 		void activateOptions();
 		/**
-		@deprecated The \c pool parameter is not required and will be removed in a future version.
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to activateOptions() without parameters.
 		*/
-		virtual void activateOptions(helpers::Pool& p) = 0;
+		virtual void activateOptions(helpers::Pool&) = 0;
 #else
+#define LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS
+#define LOG4CXX_ACTIVATE_OPTIONS_PARAMETER
 		virtual void activateOptions() = 0;
 		/**
 		@deprecated This function is deprecated and will be removed in a future version.
+		Call activateOptions() without parameters instead.
 		*/
-		[[deprecated("Override activateOptions() without parameters instead")]]
-		virtual void activateOptions(helpers::Pool& );
+		[[deprecated("Use activateOptions() without parameters instead")]]
+		void activateOptions(helpers::Pool&);
 #endif
 
 		/**
@@ -79,5 +85,11 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 }  // namespace spi
 } // namespace log4cxx
 
+
+#if 15 < LOG4CXX_ABI_VERSION
+#define LOG4CXX_16_VIRTUAL_SPECIFIER override
+#else
+#define LOG4CXX_16_VIRTUAL_SPECIFIER
+#endif
 
 #endif //_LOG4CXX_SPI_OPTION_HANDLER_H

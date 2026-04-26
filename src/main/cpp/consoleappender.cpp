@@ -49,9 +49,8 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
 	: WriterAppender (std::make_unique<ConsoleAppenderPriv>(getSystemOut()))
 {
 	setLayout(layout);
-	Pool p;
 	_priv->setWriter(std::make_shared<SystemOutWriter>());
-	WriterAppender::activateOptions(p);
+	_priv->activateOptions();
 }
 
 ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& target)
@@ -59,8 +58,12 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& targe
 {
 	setLayout(layout);
 	setTarget(target);
+#if LOG4CXX_ABI_VERSION <= 15
 	Pool p;
 	ConsoleAppender::activateOptions(p);
+#else
+	ConsoleAppender::activateOptions();
+#endif
 }
 
 ConsoleAppender::~ConsoleAppender()
@@ -111,7 +114,7 @@ void ConsoleAppender::targetWarn(const LogString& val)
 	LogLog::warn(LOG4CXX_STR("Using previously set target, System.out by default."));
 }
 
-void ConsoleAppender::activateOptions(Pool& p)
+void ConsoleAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 	if (StringHelper::equalsIgnoreCase(_priv->target,
 			LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))
@@ -124,7 +127,7 @@ void ConsoleAppender::activateOptions(Pool& p)
 		_priv->setWriter(std::make_shared<SystemErrWriter>());
 	}
 
-	WriterAppender::activateOptions(p);
+	_priv->activateOptions();
 }
 
 void ConsoleAppender::setOption(const LogString& option, const LogString& value)

@@ -20,14 +20,7 @@ using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 #if 15 < LOG4CXX_ABI_VERSION
-void spi::ErrorHandler::activateOptions(Pool&)
+void spi::ErrorHandler::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-}
-
-void spi::ErrorHandler::activateOptions()
-{
-	// Ensure any ABI 15 overriden activateOptions is invoked
-	helpers::Pool p;
-	activateOptions(p);
 }
 #endif

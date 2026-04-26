@@ -84,12 +84,13 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		void setEncoding(const LogString& value);
 
 
+		using AppenderSkeleton::activateOptions;
 		/**
 		\copybrief AppenderSkeleton::activateOptions()
 
 		Create the socket handler and wait for connections.
 		*/
-		void activateOptions(helpers::Pool& p) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 
 		/**

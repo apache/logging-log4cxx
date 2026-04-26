@@ -97,13 +97,15 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 		*/
 		bool getProperties();
 
+#if LOG4CXX_ABI_VERSION <= 15
+		using Layout::activateOptions;
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(helpers::Pool& /* p */) override { }
-
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override { }
+#endif
 		/**
 		\copybrief spi::OptionHandler::setOption()
 

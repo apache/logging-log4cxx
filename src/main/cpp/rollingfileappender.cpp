@@ -175,46 +175,56 @@ void RollingFileAppender::setDatePattern(const LogString& newPattern)
 /**
  * Prepare instance of use.
  */
-void RollingFileAppender::activateOptions(Pool& p)
+void RollingFileAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-	if (!_priv->rollingPolicy)
+	if (_priv->activateOptions())
+	{
+		FileAppender::activateOptionsInternal();
+	}
+}
+
+bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
+{
+	bool result = false;
+	if (!this->rollingPolicy)
 	{
 		LogLog::warn(LOG4CXX_STR("No rolling policy configured for the appender named [")
-			+ _priv->name + LOG4CXX_STR("]."));
+			+ this->name + LOG4CXX_STR("]."));
 		auto fwrp = std::make_shared<FixedWindowRollingPolicy>();
-		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
-		_priv->rollingPolicy = fwrp;
+		fwrp->setFileNamePattern(this->fileName + LOG4CXX_STR(".%i"));
+		this->rollingPolicy = fwrp;
 	}
 
 	//
 	//  if no explicit triggering policy and rolling policy is both.
 	//
-	if (!_priv->triggeringPolicy)
+	if (!this->triggeringPolicy)
 	{
-		TriggeringPolicyPtr trig = LOG4CXX_NS::cast<TriggeringPolicy>(_priv->rollingPolicy);
+		TriggeringPolicyPtr trig = LOG4CXX_NS::cast<TriggeringPolicy>(this->rollingPolicy);
 
 		if (trig != NULL)
 		{
-			_priv->triggeringPolicy = trig;
+			this->triggeringPolicy = trig;
 		}
 	}
 
-	if (!_priv->triggeringPolicy)
+	if (!this->triggeringPolicy)
 	{
 		LogLog::warn(LOG4CXX_STR("No triggering policy configured for the appender named [")
-			+ _priv->name + LOG4CXX_STR("]."));
-		_priv->triggeringPolicy = std::make_shared<SizeBasedTriggeringPolicy>();
+			+ this->name + LOG4CXX_STR("]."));
+		this->triggeringPolicy = std::make_shared<SizeBasedTriggeringPolicy>();
 	}
 
 	{
-		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-		_priv->triggeringPolicy->activateOptions(p);
-		_priv->rollingPolicy->activateOptions(p);
+		std::lock_guard<std::recursive_mutex> lock(this->mutex);
+		this->triggeringPolicy->activateOptions();
+		this->rollingPolicy->activateOptions();
+		Pool p;
 
 		try
 		{
 			RolloverDescriptionPtr rollover1 =
-				_priv->rollingPolicy->initialize(getFile(), getAppend(), p);
+				this->rollingPolicy->initialize(this->fileName, this->fileAppend, p);
 
 			if (rollover1 != NULL)
 			{
@@ -225,8 +235,8 @@ void RollingFileAppender::activateOptions(Pool& p)
 					syncAction->execute(p);
 				}
 
-				_priv->fileName = rollover1->getActiveFileName();
-				_priv->fileAppend = rollover1->getAppend();
+				this->fileName = rollover1->getActiveFileName();
+				this->fileAppend = rollover1->getAppend();
 
 				//
 				//  async action not yet implemented
@@ -240,24 +250,25 @@ void RollingFileAppender::activateOptions(Pool& p)
 			}
 
 			File activeFile;
-			activeFile.setPath(getFile());
+			activeFile.setPath(this->fileName);
 
-			if (getAppend())
+			if (this->fileAppend)
 			{
-				_priv->fileLength = activeFile.length();
+				this->fileLength = activeFile.length();
 			}
 			else
 			{
-				_priv->fileLength = 0;
+				this->fileLength = 0;
 			}
 
-			FileAppender::activateOptionsInternal(p);
+			result = true;
 		}
 		catch (std::exception& ex)
 		{
-			LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + getName(), ex);
+			LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + this->fileName, ex);
 		}
 	}
+	return result;
 }
 
 /**
@@ -349,14 +360,14 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 									}
 								}
 							}
-							setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize, p);
+							setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize);
 						}
 						else
 						{
 							_priv->close();
 							setFileInternal(rollover1->getActiveFileName());
 							// Call activateOptions to create any intermediate directories(if required)
-							FileAppender::activateOptionsInternal(p);
+							FileAppender::activateOptionsInternal();
 							OutputStreamPtr os = std::make_shared<FileOutputStream>
 									( rollover1->getActiveFileName()
 									, rollover1->getAppend()

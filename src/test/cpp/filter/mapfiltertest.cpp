@@ -51,8 +51,7 @@ public:
 				LOG4CXX_STR("Hello, World"),
 				LOG4CXX_LOCATION));
 		FilterPtr filter(new MapFilter());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -70,8 +69,7 @@ public:
 		MDC::put(LOG4CXX_STR("my.ip"), LOG4CXX_STR("localhost"));
 		MapFilterPtr filter(new MapFilter());
 		filter->setKeyValue(LOG4CXX_STR("my.ip"), LOG4CXX_STR("127.0.0.1"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 
 		filter->setAcceptOnMatch(true);
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
@@ -94,8 +92,7 @@ public:
 		MDC::put(LOG4CXX_STR("my.ip"), LOG4CXX_STR("127.0.0.1"));
 		MapFilterPtr filter(new MapFilter());
 		filter->setKeyValue(LOG4CXX_STR("my.ip"), LOG4CXX_STR("127.0.0.1"));
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 
 		filter->setAcceptOnMatch(true);
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
@@ -121,8 +118,7 @@ public:
 		filter->setKeyValue(LOG4CXX_STR("my.ip"), LOG4CXX_STR("127.0.0.1"));
 		filter->setKeyValue(LOG4CXX_STR("my.name"), LOG4CXX_STR("Unknown"));
 		filter->setAcceptOnMatch(true);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 
 		filter->setMustMatchAll(true);      // AND T/F
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));   // does not match second

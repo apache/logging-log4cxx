@@ -367,9 +367,11 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	}
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void SyslogAppender::activateOptions(Pool&)
 {
 }
+#endif
 
 void SyslogAppender::setOption(const LogString& option, const LogString& value)
 {

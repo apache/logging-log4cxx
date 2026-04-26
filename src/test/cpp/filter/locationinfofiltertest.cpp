@@ -55,8 +55,7 @@ public:
 				LOG4CXX_STR("Hello, World"),
 				li));
 		FilterPtr filter(new LocationInfoFilter());
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -77,8 +76,7 @@ public:
 				li));
 		LocationInfoFilterPtr filter(new LocationInfoFilter());
 		filter->setLineNumber(10);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
@@ -100,8 +98,7 @@ public:
 		LocationInfoFilterPtr filter(new LocationInfoFilter());
 		filter->setLineNumber(50);
 		filter->setAcceptOnMatch(true);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 
@@ -125,8 +122,7 @@ public:
 		filter->setMethodName(LOG4CXX_STR("exampleFun"));
 		filter->setAcceptOnMatch(true);
 		filter->setMustMatchAll(true);
-		Pool p;
-		filter->activateOptions(p);
+		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
 	}
 

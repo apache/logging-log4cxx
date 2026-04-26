@@ -52,14 +52,7 @@ size_t Layout::getFormattedEventCharacterCount() const
 }
 
 #if 15 < LOG4CXX_ABI_VERSION
-void Layout::activateOptions(Pool&)
+void Layout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-}
-
-void Layout::activateOptions()
-{
-	// Ensure any ABI 15 overriden activateOptions is invoked
-	Pool p;
-	activateOptions(p);
 }
 #endif

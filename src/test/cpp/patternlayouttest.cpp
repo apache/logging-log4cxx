@@ -505,54 +505,53 @@ public:
 		root->debug(LOG4CXX_TEST_STR("starting mdc pattern test"));
 
 		layout->setConversionPattern(mdcMsgPattern1);
-		log4cxx::helpers::Pool pool;
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("empty mdc, no key specified in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern2);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("empty mdc, key1 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern3);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("empty mdc, key2 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern4);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("empty mdc, key3 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern5);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("empty mdc, key1, key2, and key3 in pattern"));
 
 		MDC::put(LOG4CXX_TEST_STR("key1"), LOG4CXX_TEST_STR("value1"));
 		MDC::put(LOG4CXX_TEST_STR("key2"), LOG4CXX_TEST_STR("value2"));
 
 		layout->setConversionPattern(mdcMsgPattern1);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("filled mdc, no key specified in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern2);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("filled mdc, key1 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern3);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("filled mdc, key2 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern4);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("filled mdc, key3 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern5);
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("filled mdc, key1, key2, and key3 in pattern"));
 
 		MDC::remove(LOG4CXX_TEST_STR("key1"));
 		MDC::remove(LOG4CXX_TEST_STR("key2"));
 
 		layout->setConversionPattern(LOG4CXX_STR("%m%n"));
-		layout->activateOptions(pool);
+		layout->activateOptions();
 		root->debug(LOG4CXX_TEST_STR("finished mdc pattern test"));
 
 		LOGUNIT_ASSERT(Compare::compare(OUTPUT_FILE, WITNESS_FILE));

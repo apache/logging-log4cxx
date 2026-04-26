@@ -122,7 +122,7 @@ TelnetAppender::~TelnetAppender()
 		_priv->close();
 }
 
-void TelnetAppender::activateOptions(Pool& /* p */)
+void TelnetAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 	if (_priv->serverSocket == NULL)
 	{

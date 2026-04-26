@@ -52,8 +52,7 @@ FileAppender::FileAppender
 	)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, bufferedIO1, bufferSize1))
 {
-	Pool p;
-	activateOptions(p);
+	activateOptionsInternal();
 }
 
 FileAppender::FileAppender
@@ -63,15 +62,13 @@ FileAppender::FileAppender
 	)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, false))
 {
-	Pool p;
-	activateOptions(p);
+	activateOptionsInternal();
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1))
 {
-	Pool p;
-	activateOptions(p);
+	activateOptionsInternal();
 }
 
 FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
@@ -153,13 +150,13 @@ void FileAppender::setOption(const LogString& option,
 	}
 }
 
-void FileAppender::activateOptions(Pool& p)
+void FileAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	activateOptionsInternal(p);
+	activateOptionsInternal();
 }
 
-void FileAppender::activateOptionsInternal(Pool& p)
+void FileAppender::activateOptionsInternal()
 {
 	int errors = 0;
 
@@ -167,7 +164,7 @@ void FileAppender::activateOptionsInternal(Pool& p)
 	{
 		try
 		{
-			setFileInternal(_priv->fileName, _priv->fileAppend, _priv->bufferedIO, _priv->bufferSize, p);
+			setFileInternal(_priv->fileName, _priv->fileAppend, _priv->bufferedIO, _priv->bufferSize);
 		}
 		catch (IOException& e)
 		{
@@ -190,7 +187,7 @@ void FileAppender::activateOptionsInternal(Pool& p)
 
 	if (errors == 0)
 	{
-		WriterAppender::activateOptions(p);
+		_priv->activateOptions();
 		if (auto p = _priv->taskManager.lock())
 			p->value().removePeriodicTask(getName());
 
@@ -287,8 +284,7 @@ void FileAppender::setFileInternal(
 	const LogString& filename,
 	bool append1,
 	bool bufferedIO1,
-	size_t bufferSize1,
-	Pool& p)
+	size_t bufferSize1)
 {
 	// It does not make sense to have immediate flush and bufferedIO.
 	if (bufferedIO1)
@@ -354,6 +350,7 @@ void FileAppender::setFileInternal(
 	//
 	if (writeBOM)
 	{
+		Pool p;
 		char bom[] = { (char) 0xFE, (char) 0xFF };
 		ByteBuffer buf(bom, 2);
 		outStream->write(buf, p);
@@ -410,3 +407,12 @@ bool FileAppender::getAppend() const
 {
 	return _priv->fileAppend;
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+void FileAppender::activateOptionsInternal(helpers::Pool& )
+{ activateOptionsInternal(); }
+void FileAppender::setFileInternal(const LogString& file, bool append,
+	bool bufferedIO, size_t bufferSize,
+	helpers::Pool&)
+{ setFileInternal(file, append, bufferedIO, bufferSize); }
+#endif

@@ -54,8 +54,7 @@ public:
 		setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%d [%t] %-5p %.16c - %m%n")));
 		setAppend(false);
 		setBufferedIO(true);
-		helpers::Pool p;
-		activateOptions(p);
+		activateOptions();
 	}
 };
 #endif

@@ -56,7 +56,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions(helpers::Pool& pool ) override;
+		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
 
 		/**
 		   Implements the usual roll over behaviour.

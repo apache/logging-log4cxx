@@ -40,8 +40,7 @@ auto getLogger(const LogString& name = {}) -> LoggerPtr {
 			writer->setName(LOG4CXX_STR("FileAppender"));
 			writer->setBufferedIO(true);
 			writer->setBufferedSeconds(1);
-			helpers::Pool p;
-			writer->activateOptions(p);
+			writer->activateOptions();
 			BasicConfigurator::configure(writer);
 		}
 		~log4cxx_initializer() {
@@ -95,8 +94,7 @@ public:
 		FileAppenderPtr wa(new FileAppender());
 		wa->setFile(LOG4CXX_STR("output/newdir/temp.log"));
 		wa->setLayout(PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m%n"))));
-		Pool p;
-		wa->activateOptions(p);
+		wa->activateOptions();
 
 		LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists());
 	}
@@ -172,8 +170,7 @@ public:
 		auto policy = std::make_shared<rolling::TimeBasedRollingPolicy>();
 		policy->setFileNamePattern(dir + LOG4CXX_STR("/100message-%d{yyyy}.log"));
 		writer->setRollingPolicy(policy);
-		helpers::Pool p;
-		writer->activateOptions(p);
+		writer->activateOptions();
 		logger->setAdditivity(false);
 		logger->addAppender(writer);
 
