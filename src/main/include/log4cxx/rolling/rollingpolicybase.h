@@ -39,9 +39,13 @@ LOG4CXX_LIST_DEF(PatternConverterList, LOG4CXX_NS::pattern::PatternConverterPtr)
  *
  *
  */
-class LOG4CXX_EXPORT RollingPolicyBase :
-	public virtual RollingPolicy,
-	public virtual helpers::Object
+class LOG4CXX_EXPORT RollingPolicyBase
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual RollingPolicy
+	, public virtual helpers::Object
+#else
+	: public RollingPolicy
+#endif
 {
 	protected:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(RollingPolicyBase)

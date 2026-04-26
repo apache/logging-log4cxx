@@ -40,8 +40,12 @@ Here is a sample configuration file that installs this error handler:
 \anchor fallback-ref-example
 \include async-fall-back-example.xml
 */
-class LOG4CXX_EXPORT FallbackErrorHandler :
-	public virtual spi::ErrorHandler
+class LOG4CXX_EXPORT FallbackErrorHandler
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual spi::ErrorHandler
+#else
+	: public spi::ErrorHandler
+#endif
 {
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FallbackErrorHandlerPrivate, m_priv)

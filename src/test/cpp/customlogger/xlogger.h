@@ -31,9 +31,8 @@ class LocationInfo;
 }
 // Any sub-class of Logger must also have its own implementation of
 // LoggerFactory.
-class XFactory :
-	public virtual spi::LoggerFactory,
-	public virtual helpers::Object
+class XFactory
+	: public spi::LoggerFactory
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XFactory)

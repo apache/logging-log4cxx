@@ -55,7 +55,12 @@ definition errors are hard to predict and to reproduce.
 that errors are not properly handled. You are most welcome to
 suggest new error handling policies or criticize existing policies.
 */
-class LOG4CXX_EXPORT ErrorHandler : public virtual OptionHandler
+class LOG4CXX_EXPORT ErrorHandler
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual OptionHandler
+#else
+	: public OptionHandler
+#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ErrorHandler)
