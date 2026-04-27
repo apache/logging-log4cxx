@@ -64,7 +64,12 @@ Linux ipchains.
 
 <p>Note that filtering is only supported by the DOMConfigurator.
 */
-class LOG4CXX_EXPORT Filter : public virtual OptionHandler
+class LOG4CXX_EXPORT Filter
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual OptionHandler
+#else
+	: public OptionHandler
+#endif
 {
 	protected:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilterPrivate, m_priv)

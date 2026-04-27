@@ -27,9 +27,13 @@ namespace LOG4CXX_NS
 {
 namespace spi
 {
-class LOG4CXX_EXPORT DefaultRepositorySelector :
-	public virtual RepositorySelector,
-	public virtual helpers::Object
+class LOG4CXX_EXPORT DefaultRepositorySelector
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual RepositorySelector
+	, public virtual helpers::Object
+#else
+	: public RepositorySelector
+#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultRepositorySelector)

@@ -47,7 +47,12 @@ class LOG4CXX_EXPORT DOMException : public RuntimeException
 The XMLDOMNode interface is the primary datatype for the entire Document
 Object Model.
 */
-class LOG4CXX_EXPORT XMLDOMNode : virtual public Object
+class LOG4CXX_EXPORT XMLDOMNode
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual Object
+#else
+	: public Object
+#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMNode)
@@ -68,7 +73,12 @@ LOG4CXX_PTR_DEF(XMLDOMNode);
 /**
 The XMLDOMElement interface represents an element in an XML document
 */
-class LOG4CXX_EXPORT XMLDOMElement : virtual public XMLDOMNode
+class LOG4CXX_EXPORT XMLDOMElement
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual XMLDOMNode
+#else
+	: public XMLDOMNode
+#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMElement)
@@ -83,7 +93,12 @@ The XMLDOMDocument interface represents an entire XML document.
 Conceptually, it is the root of the document tree, and provides the
 primary access to the document's data.
 */
-class LOG4CXX_EXPORT XMLDOMDocument : virtual public XMLDOMNode
+class LOG4CXX_EXPORT XMLDOMDocument
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual XMLDOMNode
+#else
+	: public XMLDOMNode
+#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMDocument)
@@ -104,7 +119,12 @@ XMLDOMNodeList objects in the DOM are live.
 The items in the XMLDOMNodeList are accessible via an integral index,
 starting from 0.
 */
-class LOG4CXX_EXPORT XMLDOMNodeList : virtual public Object
+class LOG4CXX_EXPORT XMLDOMNodeList
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual Object
+#else
+	: public Object
+#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMNodeList)

@@ -41,9 +41,13 @@ namespace rolling
  *
  * */
 
-class LOG4CXX_EXPORT TriggeringPolicy :
-	public virtual spi::OptionHandler,
-	public virtual helpers::Object
+class LOG4CXX_EXPORT TriggeringPolicy
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual spi::OptionHandler
+	, public virtual helpers::Object
+#else
+	: public spi::OptionHandler
+#endif
 {
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(TriggeringPolicy)
 		BEGIN_LOG4CXX_CAST_MAP()

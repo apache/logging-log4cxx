@@ -95,6 +95,7 @@ private:
 class ABI_15_Specialized_Appender : public BaseAppender
 {
 public:
+	using spi::OptionHandler::activateOptions;
 	// void activateOptions(helpers::Pool& p) override --> compiler error: 'ABI_15_Specialized_Appender::activateOptions': method with override specifier 'override' did not override any base class methods
 	//                                                                     'log4cxx::spi::OptionHandler::activateOptions': Use activateOptions() without parameters instead
 	void activateOptions(helpers::Pool& p)
@@ -138,7 +139,9 @@ LOGUNIT_CLASS(OptionHandlerTest)
 	LOGUNIT_TEST_SUITE(OptionHandlerTest);
 	LOGUNIT_TEST(ABI_15_AppenderTest);
 	LOGUNIT_TEST(ABI_15_Specialized_AppenderTest);
-#if 15 < LOG4CXX_ABI_VERSION
+#if LOG4CXX_ABI_VERSION <= 15
+	LOGUNIT_TEST(ABI_15_Specialized_Appender_unagumented_activate_Test);
+#else
 	LOGUNIT_TEST(ABI_16_AppenderTest);
 #endif
 	LOGUNIT_TEST_SUITE_END();
@@ -166,7 +169,19 @@ public:
 		LOGUNIT_ASSERT(a15s.isActivated());
 	}
 
-#if 15 < LOG4CXX_ABI_VERSION
+#if LOG4CXX_ABI_VERSION <= 15
+	/**
+	 * Checks all levels of the appender heirarchy are activated
+	 */
+	void ABI_15_Specialized_Appender_unagumented_activate_Test()
+	{
+		helpers::Pool p;
+		ABI_15_Specialized_Appender a15s;
+		a15s.activateOptions();
+		LOGUNIT_ASSERT(a15s.isActivated());
+	}
+
+#else
 	/**
 	 * Checks all levels of the appender heirarchy are activated
 	 */

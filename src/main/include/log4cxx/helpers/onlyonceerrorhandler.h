@@ -35,9 +35,13 @@ first error in an appender and ignoring all following errors.
 <p>This policy aims at protecting an otherwise working application
 from being flooded with error messages when logging fails
 */
-class LOG4CXX_EXPORT OnlyOnceErrorHandler :
-	public virtual spi::ErrorHandler,
-	public virtual Object
+class LOG4CXX_EXPORT OnlyOnceErrorHandler
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual spi::ErrorHandler
+	, public virtual helpers::Object
+#else
+	: public spi::ErrorHandler
+#endif
 {
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(OnlyOnceErrorHandlerPrivate, m_priv)

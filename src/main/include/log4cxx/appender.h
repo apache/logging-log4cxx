@@ -46,8 +46,12 @@ typedef std::shared_ptr<Layout> LayoutPtr;
 Implement this interface for your own strategies for outputting log
 statements.
 */
-class LOG4CXX_EXPORT Appender :
-	public virtual spi::OptionHandler
+class LOG4CXX_EXPORT Appender
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual spi::OptionHandler
+#else
+	: public spi::OptionHandler
+#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Appender)

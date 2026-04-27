@@ -342,9 +342,13 @@ class SMTPMessage
 };
 #endif
 
-class LOG4CXX_EXPORT DefaultEvaluator :
-	public virtual spi::TriggeringEventEvaluator,
-	public virtual helpers::Object
+class LOG4CXX_EXPORT DefaultEvaluator
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual spi::TriggeringEventEvaluator
+	, public virtual helpers::Object
+#else
+	: public spi::TriggeringEventEvaluator
+#endif
 {
 	public:
 		DECLARE_LOG4CXX_OBJECT(DefaultEvaluator)

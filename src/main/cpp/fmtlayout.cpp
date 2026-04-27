@@ -61,8 +61,7 @@ FMTLayout::~FMTLayout(){}
 void FMTLayout::setConversionPattern(const LogString& pattern)
 {
 	m_priv->conversionPattern = pattern;
-	helpers::Pool pool;
-	activateOptions(pool);
+	activateOptions();
 }
 
 LogString FMTLayout::getConversionPattern() const

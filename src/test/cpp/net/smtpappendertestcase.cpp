@@ -31,7 +31,7 @@ namespace net
 {
 
 class MockTriggeringEventEvaluator :
-	public virtual spi::TriggeringEventEvaluator
+	public spi::TriggeringEventEvaluator
 {
 	public:
 		DECLARE_LOG4CXX_OBJECT(MockTriggeringEventEvaluator)

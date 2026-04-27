@@ -28,9 +28,13 @@ namespace LOG4CXX_NS
 /**
 Extend this abstract class to create your own log layout format.
 */
-class LOG4CXX_EXPORT Layout :
-	public virtual spi::OptionHandler,
-	public virtual helpers::Object
+class LOG4CXX_EXPORT Layout
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual spi::OptionHandler
+	, public virtual helpers::Object
+#else
+	: public spi::OptionHandler
+#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Layout)

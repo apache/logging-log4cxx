@@ -35,9 +35,13 @@ namespace LOG4CXX_NS
 *  This class provides the code for common functionality, such as
 *  support for threshold filtering and support for general filters.
 * */
-class LOG4CXX_EXPORT AppenderSkeleton :
-	public virtual Appender,
-	public virtual helpers::Object
+class LOG4CXX_EXPORT AppenderSkeleton
+#if LOG4CXX_ABI_VERSION <= 15
+	: public virtual Appender
+	, public virtual helpers::Object
+#else
+	: public Appender
+#endif
 {
 	protected:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(AppenderSkeletonPrivate, m_priv)
