@@ -218,24 +218,24 @@ Used internally to parse appenders by IDREF name.
 AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::findAppenderByName(apr_xml_elem* element, const LogString& appenderName)
 {
 	AppenderPtr appender;
-	std::string tagName(element->name);
 
-	if (tagName == APPENDER_TAG)
+	while (element)
 	{
-		if (appenderName == getAttribute(element, NAME_ATTR))
+		if (std::string(element->name) == APPENDER_TAG)
 		{
-			appender = parseAppender(element);
+			if (appenderName == getAttribute(element, NAME_ATTR))
+			{
+				if (appender = parseAppender(element))
+					break;
+			}
 		}
-	}
 
-	if (element->first_child && !appender)
-	{
-		appender = findAppenderByName(element->first_child, appenderName);
-	}
-
-	if (element->next && !appender)
-	{
-		appender = findAppenderByName(element->next, appenderName);
+		if (element->first_child)
+		{
+			if (appender = findAppenderByName(element->first_child, appenderName))
+				break;
+		}
+		element = element->next;
 	}
 
 	return appender;
