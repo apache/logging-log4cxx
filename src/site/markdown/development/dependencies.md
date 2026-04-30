@@ -51,6 +51,26 @@ MinGW, cygwin, or MSYS2.
 `gzip` and `zip` only needed during runtime if you are compressing the log
 files, for example by setting a rollover policy which ends in `.gz` or `.zip`.
 
+## Using the std::format instead of fmt::format
+
+The `LOG4CXX_XXXXX_FMT` logging macros use the macro `LOG4CXX_FORMAT_NS`
+to select the version of the `format` function.
+
+Use the CMake option `LOG4CXX_FORMAT_NAMESPACE=std`
+to set the default value for `LOG4CXX_FORMAT_NS` to `std`.
+If `LOG4CXX_FORMAT_NAMESPACE` is not specified when Log4cxx is built,
+the default value for `LOG4CXX_FORMAT_NS` is `fmt`.
+
+Setting `LOG4CXX_FORMAT_NAMESPACE=std` when building Log4cxx
+does not prevent an application from using the {fmt} library.
+An application developer can choose the implementation
+by adding `LOG4CXX_FORMAT_NS=std` or `LOG4CXX_FORMAT_NS=fmt` to the
+[target_compile_definitions](https://cmake.org/cmake/help/latest/command/target_compile_definitions.html)
+command in their CMakeLists.txt.
+If that preprocessor macro is absent,
+the `LOG4CXX_XXXXX_FMT` logging macros will expand
+to the default value of `LOG4CXX_FORMAT_NS` defined when Log4cxx was built.
+
 # Optional Dependencies
 
 The following table lists CMake options that require additional dependencies.
@@ -63,6 +83,7 @@ The following table lists CMake options that require additional dependencies.
 |LOG4CXX_ENABLE_ESMTP | libesmtp    | any     | Compile/runtime (not on Windows) | https://github.com/libesmtp/libESMTP |
 |LOG4CXX_QT_SUPPORT |Qt    | 5     | Compile/runtime | https://www.qt.io/download |
 |LOG4CXX_CFSTRING | Mac OS/X Core Foundation | any | Compile/runtime | https://developer.apple.com/documentation/corefoundation |
+
 
 ## A note on C++ version and Boost
 
