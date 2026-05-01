@@ -24,8 +24,13 @@ Preprocessor Macros Influencing Log4cxx {#macros-influencing-log4cxx}
 The following macros can be defined in client code to influence how log messages
 are set or not.
 
-These macros may be set on a per-file basis(in which case they must be before any
-Log4cxx includes), or they may be set globally via your build system.
+These macros may be set on a per-file basis
+(in which case they must be before any Log4cxx includes),
+or they may be set using your build system,
+for example, by using the
+[target_compile_definitions](https://cmake.org/cmake/help/latest/command/target_compile_definitions.html)
+cmake command.
+
 
 | Macro | Usage |
 | ----- | ----- |
