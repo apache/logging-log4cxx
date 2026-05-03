@@ -107,7 +107,7 @@ class DiscardSummary
 		LoggingEventPtr createEvent();
 
 #if LOG4CXX_ABI_VERSION <= 15
-		LoggingEventPtr createEvent(Pool&) { createEvent(); }
+		LoggingEventPtr createEvent(Pool&);
 		static
 		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
 			size_t discardedCount);
@@ -599,8 +599,10 @@ LoggingEventPtr DiscardSummary::createEvent()
 		, LocationInfo::getLocationUnavailable()
 		);
 }
-
 #if LOG4CXX_ABI_VERSION <= 15
+LoggingEventPtr DiscardSummary::createEvent(Pool&)
+{ return createEvent(); }
+
 ::LOG4CXX_NS::spi::LoggingEventPtr
 DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 	size_t discardedCount)
