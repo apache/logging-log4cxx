@@ -127,15 +127,14 @@ class LOG4CXX_EXPORT AsyncAppender :
 		/**
 		* Call AppenderSkeleton#doAppendImpl without acquiring a lock.
 		*/
-		void doAppend(const spi::LoggingEventPtr& event,
-			helpers::Pool& pool1) override;
+		void doAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
 		/**
 		* Add \c event to a ring buffer.
 		* The behaviour when the ring buffer is full
 		* is controlled by the [Blocking property](@ref BlockingProperty) value.
 		*/
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
 		/**
 		Close this <code>AsyncAppender</code> by interrupting the

@@ -270,19 +270,20 @@ void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, 
 	}
 }
 
-void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void TelnetAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	++_priv->eventCount;
 	if (0 < _priv->activeConnections)
 	{
+		helpers::Pool tempPool;
 		LogString msg;
 		if (_priv->layout)
-			_priv->layout->format(msg, event, p);
+			_priv->layout->format(msg, event, tempPool);
 		else
 			msg = event->getRenderedMessage();
 		msg.append(LOG4CXX_STR("\r\n"));
 		size_t bytesSize = msg.size() * 2;
-		char* bytes = p.pstralloc(bytesSize);
+		char* bytes = tempPool.pstralloc(bytesSize);
 
 		LogString::const_iterator msgIter(msg.begin());
 		ByteBuffer buf(bytes, bytesSize);

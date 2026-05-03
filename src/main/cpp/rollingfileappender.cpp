@@ -286,23 +286,29 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 
  * @return true if rollover performed.
  */
-bool RollingFileAppender::rollover(Pool& p)
+bool RollingFileAppender::rollover()
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	return rolloverInternal(p);
+	return rolloverInternal();
 }
+#if LOG4CXX_ABI_VERSION <= 15
+bool RollingFileAppender::rollover(Pool& p)
+{
+	rollover()
+}
+#endif
 
-bool RollingFileAppender::rolloverInternal(Pool& p)
+bool RollingFileAppender::rolloverInternal()
 {
 	//
 	//   can't roll without a policy
 	//
 	if (_priv->rollingPolicy != NULL)
 	{
-
 		{
 				try
 				{
+					Pool p;
 					RolloverDescriptionPtr rollover1(_priv->rollingPolicy->rollover(this->getFile(), this->getAppend(), p));
 
 					if (rollover1 != NULL)
@@ -429,11 +435,17 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 
 	return false;
 }
+#if LOG4CXX_ABI_VERSION <= 15
+bool RollingFileAppender::rolloverInternal(Pool&)
+{
+	rolloverInternal();
+}
+#endif
 
 /**
  * {@inheritDoc}
 */
-void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
+void RollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
@@ -449,7 +461,7 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 		try
 		{
 			_priv->_event = event;
-			rolloverInternal(p);
+			rolloverInternal();
 		}
 		catch (std::exception& ex)
 		{
@@ -460,7 +472,7 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
 		}
 	}
 
-	FileAppender::subAppend(event, p);
+	FileAppender::subAppend( LOG4CXX_APPEND_PARAMETERS );
 }
 
 /**

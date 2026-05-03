@@ -93,7 +93,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		layout.
 
 		*/
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
 
 	protected:
@@ -181,7 +181,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		 Actual writing occurs here.
 		*/
-		virtual void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p);
+		virtual void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS );
 
 
 #if LOG4CXX_ABI_VERSION <= 15

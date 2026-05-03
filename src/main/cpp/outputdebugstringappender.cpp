@@ -32,10 +32,11 @@ OutputDebugStringAppender::OutputDebugStringAppender()
 {
 }
 
-void OutputDebugStringAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void OutputDebugStringAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	LogString buf;
-	this->m_priv->layout->format(buf, event, p);
+	Pool tempPool;
+	this->m_priv->layout->format(buf, event, tempPool);
 #if LOG4CXX_WCHAR_T_API
 	LOG4CXX_ENCODE_WCHAR(wstr, buf);
 	::OutputDebugStringW(wstr.c_str());

@@ -169,16 +169,22 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		   <code>File</code> is truncated with no backup files created.
 
 		 */
+		bool rollover();
+#if LOG4CXX_ABI_VERSION <= 15
 		bool rollover(LOG4CXX_NS::helpers::Pool& p);
+#endif
 
 	protected:
 
 		/**
 		 Actual writing occurs here.
 		*/
-		void subAppend(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+		void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
+		bool rolloverInternal();
+#if LOG4CXX_ABI_VERSION <= 15
 		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p);
+#endif
 
 	public:
 		/**

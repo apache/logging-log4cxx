@@ -99,7 +99,7 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		typedef void SID;
 		typedef void* HANDLE;
 
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 		static unsigned short getEventType(const spi::LoggingEventPtr& event);
 		static unsigned short getEventCategory(const spi::LoggingEventPtr& event);
 		/*
