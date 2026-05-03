@@ -294,7 +294,7 @@ bool RollingFileAppender::rollover()
 #if LOG4CXX_ABI_VERSION <= 15
 bool RollingFileAppender::rollover(Pool& p)
 {
-	rollover();
+	return rollover();
 }
 #endif
 
@@ -438,7 +438,7 @@ bool RollingFileAppender::rolloverInternal()
 #if LOG4CXX_ABI_VERSION <= 15
 bool RollingFileAppender::rolloverInternal(Pool&)
 {
-	rolloverInternal();
+	return rolloverInternal();
 }
 #endif
 
