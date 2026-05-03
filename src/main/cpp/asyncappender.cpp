@@ -107,6 +107,7 @@ class DiscardSummary
 		LoggingEventPtr createEvent();
 
 #if LOG4CXX_ABI_VERSION <= 15
+		LoggingEventPtr createEvent(Pool&) { createEvent(); }
 		static
 		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
 			size_t discardedCount);
