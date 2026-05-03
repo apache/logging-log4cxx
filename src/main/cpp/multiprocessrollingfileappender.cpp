@@ -254,7 +254,7 @@ bool MultiprocessRollingFileAppender::rollover()
 #if LOG4CXX_ABI_VERSION <= 15
 bool MultiprocessRollingFileAppender::rollover(Pool& p)
 {
-	return rollover()
+	return rollover();
 }
 #endif
 
