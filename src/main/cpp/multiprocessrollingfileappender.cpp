@@ -254,7 +254,7 @@ bool MultiprocessRollingFileAppender::rollover()
 #if LOG4CXX_ABI_VERSION <= 15
 bool MultiprocessRollingFileAppender::rollover(Pool& p)
 {
-	rollover()
+	return rollover()
 }
 #endif
 
@@ -379,7 +379,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 #if LOG4CXX_ABI_VERSION <= 15
 bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const TriggeringPolicyPtr& trigger)
 {
-	synchronizedRollover(trigger);
+	return synchronizedRollover(trigger);
 }
 #endif
 
