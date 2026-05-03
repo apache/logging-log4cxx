@@ -110,6 +110,12 @@ int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& ev
 	}
 	return result;
 }
+#if LOG4CXX_ABI_VERSION <= 15
+int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& event, helpers::Pool& p)
+{
+	return appendLoopOnAppenders(event);
+}
+#endif
 
 AppenderList AppenderAttachableImpl::getAllAppenders() const
 {
