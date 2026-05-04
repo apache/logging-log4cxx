@@ -66,10 +66,7 @@ PatternConverterPtr PropertiesPatternConverter::newInstance(
 	return std::make_shared<PropertiesPatternConverter>(converterName, options[0]);
 }
 
-void PropertiesPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+void PropertiesPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 	if (priv->option.length() == 0)
 	{

@@ -143,7 +143,7 @@ void JSONLayout::format(LogString& output,
 	}
 
 	output.append(LOG4CXX_STR("\"timestamp\": \""));
-	m_priv->dateFormat.format(output, event->getTimeStamp(), p);
+	m_priv->dateFormat.format(output, event->getTimeStamp());
 	output.append(LOG4CXX_STR("\","));
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 

@@ -40,10 +40,7 @@ PatternConverterPtr ClassNamePatternConverter::newInstance(
 	return std::make_shared<ClassNamePatternConverter>(options);
 }
 
-void ClassNamePatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+void ClassNamePatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 	int initialLength = (int)toAppendTo.length();
 	append(toAppendTo, event->getLocationInformation().getClassName());

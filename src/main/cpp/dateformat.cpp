@@ -18,6 +18,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/pool.h>
 
 
 using namespace LOG4CXX_NS;
@@ -36,3 +37,20 @@ void DateFormat::numberFormat(LogString& s, int n, Pool& p) const
 
 DateFormat::DateFormat() {}
 
+void DateFormat::numberFormat(LogString& toAppendTo, int n) const
+{
+	StringHelper::toString(n, toAppendTo);
+}
+
+#if LOG4CXX_ABI_VERSION <= 15
+void DateFormat::format(LogString& toAppendTo, log4cxx_time_t tm) const
+{
+	helpers::Pool p;
+	format(toAppendTo, tm, p);
+}
+#else
+void DateFormat::format(LogString& toAppendTo, log4cxx_time_t tm, Pool& p) const
+{
+	format(toAppendTo, tm);
+}
+#endif

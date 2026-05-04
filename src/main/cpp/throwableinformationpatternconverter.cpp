@@ -62,10 +62,7 @@ PatternConverterPtr ThrowableInformationPatternConverter::newInstance(
 	return std::make_shared<ThrowableInformationPatternConverter>(false);
 }
 
-void ThrowableInformationPatternConverter::format(
-	const LoggingEventPtr& /* event */,
-	LogString& /* toAppendTo */,
-	Pool& /* p */) const
+void ThrowableInformationPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 }
 

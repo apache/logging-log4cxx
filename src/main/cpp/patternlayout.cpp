@@ -121,7 +121,7 @@ void PatternLayout::format(LogString& output,
 	for (auto item : m_priv->patternConverters)
 	{
 		auto startField = output.length();
-		item->format(event, output, pool);
+		item->format(event, output);
 		if (startField < INT_MAX)
 			item->getFormattingInfo().format(static_cast<int>(startField), output);
 	}

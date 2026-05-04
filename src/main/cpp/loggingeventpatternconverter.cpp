@@ -40,15 +40,11 @@ LoggingEventPatternConverter::LoggingEventPatternConverter(std::unique_ptr<Patte
 
 }
 
-void LoggingEventPatternConverter::format(const ObjectPtr& obj,
-	LogString& output,
-	LOG4CXX_NS::helpers::Pool& p) const
+void LoggingEventPatternConverter::format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) const
 {
-	LoggingEventPtr le = LOG4CXX_NS::cast<LoggingEvent>(obj);
-
-	if (le != NULL)
+	if (auto event = LOG4CXX_NS::cast<LoggingEvent>(obj))
 	{
-		format(le, output, p);
+		format( LOG4CXX_FORMAT_EVENT_PARAMETERS );
 	}
 }
 
@@ -56,3 +52,16 @@ bool LoggingEventPatternConverter::handlesThrowable() const
 {
 	return false;
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+void LoggingEventPatternConverter::format(const spi::LoggingEventPtr& event, LogString& toAppendTo) const
+{
+	helpers::Pool p;
+	format(event, toAppendTo, p);
+}
+#else
+void LoggingEventPatternConverter::format(const spi::LoggingEventPtr& event, LogString& toAppendTo, helpers::Pool&) const
+{
+	format(event, toAppendTo);
+}
+#endif

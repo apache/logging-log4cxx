@@ -60,18 +60,12 @@ PatternConverterPtr LiteralPatternConverter::newInstance(
 	return std::make_shared<LiteralPatternConverter>(literal);
 }
 
-void LiteralPatternConverter::format(
-	const LoggingEventPtr& /* event */,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+void LiteralPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 	toAppendTo.append(priv->literal);
 }
 
-void LiteralPatternConverter::format(
-	const ObjectPtr& /* event */,
-	LogString& toAppendTo,
-	Pool& /* p */)  const
+void LiteralPatternConverter::format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS )  const
 {
 	toAppendTo.append(priv->literal);
 }

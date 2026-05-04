@@ -33,9 +33,9 @@ class LOG4CXX_EXPORT RelativeTimeDateFormat : public DateFormat
 {
 	public:
 		RelativeTimeDateFormat();
-		virtual void format(LogString& s,
-			log4cxx_time_t tm,
-			LOG4CXX_NS::helpers::Pool& p) const;
+
+		using DateFormat::format;
+		void format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const override;
 
 	private:
 		log4cxx_time_t startTime;

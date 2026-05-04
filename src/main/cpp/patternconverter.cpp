@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/pattern/patternconverter.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/patternconverter_priv.h>
 
@@ -67,3 +68,16 @@ void PatternConverter::setFormattingInfo(const FormattingInfoPtr& newValue)
 {
 	m_priv->info = newValue;
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+void PatternConverter::format(const helpers::ObjectPtr& obj, LogString& toAppendTo) const
+{
+	helpers::Pool p;
+	format(obj, toAppendTo, p);
+}
+#else
+void PatternConverter::format(const helpers::ObjectPtr& obj, LogString& toAppendTo, helpers::Pool&) const
+{
+	format(obj, toAppendTo);
+}
+#endif

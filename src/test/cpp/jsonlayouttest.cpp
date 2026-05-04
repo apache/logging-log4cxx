@@ -375,7 +375,7 @@ public:
 
 		LogString timestamp;
 		helpers::ISO8601DateFormat dateFormat;
-		dateFormat.format(timestamp, event1->getTimeStamp(), p);
+		dateFormat.format(timestamp, event1->getTimeStamp());
 
 		NDC::push("one");
 		NDC::push("two");
@@ -423,7 +423,7 @@ public:
 
 		LogString timestamp;
 		helpers::ISO8601DateFormat dateFormat;
-		dateFormat.format(timestamp, event1->getTimeStamp(), p);
+		dateFormat.format(timestamp, event1->getTimeStamp());
 
 		NDC::push("one");
 		NDC::push("two");

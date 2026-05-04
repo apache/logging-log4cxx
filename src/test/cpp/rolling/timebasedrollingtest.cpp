@@ -134,7 +134,7 @@ private:
 		for (size_t i = 0; i < N; ++i)
 		{
 			fnames[i].assign(LogString(LOG4CXX_STR("" DIR_PRE_OUTPUT)) + prefix);
-			sdf.format(fnames[i], now, pool);
+			sdf.format(fnames[i], now);
 			fnames[i].append(ext);
 
 			now += APR_USEC_PER_SEC;

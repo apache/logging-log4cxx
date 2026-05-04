@@ -48,10 +48,10 @@ StrftimeDateFormat::~StrftimeDateFormat()
 }
 
 
-void StrftimeDateFormat::format(LogString& s, log4cxx_time_t time, Pool& /* p */ ) const
+void StrftimeDateFormat::format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const
 {
 	apr_time_exp_t exploded;
-	apr_status_t stat = m_priv->timeZone->explode(&exploded, time);
+	apr_status_t stat = m_priv->timeZone->explode(&exploded, tm);
 
 	if (stat == APR_SUCCESS)
 	{
@@ -62,7 +62,7 @@ void StrftimeDateFormat::format(LogString& s, log4cxx_time_t time, Pool& /* p */
 
 		if (stat == APR_SUCCESS)
 		{
-			LOG4CXX_NS::helpers::Transcoder::decode(std::string(buf, bufLen), s);
+			LOG4CXX_NS::helpers::Transcoder::decode(std::string(buf, bufLen), toAppendTo);
 		}
 	}
 }

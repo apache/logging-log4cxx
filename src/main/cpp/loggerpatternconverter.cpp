@@ -40,10 +40,7 @@ PatternConverterPtr LoggerPatternConverter::newInstance(
 	return std::make_shared<LoggerPatternConverter>(options);
 }
 
-void LoggerPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */ ) const
+void LoggerPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 	int initialLength = (int)toAppendTo.length();
 	toAppendTo.append(event->getLoggerName());

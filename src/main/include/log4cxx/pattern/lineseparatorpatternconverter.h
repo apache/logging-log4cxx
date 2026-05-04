@@ -54,13 +54,9 @@ class LOG4CXX_EXPORT LineSeparatorPatternConverter
 
 		using LoggingEventPatternConverter::format;
 
-		void format(const spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+		void format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const override;
 
-		void format(const helpers::ObjectPtr& obj,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+		void format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) const override;
 };
 
 }

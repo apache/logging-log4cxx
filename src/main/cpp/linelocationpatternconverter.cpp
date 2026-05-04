@@ -40,10 +40,7 @@ PatternConverterPtr LineLocationPatternConverter::newInstance(
 	return std::make_shared<LineLocationPatternConverter>();
 }
 
-void LineLocationPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& p) const
+void LineLocationPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 	StringHelper::toString(
 		event->getLocationInformation().getLineNumber(),

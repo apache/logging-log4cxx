@@ -38,10 +38,7 @@ PatternConverterPtr FileLocationPatternConverter::newInstance(
 	return std::make_shared<FileLocationPatternConverter>();
 }
 
-void FileLocationPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */ ) const
+void FileLocationPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 	append(toAppendTo, event->getLocationInformation().getFileName());
 }

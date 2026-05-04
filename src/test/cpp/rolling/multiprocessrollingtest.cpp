@@ -137,8 +137,7 @@ public:
 
 		// Count rolled files
 		LOG4CXX_DECODE_CHAR(expectedPrefixLS, expectedPrefix);
-		helpers::Pool p;
-		helpers::StrftimeDateFormat(LOG4CXX_STR("%Y-%m-%d")).format(expectedPrefixLS, helpers::Date::currentTime(), p);
+		helpers::StrftimeDateFormat(LOG4CXX_STR("%Y-%m-%d")).format(expectedPrefixLS, helpers::Date::currentTime());
 		LOG4CXX_ENCODE_CHAR(rolledPrefix, expectedPrefixLS);
 		int fileCount = 0;
 		for (auto const& dir_entry : std::filesystem::directory_iterator{"output/rolling"})

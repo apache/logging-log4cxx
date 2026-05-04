@@ -56,11 +56,9 @@ public:
 
 		RelativeTimeDateFormat formatter;
 
-		Pool p;
-
 		LogString actual;
 
-		formatter.format(actual, jan2, p);
+		formatter.format(actual, jan2);
 
 		log4cxx_time_t elapsed = log4cxx::helpers::StringHelper::toInt64(actual);
 
@@ -76,9 +74,8 @@ public:
 	void test2()
 	{
 		LogString numb;
-		Pool p;
 		RelativeTimeDateFormat formatter;
-		formatter.numberFormat(numb, 87, p);
+		formatter.numberFormat(numb, 87);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
 	}
 
