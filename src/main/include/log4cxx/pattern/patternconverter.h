@@ -68,9 +68,8 @@ class LOG4CXX_EXPORT PatternConverter : public virtual helpers::Object
 
 		/**
 		 * Formats an object into a string buffer.
-		 * @param obj event to format, may not be null.
+		 * @param obj holds the attributes, may not be null.
 		 * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
-		 * @param p pool for any allocations necessary during formatting.
 		 */
 #if LOG4CXX_ABI_VERSION <= 15
 		void format(const helpers::ObjectPtr& obj, LogString& toAppendTo) const;

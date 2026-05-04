@@ -44,7 +44,7 @@ class LOG4CXX_EXPORT ThreadUsernamePatternConverter : public LoggingEventPattern
 
 		using LoggingEventPatternConverter::format;
 
-	    void format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const override;
+		void format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const override;
 };
 
 }
