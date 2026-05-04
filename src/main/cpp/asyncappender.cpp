@@ -104,9 +104,10 @@ class DiscardSummary
 		 *
 		 * @return the new event.
 		 */
-		LoggingEventPtr createEvent(Pool& p);
+		LoggingEventPtr createEvent();
 
 #if LOG4CXX_ABI_VERSION <= 15
+		LoggingEventPtr createEvent(Pool&);
 		static
 		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
 			size_t discardedCount);
@@ -340,16 +341,16 @@ void AsyncAppender::setOption(const LogString& option,
 }
 
 
-void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
+void AsyncAppender::doAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
-	doAppendImpl(event, pool1);
+	doAppendImpl( LOG4CXX_APPEND_PARAMETERS );
 }
 
-void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void AsyncAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	if (priv->bufferSize <= 0)
 	{
-		priv->appenders.appendLoopOnAppenders(event, p);
+		priv->appenders.appendLoopOnAppenders(event);
 		return;
 	}
 
@@ -585,7 +586,7 @@ void DiscardSummary::add(const LoggingEventPtr& event)
 	++this->count;
 }
 
-LoggingEventPtr DiscardSummary::createEvent(Pool& p)
+LoggingEventPtr DiscardSummary::createEvent()
 {
 	LogString msg(LOG4CXX_STR("Discarded "));
 	StringHelper::toString(this->count, msg);
@@ -598,8 +599,10 @@ LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 		, LocationInfo::getLocationUnavailable()
 		);
 }
-
 #if LOG4CXX_ABI_VERSION <= 15
+LoggingEventPtr DiscardSummary::createEvent(Pool&)
+{ return createEvent(); }
+
 ::LOG4CXX_NS::spi::LoggingEventPtr
 DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
 	size_t discardedCount)
@@ -628,7 +631,6 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 
 	while (isActive)
 	{
-		Pool p;
 		LoggingEventList events;
 		events.reserve(this->bufferSize);
 		for (int count = 0; count < 2 && this->dispatchedCount == this->commitCount; ++count)
@@ -658,7 +660,7 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 			producerBlockedCount += this->blockedCount;
 			for (auto& discardItem : this->discardMap)
 			{
-				events.push_back(discardItem.second.createEvent(p));
+				events.push_back(discardItem.second.createEvent());
 				discardCount += discardItem.second.getCount();
 			}
 			this->discardMap.clear();
@@ -668,7 +670,7 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 		{
 			try
 			{
-				this->appenders.appendLoopOnAppenders(item, p);
+				this->appenders.appendLoopOnAppenders(item);
 			}
 			catch (std::exception& ex)
 			{

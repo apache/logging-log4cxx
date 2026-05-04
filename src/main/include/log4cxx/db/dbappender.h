@@ -146,7 +146,7 @@ class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
                 /**
                 * Adds the event to the buffer.  When full the buffer is flushed.
                 */
-                void append(const spi::LoggingEventPtr& event, helpers::Pool&) override;
+                void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
                 void close() override;
 

@@ -14,37 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <log4cxx/appender.h>
+#include <log4cxx/helpers/pool.h>
 
-#ifndef _LOG4CXX_NT_OUTPUTDEBUGSTRING_APPENDER_HEADER_
-#define _LOG4CXX_NT_OUTPUTDEBUGSTRING_APPENDER_HEADER_
+using namespace LOG4CXX_NS;
 
-#include <log4cxx/appenderskeleton.h>
+IMPLEMENT_LOG4CXX_OBJECT(Appender)
 
-namespace LOG4CXX_NS
+#if LOG4CXX_ABI_VERSION <= 15
+void Appender::doAppend(const spi::LoggingEventPtr& event)
 {
-namespace nt
-{
-class LOG4CXX_EXPORT OutputDebugStringAppender : public AppenderSkeleton
-{
-	public:
-		DECLARE_LOG4CXX_OBJECT(OutputDebugStringAppender)
-		BEGIN_LOG4CXX_CAST_MAP()
-		LOG4CXX_CAST_ENTRY(OutputDebugStringAppender)
-		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-		END_LOG4CXX_CAST_MAP()
-
-		OutputDebugStringAppender();
-
-		bool requiresLayout() const override
-		{
-			return true;
-		}
-
-		void close() override {}
-
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
-};
+	helpers::Pool p;
+	doAppend(event, p);
 }
+#else
+void Appender::doAppend(const spi::LoggingEventPtr& event, helpers::Pool&)
+{
+	doAppend(event);
 }
-
-#endif //_LOG4CXX_NT_OUTPUTDEBUGSTRING_APPENDER_HEADER_
+#endif

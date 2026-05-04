@@ -213,7 +213,7 @@ void NTEventLogAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAME
 	}
 }
 
-void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
+void NTEventLogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	if (priv->hEventLog == NULL)
 	{
@@ -222,8 +222,9 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 	}
 
 	LogString oss;
-	this->m_priv->layout->format(oss, event, p);
-	wchar_t* msgs = Transcoder::wencode(oss, p);
+	Pool tempPool;
+	this->m_priv->layout->format(oss, event, tempPool);
+	wchar_t* msgs = Transcoder::wencode(oss, tempPool);
 	BOOL bSuccess = ::ReportEventW(
 			priv->hEventLog,
 			getEventType(event),

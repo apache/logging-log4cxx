@@ -96,7 +96,7 @@ void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
 		m_priv = std::make_unique<priv_data>(AppenderList{newAppender});
 }
 
-int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& event, Pool& p)
+int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& event)
 {
 	int result = 0;
 	if (m_priv)
@@ -104,12 +104,18 @@ int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& ev
 		auto allAppenders = m_priv->getAppenders();
 		for (auto& appender : *allAppenders)
 		{
-			appender->doAppend(event, p);
+			appender->doAppend(event);
 			++result;
 		}
 	}
 	return result;
 }
+#if LOG4CXX_ABI_VERSION <= 15
+int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& event, helpers::Pool& p)
+{
+	return appendLoopOnAppenders(event);
+}
+#endif
 
 AppenderList AppenderAttachableImpl::getAllAppenders() const
 {

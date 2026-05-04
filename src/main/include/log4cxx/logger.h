@@ -70,6 +70,7 @@ class LOG4CXX_EXPORT Logger
 		*/
 		Logger(const LogString& name);
 #if LOG4CXX_ABI_VERSION <= 15
+		/// @deprecated This function is deprecated and will be removed in a future version.
 		[[ deprecated( "Pool is no longer required" ) ]]
 		Logger(helpers::Pool& pool, const LogString& name);
 #endif
@@ -86,6 +87,7 @@ class LOG4CXX_EXPORT Logger
 		void addAppender(const AppenderPtr newAppender) override;
 
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		Call the appenders in the hierrachy starting at
 		<code>this</code>.  If no appenders could be found, emit a
@@ -97,8 +99,17 @@ class LOG4CXX_EXPORT Logger
 
 		@param event the event to log.
 		@param p memory pool for any allocations needed to process request.
+		@deprecated This function is deprecated and will be removed in a future version.
 		*/
+		[[ deprecated( "Pool is no longer required" ) ]]
 		void callAppenders(const spi::LoggingEventPtr& event, helpers::Pool& p) const;
+#endif
+		/**
+		Send \c event to all appenders attached to this or attached to a parent of this.
+		If no appenders are found, emit a warning.
+		This method does not check the \c event level.
+		*/
+		void callAppenders(const spi::LoggingEventPtr& event) const;
 
 		/**
 		Close all attached appenders implementing the AppenderAttachable

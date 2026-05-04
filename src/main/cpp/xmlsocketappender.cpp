@@ -130,10 +130,11 @@ void XMLSocketAppender::XMLSocketAppenderPriv::close()
 	}
 }
 
-void XMLSocketAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p)
+void XMLSocketAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	if (_priv->writer)
 	{
+		Pool p;
 		LogString output;
 		_priv->layout->format(output, event, p);
 

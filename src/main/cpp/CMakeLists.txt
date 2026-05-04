@@ -84,6 +84,7 @@ target_sources(log4cxx
   PRIVATE
   action.cpp
   andfilter.cpp
+  appender.cpp
   appenderattachableimpl.cpp
   appenderskeleton.cpp
   aprinitializer.cpp

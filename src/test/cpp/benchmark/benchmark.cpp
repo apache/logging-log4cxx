@@ -43,7 +43,7 @@ public:
 		return true;
 	}
 
-	void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override
+	void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
 	{
 		LogString buf;
 		m_priv->layout->format(buf, event, p);

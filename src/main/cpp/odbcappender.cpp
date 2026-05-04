@@ -260,14 +260,14 @@ void ODBCAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 }
 
 
-void ODBCAppender::append(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p)
+void ODBCAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 #if LOG4CXX_HAVE_ODBC
 	_priv->buffer.push_back(event);
 
 	if (_priv->buffer.size() >= _priv->bufferSize)
 	{
-		flushBuffer(p);
+		flushBuffer(_priv->pool);
 	}
 
 #endif

@@ -246,18 +246,24 @@ bool MultiprocessRollingFileAppender::getCurrentFileSize(size_t* pSize)
 
  * @return true if rollover performed.
  */
-bool MultiprocessRollingFileAppender::rollover(Pool& p)
+bool MultiprocessRollingFileAppender::rollover()
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	return synchronizedRollover(p);
+	return synchronizedRollover();
 }
+#if LOG4CXX_ABI_VERSION <= 15
+bool MultiprocessRollingFileAppender::rollover(Pool& p)
+{
+	return rollover();
+}
+#endif
 
 /**
  * Coordinate a rollover with other processes
 
  * @return true if this process perfomed the rollover.
  */
-bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const TriggeringPolicyPtr& trigger)
+bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolicyPtr& trigger)
 {
 	bool result = false;
 	LogString fileName = getFile();
@@ -267,6 +273,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 		reopenFile(fileName);
 	else
 	{
+		helpers::Pool tempPool;
 		MultiprocessRollingFileAppenderPriv::Lock lk(_priv, fileName);
 		if (!lk.hasLock())
 			LogLog::warn(LOG4CXX_STR("Failed to lock ") + fileName);
@@ -274,14 +281,14 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 			reopenFile(fileName);
 		else if (trigger && !trigger->isTriggeringEvent(this, _priv->_event, fileName, _priv->fileLength))
 			;
-		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend(), p))
+		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend(), tempPool))
 		{
 			_priv->close();
 			if (rollover1->getActiveFileName() == fileName)
 			{
 				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
-					success = pAction->execute(p);
+					success = pAction->execute(tempPool);
 
 				bool appendToExisting = true;
 				if (success)
@@ -300,7 +307,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 					{
 						try
 						{
-							asyncAction->execute(p);
+							asyncAction->execute(tempPool);
 						}
 						catch (std::exception& ex)
 						{
@@ -330,10 +337,10 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 					, rollover1->getAppend()
 					);
 				_priv->setWriter(createWriter(os));
-
+				helpers::Pool tempPool;
 				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
-					success = pAction->execute(p);
+					success = pAction->execute(tempPool);
 
 				if (success)
 				{
@@ -350,7 +357,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 					{
 						try
 						{
-							asyncAction->execute(p);
+							asyncAction->execute(tempPool);
 						}
 						catch (std::exception& ex)
 						{
@@ -369,6 +376,12 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 
 	return result;
 }
+#if LOG4CXX_ABI_VERSION <= 15
+bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const TriggeringPolicyPtr& trigger)
+{
+	return synchronizedRollover(trigger);
+}
+#endif
 
 /**
  * re-open \c fileName (used after it has been renamed)
@@ -389,7 +402,7 @@ void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 /**
  * {@inheritDoc}
 */
-void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p)
+void MultiprocessRollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
@@ -404,7 +417,7 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 		try
 		{
 			_priv->_event = event;
-			synchronizedRollover(p, _priv->triggeringPolicy);
+			synchronizedRollover(_priv->triggeringPolicy);
 		}
 		catch (std::exception& ex)
 		{
@@ -419,7 +432,7 @@ void MultiprocessRollingFileAppender::subAppend(const LoggingEventPtr& event, Po
 	else if (isAlreadyRolled(fileName, &_priv->fileLength))
 		reopenFile(fileName);
 
-	FileAppender::subAppend(event, p);
+	FileAppender::subAppend( LOG4CXX_APPEND_PARAMETERS );
 }
 
 /**

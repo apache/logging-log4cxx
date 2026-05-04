@@ -147,7 +147,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		Perform SMTPAppender specific appending actions, mainly adding
 		the event to a cyclic buffer and checking if the event triggers
 		an e-mail to be sent. */
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
 
 		void close() override;

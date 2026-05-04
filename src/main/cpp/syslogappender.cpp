@@ -270,16 +270,17 @@ int SyslogAppender::getFacility(
 	}
 }
 
-void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void SyslogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	if  (!isAsSevereAsThreshold(event->getLevel()))
 	{
 		return;
 	}
 
+	helpers::Pool tempPool;
 	LogString msg;
 	std::string encoded;
-	_priv->layout->format(msg, event, p);
+	_priv->layout->format(msg, event, tempPool);
 
 	Transcoder::encode(msg, encoded);
 

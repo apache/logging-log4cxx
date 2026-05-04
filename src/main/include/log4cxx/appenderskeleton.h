@@ -52,15 +52,14 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		method to perform actual logging. See also AppenderSkeleton::doAppend
 		method.
 		*/
-		virtual void append(const spi::LoggingEventPtr& event, helpers::Pool& p) = 0;
+		virtual void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) = 0;
 
 		/**
 		* Compare \c event level against the appender threshold and check that \c event is accepted.
 		* If \c event is accepted, delegate log output to the subclass implementation of
 		* the AppenderSkeleton#append method.
 		* */
-		void doAppendImpl(const spi::LoggingEventPtr& event, helpers::Pool& pool);
-
+		void doAppendImpl( LOG4CXX_APPEND_FORMAL_PARAMETERS );
 		/**
 		* Does no attached filter deny \c event or does an attached filter accept \c event?
 		*/
@@ -167,7 +166,7 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		*
 		* Reimplement this method in your appender if you use a different concurrency control technique.
 		* */
-		void doAppend(const spi::LoggingEventPtr& event, helpers::Pool& pool) override;
+		void doAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.

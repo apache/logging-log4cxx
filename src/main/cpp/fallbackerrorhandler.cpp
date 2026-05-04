@@ -143,8 +143,7 @@ void FallbackErrorHandler::error
 	m_priv->errorReported = true;
 	if (event)
     {
-        Pool p;
-		backupLocked->doAppend(event, p);
+		backupLocked->doAppend(event);
     }
 	m_priv->primary = backupLocked;
 }

@@ -145,7 +145,7 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 
 		int getDefaultPort() const override;
 
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& pool) override;
+		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
 	private:
 		//  prevent copy and assignment statements

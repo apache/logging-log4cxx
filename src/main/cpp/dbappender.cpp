@@ -223,7 +223,7 @@ void DBAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
     }
 }
 
-void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
+void DBAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS ){
 	std::vector<std::string> ls_args;
     std::vector<const char*> args;
     int stat;
@@ -236,9 +236,10 @@ void DBAppender::append(const spi::LoggingEventPtr& event, helpers::Pool& p){
         return;
     }
 
+    helpers::Pool tempPool;
     for(auto& converter : _priv->converters){
         LogString str_data;
-        converter->format(event, str_data, p);
+        converter->format(event, str_data, tempPool);
 		LOG4CXX_ENCODE_CHAR(new_str_data, str_data);
 		ls_args.push_back(new_str_data);
     }

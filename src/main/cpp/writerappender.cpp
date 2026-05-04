@@ -88,7 +88,7 @@ void WriterAppender::WriterAppenderPriv::activateOptions()
 	}
 }
 
-void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool1)
+void WriterAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 
 	if (!checkEntryConditions())
@@ -96,7 +96,7 @@ void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool1)
 		return;
 	}
 
-	subAppend(event, pool1);
+	subAppend( LOG4CXX_APPEND_PARAMETERS );
 }
 
 /**
@@ -215,22 +215,23 @@ void WriterAppender::setEncoding(const LogString& enc)
 	_priv->encoding = enc;
 }
 
-void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
+void WriterAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 #if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
 	if (event->getRenderedMessage() == _priv->exceptionTriggeringMessage)
 		throw RuntimeException(LOG4CXX_STR("Simulated fault"));
 #endif
+	Pool tempPool;
 	LogString msg;
-	_priv->layout->format(msg, event, p);
+	_priv->layout->format(msg, event, tempPool);
 
 	if (_priv->writer != NULL)
 	{
-		_priv->writer->write(msg, p);
+		_priv->writer->write(msg, tempPool);
 
 		if (_priv->immediateFlush)
 		{
-			_priv->writer->flush(p);
+			_priv->writer->flush(tempPool);
 		}
 	}
 }

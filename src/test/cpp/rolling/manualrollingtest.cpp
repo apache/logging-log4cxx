@@ -91,7 +91,7 @@ public:
 
 				if (digit == 0)
 				{
-					rfa->rollover(pool);
+					rfa->rollover();
 				}
 
 				msg[7] = '0' + i / 10;

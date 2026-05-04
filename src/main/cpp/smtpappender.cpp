@@ -629,7 +629,7 @@ void SMTPAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 Perform SMTPAppender specific appending actions, mainly adding
 the event to a cyclic buffer and checking if the event triggers
 an e-mail to be sent. */
-void SMTPAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void SMTPAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	if (!checkEntryConditions())
 	{
@@ -643,6 +643,7 @@ void SMTPAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if (_priv->evaluator->isTriggeringEvent(event))
 	{
+		Pool p;
 		sendBuffer(p);
 	}
 }

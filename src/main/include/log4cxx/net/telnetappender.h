@@ -168,7 +168,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 	protected:
 		/** Send \c event to each connected client.
 		*/
-		void append(const spi::LoggingEventPtr& event, helpers::Pool& p) override;
+		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
 	private:
 		//   prevent copy and assignment statements
