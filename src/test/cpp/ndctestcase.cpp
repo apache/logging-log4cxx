@@ -121,10 +121,9 @@ public:
 		NDC item1("context1");
 		NDC item2("context2");
 		NDC item3("context3");
-		helpers::Pool p;
 		LogString output;
 		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.20x %m") };
-		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("NDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()), p);
+		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("NDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()));
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  NDC.LayoutTest - t1 context2 context3 Message"), output);
 	}
 

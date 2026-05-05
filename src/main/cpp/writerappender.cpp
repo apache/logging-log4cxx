@@ -223,7 +223,7 @@ void WriterAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 #endif
 	Pool tempPool;
 	LogString msg;
-	_priv->layout->format(msg, event, tempPool);
+	_priv->layout->format(msg, event);
 
 	if (_priv->writer != NULL)
 	{

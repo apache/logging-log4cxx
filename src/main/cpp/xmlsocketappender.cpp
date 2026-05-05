@@ -136,7 +136,7 @@ void XMLSocketAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 	{
 		Pool p;
 		LogString output;
-		_priv->layout->format(output, event, p);
+		_priv->layout->format(output, event);
 
 		try
 		{

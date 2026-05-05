@@ -278,7 +278,7 @@ void TelnetAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 		helpers::Pool tempPool;
 		LogString msg;
 		if (_priv->layout)
-			_priv->layout->format(msg, event, tempPool);
+			_priv->layout->format(msg, event);
 		else
 			msg = event->getRenderedMessage();
 		msg.append(LOG4CXX_STR("\r\n"));
