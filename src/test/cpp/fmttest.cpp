@@ -149,8 +149,7 @@ public:
 																							 log4cxx::spi::LocationInfo::getLocationUnavailable());
 		FMTLayout layout(LOG4CXX_STR("{d:%Y-%m-%d %H:%M:%S} {message}"));
 		LogString output;
-		log4cxx::helpers::Pool pool;
-		layout.format( output, logEvt, pool);
+		layout.format( output, logEvt);
 
 		log4cxx::helpers::Date::setGetCurrentTimeFunction(nullptr);
 

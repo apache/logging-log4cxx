@@ -240,6 +240,7 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
 		 */
 		LogString getConversionPattern() const;
 
+		using Layout::format;
 		/**
 		 * Append the attributes of \c event onto \c output as specified by the conversion pattern.
 		 */
