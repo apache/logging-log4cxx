@@ -91,7 +91,7 @@ void HTMLLayout::format(LogString& output,
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("<td>"));
 
-	m_priv->dateFormat.format(output, event->getTimeStamp(), p);
+	m_priv->dateFormat.format(output, event->getTimeStamp());
 
 
 	output.append(LOG4CXX_STR("</td>"));
@@ -207,7 +207,7 @@ void HTMLLayout::appendHeader(LogString& output, Pool& p)
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("Log session start time "));
 
-	m_priv->dateFormat.format(output, Date::currentTime(), p);
+	m_priv->dateFormat.format(output, Date::currentTime());
 
 	output.append(LOG4CXX_STR("<br>"));
 	output.append(LOG4CXX_EOL);

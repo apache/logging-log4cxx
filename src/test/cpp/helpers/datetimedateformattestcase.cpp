@@ -92,8 +92,7 @@ private:
 		DateTimeDateFormat formatter(locale);
 		formatter.setTimeZone(timeZone);
 		LogString actual;
-		Pool p;
-		formatter.format(actual, date, p);
+		formatter.format(actual, date);
 		LOGUNIT_ASSERT_EQUAL( expected, actual );
 	}
 public:
@@ -205,9 +204,8 @@ public:
 		if (localeChange.isEffective())
 		{
 			LogString formatted;
-			Pool p;
 			SimpleDateFormat formatter(LOG4CXX_STR("MMM"));
-			formatter.format(formatted, avr11, p);
+			formatter.format(formatted, avr11);
 
 			std::locale localeFR(LOCALE_FR);
 			struct tm avr11tm = { 0, 0, 0, 11, 03, 104 };
@@ -226,10 +224,9 @@ public:
 		if (localeChange.isEffective())
 		{
 			LogString formatted;
-			Pool p;
 			SimpleDateFormat formatter(LOG4CXX_STR("MMM"));
 			formatter.setTimeZone(TimeZone::getGMT());
-			formatter.format(formatted, apr11, p);
+			formatter.format(formatted, apr11);
 
 			std::locale localeUS(LOCALE_US);
 			struct tm apr11tm = { 0, 0, 0, 11, 03, 104 };

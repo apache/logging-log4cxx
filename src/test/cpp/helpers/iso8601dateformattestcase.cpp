@@ -62,8 +62,7 @@ LOGUNIT_CLASS(ISO8601DateFormatTestCase)
 		ISO8601DateFormat formatter;
 		formatter.setTimeZone(timeZone);
 		LogString actual;
-		Pool p;
-		formatter.format(actual, date, p);
+		formatter.format(actual, date);
 		LOGUNIT_ASSERT_EQUAL(expected, actual);
 	}
 
@@ -157,8 +156,7 @@ public:
 	{
 		LogString number;
 		ISO8601DateFormat formatter;
-		Pool p;
-		formatter.numberFormat(number, 87, p);
+		formatter.numberFormat(number, 87);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), number);
 	}
 

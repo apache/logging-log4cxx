@@ -51,9 +51,8 @@ class LOG4CXX_EXPORT IntegerPatternConverter : public PatternConverter
 		static PatternConverterPtr newInstance(
 			const std::vector<LogString>& options);
 
-		void format(const helpers::ObjectPtr& obj,
-			LogString& toAppendTo,
-			helpers::Pool& p) const override;
+		using PatternConverter::format;
+		void format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) const override;
 };
 
 LOG4CXX_PTR_DEF(IntegerPatternConverter);

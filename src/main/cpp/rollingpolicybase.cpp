@@ -122,7 +122,7 @@ void RollingPolicyBase::formatFileName(
 	for (auto item : m_priv->patternConverters)
 	{
 		auto startField = toAppendTo.length();
-		item->format(obj, toAppendTo, pool);
+		item->format(obj, toAppendTo);
 		item->getFormattingInfo().format((int)startField, toAppendTo);
 	}
 }

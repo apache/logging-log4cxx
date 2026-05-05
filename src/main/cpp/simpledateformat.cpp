@@ -838,16 +838,17 @@ SimpleDateFormat::~SimpleDateFormat()
 }
 
 
-void SimpleDateFormat::format( LogString& s, log4cxx_time_t time, Pool& p ) const
+void SimpleDateFormat::format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const
 {
+	helpers::Pool tempPool;
 	apr_time_exp_t exploded;
-	apr_status_t stat = m_priv->timeZone->explode( & exploded, time );
+	apr_status_t stat = m_priv->timeZone->explode( & exploded, tm );
 
 	if ( stat == APR_SUCCESS )
 	{
 		for ( PatternTokenList::const_iterator iter = m_priv->pattern.begin(); iter != m_priv->pattern.end(); iter++ )
 		{
-			( * iter )->format( s, exploded, p );
+			( * iter )->format( toAppendTo, exploded, tempPool );
 		}
 	}
 }

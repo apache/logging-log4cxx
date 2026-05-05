@@ -97,27 +97,26 @@ public:
 		gmtFormat.setTimeZone(TimeZone::getGMT());
 
 		apr_time_t jul1 = MICROSECONDS_PER_DAY * 12601L;
-		Pool p;
 
 		LogString actual;
 
-		gmtFormat.format(actual, jul1, p);
+		gmtFormat.format(actual, jul1);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
 		actual.erase(actual.begin(), actual.end());
 
-		gmtFormat.format(actual, jul1 + 8000, p);
+		gmtFormat.format(actual, jul1 + 8000);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,008"), actual);
 		actual.erase(actual.begin(), actual.end());
 
-		gmtFormat.format(actual, jul1 + 17000, p);
+		gmtFormat.format(actual, jul1 + 17000);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,017"), actual);
 		actual.erase(actual.begin(), actual.end());
 
-		gmtFormat.format(actual, jul1 + 237000, p);
+		gmtFormat.format(actual, jul1 + 237000);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
 		actual.erase(actual.begin(), actual.end());
 
-		gmtFormat.format(actual, jul1 + 1415000, p);
+		gmtFormat.format(actual, jul1 + 1415000);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:01,415"), actual);
 		actual.erase(actual.begin(), actual.end());
 
@@ -138,17 +137,16 @@ public:
 		CachedDateFormat chicagoFormat(chicagoBase, 1000000);
 		chicagoFormat.setTimeZone(TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")));
 
-		Pool p;
 		LogString actual;
-		gmtFormat.format(actual, jul2, p);
+		gmtFormat.format(actual, jul2);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
 
 		actual.erase(actual.begin(), actual.end());
-		chicagoFormat.format(actual, jul2, p);
+		chicagoFormat.format(actual, jul2);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("19:00:00,000"), actual);
 
 		actual.erase(actual.begin(), actual.end());
-		gmtFormat.format(actual, jul2, p);
+		gmtFormat.format(actual, jul2);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
 	}
 
@@ -166,45 +164,40 @@ public:
 
 		apr_time_t ticks = MICROSECONDS_PER_DAY * -7;
 
-		Pool p;
-
 		LogString actual;
-
-
-		gmtFormat.format(actual, ticks, p);
+		gmtFormat.format(actual, ticks);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
 		actual.erase(actual.begin(), actual.end());
 
 		//
 		//   APR's explode_time method does not properly calculate tm_usec
 		//     prior to 1 Jan 1970 on Unix
-		gmtFormat.format(actual, ticks + 8000, p);
+		gmtFormat.format(actual, ticks + 8000);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,008"), actual);
 		actual.erase(actual.begin(), actual.end());
 
-		gmtFormat.format(actual, ticks + 17000, p);
+		gmtFormat.format(actual, ticks + 17000);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,017"), actual);
 		actual.erase(actual.begin(), actual.end());
 
-		gmtFormat.format(actual, ticks + 237000, p);
+		gmtFormat.format(actual, ticks + 237000);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
 		actual.erase(actual.begin(), actual.end());
 
-		gmtFormat.format(actual, ticks + 1423000, p);
+		gmtFormat.format(actual, ticks + 1423000);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:01,423"), actual);
 	}
 
 	void assertFormattedEquals(
 		const DateFormatPtr & baseFormat,
 		const CachedDateFormat & cachedFormat,
-		apr_time_t date,
-		Pool & p)
+		apr_time_t date)
 	{
 		LogString expected;
 		LogString actual;
 
-		baseFormat->format(expected, date, p);
-		cachedFormat.format(actual, date, p);
+		baseFormat->format(expected, date);
+		cachedFormat.format(actual, date);
 
 
 		LOGUNIT_ASSERT_EQUAL(expected, actual);
@@ -228,13 +221,11 @@ public:
 		//   use a date in 2000 to attempt to confuse the millisecond locator
 		apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
 
-		Pool p;
-
-		assertFormattedEquals(baseFormat, cachedFormat, ticks, p);
-		assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000, p);
-		assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000, p);
-		assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000, p);
-		assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
+		assertFormattedEquals(baseFormat, cachedFormat, ticks);
+		assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000);
+		assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000);
+		assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000);
+		assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000);
 	}
 
 
@@ -257,11 +248,11 @@ public:
 
 			Pool p;
 
-			assertFormattedEquals(baseFormat, cachedFormat, ticks, p);
-			assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000, p);
-			assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000, p);
-			assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000, p);
-			assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
+			assertFormattedEquals(baseFormat, cachedFormat, ticks);
+			assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000);
+			assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000);
+			assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000);
+			assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000);
 		}
 	}
 #endif
@@ -272,9 +263,8 @@ public:
 	void test6()
 	{
 		LogString numb;
-		Pool p;
 		AbsoluteTimeDateFormat formatter;
-		formatter.numberFormat(numb, 87, p);
+		formatter.numberFormat(numb, 87);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
 	}
 
@@ -289,15 +279,13 @@ public:
 		CachedDateFormat cachedFormat(baseFormat, 1000000);
 		apr_time_t jul4 = MICROSECONDS_PER_DAY * 12603;
 
-		Pool p;
-
 		LogString actual;
-		cachedFormat.format(actual, jul4, p);
+		cachedFormat.format(actual, jul4);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-04 00:00:00,000"), actual);
 
 		cachedFormat.setTimeZone(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
 		actual.erase(actual.begin(), actual.end());
-		cachedFormat.format(actual, jul4, p);
+		cachedFormat.format(actual, jul4);
 
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-03 18:00:00,000"), actual);
 	}
@@ -331,10 +319,8 @@ public:
 		const apr_status_t statOK = 0;
 		LOGUNIT_ASSERT_EQUAL(statOK, stat);
 
-		Pool p;
-
 		LogString s;
-		cachedFormat->format(s, dec12, p);
+		cachedFormat->format(s, dec12);
 
 		LOGUNIT_ASSERT_EQUAL(
 			(LogString) LOG4CXX_STR("2004-December-12 20:00:37,23 +0100"), s);
@@ -352,7 +338,7 @@ public:
 		LOGUNIT_ASSERT_EQUAL(statOK, stat);
 
 		s.erase(s.begin(), s.end());
-		cachedFormat->format(s, jan1, p);
+		cachedFormat->format(s, jan1);
 
 		LOGUNIT_ASSERT_EQUAL(
 			(LogString) LOG4CXX_STR("2005-January-01 00:00:13,905 +0100"), s);
@@ -390,10 +376,8 @@ public:
 		const apr_status_t statOK = 0;
 		LOGUNIT_ASSERT_EQUAL(statOK, stat);
 
-		Pool p;
-
 		LogString s;
-		cachedFormat->format(s, oct5, p);
+		cachedFormat->format(s, oct5);
 
 		LOGUNIT_ASSERT_EQUAL(
 			(LogString) LOG4CXX_STR("October 023 Tuesday"), s);
@@ -409,14 +393,14 @@ public:
 		LOGUNIT_ASSERT_EQUAL(statOK, stat);
 
 		s.erase(s.begin(), s.end());
-		cachedFormat->format(s, nov1, p);
+		cachedFormat->format(s, nov1);
 
 		LOGUNIT_ASSERT_EQUAL(
 			(LogString) LOG4CXX_STR("November 023 Monday"), s);
 
 		nov1 += 961000;
 		s.erase(s.begin(), s.end());
-		cachedFormat->format(s, nov1, p);
+		cachedFormat->format(s, nov1);
 
 		LOGUNIT_ASSERT_EQUAL(
 			(LogString) LOG4CXX_STR("November 984 Monday"), s);
@@ -442,10 +426,8 @@ public:
 		apr_time_t ticks = MICROSECONDS_PER_DAY * 11142L;
 		apr_time_t jul2 = ticks + 120000;
 
-		Pool p;
-
 		LogString s;
-		gmtFormat->format(s, jul2, p);
+		gmtFormat->format(s, jul2);
 
 		LOGUNIT_ASSERT_EQUAL(
 			(LogString) LOG4CXX_STR("00,1200"), s);
@@ -453,7 +435,7 @@ public:
 		jul2 = ticks + 87000;
 
 		s.erase(s.begin(), s.end());
-		gmtFormat->format(s, jul2, p);
+		gmtFormat->format(s, jul2);
 
 		LOGUNIT_ASSERT_EQUAL(
 			(LogString) LOG4CXX_STR("00,870"), s);
@@ -466,11 +448,10 @@ public:
 	{
 		DateFormatPtr df    = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS")));
 		apr_time_t    ticks = 11142L * MICROSECONDS_PER_DAY;
-		Pool p;
 		LogString formatted;
 
-		df->format(formatted, ticks, p);
-		int msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+		df->format(formatted, ticks);
+		int msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df);
 		LOGUNIT_ASSERT_EQUAL(20, msStart);
 
 		// Test for for milliseconds overlapping with the magic ones as per LOGCXX-420.
@@ -487,16 +468,16 @@ public:
 		LOGUNIT_ASSERT_EQUAL(0, apr_time_exp_gmt_get(&ticks, &c));
 
 		formatted.clear();
-		df->format(formatted, ticks, p);
-		msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+		df->format(formatted, ticks);
+		msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df);
 		LOGUNIT_ASSERT_EQUAL(20, msStart);
 
 		c.tm_usec = 609000;
 		LOGUNIT_ASSERT_EQUAL(0, apr_time_exp_gmt_get(&ticks, &c));
 
 		formatted.clear();
-		df->format(formatted, ticks, p);
-		msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+		df->format(formatted, ticks);
+		msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df);
 		LOGUNIT_ASSERT_EQUAL(20, msStart);
 	}
 
@@ -508,13 +489,11 @@ public:
 		DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd")));
 		apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
 
-		Pool p;
-
 		LogString formatted;
-		df->format(formatted, ticks, p);
+		df->format(formatted, ticks);
 
 		int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
-				formatted, df, p);
+				formatted, df);
 		LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::NO_MILLISECONDS, millisecondStart);
 	}
 
@@ -526,12 +505,11 @@ public:
 		DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SSS")));
 		apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
 
-		Pool p;
 		LogString formatted;
-		df->format(formatted, ticks, p);
+		df->format(formatted, ticks);
 
 		int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
-				formatted, df, p);
+				formatted, df);
 		LOGUNIT_ASSERT_EQUAL(9, millisecondStart);
 	}
 
@@ -543,12 +521,11 @@ public:
 		DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,S")));
 		apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
 
-		Pool p;
 		LogString formatted;
-		df->format(formatted, ticks, p);
+		df->format(formatted, ticks);
 
 		int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
-				formatted, df, p);
+				formatted, df);
 		LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
 	}
 
@@ -560,12 +537,11 @@ public:
 		DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SS")));
 		apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
 
-		Pool p;
 		LogString formatted;
-		df->format(formatted, ticks, p);
+		df->format(formatted, ticks);
 
 		int millisecondStart =
-			CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+			CachedDateFormat::findMillisecondStart(ticks, formatted, df);
 		LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
 	}
 
@@ -580,22 +556,21 @@ public:
 		simpleFormat->setTimeZone(TimeZone::getGMT());
 		DateFormatPtr cachedFormat = DateFormatPtr(new CachedDateFormat(simpleFormat, 1000000));
 
-		Pool p;
 		LogString s;
-		cachedFormat->format(s, jul2, p);
+		cachedFormat->format(s, jul2);
 
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000 00:00:00,000"), s);
 		jul2 += 120000;
 
 		s.erase(s.begin(), s.end());
-		simpleFormat->format(s, jul2, p);
+		simpleFormat->format(s, jul2);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s);
 
 		s.erase(s.begin(), s.end());
-		int msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
+		int msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat);
 		LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, msStart);
 
-		cachedFormat->format(s, jul2, p);
+		cachedFormat->format(s, jul2);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s) ;
 
 		int maxValid = CachedDateFormat::getMaximumCacheValidity(badPattern);
@@ -604,14 +579,14 @@ public:
 		// Test overlapping millis with a magic string from CachedDateFormat for LOGCXX-420.
 		s.clear();
 		jul2 += 286000;
-		cachedFormat->format(s, jul2, p);
-		msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
+		cachedFormat->format(s, jul2);
+		msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat);
 		LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, msStart);
 
 		s.clear();
 		jul2 += 203000;
-		cachedFormat->format(s, jul2, p);
-		msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
+		cachedFormat->format(s, jul2);
+		msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat);
 		LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, msStart);
 	}
 
@@ -677,22 +652,21 @@ public:
 		CachedDateFormat isoFormat(baseFormatter, 1000000);
 		isoFormat.setTimeZone(TimeZone::getGMT());
 
-		Pool p;
 		LogString formatted;
 
-		isoFormat.format(formatted, 654000, p);
+		isoFormat.format(formatted, 654000);
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:00,654"), formatted);
 
 		formatted.clear();
-		isoFormat.format(formatted, 999000, p);
+		isoFormat.format(formatted, 999000);
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:00,999"), formatted);
 
 		formatted.clear();
-		isoFormat.format(formatted, 1654010, p);
+		isoFormat.format(formatted, 1654010);
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:01,654"), formatted);
 
 		formatted.clear();
-		isoFormat.format(formatted, 1999010, p);
+		isoFormat.format(formatted, 1999010);
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:01,999"), formatted);
 	}
 

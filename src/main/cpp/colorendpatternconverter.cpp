@@ -41,10 +41,7 @@ PatternConverterPtr ColorEndPatternConverter::newInstance(
 	return instance;
 }
 
-void ColorEndPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& p) const
+void ColorEndPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 
 	// Reset all colors on the output(code 0)

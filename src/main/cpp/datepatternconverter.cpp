@@ -144,39 +144,27 @@ PatternConverterPtr DatePatternConverter::newInstance(
 	return std::make_shared<DatePatternConverter>(options);
 }
 
-void DatePatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& p) const
+void DatePatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
-	priv->df->format(toAppendTo, event->getTimeStamp(), p);
+	priv->df->format(toAppendTo, event->getTimeStamp());
 }
 
 /**
  * {@inheritDoc}
  */
-void DatePatternConverter::format(
-	const ObjectPtr& obj,
-	LogString& toAppendTo,
-	Pool& p) const
+void DatePatternConverter::format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) const
 {
-	DatePtr date = LOG4CXX_NS::cast<Date>(obj);
-
-	if (date != NULL)
+	if (auto date = LOG4CXX_NS::cast<Date>(obj))
 	{
-		format(date, toAppendTo, p);
+		format(date, toAppendTo);
 	}
-	else
+	else if (auto event = LOG4CXX_NS::cast<LoggingEvent>(obj))
 	{
-		LoggingEventPtr event = LOG4CXX_NS::cast<LoggingEvent>(obj);
-
-		if (event != NULL)
-		{
-			format(event, toAppendTo, p);
-		}
+		format( LOG4CXX_FORMAT_EVENT_PARAMETERS );
 	}
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 /**
  * Append formatted date to string buffer.
  * @param date date
@@ -188,4 +176,9 @@ void DatePatternConverter::format(
 	Pool& p) const
 {
 	priv->df->format(toAppendTo, date->getTime(), p);
+}
+#endif
+void DatePatternConverter::format(const DatePtr& date, LogString& toAppendTo) const
+{
+	priv->df->format(toAppendTo, date->getTime());
 }

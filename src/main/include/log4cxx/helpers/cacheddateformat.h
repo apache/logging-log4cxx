@@ -24,7 +24,7 @@ namespace LOG4CXX_NS
 {
 namespace pattern
 {
-class LOG4CXX_EXPORT CachedDateFormat : public LOG4CXX_NS::helpers::DateFormat
+class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 {
 	public:
 		enum
@@ -93,7 +93,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public LOG4CXX_NS::helpers::DateFormat
 		 *      caching algorithm, use a value of 0 to totally disable
 		 *      caching or 1 to only use cache for duplicate requests.
 		 */
-		CachedDateFormat(const LOG4CXX_NS::helpers::DateFormatPtr& dateFormat, int expiration);
+		CachedDateFormat(const helpers::DateFormatPtr& dateFormat, int expiration);
 		~CachedDateFormat();
 
 		/**
@@ -101,26 +101,28 @@ class LOG4CXX_EXPORT CachedDateFormat : public LOG4CXX_NS::helpers::DateFormat
 		 * @param time long time, must be integral number of seconds
 		 * @param formatted String corresponding formatted string
 		 * @param formatter DateFormat date format
-		 * @param pool pool.
 		 * @return int position in string of first digit of milliseconds,
 		 *    -1 indicates no millisecond field, -2 indicates unrecognized
 		 *    field (likely RelativeTimeDateFormat)
 		 */
 		static int findMillisecondStart(
 			log4cxx_time_t time, const LogString& formatted,
+			const helpers::DateFormatPtr& formatter);
+#if LOG4CXX_ABI_VERSION <= 15
+		[[deprecated("Use findMillisecondStart() without a Pool parameter instead")]]
+		static int findMillisecondStart(
+			log4cxx_time_t time, const LogString& formatted,
 			const LOG4CXX_NS::helpers::DateFormatPtr& formatter,
 			LOG4CXX_NS::helpers::Pool& pool);
-
+#endif
+		using DateFormat::format;
 		/**
 		 * Formats a Date into a date/time string.
 		 *
 		 *  @param date the date to format.
 		 *  @param sbuf the string buffer to write to.
-		 *  @param p memory pool.
 		 */
-		virtual void format(LogString& sbuf,
-			log4cxx_time_t date,
-			LOG4CXX_NS::helpers::Pool& p) const;
+		void format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const override;
 
 	private:
 		/**
@@ -143,7 +145,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public LOG4CXX_NS::helpers::DateFormat
 		 * will likely cause caching to misbehave.
 		 * @param zone TimeZone new timezone
 		 */
-		virtual void setTimeZone(const LOG4CXX_NS::helpers::TimeZonePtr& zone);
+		void setTimeZone(const helpers::TimeZonePtr& zone) override;
 
 		/**
 		* Format an integer consistent with the format method.
@@ -151,9 +153,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public LOG4CXX_NS::helpers::DateFormat
 		* @param n integer value.
 		* @param p memory pool used during formatting.
 		*/
-		virtual void numberFormat(LogString& s,
-			int n,
-			LOG4CXX_NS::helpers::Pool& p) const;
+		void numberFormat( LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS ) const override;
 
 		/**
 		 * Gets maximum cache validity for the specified SimpleDateTime

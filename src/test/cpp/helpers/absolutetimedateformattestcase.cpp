@@ -68,8 +68,7 @@ private:
 		AbsoluteTimeDateFormat formatter;
 		formatter.setTimeZone(timeZone);
 		LogString actual;
-		Pool p;
-		formatter.format(actual, date, p);
+		formatter.format(actual, date);
 		LOGUNIT_ASSERT_EQUAL(expected, actual);
 	}
 
@@ -176,10 +175,9 @@ public:
 	 */
 	void test8()
 	{
-		Pool p;
 		LogString numb;
 		AbsoluteTimeDateFormat formatter;
-		formatter.numberFormat(numb, 87, p);
+		formatter.numberFormat(numb, 87);
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
 	}
 

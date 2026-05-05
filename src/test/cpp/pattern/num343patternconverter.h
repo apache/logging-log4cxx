@@ -32,10 +32,9 @@ class Num343PatternConverter : public LoggingEventPatternConverter
 			const std::vector<LogString>& options);
 
 	protected:
-		void format(
-			const log4cxx::spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			log4cxx::helpers::Pool& pool) const override;
+		using LoggingEventPatternConverter::format;
+
+		void format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const override;
 };
 }
 }

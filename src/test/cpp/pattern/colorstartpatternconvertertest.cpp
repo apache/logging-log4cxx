@@ -69,16 +69,15 @@ public:
 	{
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(red)"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;31m"), outputString);
 	}
@@ -87,16 +86,15 @@ public:
 	{
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("bg(red)"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;41m"), outputString);
 	}
@@ -105,16 +103,15 @@ public:
 	{
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(green)|bg(red)"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;32;41m"), outputString);
 	}
@@ -122,16 +119,15 @@ public:
 	void testParseUnbalancedParens1(){
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(green))"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[m"), outputString);
 	}
@@ -139,16 +135,15 @@ public:
 	void testParseUnbalancedParens2(){
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(green"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[m"), outputString);
 	}
@@ -156,16 +151,15 @@ public:
 	void testParseUnbalancedParens3(){
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(green|bg(red)"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		// The background should be parsed correctly, but since the foreground
 		// is bad it will not work
@@ -175,16 +169,15 @@ public:
 	void testANSICode(){
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("\\x1b[34;40m"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[34;40m"), outputString);
 	}
@@ -192,16 +185,15 @@ public:
 	void testInvalidANSICode(){
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("\\x1b"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR(""), outputString);
 	}
@@ -209,16 +201,15 @@ public:
 	void testUnterminatedANSICode(){
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("\\x1b[31"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR(""), outputString);
 	}
@@ -226,16 +217,15 @@ public:
 	void testForegroundBackgroundBlink(){
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(white)|bg(black)|blinking"));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\x1b[;37;40;5m"), outputString);
 	}
@@ -243,17 +233,16 @@ public:
 	void testClearColor(){
 		ColorStartPatternConverter colorPatternConverter;
 		LogString outputString;
-		Pool p;
-
-		LoggingEventPtr event= LoggingEventPtr(new LoggingEvent(
-												   LOG4CXX_STR("org.foobar"),
-												   Level::getInfo(),
-												   LOG4CXX_STR("msg 1"),
-												   LOG4CXX_LOCATION));
+		auto event = std::make_shared<LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg 1")
+			, LOG4CXX_LOCATION
+			);
 
 		colorPatternConverter.setInfoColor(LOG4CXX_STR("fg(white)|bg(black)|blinking"));
 		colorPatternConverter.setInfoColor(LOG4CXX_STR(""));
-		colorPatternConverter.format(event, outputString, p);
+		colorPatternConverter.format(event, outputString);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR(""), outputString);
 	}

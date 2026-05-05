@@ -158,10 +158,7 @@ PatternConverterPtr ColorStartPatternConverter::newInstance(
 	return instance;
 }
 
-void ColorStartPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& p) const
+void ColorStartPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 
 	LOG4CXX_NS::LevelPtr lvl = event->getLevel();

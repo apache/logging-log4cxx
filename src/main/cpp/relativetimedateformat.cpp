@@ -26,11 +26,8 @@ LOG4CXX_NS::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
 {
 }
 
-void LOG4CXX_NS::helpers::RelativeTimeDateFormat::format(
-	LogString& s,
-	log4cxx_time_t date,
-	Pool& p) const
+void LOG4CXX_NS::helpers::RelativeTimeDateFormat::format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const
 {
-	int64_t interval = (date - startTime) / int64_t(1000);
-	StringHelper::toString(interval, s);
+	int64_t interval = (tm - startTime) / int64_t(1000);
+	StringHelper::toString(interval, toAppendTo);
 }

@@ -39,10 +39,7 @@ PatternConverterPtr NDCPatternConverter::newInstance(
 	return std::make_shared<NDCPatternConverter>();
 }
 
-void NDCPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+void NDCPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 	LogString value;
 	if (event->getNDC(value))

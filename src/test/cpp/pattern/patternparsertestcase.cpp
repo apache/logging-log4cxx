@@ -171,13 +171,12 @@ public:
 		const LogString & expected)
 	{
 		auto converters = PatternParser::parse(pattern, patternMap);
-		Pool p;
 		LogString actual;
 
 		for (auto item : converters)
 		{
 			auto fieldStart = static_cast<int>(actual.length());
-			item->format(event, actual, p);
+			item->format(event, actual);
 			item->getFormattingInfo().format(fieldStart, actual);
 		}
 
@@ -230,10 +229,9 @@ public:
 
 	void testBasic2()
 	{
-		Pool pool;
 		RelativeTimeDateFormat relativeFormat;
 		LogString expected;
-		relativeFormat.format(expected, event->getTimeStamp(), pool);
+		relativeFormat.format(expected, event->getTimeStamp());
 
 		expected.append(LOG4CXX_STR(" INFO  ["));
 		expected.append(event->getThreadName());
@@ -247,15 +245,13 @@ public:
 
 	void testMultiOption()
 	{
-		Pool pool;
-
 		SimpleDateFormat dateFormat(LOG4CXX_STR("HH:mm:ss"));
 		LogString localTime;
-		dateFormat.format(localTime, event->getTimeStamp(), pool);
+		dateFormat.format(localTime, event->getTimeStamp());
 
 		dateFormat.setTimeZone(TimeZone::getGMT());
 		LogString utcTime;
-		dateFormat.format(utcTime, event->getTimeStamp(), pool);
+		dateFormat.format(utcTime, event->getTimeStamp());
 
 		LogString expected(utcTime);
 		expected.append(1, LOG4CXX_STR(' '));
@@ -277,10 +273,9 @@ public:
 
 	void testThreadUsername()
 	{
-		Pool pool;
 		RelativeTimeDateFormat relativeFormat;
 		LogString expected;
-		relativeFormat.format(expected, event->getTimeStamp(), pool);
+		relativeFormat.format(expected, event->getTimeStamp());
 
 		expected.append(LOG4CXX_STR(" INFO  ["));
 		expected.append(event->getThreadUserName());

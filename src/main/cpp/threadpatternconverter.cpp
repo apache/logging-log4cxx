@@ -39,10 +39,7 @@ PatternConverterPtr ThreadPatternConverter::newInstance(
 	return std::make_shared<ThreadPatternConverter>();
 }
 
-void ThreadPatternConverter::format(
-	const LoggingEventPtr& event,
-	LogString& toAppendTo,
-	Pool& /* p */) const
+void ThreadPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
 	toAppendTo.append(event->getThreadName());
 }

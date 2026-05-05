@@ -151,8 +151,7 @@ CachedDateFormat::~CachedDateFormat() {}
  */
 int CachedDateFormat::findMillisecondStart(
 	log4cxx_time_t time, const LogString& formatted,
-	const DateFormatPtr& formatter,
-	Pool& pool)
+	const DateFormatPtr& formatter)
 {
 
 	log4cxx_time_t slotBegin = (time / 1000000) * 1000000;
@@ -175,7 +174,7 @@ int CachedDateFormat::findMillisecondStart(
 	}
 
 	LogString plusMagic;
-	formatter->format(plusMagic, slotBegin + magic, pool);
+	formatter->format(plusMagic, slotBegin + magic);
 
 	/**
 	 *   If the string lengths differ then
@@ -199,7 +198,7 @@ int CachedDateFormat::findMillisecondStart(
 				millisecondFormat(millis, formattedMillis, 0);
 
 				LogString plusZero;
-				formatter->format(plusZero, slotBegin, pool);
+				formatter->format(plusZero, slotBegin);
 
 				// Test if the next 1..3 characters match the magic string, main problem is that magic
 				// available millis in formatted can overlap. Therefore the current i is not always the
@@ -232,7 +231,15 @@ int CachedDateFormat::findMillisecondStart(
 
 	return NO_MILLISECONDS;
 }
-
+#if LOG4CXX_ABI_VERSION <= 15
+int CachedDateFormat::findMillisecondStart(
+	log4cxx_time_t time, const LogString& formatted,
+	const DateFormatPtr& formatter,
+	Pool& pool)
+{
+	return findMillisecondStart(time, formatted, formatter);
+}
+#endif
 
 /**
  * Formats a millisecond count into a date/time string.
@@ -240,16 +247,16 @@ int CachedDateFormat::findMillisecondStart(
  *  @param now Number of milliseconds after midnight 1 Jan 1970 GMT.
  *  @param sbuf the string buffer to write to
  */
-void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const
+void CachedDateFormat::format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const
 {
 
 	//
 	// If the current requested time is identical to the previously
 	//     requested time, then append the cache contents.
 	//
-	if (now == m_priv->previousTime)
+	if (tm == m_priv->previousTime)
 	{
-		buf.append(m_priv->cache);
+		toAppendTo.append(m_priv->cache);
 		return;
 	}
 
@@ -262,23 +269,23 @@ void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const
 		//    Check if the cache is still valid.
 		//    If the requested time is within the same integral second
 		//       as the last request and a shorter expiration was not requested.
-		if (now < m_priv->slotBegin + m_priv->expiration
-			&& now >= m_priv->slotBegin
-			&& now < m_priv->slotBegin + 1000000L)
+		if (tm < m_priv->slotBegin + m_priv->expiration
+			&& tm >= m_priv->slotBegin
+			&& tm < m_priv->slotBegin + 1000000L)
 		{
 			//
 			//    if there was a millisecond field then update it
 			//
 			if (m_priv->millisecondStart >= 0)
 			{
-				millisecondFormat((int) ((now - m_priv->slotBegin) / 1000), m_priv->cache, m_priv->millisecondStart);
+				millisecondFormat((int) ((tm - m_priv->slotBegin) / 1000), m_priv->cache, m_priv->millisecondStart);
 			}
 
 			//
 			//   update the previously requested time
 			//      (the slot begin should be unchanged)
-			m_priv->previousTime = now;
-			buf.append(m_priv->cache);
+			m_priv->previousTime = tm;
+			toAppendTo.append(m_priv->cache);
 
 			return;
 		}
@@ -288,9 +295,9 @@ void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const
 	//  could not use previous value.
 	//    Call underlying formatter to format date.
 	m_priv->cache.erase(m_priv->cache.begin(), m_priv->cache.end());
-	m_priv->formatter->format(m_priv->cache, now, p);
-	buf.append(m_priv->cache);
-	m_priv->previousTime = now;
+	m_priv->formatter->format(m_priv->cache, tm);
+	toAppendTo.append(m_priv->cache);
+	m_priv->previousTime = tm;
 	m_priv->slotBegin = (m_priv->previousTime / 1000000) * 1000000;
 
 	if (m_priv->slotBegin > m_priv->previousTime)
@@ -304,7 +311,7 @@ void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const
 	//
 	if (m_priv->millisecondStart >= 0)
 	{
-		m_priv->millisecondStart = findMillisecondStart(now, m_priv->cache, m_priv->formatter, p);
+		m_priv->millisecondStart = findMillisecondStart(tm, m_priv->cache, m_priv->formatter);
 	}
 }
 
@@ -340,9 +347,9 @@ void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone)
 
 
 
-void CachedDateFormat::numberFormat(LogString& s, int n, Pool& p) const
+void CachedDateFormat::numberFormat( LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS ) const
 {
-	m_priv->formatter->numberFormat(s, n, p);
+	m_priv->formatter->numberFormat(toAppendTo, n);
 }
 
 
