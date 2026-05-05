@@ -479,9 +479,8 @@ public:
 		auto event = std::make_shared<LoggingEvent>(problemName, level, problemName, LOG4CXX_LOCATION);
 
 		HTMLLayout layout;
-		Pool p;
 		LogString html(LOG4CXX_STR("<body>"));
-		layout.format(html, event, p);
+		layout.format(html, event);
 		html += LOG4CXX_STR("</body>");
 
 		LogLog::debug(html);
@@ -492,6 +491,7 @@ public:
 		encoder->encode(html, iter, buf);
 		LOGUNIT_ASSERT(iter == html.end());
 		buf.flip();
+		Pool p;
 		auto parser = apr_xml_parser_create(p.getAPRPool());
 		LOGUNIT_ASSERT(parser != 0);
 		auto stat = apr_xml_parser_feed(parser, buf.data(), buf.remaining());
