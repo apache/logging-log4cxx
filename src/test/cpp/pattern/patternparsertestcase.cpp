@@ -171,13 +171,12 @@ public:
 		const LogString & expected)
 	{
 		auto converters = PatternParser::parse(pattern, patternMap);
-		Pool p;
 		LogString actual;
 
 		for (auto item : converters)
 		{
 			auto fieldStart = static_cast<int>(actual.length());
-			item->format(event, actual, p);
+			item->format(event, actual);
 			item->getFormattingInfo().format(fieldStart, actual);
 		}
 

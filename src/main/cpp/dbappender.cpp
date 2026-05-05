@@ -236,10 +236,9 @@ void DBAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS ){
         return;
     }
 
-    helpers::Pool tempPool;
     for(auto& converter : _priv->converters){
-        LogString str_data;
-        converter->format(event, str_data, tempPool);
+		LogString str_data;
+		converter->format(event, str_data);
 		LOG4CXX_ENCODE_CHAR(new_str_data, str_data);
 		ls_args.push_back(new_str_data);
     }

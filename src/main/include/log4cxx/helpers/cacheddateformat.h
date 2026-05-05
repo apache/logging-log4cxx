@@ -121,9 +121,8 @@ class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 		 *
 		 *  @param date the date to format.
 		 *  @param sbuf the string buffer to write to.
-		 *  @param p memory pool.
 		 */
-		virtual void format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const;
+		void format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const override;
 
 	private:
 		/**
@@ -146,7 +145,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 		 * will likely cause caching to misbehave.
 		 * @param zone TimeZone new timezone
 		 */
-		virtual void setTimeZone(const helpers::TimeZonePtr& zone);
+		void setTimeZone(const helpers::TimeZonePtr& zone) override;
 
 		/**
 		* Format an integer consistent with the format method.

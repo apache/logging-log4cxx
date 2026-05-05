@@ -71,12 +71,11 @@ public:
 		rules.insert(PatternMap::value_type(LOG4CXX_STR("i"), (PatternConstructor) IntegerPatternConverter::newInstance));
 		auto converters = PatternParser::parse(pattern, rules);
 		LogString result;
-		Pool pool;
 
 		for (auto item :  converters)
 		{
 			LogString::size_type i = result.length();
-			item->format(obj, result, pool);
+			item->format(obj, result);
 			item->getFormattingInfo().format((int)i, result);
 		}
 

@@ -91,7 +91,7 @@ class LOG4CXX_EXPORT SimpleDateFormat : public DateFormat
 		 * Set time zone.
 		 * @param zone new time zone.
 		 */
-		void setTimeZone(const TimeZonePtr& zone);
+		void setTimeZone(const TimeZonePtr& zone) override;
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(SimpleDateFormatPrivate, m_priv)

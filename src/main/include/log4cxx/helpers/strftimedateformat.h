@@ -49,7 +49,7 @@ class LOG4CXX_EXPORT StrftimeDateFormat : public DateFormat
 		*    Set time zone.
 		* @param zone new time zone.
 		*/
-		void setTimeZone(const TimeZonePtr& zone);
+		void setTimeZone(const TimeZonePtr& zone) override;
 
 
 	private:
