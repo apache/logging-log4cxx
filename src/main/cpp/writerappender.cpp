@@ -255,7 +255,7 @@ void WriterAppender::WriterAppenderPriv::writeFooter()
 	{
 		Pool p;
 		LogString foot;
-		this->layout->appendFooter(foot, p);
+		this->layout->appendFooter(foot);
 		this->writer->write(foot, p);
 	}
 }
@@ -266,7 +266,7 @@ void WriterAppender::WriterAppenderPriv::writeHeader()
 	{
 		Pool p;
 		LogString header;
-		this->layout->appendHeader(header, p);
+		this->layout->appendHeader(header);
 		this->writer->write(header, p);
 	}
 }

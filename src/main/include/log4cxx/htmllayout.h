@@ -78,6 +78,7 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		*/
 		LogString getContentType() const override;
 
+		using Layout::activateOptions;
 #if LOG4CXX_ABI_VERSION <= 15
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
@@ -96,18 +97,24 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
-		void format(LogString& output,
-			const spi::LoggingEventPtr& event, helpers::Pool& pool) const override;
-
+		using Layout::format;
 		/**
-		Append appropriate HTML headers.
+		Append the attributes of \c event as a HTML table row onto \c output.
 		*/
-		void appendHeader(LogString& output, helpers::Pool& pool) override;
+		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
 
+		using Layout::appendHeader;
 		/**
-		Append the appropriate HTML footers.
+		Append a HTML document header and start a HTML table with column headings
+		that align with the output produced by HTMLLayout::format.
 		*/
-		void appendFooter(LogString& output, helpers::Pool& pool) override;
+		void appendHeader( LOG4CXX_APPEND_HEADER_FORMAL_PARAMETERS ) override;
+
+		using Layout::appendFooter;
+		/**
+		Terminate the HTML table and the HTML document.
+		*/
+		void appendFooter( LOG4CXX_APPEND_FOOTER_FORMAL_PARAMETERS ) override;
 
 		/**
 		The HTML layout handles the throwable contained in logging

@@ -115,9 +115,8 @@ public:
 	 */
 	void testGetHeader()
 	{
-		Pool p;
 		LogString header;
-		XMLLayout().appendHeader(header, p);
+		XMLLayout().appendHeader(header);
 		LOGUNIT_ASSERT_EQUAL((size_t) 0, header.size());
 	}
 
@@ -126,9 +125,8 @@ public:
 	 */
 	void testGetFooter()
 	{
-		Pool p;
 		LogString footer;
-		XMLLayout().appendFooter(footer, p);
+		XMLLayout().appendFooter(footer);
 		LOGUNIT_ASSERT_EQUAL((size_t) 0, footer.size());
 	}
 
@@ -282,7 +280,7 @@ public:
 		Pool p;
 		XMLLayout layout;
 		LogString result;
-		layout.format(result, event, p);
+		layout.format(result, event);
 		apr_xml_elem* parsedResult = parse(result, p);
 		checkEventElement(parsedResult, event);
 
@@ -316,7 +314,7 @@ public:
 		Pool p;
 		XMLLayout layout;
 		LogString result;
-		layout.format(result, event, p);
+		layout.format(result, event);
 		NDC::pop();
 
 		apr_xml_elem* parsedResult = parse(result, p);
@@ -398,7 +396,7 @@ public:
 		layout.setProperties(true);
 		Pool p;
 		LogString result;
-		layout.format(result, event, p);
+		layout.format(result, event);
 		MDC::clear();
 
 		apr_xml_elem* parsedResult = parse(result, p);
@@ -450,7 +448,7 @@ public:
 		XMLLayout layout;
 		Pool p;
 		LogString result;
-		layout.format(result, event, p);
+		layout.format(result, event);
 		NDC::clear();
 		apr_xml_elem* parsedResult = parse(result, p);
 		int ndcCount = 0;

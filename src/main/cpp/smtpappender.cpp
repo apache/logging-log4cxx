@@ -732,17 +732,17 @@ void SMTPAppender::sendBuffer(Pool& p)
 	try
 	{
 		LogString sbuf;
-		_priv->layout->appendHeader(sbuf, p);
+		_priv->layout->appendHeader(sbuf);
 
 		int len = _priv->cb.length();
 
 		for (int i = 0; i < len; i++)
 		{
 			LoggingEventPtr event = _priv->cb.get();
-			_priv->layout->format(sbuf, event, p);
+			_priv->layout->format(sbuf, event);
 		}
 
-		_priv->layout->appendFooter(sbuf, p);
+		_priv->layout->appendFooter(sbuf);
 
 		SMTPSession session(_priv->smtpHost, _priv->smtpPort, _priv->smtpUsername, _priv->smtpPassword, p);
 

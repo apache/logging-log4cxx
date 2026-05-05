@@ -117,13 +117,12 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 		void setOption(const LogString& option,
 			const LogString& value) override;
 
+		using Layout::format;
 		/**
 		* Formats a {@link spi::LoggingEvent LoggingEvent}
-		* in conformance with the log4cxx.dtd.
+		* in conformance with [this XML data definition file](https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd).
 		**/
-		void format(LogString& output,
-			const spi::LoggingEventPtr& event,
-			helpers::Pool& p) const override;
+		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
 
 		/**
 		The XMLLayout prints and does not ignore exceptions. Hence the

@@ -74,9 +74,7 @@ void XMLLayout::setOption(const LogString& option,
 	}
 }
 
-void XMLLayout::format(LogString& output,
-	const spi::LoggingEventPtr& event,
-	Pool& p) const
+void XMLLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());

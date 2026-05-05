@@ -2359,6 +2359,9 @@ PREDEFINED             = LOG4CXX_NS=log4cxx \
                          LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS="LogString& toAppendTo, int n, helpers::Pool& p" \
                          LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS="const spi::LoggingEventPtr& event, LogString& toAppendTo, helpers::Pool& p" \
                          LOG4CXX_FORMAT_EVENT_PARAMETERS="event, toAppendTo, p" \
+                         LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS="LogString& output, const spi::LoggingEventPtr& event, helpers::Pool& p" \
+                         LOG4CXX_APPEND_HEADER_FORMAL_PARAMETERS="LogString& output, LOG4CXX_NS::helpers::Pool& p" \
+                         LOG4CXX_APPEND_FOOTER_FORMAL_PARAMETERS="LogString& output, LOG4CXX_NS::helpers::Pool& p" \
                          LOG4CXX_HAS_DOMCONFIGURATOR=1 \
                          LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT=1 \
                          __LOG4CXX_FUNC__=compiler_dependent

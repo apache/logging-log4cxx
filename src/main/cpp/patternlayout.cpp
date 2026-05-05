@@ -111,9 +111,7 @@ void PatternLayout::setConversionPattern(const LogString& pattern)
 	activateOptions();
 }
 
-void PatternLayout::format(LogString& output,
-	const spi::LoggingEventPtr& event,
-	Pool& pool) const
+void PatternLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());

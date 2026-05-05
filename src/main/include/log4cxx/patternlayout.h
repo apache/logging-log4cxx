@@ -523,12 +523,11 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 			return true;
 		}
 
+		using Layout::format;
 		/**
 		 * Produces a formatted string as specified by the conversion pattern.
 		 */
-		void format(    LogString& output,
-			const spi::LoggingEventPtr& event,
-			helpers::Pool& pool) const override;
+		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
 
 	protected:
 		virtual LOG4CXX_NS::pattern::PatternMap getFormatSpecifiers();
