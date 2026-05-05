@@ -25,6 +25,8 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/exception.h>
 #include <stdlib.h>
+#include <cerrno>
+#include <limits>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
@@ -281,35 +283,57 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 
 long OptionConverter::toFileSize(const LogString& s, long dEfault)
 {
-	if (s.empty())
+	LogString trimmed(StringHelper::trim(s));
+	if (trimmed.empty())
 	{
 		return dEfault;
 	}
 
-	size_t index = s.find_first_of(LOG4CXX_STR("bB"));
+	size_t index = trimmed.find_first_of(LOG4CXX_STR("bB"));
 
+	long long multiplier = 1;
+	LogString numericPart = trimmed;
 	if (index != LogString::npos && index > 0)
 	{
-		long multiplier = 1;
-		index--;
-
-		if (s[index] == 0x6B /* 'k' */ || s[index] == 0x4B /* 'K' */)
+		size_t suffixIndex = index - 1;
+		if (trimmed[suffixIndex] == 0x6B /* 'k' */ || trimmed[suffixIndex] == 0x4B /* 'K' */)
 		{
 			multiplier = 1024;
 		}
-		else if (s[index] == 0x6D /* 'm' */ || s[index] == 0x4D /* 'M' */)
+		else if (trimmed[suffixIndex] == 0x6D /* 'm' */ || trimmed[suffixIndex] == 0x4D /* 'M' */)
 		{
 			multiplier = 1024 * 1024;
 		}
-		else if (s[index] == 0x67 /* 'g'*/ || s[index] == 0x47 /* 'G' */)
+		else if (trimmed[suffixIndex] == 0x67 /* 'g'*/ || trimmed[suffixIndex] == 0x47 /* 'G' */)
 		{
 			multiplier = 1024 * 1024 * 1024;
 		}
 
-		return toInt(s.substr(0, index), 1) * multiplier;
+		numericPart = trimmed.substr(0, suffixIndex);
 	}
 
-	return toInt(s, 1);
+	LOG4CXX_ENCODE_CHAR(cvalue, numericPart);
+	char* endptr;
+	errno = 0;
+	long long parsed = strtoll(cvalue.c_str(), &endptr, 10);
+
+	if (endptr == cvalue.c_str() || errno == ERANGE || parsed < 0)
+	{
+		return dEfault;
+	}
+
+	if (multiplier != 0 && parsed > std::numeric_limits<long long>::max() / multiplier)
+	{
+		return dEfault;
+	}
+
+	long long scaled = parsed * multiplier;
+	if (scaled > std::numeric_limits<long>::max())
+	{
+		return dEfault;
+	}
+
+	return static_cast<long>(scaled);
 }
 
 LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
