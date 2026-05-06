@@ -223,7 +223,7 @@ void WriterAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 #endif
 	Pool tempPool;
 	LogString msg;
-	_priv->layout->format(msg, event, tempPool);
+	_priv->layout->format(msg, event);
 
 	if (_priv->writer != NULL)
 	{
@@ -255,7 +255,7 @@ void WriterAppender::WriterAppenderPriv::writeFooter()
 	{
 		Pool p;
 		LogString foot;
-		this->layout->appendFooter(foot, p);
+		this->layout->appendFooter(foot);
 		this->writer->write(foot, p);
 	}
 }
@@ -266,7 +266,7 @@ void WriterAppender::WriterAppenderPriv::writeHeader()
 	{
 		Pool p;
 		LogString header;
-		this->layout->appendHeader(header, p);
+		this->layout->appendHeader(header);
 		this->writer->write(header, p);
 	}
 }

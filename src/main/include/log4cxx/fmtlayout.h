@@ -240,15 +240,11 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
 		 */
 		LogString getConversionPattern() const;
 
+		using Layout::format;
 		/**
-		Returns the log statement in a format consisting of the
-		<code>level</code>, followed by " - " and then the
-		<code>message</code>. For example, <pre> INFO - "A message"
-		</pre>
-		*/
-		void format(LogString& output,
-			const spi::LoggingEventPtr& event,
-			helpers::Pool& pool) const override;
+		 * Append the attributes of \c event onto \c output as specified by the conversion pattern.
+		 */
+		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
 
 		bool ignoresThrowable() const override
 		{

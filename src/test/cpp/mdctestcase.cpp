@@ -69,10 +69,9 @@ public:
 	{
 		MDC item1("key1", "value1");
 		MDC item2("key2", "value2");
-		helpers::Pool p;
 		LogString output;
 		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.30J %m") };
-		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()), p);
+		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()));
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  MDC.LayoutTest - {\"key1\":\"value1\"} Message"), output);
 	}
 };

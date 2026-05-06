@@ -128,9 +128,7 @@ void JSONLayout::setOption(const LogString& option, const LogString& value)
 	}
 }
 
-void JSONLayout::format(LogString& output,
-	const spi::LoggingEventPtr& event,
-	Pool& p) const
+void JSONLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
@@ -197,7 +195,7 @@ void JSONLayout::format(LogString& output,
 	{
 		output.append(LOG4CXX_STR(","));
 		output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
-		appendSerializedLocationInfo(output, event, p);
+		appendSerializedLocationInfo(output, event);
 	}
 
 	output.append(m_priv->prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
@@ -392,8 +390,7 @@ void JSONLayout::appendSerializedNDC(LogString& buf,
 	buf.append(LOG4CXX_STR("]"));
 }
 
-void JSONLayout::appendSerializedLocationInfo(LogString& buf,
-	const LoggingEventPtr& event, Pool& p) const
+void JSONLayout::appendSerializedLocationInfo(LogString& buf, const LoggingEventPtr& event) const
 {
 	if (m_priv->prettyPrint)
 	{
@@ -461,3 +458,10 @@ void JSONLayout::appendSerializedLocationInfo(LogString& buf,
 	buf.append(LOG4CXX_STR("}"));
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
+void JSONLayout::appendSerializedLocationInfo(LogString& buf,
+	const LoggingEventPtr& event, Pool& p) const
+{
+	appendSerializedLocationInfo(buf, event);
+}
+#endif

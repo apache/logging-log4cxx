@@ -277,10 +277,9 @@ void SyslogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 		return;
 	}
 
-	helpers::Pool tempPool;
 	LogString msg;
 	std::string encoded;
-	_priv->layout->format(msg, event, tempPool);
+	_priv->layout->format(msg, event);
 
 	Transcoder::encode(msg, encoded);
 

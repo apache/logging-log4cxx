@@ -300,8 +300,6 @@ public:
 	 */
 	void testAppendSerializedLocationInfo()
 	{
-		Pool p;
-
 		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
 					Level::getInfo(),
 					LOG4CXX_STR("A message goes here."),
@@ -317,7 +315,7 @@ public:
 		.append(LOG4CXX_STR("\"class\": \"\", "))
 		.append(LOG4CXX_STR("\"method\": \"BarFunc\" }"));
 
-		appendSerializedLocationInfo(output1, event1, p);
+		appendSerializedLocationInfo(output1, event1);
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
 	}
 
@@ -326,8 +324,6 @@ public:
 	 */
 	void testAppendSerializedLocationInfoWithPrettyPrint()
 	{
-		Pool p;
-
 		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
 					Level::getInfo(),
 					LOG4CXX_STR("A message goes here."),
@@ -356,7 +352,7 @@ public:
 		.append(LOG4CXX_STR("}"));
 
 		setPrettyPrint(true);
-		appendSerializedLocationInfo(output1, event1, p);
+		appendSerializedLocationInfo(output1, event1);
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
 	}
@@ -366,8 +362,6 @@ public:
 	 */
 	void testFormat()
 	{
-		Pool p;
-
 		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
 					Level::getInfo(),
 					LOG4CXX_STR("A message goes here."),
@@ -400,11 +394,11 @@ public:
 		appendSerializedMDC(expected1, event1);
 		appendSerializedNDC(expected1, event1);
 		expected1.append(LOG4CXX_STR(", "));
-		appendSerializedLocationInfo(expected1, event1, p);
+		appendSerializedLocationInfo(expected1, event1);
 
 		expected1.append(LOG4CXX_STR(" }"));
 		expected1.append(LOG4CXX_EOL);
-		format(output1, event1, p);
+		format(output1, event1);
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
 	}
@@ -414,8 +408,6 @@ public:
 	 */
 	void testFormatWithPrettyPrint()
 	{
-		Pool p;
-
 		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
 					Level::getInfo(),
 					LOG4CXX_STR("A message goes here."),
@@ -459,12 +451,12 @@ public:
 		appendSerializedNDC(expected1, event1);
 		expected1.append(LOG4CXX_STR(","));
 		expected1.append(LOG4CXX_EOL);
-		appendSerializedLocationInfo(expected1, event1, p);
+		appendSerializedLocationInfo(expected1, event1);
 
 		expected1.append(LOG4CXX_EOL);
 		expected1.append(LOG4CXX_STR("}"));
 		expected1.append(LOG4CXX_EOL);
-		format(output1, event1, p);
+		format(output1, event1);
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
 	}

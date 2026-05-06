@@ -84,9 +84,7 @@ void FMTLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
 }
 
-void FMTLayout::format(LogString& output,
-	const spi::LoggingEventPtr& event,
-	LOG4CXX_NS::helpers::Pool&) const
+void FMTLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	output.reserve(m_priv->expectedPatternLength + lsMsg.size());

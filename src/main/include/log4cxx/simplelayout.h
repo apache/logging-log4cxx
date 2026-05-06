@@ -44,14 +44,13 @@ class LOG4CXX_EXPORT SimpleLayout : public Layout
 		END_LOG4CXX_CAST_MAP()
 
 		/**
-		Returns the log statement in a format consisting of the
-		<code>level</code>, followed by " - " and then the
-		<code>message</code>. For example, <pre> INFO - "A message"
+		Append the <code>level</code>, followed by " - "
+		and then the <code>message</code>.
+		For example,
+		<pre> INFO - "A message"
 		</pre>
 		*/
-		void format(LogString& output,
-			const spi::LoggingEventPtr& event,
-			helpers::Pool& pool) const override;
+		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
 
 		/**
 		The SimpleLayout does not handle the throwable contained within

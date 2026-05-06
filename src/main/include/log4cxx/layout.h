@@ -48,8 +48,24 @@ class LOG4CXX_EXPORT Layout
 		/**
 		Implement this method to create your own layout format.
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
+		void format(LogString& output, const spi::LoggingEventPtr& event) const;
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to format() without a helpers::Pool parameter.
+		*/
 		virtual void format(LogString& output,
 			const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& pool) const = 0;
+#define LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS LogString& output, const spi::LoggingEventPtr& event, helpers::Pool& p
+#else
+		virtual void format(LogString& output, const spi::LoggingEventPtr& event) const = 0;
+#define LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS LogString& output, const spi::LoggingEventPtr& event
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use format() without a Pool parameter instead")]]
+		void format(LogString& output, const spi::LoggingEventPtr& event, helpers::Pool& p) const;
+#endif
 
 		/**
 		Returns the content type output by this layout. The base class
@@ -61,13 +77,45 @@ class LOG4CXX_EXPORT Layout
 		Append the header for the layout format. The base class does
 		nothing.
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
+		void appendHeader(LogString& output);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to appendHeader() without a helpers::Pool parameter.
+		*/
 		virtual void appendHeader(LogString& output, LOG4CXX_NS::helpers::Pool& p);
+#define LOG4CXX_APPEND_HEADER_FORMAL_PARAMETERS LogString& output, LOG4CXX_NS::helpers::Pool& p
+#else
+		virtual void appendHeader(LogString& output);
+#define LOG4CXX_APPEND_HEADER_FORMAL_PARAMETERS LogString& output
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use appendHeader() without a Pool parameter instead")]]
+		void appendHeader(LogString& output, helpers::Pool& p);
+#endif
 
 		/**
 		Append the footer for the layout format. The base class does
 		nothing.
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
+		void appendFooter(LogString& output);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to appendFooter() without a helpers::Pool parameter.
+		*/
 		virtual void appendFooter(LogString& output, LOG4CXX_NS::helpers::Pool& p);
+#define LOG4CXX_APPEND_FOOTER_FORMAL_PARAMETERS LogString& output, LOG4CXX_NS::helpers::Pool& p
+#else
+		virtual void appendFooter(LogString& output);
+#define LOG4CXX_APPEND_FOOTER_FORMAL_PARAMETERS LogString& output
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use appendFooter() without a Pool parameter instead")]]
+		void appendFooter(LogString& output, helpers::Pool& p);
+#endif
 
 		/**
 		If the layout handles the throwable object contained within
