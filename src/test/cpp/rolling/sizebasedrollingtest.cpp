@@ -279,16 +279,15 @@ public:
 
 		//
 		//   put stray file about locked file
-		Pool p;
 		FileOutputStream os1(LOG4CXX_STR("output/sizeBased-test5.1"), false);
-		os1.close(p);
+		os1.close();
 
 
 		FileOutputStream os0(LOG4CXX_STR("output/sizeBased-test5.0"), false);
 
 		common(logger, 0);
 
-		os0.close(p);
+		os0.close();
 
 		if (File("output/sizeBased-test5.3").exists())
 		{

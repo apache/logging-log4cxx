@@ -73,7 +73,6 @@ public:
 	}
 
 	void common(RollingFileAppenderPtr & rfa,
-		Pool & pool,
 		LoggerPtr & logger1)
 	{
 		char msg[] = { 'H', 'e', 'l', 'l', 'o', '-', '-', '-', 'N', 0 };
@@ -126,8 +125,7 @@ public:
 		rfa->activateOptions();
 		root->addAppender(rfa);
 
-		Pool p;
-		common(rfa, p, logger);
+		common(rfa, logger);
 
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test1.0").exists());
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test1.1").exists());
@@ -155,8 +153,7 @@ public:
 		rfa->activateOptions();
 		root->addAppender(rfa);
 
-		Pool p;
-		common(rfa, p, logger);
+		common(rfa, logger);
 
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log").exists());
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log.1").exists());
@@ -185,13 +182,12 @@ public:
 		fwrp->setMinIndex(0);
 		rfa->setFile(LOG4CXX_STR("output/manual-test3.log"));
 		fwrp->setFileNamePattern(LOG4CXX_STR("output/sbr-test3.%i.gz"));
-		Pool p;
 		fwrp->activateOptions();
 		rfa->setRollingPolicy(fwrp);
 		rfa->activateOptions();
 		root->addAppender(rfa);
 
-		common(rfa, p, logger);
+		common(rfa, logger);
 
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test3.log").exists());
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test3.0.gz").exists());
@@ -222,14 +218,13 @@ public:
 		//   test4 directory should not exists.  Should cause all rollover attempts to fail.
 		//
 		swrp->setFileNamePattern(LOG4CXX_STR("output/test4/manual-test4.%i"));
-		Pool p;
 		swrp->activateOptions();
 
 		rfa->setRollingPolicy(swrp);
 		rfa->activateOptions();
 		root->addAppender(rfa);
 
-		common(rfa, p, logger);
+		common(rfa, logger);
 
 		LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test4.log").exists());
 
@@ -263,16 +258,15 @@ public:
 
 		//
 		//   put stray file about locked file
-		Pool p;
 		FileOutputStream os1(LOG4CXX_STR("output/manual-test5.1"), false);
-		os1.close(p);
+		os1.close();
 
 
 		FileOutputStream os0(LOG4CXX_STR("output/manual-test5.0"), false);
 
-		common(rfa, p, logger);
+		common(rfa, logger);
 
-		os0.close(p);
+		os0.close();
 
 		if (File("output/manual-test5.3").exists())
 		{
@@ -339,9 +333,7 @@ public:
 		rfa->activateOptions();
 		root->addAppender(rfa);
 
-
-		Pool p;
-		common(rfa, p, logger);
+		common(rfa, logger);
 
 		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + LOG4CXX_STR("/file-0.gz")).exists());
 		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + LOG4CXX_STR("/file-1.gz")).exists());

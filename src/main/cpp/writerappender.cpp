@@ -154,7 +154,7 @@ void WriterAppender::WriterAppenderPriv::close()
 			//    and pool is likely to be reclaimed soon when appender is destructed.
 			//
 			this->writeFooter();
-			this->writer->close(this->pool);
+			this->writer->close();
 			this->writer = 0;
 		}
 		catch (IOException& e)
@@ -221,17 +221,16 @@ void WriterAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 	if (event->getRenderedMessage() == _priv->exceptionTriggeringMessage)
 		throw RuntimeException(LOG4CXX_STR("Simulated fault"));
 #endif
-	Pool tempPool;
 	LogString msg;
 	_priv->layout->format(msg, event);
 
 	if (_priv->writer != NULL)
 	{
-		_priv->writer->write(msg, tempPool);
+		_priv->writer->write(msg);
 
 		if (_priv->immediateFlush)
 		{
-			_priv->writer->flush(tempPool);
+			_priv->writer->flush();
 		}
 	}
 }
@@ -253,10 +252,9 @@ void WriterAppender::WriterAppenderPriv::writeFooter()
 {
 	if (this->layout != NULL)
 	{
-		Pool p;
 		LogString foot;
 		this->layout->appendFooter(foot);
-		this->writer->write(foot, p);
+		this->writer->write(foot);
 	}
 }
 
@@ -264,10 +262,9 @@ void WriterAppender::WriterAppenderPriv::writeHeader()
 {
 	if (this->layout != NULL)
 	{
-		Pool p;
 		LogString header;
 		this->layout->appendHeader(header);
-		this->writer->write(header, p);
+		this->writer->write(header);
 	}
 }
 

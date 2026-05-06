@@ -158,9 +158,9 @@ public:
 		}
 		bbuf.flip();
 		helpers::FileOutputStream of(m_configFile, true);
-		of.write(bbuf, m_pool);
-		of.flush(m_pool);
-		of.close(m_pool);
+		of.write(bbuf);
+		of.flush();
+		of.close();
 
 		// wait 1.5 sec for the change to be noticed
 		apr_sleep(1500000);
