@@ -43,10 +43,48 @@ class LOG4CXX_EXPORT Writer : public Object
 		virtual ~Writer();
 
 	public:
+#if LOG4CXX_ABI_VERSION <= 15
+		void close();
+		void flush();
+		void write(const LogString& str);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to close() without a helpers::Pool parameter.
+		*/
 		virtual void close(Pool& p) = 0;
+#define LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS helpers::Pool& p
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to flush() without a helpers::Pool parameter.
+		*/
 		virtual void flush(Pool& p) = 0;
+#define LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS helpers::Pool& p
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to write() without a helpers::Pool parameter.
+		*/
 		virtual void write(const LogString& str, Pool& p) = 0;
-
+#define LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS const LogString& str, helpers::Pool& p
+#else
+		virtual void close() = 0;
+#define LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS
+		virtual void flush() = 0;
+#define LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS
+		virtual void write(const LogString& str) = 0;
+#define LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS const LogString& str
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		void close(Pool& p);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		void flush(Pool& p);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		void write(const LogString& str, Pool& p);
+#endif
 	private:
 		Writer(const Writer&);
 		Writer& operator=(const Writer&);

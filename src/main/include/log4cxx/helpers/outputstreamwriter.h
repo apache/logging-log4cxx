@@ -53,9 +53,12 @@ class LOG4CXX_EXPORT OutputStreamWriter : public Writer
 		OutputStreamWriter(LOG4CXX_16_CONST OutputStreamPtr& out, LOG4CXX_16_CONST CharsetEncoderPtr& enc);
 		~OutputStreamWriter();
 
-		void close(Pool& p) override;
-		void flush(Pool& p) override;
-		void write(const LogString& str, Pool& p) override;
+		using Writer::close;
+		void close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS ) override;
+		using Writer::flush;
+		void flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS ) override;
+		using Writer::write;
+		void write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS ) override;
 		LogString getEncoding() const;
 
 		OutputStreamPtr getOutputStreamPtr() const;

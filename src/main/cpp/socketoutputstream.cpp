@@ -45,13 +45,13 @@ SocketOutputStream::~SocketOutputStream()
 {
 }
 
-void SocketOutputStream::close(Pool& p)
+void SocketOutputStream::close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS )
 {
-	flush(p);
+	flush();
 	m_priv->socket->close();
 }
 
-void SocketOutputStream::flush(Pool& /* p */)
+void SocketOutputStream::flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS )
 {
 	if (m_priv->array.size() > 0)
 	{
@@ -61,7 +61,7 @@ void SocketOutputStream::flush(Pool& /* p */)
 	}
 }
 
-void SocketOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
+void SocketOutputStream::write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS )
 {
 	if (buf.remaining() > 0)
 	{

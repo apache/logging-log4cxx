@@ -37,18 +37,28 @@ SystemErrWriter::~SystemErrWriter()
 {
 }
 
-void SystemErrWriter::close(Pool& /* p */)
+void SystemErrWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
 {
 }
 
-void SystemErrWriter::flush(Pool& /* p */)
+void SystemErrWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
 {
-	flush();
+	fflush(stderr);
 }
 
-void SystemErrWriter::write(const LogString& str, Pool& /* p */)
+void SystemErrWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
 {
-	write(str);
+#if LOG4CXX_WCHAR_T_API
+	if (isWide())
+	{
+		LOG4CXX_ENCODE_WCHAR(msg, str);
+		fputws(msg.c_str(), stderr);
+		return;
+	}
+
+#endif
+	LOG4CXX_ENCODE_CHAR(msg, str);
+	fputs(msg.c_str(), stderr);
 }
 
 bool SystemErrWriter::isWide()
@@ -62,6 +72,7 @@ bool SystemErrWriter::isWide()
 #endif
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void SystemErrWriter::write(const LogString& str)
 {
 #if LOG4CXX_WCHAR_T_API
@@ -82,3 +93,4 @@ void SystemErrWriter::flush()
 {
 	fflush(stderr);
 }
+#endif

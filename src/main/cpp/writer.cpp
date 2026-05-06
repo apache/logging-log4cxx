@@ -18,6 +18,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/writer.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/pool.h>
 #include <stdexcept>
 
 using namespace LOG4CXX_NS::helpers;
@@ -31,3 +32,25 @@ Writer::Writer()
 Writer::~Writer()
 {
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+void Writer::close()
+{
+	Pool p;
+	close(p);
+}
+void Writer::flush()
+{
+	Pool p;
+	flush(p);
+}
+void Writer::write(const LogString& str)
+{
+	Pool p;
+	write(str, p);
+}
+#else
+void Writer::close(Pool&) { close(); }
+void Writer::flush(Pool&) { flush(); }
+void Writer::write(const LogString& str, Pool&) { write(str); }
+#endif
