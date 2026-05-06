@@ -75,14 +75,17 @@ class LOG4CXX_EXPORT OutputStream : public Object
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
+		[[deprecated("Use close() without a Pool parameter instead")]]
 		void close(Pool& p);
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
+		[[deprecated("Use flush() without a Pool parameter instead")]]
 		void flush(Pool& p);
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
+		[[deprecated("Use write() without a Pool parameter instead")]]
 		void write(ByteBuffer& buf, Pool& p);
 #endif
 
