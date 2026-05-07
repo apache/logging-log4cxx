@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/helpers/cyclicbuffer.h>
+#include <log4cxx/helpers/exception.h>
 #include "../logunit.h"
 
 #include <log4cxx/logmanager.h>
@@ -36,6 +37,8 @@ LOGUNIT_CLASS(CyclicBufferTestCase)
 	LOGUNIT_TEST(test0);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(testResize);
+	LOGUNIT_TEST_EXCEPTION(testNegativeSizeRejectedBeforeAllocation, IllegalArgumentException);
+	LOGUNIT_TEST(testResizeAfterReadPreservesOrder);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr logger;
@@ -166,6 +169,28 @@ public:
 		{
 			LOGUNIT_ASSERT_EQUAL(e[offset + j], cb.get(j));
 		}
+	}
+
+	void testNegativeSizeRejectedBeforeAllocation()
+	{
+		CyclicBuffer cb(-1);
+	}
+
+	void testResizeAfterReadPreservesOrder()
+	{
+		CyclicBuffer cb(5);
+		cb.add(e[0]);
+		cb.add(e[1]);
+		cb.add(e[2]); // first=0, numElems=3
+
+		LOGUNIT_ASSERT_EQUAL(e[0], cb.get()); // first=1, numElems=2
+
+		cb.resize(4);
+
+		LOGUNIT_ASSERT_EQUAL(2, cb.length());
+		LOGUNIT_ASSERT_EQUAL(e[1], cb.get());
+		LOGUNIT_ASSERT_EQUAL(e[2], cb.get());
+		LOGUNIT_ASSERT(cb.get() == 0);
 	}
 };
 

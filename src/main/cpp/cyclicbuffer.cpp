@@ -25,6 +25,22 @@ using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
 
+namespace
+{
+int validateMaxSize(int maxSize)
+{
+	if (maxSize < 1)
+	{
+		LogString msg(LOG4CXX_STR("The maxSize argument ("));
+		StringHelper::toString(maxSize, msg);
+		msg.append(LOG4CXX_STR(") is not a positive integer."));
+		throw IllegalArgumentException(msg);
+	}
+
+	return maxSize;
+}
+}
+
 struct CyclicBuffer::CyclicBufferPriv
 {
 	CyclicBufferPriv(int maxSize1) :
@@ -43,15 +59,8 @@ The <code>maxSize</code> argument must a positive integer.
 @param maxSize The maximum number of elements in the buffer.
 */
 CyclicBuffer::CyclicBuffer(int maxSize1)
-	: m_priv(std::make_unique<CyclicBufferPriv>(maxSize1))
+	: m_priv(std::make_unique<CyclicBufferPriv>(validateMaxSize(maxSize1)))
 {
-	if (maxSize1 < 1)
-	{
-		LogString msg(LOG4CXX_STR("The maxSize argument ("));
-		StringHelper::toString(maxSize1, msg);
-		msg.append(LOG4CXX_STR(") is not a positive integer."));
-		throw IllegalArgumentException(msg);
-	}
 }
 
 CyclicBuffer::~CyclicBuffer()
@@ -153,7 +162,7 @@ void CyclicBuffer::resize(int newSize)
 		temp[i] = m_priv->ea[m_priv->first];
 		m_priv->ea[m_priv->first] = 0;
 
-		if (++m_priv->first == m_priv->numElems)
+		if (++m_priv->first == m_priv->maxSize)
 		{
 			m_priv->first = 0;
 		}
