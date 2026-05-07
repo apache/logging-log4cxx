@@ -429,10 +429,17 @@ int TelnetAppender::getMaxConnections() const
 
 void TelnetAppender::setMaxConnections(int newValue)
 {
+	if (newValue < 0)
+	{
+		LogLog::warn(LOG4CXX_STR("TelnetAppender MaxConnections must be non-negative. Keeping the previous value."));
+		return;
+	}
+
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	if (_priv->connections.size() < newValue)
-		_priv->connections.resize(newValue);
-	else while (newValue < _priv->connections.size())
+	const size_t newSize = static_cast<size_t>(newValue);
+	if (_priv->connections.size() < newSize)
+		_priv->connections.resize(newSize);
+	else while (newSize < _priv->connections.size())
 	{
 		auto item = _priv->connections.back();
 		_priv->connections.pop_back();

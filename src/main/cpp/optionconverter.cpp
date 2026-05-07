@@ -278,7 +278,18 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 
 	LOG4CXX_ENCODE_CHAR(cvalue, trimmed);
 
-	return (int) atol(cvalue.c_str());
+	char* endptr = nullptr;
+	errno = 0;
+	long long parsed = strtoll(cvalue.c_str(), &endptr, 10);
+
+	if (endptr == cvalue.c_str() || *endptr != '\0' || errno == ERANGE ||
+		parsed < (std::numeric_limits<int>::min)() ||
+		parsed > (std::numeric_limits<int>::max)())
+	{
+		return dEfault;
+	}
+
+	return static_cast<int>(parsed);
 }
 
 long OptionConverter::toFileSize(const LogString& s, long dEfault)
