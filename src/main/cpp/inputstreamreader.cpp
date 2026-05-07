@@ -65,15 +65,16 @@ InputStreamReader::~InputStreamReader()
 {
 }
 
-void InputStreamReader::close(Pool& )
+void InputStreamReader::close( LOG4CXX_CLOSE_READER_FORMAL_PARAMETERS )
 {
 	m_priv->in->close();
 }
 
-LogString InputStreamReader::read(Pool& p)
+LogString InputStreamReader::read( LOG4CXX_READ_READER_FORMAL_PARAMETERS )
 {
 	const size_t BUFSIZE = 4096;
-	ByteBuffer buf(p.pstralloc(BUFSIZE), BUFSIZE);
+	char stackStorage[BUFSIZE];
+	ByteBuffer buf(stackStorage, BUFSIZE);
 	LogString output;
 	log4cxx_status_t stat{ 0 };
 

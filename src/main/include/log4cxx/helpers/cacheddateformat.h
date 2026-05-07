@@ -149,9 +149,8 @@ class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 
 		/**
 		* Format an integer consistent with the format method.
-		* @param s string to which the numeric string is appended.
+		* @param toAppendTo string to which the numeric string is appended.
 		* @param n integer value.
-		* @param p memory pool used during formatting.
 		*/
 		void numberFormat( LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS ) const override;
 
