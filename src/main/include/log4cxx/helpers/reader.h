@@ -66,7 +66,7 @@ class LOG4CXX_EXPORT Reader : public Object
 #define LOG4CXX_CLOSE_READER_FORMAL_PARAMETERS helpers::Pool& p
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to close() without a helpers::Pool parameter.
+		Implement this method for now, but plan to migrate to read() without a helpers::Pool parameter.
 		*/
 		virtual LogString read(Pool& p) = 0;
 #define LOG4CXX_READ_READER_FORMAL_PARAMETERS helpers::Pool& p
