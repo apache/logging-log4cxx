@@ -75,6 +75,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testSetOptionThreshold);
 		LOGUNIT_TEST(testTrigger);
 		LOGUNIT_TEST(testInvalid);
+		LOGUNIT_TEST(testNegativeBufferSizeOption);
 //#define LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
 #ifdef LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
 		// This test requires the following environment variables:
@@ -133,6 +134,12 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(eh->errorReported());
 		}
 
+		void testNegativeBufferSizeOption()
+		{
+			SMTPAppender appender;
+			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("-10"));
+			LOGUNIT_ASSERT_EQUAL(1, appender.getBufferSize());
+		}
 
 		void testValid()
 		{
