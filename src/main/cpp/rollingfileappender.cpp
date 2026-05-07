@@ -554,26 +554,26 @@ class CountingOutputStream : public OutputStream
 		/**
 		 * {@inheritDoc}
 		 */
-		void close(Pool& p) override
+		void close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS ) override
 		{
-			os->close(p);
+			os->close();
 			rfa = 0;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		void flush(Pool& p) override
+		void flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS ) override
 		{
-			os->flush(p);
+			os->flush();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		void write(ByteBuffer& buf, Pool& p) override
+		void write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS ) override
 		{
-			os->write(buf, p);
+			os->write(buf);
 
 			if (rfa != 0)
 			{

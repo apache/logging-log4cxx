@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/outputstream.h>
+#include <log4cxx/helpers/pool.h>
 #include <stdexcept>
 
 using namespace LOG4CXX_NS;
@@ -31,3 +32,25 @@ OutputStream::OutputStream()
 OutputStream::~OutputStream()
 {
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+void OutputStream::close()
+{
+	Pool p;
+	close(p);
+}
+void OutputStream::flush()
+{
+	Pool p;
+	flush(p);
+}
+void OutputStream::write(ByteBuffer& buf)
+{
+	Pool p;
+	write(buf, p);
+}
+#else
+void OutputStream::close(Pool&) { close(); }
+void OutputStream::flush(Pool&) { flush(); }
+void OutputStream::write(ByteBuffer& buf, Pool&) { write(buf); }
+#endif

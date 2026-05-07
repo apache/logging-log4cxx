@@ -48,9 +48,12 @@ class LOG4CXX_EXPORT ByteArrayOutputStream : public OutputStream
 		ByteArrayOutputStream();
 		virtual ~ByteArrayOutputStream();
 
-		void close(Pool& p) override;
-		void flush(Pool& p) override;
-		void write(ByteBuffer& buf, Pool& p) override;
+		using OutputStream::close;
+		void close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS ) override;
+		using OutputStream::flush;
+		void flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS ) override;
+		using OutputStream::write;
+		void write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS ) override;
 		ByteList toByteArray() const;
 
 	private:

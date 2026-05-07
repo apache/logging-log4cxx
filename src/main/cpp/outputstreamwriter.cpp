@@ -71,24 +71,24 @@ OutputStreamWriter::~OutputStreamWriter()
 {
 }
 
-void OutputStreamWriter::close(Pool& p)
+void OutputStreamWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
 {
-	m_priv->out->close(p);
+	m_priv->out->close();
 }
 
-void OutputStreamWriter::flush(Pool& p)
+void OutputStreamWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
 {
-	m_priv->out->flush(p);
+	m_priv->out->flush();
 }
 
-void OutputStreamWriter::write(const LogString& str, Pool& p)
+void OutputStreamWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
 {
 	if (str.empty())
 		return;
 	if (CharsetEncoder::isTriviallyCopyable(str, m_priv->enc))
 	{
 		ByteBuffer buf((char*)str.data(), str.size() * sizeof (logchar));
-		m_priv->out->write(buf, p);
+		m_priv->out->write(buf);
 	}
 	else
 	{
@@ -113,14 +113,14 @@ void OutputStreamWriter::write(const LogString& str, Pool& p)
 		{
 			CharsetEncoder::encode(m_priv->enc, str, iter, buf);
 			buf.flip();
-			m_priv->out->write(buf, p);
+			m_priv->out->write(buf);
 			buf.clear();
 		}
 
 		CharsetEncoder::encode(m_priv->enc, str, iter, buf);
 		m_priv->enc->flush(buf);
 		buf.flip();
-		m_priv->out->write(buf, p);
+		m_priv->out->write(buf);
 	}
 }
 

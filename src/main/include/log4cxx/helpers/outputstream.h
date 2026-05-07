@@ -43,9 +43,51 @@ class LOG4CXX_EXPORT OutputStream : public Object
 		virtual ~OutputStream();
 
 	public:
+#if LOG4CXX_ABI_VERSION <= 15
+		void close();
+		void flush();
+		void write(ByteBuffer& buf);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to close() without a helpers::Pool parameter.
+		*/
 		virtual void close(Pool& p) = 0;
+#define LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS helpers::Pool& p
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to flush() without a helpers::Pool parameter.
+		*/
 		virtual void flush(Pool& p) = 0;
+#define LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS helpers::Pool& p
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to write() without a helpers::Pool parameter.
+		*/
 		virtual void write(ByteBuffer& buf, Pool& p) = 0;
+#define LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS ByteBuffer& buf, helpers::Pool& p
+#else
+		virtual void close() = 0;
+#define LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS
+		virtual void flush() = 0;
+#define LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS
+		virtual void write(ByteBuffer& buf) = 0;
+#define LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS ByteBuffer& buf
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use close() without a Pool parameter instead")]]
+		void close(Pool& p);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use flush() without a Pool parameter instead")]]
+		void flush(Pool& p);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use write() without a Pool parameter instead")]]
+		void write(ByteBuffer& buf, Pool& p);
+#endif
 
 	private:
 		OutputStream(const OutputStream&);

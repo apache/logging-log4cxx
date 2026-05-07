@@ -145,7 +145,7 @@ void Compare::outputFile(const File& file,
 
 void Compare::emit(const LogString& s1)
 {
-	SystemOutWriter::write(s1);
+	SystemOutWriter().write(s1);
 }
 
 

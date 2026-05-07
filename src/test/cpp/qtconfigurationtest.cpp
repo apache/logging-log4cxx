@@ -113,9 +113,9 @@ public:
 		bbuf.flip();
 		LOG4CXX_DECODE_QSTRING(lsConfigFile, m_configFile);
 		helpers::FileOutputStream of(lsConfigFile, true);
-		of.write(bbuf, m_pool);
-		of.flush(m_pool);
-		of.close(m_pool);
+		of.write(bbuf);
+		of.flush();
+		of.close();
 		helpers::LogLog::debug(LOG4CXX_STR("Updated ") + lsConfigFile);
 
 		// wait 0.1 sec for the change to be noticed

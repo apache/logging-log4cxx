@@ -39,15 +39,15 @@ ByteArrayOutputStream::~ByteArrayOutputStream()
 {
 }
 
-void ByteArrayOutputStream::close(Pool& /* p */)
+void ByteArrayOutputStream::close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS )
 {
 }
 
-void ByteArrayOutputStream::flush(Pool& /* p */)
+void ByteArrayOutputStream::flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS )
 {
 }
 
-void ByteArrayOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
+void ByteArrayOutputStream::write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS )
 {
 	const size_t count = buf.remaining();
 	const size_t sz = m_priv->array.size();

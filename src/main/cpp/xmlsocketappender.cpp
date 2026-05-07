@@ -121,7 +121,7 @@ void XMLSocketAppender::XMLSocketAppenderPriv::close()
 	{
 		try
 		{
-			this->writer->close(this->pool);
+			this->writer->close();
 			this->writer = nullptr;
 		}
 		catch (std::exception&)
@@ -134,14 +134,13 @@ void XMLSocketAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
 	if (_priv->writer)
 	{
-		Pool p;
 		LogString output;
 		_priv->layout->format(output, event);
 
 		try
 		{
-			_priv->writer->write(output, p);
-			_priv->writer->flush(p);
+			_priv->writer->write(output);
+			_priv->writer->flush();
 		}
 		catch (std::exception& e)
 		{

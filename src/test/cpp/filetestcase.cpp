@@ -187,7 +187,7 @@ public:
 		Pool pool;
 		LogString greeting(LOG4CXX_STR("Hello, World"));
 		greeting.append(LOG4CXX_EOL);
-		osw->write(greeting, pool);
+		osw->write(greeting);
 
 		InputStreamPtr is = FileInputStreamPtr(
 				new FileInputStream(LOG4CXX_STR("output/fileWrite1.txt")));

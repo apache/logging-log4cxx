@@ -46,9 +46,12 @@ class LOG4CXX_EXPORT BufferedWriter : public Writer
 		BufferedWriter(WriterPtr& out, size_t sz);
 		virtual ~BufferedWriter();
 
-		void close(Pool& p) override;
-		void flush(Pool& p) override;
-		void write(const LogString& str, Pool& p) override;
+		using Writer::close;
+		void close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS ) override;
+		using Writer::flush;
+		void flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS ) override;
+		using Writer::write;
+		void write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS ) override;
 
 		WriterPtr getWriter() const;
 	private:
