@@ -32,11 +32,23 @@ class RollingFileAppenderTestCase : public FileAppenderAbstractTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST(testMaxFileSizeOverflow);
 
 		LOGUNIT_TEST_SUITE_END();
 
 
 	public:
+		void testMaxFileSizeOverflow()
+		{
+			log4cxx::rolling::RollingFileAppender rfa;
+			// Set an extremely large value that would cause overflow in the buggy version
+			rfa.setOption(LOG4CXX_STR("MaxFileSize"), LOG4CXX_STR("9999999999999999999999GB"));
+			size_t currentMax = rfa.getMaximumFileSize();
+			
+			// In the buggy version, currentMax would be a huge positive value (size_t conversion of a negative long)
+			// In the fixed version, it should return the default value or at least be reasonable.
+			LOGUNIT_ASSERT(currentMax <= (size_t)2000000000ULL);
+		}
 
 		FileAppender* createFileAppender() const
 		{
