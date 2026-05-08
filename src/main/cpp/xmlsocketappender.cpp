@@ -17,19 +17,11 @@
 
 #include <log4cxx/net/xmlsocketappender.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/optionconverter.h>
-#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/xml/xmllayout.h>
-#include <log4cxx/level.h>
-#include <log4cxx/helpers/transform.h>
-#include <log4cxx/helpers/transcoder.h>
-#include <log4cxx/private/appenderskeleton_priv.h>
 #include <log4cxx/private/socketappenderskeleton_priv.h>
 
 using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::net;
-using namespace LOG4CXX_NS::xml;
 
 #if LOG4CXX_ABI_VERSION <= 15
 struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonPriv
@@ -37,7 +29,7 @@ struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonP
 	XMLSocketAppenderPriv(int defaultPort, int reconnectionDelay) :
 		SocketAppenderSkeletonPriv(defaultPort, reconnectionDelay) {}
 
-	XMLSocketAppenderPriv(InetAddressPtr address, int defaultPort, int reconnectionDelay) :
+	XMLSocketAppenderPriv(helpers::InetAddressPtr address, int defaultPort, int reconnectionDelay) :
 		SocketAppenderSkeletonPriv( address, defaultPort, reconnectionDelay ) {}
 
 	XMLSocketAppenderPriv(const LogString& host, int port, int delay) :
@@ -65,24 +57,24 @@ const int XMLSocketAppender::MAX_EVENT_LEN          = 1024;
 XMLSocketAppender::XMLSocketAppender()
 	: SocketAppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY))
 {
-	_priv->layout = std::make_shared<XMLLayout>();
+	_priv->layout = std::make_shared<xml::XMLLayout>();
 }
 
 #if LOG4CXX_ABI_VERSION <= 15
-XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
+XMLSocketAppender::XMLSocketAppender(helpers::InetAddressPtr address1, int port1)
 #else
-XMLSocketAppender::XMLSocketAppender(const InetAddressPtr& address1, int port1)
+XMLSocketAppender::XMLSocketAppender(const helpers::InetAddressPtr& address1, int port1)
 #endif
 	: SocketAppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(address1, port1, DEFAULT_RECONNECTION_DELAY))
 {
-	_priv->layout = std::make_shared<XMLLayout>();
+	_priv->layout = std::make_shared<xml::XMLLayout>();
 	activateOptions();
 }
 
 XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
 	: SocketAppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(host, port1, DEFAULT_RECONNECTION_DELAY))
 {
-	_priv->layout = std::make_shared<XMLLayout>();
+	_priv->layout = std::make_shared<xml::XMLLayout>();
 	activateOptions();
 }
 
@@ -102,14 +94,14 @@ int XMLSocketAppender::getDefaultPort() const
 }
 
 #if LOG4CXX_ABI_VERSION <= 15
-void XMLSocketAppender::setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, Pool& p)
+void XMLSocketAppender::setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, helpers::Pool& p)
 {
 	static auto silenceABIchecker = std::make_unique<XMLSocketAppenderPriv>(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
 	_priv->setOutputSink(socket);
 }
 
 
-void XMLSocketAppender::cleanUp(Pool& p)
+void XMLSocketAppender::cleanUp(helpers::Pool& p)
 {
 	_priv->close();
 }
@@ -130,7 +122,7 @@ void XMLSocketAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 		catch (std::exception& e)
 		{
 			_priv->outputSink.reset();
-			LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
+			helpers::LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
 
 			if (getReconnectionDelay() > 0)
 			{
