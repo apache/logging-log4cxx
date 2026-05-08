@@ -787,6 +787,11 @@ buffer. By default the size of the cyclic buffer is 512 events.
 */
 void SMTPAppender::setBufferSize(int sz)
 {
+	if (sz < 1)
+	{
+		sz = 1;
+	}
+
 	_priv->bufferSize = sz;
 	_priv->cb.resize(sz);
 }
