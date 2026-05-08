@@ -47,7 +47,6 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		* Formats an log4cxx_time_t into a date/time string.
 		* @param toAppendTo string to which the date/time string is appended.
 		* @param tm date to be formatted.
-		* @param p memory pool used during formatting.
 		*/
 #if LOG4CXX_ABI_VERSION <= 15
 #define LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS LogString& toAppendTo, log4cxx_time_t tm, helpers::Pool& p

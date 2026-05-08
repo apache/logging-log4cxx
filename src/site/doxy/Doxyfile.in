@@ -2362,6 +2362,14 @@ PREDEFINED             = LOG4CXX_NS=log4cxx \
                          LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS="LogString& output, const spi::LoggingEventPtr& event, helpers::Pool& p" \
                          LOG4CXX_APPEND_HEADER_FORMAL_PARAMETERS="LogString& output, LOG4CXX_NS::helpers::Pool& p" \
                          LOG4CXX_APPEND_FOOTER_FORMAL_PARAMETERS="LogString& output, LOG4CXX_NS::helpers::Pool& p" \
+                         LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS="helpers::Pool& p" \
+                         LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS="helpers::Pool& p" \
+                         LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS="const LogString& str, helpers::Pool& p" \
+                         LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS="helpers::Pool& p" \
+                         LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS="helpers::Pool& p" \
+                         LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS="ByteBuffer& buf, helpers::Pool& p" \
+                         LOG4CXX_CLOSE_READER_FORMAL_PARAMETERS="helpers::Pool& p" \
+                         LOG4CXX_READ_READER_FORMAL_PARAMETERS="helpers::Pool& p" \
                          LOG4CXX_HAS_DOMCONFIGURATOR=1 \
                          LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT=1 \
                          __LOG4CXX_FUNC__=compiler_dependent

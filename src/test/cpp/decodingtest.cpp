@@ -203,12 +203,11 @@ private:
 		LogString         lsContent;
 		std::wstring      wsContent;
 		LogString         path(LOG4CXX_STR("input/decoding/") + fileName);
-		Pool              pool;
 
 		FileInputStreamPtr   fis(     new FileInputStream(path));
 		InputStreamReaderPtr isReader(new InputStreamReader(fis, decoder));
 
-		lsContent.assign(isReader->read(pool));
+		lsContent.assign(isReader->read());
 		Transcoder::encode(lsContent, wsContent);
 
 		LOGUNIT_ASSERT_EQUAL((std::wstring) witness, wsContent);

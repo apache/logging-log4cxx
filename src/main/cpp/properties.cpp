@@ -441,8 +441,7 @@ LogString Properties::get(const LogString& key) const
 
 void Properties::load(InputStreamPtr inStream)
 {
-	Pool pool;
-	auto contents = InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()).read(pool);
+	auto contents = InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()).read();
 	PropertyParser().parse(contents, *this);
 }
 

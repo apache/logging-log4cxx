@@ -94,13 +94,12 @@ public:
 	void defaultRead()
 	{
 		File defFile;
-		Pool pool;
 
 		try
 		{
 			InputStreamPtr defInput = FileInputStreamPtr(new FileInputStream(defFile));
 			InputStreamReaderPtr inputReader = InputStreamReaderPtr(new InputStreamReader(defInput));
-			LogString contents(inputReader->read(pool));
+			LogString contents(inputReader->read());
 			LOGUNIT_ASSERT(false);
 		}
 		catch (IOException& ex)
@@ -128,8 +127,7 @@ public:
 				'p', 'r', 'o', 'p', 'e', 'r', 't', 'i', 'e', 's', 0
 			};
 		File propFile(filename);
-		Pool pool;
-		bool exists = propFile.exists(pool);
+		bool exists = propFile.exists();
 		LOGUNIT_ASSERT_EQUAL(true, exists);
 	}
 #endif
@@ -138,8 +136,7 @@ public:
 	void cfstringConstructor()
 	{
 		File propFile(CFSTR("input/patternLayout1.properties"));
-		Pool pool;
-		bool exists = propFile.exists(pool);
+		bool exists = propFile.exists();
 		LOGUNIT_ASSERT_EQUAL(true, exists);
 	}
 #endif
@@ -163,10 +160,9 @@ public:
 	void propertyRead()
 	{
 		File propFile("input/patternLayout1.properties");
-		Pool pool;
 		InputStreamPtr propStream = FileInputStreamPtr(new FileInputStream(propFile));
 		InputStreamReaderPtr propReader = InputStreamReaderPtr(new InputStreamReader(propStream));
-		LogString props(propReader->read(pool));
+		LogString props(propReader->read());
 		LogString line1(LOG4CXX_STR("# Licensed to the Apache Software Foundation (ASF) under one or more"));
 		LOGUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
 	}
@@ -184,7 +180,6 @@ public:
 				new FileOutputStream(LOG4CXX_STR("output/fileWrite1.txt")));
 		OutputStreamWriterPtr osw = OutputStreamWriterPtr(new OutputStreamWriter(fos));
 
-		Pool pool;
 		LogString greeting(LOG4CXX_STR("Hello, World"));
 		greeting.append(LOG4CXX_EOL);
 		osw->write(greeting);
@@ -192,7 +187,7 @@ public:
 		InputStreamPtr is = FileInputStreamPtr(
 				new FileInputStream(LOG4CXX_STR("output/fileWrite1.txt")));
 		InputStreamReaderPtr isr = InputStreamReaderPtr(new InputStreamReader(is));
-		LogString reply = isr->read(pool);
+		LogString reply = isr->read();
 
 		LOGUNIT_ASSERT_EQUAL(greeting, reply);
 	}
@@ -235,13 +230,12 @@ public:
 	 */
 	void testSplitMultibyteUtf8()
 	{
-		Pool p;
 		// InputStreamReader uses a buffer of size 4096
 		std::string input( 4094, 'A' );
 		// räksmörgås.josefsson.org
 		input.append("\162\303\244\153\163\155\303\266\162\147\303\245\163\056\152\157\163\145\146\163\163\157\156\056\157\162\147");
 		InputStreamReader reader(std::make_shared<MockInputStream>(input.c_str(), input.size()), CharsetDecoder::getUTF8Decoder());
-		auto contentLS = reader.read(p);
+		auto contentLS = reader.read();
 		LOG4CXX_ENCODE_CHAR(content, contentLS);
 		LOGUNIT_ASSERT_EQUAL(input, content);
 	}
@@ -251,13 +245,12 @@ public:
 	 */
 	void testInvalidUtf8()
 	{
-		Pool p;
 		// 0xC2 is a generic start byte for a 2-byte sequence in UTF-8.
 		char input[] = { 'A', (char)0xC2, 'B', 'C', 0 };
 		InputStreamReader reader(std::make_shared<MockInputStream>(input, 4), CharsetDecoder::getUTF8Decoder());
 		try
 		{
-			reader.read(p);
+			reader.read();
 			LOGUNIT_ASSERT(false);
 		}
 		catch (const Exception& ex)
