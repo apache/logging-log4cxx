@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/aprsocket.h>
 #include <apr_network_io.h>
+#include <thread>
 
 namespace LOG4CXX_NS { namespace net {
 	using SocketAppender = XMLSocketAppender;
