@@ -29,6 +29,7 @@
 #include <apr_file_io.h>
 #include <apr_user.h>
 #include <apr_env.h>
+#include <limits>
 
 
 using namespace log4cxx;
@@ -46,6 +47,8 @@ LOGUNIT_CLASS(OptionConverterTestCase)
 	LOGUNIT_TEST(varSubstTest4);
 	LOGUNIT_TEST(varSubstTest5);
 	LOGUNIT_TEST(varSubstRecursiveReferenceTest);
+	LOGUNIT_TEST(toIntReturnsDefaultOnOverflow);
+	LOGUNIT_TEST(toIntReturnsDefaultOnMalformedInput);
 	LOGUNIT_TEST(testTmpDir);
 #if APR_HAS_USER
 	LOGUNIT_TEST(testUserHome);
@@ -161,6 +164,24 @@ public:
 			LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 			LogLog::debug(lsMsg);
 		}
+	}
+
+	void toIntReturnsDefaultOnOverflow()
+	{
+		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("9999999999999999999999"), 7));
+		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("-9999999999999999999999"), 7));
+		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("2147483648"), 7));
+		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("-2147483649"), 7));
+	}
+
+	void toIntReturnsDefaultOnMalformedInput()
+	{
+		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("not-a-number"), 7));
+		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("123abc"), 7));
+		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("42xyz"), 7));
+		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR(""), 7));
+		LOGUNIT_ASSERT_EQUAL((std::numeric_limits<int>::max)(), OptionConverter::toInt(LOG4CXX_STR("2147483647"), 7));
+		LOGUNIT_ASSERT_EQUAL((std::numeric_limits<int>::min)(), OptionConverter::toInt(LOG4CXX_STR("-2147483648"), 7));
 	}
 
 	void testTmpDir()

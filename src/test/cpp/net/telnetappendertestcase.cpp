@@ -24,6 +24,8 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/fileoutputstream.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/config/propertysetter.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/spi/configurator.h>
@@ -50,6 +52,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testActivateWriteClose);
 		LOGUNIT_TEST(testConnectNoRead);
 		LOGUNIT_TEST(testActivateWriteNoClose);
+		LOGUNIT_TEST(testInvalidMaxConnectionsOptionFallsBack);
 
 		LOGUNIT_TEST_SUITE_END();
 
@@ -133,6 +136,21 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 #endif
 				LOG4CXX_INFO(root, "Hello, World " << i);
 			}
+		}
+
+		void testInvalidMaxConnectionsOptionFallsBack()
+		{
+			Pool p;
+			auto appender = std::make_shared<TelnetAppender>();
+			config::PropertySetter setter(appender);
+			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("9999999999999999999999"), p);
+			LOGUNIT_ASSERT_EQUAL(20, appender->getMaxConnections());
+
+			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("-2147483649"), p);
+			LOGUNIT_ASSERT_EQUAL(20, appender->getMaxConnections());
+
+			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("16"), p);
+			LOGUNIT_ASSERT_EQUAL(16, appender->getMaxConnections());
 		}
 
 		void testConnectNoRead()
