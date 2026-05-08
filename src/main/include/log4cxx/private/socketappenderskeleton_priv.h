@@ -19,8 +19,9 @@
 
 #include <log4cxx/net/socketappenderskeleton.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
-#include <log4cxx/helpers/inetaddress.h>
+#include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/threadutility.h>
+#include <log4cxx/helpers/writer.h>
 
 namespace LOG4CXX_NS
 {
@@ -38,7 +39,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 		locationInfo(false)
         { }
 
-	SocketAppenderSkeletonPriv(helpers::InetAddressPtr address, int defaultPort, int reconnectionDelay) :
+	SocketAppenderSkeletonPriv(const helpers::InetAddressPtr& address, int defaultPort, int reconnectionDelay) :
 		AppenderSkeletonPrivate(),
 		remoteHost(),
 		address(address),
@@ -56,8 +57,10 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 		locationInfo(false)
 	{ }
 
-	virtual ~SocketAppenderSkeletonPriv()
+	~SocketAppenderSkeletonPriv()
 	{
+		if (this->setClosed())
+			this->close();
 	}
 
 	/**
@@ -73,7 +76,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	int port;
 	int reconnectionDelay;
 	bool locationInfo;
-	virtual void close();
+	void close();
 
 	/**
 	Manages asynchronous reconnection attempts.
@@ -84,6 +87,20 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	The reconnection task name.
 	*/
 	LogString taskName;
+
+	/**
+	The sink for formatted logging events.
+	*/
+	helpers::WriterPtr outputSink;
+
+	void connect();
+
+	void fireConnector();
+
+	void setOutputSink(const helpers::SocketPtr& socket);
+
+	void retryConnect();
+
 };
 
 } // namespace net

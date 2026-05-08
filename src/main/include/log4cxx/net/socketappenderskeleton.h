@@ -19,9 +19,11 @@
 #define _LOG4CXX_NET_SOCKET_APPENDER_SKELETON_H
 
 #include <log4cxx/appenderskeleton.h>
+#include <log4cxx/helpers/inetaddress.h>
+#if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/helpers/socket.h>
-#include <thread>
-#include <condition_variable>
+#endif
+
 
 namespace LOG4CXX_NS
 {
@@ -30,7 +32,53 @@ namespace net
 {
 
 /**
- *  Abstract base class for SocketAppender and XMLSocketAppender
+Abstract base class that sends spi::LoggingEvent elements to a remote server.
+
+\anchor socket_appender_properties
+This appender has the following properties:
+
+- The event will be logged with the same time stamp,
+NDC, location info as if it were logged locally by
+the client.
+
+- Remote logging uses the TCP protocol,
+so if the server is reachable,
+log events will eventually arrive at the server.
+
+- If the remote server is down, the logging requests are simply dropped.
+However, if and when the server comes back up,
+then event transmission is resumed transparently.
+This transparent reconneciton is performed by a <em>connector</em>
+task which periodically attempts to connect to the server.
+
+- Logging events are automatically <em>buffered</em> by the
+native TCP implementation. This means that if the link to server
+is slow but still faster than the rate of (log) event production
+by the client, the client will not be affected by the slow
+network connection. However, if the network connection is slower
+then the rate of event production, then the client can only
+progress at the network rate. In particular, if the network link
+to the the server is down, the client will be blocked.
+On the other hand, if the network link is up, but the server
+is down, the client will not be blocked when making log requests
+but the log events will be lost due to server unavailability.
+
+- If the application hosting this appender exits before it is closed,
+either explicitly or subsequent to destruction,
+then there might be untransmitted data in the pipe which might be lost.
+
+To avoid lost data, it is usually sufficient to
+#close the appender either explicitly or by
+calling the LogManager#shutdown method
+before exiting the application.
+
+A periodic task will connect when the server becomes available.
+It does this by attempting to open a new connection every
+<code>reconnectionDelay</code> milliseconds.
+
+The periodic task stops trying whenever a connection is established.
+It will restart attempting to open a new connection to the server
+when a previously open connection is droppped.
  */
 class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 {
@@ -44,8 +92,11 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		/**
 		Connects to remote server at <code>address</code> and <code>port</code>.
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
 		SocketAppenderSkeleton(helpers::InetAddressPtr address, int port, int reconnectionDelay);
-
+#else
+		SocketAppenderSkeleton(const helpers::InetAddressPtr& address, int port, int reconnectionDelay);
+#endif
 		/**
 		Connects to remote server at <code>host</code> and <code>port</code>.
 		*/
@@ -61,7 +112,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
 		void close() override;
 
-
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		* This appender does not use a layout. Hence, this method
 		* returns <code>false</code>.
@@ -71,7 +122,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		{
 			return false;
 		}
-
+#endif
 		/**
 		* The <b>RemoteHost</b> option takes a string value which should be
 		* the host name of the server where a
@@ -123,7 +174,12 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		*/
 		int getReconnectionDelay() const;
 
+#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		@deprecated This method will be removed in a future version.
+		*/
 		void fireConnector();
+#endif
 
 		/**
 		\copybrief AppenderSkeleton::setOption()
@@ -145,9 +201,15 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 	protected:
 		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);
 
-		virtual void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, LOG4CXX_NS::helpers::Pool& p) = 0;
-
 #if LOG4CXX_ABI_VERSION <= 15
+		/**
+		@deprecated This method will be removed in a future version.
+		*/
+		virtual void setSocket(helpers::SocketPtr& socket, helpers::Pool& p) = 0;
+
+		/**
+		@deprecated This method will be removed in a future version.
+		*/
 		virtual void cleanUp(LOG4CXX_NS::helpers::Pool& p) = 0;
 #endif
 		virtual int getDefaultDelay() const = 0;
@@ -155,19 +217,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		virtual int getDefaultPort() const = 0;
 
 	private:
-		void connect(LOG4CXX_NS::helpers::Pool& p);
-		/**
-		     The Connector will reconnect when the server becomes available
-		     again.  It does this by attempting to open a new connection every
-		     <code>reconnectionDelay</code> milliseconds.
 
-		     <p>It stops trying whenever a connection is established. It will
-		     restart to try reconnect to the server when previously open
-		     connection is droppped.
-		     */
-
-		void retryConnect();
-		bool is_closed();
 		SocketAppenderSkeleton(const SocketAppenderSkeleton&);
 		SocketAppenderSkeleton& operator=(const SocketAppenderSkeleton&);
 
