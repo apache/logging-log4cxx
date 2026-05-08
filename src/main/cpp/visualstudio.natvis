@@ -59,7 +59,7 @@
 	<Type Name="log4cxx::net::XMLSocketAppender">
 		<Expand>
 			<Item Name="m_priv">
-				static_cast&lt;XMLSocketAppenderPriv*&gt;(m_priv._Mypair._Myval2)
+				static_cast&lt;SocketAppenderSkeletonPriv*&gt;(m_priv._Mypair._Myval2)
 			</Item>
 		</Expand>
 	</Type>

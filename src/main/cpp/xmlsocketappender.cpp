@@ -31,6 +31,7 @@ using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::net;
 using namespace LOG4CXX_NS::xml;
 
+#if LOG4CXX_ABI_VERSION <= 15
 struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonPriv
 {
 	XMLSocketAppenderPriv(int defaultPort, int reconnectionDelay) :
@@ -42,14 +43,14 @@ struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonP
 	XMLSocketAppenderPriv(const LogString& host, int port, int delay) :
 		SocketAppenderSkeletonPriv( host, port, delay ) {}
 
-#if LOG4CXX_ABI_VERSION <= 15
 	LOG4CXX_NS::helpers::WriterPtr unused_writer;
-#endif
+
 };
+#endif
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
 
-#define _priv static_cast<XMLSocketAppenderPriv*>(m_priv.get())
+#define _priv static_cast<SocketAppenderSkeletonPriv*>(m_priv.get())
 
 // The default port number of remote logging server (4560)
 int XMLSocketAppender::DEFAULT_PORT                 = 4560;
@@ -62,7 +63,7 @@ const int XMLSocketAppender::MAX_EVENT_LEN          = 1024;
 #endif
 
 XMLSocketAppender::XMLSocketAppender()
-	: SocketAppenderSkeleton(std::make_unique<XMLSocketAppenderPriv>(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY))
+	: SocketAppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY))
 {
 	_priv->layout = std::make_shared<XMLLayout>();
 }
@@ -72,14 +73,14 @@ XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
 #else
 XMLSocketAppender::XMLSocketAppender(const InetAddressPtr& address1, int port1)
 #endif
-	: SocketAppenderSkeleton(std::make_unique<XMLSocketAppenderPriv>(address1, port1, DEFAULT_RECONNECTION_DELAY))
+	: SocketAppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(address1, port1, DEFAULT_RECONNECTION_DELAY))
 {
 	_priv->layout = std::make_shared<XMLLayout>();
 	activateOptions();
 }
 
 XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
-	: SocketAppenderSkeleton(std::make_unique<XMLSocketAppenderPriv>(host, port1, DEFAULT_RECONNECTION_DELAY))
+	: SocketAppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(host, port1, DEFAULT_RECONNECTION_DELAY))
 {
 	_priv->layout = std::make_shared<XMLLayout>();
 	activateOptions();
