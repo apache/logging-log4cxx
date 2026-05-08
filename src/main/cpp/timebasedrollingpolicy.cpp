@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/fileappender.h>
+#include <algorithm>
 #include <iostream>
 #include <apr_mmap.h>
 
@@ -121,6 +122,29 @@ struct TimeBasedRollingPolicy::TimeBasedRollingPolicyPrivate{
 #define MAX_FILE_LEN 2048
 
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+namespace
+{
+LogString readMappedFileName(apr_mmap_t* mmap)
+{
+	if (!mmap || !mmap->mm)
+	{
+		return LogString();
+	}
+
+	const auto* first = static_cast<const logchar*>(mmap->mm);
+	const auto* last = first + (MAX_FILE_LEN / sizeof(logchar));
+	const auto* terminator = std::find(first, last, logchar(0));
+
+	if (terminator == last)
+	{
+		LogLog::warn(LOG4CXX_STR("Ignoring invalid multiprocess rolling map file: missing string terminator"));
+		return LogString();
+	}
+
+	return LogString(first, terminator);
+}
+}
+
 bool TimeBasedRollingPolicy::isMapFileEmpty(LOG4CXX_NS::helpers::Pool& pool)
 {
 	apr_finfo_t finfo;
@@ -406,9 +430,10 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 		if (m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
 		{
 			lockMMapFile(APR_FLOCK_SHARED);
-			LogString mapLastFile(static_cast<logchar*>(m_priv->_mmap->mm));
-			m_priv->lastFileName = mapLastFile;
+			LogString mapLastFile(readMappedFileName(m_priv->_mmap));
 			unLockMMapFile();
+			if (!mapLastFile.empty())
+				m_priv->lastFileName = mapLastFile;
 		}
 		else
 		{
@@ -508,14 +533,18 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 		if (m_priv->bRefreshCurFile && m_priv->_mmap && !isMapFileEmpty(m_priv->_mmapPool))
 		{
 			lockMMapFile(APR_FLOCK_SHARED);
-			LogString mapCurrent(static_cast<logchar*>(m_priv->_mmap->mm));
+			LogString mapCurrent(readMappedFileName(m_priv->_mmap));
 			unLockMMapFile();
-			LogString mapCurrentBase(mapCurrent.substr(0, mapCurrent.length() - m_priv->suffixLength));
 
-			if (!mapCurrentBase.empty() && mapCurrentBase != filename)
+			if (!mapCurrent.empty() && static_cast<size_t>(m_priv->suffixLength) <= mapCurrent.length())
 			{
-				if (auto fappend = dynamic_cast<FileAppender*>(appender))
-					fappend->setFile(mapCurrentBase);
+				LogString mapCurrentBase(mapCurrent.substr(0, mapCurrent.length() - m_priv->suffixLength));
+
+				if (!mapCurrentBase.empty() && mapCurrentBase != filename)
+				{
+					if (auto fappend = dynamic_cast<FileAppender*>(appender))
+						fappend->setFile(mapCurrentBase);
+				}
 			}
 		}
 
@@ -559,7 +588,7 @@ bool TimeBasedRollingPolicy::isLastFileNameUnchanged()
 		if (m_priv->_mmap)
 		{
 			lockMMapFile(APR_FLOCK_SHARED);
-			LogString mapCurrent(static_cast<logchar*>(m_priv->_mmap->mm));
+			LogString mapCurrent(readMappedFileName(m_priv->_mmap));
 			unLockMMapFile();
 			result = (mapCurrent == m_priv->lastFileName);
 		}
@@ -578,7 +607,7 @@ void TimeBasedRollingPolicy::loadLastFileName()
 		if (m_priv->_mmap)
 		{
 			lockMMapFile(APR_FLOCK_SHARED);
-			LogString mapLastFile(static_cast<logchar*>(m_priv->_mmap->mm));
+			LogString mapLastFile(readMappedFileName(m_priv->_mmap));
 			unLockMMapFile();
 			if (!mapLastFile.empty())
 				m_priv->lastFileName = mapLastFile;

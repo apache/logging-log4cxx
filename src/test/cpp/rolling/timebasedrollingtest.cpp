@@ -31,8 +31,12 @@
 #include "../util/compare.h"
 #include "../logunit.h"
 
+#include <fstream>
 #include <apr_strings.h>
 #include <apr_time.h>
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+#include <apr_user.h>
+#endif
 #include <random>
 #ifndef INT64_C
 	#define INT64_C(x) x ## LL
@@ -83,6 +87,9 @@ LOGUNIT_CLASS(TimeBasedRollingTest)
 	LOGUNIT_TEST(test6);
 	LOGUNIT_TEST(test7);
 	LOGUNIT_TEST(rollIntoDir);
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+	LOGUNIT_TEST(unterminatedMultiprocessMapFile);
+#endif
 	LOGUNIT_TEST_SUITE_END();
 
 private:
@@ -683,6 +690,59 @@ public:
 		this->logMsgAndSleep(	pool, nrOfLogMsgs, __LOG4CXX_FUNC__, __LINE__);
 		this->checkFilesExist(	pool, LOG4CXX_STR("test6."), fnames, 0, __LINE__);
 	}
+
+#if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
+	void unterminatedMultiprocessMapFile()
+	{
+		Pool pool;
+		char uidBuffer[64] = "0000";
+#ifndef _WIN32
+		apr_uid_t uid;
+		apr_gid_t groupid;
+		if (APR_SUCCESS == apr_uid_current(&uid, &groupid, pool.getAPRPool()))
+			apr_snprintf(uidBuffer, sizeof(uidBuffer), "%u", uid);
+#endif
+		std::string mapFile("output/rolling/tbr-map-corrupt-");
+		mapFile += uidBuffer;
+		mapFile += ".map";
+		std::string lockFile("output/rolling/tbr-map-corrupt-");
+		lockFile += uidBuffer;
+		lockFile += ".maplck";
+
+		File("output/rolling").mkdirs();
+		File(mapFile).deleteFile();
+		File(lockFile).deleteFile();
+
+		std::ofstream corruptMap(mapFile, std::ios::binary | std::ios::trunc);
+		LOGUNIT_ASSERT(corruptMap.is_open());
+		std::string unterminatedMap(4096, 'x');
+		corruptMap.write(unterminatedMap.data(), unterminatedMap.size());
+		corruptMap.close();
+
+		PatternLayoutPtr layout(new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr rfa(new RollingFileAppender());
+		rfa->setAppend(false);
+		rfa->setLayout(layout);
+		rfa->setFile(LOG4CXX_STR("output/rolling/tbr-map-corrupt.log"));
+
+		TimeBasedRollingPolicyPtr tbrp(new TimeBasedRollingPolicy());
+		tbrp->setMultiprocess(true);
+		tbrp->setFileNamePattern(LOG4CXX_STR("output/rolling/tbr-map-corrupt-%d{" DATE_PATTERN "}"));
+		tbrp->activateOptions();
+		rfa->setRollingPolicy(tbrp);
+		rfa->activateOptions();
+		logger->addAppender(rfa);
+
+		this->delayUntilNextSecond();
+		LOG4CXX_DEBUG(logger, "roll despite corrupt map");
+		LOGUNIT_ASSERT(File("output/rolling/tbr-map-corrupt.log").exists());
+
+		logger->removeAppender(rfa);
+		rfa->close();
+		File(mapFile).deleteFile();
+		File(lockFile).deleteFile();
+	}
+#endif
 
 };
 
