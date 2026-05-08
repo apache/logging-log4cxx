@@ -128,7 +128,9 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		XMLSocketAppender(const XMLSocketAppender&);
 		XMLSocketAppender& operator=(const XMLSocketAppender&);
 
+#if LOG4CXX_ABI_VERSION <= 15
 		struct XMLSocketAppenderPriv;
+#endif
 }; // class XMLSocketAppender
 
 LOG4CXX_PTR_DEF(XMLSocketAppender);

@@ -104,6 +104,7 @@ int XMLSocketAppender::getDefaultPort() const
 #if LOG4CXX_ABI_VERSION <= 15
 void XMLSocketAppender::setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, Pool& p)
 {
+	static auto silenceABIchecker = std::make_unique<XMLSocketAppenderPriv>(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
 	_priv->setOutputSink(socket);
 }
 
