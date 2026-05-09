@@ -43,6 +43,9 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 		//  tests defined here
 		LOGUNIT_TEST(testSetDoubleBackslashes);
 		LOGUNIT_TEST(testStripDuplicateBackslashes);
+		LOGUNIT_TEST(testNegativeBufferSizeOptionFallsBack);
+		LOGUNIT_TEST(testOversizedBufferSizeOptionFallsBack);
+		LOGUNIT_TEST(testSetBufferSizeNormalizesNegativeValue);
 
 		LOGUNIT_TEST_SUITE_END();
 
@@ -108,6 +111,27 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 			//      then it is a UNC
 			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo.log"),
 				FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo.log")));
+		}
+
+		void testNegativeBufferSizeOptionFallsBack()
+		{
+			FileAppender appender;
+			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("-1"));
+			LOGUNIT_ASSERT(appender.getBufferSize() >= 0);
+		}
+
+		void testOversizedBufferSizeOptionFallsBack()
+		{
+			FileAppender appender;
+			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("2G"));
+			LOGUNIT_ASSERT(appender.getBufferSize() >= 0);
+		}
+
+		void testSetBufferSizeNormalizesNegativeValue()
+		{
+			FileAppender appender;
+			appender.setBufferSize(-100);
+			LOGUNIT_ASSERT(appender.getBufferSize() >= 0);
 		}
 
 };
