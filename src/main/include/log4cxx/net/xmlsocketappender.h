@@ -19,7 +19,6 @@
 #define _LOG4CXX_NET_XML_SOCKET_APPENDER_H
 
 #include <log4cxx/net/socketappenderskeleton.h>
-#include <log4cxx/helpers/writer.h>
 
 namespace LOG4CXX_NS
 {
@@ -47,53 +46,7 @@ running on the same system as the application:
 </log4j:configuration>
 ~~~
 
-<p>XMLSocketAppender has the following properties:
-
-- The event will be logged with the same time stamp,
-NDC, location info as if it were logged locally by
-the client.
-
-- Remote logging uses the TCP protocol. Consequently, if
-the server is reachable, then log events will eventually arrive
-at the server.
-
-- If the remote server is down, the logging requests are
-simply dropped. However, if and when the server comes back up,
-then event transmission is resumed transparently. This
-transparent reconneciton is performed by a <em>connector</em>
-thread which periodically attempts to connect to the server.
-
-- Logging events are automatically <em>buffered</em> by the
-native TCP implementation. This means that if the link to server
-is slow but still faster than the rate of (log) event production
-by the client, the client will not be affected by the slow
-network connection. However, if the network connection is slower
-then the rate of event production, then the client can only
-progress at the network rate. In particular, if the network link
-to the the server is down, the client will be blocked.
-@n @n On the other hand, if the network link is up, but the server
-is down, the client will not be blocked when making log requests
-but the log events will be lost due to server unavailability.
-
-- Even if an <code>XMLSocketAppender</code> is no longer
-attached to any logger, it will not be destroyed in
-the presence of a connector thread. A connector thread exists
-only if the connection to the server is down. To avoid this
-destruction problem, you should #close the the
-<code>XMLSocketAppender</code> explicitly. See also next item.
-@n @n Long lived applications which create/destroy many
-<code>XMLSocketAppender</code> instances should be aware of this
-destruction problem. Most other applications can safely
-ignore it.
-
-- If the application hosting the <code>XMLSocketAppender</code>
-exits before the <code>XMLSocketAppender</code> is closed either
-explicitly or subsequent to destruction, then there might
-be untransmitted data in the pipe which might be lost.
-@n @n To avoid lost data, it is usually sufficient to
-#close the <code>XMLSocketAppender</code> either explicitly or by
-calling the LogManager#shutdown method
-before exiting the application.
+See \ref socket_appender_properties "SocketAppenderSkeleton" for more information on the behaviour this appender.
 */
 
 class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
@@ -109,10 +62,12 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		*/
 		static int DEFAULT_RECONNECTION_DELAY;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		Unused
 		*/
 		static const int MAX_EVENT_LEN;
+#endif
 
 		DECLARE_LOG4CXX_OBJECT(XMLSocketAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -126,7 +81,11 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		/**
 		Connects to remote server at <code>address</code> and <code>port</code>.
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
 		XMLSocketAppender(helpers::InetAddressPtr address, int port);
+#else
+		XMLSocketAppender(const helpers::InetAddressPtr& address, int port);
+#endif
 
 		/**
 		Connects to remote server at <code>host</code> and <code>port</code>.
@@ -135,10 +94,27 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 
 		using SocketAppenderSkeleton::activateOptions;
 
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		* This appender has a default layout.
+		* @returns false
+		*/
+		bool requiresLayout() const override
+		{
+			return false;
+		}
+#endif
+
 	protected:
+#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		@deprecated This method will be removed in a future version.
+		*/
 		void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, helpers::Pool& p) override;
 
-#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		@deprecated This method will be removed in a future version.
+		*/
 		void cleanUp(helpers::Pool& p) override;
 #endif
 		int getDefaultDelay() const override;
@@ -152,7 +128,9 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		XMLSocketAppender(const XMLSocketAppender&);
 		XMLSocketAppender& operator=(const XMLSocketAppender&);
 
+#if LOG4CXX_ABI_VERSION <= 15
 		struct XMLSocketAppenderPriv;
+#endif
 }; // class XMLSocketAppender
 
 LOG4CXX_PTR_DEF(XMLSocketAppender);

@@ -223,7 +223,7 @@ void NTEventLogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 
 	LogString oss;
 	Pool tempPool;
-	this->m_priv->layout->format(oss, event, tempPool);
+	this->m_priv->layout->format(oss, event);
 	wchar_t* msgs = Transcoder::wencode(oss, tempPool);
 	BOOL bSuccess = ::ReportEventW(
 			priv->hEventLog,

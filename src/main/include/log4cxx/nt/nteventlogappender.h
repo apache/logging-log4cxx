@@ -69,8 +69,8 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
-		 * The SocketAppender does not use a layout. Hence, this method
-		 * returns <code>false</code>.
+		 * This appender does need a layout.
+		 * returns <code>true</code>.
 		 *
 		 */
 		bool requiresLayout() const override
