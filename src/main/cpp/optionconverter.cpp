@@ -21,6 +21,7 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <algorithm>
+#include <cctype>
 #include <ctype.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/exception.h>
@@ -49,6 +50,14 @@
 namespace
 {
 using namespace LOG4CXX_NS;
+
+void skipWhitespace(char*& p)
+{
+	while (std::isspace(static_cast<unsigned char>(*p)))
+	{
+		++p;
+	}
+}
 
 /// For recursion checking
 struct LogStringChain
@@ -300,30 +309,8 @@ long OptionConverter::toFileSize(const LogString& s, long dEfault)
 		return dEfault;
 	}
 
-	size_t index = trimmed.find_first_of(LOG4CXX_STR("bB"));
-
 	long long multiplier = 1;
-	LogString numericPart = trimmed;
-	if (index != LogString::npos && index > 0)
-	{
-		size_t suffixIndex = index - 1;
-		if (trimmed[suffixIndex] == 0x6B /* 'k' */ || trimmed[suffixIndex] == 0x4B /* 'K' */)
-		{
-			multiplier = 1024;
-		}
-		else if (trimmed[suffixIndex] == 0x6D /* 'm' */ || trimmed[suffixIndex] == 0x4D /* 'M' */)
-		{
-			multiplier = 1024 * 1024;
-		}
-		else if (trimmed[suffixIndex] == 0x67 /* 'g'*/ || trimmed[suffixIndex] == 0x47 /* 'G' */)
-		{
-			multiplier = 1024 * 1024 * 1024;
-		}
-
-		numericPart = trimmed.substr(0, suffixIndex);
-	}
-
-	LOG4CXX_ENCODE_CHAR(cvalue, numericPart);
+	LOG4CXX_ENCODE_CHAR(cvalue, trimmed);
 	char* endptr;
 	errno = 0;
 	long long parsed = strtoll(cvalue.c_str(), &endptr, 10);
@@ -331,6 +318,38 @@ long OptionConverter::toFileSize(const LogString& s, long dEfault)
 	if (endptr == cvalue.c_str() || errno == ERANGE || parsed < 0)
 	{
 		return dEfault;
+	}
+
+	skipWhitespace(endptr);
+	if (*endptr != '\0')
+	{
+		const char unit = static_cast<char>(std::toupper(static_cast<unsigned char>(*endptr)));
+		if (unit == 'K')
+		{
+			multiplier = 1024;
+			++endptr;
+		}
+		else if (unit == 'M')
+		{
+			multiplier = 1024 * 1024;
+			++endptr;
+		}
+		else if (unit == 'G')
+		{
+			multiplier = 1024 * 1024 * 1024;
+			++endptr;
+		}
+
+		if (static_cast<char>(std::toupper(static_cast<unsigned char>(*endptr))) != 'B')
+		{
+			return dEfault;
+		}
+		++endptr;
+		skipWhitespace(endptr);
+		if (*endptr != '\0')
+		{
+			return dEfault;
+		}
 	}
 
 	if (multiplier != 0 && parsed > std::numeric_limits<long long>::max() / multiplier)
