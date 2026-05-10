@@ -33,6 +33,10 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST(testSetMaxMessageLengthBelowSuffixSizeFallsBack);
+		LOGUNIT_TEST(testSetMaxMessageLengthNegativeFallsBack);
+		LOGUNIT_TEST(testMaxMessageLengthOptionBelowSuffixSizeFallsBack);
+		LOGUNIT_TEST(testMaxMessageLengthOptionValid);
 
 		LOGUNIT_TEST_SUITE_END();
 
@@ -42,6 +46,34 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
 			return new log4cxx::net::SyslogAppender();
+		}
+
+		void testSetMaxMessageLengthBelowSuffixSizeFallsBack()
+		{
+			log4cxx::net::SyslogAppender appender;
+			appender.setMaxMessageLength(12);
+			LOGUNIT_ASSERT(appender.getMaxMessageLength() >= 13);
+		}
+
+		void testSetMaxMessageLengthNegativeFallsBack()
+		{
+			log4cxx::net::SyslogAppender appender;
+			appender.setMaxMessageLength(-100);
+			LOGUNIT_ASSERT(appender.getMaxMessageLength() >= 13);
+		}
+
+		void testMaxMessageLengthOptionBelowSuffixSizeFallsBack()
+		{
+			log4cxx::net::SyslogAppender appender;
+			appender.setOption(LOG4CXX_STR("MAXMESSAGELENGTH"), LOG4CXX_STR("5"));
+			LOGUNIT_ASSERT(appender.getMaxMessageLength() >= 13);
+		}
+
+		void testMaxMessageLengthOptionValid()
+		{
+			log4cxx::net::SyslogAppender appender;
+			appender.setOption(LOG4CXX_STR("MAXMESSAGELENGTH"), LOG4CXX_STR("2048"));
+			LOGUNIT_ASSERT_EQUAL(2048, appender.getMaxMessageLength());
 		}
 };
 

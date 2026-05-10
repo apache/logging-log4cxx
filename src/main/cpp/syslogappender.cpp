@@ -477,6 +477,15 @@ bool SyslogAppender::getFacilityPrinting() const
 
 void SyslogAppender::setMaxMessageLength(int maxMessageLength1)
 {
+	// append() reserves 12 characters per chunk for an "(x/y)" sequence suffix.
+	// A value at or below the suffix size produces a zero-length chunk (causing
+	// an infinite split loop) or an iterator computed before msg.begin() (UB).
+	static const int MIN_MAX_MESSAGE_LENGTH = 13;
+	if (maxMessageLength1 < MIN_MAX_MESSAGE_LENGTH)
+	{
+		LogLog::warn(LOG4CXX_STR("SyslogAppender MaxMessageLength is too small. Using the default value."));
+		maxMessageLength1 = 1024;
+	}
 	_priv->maxMessageLength = maxMessageLength1;
 }
 
