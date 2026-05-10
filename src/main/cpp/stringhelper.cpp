@@ -174,22 +174,24 @@ LogString StringHelper::format(const LogString& pattern, const std::vector<LogSt
 {
 
 	LogString result;
-	int i = 0;
+	LogString::size_type i = 0;
 
-	while (pattern[i] != 0)
+	while (i < pattern.length())
 	{
-		if (pattern[i] == 0x7B /* '{' */ && pattern[i + 1] >= 0x30 /* '0' */ &&
+		if (i + 2 < pattern.length() &&
+			pattern[i] == 0x7B /* '{' */ && pattern[i + 1] >= 0x30 /* '0' */ &&
 			pattern[i + 1] <= 0x39 /* '9' */ && pattern[i + 2] == 0x7D /* '}' */)
 		{
-			int arg = pattern[i + 1] - 0x30 /* '0' */;
-			result = result + params[arg];
-			i += 3;
+			LogString::size_type arg = pattern[i + 1] - 0x30 /* '0' */;
+			if (arg < params.size())
+			{
+				result = result + params[arg];
+				i += 3;
+				continue;
+			}
 		}
-		else
-		{
-			result = result + pattern[i];
-			i++;
-		}
+		result = result + pattern[i];
+		i++;
 	}
 
 	return result;

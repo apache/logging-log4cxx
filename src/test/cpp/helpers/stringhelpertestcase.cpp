@@ -42,6 +42,8 @@ LOGUNIT_CLASS(StringHelperTestCase)
 	LOGUNIT_TEST( testEndsWith3 );
 	LOGUNIT_TEST( testEndsWith4 );
 	LOGUNIT_TEST( testEndsWith5 );
+	LOGUNIT_TEST( testFormatEmptyPattern );
+	LOGUNIT_TEST( testFormatMissingArgument );
 	LOGUNIT_TEST_SUITE_END();
 
 
@@ -127,6 +129,19 @@ public:
 	void testEndsWith5()
 	{
 		LOGUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("abc")));
+	}
+
+	void testFormatEmptyPattern()
+	{
+		std::vector<LogString> params;
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), StringHelper::format(LOG4CXX_STR(""), params));
+	}
+
+	void testFormatMissingArgument()
+	{
+		std::vector<LogString> params(1);
+		params[0] = LOG4CXX_STR("first");
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("first {1}"), StringHelper::format(LOG4CXX_STR("{0} {1}"), params));
 	}
 
 
