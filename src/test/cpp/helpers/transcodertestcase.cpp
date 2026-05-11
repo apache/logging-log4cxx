@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/bytebuffer.h>
 #include "../insertwide.h"
 #include "../logunit.h"
 
@@ -63,6 +64,9 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(testDecodeUTF8_2);
 	LOGUNIT_TEST(testDecodeUTF8_3);
 	LOGUNIT_TEST(testDecodeUTF8_4);
+	LOGUNIT_TEST(testEncodeUTF16BE_BMP);
+	LOGUNIT_TEST(testEncodeUTF16BE_Supplementary);
+	LOGUNIT_TEST(testEncodeUTF16LE_Supplementary);
 #if LOG4CXX_UNICHAR_API
 	LOGUNIT_TEST(udecode2);
 	LOGUNIT_TEST(udecode4);
@@ -310,6 +314,44 @@ public:
 		unsigned int sv = Transcoder::decode(out, iter);
 		LOGUNIT_ASSERT_EQUAL((unsigned int) 0xA9, sv);
 		LOGUNIT_ASSERT_EQUAL(true, iter == out.end());
+	}
+
+	void testEncodeUTF16BE_BMP()
+	{
+		char raw[4] = { 0, 0, 0, 0 };
+		ByteBuffer buf(raw, sizeof(raw));
+		Transcoder::encodeUTF16BE(0x4E03, buf); // CJK 七
+		LOGUNIT_ASSERT_EQUAL((size_t) 2, buf.position());
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0x4E, (unsigned char) raw[0]);
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0x03, (unsigned char) raw[1]);
+	}
+
+	// U+1F600 (GRINNING FACE) encodes to UTF-16BE as D8 3D DE 00.
+	// Before the fix the low surrogate's high byte was derived from bits 4-5
+	// of the code point, yielding 0xDC here instead of 0xDE — corrupting the
+	// pair into two unpaired surrogates.
+	void testEncodeUTF16BE_Supplementary()
+	{
+		char raw[4] = { 0, 0, 0, 0 };
+		ByteBuffer buf(raw, sizeof(raw));
+		Transcoder::encodeUTF16BE(0x1F600, buf);
+		LOGUNIT_ASSERT_EQUAL((size_t) 4, buf.position());
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0xD8, (unsigned char) raw[0]);
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0x3D, (unsigned char) raw[1]);
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0xDE, (unsigned char) raw[2]);
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0x00, (unsigned char) raw[3]);
+	}
+
+	void testEncodeUTF16LE_Supplementary()
+	{
+		char raw[4] = { 0, 0, 0, 0 };
+		ByteBuffer buf(raw, sizeof(raw));
+		Transcoder::encodeUTF16LE(0x1F600, buf);
+		LOGUNIT_ASSERT_EQUAL((size_t) 4, buf.position());
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0x3D, (unsigned char) raw[0]);
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0xD8, (unsigned char) raw[1]);
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0x00, (unsigned char) raw[2]);
+		LOGUNIT_ASSERT_EQUAL((unsigned char) 0xDE, (unsigned char) raw[3]);
 	}
 
 
