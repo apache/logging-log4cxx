@@ -355,7 +355,7 @@ class ISOLatinCharsetDecoder : public CharsetDecoder
 
 			while (src < srcEnd)
 			{
-				auto sv = static_cast<unsigned int>(*src++);
+				auto sv = static_cast<unsigned int>(static_cast<unsigned char>(*src++));
 				Transcoder::encode(sv, out);
 			}
 			in.increment_position(availableByteCount);
