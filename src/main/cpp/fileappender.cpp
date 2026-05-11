@@ -28,6 +28,7 @@
 #include "log4cxx/helpers/threadutility.h"
 #include <log4cxx/private/writerappender_priv.h>
 #include <log4cxx/private/fileappender_priv.h>
+#include <limits>
 #include <mutex>
 
 using namespace LOG4CXX_NS;
@@ -137,7 +138,13 @@ void FileAppender::setOption(const LogString& option,
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-		_priv->bufferSize = OptionConverter::toFileSize(value, 8 * 1024);
+		long parsed = OptionConverter::toFileSize(value, 8 * 1024);
+		if (parsed < 0 || parsed > static_cast<long>((std::numeric_limits<int>::max)()))
+		{
+			LogLog::warn(LOG4CXX_STR("FileAppender BufferSize is out of range. Using the default value."));
+			parsed = 8 * 1024;
+		}
+		_priv->bufferSize = static_cast<int>(parsed);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDSECONDS"), LOG4CXX_STR("bufferedseconds")))
 	{
@@ -368,7 +375,8 @@ void FileAppender::setFileInternal(
 	_priv->fileAppend = append1;
 	_priv->bufferedIO = bufferedIO1;
 	_priv->fileName = filename;
-	_priv->bufferSize = (int)bufferSize1;
+	const size_t intMax = static_cast<size_t>((std::numeric_limits<int>::max)());
+	_priv->bufferSize = static_cast<int>(bufferSize1 > intMax ? intMax : bufferSize1);
 	_priv->writeHeader();
 
 }
@@ -395,6 +403,11 @@ int FileAppender::getBufferedSeconds() const
 
 void FileAppender::setBufferSize(int newValue)
 {
+	if (newValue < 0)
+	{
+		LogLog::warn(LOG4CXX_STR("FileAppender BufferSize must be non-negative. Using zero."));
+		newValue = 0;
+	}
 	_priv->bufferSize = newValue;
 }
 
