@@ -166,19 +166,21 @@ public:
 	 */
 	void testISOLatinHighBytes()
 	{
-		char buf[2];
+		char buf[1];
 		auto dec = CharsetDecoder::getISOLatinDecoder();
 		for (unsigned int b = 0x80; b <= 0xFF; ++b)
 		{
 			buf[0] = static_cast<char>(b);
-			buf[1] = 0;
 			ByteBuffer in(buf, 1);
 			LogString out;
 			log4cxx_status_t stat = dec->decode(in, out);
 			LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-			LOGUNIT_ASSERT_EQUAL((size_t) 1, out.size());
-			LOGUNIT_ASSERT_EQUAL(static_cast<unsigned int>(b),
-				static_cast<unsigned int>(out[0]));
+
+			// Build the expected LogString by encoding code point b
+			// through the same Transcoder path the decoder uses.
+			LogString expected;
+			Transcoder::encode(b, expected);
+			LOGUNIT_ASSERT_EQUAL(expected, out);
 		}
 	}
 
