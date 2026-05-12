@@ -29,56 +29,29 @@ using namespace LOG4CXX_NS::helpers;
 Exception::Exception(const LogString& msg1)
 {
 	LOG4CXX_ENCODE_CHAR(m, msg1);
-	size_t len = m.size();
-
-	if (len > MSG_SIZE)
-	{
-		len = MSG_SIZE;
-	}
-
-#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
-	memcpy_s(msg, sizeof msg, m.data(), len);
-#else
-	memcpy(msg, m.data(), len);
-#endif
-	msg[len] = 0;
+	msg = m;
 }
 
 Exception::Exception(const char* m)
 {
-#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
-	strncpy_s(msg, sizeof msg, m, MSG_SIZE);
-#else
-	strncpy(msg, m, MSG_SIZE);
-#endif
-	msg[MSG_SIZE] = 0;
+	msg = (m ? std::string(m) : std::string());
 }
 
 
 Exception::Exception(const Exception& src) : std::exception()
 {
-#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
-	strcpy_s(msg, sizeof msg, src.msg);
-#else
-	strncpy(msg, src.msg, MSG_SIZE);
-	msg[MSG_SIZE] = 0;
-#endif
+	msg = src.msg;
 }
 
 Exception& Exception::operator=(const Exception& src)
 {
-#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
-	strcpy_s(msg, sizeof msg, src.msg);
-#else
-	strncpy(msg, src.msg, MSG_SIZE);
-	msg[MSG_SIZE] = 0;
-#endif
+	msg = src.msg;
 	return *this;
 }
 
 const char* Exception::what() const throw()
 {
-	return msg;
+	return msg.c_str();
 }
 
 RuntimeException::RuntimeException(log4cxx_status_t stat)
