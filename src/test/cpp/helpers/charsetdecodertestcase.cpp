@@ -40,6 +40,7 @@ LOGUNIT_CLASS(CharsetDecoderTestCase)
 	LOGUNIT_TEST(decode2);
 	LOGUNIT_TEST(decode3);
 	LOGUNIT_TEST(decode4);
+	LOGUNIT_TEST(testISOLatinHighBytes);
 #if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_MBSRTOWCS
     LOGUNIT_TEST(testMbstowcsInfiniteLoop);
 #endif
@@ -149,6 +150,37 @@ public:
 			msg.append(LOG4CXX_STR(": "));
 			msg.append(LOG4CXX_STR("en_US.UTF-8"));
 			LogLog::warn(msg);
+		}
+	}
+
+	/**
+	 * Decoding ISO-8859-1 must map every byte 0x80..0xFF to the
+	 * code point of the same numeric value. On platforms where plain
+	 * char is signed (default on MSVC/GCC/Clang for x86/x64), a
+	 * static_cast<unsigned int>(*src) sign-extends bytes >= 0x80 into
+	 * 0xFFFFFFxx, which Transcoder::encode then treats as out-of-range
+	 * Unicode and replaces with U+FFFD (or appends garbage on wchar_t
+	 * builds). The .properties configuration loader uses this decoder
+	 * per the Java spec, so the bug silently corrupts any non-ASCII
+	 * Latin-1 byte that appears in a log4cxx configuration file.
+	 */
+	void testISOLatinHighBytes()
+	{
+		char buf[1];
+		auto dec = CharsetDecoder::getISOLatinDecoder();
+		for (unsigned int b = 0x80; b <= 0xFF; ++b)
+		{
+			buf[0] = static_cast<char>(b);
+			ByteBuffer in(buf, 1);
+			LogString out;
+			log4cxx_status_t stat = dec->decode(in, out);
+			LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+			// Build the expected LogString by encoding code point b
+			// through the same Transcoder path the decoder uses.
+			LogString expected;
+			Transcoder::encode(b, expected);
+			LOGUNIT_ASSERT_EQUAL(expected, out);
 		}
 	}
 
