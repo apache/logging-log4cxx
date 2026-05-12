@@ -165,7 +165,7 @@ size_t Transcoder::encodeUTF16BE(unsigned int ch, char* dst)
 		unsigned char w = (unsigned char) ((ch >> 16) - 1);
 		dst[0] = (char) (0xD8 + (w >> 2));
 		dst[1] = (char) (((w & 0x03) << 6) + ((ch >> 10) & 0x3F));
-		dst[2] = (char) (0xDC + ((ch & 0x30) >> 4));
+		dst[2] = (char) (0xDC + ((ch >> 8) & 0x03));
 		dst[3] = (char) (ch & 0xFF);
 		return 4;
 	}
@@ -194,7 +194,7 @@ size_t Transcoder::encodeUTF16LE(unsigned int ch, char* dst)
 		unsigned char w = (unsigned char) ((ch >> 16) - 1);
 		dst[1] = (char) (0xD8 + (w >> 2));
 		dst[0] = (char) (((w & 0x03) << 6) + ((ch >> 10) & 0x3F));
-		dst[3] = (char) (0xDC + ((ch & 0x30) >> 4));
+		dst[3] = (char) (0xDC + ((ch >> 8) & 0x03));
 		dst[2] = (char) (ch & 0xFF);
 		return 4;
 	}
