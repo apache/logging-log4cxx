@@ -306,7 +306,7 @@ BSDSocket::Data::close()
 #ifdef WIN32
 	closesocket(m_handle);
 #else
-	close(m_handle);
+	::close(m_handle);
 #endif
 	m_handle = -1;
  }
