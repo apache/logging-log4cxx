@@ -35,6 +35,7 @@
 #include <sys/time.h>
 #include <net/if.h>
 #include <netdb.h>
+#include <fcntl.h>
 #include <cstring>
 #endif
 #include <sstream>
