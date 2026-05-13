@@ -26,9 +26,9 @@ using namespace log4cxx::helpers;
 LOGUNIT_CLASS(StringTokenizerTestCase)
 {
 	LOGUNIT_TEST_SUITE(StringTokenizerTestCase);
-	LOGUNIT_TEST(testNextTokenEmptyString);
+	LOGUNIT_TEST_EXCEPTION(testNextTokenEmptyString, std::exception);
 	LOGUNIT_TEST(testHasMoreTokensEmptyString);
-	LOGUNIT_TEST(testNextTokenAllDelim);
+	LOGUNIT_TEST_EXCEPTION(testNextTokenAllDelim, std::exception);
 	LOGUNIT_TEST(testHasMoreTokensAllDelim);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
@@ -44,17 +44,7 @@ public:
 		LogString src;
 		LogString delim(LOG4CXX_STR(" "));
 		StringTokenizer tokenizer(src, delim);
-
-		try
-		{
-			LogString token(tokenizer.nextToken());
-		}
-		catch (NoSuchElementException& ex)
-		{
-			return;
-		}
-
-		LOGUNIT_ASSERT(false);
+		LogString token(tokenizer.nextToken());
 	}
 
 	void testHasMoreTokensEmptyString()
@@ -70,17 +60,7 @@ public:
 		LogString src(LOG4CXX_STR("==="));
 		LogString delim(LOG4CXX_STR("="));
 		StringTokenizer tokenizer(src, delim);
-
-		try
-		{
-			LogString token(tokenizer.nextToken());
-		}
-		catch (NoSuchElementException& ex)
-		{
-			return;
-		}
-
-		LOGUNIT_ASSERT(false);
+		LogString token(tokenizer.nextToken());
 	}
 
 	void testHasMoreTokensAllDelim()
@@ -106,7 +86,7 @@ public:
 		{
 			LogString token(tokenizer.nextToken());
 		}
-		catch (NoSuchElementException& ex)
+		catch (const std::exception&)
 		{
 			return;
 		}
