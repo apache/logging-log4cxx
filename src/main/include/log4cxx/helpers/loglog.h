@@ -139,7 +139,7 @@ class LOG4CXX_EXPORT LogLog
 }  // namespace helpers
 } // namespace log4cxx
 
-#if defined(LOGLOG_THRESHOLD) || LOGLOG_THRESHOLD <= 10000
+#if defined(LOGLOG_THRESHOLD) && LOGLOG_THRESHOLD <= 10000
 /**
 Send \c message to helpers::SystemErrWriter if \c logger is enabled for <code>DEBUG</code> events.
 

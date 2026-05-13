@@ -34,7 +34,7 @@ endif()
 if(LOG4CXX_TEST_ONLY_BUILD)
     list(APPEND PRIVATE_COMPILE_DEFINITIONS
       "ENABLE_FAILING_APPENDER_SIMULATION_TESTING=1"
-      "LOGLOG_THRESHOLD=1000"
+      "LOGLOG_THRESHOLD=1"
     )
 endif()
 target_compile_definitions(log4cxx
