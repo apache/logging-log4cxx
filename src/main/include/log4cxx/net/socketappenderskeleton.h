@@ -179,6 +179,16 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		@deprecated This method will be removed in a future version.
 		*/
 		void fireConnector();
+#else
+		/**
+		* Use \c newSubclass as the helpers::Socket interface instead of the default implementation.
+		* */
+		void setSocketSubclass(const LogString& newSubclass);
+
+		/**
+		The class name used for the helpers::Socket interface implemention.
+		*/
+		const LogString& getSocketSubclass() const;
 #endif
 
 		/**
@@ -189,10 +199,13 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		RemoteHost |  (\ref inetAddress "1") | - |
 		Port | {int} | (\ref defaultPort "2") |
 		LocationInfo | True,False | False |
+		SocketSubclass |  (\ref socketSubclass "3") | APRSocket |
 
 		\anchor inetAddress (1) A valid internet address.
 
 		\anchor defaultPort (2) Provided by the derived class.
+
+		\anchor socketSubclass (3) A registered class derived from helpers::Socket.
 
 		\sa AppenderSkeleton::setOption()
 		*/

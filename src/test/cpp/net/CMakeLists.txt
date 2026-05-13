@@ -34,8 +34,13 @@ endif()
 if(HAS_LIBESMTP)
     list(APPEND NET_TESTS smtpappendertestcase)
 endif(HAS_LIBESMTP)
+
+if(${log4cxx_ABI_VER} GREATER 15)
+set(OTHER_SOCKET_IMPL bsdsocket.cpp)
+endif()
+
 foreach(fileName IN LISTS NET_TESTS)
-    add_executable(${fileName} "${fileName}.cpp")
+    add_executable(${fileName} "${fileName}.cpp" ${OTHER_SOCKET_IMPL})
 endforeach()
 
 set(ALL_LOG4CXX_TESTS ${ALL_LOG4CXX_TESTS} ${NET_TESTS} PARENT_SCOPE)

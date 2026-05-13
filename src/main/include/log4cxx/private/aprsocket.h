@@ -30,17 +30,26 @@ namespace helpers
 class LOG4CXX_EXPORT APRSocket : public helpers::Socket
 {
 	public:
+		/** An uninitialised socket
+		*/
+		APRSocket();
+
 		/** Creates a stream socket and connects it to the specified port
 		number at the specified IP address.
 		*/
-		APRSocket(InetAddressPtr& address, int port);
+		APRSocket(LOG4CXX_16_CONST InetAddressPtr& address, int port);
 		APRSocket(apr_socket_t*, apr_pool_t* pool);
-
 		size_t write(ByteBuffer&) override;
 
 		void setNonBlocking(bool newValue) LOG4CXX_16_VIRTUAL_SPECIFIER;
 
-		/** Closes this socket. */
+		/// Is this available for use?
+		bool is_open() LOG4CXX_16_VIRTUAL_SPECIFIER;
+
+		/// Establish a connection on this socket.
+		void open() LOG4CXX_16_VIRTUAL_SPECIFIER;
+
+		/// Disconnect this socket.
 		void close() override;
 
 		apr_socket_t* getSocketPtr() const;

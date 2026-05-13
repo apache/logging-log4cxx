@@ -26,6 +26,7 @@
 #ifdef _MSC_VER
 	#pragma warning ( push )
 	#pragma warning (disable : 4275) // ::std::exception needs to have dll-interface
+	#pragma warning (disable : 4251) // ::std::basic_string needs to have dll-interface
 #endif
 
 namespace LOG4CXX_NS
@@ -234,6 +235,7 @@ remotely (e.g., no process is listening on the remote address/port).
 class LOG4CXX_EXPORT ConnectException : public SocketException
 {
 	public:
+		ConnectException(const LogString& msg);
 		ConnectException(log4cxx_status_t status);
 		ConnectException(const ConnectException& src);
 		ConnectException& operator=(const ConnectException&);

@@ -29,7 +29,7 @@ namespace helpers
 {
 
 struct APRSocket::APRSocketPriv : public Socket::SocketPrivate {
-	APRSocketPriv(InetAddressPtr& address, int port)
+	APRSocketPriv(LOG4CXX_16_CONST InetAddressPtr& address, int port)
 		: Socket::SocketPrivate(address, port)
 		, socket(nullptr)
 	{}
@@ -40,13 +40,15 @@ struct APRSocket::APRSocketPriv : public Socket::SocketPrivate {
 	{}
 
 	Pool pool;
-	apr_socket_t* socket;
+	apr_socket_t* socket{ NULL };
+	bool connected{ false };
 };
 
 #define _priv static_cast<APRSocketPriv*>(m_priv.get())
 
-APRSocket::APRSocket(InetAddressPtr& address, int port) :
-	Socket(std::make_unique<APRSocketPriv>(address, port)){
+APRSocket::APRSocket(LOG4CXX_16_CONST InetAddressPtr& address, int port)
+	: Socket(std::make_unique<APRSocketPriv>(address, port))
+{
 	apr_status_t status =
 		apr_socket_create(&_priv->socket, APR_INET, SOCK_STREAM,
 			APR_PROTO_TCP, _priv->pool.getAPRPool());
@@ -55,14 +57,23 @@ APRSocket::APRSocket(InetAddressPtr& address, int port) :
 	{
 		throw SocketException(status);
 	}
+	open();
+}
 
-	LOG4CXX_ENCODE_CHAR(host, address->getHostAddress());
+void APRSocket::open()
+{
+	LOG4CXX_ENCODE_CHAR(host, _priv->address->getHostAddress());
 
 	// create socket address (including port)
 	apr_sockaddr_t* client_addr;
-	status =
-		apr_sockaddr_info_get(&client_addr, host.c_str(), APR_INET,
-			port, 0, _priv->pool.getAPRPool());
+	apr_status_t status = apr_sockaddr_info_get
+		( &client_addr
+		, host.c_str()
+		, APR_INET
+		, _priv->port
+		, 0
+		, _priv->pool.getAPRPool()
+		);
 
 	if (status != APR_SUCCESS)
 	{
@@ -76,6 +87,13 @@ APRSocket::APRSocket(InetAddressPtr& address, int port) :
 	{
 		throw ConnectException(status);
 	}
+	_priv->connected = true;
+}
+
+// Is the socket available for use?
+bool APRSocket::is_open()
+{
+	return _priv->socket && _priv->connected;
 }
 
 APRSocket::APRSocket(apr_socket_t* s, apr_pool_t* pool) :
