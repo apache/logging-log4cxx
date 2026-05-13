@@ -37,6 +37,7 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <cstring>
+#include <unistd.h>
 #endif
 #include <sstream>
 #undef min
