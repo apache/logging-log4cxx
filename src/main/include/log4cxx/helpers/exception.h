@@ -21,6 +21,7 @@
 #include <exception>
 #include <log4cxx/log4cxx.h>
 #include <log4cxx/logstring.h>
+#include <string>
 
 #ifdef _MSC_VER
 	#pragma warning ( push )
@@ -47,8 +48,7 @@ class LOG4CXX_EXPORT Exception : public ::std::exception
 		static std::string makeMessage(const char* type, log4cxx_status_t stat);
 #endif
 	private:
-		enum { MSG_SIZE = 128 };
-		char msg[MSG_SIZE + 1];
+		std::string msg;
 }; // class Exception
 
 /** RuntimeException is the parent class of those exceptions that can be
@@ -97,14 +97,14 @@ class LOG4CXX_EXPORT IOException : public Exception
 		IOException(log4cxx_status_t stat);
 		IOException(const LogString& msg);
 		IOException(const char* msg);
-		IOException(const LogString& type, log4cxx_status_t stat);
+	IOException(const LogString& type, log4cxx_status_t stat);
 #if !LOG4CXX_LOGCHAR_IS_UTF8
-		IOException(const char* msg, log4cxx_status_t stat);
+	IOException(const char* msg, log4cxx_status_t stat);
 #endif
-		IOException(const IOException& src);
-		IOException& operator=(const IOException&);
-	private:
-		static LogString formatMessage(log4cxx_status_t stat);
+	IOException(const IOException& src);
+	IOException& operator=(const IOException&);
+    private:
+	static LogString formatMessage(log4cxx_status_t stat);
 };
 
 class LOG4CXX_EXPORT MissingResourceException : public Exception
