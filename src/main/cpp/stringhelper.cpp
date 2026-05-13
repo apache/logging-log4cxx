@@ -24,9 +24,26 @@
 #include <iterator>
 #include <algorithm>
 #include <cctype>
+#include <stdexcept>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
+
+namespace
+{
+void checkFullyParsed(const std::string& value, std::size_t pos)
+{
+	while (pos < value.size() && std::isspace(static_cast<unsigned char>(value[pos])))
+	{
+		++pos;
+	}
+
+	if (pos != value.size())
+	{
+		throw std::invalid_argument("unexpected trailing characters");
+	}
+}
+}
 
 bool StringHelper::equalsIgnoreCase(const LogString& s1, const logchar* upper, const logchar* lower)
 {
@@ -109,24 +126,20 @@ bool StringHelper::endsWith(const LogString& s, const LogString& suffix)
 
 int StringHelper::toInt(const LogString& s)
 {
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::string as;
-	Transcoder::encode(s, as);
-	return std::stoi(as);
-#else
-	return std::stoi(s);
-#endif
+	LOG4CXX_ENCODE_CHAR(as, s);
+	std::size_t pos = 0;
+	int value = std::stoi(as, &pos);
+	checkFullyParsed(as, pos);
+	return value;
 }
 
 int64_t StringHelper::toInt64(const LogString& s)
 {
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::string as;
-	Transcoder::encode(s, as);
-	return std::stoll(as);
-#else
-	return std::stoll(s);
-#endif
+	LOG4CXX_ENCODE_CHAR(as, s);
+	std::size_t pos = 0;
+	auto value = std::stoll(as, &pos);
+	checkFullyParsed(as, pos);
+	return value;
 }
 
 void StringHelper::toString(int n, LogString& dst)

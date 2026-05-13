@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include "../insertwide.h"
 #include "../logunit.h"
+#include <stdexcept>
 
 
 using namespace log4cxx;
@@ -42,6 +43,13 @@ LOGUNIT_CLASS(StringHelperTestCase)
 	LOGUNIT_TEST( testEndsWith3 );
 	LOGUNIT_TEST( testEndsWith4 );
 	LOGUNIT_TEST( testEndsWith5 );
+	LOGUNIT_TEST( testToIntAcceptsSign );
+	LOGUNIT_TEST( testToIntParsesWholeString );
+	LOGUNIT_TEST_EXCEPTION( testToIntRejectsEmptyString, std::invalid_argument );
+	LOGUNIT_TEST_EXCEPTION( testToIntRejectsWhitespaceOnly, std::invalid_argument );
+	LOGUNIT_TEST_EXCEPTION( testToIntRejectsEmbeddedWhitespace, std::invalid_argument );
+	LOGUNIT_TEST_EXCEPTION( testToIntRejectsTrailingCharacters, std::invalid_argument );
+	LOGUNIT_TEST_EXCEPTION( testToInt64RejectsTrailingCharacters, std::invalid_argument );
 	LOGUNIT_TEST( testFormatEmptyPattern );
 	LOGUNIT_TEST( testFormatMissingArgument );
 	LOGUNIT_TEST_SUITE_END();
@@ -129,6 +137,43 @@ public:
 	void testEndsWith5()
 	{
 		LOGUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("abc")));
+	}
+
+	void testToIntAcceptsSign()
+	{
+		LOGUNIT_ASSERT_EQUAL(42, StringHelper::toInt(LOG4CXX_STR("+42")));
+		LOGUNIT_ASSERT_EQUAL(-42, StringHelper::toInt(LOG4CXX_STR("-42")));
+	}
+
+	void testToIntParsesWholeString()
+	{
+		LOGUNIT_ASSERT_EQUAL(42, StringHelper::toInt(LOG4CXX_STR(" 42 \t")));
+		LOGUNIT_ASSERT_EQUAL(1234567890123LL, StringHelper::toInt64(LOG4CXX_STR("1234567890123")));
+	}
+
+	void testToIntRejectsEmptyString()
+	{
+		StringHelper::toInt(LOG4CXX_STR(""));
+	}
+
+	void testToIntRejectsWhitespaceOnly()
+	{
+		StringHelper::toInt(LOG4CXX_STR("   "));
+	}
+
+	void testToIntRejectsEmbeddedWhitespace()
+	{
+		StringHelper::toInt(LOG4CXX_STR("12 34"));
+	}
+
+	void testToIntRejectsTrailingCharacters()
+	{
+		StringHelper::toInt(LOG4CXX_STR("123abc"));
+	}
+
+	void testToInt64RejectsTrailingCharacters()
+	{
+		StringHelper::toInt64(LOG4CXX_STR("123abc"));
 	}
 
 	void testFormatEmptyPattern()
