@@ -64,6 +64,7 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(testDecodeUTF8_2);
 	LOGUNIT_TEST(testDecodeUTF8_3);
 	LOGUNIT_TEST(testDecodeUTF8_4);
+	LOGUNIT_TEST(testDecodeUTF8_U0800);
 	LOGUNIT_TEST(testEncodeUTF16BE_BMP);
 	LOGUNIT_TEST(testEncodeUTF16BE_Supplementary);
 	LOGUNIT_TEST(testEncodeUTF16LE_Supplementary);
@@ -314,6 +315,27 @@ public:
 		unsigned int sv = Transcoder::decode(out, iter);
 		LOGUNIT_ASSERT_EQUAL((unsigned int) 0xA9, sv);
 		LOGUNIT_ASSERT_EQUAL(true, iter == out.end());
+	}
+
+	/**
+	 * U+0800 (SAMARITAN LETTER ALAF) is the smallest code point that
+	 * legitimately requires a three-byte UTF-8 sequence (E0 A0 80).
+	 * The overlong check in the three-byte branch of Transcoder::decode
+	 * previously used `rv <= 0x800` instead of `rv < 0x800`, so this exact
+	 * code point was rejected as if it were an overlong encoding and the
+	 * caller substituted Transcoder::LOSSCHAR. Any UTF-8 input containing
+	 * the bytes E0 A0 80 was therefore silently corrupted on decode.
+	 */
+	void testDecodeUTF8_U0800()
+	{
+		std::string src("\xE0\xA0\x80");
+		LogString out;
+		Transcoder::decodeUTF8(src, out);
+
+		LogString expected;
+		Transcoder::encode(0x0800, expected);
+		LOGUNIT_ASSERT_EQUAL(expected, out);
+		LOGUNIT_ASSERT(out.find(Transcoder::LOSSCHAR) == LogString::npos);
 	}
 
 	void testEncodeUTF16BE_BMP()

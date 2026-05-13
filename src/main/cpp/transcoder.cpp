@@ -265,7 +265,7 @@ unsigned int Transcoder::decode(const std::string& src,
 					+ ((ch2 & 0x3F) << 6)
 					+ (ch3 & 0x3F);
 
-				if (rv <= 0x800)
+				if (rv < 0x800)
 				{
 					iter = start;
 					return 0xFFFF;
