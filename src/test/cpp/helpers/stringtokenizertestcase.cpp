@@ -16,6 +16,7 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/stringtokenizer.h>
+#include <log4cxx/helpers/exception.h>
 #include "../logunit.h"
 #include "../insertwide.h"
 
@@ -26,9 +27,9 @@ using namespace log4cxx::helpers;
 LOGUNIT_CLASS(StringTokenizerTestCase)
 {
 	LOGUNIT_TEST_SUITE(StringTokenizerTestCase);
-	LOGUNIT_TEST_EXCEPTION(testNextTokenEmptyString, std::exception);
+	LOGUNIT_TEST_EXCEPTION(testNextTokenEmptyString, NoSuchElementException);
 	LOGUNIT_TEST(testHasMoreTokensEmptyString);
-	LOGUNIT_TEST_EXCEPTION(testNextTokenAllDelim, std::exception);
+	LOGUNIT_TEST_EXCEPTION(testNextTokenAllDelim, NoSuchElementException);
 	LOGUNIT_TEST(testHasMoreTokensAllDelim);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
@@ -86,7 +87,7 @@ public:
 		{
 			LogString token(tokenizer.nextToken());
 		}
-		catch (const std::exception&)
+		catch (const NoSuchElementException&)
 		{
 			return;
 		}

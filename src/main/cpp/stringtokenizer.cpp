@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/helpers/stringtokenizer.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
