@@ -54,6 +54,7 @@ LOGUNIT_CLASS(ManualRollingTest)
 	//           LOGUNIT_TEST(test3);
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(test5);
+	LOGUNIT_TEST(testShortFileNamePattern);
 	LOGUNIT_TEST(create_directories);
 	LOGUNIT_TEST_SUITE_END();
 
@@ -165,6 +166,23 @@ public:
 				File("witness/rolling/sbr-test2.0")));
 		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test2.log.2"),
 				File("witness/rolling/sbr-test2.1")));
+	}
+
+	void testShortFileNamePattern()
+	{
+		FixedWindowRollingPolicyPtr policy = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		policy->setMinIndex(0);
+		policy->setMaxIndex(1);
+		policy->setFileNamePattern(LOG4CXX_STR("%i"));
+		policy->activateOptions();
+
+		Pool pool;
+		RolloverDescriptionPtr desc = policy->rollover(
+				LOG4CXX_STR("output/manual-short-pattern-active.log"),
+				false,
+				pool);
+
+		LOGUNIT_ASSERT(desc != NULL);
 	}
 
 	/**

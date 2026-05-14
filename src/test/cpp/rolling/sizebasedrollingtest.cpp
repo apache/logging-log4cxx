@@ -56,6 +56,7 @@ LOGUNIT_CLASS(SizeBasedRollingTest)
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(test5);
 	LOGUNIT_TEST(test6);
+	LOGUNIT_TEST(testShortPatternRegression);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
@@ -356,7 +357,51 @@ public:
 		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sbr-test6.log"),  File("witness/rolling/sbr-test3.log")));
 	}
 
-};
+	/**
+	 * Regression test for FixedWindowRollingPolicy::purge() underflow.
+	 * This test uses a very short fileNamePattern ("R%i" -> "R1") which would
+	 * trigger std::out_of_range in the original vulnerable code.
+	 */
+	void testShortPatternRegression()
+	{
+		LogString activeFile = LOG4CXX_STR("output/active.log");
+		LogString rolledFile = LOG4CXX_STR("R1");
+		File(activeFile).deleteFile();
+		File(rolledFile).deleteFile();
 
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
+		rfa->setAppend(false);
+		rfa->setLayout(layout);
+		rfa->setFile(activeFile);
+
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
+
+		sbtp->setMaxFileSize(5); // Very small to trigger rollover
+		swrp->setMinIndex(1);
+		swrp->setFileNamePattern(LOG4CXX_STR("R%i"));
+		swrp->activateOptions();
+
+		rfa->setRollingPolicy(swrp);
+		rfa->setTriggeringPolicy(sbtp);
+		rfa->activateOptions();
+		root->addAppender(rfa);
+
+		// First log: goes to active.log, size becomes > 5
+		LOG4CXX_INFO(logger, LOG4CXX_STR("123456"));
+		// Second log: triggers rollover
+		LOG4CXX_INFO(logger, LOG4CXX_STR("next"));
+
+		// In the vulnerable code, rollover would fail due to std::out_of_range
+		// and the rolled file would not exist.
+		LOGUNIT_ASSERT(File(rolledFile).exists());
+
+		// Cleanup
+		File(activeFile).deleteFile();
+		File(rolledFile).deleteFile();
+	}
+
+};
 
 LOGUNIT_TEST_SUITE_REGISTRATION(SizeBasedRollingTest);

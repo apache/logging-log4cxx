@@ -265,11 +265,11 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 
 	LogString lowFilename(buf);
 
-	if (lowFilename.compare(lowFilename.length() - 3, 3, LOG4CXX_STR(".gz")) == 0)
+	if (StringHelper::endsWith(lowFilename, LOG4CXX_STR(".gz")))
 	{
 		suffixLength = 3;
 	}
-	else if (lowFilename.compare(lowFilename.length() - 4, 4, LOG4CXX_STR(".zip")) == 0)
+	else if (StringHelper::endsWith(lowFilename, LOG4CXX_STR(".zip")))
 	{
 		suffixLength = 4;
 	}
