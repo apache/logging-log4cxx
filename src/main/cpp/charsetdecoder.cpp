@@ -197,7 +197,26 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 							&src,
 							BUFSIZE - 1,
 							&mbstate);
-					auto converted = src - cbuf;
+					// mbsrtowcs sets *src to nullptr when it consumes a null wide character.
+					// Performing pointer arithmetic on that nullptr (src - cbuf) is undefined
+					// behaviour, so recover the consumed byte count from the position of the
+					// null that stopped the conversion instead.
+					size_t converted;
+					if (src == nullptr)
+					{
+						size_t nullPos = 0;
+						while (nullPos < available && cbuf[nullPos] != 0)
+						{
+							++nullPos;
+						}
+						// If the null came from the input bytes, it was consumed too;
+						// if it is the sentinel we wrote at cbuf[available], stop at available.
+						converted = (nullPos < available) ? nullPos + 1 : available;
+					}
+					else
+					{
+						converted = static_cast<size_t>(src - cbuf);
+					}
 					in.increment_position(converted);
 
 					if (wCharCount == (size_t) -1) // Illegal byte sequence?
