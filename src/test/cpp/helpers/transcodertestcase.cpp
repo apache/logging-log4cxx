@@ -64,6 +64,8 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(testDecodeUTF8_2);
 	LOGUNIT_TEST(testDecodeUTF8_3);
 	LOGUNIT_TEST(testDecodeUTF8_4);
+	LOGUNIT_TEST(testDecodeUTF8_RejectSurrogate);
+	LOGUNIT_TEST(testDecodeUTF8_SurrogateBoundaries);
 	LOGUNIT_TEST(testEncodeUTF16BE_BMP);
 	LOGUNIT_TEST(testEncodeUTF16BE_Supplementary);
 	LOGUNIT_TEST(testEncodeUTF16LE_Supplementary);
@@ -314,6 +316,54 @@ public:
 		unsigned int sv = Transcoder::decode(out, iter);
 		LOGUNIT_ASSERT_EQUAL((unsigned int) 0xA9, sv);
 		LOGUNIT_ASSERT_EQUAL(true, iter == out.end());
+	}
+
+	/**
+	 * RFC 3629 §3 prohibits UTF-8 encodings of the UTF-16 surrogate halves
+	 * (U+D800..U+DFFF). The three-byte sequences ED A0 80 .. ED BF BF must
+	 * not decode to the corresponding surrogate code points: doing so lets
+	 * lone surrogates enter LogString and be re-emitted by JSON/XML layouts,
+	 * propagating malformed Unicode past the parsing boundary. Each byte of
+	 * the invalid sequence is replaced with Transcoder::LOSSCHAR.
+	 */
+	void testDecodeUTF8_RejectSurrogate()
+	{
+		// ED A0 80 would encode U+D800 (the smallest high-surrogate).
+		std::string src("\xED\xA0\x80");
+		LogString out;
+		Transcoder::decodeUTF8(src, out);
+
+		LogString expected;
+		expected.append(1, Transcoder::LOSSCHAR);
+		expected.append(1, Transcoder::LOSSCHAR);
+		expected.append(1, Transcoder::LOSSCHAR);
+		LOGUNIT_ASSERT_EQUAL(expected, out);
+	}
+
+	/**
+	 * Confirm the surrogate-rejection range is exactly U+D800..U+DFFF:
+	 * U+D7FF (ED 9F BF) and U+E000 (EE 80 80) bracket the range and must
+	 * still decode cleanly. The four interior values are each rejected.
+	 */
+	void testDecodeUTF8_SurrogateBoundaries()
+	{
+		struct { const char* bytes; size_t len; bool reject; } cases[] =
+		{
+			{ "\xED\x9F\xBF", 3, false }, // U+D7FF — last valid before surrogates
+			{ "\xED\xA0\x80", 3, true  }, // U+D800 — high-surrogate min (reject)
+			{ "\xED\xAF\xBF", 3, true  }, // U+DBFF — high-surrogate max (reject)
+			{ "\xED\xB0\x80", 3, true  }, // U+DC00 — low-surrogate min  (reject)
+			{ "\xED\xBF\xBF", 3, true  }, // U+DFFF — low-surrogate max  (reject)
+			{ "\xEE\x80\x80", 3, false }, // U+E000 — first valid after surrogates
+		};
+		for (auto& c : cases)
+		{
+			std::string src(c.bytes, c.len);
+			LogString out;
+			Transcoder::decodeUTF8(src, out);
+			bool hasLoss = out.find(Transcoder::LOSSCHAR) != LogString::npos;
+			LOGUNIT_ASSERT_EQUAL(c.reject, hasLoss);
+		}
 	}
 
 	void testEncodeUTF16BE_BMP()

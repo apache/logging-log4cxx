@@ -265,7 +265,10 @@ unsigned int Transcoder::decode(const std::string& src,
 					+ ((ch2 & 0x3F) << 6)
 					+ (ch3 & 0x3F);
 
-				if (rv <= 0x800)
+				// RFC 3629 §3 prohibits UTF-8 encodings of the UTF-16 surrogate
+				// halves (U+D800..U+DFFF); accepting them lets malformed Unicode
+				// cross the decode boundary into LogString and downstream output.
+				if (rv <= 0x800 || (0xD800 <= rv && rv <= 0xDFFF))
 				{
 					iter = start;
 					return 0xFFFF;
