@@ -90,16 +90,16 @@ __pragma( warning( pop ) )
 
 #if defined(_WIN32) && defined(_MSC_VER)
 #if defined(LOG4CXX_STATIC)     // Linking a static library?
-#define LOG4CXX_EXPORT
+#  define LOG4CXX_EXPORT
 #elif defined(LOG4CXX)          // Building a DLL?
-#define LOG4CXX_EXPORT __declspec(dllexport)
+#  define LOG4CXX_EXPORT __declspec(dllexport)
 #else                          // Linking against a DLL?
-#define LOG4CXX_EXPORT __declspec(dllimport)
+#  define LOG4CXX_EXPORT __declspec(dllimport)
 #endif // !LOG4CXX_STATIC
-#elif defined(__GNUC__) && 4 <= __GNUC__ && 15 < LOG4CXX_ABI_VERSION
-  #define LOG4CXX_EXPORT __attribute__ ((visibility ("default")))
-#else // !(defined(_WIN32) && defined(_MSC_VER)) || LOG4CXX_ABI_VERSION <= 15 || __GNUC__ < 4
-  #define LOG4CXX_EXPORT
+#elif defined(__has_attribute) && __has_attribute(visibility)
+#  define LOG4CXX_EXPORT __attribute__ ((visibility ("default")))
+#else // !defined(__has_attribute)
+#  define LOG4CXX_EXPORT
 #endif
 
 #define LOG4CXX_NS @LOG4CXX_NS@
