@@ -603,5 +603,6 @@ void PropertyConfigurator::registryPut(const AppenderPtr& appender)
 
 AppenderPtr PropertyConfigurator::registryGet(const LogString& name)
 {
-	return (*m_priv->registry)[name];
+	auto it = m_priv->registry->find(name);
+	return (it == m_priv->registry->end()) ? AppenderPtr() : it->second;
 }

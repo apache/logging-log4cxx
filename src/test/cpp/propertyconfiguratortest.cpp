@@ -31,6 +31,7 @@ LOGUNIT_CLASS(PropertyConfiguratorTest)
 	LOGUNIT_TEST(testInherited);
 	LOGUNIT_TEST(testNull);
 	LOGUNIT_TEST(testAppenderThreshold);
+	LOGUNIT_TEST(testInvalidAppenderBehavesNotConfigured);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -85,6 +86,27 @@ public:
 		LOG4CXX_WARN(root, "Warn message");
 		LOG4CXX_WARN(root, "Error message");
 		LOGUNIT_ASSERT_EQUAL((size_t) 2, appender->vector.size());
+		LogManager::resetConfiguration();
+	}
+
+	void testInvalidAppenderBehavesNotConfigured()
+	{
+		Properties props;
+		props.put(LOG4CXX_STR("log4j.rootLogger"), LOG4CXX_STR("DEBUG,BAD"));
+		props.put(LOG4CXX_STR("log4j.appender.BAD"), LOG4CXX_STR("does.not.Exist"));
+
+		auto status = PropertyConfigurator::configure(props);
+
+		// Expect: invalid appender config should result in NotConfigured
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::NotConfigured);
+
+		// Repository should not be marked configured
+		LOGUNIT_ASSERT_EQUAL(false, LogManager::getLoggerRepository()->isConfigured());
+
+		// Root logger should have no appenders
+		LoggerPtr root(Logger::getRootLogger());
+		LOGUNIT_ASSERT_EQUAL((size_t)0, root->getAllAppenders().size());
+
 		LogManager::resetConfiguration();
 	}
 
