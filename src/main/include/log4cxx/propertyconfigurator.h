@@ -245,13 +245,16 @@ The usage of custom logger factories is discouraged and no longer
 documented.
 
 */
-class LOG4CXX_EXPORT PropertyConfigurator :
-	virtual public spi::Configurator,
-	virtual public helpers::Object
+class LOG4CXX_EXPORT PropertyConfigurator
+#if LOG4CXX_ABI_VERSION <= 15
+	: virtual public spi::Configurator
+	, virtual public helpers::Object
+#else
+	: public spi::Configurator
+#endif
 {
 #if 15 < LOG4CXX_ABI_VERSION
 	private:
-		struct PrivateData;
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(PrivateData, m_priv)
 #else
 	protected:
