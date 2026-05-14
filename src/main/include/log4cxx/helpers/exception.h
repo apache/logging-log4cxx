@@ -200,7 +200,7 @@ class LOG4CXX_EXPORT ClassNotFoundException : public Exception
 };
 
 
-class NoSuchElementException : public Exception
+class LOG4CXX_EXPORT NoSuchElementException : public Exception
 {
 	public:
 		NoSuchElementException();
@@ -208,7 +208,7 @@ class NoSuchElementException : public Exception
 		NoSuchElementException& operator=(const NoSuchElementException&);
 };
 
-class IllegalStateException : public Exception
+class LOG4CXX_EXPORT IllegalStateException : public Exception
 {
 	public:
 		IllegalStateException();
