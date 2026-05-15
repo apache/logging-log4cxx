@@ -268,7 +268,7 @@ unsigned int Transcoder::decode(const std::string& src,
 				// RFC 3629 §3 prohibits UTF-8 encodings of the UTF-16 surrogate
 				// halves (U+D800..U+DFFF); accepting them lets malformed Unicode
 				// cross the decode boundary into LogString and downstream output.
-				if (rv <= 0x800 || (0xD800 <= rv && rv <= 0xDFFF))
+				if (rv < 0x800 || (0xD800 <= rv && rv <= 0xDFFF))
 				{
 					iter = start;
 					return 0xFFFF;
@@ -292,7 +292,12 @@ unsigned int Transcoder::decode(const std::string& src,
 					+ ((ch3 & 0x3F) << 6)
 					+ (ch4 & 0x3F);
 
-				if (rv > 0xFFFF)
+				// RFC 3629 §3 caps UTF-8 at U+10FFFF; lead bytes F5..F7 (and
+				// F4 with an over-high trailer) produce rv > 0x10FFFF, which
+				// is not a Unicode code point. Without this bound, encodeUTF16
+				// later silently aliases the bogus value to a valid in-range
+				// code point — a substitution-collision filter-bypass primitive.
+				if (rv > 0xFFFF && rv <= 0x10FFFF)
 				{
 					return rv;
 				}

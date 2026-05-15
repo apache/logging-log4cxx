@@ -67,6 +67,8 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(testDecodeUTF8_RejectSurrogate);
 	LOGUNIT_TEST(testDecodeUTF8_SurrogateBoundaries);
 	LOGUNIT_TEST(testDecodeUTF8_U0800);
+	LOGUNIT_TEST(testDecodeUTF8_RejectAboveMax);
+	LOGUNIT_TEST(testDecodeUTF8_MaxBoundary);
 	LOGUNIT_TEST(testEncodeUTF16BE_BMP);
 	LOGUNIT_TEST(testEncodeUTF16BE_Supplementary);
 	LOGUNIT_TEST(testEncodeUTF16LE_Supplementary);
@@ -331,6 +333,17 @@ public:
 	{
 		// ED A0 80 would encode U+D800 (the smallest high-surrogate).
 		std::string src("\xED\xA0\x80");
+		LogString out;
+		Transcoder::decodeUTF8(src, out);
+
+		LogString expected;
+		expected.append(1, Transcoder::LOSSCHAR);
+		expected.append(1, Transcoder::LOSSCHAR);
+		expected.append(1, Transcoder::LOSSCHAR);
+		LOGUNIT_ASSERT_EQUAL(expected, out);
+	}
+
+	/**
 	 * U+0800 (SAMARITAN LETTER ALAF) is the smallest code point that
 	 * legitimately requires a three-byte UTF-8 sequence (E0 A0 80).
 	 * The overlong check in the three-byte branch of Transcoder::decode
@@ -346,10 +359,9 @@ public:
 		Transcoder::decodeUTF8(src, out);
 
 		LogString expected;
-		expected.append(1, Transcoder::LOSSCHAR);
-		expected.append(1, Transcoder::LOSSCHAR);
-		expected.append(1, Transcoder::LOSSCHAR);
+		Transcoder::encode(0x0800, expected);
 		LOGUNIT_ASSERT_EQUAL(expected, out);
+		LOGUNIT_ASSERT(out.find(Transcoder::LOSSCHAR) == LogString::npos);
 	}
 
 	/**
@@ -376,9 +388,52 @@ public:
 			bool hasLoss = out.find(Transcoder::LOSSCHAR) != LogString::npos;
 			LOGUNIT_ASSERT_EQUAL(c.reject, hasLoss);
 		}
-		Transcoder::encode(0x0800, expected);
+	}
+
+	/**
+	 * RFC 3629 §3 caps UTF-8 at U+10FFFF. Four-byte sequences with lead F5,
+	 * F6, F7 (and F4 with an over-high trailer) decode to values above the
+	 * Unicode maximum. Without bounds-rejection here, Transcoder::encodeUTF16
+	 * later silently aliases the bogus value to a valid in-range code point
+	 * (e.g. U+110000 collides with U+10000) — a substitution-collision
+	 * filter-bypass primitive in wchar builds.
+	 */
+	void testDecodeUTF8_RejectAboveMax()
+	{
+		// F4 90 80 80 would encode U+110000 (one past the maximum).
+		std::string src("\xF4\x90\x80\x80");
+		LogString out;
+		Transcoder::decodeUTF8(src, out);
+
+		LogString expected;
+		for (int i = 0; i < 4; ++i)
+			expected.append(1, Transcoder::LOSSCHAR);
 		LOGUNIT_ASSERT_EQUAL(expected, out);
-		LOGUNIT_ASSERT(out.find(Transcoder::LOSSCHAR) == LogString::npos);
+	}
+
+	/**
+	 * Boundary check around U+10FFFF: the canonical encoding of the
+	 * maximum legal code point (F4 8F BF BF) must decode cleanly; one past
+	 * (F4 90 80 80) and the F5/F6/F7 lead bytes must all be rejected.
+	 */
+	void testDecodeUTF8_MaxBoundary()
+	{
+		struct { const char* bytes; size_t len; bool reject; } cases[] =
+		{
+			{ "\xF4\x8F\xBF\xBF", 4, false }, // U+10FFFF — maximum legal code point
+			{ "\xF4\x90\x80\x80", 4, true  }, // U+110000 — one past max (reject)
+			{ "\xF5\x80\x80\x80", 4, true  }, // F5 lead: rv = 0x140000 (reject)
+			{ "\xF6\x80\x80\x80", 4, true  }, // F6 lead: rv = 0x180000 (reject)
+			{ "\xF7\xBF\xBF\xBF", 4, true  }, // F7 lead: rv = 0x1FFFFF (reject)
+		};
+		for (auto& c : cases)
+		{
+			std::string src(c.bytes, c.len);
+			LogString out;
+			Transcoder::decodeUTF8(src, out);
+			bool hasLoss = out.find(Transcoder::LOSSCHAR) != LogString::npos;
+			LOGUNIT_ASSERT_EQUAL(c.reject, hasLoss);
+		}
 	}
 
 	void testEncodeUTF16BE_BMP()
