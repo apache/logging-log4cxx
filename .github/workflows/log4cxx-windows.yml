@@ -23,15 +23,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [windows-2022, windows-2025-qt]
+        name: [windows-2022, windows-2025, windows-2025-qt]
         include:
           - name: windows-2022
             os: windows-2022
             qt: OFF
+            next_abi: OFF
+          - name: windows-2025
+            os: windows-2025
+            qt: OFF
+            next_abi: ON
           - name: windows-2025-qt
             os: windows-2025
             qt: ON
             qt_component: qtbase
+            next_abi: OFF
 
     steps:
     - uses: actions/checkout@v4
@@ -85,6 +91,7 @@ jobs:
            "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
            "-DVCPKG_TARGET_TRIPLET=x64-windows" `
            "-DCMAKE_INSTALL_PREFIX=$ROOT/Libraries" `
+           "-DLOG4CXX_BUILD_NEXT_ABI=${{ matrix.next_abi }}" `
            -S "$ROOT/main" `
            -B "$ROOT/build"
 

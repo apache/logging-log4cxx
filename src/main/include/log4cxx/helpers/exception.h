@@ -26,6 +26,7 @@
 #ifdef _MSC_VER
 	#pragma warning ( push )
 	#pragma warning (disable : 4275) // ::std::exception needs to have dll-interface
+	#pragma warning (disable : 4251) // ::std::basic_string needs to have dll-interface
 #endif
 
 namespace LOG4CXX_NS
@@ -97,14 +98,14 @@ class LOG4CXX_EXPORT IOException : public Exception
 		IOException(log4cxx_status_t stat);
 		IOException(const LogString& msg);
 		IOException(const char* msg);
-	IOException(const LogString& type, log4cxx_status_t stat);
+		IOException(const LogString& type, log4cxx_status_t stat);
 #if !LOG4CXX_LOGCHAR_IS_UTF8
-	IOException(const char* msg, log4cxx_status_t stat);
+		IOException(const char* msg, log4cxx_status_t stat);
 #endif
-	IOException(const IOException& src);
-	IOException& operator=(const IOException&);
-    private:
-	static LogString formatMessage(log4cxx_status_t stat);
+		IOException(const IOException& src);
+		IOException& operator=(const IOException&);
+	private:
+		static LogString formatMessage(log4cxx_status_t stat);
 };
 
 class LOG4CXX_EXPORT MissingResourceException : public Exception
@@ -199,7 +200,7 @@ class LOG4CXX_EXPORT ClassNotFoundException : public Exception
 };
 
 
-class NoSuchElementException : public Exception
+class LOG4CXX_EXPORT NoSuchElementException : public Exception
 {
 	public:
 		NoSuchElementException();
@@ -207,7 +208,7 @@ class NoSuchElementException : public Exception
 		NoSuchElementException& operator=(const NoSuchElementException&);
 };
 
-class IllegalStateException : public Exception
+class LOG4CXX_EXPORT IllegalStateException : public Exception
 {
 	public:
 		IllegalStateException();
@@ -234,6 +235,7 @@ remotely (e.g., no process is listening on the remote address/port).
 class LOG4CXX_EXPORT ConnectException : public SocketException
 {
 	public:
+		ConnectException(const LogString& msg);
 		ConnectException(log4cxx_status_t status);
 		ConnectException(const ConnectException& src);
 		ConnectException& operator=(const ConnectException&);
