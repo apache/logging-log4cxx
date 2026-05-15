@@ -47,6 +47,7 @@ find_program(GZIP_APP gzip REQUIRED)
 set(ALL_LOG4CXX_TESTS
     autoconfiguretestcase
     asyncappendertestcase
+    asyncappenderracestress
     consoleappendertestcase
     decodingtest
     encodingtest
