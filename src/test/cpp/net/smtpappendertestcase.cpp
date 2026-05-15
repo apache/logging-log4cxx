@@ -76,6 +76,9 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testTrigger);
 		LOGUNIT_TEST(testInvalid);
 		LOGUNIT_TEST(testNegativeBufferSizeOption);
+		LOGUNIT_TEST(testSubjectStripsCRLF);
+		LOGUNIT_TEST(testAddressFieldsStripCRLF);
+		LOGUNIT_TEST(testCleanFieldsArePreserved);
 //#define LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
 #ifdef LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
 		// This test requires the following environment variables:
@@ -139,6 +142,74 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			SMTPAppender appender;
 			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("-10"));
 			LOGUNIT_ASSERT_EQUAL(1, appender.getBufferSize());
+		}
+
+		/**
+		 * SMTPSession::toAscii is the library's sanitization step for values
+		 * destined for SMTP headers via libesmtp; it rewrites non-ASCII to '?'
+		 * but does not touch CR/LF. Before the fix, a Subject containing CRLF
+		 * was passed verbatim to smtp_set_header — RFC 5322 §2.1 treats CRLF
+		 * as the header-field terminator, so an attacker controlling a
+		 * configured Subject (e.g. via property substitution) could inject a
+		 * fresh Bcc/Cc header. Each public setter must strip CR (0x0D) and
+		 * LF (0x0A) so the boundary is enforced regardless of how the value
+		 * reaches the appender.
+		 */
+		void testSubjectStripsCRLF()
+		{
+			SMTPAppender appender;
+			appender.setSubject(LOG4CXX_STR("Notification\r\nBcc: attacker@example.invalid"));
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("NotificationBcc: attacker@example.invalid")),
+				appender.getSubject());
+
+			appender.setSubject(LOG4CXX_STR("alert\nfollow-up"));
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("alertfollow-up")),
+				appender.getSubject());
+
+			appender.setSubject(LOG4CXX_STR("loose\rCR"));
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("looseCR")),
+				appender.getSubject());
+		}
+
+		void testAddressFieldsStripCRLF()
+		{
+			SMTPAppender appender;
+			appender.setFrom(LOG4CXX_STR("me@example.invalid\r\nBcc: x@y"));
+			appender.setTo(LOG4CXX_STR("you@example.invalid\nBcc: x@y"));
+			appender.setCc(LOG4CXX_STR("a@b\r,c@d"));
+			appender.setBcc(LOG4CXX_STR("z@example.invalid\n"));
+
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("me@example.invalidBcc: x@y")),
+				appender.getFrom());
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("you@example.invalidBcc: x@y")),
+				appender.getTo());
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("a@b,c@d")),
+				appender.getCc());
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("z@example.invalid")),
+				appender.getBcc());
+		}
+
+		void testCleanFieldsArePreserved()
+		{
+			// Whitespace, tabs, commas, and non-ASCII are deliberately untouched
+			// here: only CR/LF are stripped. toAscii continues to handle non-ASCII
+			// at SMTP-message construction time.
+			SMTPAppender appender;
+			appender.setSubject(LOG4CXX_STR("  Spaced subject\t"));
+			appender.setTo(LOG4CXX_STR("a@example.invalid, b@example.invalid"));
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("  Spaced subject\t")),
+				appender.getSubject());
+			LOGUNIT_ASSERT_EQUAL(
+				LogString(LOG4CXX_STR("a@example.invalid, b@example.invalid")),
+				appender.getTo());
 		}
 
 		void testValid()
