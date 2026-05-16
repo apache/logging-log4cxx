@@ -17,8 +17,8 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/action.h>
 #include <log4cxx/private/action_priv.h>
+#include <log4cxx/helpers/loglog.h>
 #include <mutex>
-#include <memory>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::rolling;
@@ -38,26 +38,23 @@ Action::~Action()
 {
 }
 
-/**
- * {@inheritDoc}
- */
-void Action::run(LOG4CXX_NS::helpers::Pool& pool1)
+void Action::run()
 {
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
 
-	if (!m_priv->interrupted)
+	if (!m_priv->closed)
 	{
 		try
 		{
-			execute(pool1);
+			execute();
 		}
 		catch (std::exception& ex)
 		{
-			reportException(ex);
+			helpers::LogLog::error(getName() + LOG4CXX_STR(" raised the following exception"), ex);
 		}
 
 		m_priv->complete = true;
-		m_priv->interrupted = true;
+		m_priv->closed = true;
 	}
 }
 
@@ -67,7 +64,7 @@ void Action::run(LOG4CXX_NS::helpers::Pool& pool1)
 void Action::close()
 {
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
-	m_priv->interrupted = true;
+	m_priv->closed = true;
 }
 
 /**
@@ -79,6 +76,18 @@ bool Action::isComplete() const
 	return m_priv->complete;
 }
 
+LogString Action::getName() const
+{
+	return m_priv->actionName;
+}
+
+#if LOG4CXX_ABI_VERSION <= 15
+bool Action::execute() const
+{
+	helpers::Pool p;
+	return execute(p);
+}
+
 /**
  * Capture exception.
  *
@@ -87,3 +96,15 @@ bool Action::isComplete() const
 void Action::reportException(const std::exception& /* ex */)
 {
 }
+
+void Action::run(helpers::Pool&)
+{
+	run();
+}
+#else
+bool Action::execute(helpers::Pool&) const
+{
+	return execute();
+}
+
+#endif

@@ -83,7 +83,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		 */
 		enum { MAX_WINDOW_SIZE = 12 };
 
-		bool purge(int purgeStart, int maxIndex, LOG4CXX_NS::helpers::Pool& p) const;
+		bool purge(int purgeStart, int maxIndex) const;
 
 	public:
 
@@ -122,21 +122,17 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		void setMaxIndex(int newVal);
 		void setMinIndex(int newVal);
 
+		using RollingPolicy::initialize;
 		/**
 		 * {@inheritDoc}
 		 */
-		RolloverDescriptionPtr initialize(
-			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			helpers::Pool& pool) override;
+		RolloverDescriptionPtr initialize( LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS ) override;
 
+		using RollingPolicy::rollover;
 		/**
 		 * {@inheritDoc}
 		 */
-		RolloverDescriptionPtr rollover(
-			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			helpers::Pool& pool) override;
+		RolloverDescriptionPtr rollover( LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS ) override;
 
 	protected:
 		/**

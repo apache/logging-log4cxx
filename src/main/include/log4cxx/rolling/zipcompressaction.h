@@ -44,12 +44,11 @@ class ZipCompressAction : public Action
 			const File& destination,
 			bool deleteSource);
 
+		using Action::execute;
 		/**
-		 * Perform action.
-		 *
-		 * @return true if successful.
+		 * Compress the file.
 		 */
-		bool execute(LOG4CXX_NS::helpers::Pool& pool) const override;
+		bool execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const override;
 
 		/**
 		 * Set to true to throw an IOException on a fork failure.  By default, this
