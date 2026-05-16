@@ -286,8 +286,7 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 			);
 
 		m_priv->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
-		Pool p;
-		PropertySetter::setProperties(m_priv->loggerFactory, props, LOG4CXX_STR("log4j.factory."), p);
+		PropertySetter::setProperties(m_priv->loggerFactory, props, LOG4CXX_STR("log4j.factory."));
 	}
 }
 
@@ -509,8 +508,6 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 	if (appender->instanceof(OptionHandler::getStaticClass()))
 	{
-		Pool p;
-
 		if (appender->requiresLayout())
 		{
 			LayoutPtr layout;
@@ -528,7 +525,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 						+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
 				}
 
-				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."), p);
+				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."));
 				if (LogLog::isDebugEnabled())
 				{
 					LogLog::debug((LogString) LOG4CXX_STR("End of parsing for [")
@@ -557,7 +554,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 						LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + RollingPolicy::getStaticClass().getName()
 							+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
 					}
-					PropertySetter::setProperties(rollingPolicy, props, rollingPolicyKey + LOG4CXX_STR("."), p);
+					PropertySetter::setProperties(rollingPolicy, props, rollingPolicyKey + LOG4CXX_STR("."));
 				}
 			}
 
@@ -578,12 +575,12 @@ AppenderPtr PropertyConfigurator::parseAppender(
 						LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + TriggeringPolicy::getStaticClass().getName()
 							+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
 					}
-					PropertySetter::setProperties(triggeringPolicy, props, triggeringPolicyKey + LOG4CXX_STR("."), p);
+					PropertySetter::setProperties(triggeringPolicy, props, triggeringPolicyKey + LOG4CXX_STR("."));
 				}
 			}
 		}
 
-		PropertySetter::setProperties(appender, props, prefix + LOG4CXX_STR("."), p);
+		PropertySetter::setProperties(appender, props, prefix + LOG4CXX_STR("."));
 		if (LogLog::isDebugEnabled())
 		{
 			LogLog::debug((LogString) LOG4CXX_STR("Parsed [")

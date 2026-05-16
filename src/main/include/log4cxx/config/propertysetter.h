@@ -81,20 +81,14 @@ class LOG4CXX_EXPORT PropertySetter
 		@param obj The object to configure.
 		@param properties A java.util.Properties containing keys and values.
 		@param prefix Only keys having the specified prefix will be set.
-		@param p pool to use for any allocations required during call.
 		*/
-		static void setProperties(const helpers::ObjectPtr& obj,
-			helpers::Properties& properties,
-			const LogString& prefix,
-			LOG4CXX_NS::helpers::Pool& p);
+		static void setProperties(const helpers::ObjectPtr& obj, helpers::Properties& properties, const LogString& prefix);
 
 		/**
 		Set the properites for the object that match the
 		<code>prefix</code> passed as parameter.
 		*/
-		void setProperties(helpers::Properties& properties,
-			const LogString& prefix,
-			LOG4CXX_NS::helpers::Pool& p);
+		void setProperties(helpers::Properties& properties, const LogString& prefix);
 
 		/**
 		Set a property on this PropertySetter's Object. If the underlying
@@ -103,13 +97,33 @@ class LOG4CXX_EXPORT PropertySetter
 
 		@param option   name of the property
 		@param value   String value of the property
-		@param p pool to use for any allocations required during call.
 		*/
-		void setProperty(const LogString& option,
-			const LogString& value,
-			LOG4CXX_NS::helpers::Pool& p);
+		void setProperty(const LogString& option, const LogString& value);
 
-		void activate(LOG4CXX_NS::helpers::Pool& p);
+		void activate();
+
+#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use setProperties() without a Pool parameter instead")]]
+		static void setProperties(const helpers::ObjectPtr& obj, helpers::Properties& properties, const LogString& prefix, helpers::Pool& p);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use setProperties() without a Pool parameter instead")]]
+		void setProperties(helpers::Properties& properties, const LogString& prefix, helpers::Pool& p);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use setProperty() without a Pool parameter instead")]]
+		void setProperty(const LogString& option, const LogString& value, helpers::Pool& p);
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use activate() without a Pool parameter instead")]]
+		void activate(helpers::Pool& p);
+#endif
 }; // class PropertySetter
 }  // namespace config;
 } // namespace log4cxx

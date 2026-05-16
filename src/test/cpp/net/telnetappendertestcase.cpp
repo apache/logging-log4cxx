@@ -140,16 +140,15 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 
 		void testInvalidMaxConnectionsOptionFallsBack()
 		{
-			Pool p;
 			auto appender = std::make_shared<TelnetAppender>();
 			config::PropertySetter setter(appender);
-			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("9999999999999999999999"), p);
+			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("9999999999999999999999"));
 			LOGUNIT_ASSERT_EQUAL(20, appender->getMaxConnections());
 
-			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("-2147483649"), p);
+			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("-2147483649"));
 			LOGUNIT_ASSERT_EQUAL(20, appender->getMaxConnections());
 
-			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("16"), p);
+			setter.setProperty(LOG4CXX_STR("MaxConnections"), LOG4CXX_STR("16"));
 			LOGUNIT_ASSERT_EQUAL(16, appender->getMaxConnections());
 		}
 
