@@ -90,7 +90,7 @@ class LOG4CXX_EXPORT RollingPolicy :
 		RolloverDescriptionPtr rollover(const LogString& currentActiveFile, bool append);
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to execute() without a helpers::Pool parameter.
+		Implement this method for now, but plan to migrate to rollover() without a helpers::Pool parameter.
 		*/
 		virtual RolloverDescriptionPtr rollover(
 			const   LogString&              currentActiveFile,

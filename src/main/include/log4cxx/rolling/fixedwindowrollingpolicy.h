@@ -84,7 +84,9 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		enum { MAX_WINDOW_SIZE = 12 };
 
 		bool purge(int purgeStart, int maxIndex) const;
-
+#if LOG4CXX_ABI_VERSION <= 15
+		bool purge(int lowIndex, int highIndex, helpers::Pool& pool) const;
+#endif
 	public:
 
 		FixedWindowRollingPolicy();

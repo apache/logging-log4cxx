@@ -361,6 +361,12 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex) const
 
 	return true;
 }
+#if LOG4CXX_ABI_VERSION <= 15
+bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, helpers::Pool& pool) const
+{
+	return purge(lowIndex, highIndex);
+}
+#endif
 
 #define RULES_PUT(spec, cls) \
 	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), (PatternConstructor) cls ::newInstance))
