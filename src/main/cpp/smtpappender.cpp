@@ -44,6 +44,39 @@ using namespace LOG4CXX_NS::spi;
 	#include <libesmtp.h>
 #endif
 
+namespace
+{
+// RFC 5322 §2.1 defines header fields as CRLF-terminated lines, so an embedded
+// CR or LF in a configured Subject/From/To/Cc/Bcc value would split it across
+// header boundaries on the wire — a caller who controls a configured field
+// (e.g. through ${...} property substitution from an environment variable)
+// could inject arbitrary additional headers such as Bcc. The library already
+// owns SMTP wire-format sanitization (see SMTPSession::toAscii, which silently
+// rewrites non-ASCII to '?'); strip CR/LF in the public setters so the same
+// boundary is enforced regardless of how the value reaches the appender.
+LogString stripSmtpControl(const LogString& value, const logchar* field)
+{
+	if (value.find_first_of(LOG4CXX_STR("\r\n")) == LogString::npos)
+	{
+		return value;
+	}
+	LogString warning(LOG4CXX_STR("SMTPAppender "));
+	warning.append(field);
+	warning.append(LOG4CXX_STR(" contains CR or LF; stripping to prevent SMTP header injection."));
+	LogLog::warn(warning);
+	LogString out;
+	out.reserve(value.size());
+	for (auto ch : value)
+	{
+		if (ch != 0x0D && ch != 0x0A)
+		{
+			out.append(1, ch);
+		}
+	}
+	return out;
+}
+} // namespace
+
 namespace LOG4CXX_NS
 {
 namespace net
@@ -451,7 +484,7 @@ LogString SMTPAppender::getFrom() const
 
 void SMTPAppender::setFrom(const LogString& newVal)
 {
-	_priv->from = newVal;
+	_priv->from = stripSmtpControl(newVal, LOG4CXX_STR("From"));
 }
 
 
@@ -462,7 +495,7 @@ LogString SMTPAppender::getSubject() const
 
 void SMTPAppender::setSubject(const LogString& newVal)
 {
-	_priv->subject = newVal;
+	_priv->subject = stripSmtpControl(newVal, LOG4CXX_STR("Subject"));
 }
 
 LogString SMTPAppender::getSMTPHost() const
@@ -697,7 +730,7 @@ LogString SMTPAppender::getTo() const
 
 void SMTPAppender::setTo(const LogString& addressStr)
 {
-	_priv->to = addressStr;
+	_priv->to = stripSmtpControl(addressStr, LOG4CXX_STR("To"));
 }
 
 LogString SMTPAppender::getCc() const
@@ -707,7 +740,7 @@ LogString SMTPAppender::getCc() const
 
 void SMTPAppender::setCc(const LogString& addressStr)
 {
-	_priv->cc = addressStr;
+	_priv->cc = stripSmtpControl(addressStr, LOG4CXX_STR("Cc"));
 }
 
 LogString SMTPAppender::getBcc() const
@@ -717,7 +750,7 @@ LogString SMTPAppender::getBcc() const
 
 void SMTPAppender::setBcc(const LogString& addressStr)
 {
-	_priv->bcc = addressStr;
+	_priv->bcc = stripSmtpControl(addressStr, LOG4CXX_STR("Bcc"));
 }
 
 /**
