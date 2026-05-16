@@ -531,6 +531,7 @@ void AsyncAppender::setBufferSize(int size)
 
 int AsyncAppender::getBufferSize() const
 {
+	std::lock_guard<std::mutex> lock(priv->bufferMutex);
 	return priv->bufferSize;
 }
 
@@ -543,6 +544,7 @@ void AsyncAppender::setBlocking(bool value)
 
 bool AsyncAppender::getBlocking() const
 {
+	std::lock_guard<std::mutex> lock(priv->bufferMutex);
 	return priv->blocking;
 }
 
