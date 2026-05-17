@@ -172,21 +172,17 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy
 
 		void setMultiprocess(bool multiprocess);
 
+		using RollingPolicy::initialize;
 		/**
 		 * {@inheritDoc}
 		 */
-		RolloverDescriptionPtr initialize(
-			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			helpers::Pool& pool) override;
+		RolloverDescriptionPtr initialize( LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS ) override;
 
+		using RollingPolicy::rollover;
 		/**
 		 * {@inheritDoc}
 		 */
-		RolloverDescriptionPtr rollover(
-			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			helpers::Pool& pool) override;
+		RolloverDescriptionPtr rollover( LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS ) override;
 
 		/**
 		 * Determines if a rollover may be appropriate at this time.  If

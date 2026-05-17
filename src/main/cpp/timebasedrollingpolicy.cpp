@@ -315,7 +315,7 @@ void TimeBasedRollingPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PA
 	Pool pool;
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Date>();
-	formatFileName(obj, buf, pool);
+	formatFileName(obj, buf);
 	m_priv->lastFileName = buf;
 
 	m_priv->suffixLength = 0;
@@ -348,10 +348,7 @@ LOG4CXX_NS::pattern::PatternMap TimeBasedRollingPolicy::getFormatSpecifiers() co
 /**
  * {@inheritDoc}
  */
-RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
-	const   LogString&  currentActiveFile,
-	const   bool        append,
-	Pool&       pool)
+RolloverDescriptionPtr TimeBasedRollingPolicy::initialize( LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS )
 {
 	Date now;
 	log4cxx_time_t n = now.getTime();
@@ -361,7 +358,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Date>(currentFile.exists() ? currentFile.lastModified() : n);
-	formatFileName(obj, buf, pool);
+	formatFileName(obj, buf);
 	m_priv->lastFileName = buf;
 
 	ActionPtr noAction;
@@ -380,10 +377,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 	}
 }
 
-RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
-	const   LogString&  currentActiveFile,
-	const   bool        append,
-	Pool&       pool)
+RolloverDescriptionPtr TimeBasedRollingPolicy::rollover( LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS )
 {
 	Date now;
 	log4cxx_time_t n = now.getTime();
@@ -391,7 +385,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Date>(n);
-	formatFileName(obj, buf, pool);
+	formatFileName(obj, buf);
 
 	LogString newFileName(buf);
 
@@ -402,7 +396,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 		{
 			if (getPatternConverterList().size())
 			{
-				(*(getPatternConverterList().begin()))->format(obj, m_priv->_fileNamePattern, pool);
+				(*(getPatternConverterList().begin()))->format(obj, m_priv->_fileNamePattern);
 			}
 			else
 			{

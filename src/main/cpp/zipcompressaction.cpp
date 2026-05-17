@@ -31,10 +31,16 @@ using namespace LOG4CXX_NS::helpers;
 
 struct ZipCompressAction::ZipCompressActionPrivate : public ActionPrivate
 {
-	ZipCompressActionPrivate( const File& toRename,
-		const File& renameTo,
-		bool deleteSource):
-		source(toRename), destination(renameTo), deleteSource(deleteSource) {}
+	ZipCompressActionPrivate
+		( const File& toRename
+		, const File& renameTo
+		, bool deleteSource
+		)
+		: ActionPrivate{ LOG4CXX_STR("zip") }
+		, source(toRename)
+		, destination(renameTo)
+		, deleteSource(deleteSource)
+		{}
 
 	const File source;
 	const File destination;
@@ -52,14 +58,14 @@ ZipCompressAction::ZipCompressAction(const File& src,
 {
 }
 
-bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
+bool ZipCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const
 {
 	if (!priv->source.exists())
 	{
 		return false;
 	}
-
-	apr_pool_t* aprpool = p.getAPRPool();
+	helpers::Pool tempPool;
+	apr_pool_t* aprpool = tempPool.getAPRPool();
 	apr_procattr_t* attr;
 	apr_status_t stat = apr_procattr_create(&attr, aprpool);
 
@@ -104,8 +110,8 @@ bool ZipCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 
 	args[i++] = "zip";
 	args[i++] = "-q";
-	args[i++] = Transcoder::encode(priv->destination.getPath(), p);
-	args[i++] = Transcoder::encode(priv->source.getPath(), p);
+	args[i++] = Transcoder::encode(priv->destination.getPath(), tempPool);
+	args[i++] = Transcoder::encode(priv->source.getPath(), tempPool);
 	args[i++] = NULL;
 
 	if (priv->destination.exists())

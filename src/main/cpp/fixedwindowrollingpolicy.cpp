@@ -127,10 +127,7 @@ void FixedWindowRollingPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_
 /**
  * {@inheritDoc}
  */
-RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
-	const   LogString&  currentActiveFile,
-	const   bool        append,
-	Pool&       pool)
+RolloverDescriptionPtr FixedWindowRollingPolicy::initialize( LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS )
 {
 	LogString newActiveFile(currentActiveFile);
 	priv->explicitActiveFile = false;
@@ -145,7 +142,7 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
 	{
 		LogString buf;
 		ObjectPtr obj = std::make_shared<Integer>(priv->minIndex);
-		formatFileName(obj, buf, pool);
+		formatFileName(obj, buf);
 		newActiveFile = buf;
 	}
 
@@ -157,10 +154,7 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
 /**
  * {@inheritDoc}
  */
-RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
-	const   LogString&  currentActiveFile,
-	const   bool        append,
-	Pool&       pool)
+RolloverDescriptionPtr FixedWindowRollingPolicy::rollover( LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS )
 {
 	RolloverDescriptionPtr desc;
 
@@ -176,14 +170,14 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 		purgeStart++;
 	}
 
-	if (!purge(purgeStart, priv->maxIndex, pool))
+	if (!purge(purgeStart, priv->maxIndex))
 	{
 		return desc;
 	}
 
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Integer>(purgeStart);
-	formatFileName(obj, buf, pool);
+	formatFileName(obj, buf);
 
 	LogString renameTo(buf);
 	LogString compressedName(renameTo);
@@ -254,14 +248,14 @@ int FixedWindowRollingPolicy::getMinIndex() const
  * index will be deleted if needed.
  * @return true if purge was successful and rollover should be attempted.
  */
-bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
+bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex) const
 {
 	int suffixLength = 0;
 
 	std::vector<FileRenameActionPtr> renames;
 	LogString buf;
 	ObjectPtr obj = std::make_shared<Integer>(lowIndex);
-	formatFileName(obj, buf, p);
+	formatFileName(obj, buf);
 
 	LogString lowFilename(buf);
 
@@ -322,7 +316,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 			//     add a rename action to the list
 			buf.erase(buf.begin(), buf.end());
 			obj = std::make_shared<Integer>(i + 1);
-			formatFileName(obj, buf, p);
+			formatFileName(obj, buf);
 
 			LogString highFilename(buf);
 			LogString renameTo(highFilename);
@@ -349,17 +343,17 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 		iter != renames.rend();
 		iter++)
 	{
-
+		auto& action = *iter;
 		try
 		{
-			if (!(*iter)->execute(p))
+			if (!action->execute())
 			{
 				return false;
 			}
 		}
-		catch (std::exception&)
+		catch (const std::exception& ex)
 		{
-			LogLog::warn(LOG4CXX_STR("Exception during purge in RollingFileAppender"));
+			LogLog::warn(action->getName() + LOG4CXX_STR(" raised the following exception"), ex);
 
 			return false;
 		}
@@ -367,6 +361,12 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 
 	return true;
 }
+#if LOG4CXX_ABI_VERSION <= 15
+bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, helpers::Pool& pool) const
+{
+	return purge(lowIndex, highIndex);
+}
+#endif
 
 #define RULES_PUT(spec, cls) \
 	specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), (PatternConstructor) cls ::newInstance))

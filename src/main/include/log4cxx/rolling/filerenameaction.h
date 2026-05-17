@@ -44,12 +44,11 @@ class FileRenameAction : public Action
 			const File& renameTo,
 			bool renameEmptyFile);
 
+		using Action::execute;
 		/**
-		 * Perform action.
-		 *
-		 * @return true if successful.
+		 * Perform rename.
 		 */
-		bool execute(LOG4CXX_NS::helpers::Pool& pool) const override;
+		bool execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const override;
 };
 
 LOG4CXX_PTR_DEF(FileRenameAction);

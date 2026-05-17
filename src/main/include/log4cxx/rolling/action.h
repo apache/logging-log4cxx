@@ -20,8 +20,6 @@
 
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
-#include <mutex>
-#include <memory>
 
 namespace LOG4CXX_NS
 {
@@ -51,24 +49,50 @@ class Action : public virtual LOG4CXX_NS::helpers::Object
 
 	public:
 		/**
-		 * Perform action.
+		 * Perform the action.
 		 *
 		 * @return true if successful.
 		 */
-		virtual bool execute(LOG4CXX_NS::helpers::Pool& pool) const = 0;
+#if LOG4CXX_ABI_VERSION <= 15
+		bool execute() const;
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		Implement this method for now, but plan to migrate to execute() without a helpers::Pool parameter.
+		*/
+		virtual bool execute(helpers::Pool& pool) const = 0;
+#define LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS helpers::Pool& p
+#else
+		virtual bool execute() const = 0;
+#define LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS
+		/**
+		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		*/
+		[[deprecated("Use execute() without a Pool parameter instead")]]
+		bool execute(helpers::Pool& pool) const;
+#endif
 
-		void run(LOG4CXX_NS::helpers::Pool& pool);
+		/* Call execute() if not already closed.
+		*/
+		void run();
 
+		/* Wait until run() completes.
+		*/
 		void close();
 
 		/**
-		 * Tests if the action is complete.
-		 * @return true if action is complete.
+		 * Is action is complete?
 		 */
 		bool isComplete() const;
 
+		/* The action description
+		*/
+		LogString getName() const;
+
+#if LOG4CXX_ABI_VERSION <= 15
 		void reportException(const std::exception&);
 
+		void run(helpers::Pool& pool);
+#endif
 
 };
 
