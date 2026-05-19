@@ -15,51 +15,41 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
-#include <log4cxx/helpers/systemerrwriter.h>
-#include <log4cxx/helpers/transcoder.h>
-#include <stdio.h>
-#if !defined(LOG4CXX)
-	#define LOG4CXX 1
-#endif
-#include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/private/consolewriter_priv.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(SystemErrWriter)
-
-SystemErrWriter::SystemErrWriter()
+static bool isConsoleWide(FILE *file)
 {
-}
-
-SystemErrWriter::~SystemErrWriter()
-{
-}
-
-void SystemErrWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
-{
-}
-
-void SystemErrWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
-{
-	fflush(stderr);
-}
-
-void SystemErrWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
-{
-	helpers::writeToConsole(str, stderr);
-}
-
-#if LOG4CXX_ABI_VERSION <= 15
-void SystemErrWriter::write(const LogString& str)
-{
-	helpers::writeToConsole(str, stderr);
-}
-
-void SystemErrWriter::flush()
-{
-	fflush(stderr);
-}
+#if LOG4CXX_FORCE_WIDE_CONSOLE
+	return true;
+#elif LOG4CXX_FORCE_BYTE_CONSOLE || !LOG4CXX_HAS_FWIDE
+	return false;
+#else
+	return fwide(file, 0) > 0;
 #endif
+}
+
+size_t helpers::writeToConsole(const LogString& str, FILE *file)
+{
+#if LOG4CXX_WCHAR_T_API
+	if (isConsoleWide(file))
+	{
+		LOG4CXX_ENCODE_WCHAR(msg, str);
+		int status = fputws(msg.c_str(), file);
+		return status == EOF ? 0 : msg.size();
+	}
+#endif
+
+	LOG4CXX_ENCODE_CHAR(msg, str);
+
+	//
+	// We can't use fputs, fprintf, or even a `%.*s` specifier
+	// as the message may contain embedded null bytes, which would cause the
+	// message to be prematurely truncated.
+	//
+	msg.append("\n");
+	return fwrite(msg.data(), 1, msg.size(), file);
+}
