@@ -54,7 +54,6 @@ class LOG4CXX_EXPORT SystemOutWriter : public Writer
 	private:
 		SystemOutWriter(const SystemOutWriter&);
 		SystemOutWriter& operator=(const SystemOutWriter&);
-		static bool isWide();
 };
 
 } // namespace helpers

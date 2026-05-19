@@ -108,6 +108,7 @@ target_sources(log4cxx
   colorendpatternconverter.cpp
   configurator.cpp
   consoleappender.cpp
+  consolewriter.cpp
   cyclicbuffer.cpp
   date.cpp
   dateformat.cpp

@@ -14,46 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef LOG4CXX_CONSOLEWRITER_PRIVATE_H
+#define LOG4CXX_CONSOLEWRITER_PRIVATE_H
 
-#include <log4cxx/helpers/systemerrwriter.h>
+#include <log4cxx/logstring.h>
 #include <stdio.h>
-#include <log4cxx/private/consolewriter_priv.h>
 
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::helpers;
-
-IMPLEMENT_LOG4CXX_OBJECT(SystemErrWriter)
-
-SystemErrWriter::SystemErrWriter()
+namespace LOG4CXX_NS
 {
-}
-
-SystemErrWriter::~SystemErrWriter()
+namespace helpers
 {
-}
 
-void SystemErrWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
-{
-}
+LOG4CXX_EXPORT size_t writeToConsole(const LogString& str, FILE *file);
 
-void SystemErrWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
-{
-	fflush(stderr);
-}
+} // namespace helpers
 
-void SystemErrWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
-{
-	helpers::writeToConsole(str, stderr);
-}
+} // namespace log4cxx
 
-#if LOG4CXX_ABI_VERSION <= 15
-void SystemErrWriter::write(const LogString& str)
-{
-	helpers::writeToConsole(str, stderr);
-}
-
-void SystemErrWriter::flush()
-{
-	fflush(stderr);
-}
-#endif
+#endif /* LOG4CXX_CONSOLEWRITER_PRIVATE_H */
