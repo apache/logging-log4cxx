@@ -17,7 +17,8 @@
 #ifndef LOG4CXX_CONSOLEWRITER_PRIVATE_H
 #define LOG4CXX_CONSOLEWRITER_PRIVATE_H
 
-#include <log4cxx/rolling/action.h>
+#include <log4cxx/logstring.h>
+#include <stdio.h>
 
 namespace LOG4CXX_NS
 {
