@@ -19,6 +19,7 @@
 
 #include <log4cxx/private/consolewriter_priv.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <apr_file_io.h>
 
 using namespace log4cxx;
