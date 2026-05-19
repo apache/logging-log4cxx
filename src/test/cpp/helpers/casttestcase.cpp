@@ -17,6 +17,7 @@
 
 #include "../logunit.h"
 #include <log4cxx/helpers/bytearrayoutputstream.h>
+#include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <iostream>
@@ -36,6 +37,7 @@ LOGUNIT_CLASS(CastTestCase)
 	LOGUNIT_TEST(testBadCast);
 	LOGUNIT_TEST(testNullParameter);
 	LOGUNIT_TEST(testRollingFileAppender);
+	LOGUNIT_TEST(testByteArrayOutputStreamWriteAfterDefaultConstruction);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -77,6 +79,30 @@ public:
 		AppenderPtr appender = log4cxx::cast<Appender>(rolling);
 
 		LOGUNIT_ASSERT(appender);
+	}
+
+	/**
+	 * The default constructor of ByteArrayOutputStream left its private
+	 * unique_ptr default-initialised (nullptr), so the first call into
+	 * write() / toByteArray() dereferenced a null pointer. Verify that
+	 * a freshly constructed instance can accept input and round-trip it
+	 * back through toByteArray() without crashing.
+	 */
+	void testByteArrayOutputStreamWriteAfterDefaultConstruction()
+	{
+		ByteArrayOutputStreamPtr stream = std::make_shared<ByteArrayOutputStream>();
+
+		char payload[] = { 'l', 'o', 'g', '4', 'c', 'x', 'x' };
+		ByteBuffer buf(payload, sizeof(payload));
+
+		stream->write(buf);
+
+		ByteList result = stream->toByteArray();
+		LOGUNIT_ASSERT_EQUAL(sizeof(payload), result.size());
+		for (size_t i = 0; i < sizeof(payload); ++i)
+		{
+			LOGUNIT_ASSERT_EQUAL(static_cast<unsigned char>(payload[i]), result[i]);
+		}
 	}
 
 };
