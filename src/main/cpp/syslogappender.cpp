@@ -26,14 +26,150 @@
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
-#include <apr_strings.h>
 #include <log4cxx/private/syslogappender_priv.h>
+#include <algorithm>
 
 #define LOG_UNDEF -1
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::net;
+
+namespace
+{
+	constexpr size_t SYSLOG_PACKET_SUFFIX_RESERVED_CHARS = 12;
+
+	void appendPacketSuffix(LogString& item, size_t current, size_t total)
+	{
+		item.append(LOG4CXX_STR("("));
+		StringHelper::toString(current, item);
+		item.append(LOG4CXX_STR("/"));
+		StringHelper::toString(total, item);
+		item.append(LOG4CXX_STR(")"));
+	}
+}
+
+namespace LOG4CXX_NS
+{
+namespace net
+{
+namespace detail
+{
+std::vector<LogString> splitSyslogPackets(const LogString& msg, size_t maxMessageLength)
+{
+	std::vector<LogString> packets;
+	auto digitCount = [](size_t value) {
+		size_t digits = 1u;
+		while (value >= 10u)
+		{
+			value /= 10u;
+			++digits;
+		}
+		return digits;
+	};
+	auto reservePackets = [&](size_t count) -> bool
+	{
+		if (count > packets.max_size())
+		{
+			LogLog::error(LOG4CXX_STR("SyslogAppender cannot reserve memory for packet splitting; message too large."));
+			return false;
+		}
+
+		try
+		{
+			packets.reserve(count);
+			return true;
+		}
+		catch (const std::length_error&)
+		{
+			LogLog::error(LOG4CXX_STR("SyslogAppender cannot reserve memory for packet splitting; message too large."));
+			return false;
+		}
+	};
+	auto splitByChunkSize = [&](size_t chunkSize, bool appendSuffix) -> bool
+	{
+		const size_t nChunks = msg.size() / chunkSize + ((msg.size() % chunkSize) != 0u ? 1u : 0u);
+		if (!reservePackets(nChunks))
+		{
+			return false;
+		}
+
+		for (size_t start = 0u; start < msg.size();)
+		{
+			const size_t remaining = msg.size() - start;
+			const size_t count = std::min(chunkSize, remaining);
+			packets.push_back(msg.substr(start, count));
+			start += count;
+		}
+
+		if (appendSuffix)
+		{
+			size_t current = 1u;
+			for (auto& item : packets)
+			{
+				appendPacketSuffix(item, current, packets.size());
+				++current;
+			}
+		}
+
+		return true;
+	};
+
+	if (maxMessageLength == 0u)
+	{
+		return packets;
+	}
+
+	if (msg.size() <= maxMessageLength)
+	{
+		packets.push_back(msg);
+		return packets;
+	}
+
+	size_t chunkSize = maxMessageLength > SYSLOG_PACKET_SUFFIX_RESERVED_CHARS
+		? maxMessageLength - SYSLOG_PACKET_SUFFIX_RESERVED_CHARS
+		: 1u;
+
+	const size_t maxIterations = 10u;
+	for (size_t iter = 0u; iter < maxIterations; ++iter)
+	{
+		const size_t nChunks = msg.size() / chunkSize + ((msg.size() % chunkSize) != 0u ? 1u : 0u);
+		const size_t suffixLen = 2u * digitCount(nChunks) + 3u;
+
+		if (suffixLen <= SYSLOG_PACKET_SUFFIX_RESERVED_CHARS)
+		{
+			splitByChunkSize(chunkSize, true);
+			return packets;
+		}
+
+		if (suffixLen >= maxMessageLength)
+		{
+			LogLog::warn(LOG4CXX_STR("SyslogAppender: suffix does not fit in MaxMessageLength; omitting packet suffix."));
+			splitByChunkSize(maxMessageLength, false);
+			return packets;
+		}
+
+		size_t newChunkSize = maxMessageLength - suffixLen;
+		if (newChunkSize == 0u)
+		{
+			newChunkSize = 1u;
+		}
+
+		if (newChunkSize >= chunkSize)
+		{
+			splitByChunkSize(chunkSize, true);
+			return packets;
+		}
+
+		chunkSize = newChunkSize;
+	}
+
+	splitByChunkSize(chunkSize, true);
+	return packets;
+}
+}
+}
+}
 
 IMPLEMENT_LOG4CXX_OBJECT(SyslogAppender)
 
@@ -282,46 +418,10 @@ void SyslogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 	_priv->layout->format(msg, event);
 
 	Transcoder::encode(msg, encoded);
-
-	// Split up the message if it is over maxMessageLength in size.
-	// According to RFC 3164, the max message length is 1024, however
-	// newer systems(such as syslog-ng) can go up to 8k in size for their
-	// messages.  We will append (x/y) at the end of each message
-	// to indicate how far through the message we are
-	std::vector<LogString> packets;
-
-	if ( msg.size() > _priv->maxMessageLength )
+	auto packets = detail::splitSyslogPackets(msg, static_cast<size_t>(_priv->maxMessageLength));
+	if (packets.empty() && !msg.empty())
 	{
-		LogString::iterator start = msg.begin();
-
-		while ( start != msg.end() )
-		{
-			LogString::iterator end = start + _priv->maxMessageLength - 12;
-
-			if ( end > msg.end() )
-			{
-				end = msg.end();
-			}
-
-			LogString newMsg = LogString( start, end );
-			packets.push_back( newMsg );
-			start = end;
-		}
-
-		int current = 1;
-
-		for (auto& item : packets)
-		{
-			char buf[12];
-			apr_snprintf( buf, sizeof(buf), "(%d/%d)", current, (int)packets.size() );
-			LOG4CXX_DECODE_CHAR(str, buf);
-			item.append( str );
-			++current;
-		}
-	}
-	else
-	{
-		packets.push_back( msg );
+		return;
 	}
 
 	// On the local host, we can directly use the system function 'syslog'
@@ -493,4 +593,3 @@ int SyslogAppender::getMaxMessageLength() const
 {
 	return _priv->maxMessageLength;
 }
-
