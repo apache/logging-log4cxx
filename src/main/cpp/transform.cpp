@@ -46,6 +46,11 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 		auto ch = Transcoder::decode(input, nextCodePoint);
 		if (nextCodePoint == lastCodePoint) // failed to decode input?
 			nextCodePoint = input.end();
+		else if (0xD800 <= ch && ch <= 0xDFFF)
+		{
+			// RFC 3629 §3 explicitly forbids surrogate-half values in UTF-8
+			ch = 0xFFFF;
+		}
 		else if ((0x20 <= ch && ch <= 0xD7FF) &&
 			specials[0] != ch &&
 			specials[1] != ch &&
@@ -53,11 +58,6 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 			specials[3] != ch)
 		{
 			continue;
-		}
-		else if (0xD800 <= ch && ch <= 0xDFFF)
-		{
-			// RFC 3629 §3 explicitly forbids surrogate-half values in UTF-8
-			ch = 0xFFFF;
 		}
 		else if ((0x9 == ch || 0xA == ch || 0xD == ch) ||
 				(0xE000 <= ch && ch <= 0xFFFD) ||
