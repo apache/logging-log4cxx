@@ -38,6 +38,7 @@ LOGUNIT_CLASS(CastTestCase)
 	LOGUNIT_TEST(testNullParameter);
 	LOGUNIT_TEST(testRollingFileAppender);
 	LOGUNIT_TEST(testByteArrayOutputStreamWriteAfterDefaultConstruction);
+	LOGUNIT_TEST(testByteArrayOutputStreamIgnoresEmptyWrite);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -103,6 +104,19 @@ public:
 		{
 			LOGUNIT_ASSERT_EQUAL(static_cast<unsigned char>(payload[i]), result[i]);
 		}
+	}
+
+	void testByteArrayOutputStreamIgnoresEmptyWrite()
+	{
+		ByteArrayOutputStreamPtr stream = std::make_shared<ByteArrayOutputStream>();
+
+		char payload[] = { 'x' };
+		ByteBuffer buf(payload, 0);
+
+		stream->write(buf);
+
+		LOGUNIT_ASSERT_EQUAL(size_t(0), stream->toByteArray().size());
+		LOGUNIT_ASSERT_EQUAL(size_t(0), buf.remaining());
 	}
 
 };
