@@ -54,6 +54,11 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 		{
 			continue;
 		}
+		else if (0xD800 <= ch && ch <= 0xDFFF)
+		{
+			// RFC 3629 §3 explicitly forbids surrogate-half values in UTF-8
+			ch = 0xFFFF;
+		}
 		else if ((0x9 == ch || 0xA == ch || 0xD == ch) ||
 				(0xE000 <= ch && ch <= 0xFFFD) ||
 				(0x10000 <= ch && ch <= 0x10FFFF))
