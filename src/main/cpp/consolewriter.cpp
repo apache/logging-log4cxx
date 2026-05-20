@@ -53,6 +53,5 @@ size_t helpers::writeToConsole(const LogString& str, FILE *file)
 	// as the message may contain embedded null bytes, which would cause the
 	// message to be prematurely truncated.
 	//
-	msg.append("\n");
 	return fwrite(msg.data(), 1, msg.size(), file);
 }

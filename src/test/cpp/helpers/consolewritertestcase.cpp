@@ -46,15 +46,13 @@ public:
 		std::string path = tmpdir;
 		path += "/log4cxx.test.log";
 
-		remove(path.c_str());
-
-		std::string message{"Hello\0World!", 12};
+		std::string message{"Hello\0World!\n", 13};
 
 		{
 			FILE *fp = fopen(path.c_str(), "wb");
 			LOG4CXX_DECODE_CHAR(lsMessage, message);
 			size_t written = helpers::writeToConsole(lsMessage, fp);
-			LOGUNIT_ASSERT_EQUAL(message.size() + 1, written);
+			LOGUNIT_ASSERT_EQUAL(message.size(), written);
 			fclose(fp);
 		}
 
@@ -68,7 +66,9 @@ public:
 			fclose(fp);
 		}
 
-		LOGUNIT_ASSERT_EQUAL(content, message + "\n");
+		remove(path.c_str());
+
+		LOGUNIT_ASSERT(content == message);
 	}
 
 };
