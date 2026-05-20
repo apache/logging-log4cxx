@@ -1,9 +1,9 @@
 ﻿To: dev@logging.apache.org
-Subject: [VOTE] Release Apache Log4cxx 1.7.0
+Subject: [VOTE] Release Apache Log4cxx 1.8.0
 
-This is a vote to release the Apache Log4cxx 1.7.0.
+This is a vote to release the Apache Log4cxx 1.8.0.
 
-Website: https://logging.staged.apache.org/log4cxx/changelog.html#rel_1_7_0
+Website: https://logging.staged.apache.org/log4cxx/changelog.html#rel_1_8_0
 GitHub: https://github.com/apache/logging-log4cxx
 Commit: <todo insert>
 Distribution: https://dist.apache.org/repos/dist/dev/logging/log4cxx/
