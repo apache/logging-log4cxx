@@ -148,7 +148,7 @@ public:
 	void testToIntParsesWholeString()
 	{
 		LOGUNIT_ASSERT_EQUAL(42, StringHelper::toInt(LOG4CXX_STR(" 42 \t")));
-		LOGUNIT_ASSERT_EQUAL(1234567890123LL, StringHelper::toInt64(LOG4CXX_STR("1234567890123")));
+		LOGUNIT_ASSERT_EQUAL(int64_t(1234567890123LL), StringHelper::toInt64(LOG4CXX_STR("1234567890123")));
 	}
 
 	void testToIntRejectsEmptyString()
