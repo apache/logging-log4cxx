@@ -46,6 +46,19 @@ class LOG4CXX_EXPORT Transform
 			LogString& buf, const LogString& input);
 
 		/**
+		* Add \c input to an HTML attribute value while replacing characters
+		* that can break out of quoted attributes with entity references.
+		* Any NUL character in \c input is not copied to \c buf.
+		* A character reference is used in place of a character
+		* whose value is not permitted by the XML 1.0 specification.
+		*
+		* @param buf output stream where to write the modified string.
+		* @param input The text to be converted.
+		* */
+		static void appendEscapingAttribute(
+			LogString& buf, const LogString& input);
+
+		/**
 		* Add \c input to \c buf while ensuring embedded CDEnd strings (]]&gt;)
 		* are handled properly within the message.
 		* The initial CDStart (&lt;![CDATA[) and terminating CDEnd (]]&gt;)

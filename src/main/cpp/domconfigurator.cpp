@@ -410,7 +410,7 @@ AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::parseAppender(apr_xml_elem*
 			}
 		}
 
-		propSetter.activate(p);
+		propSetter.activate();
 		appenders[appender->getName()].activated = true;
 		return appender;
 	}
@@ -503,7 +503,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseErrorHandler(apr_xml_elem* el
 			}
 		}
 
-		propSetter.activate(p);
+		propSetter.activate();
 		if (auto appSkeleton = LOG4CXX_NS::cast<AppenderSkeleton>(appender))
 			appSkeleton->setErrorHandler(eh);
 	}
@@ -546,7 +546,7 @@ FilterStore DOMConfigurator::DOMConfiguratorPrivate::parseFilters(apr_xml_elem* 
 			}
 		}
 
-		propSetter.activate(p);
+		propSetter.activate();
 		result.push_back(filter);
 	}
 	return result;
@@ -720,7 +720,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseChildrenOfLoggerElement(apr_x
 		logger->replaceAppenders(newappenders);
 		this->appenderAdded = true;
 	}
-	propSetter.activate(p);
+	propSetter.activate();
 }
 
 /**
@@ -762,7 +762,7 @@ LayoutPtr DOMConfigurator::DOMConfiguratorPrivate::parseLayout(apr_xml_elem* lay
 			}
 		}
 
-		propSetter.activate(p);
+		propSetter.activate();
 		return layout;
 	}
 	catch (Exception& oops)
@@ -821,7 +821,7 @@ ObjectPtr DOMConfigurator::DOMConfiguratorPrivate::parseTriggeringPolicy(apr_xml
 			}
 		}
 
-		propSetter.activate(p);
+		propSetter.activate();
 		return instance;
 	}
 	catch (Exception& oops)
@@ -869,7 +869,7 @@ RollingPolicyPtr DOMConfigurator::DOMConfiguratorPrivate::parseRollingPolicy(apr
 			}
 		}
 
-		propSetter.activate(p);
+		propSetter.activate();
 		return LOG4CXX_NS::cast<RollingPolicy>(instance);
 	}
 	catch (Exception& oops)
@@ -958,7 +958,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::setParameter(apr_xml_elem* elem, P
 	LogString name(subst(getAttribute(elem, NAME_ATTR)));
 	LogString value(subst(getAttribute(elem, VALUE_ATTR)));
 	value = subst(value);
-	propSetter.setProperty(name, value, p);
+	propSetter.setProperty(name, value);
 }
 
 spi::ConfigurationStatus DOMConfigurator::doConfigure

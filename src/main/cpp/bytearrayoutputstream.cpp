@@ -32,6 +32,7 @@ struct ByteArrayOutputStream::ByteArrayOutputStreamPriv
 IMPLEMENT_LOG4CXX_OBJECT(ByteArrayOutputStream)
 
 ByteArrayOutputStream::ByteArrayOutputStream()
+	: m_priv(std::make_unique<ByteArrayOutputStreamPriv>())
 {
 }
 

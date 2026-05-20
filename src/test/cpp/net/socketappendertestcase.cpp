@@ -16,6 +16,7 @@
  */
 
 #include "../appenderskeletontestcase.h"
+#include <log4cxx/logmanager.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/net/xmlsocketappender.h>
@@ -44,8 +45,10 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
-		LOGUNIT_TEST(testRetryConnect);
-
+		LOGUNIT_TEST(testRetryConnectDefault);
+#if 15 < LOG4CXX_ABI_VERSION
+		LOGUNIT_TEST(testRetryConnectBSD);
+#endif
 		LOGUNIT_TEST_SUITE_END();
 
 #ifdef _DEBUG
@@ -59,20 +62,29 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 
 
 	public:
+		void tearDown() override
+		{
+			LogManager::shutdown();
+		}
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
 			return new log4cxx::net::SocketAppender();
 		}
 
-		void testRetryConnect()
+		void testRetryConnect(const LogString& socketImpl = {})
 		{
 			int tcpPort = 44445;
+			int millisecondDelay = 50;
 			auto appender = std::make_shared<net::SocketAppender>();
 			appender->setLayout(std::make_shared<log4cxx::PatternLayout>(LOG4CXX_STR("%d [%T] %m%n")));
 			appender->setRemoteHost(LOG4CXX_STR("localhost"));
-			appender->setReconnectionDelay(50); // milliseconds
+			appender->setReconnectionDelay(millisecondDelay);
 			appender->setPort(tcpPort);
+#if 15 < LOG4CXX_ABI_VERSION
+			if (!socketImpl.empty())
+				appender->setSocketSubclass(socketImpl);
+#endif
 			appender->activateOptions();
 
 			BasicConfigurator::configure(appender);
@@ -179,6 +191,18 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			}
 			LOGUNIT_ASSERT_EQUAL(logEventCount, (int)messageCount.size());
 		}
+
+		void testRetryConnectDefault()
+		{
+			testRetryConnect();
+		}
+
+#if 15 < LOG4CXX_ABI_VERSION
+		void testRetryConnectBSD()
+		{
+			testRetryConnect(LOG4CXX_STR("BSDSocket"));
+		}
+#endif
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(SocketAppenderTestCase);

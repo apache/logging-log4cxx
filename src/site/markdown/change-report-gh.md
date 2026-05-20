@@ -25,6 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
+| [1.8.0](#rel_1_8_0) | 2026-XX-XX | Maintenance release  |
 | [1.7.0](#rel_1_7_0) | 2026-04-04 | Maintenance release  |
 | [1.6.1](#rel_1_6_1) | 2026-01-09 | Bugfix release       |
 | [1.6.0](#rel_1_6_0) | 2025-12-14 | Maintenance release  |
@@ -52,6 +53,40 @@ Change Log {#changelog}
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
+
+## Release 1.8.0 - 2026-XX-XX {#rel_1_8_0}
+
+Release 1.8.0 includes the following new features:
+
+* Functions that aid the transition to the next ABI version
+   * [#625](https://github.com/apache/logging-log4cxx/pull/625)
+   , [#634](https://github.com/apache/logging-log4cxx/pull/634)
+   , [#642](https://github.com/apache/logging-log4cxx/pull/642)
+   , [#645](https://github.com/apache/logging-log4cxx/pull/645)
+
+The following issues have been addressed:
+
+* Various character encoding/decoding issues
+   * [#589](https://github.com/apache/logging-log4cxx/pull/589)
+   , [#659](https://github.com/apache/logging-log4cxx/pull/659)
+   , [#660](https://github.com/apache/logging-log4cxx/pull/660)
+   , [#664](https://github.com/apache/logging-log4cxx/pull/664)
+   , [#670](https://github.com/apache/logging-log4cxx/pull/670)
+
+* A lack of robustness dealing with values near numeric limits  
+   * [#633](https://github.com/apache/logging-log4cxx/pull/633)
+   , [#646](https://github.com/apache/logging-log4cxx/pull/646)
+   , [#649](https://github.com/apache/logging-log4cxx/pull/649)
+   , [#650](https://github.com/apache/logging-log4cxx/pull/650)
+   , [#651](https://github.com/apache/logging-log4cxx/pull/651)
+   , [#654](https://github.com/apache/logging-log4cxx/pull/654)
+   , [#655](https://github.com/apache/logging-log4cxx/pull/655)
+   , [#656](https://github.com/apache/logging-log4cxx/pull/656)
+   , [#657](https://github.com/apache/logging-log4cxx/pull/657)
+   , [#660](https://github.com/apache/logging-log4cxx/pull/660)
+
+* Console appender truncated a message containing an embedded null character
+   \[[#643](https://github.com/apache/logging-log4cxx/pull/643)\]
 
 ## Release 1.7.0 - 2026-04-04 {#rel_1_7_0}
 

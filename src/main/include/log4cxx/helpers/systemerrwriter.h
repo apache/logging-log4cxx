@@ -54,7 +54,6 @@ class LOG4CXX_EXPORT SystemErrWriter : public Writer
 	private:
 		SystemErrWriter(const SystemErrWriter&);
 		SystemErrWriter& operator=(const SystemErrWriter&);
-		static bool isWide();
 };
 
 } // namespace helpers

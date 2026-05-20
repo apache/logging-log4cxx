@@ -76,6 +76,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	int port;
 	int reconnectionDelay;
 	bool locationInfo;
+
 	void close();
 
 	/**
@@ -101,6 +102,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 
 	void retryConnect();
 
+	LogString socketSubclass;
 };
 
 } // namespace net

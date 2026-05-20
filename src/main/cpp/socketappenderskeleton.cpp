@@ -98,7 +98,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}
-			this->setOutputSink(Socket::create(this->address, this->port));
+			this->setOutputSink(Socket::create(this->address, this->port, this->socketSubclass));
 		}
 		catch (SocketException& e)
 		{
@@ -131,6 +131,12 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 	{
 		setReconnectionDelay(OptionConverter::toInt(value, getDefaultDelay()));
 	}
+#if 15 < LOG4CXX_ABI_VERSION
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SOCKETSUBCLASS"), LOG4CXX_STR("socketsubclass")))
+	{
+		setSocketSubclass(value);
+	}
+#endif
 	else
 	{
 		AppenderSkeleton::setOption(option, value);
@@ -193,7 +199,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::retryConnect()
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}
-			this->setOutputSink(Socket::create(this->address, this->port));
+			this->setOutputSink(Socket::create(this->address, this->port, this->socketSubclass));
 			if (LogLog::isDebugEnabled())
 			{
 				LogString msg(LOG4CXX_STR("Connection established to [")
@@ -314,3 +320,15 @@ int SocketAppenderSkeleton::getReconnectionDelay() const
 {
 	return _priv->reconnectionDelay;
 }
+
+#if 15 < LOG4CXX_ABI_VERSION
+void SocketAppenderSkeleton::setSocketSubclass(const LogString& newValue)
+{
+	_priv->socketSubclass = newValue;
+}
+
+const LogString& SocketAppenderSkeleton::getSocketSubclass() const
+{
+	return _priv->socketSubclass;
+}
+#endif

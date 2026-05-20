@@ -15,16 +15,13 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
 #include <log4cxx/config/propertysetter.h>
-#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/appender.h>
-#include <log4cxx/layout.h>
-#include <log4cxx/helpers/pool.h>
+
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -35,24 +32,19 @@ PropertySetter::PropertySetter(const helpers::ObjectPtr& obj1) : obj(obj1)
 {
 }
 
-void PropertySetter::setProperties(const helpers::ObjectPtr& obj,
-	helpers::Properties& properties,
-	const LogString& prefix,
-	Pool& p)
+void PropertySetter::setProperties(const helpers::ObjectPtr& obj, helpers::Properties& properties, const LogString& prefix)
 {
-	PropertySetter(obj).setProperties(properties, prefix, p);
+	PropertySetter(obj).setProperties(properties, prefix);
 }
 
 
-void PropertySetter::setProperties(helpers::Properties& properties,
-	const LogString& prefix,
-	Pool& p)
+void PropertySetter::setProperties(helpers::Properties& properties, const LogString& prefix)
 {
 	size_t len = prefix.length();
 
 	for (auto key : properties.propertyNames())
 	{
-		// handle only properties that start with the desired frefix.
+		// handle only properties that start with the desired prefix.
 		if (key.find(prefix) == 0)
 		{
 			// ignore key if it contains dots after the prefix
@@ -71,16 +63,14 @@ void PropertySetter::setProperties(helpers::Properties& properties,
 				continue;
 			}
 
-			setProperty(key, value, p);
+			setProperty(key, value);
 		}
 	}
 
-	activate(p);
+	activate();
 }
 
-void PropertySetter::setProperty(const LogString& option,
-	const LogString& value,
-	Pool&)
+void PropertySetter::setProperty(const LogString& option, const LogString& value)
 {
 	if (value.empty())
 	{
@@ -99,7 +89,7 @@ void PropertySetter::setProperty(const LogString& option,
 	}
 }
 
-void PropertySetter::activate(Pool& p)
+void PropertySetter::activate()
 {
 	if (obj != 0 && obj->instanceof(OptionHandler::getStaticClass()))
 	{
@@ -107,3 +97,33 @@ void PropertySetter::activate(Pool& p)
 		handler->activateOptions();
 	}
 }
+
+#if LOG4CXX_ABI_VERSION <= 15
+void PropertySetter::setProperties(const helpers::ObjectPtr& obj,
+	helpers::Properties& properties,
+	const LogString& prefix,
+	Pool&)
+{
+	PropertySetter(obj).setProperties(properties, prefix);
+}
+
+
+void PropertySetter::setProperties(helpers::Properties& properties,
+	const LogString& prefix,
+	Pool&)
+{
+	setProperties(properties, prefix);
+}
+
+void PropertySetter::setProperty(const LogString& option,
+	const LogString& value,
+	Pool&)
+{
+	setProperty(option, value);
+}
+
+void PropertySetter::activate(Pool& p)
+{
+	activate();
+}
+#endif

@@ -14,32 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef _LOG4CXX_HELPERS_STRING_TOKENIZER_H
-#define _LOG4CXX_HELPERS_STRING_TOKENIZER_H
+#ifndef LOG4CXX_CONSOLEWRITER_PRIVATE_H
+#define LOG4CXX_CONSOLEWRITER_PRIVATE_H
 
 #include <log4cxx/logstring.h>
+#include <stdio.h>
 
 namespace LOG4CXX_NS
 {
 namespace helpers
 {
-class LOG4CXX_EXPORT StringTokenizer
-{
-	public:
-		StringTokenizer(const LogString& str, const LogString& delim);
-		~StringTokenizer();
-		bool hasMoreTokens() const;
-		LogString nextToken();
 
-	private:
-		//   prevent copy and assignment statements
-		StringTokenizer(const StringTokenizer&);
-		StringTokenizer& operator=(const StringTokenizer&);
+LOG4CXX_EXPORT size_t writeToConsole(const LogString& str, FILE *file);
 
-		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(StringTokenizerPrivate, m_priv)
-}; // class StringTokenizer
-}  // namespace helpers;
-} // namespace log4cxx;
+} // namespace helpers
 
-#endif //_LOG4CXX_HELPERS_STRING_TOKENIZER_H
+} // namespace log4cxx
+
+#endif /* LOG4CXX_CONSOLEWRITER_PRIVATE_H */

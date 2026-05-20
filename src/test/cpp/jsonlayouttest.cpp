@@ -510,15 +510,11 @@ public:
 		LOGUNIT_ASSERT_EQUAL(expectedQuotedEscapedName, quotedEscapedName);
 
 		Transcoder::encode(0xD822, problemNameLS); // Add a character that cannot be converted to UTF16
-#if LOG4CXX_LOGCHAR_IS_WCHAR && defined(__STDC_ISO_10646__)
-		expectedQuotedEscapedName[expectedQuotedEscapedName.size() - 1] = 0xD822;
-		expectedQuotedEscapedName += 0x22; // Add a double quote at the end
-#elif LOG4CXX_LOGCHAR_IS_WCHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR && !defined(__STDC_ISO_10646__)
 		// encodeUTF16 adds 0xD822, but decodeUTF16 cannot convert 0xD822
 		expectedQuotedEscapedName.insert(expectedQuotedEscapedName.size() - 1, LOG4CXX_STR("\\ufffd")); // The Unicode replacement character
-#elif LOG4CXX_LOGCHAR_IS_UTF8
-		// 0xD822 is encoded in UTF-8 as 0xED 0xA0 0xA2
-		expectedQuotedEscapedName.insert(expectedQuotedEscapedName.size() - 1, "\xED\xA0\xA2");
+#else
+		expectedQuotedEscapedName.insert(expectedQuotedEscapedName.size() - 1, LOG4CXX_STR("\\ufffd")); // The Unicode replacement character
 #endif
 		LogString escapedQuoted0xD822Name;
 		appendQuotedEscapedString(escapedQuoted0xD822Name, problemNameLS);

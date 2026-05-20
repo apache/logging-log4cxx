@@ -24,6 +24,8 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/helpers/date.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/systemerrwriter.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <mutex>
@@ -69,6 +71,13 @@ struct LogLog::LogLogPrivate {
 			this->suffix.clear();
 		}
 	}
+	LogString elapsedMicroseconds()
+	{
+		LogString result;
+		auto microsecondInterval = Date::currentTime() - APRInitializer::getStartTime();
+		StringHelper::toString(microsecondInterval, result);
+		return result;
+	}
 };
 
 LogLog::LogLog() :
@@ -95,6 +104,16 @@ bool LogLog::isDebugEnabled()
 	auto p = getInstance().m_priv.get();
 	return p && !p->quietMode // Not deleted by onexit processing?
 			 && p->debugEnabled;
+}
+
+bool LogLog::isDebugEnabledFor(const LoggerPtr& category)
+{
+	return isDebugEnabled() && category && category->isDebugEnabled();
+}
+
+bool LogLog::isTraceEnabledFor(const LoggerPtr& category)
+{
+	return isDebugEnabled() && category && category->isTraceEnabled();
 }
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
@@ -127,7 +146,6 @@ void LogLog::debug(const LogString& msg)
 		}
 
 		std::lock_guard<std::mutex> lock(p->mutex);
-
 		emit_log(p->debugPrefix, msg, p->suffix);
 	}
 }
@@ -166,6 +184,29 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 		std::lock_guard<std::mutex> lock(p->mutex);
 		emit_log(p->errorPrefix, msg, p->suffix);
 		emit_log(p->errorPrefix, e, p->suffix);
+	}
+}
+
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+void LogLog::trace(const LoggerPtr& category, const std::string& msg)
+{
+	LOG4CXX_DECODE_CHAR(lsMsg, msg);
+	trace(category, lsMsg);
+}
+#endif
+
+void LogLog::trace(const LoggerPtr& category, const LogString& msg)
+{
+	auto p = getInstance().m_priv.get();
+	if (p && !p->quietMode) // Not deleted by onexit processing?
+	{
+		if (!p->debugEnabled)
+		{
+			return;
+		}
+
+		std::lock_guard<std::mutex> lock(p->mutex);
+		emit_log(p->debugPrefix, p->elapsedMicroseconds() + LOG4CXX_STR(" ") + category->getName() + LOG4CXX_STR("::") + msg, p->suffix);
 	}
 }
 

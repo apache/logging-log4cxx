@@ -117,13 +117,16 @@ class LOG4CXX_EXPORT RollingPolicyBase
 		 *
 		 * @param obj object to be evaluted in formatting, may not be null.
 		 * @param buf string buffer to which formatted file name is appended, may not be null.
-		 * @param p memory pool.
 		 */
-		void formatFileName(const helpers::ObjectPtr& obj,
-			LogString& buf, helpers::Pool& p) const;
+		void formatFileName(const helpers::ObjectPtr& obj, LogString& buf) const;
 
 		LOG4CXX_NS::pattern::PatternConverterPtr getIntegerPatternConverter() const;
 		LOG4CXX_NS::pattern::PatternConverterPtr getDatePatternConverter() const;
+
+#if LOG4CXX_ABI_VERSION <= 15
+		void formatFileName(const helpers::ObjectPtr& obj,
+			LogString& buf, helpers::Pool& p) const;
+#endif
 };
 
 LOG4CXX_PTR_DEF(RollingPolicyBase);

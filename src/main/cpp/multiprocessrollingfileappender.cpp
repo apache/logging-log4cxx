@@ -281,14 +281,14 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 			reopenFile(fileName);
 		else if (trigger && !trigger->isTriggeringEvent(this, _priv->_event, fileName, _priv->fileLength))
 			;
-		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend(), tempPool))
+		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend()))
 		{
 			_priv->close();
 			if (rollover1->getActiveFileName() == fileName)
 			{
 				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
-					success = pAction->execute(tempPool);
+					success = pAction->execute();
 
 				bool appendToExisting = true;
 				if (success)
@@ -307,7 +307,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 					{
 						try
 						{
-							asyncAction->execute(tempPool);
+							asyncAction->execute();
 						}
 						catch (std::exception& ex)
 						{
@@ -337,10 +337,9 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 					, rollover1->getAppend()
 					);
 				_priv->setWriter(createWriter(os));
-				helpers::Pool tempPool;
 				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
-					success = pAction->execute(tempPool);
+					success = pAction->execute();
 
 				if (success)
 				{
@@ -357,7 +356,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 					{
 						try
 						{
-							asyncAction->execute(tempPool);
+							asyncAction->execute();
 						}
 						catch (std::exception& ex)
 						{

@@ -19,6 +19,7 @@
 #define _LOG4CXX_HELPERS_LOG_LOG_H
 
 #include <log4cxx/logstring.h>
+#include <log4cxx/logger.h>
 #include <log4cxx/helpers/widelife.h>
 #include <exception>
 #include <mutex>
@@ -58,6 +59,16 @@ class LOG4CXX_EXPORT LogLog
 		static bool isDebugEnabled();
 
 		/**
+		 *  Are \c category debug messages sent to SystemErrWriter?
+		 **/
+		static bool isDebugEnabledFor(const LoggerPtr& category);
+
+		/**
+		 *  Are \c category trace messages sent to SystemErrWriter?
+		 **/
+		static bool isTraceEnabledFor(const LoggerPtr& category);
+
+		/**
 		Start/stop outputing debug messages if \c newValue is true/false respectively.
 		*/
 		static void setInternalDebugging(bool newValue);
@@ -91,7 +102,17 @@ class LOG4CXX_EXPORT LogLog
 		*/
 		static void error(const LogString& msg, const std::exception& ex);
 
+		/**
+		Output \c msg to SystemErrWriter if internal debug logging is enabled.
+		*/
+		static void trace(const LoggerPtr& category, const LogString& msg);
 
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+		/**
+		Output \c msg to SystemErrWriter if internal debug logging is enabled.
+		*/
+		static void trace(const LoggerPtr& category, const std::string& msg);
+#endif
 		/**
 		Change quiet mode to \c newValue.
 
@@ -118,14 +139,69 @@ class LOG4CXX_EXPORT LogLog
 }  // namespace helpers
 } // namespace log4cxx
 
-#define LOGLOG_DEBUG(log) { \
-		if (LogLog::isDebugEnabled()) \
-			LOG4CXX_NS::helpers::LogLog::debug(log) ; }
+#if defined(LOGLOG_THRESHOLD) && LOGLOG_THRESHOLD <= 10000
+/**
+Send \c message to helpers::SystemErrWriter if \c logger is enabled for <code>DEBUG</code> events.
 
-#define LOGLOG_WARN(log) { \
-		LOG4CXX_NS::helpers::LogLog::warn(log) ; }
+\usage
+~~~{.cpp}
+LOGLOG_DEBUG(m_log, "setRemote:"
+	<< " hostAddress " << address->getHostAddress()
+	<< " port " << port
+	<< " inetType " << m_inetType
+	<< " ipVersion " << m_inetFamily
+	);
+~~~
 
-#define LOGLOG_ERROR(log) { \
-		LOG4CXX_NS::helpers::LogLog::warn(log); }
+@param logger the logger that has the enabled status.
+@param message a valid parameter to an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOGLOG_DEBUG(logger, message) { \
+		if (LOG4CXX_NS::helpers::LogLog::isDebugEnabledFor(logger)) { \
+			LOG4CXX_NS::helpers::MessageBuffer buf; \
+			LOG4CXX_NS::helpers::LogLog::trace(logger, buf.str(buf << message)); } }
+#else // !defined(LOGLOG_THRESHOLD) || 10000 < LOGLOG_THRESHOLD
+#define LOGLOG_DEBUG(logger, message)
+#endif
+
+#if defined(LOGLOG_THRESHOLD) && LOGLOG_THRESHOLD <= 5000
+/**
+Send \c message to helpers::SystemErrWriter if \c logger is enabled for <code>TRACE</code> events.
+
+\usage
+~~~{.cpp}
+LOGLOG_TRACE(m_log, "write:"
+	<< " byteCount " << byteCount
+	<< " to " << *m_remoteAddress
+	<< "\n" << MessageData(pMessage, byteCount)
+	);
+~~~
+
+@param logger the logger that has the enabled status.
+@param message a valid parameter to an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOGLOG_TRACE(logger, message) { \
+		if (LOG4CXX_NS::helpers::LogLog::isTraceEnabledFor(logger)) { \
+			LOG4CXX_NS::helpers::MessageBuffer buf; \
+			LOG4CXX_NS::helpers::LogLog::trace(logger, buf.str(buf << message)); } }
+#else // !defined(LOGLOG_THRESHOLD) || 5000 < LOGLOG_THRESHOLD
+#define LOGLOG_TRACE(logger, message)
+#endif
+
+/**
+Send \c message to helpers::SystemErrWriter using the configured warning output style.
+@param message a valid parameter to an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOGLOG_WARN(message) { \
+		LOG4CXX_NS::helpers::MessageBuffer buf; \
+		LOG4CXX_NS::helpers::LogLog::warn(buf.str(buf << message)); }
+
+/**
+Send \c message to helpers::SystemErrWriter using the configured error output style.
+@param message a valid parameter to an <code>operator<<(std::ostream&. ...)</code> overload.
+*/
+#define LOGLOG_ERROR(message) { \
+		LOG4CXX_NS::helpers::MessageBuffer buf; \
+		LOG4CXX_NS::helpers::LogLog::error(buf.str(buf << message)); }
 
 #endif //_LOG4CXX_HELPERS_LOG_LOG_H

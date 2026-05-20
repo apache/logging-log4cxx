@@ -26,11 +26,11 @@ using namespace LOG4CXX_NS::helpers;
 
 namespace
 {
-using CharProcessor = std::function<void(LogString&, int)>;
+using CharProcessor = std::function<bool(LogString&, int)>;
 
 // Allowable XML 1.0 characters are:
 // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor handler = {})
+void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor handler = {}, bool handleValidCharacters = false)
 {
 	static const unsigned int specials[] =
 		{ 0x22 /* " */
@@ -51,18 +51,23 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 			// RFC 3629 §3 explicitly forbids surrogate-half values in UTF-8
 			ch = 0xFFFF;
 		}
-		else if ((0x20 <= ch && ch <= 0xD7FF) &&
-			specials[0] != ch &&
-			specials[1] != ch &&
-			specials[2] != ch &&
-			specials[3] != ch)
+		else if (((0x20 <= ch && ch <= 0xD7FF) &&
+				specials[0] != ch &&
+				specials[1] != ch &&
+				specials[2] != ch &&
+				specials[3] != ch) ||
+			(0x9 == ch || 0xA == ch || 0xD == ch) ||
+			(0xE000 <= ch && ch <= 0xFFFD) ||
+			(0x10000 <= ch && ch <= 0x10FFFF))
 		{
-			continue;
-		}
-		else if ((0x9 == ch || 0xA == ch || 0xD == ch) ||
-				(0xE000 <= ch && ch <= 0xFFFD) ||
-				(0x10000 <= ch && ch <= 0x10FFFF))
-		{
+			LogString escaped;
+			if (handleValidCharacters && handler && handler(escaped, ch))
+			{
+				if (start != lastCodePoint)
+					buf.append(start, lastCodePoint);
+				buf.append(escaped);
+				start = nextCodePoint;
+			}
 			continue;
 		}
 
@@ -94,12 +99,29 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 				break;
 
 			default:
-				if (handler)
-					handler(buf, ch);
+				if (handler && !handler(buf, ch))
+					Transform::appendCharacterReference(buf, ch);
 				break;
 		}
 	}
 	buf.append(start, input.end());
+}
+
+bool appendCharacterReferenceHandler(LogString& buf, int ch)
+{
+	Transform::appendCharacterReference(buf, ch);
+	return true;
+}
+
+bool appendAttributeCharacterReference(LogString& buf, int ch)
+{
+	if (0x27 == ch || 0x9 == ch || 0xA == ch || 0xD == ch)
+	{
+		Transform::appendCharacterReference(buf, ch);
+		return true;
+	}
+
+	return false;
 }
 
 } // namespace
@@ -182,7 +204,12 @@ void Transform::appendCharacterReference(LogString& buf, unsigned int ch)
 
 void Transform::appendEscapingTags(LogString& buf, const LogString& input)
 {
-	appendValidCharacters(buf, input, appendCharacterReference);
+	appendValidCharacters(buf, input, appendCharacterReferenceHandler);
+}
+
+void Transform::appendEscapingAttribute(LogString& buf, const LogString& input)
+{
+	appendValidCharacters(buf, input, appendAttributeCharacterReference, true);
 }
 
 void Transform::appendLegalCharacters(LogString& buf, const LogString& input)

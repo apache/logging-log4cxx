@@ -21,6 +21,12 @@
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/pool.h>
 
+#if 15 < LOG4CXX_ABI_VERSION
+#define LOG4CXX_16_CONST const
+#else
+#define LOG4CXX_16_CONST
+#endif
+
 
 namespace LOG4CXX_NS
 {
@@ -60,6 +66,12 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		When true, an exception is thrown if the write would block.
 		*/
 		virtual void setNonBlocking(bool newValue) = 0;
+
+		/// Open this socket.
+		virtual void open() = 0;
+
+		/// Is this available for use?
+		virtual bool is_open() = 0;
 #endif
 
 		/** Close this socket. */
@@ -71,10 +83,17 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		/** Returns the value of this socket's port field. */
 		int getPort() const;
 
+		/** Use \c newAddress and \c newPort as the destination. */
+		void setAttributes(const InetAddressPtr& newAddress, int newPort);
+
 		/** Create a concrete instance of this class
 		*/
+#if LOG4CXX_ABI_VERSION <= 15
 		static SocketUniquePtr create(InetAddressPtr& address, int port);
-
+		static SocketUniquePtr create(LOG4CXX_16_CONST InetAddressPtr& address, int port, const LogString& concreteClassName);
+#else
+		static SocketUniquePtr create(const InetAddressPtr& address, int port, const LogString& concreteClassName = {});
+#endif
 	private:
 		Socket(const Socket&);
 		Socket& operator=(const Socket&);

@@ -32,7 +32,10 @@ else()
     list(APPEND PUBLIC_COMPILE_DEFINITIONS LOG4CXX_STATIC)
 endif()
 if(LOG4CXX_TEST_ONLY_BUILD)
-    list(APPEND PRIVATE_COMPILE_DEFINITIONS "ENABLE_FAILING_APPENDER_SIMULATION_TESTING=1")
+    list(APPEND PRIVATE_COMPILE_DEFINITIONS
+      "ENABLE_FAILING_APPENDER_SIMULATION_TESTING=1"
+      "LOGLOG_THRESHOLD=1"
+    )
 endif()
 target_compile_definitions(log4cxx
     PUBLIC ${PUBLIC_COMPILE_DEFINITIONS}
@@ -105,6 +108,7 @@ target_sources(log4cxx
   colorendpatternconverter.cpp
   configurator.cpp
   consoleappender.cpp
+  consolewriter.cpp
   cyclicbuffer.cpp
   date.cpp
   dateformat.cpp

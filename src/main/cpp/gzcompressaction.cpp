@@ -31,10 +31,16 @@ using namespace LOG4CXX_NS::helpers;
 
 struct GZCompressAction::GZCompressActionPrivate : public ActionPrivate
 {
-	GZCompressActionPrivate( const File& toRename,
-		const File& renameTo,
-		bool deleteSource):
-		source(toRename), destination(renameTo), deleteSource(deleteSource) {}
+	GZCompressActionPrivate
+		( const File& toRename
+		, const File& renameTo
+		, bool deleteSource
+		)
+		: ActionPrivate{ LOG4CXX_STR("gzip") }
+		, source(toRename)
+		, destination(renameTo)
+		, deleteSource(deleteSource)
+		{}
 
 	const File source;
 	File destination;
@@ -54,11 +60,12 @@ GZCompressAction::GZCompressAction(const File& src,
 
 GZCompressAction::~GZCompressAction() {}
 
-bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
+bool GZCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const
 {
 	if (priv->source.exists())
 	{
-		apr_pool_t* aprpool = p.getAPRPool();
+		helpers::Pool tempPool;
+		apr_pool_t* aprpool = tempPool.getAPRPool();
 		apr_procattr_t* attr;
 		apr_status_t stat = apr_procattr_create(&attr, aprpool);
 
@@ -124,7 +131,7 @@ bool GZCompressAction::execute(LOG4CXX_NS::helpers::Pool& p) const
 		int i = 0;
 		args[i++] = "gzip";
 		args[i++] = "-c";
-		args[i++] = Transcoder::encode(priv->source.getPath(), p);
+		args[i++] = Transcoder::encode(priv->source.getPath(), tempPool);
 		args[i++] = NULL;
 
 		apr_proc_t pid;

@@ -18,6 +18,7 @@
 #define LOG4CXX_ACTION_PRIVATE_H
 
 #include <log4cxx/rolling/action.h>
+#include <mutex>
 
 namespace LOG4CXX_NS
 {
@@ -26,25 +27,25 @@ namespace rolling
 
 struct Action::ActionPrivate
 {
-	ActionPrivate() :
-		complete(false),
-		interrupted(false),
-		pool() {}
+	ActionPrivate(const LogString& name = LOG4CXX_STR("An action") )
+		: actionName(name)
+	{}
 
 	virtual ~ActionPrivate(){}
 
 	/**
-	 * Is action complete.
+	 * Did the action complete.
 	 */
-	bool complete;
+	bool complete{ false };
 
 	/**
-	 * Is action interrupted.
+	 * Is the action closed.
 	 */
-	bool interrupted;
+	bool closed{ false };
 
-	LOG4CXX_NS::helpers::Pool pool;
 	std::mutex mutex;
+
+	LogString actionName;
 };
 
 }

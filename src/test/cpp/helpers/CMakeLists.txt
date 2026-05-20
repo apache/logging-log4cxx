@@ -15,12 +15,13 @@
 # limitations under the License.
 #
 
-set(HELPER_TESTS 
+set(HELPER_TESTS
     absolutetimedateformattestcase
     cacheddateformattestcase
     casttestcase
     charsetdecodertestcase
     charsetencodertestcase
+    consolewritertestcase
     cyclicbuffertestcase
     datetimedateformattestcase
     filewatchdogtest

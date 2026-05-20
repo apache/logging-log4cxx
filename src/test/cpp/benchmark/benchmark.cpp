@@ -46,7 +46,7 @@ public:
 	void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
 	{
 		LogString buf;
-		m_priv->layout->format(buf, event, p);
+		m_priv->layout->format(buf, event);
 	}
 
 	void setOption(const LogString& option, const LogString& value) override
@@ -64,8 +64,7 @@ public:
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("benchmark.log"));
 		setAppend(false);
 		setBufferedIO(buffered);
-		helpers::Pool p;
-		activateOptions(p);
+		activateOptions();
 	}
 };
 
@@ -79,8 +78,7 @@ public:
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("benchmark.json"));
 		setAppend(false);
 		setBufferedIO(true);
-		helpers::Pool p;
-		activateOptions(p);
+		activateOptions();
 	}
 };
 
@@ -94,8 +92,7 @@ public:
 		setLayout(std::make_shared<JSONLayout>());
 		setRemoteHost(LOG4CXX_STR("localhost"));
 		setPort(5170);
-		helpers::Pool p;
-		activateOptions(p);
+		activateOptions();
 	}
 };
 #endif
@@ -113,8 +110,7 @@ public:
 		setRollingPolicy(policy);
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess.log"));
 		setBufferedIO(true);
-		helpers::Pool p;
-		activateOptions(p);
+		activateOptions();
 	}
 };
 #endif
@@ -229,8 +225,7 @@ public: // Class methods
 			result->setLevel(Level::getInfo());
 			auto writer = std::make_shared<BenchmarkFileAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n")));
 			writer->setName(LOG4CXX_STR("FileAppender"));
-			helpers::Pool p;
-			writer->activateOptions(p);
+			writer->activateOptions();
 			result->addAppender(writer);
 		}
 		return result;
@@ -249,8 +244,7 @@ public: // Class methods
 			auto writer = std::make_shared<BenchmarkJSONFileAppender>();
 			writer->setName(LOG4CXX_STR("JSONFileAppender"));
 			writer->setBufferedIO(true);
-			helpers::Pool p;
-			writer->activateOptions(p);
+			writer->activateOptions();
 			result->addAppender(writer);
 		}
 		return result;
@@ -268,8 +262,7 @@ public: // Class methods
 			result->setAdditivity(false);
 			result->setLevel(Level::getInfo());
 			auto writer = std::make_shared<BenchmarkFluentbitAppender>();
-			helpers::Pool p;
-			writer->activateOptions(p);
+			writer->activateOptions();
 			result->addAppender(writer);
 		}
 		return result;
@@ -289,8 +282,7 @@ public: // Class methods
 			result->setLevel(Level::getInfo());
 			auto writer = std::make_shared<BenchmarkMultiprocessFileAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%d %m%n")));
 			writer->setName(LOG4CXX_STR("MultiprocessFileAppender"));
-			helpers::Pool p;
-			writer->activateOptions(p);
+			writer->activateOptions();
 			result->addAppender(writer);
 		}
 		return result;

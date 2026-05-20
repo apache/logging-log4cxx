@@ -219,12 +219,11 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 		std::lock_guard<std::recursive_mutex> lock(this->mutex);
 		this->triggeringPolicy->activateOptions();
 		this->rollingPolicy->activateOptions();
-		Pool p;
 
 		try
 		{
 			RolloverDescriptionPtr rollover1 =
-				this->rollingPolicy->initialize(this->fileName, this->fileAppend, p);
+				this->rollingPolicy->initialize(this->fileName, this->fileAppend);
 
 			if (rollover1 != NULL)
 			{
@@ -232,7 +231,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 
 				if (syncAction != NULL)
 				{
-					syncAction->execute(p);
+					syncAction->execute();
 				}
 
 				this->fileName = rollover1->getActiveFileName();
@@ -245,7 +244,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 
 				if (asyncAction != NULL)
 				{
-					asyncAction->execute(p);
+					asyncAction->execute();
 				}
 			}
 
@@ -292,7 +291,7 @@ bool RollingFileAppender::rollover()
 	return rolloverInternal();
 }
 #if LOG4CXX_ABI_VERSION <= 15
-bool RollingFileAppender::rollover(Pool& p)
+bool RollingFileAppender::rollover(Pool& )
 {
 	return rollover();
 }
@@ -308,8 +307,7 @@ bool RollingFileAppender::rolloverInternal()
 		{
 				try
 				{
-					Pool p;
-					RolloverDescriptionPtr rollover1(_priv->rollingPolicy->rollover(this->getFile(), this->getAppend(), p));
+					RolloverDescriptionPtr rollover1(_priv->rollingPolicy->rollover(this->getFile(), this->getAppend()));
 
 					if (rollover1 != NULL)
 					{
@@ -325,7 +323,7 @@ bool RollingFileAppender::rolloverInternal()
 
 								try
 								{
-									success = rollover1->getSynchronous()->execute(p);
+									success = rollover1->getSynchronous()->execute();
 								}
 								catch (std::exception& ex)
 								{
@@ -355,7 +353,7 @@ bool RollingFileAppender::rolloverInternal()
 								{
 									try
 									{
-										asyncAction->execute(p);
+										asyncAction->execute();
 									}
 									catch (std::exception& ex)
 									{
@@ -388,7 +386,7 @@ bool RollingFileAppender::rolloverInternal()
 
 								try
 								{
-									success = rollover1->getSynchronous()->execute(p);
+									success = rollover1->getSynchronous()->execute();
 								}
 								catch (std::exception& ex)
 								{
@@ -414,7 +412,7 @@ bool RollingFileAppender::rolloverInternal()
 
 								if (asyncAction != NULL)
 								{
-									asyncAction->execute(p);
+									asyncAction->execute();
 								}
 							}
 

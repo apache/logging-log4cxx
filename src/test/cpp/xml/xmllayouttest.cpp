@@ -470,7 +470,7 @@ public:
 	 */
 	void testHTMLLayout()
 	{
-		LogString problemName = LOG4CXX_STR("com.example.bar<>&\"'");
+		LogString problemName = LOG4CXX_STR("com.example.bar<>&\"'\n\t");
 		auto level = std::make_shared<XLevel>(6000, problemName, 7);
 		NDC context(problemName);
 		auto event = std::make_shared<LoggingEvent>(problemName, level, problemName, LOG4CXX_LOCATION);
@@ -488,6 +488,10 @@ public:
 		encoder->encode(html, iter, buf);
 		LOGUNIT_ASSERT(iter == html.end());
 		buf.flip();
+
+		LOGUNIT_ASSERT(html.find(LOG4CXX_STR(
+			"title=\"com.example.bar&lt;&gt;&amp;&quot;&#x27;&#xa;&#x9; logger\"")) != LogString::npos);
+
 		Pool p;
 		auto parser = apr_xml_parser_create(p.getAPRPool());
 		LOGUNIT_ASSERT(parser != 0);

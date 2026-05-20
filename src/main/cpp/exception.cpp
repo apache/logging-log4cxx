@@ -433,6 +433,10 @@ SocketException& SocketException::operator=(const SocketException& src)
 	return *this;
 }
 
+ConnectException::ConnectException(const LogString& msg) : SocketException(msg)
+{
+}
+
 ConnectException::ConnectException(log4cxx_status_t status) : SocketException(status)
 {
 }

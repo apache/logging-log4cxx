@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [osx-14-clang, osx-15-clang, osx-g++]
+        name: [osx-14-clang, osx-15-clang, osx-26-clang, osx-g++]
         include:
           - name: osx-14-clang
             os: macos-14
@@ -33,6 +33,7 @@ jobs:
             qt: OFF
             multiprocess: ON
             cfstring: OFF
+            next_abi: OFF
           - name: osx-15-clang
             os: macos-15
             cxx: clang++
@@ -40,6 +41,15 @@ jobs:
             qt: ON
             multiprocess: OFF
             cfstring: ON
+            next_abi: OFF
+          - name: osx-26-clang
+            os: macos-26
+            cxx: clang++
+            odbc: ON
+            qt: ON
+            multiprocess: OFF
+            cfstring: ON
+            next_abi: ON
           - name: osx-g++
             os: macos-latest
             cxx: g++-14
@@ -47,6 +57,7 @@ jobs:
             qt: OFF
             multiprocess: OFF
             cfstring: ON
+            next_abi: OFF
 
     steps:
     - uses: actions/checkout@v4
@@ -76,6 +87,7 @@ jobs:
           -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
           -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=${{ matrix.multiprocess }} \
           -DLOG4CXX_CFSTRING=${{ matrix.cfstring }} \
+          -DLOG4CXX_BUILD_NEXT_ABI=${{ matrix.next_abi }} \
           -DCMAKE_BUILD_TYPE=Debug \
           ..
         cmake --build .
