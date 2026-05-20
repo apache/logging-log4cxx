@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/pattern/formattinginfo.h>
+#include <algorithm>
 #include <limits.h>
 
 using namespace LOG4CXX_NS;
@@ -79,24 +80,34 @@ FormattingInfoPtr FormattingInfo::getDefault()
  */
 void FormattingInfo::format(const int fieldStart, LogString& buffer) const
 {
-	if (INT_MAX < buffer.length())
-		return;
-	int rawLength = static_cast<int>(buffer.length()) - fieldStart;
+	format(static_cast<LogString::size_type>(std::max(fieldStart, 0)), buffer);
+}
 
-	if (rawLength > m_priv->maxLength)
+void FormattingInfo::format(const LogString::size_type fieldStart, LogString& buffer) const
+{
+	if (fieldStart > buffer.length())
+	{
+		return;
+	}
+
+	const LogString::size_type rawLength = buffer.length() - fieldStart;
+	const LogString::size_type maxLength = static_cast<LogString::size_type>(m_priv->maxLength);
+	const LogString::size_type minLength = static_cast<LogString::size_type>(m_priv->minLength);
+
+	if (rawLength > maxLength)
 	{
 		buffer.erase(buffer.begin() + fieldStart,
-			buffer.begin() + fieldStart + (rawLength - m_priv->maxLength));
+			buffer.begin() + fieldStart + (rawLength - maxLength));
 	}
-	else if (rawLength < m_priv->minLength)
+	else if (rawLength < minLength)
 	{
 		if (m_priv->leftAlign)
 		{
-			buffer.append(m_priv->minLength - rawLength, (logchar) 0x20 /* ' ' */);
+			buffer.append(minLength - rawLength, (logchar) 0x20 /* ' ' */);
 		}
 		else
 		{
-			buffer.insert(fieldStart, m_priv->minLength - rawLength, 0x20 /* ' ' */);
+			buffer.insert(fieldStart, minLength - rawLength, 0x20 /* ' ' */);
 		}
 	}
 }

@@ -27,6 +27,7 @@
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/pattern/patternparser.h>
 #include <log4cxx/pattern/patternconverter.h>
+#include <log4cxx/pattern/formattinginfo.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/helpers/simpledateformat.h>
 #include <log4cxx/helpers/transcoder.h>
@@ -81,6 +82,7 @@ LOGUNIT_CLASS(PatternParserTestCase)
 	LOGUNIT_TEST(testMultiOption);
 	LOGUNIT_TEST(testThreadUsername);
 	LOGUNIT_TEST(testInvalidPatterns);
+	LOGUNIT_TEST(testFormattingInfoUsesSizeTypeFieldStart);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggingEventPtr event;
@@ -175,7 +177,7 @@ public:
 
 		for (auto item : converters)
 		{
-			auto fieldStart = static_cast<int>(actual.length());
+			auto fieldStart = actual.length();
 			item->format(event, actual);
 			item->getFormattingInfo().format(fieldStart, actual);
 		}
@@ -295,6 +297,17 @@ public:
 		assertFormattedEquals(LOG4CXX_STR("%6.6666c"),
 			getFormatSpecifiers(),
 			LOG4CXX_STR("%6.6666c"));
+	}
+
+	void testFormattingInfoUsesSizeTypeFieldStart()
+	{
+		LogString actual(LOG4CXX_STR("prefix"));
+		const LogString::size_type fieldStart = actual.length();
+		actual.append(LOG4CXX_STR("abcdef"));
+
+		FormattingInfo(false, 0, 3).format(fieldStart, actual);
+
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("prefixdef"), actual);
 	}
 
 };

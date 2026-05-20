@@ -120,8 +120,7 @@ void PatternLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 	{
 		auto startField = output.length();
 		item->format(event, output);
-		if (startField < INT_MAX)
-			item->getFormattingInfo().format(static_cast<int>(startField), output);
+		item->getFormattingInfo().format(startField, output);
 	}
 
 }
@@ -269,6 +268,5 @@ pattern::PatternConverterPtr PatternLayout::createColorStartPatternConverter(con
 
 	return colorPatternConverter;
 }
-
 
 

@@ -92,6 +92,14 @@ class LOG4CXX_EXPORT FormattingInfo : public virtual LOG4CXX_NS::helpers::Object
 		 * @param buffer buffer to be modified.
 		 */
 		void format(const int fieldStart, LogString& buffer) const;
+
+		/**
+		 * Adjust the content of the buffer based on the specified lengths and alignment.
+		 *
+		 * @param fieldStart start of field in buffer.
+		 * @param buffer buffer to be modified.
+		 */
+		void format(const LogString::size_type fieldStart, LogString& buffer) const;
 };
 LOG4CXX_PTR_DEF(FormattingInfo);
 }
