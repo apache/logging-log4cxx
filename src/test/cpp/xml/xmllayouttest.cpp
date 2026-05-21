@@ -377,7 +377,7 @@ public:
 		Transcoder::encode(0xD822, problemNameLS); // Add an invalid character that should be stripped from attribute values
 		auto keyLS = problemNameLS;
 		auto expectedKeyValue = problemName;
-		// Expat translates the Unicode replacement character to the following
+		// UTF-8 encodes the Unicode replacement character (0xFFFD) as the following:
 		expectedKeyValue += "\xEF\xBF\xBD";
 		std::string problemMessage = "'\001\"<Hello >\"\004'";
 		std::string expectedCdataValue = "'&#x1;\"<Hello >\"&#x4;'";
