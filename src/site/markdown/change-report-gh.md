@@ -71,6 +71,7 @@ The following issues have been addressed:
    , [#659](https://github.com/apache/logging-log4cxx/pull/659)
    , [#660](https://github.com/apache/logging-log4cxx/pull/660)
    , [#664](https://github.com/apache/logging-log4cxx/pull/664)
+   , [#669](https://github.com/apache/logging-log4cxx/pull/669)
    , [#670](https://github.com/apache/logging-log4cxx/pull/670)
 
 * A lack of robustness dealing with values near numeric limits  
