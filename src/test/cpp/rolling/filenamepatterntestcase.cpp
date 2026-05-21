@@ -74,9 +74,9 @@ public:
 
 		for (auto item :  converters)
 		{
-			LogString::size_type i = result.length();
+			auto fieldStart = result.length();
 			item->format(obj, result);
-			item->getFormattingInfo().format((int)i, result);
+			item->getFormattingInfo().adjustField(fieldStart, result);
 		}
 
 		return result;

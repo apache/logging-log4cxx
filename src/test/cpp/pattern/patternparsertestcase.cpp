@@ -179,7 +179,7 @@ public:
 		{
 			auto fieldStart = actual.length();
 			item->format(event, actual);
-			item->getFormattingInfo().format(fieldStart, actual);
+			item->getFormattingInfo().adjustField(fieldStart, actual);
 		}
 
 		LOGUNIT_ASSERT_EQUAL(expected, actual);
@@ -302,10 +302,10 @@ public:
 	void testFormattingInfoUsesSizeTypeFieldStart()
 	{
 		LogString actual(LOG4CXX_STR("prefix"));
-		const LogString::size_type fieldStart = actual.length();
+		auto fieldStart = actual.length();
 		actual.append(LOG4CXX_STR("abcdef"));
 
-		FormattingInfo(false, 0, 3).format(fieldStart, actual);
+		FormattingInfo(false, 0, 3).adjustField(fieldStart, actual);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("prefixdef"), actual);
 	}

@@ -120,7 +120,7 @@ void PatternLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 	{
 		auto startField = output.length();
 		item->format(event, output);
-		item->getFormattingInfo().format(startField, output);
+		item->getFormattingInfo().adjustField(startField, output);
 	}
 
 }

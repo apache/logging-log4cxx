@@ -122,7 +122,7 @@ void RollingPolicyBase::formatFileName(
 	{
 		auto startField = toAppendTo.length();
 		item->format(obj, toAppendTo);
-		item->getFormattingInfo().format(startField, toAppendTo);
+		item->getFormattingInfo().adjustField(startField, toAppendTo);
 	}
 }
 #if LOG4CXX_ABI_VERSION <= 15
