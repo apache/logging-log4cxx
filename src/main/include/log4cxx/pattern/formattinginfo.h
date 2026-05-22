@@ -85,13 +85,24 @@ class LOG4CXX_EXPORT FormattingInfo : public virtual LOG4CXX_NS::helpers::Object
 		 */
 		int getMaxLength() const;
 
+#if LOG4CXX_ABI_VERSION <= 15
+		/**
+		 * Adjust the content of the buffer based on the specified lengths and alignment.
+		 * @deprecated This function is deprecated and will be removed in a future version.
+		 *
+		 * @param fieldStart start of field in buffer.
+		 * @param buffer buffer to be modified.
+		 */
+		[[ deprecated( "Use adjustField() instead" ) ]]
+		void format(const int fieldStart, LogString& buffer) const;
+#endif
 		/**
 		 * Adjust the content of the buffer based on the specified lengths and alignment.
 		 *
 		 * @param fieldStart start of field in buffer.
 		 * @param buffer buffer to be modified.
 		 */
-		void format(const int fieldStart, LogString& buffer) const;
+		void adjustField(const LogString::size_type fieldStart, LogString& buffer) const;
 };
 LOG4CXX_PTR_DEF(FormattingInfo);
 }
