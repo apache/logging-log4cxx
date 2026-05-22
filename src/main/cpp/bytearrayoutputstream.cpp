@@ -19,7 +19,6 @@
 #include <log4cxx/helpers/bytearrayoutputstream.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <string.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -51,15 +50,19 @@ void ByteArrayOutputStream::flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS
 void ByteArrayOutputStream::write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS )
 {
 	const size_t count = buf.remaining();
-	const size_t sz = m_priv->array.size();
 
-	if (count > m_priv->array.max_size() - sz)
+	if (count == 0)
+	{
+		return;
+	}
+
+	if (count > m_priv->array.max_size() - m_priv->array.size())
 	{
 		throw IllegalArgumentException(LOG4CXX_STR("ByteArrayOutputStream::write overflow"));
 	}
 
-	m_priv->array.resize(sz + count);
-	memcpy(&m_priv->array[sz], buf.current(), count);
+	const char* const current = buf.current();
+	m_priv->array.insert(m_priv->array.end(), current, current + count);
 	buf.increment_position(count);
 }
 
@@ -67,6 +70,5 @@ std::vector<unsigned char> ByteArrayOutputStream::toByteArray() const
 {
 	return m_priv->array;
 }
-
 
 
