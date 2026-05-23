@@ -67,9 +67,20 @@ bool StringHelper::equalsIgnoreCase(const LogString& s1, const LogString& upper,
 
 LogString StringHelper::toLowerCase(const LogString& s)
 {
+	// Fold ASCII A-Z only. Passing a value not representable as unsigned char
+	// (or EOF) to std::tolower(int) is undefined behaviour; with signed char,
+	// any byte > 0x7F sign-extends to a negative int. The previous implementation
+	// also produced locale-dependent output for the same input, which is wrong
+	// for the callers (class names, color names, column names — all ASCII).
 	LogString d;
-	std::transform(s.begin(), s.end(),
-		std::insert_iterator<LogString>(d, d.begin()), tolower);
+	d.reserve(s.size());
+	for (auto ch : s)
+	{
+		if (ch >= static_cast<logchar>('A') && ch <= static_cast<logchar>('Z'))
+			d.push_back(static_cast<logchar>(ch + ('a' - 'A')));
+		else
+			d.push_back(ch);
+	}
 	return d;
 }
 
