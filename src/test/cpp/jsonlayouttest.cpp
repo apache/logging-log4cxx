@@ -61,6 +61,7 @@ LOGUNIT_CLASS(JSONLayoutTest), public JSONLayout
 	LOGUNIT_TEST(testFormatWithPrettyPrint);
 	LOGUNIT_TEST(testGetSetLocationInfo);
 	LOGUNIT_TEST(testAppendQuotedEscapedString);
+	LOGUNIT_TEST(testAppendQuotedEscapedStringWithInvalidUtf8);
 	LOGUNIT_TEST_SUITE_END();
 
 
@@ -520,8 +521,21 @@ public:
 		appendQuotedEscapedString(escapedQuoted0xD822Name, problemNameLS);
 		LOGUNIT_ASSERT_EQUAL(expectedQuotedEscapedName, escapedQuoted0xD822Name);
 	}
+
+	void testAppendQuotedEscapedStringWithInvalidUtf8()
+	{
+#if LOG4CXX_LOGCHAR_IS_UTF8
+		LogString malformed;
+		malformed.push_back('A');
+		malformed.push_back(static_cast<logchar>(0xC3));
+		malformed.push_back('B');
+
+		LogString escaped;
+		appendQuotedEscapedString(escaped, malformed);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\"A\\ufffd\""), escaped);
+#endif
+	}
 };
 
 
 LOGUNIT_TEST_SUITE_REGISTRATION(JSONLayoutTest);
-

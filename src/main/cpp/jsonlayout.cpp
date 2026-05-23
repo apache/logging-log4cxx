@@ -223,18 +223,21 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 	{
 		auto lastCodePoint = nextCodePoint;
 		auto ch = Transcoder::decode(input, nextCodePoint);
+		bool escapeReplacement = false;
 		if (nextCodePoint == lastCodePoint) // failed to decode input?
 		{
 			nextCodePoint = input.end();
 			ch = 0xFFFD; // The Unicode replacement character
+			escapeReplacement = true;
 		}
 		else if ((0xD800 <= ch && ch <= 0xDFFF) || 0x10FFFF < ch)
 		{
 			ch = 0xFFFD; // The Unicode replacement character
+			escapeReplacement = true;
 		}
 		else if (0x22 == ch || 0x5c == ch) // double quote or backslash?
 			;
-		else if (0x20 <= ch) // not a control character?
+		else if (!escapeReplacement && 0x20 <= ch) // not a control character?
 			continue;
 
 		if (start != lastCodePoint)
