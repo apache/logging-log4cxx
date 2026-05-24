@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/private/layout_priv.h>
 #include <log4cxx/level.h>
 #include <chrono>
 
@@ -81,13 +82,13 @@ void FMTLayout::setOption(const LogString& option, const LogString& value)
 
 void FMTLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
+	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 }
 
 void FMTLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
-	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
+	priv::reserveFormattedEvent(output, m_priv->expectedPatternLength, lsMsg.size());
 	auto locationFull = fmt::format("{}({})",
 										 event->getLocationInformation().getFileName(),
 										 event->getLocationInformation().getLineNumber());
