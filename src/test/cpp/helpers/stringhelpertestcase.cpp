@@ -44,6 +44,8 @@ LOGUNIT_CLASS(StringHelperTestCase)
 	LOGUNIT_TEST( testEndsWith5 );
 	LOGUNIT_TEST( testFormatEmptyPattern );
 	LOGUNIT_TEST( testFormatMissingArgument );
+	LOGUNIT_TEST( testToLowerCaseAscii );
+	LOGUNIT_TEST( testToLowerCaseNonAsciiPassesThrough );
 	LOGUNIT_TEST_SUITE_END();
 
 
@@ -142,6 +144,32 @@ public:
 		std::vector<LogString> params(1);
 		params[0] = LOG4CXX_STR("first");
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("first {1}"), StringHelper::format(LOG4CXX_STR("{0} {1}"), params));
+	}
+
+	void testToLowerCaseAscii()
+	{
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("hello world"),
+			StringHelper::toLowerCase(LOG4CXX_STR("Hello World")));
+	}
+
+	// Regression: passing a non-ASCII byte (negative when char is signed, or > 0xFF
+	// for wchar_t/UniChar) to ::tolower(int) is undefined behaviour. The prior
+	// implementation also varied with the active C locale, producing different
+	// output on different machines for the same configuration file. Verify the
+	// non-ASCII bytes pass through unchanged regardless of locale.
+	void testToLowerCaseNonAsciiPassesThrough()
+	{
+		LogString input;
+		input.push_back(static_cast<logchar>('A'));
+		input.push_back(static_cast<logchar>(0xC9));   // uppercase 'É' in Latin-1 / Windows-1252
+		input.push_back(static_cast<logchar>(0xE9));   // lowercase 'é' in Latin-1 / Windows-1252
+		input.push_back(static_cast<logchar>('Z'));
+		LogString expected;
+		expected.push_back(static_cast<logchar>('a'));
+		expected.push_back(static_cast<logchar>(0xC9));
+		expected.push_back(static_cast<logchar>(0xE9));
+		expected.push_back(static_cast<logchar>('z'));
+		LOGUNIT_ASSERT_EQUAL(expected, StringHelper::toLowerCase(input));
 	}
 
 
