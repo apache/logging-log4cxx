@@ -24,12 +24,17 @@ namespace LOG4CXX_NS
 {
 namespace helpers
 {
+/// An iterator over substrings
 class LOG4CXX_EXPORT StringTokenizer
 {
 	public:
+		/// The substrings of \c str between one of the characters in \c delim.
 		StringTokenizer(const LogString& str, const LogString& delim);
 		~StringTokenizer();
+		/// Will nextToken() return a string?
 		bool hasMoreTokens() const;
+		/// Step past the current token which is returned.
+		/// \exception NoSuchElementException No substring is available.
 		LogString nextToken();
 
 	private:

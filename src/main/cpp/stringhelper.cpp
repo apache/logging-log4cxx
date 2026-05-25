@@ -144,6 +144,8 @@ void StringHelper::toString(int n, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(std::to_wstring(n));
+#elif LOG4CXX_LOGCHAR_IS_UTF8
+	dst.append(std::to_string(n));
 #else
 	Transcoder::decode(std::to_string(n), dst);
 #endif
@@ -166,6 +168,8 @@ void StringHelper::toString(int64_t n, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(std::to_wstring(n));
+#elif LOG4CXX_LOGCHAR_IS_UTF8
+	dst.append(std::to_string(n));
 #else
 	Transcoder::decode(std::to_string(n), dst);
 #endif
@@ -176,6 +180,8 @@ void StringHelper::toString(size_t n, LogString& dst)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 	dst.append(std::to_wstring(n));
+#elif LOG4CXX_LOGCHAR_IS_UTF8
+	dst.append(std::to_string(n));
 #else
 	Transcoder::decode(std::to_string(n), dst);
 #endif
