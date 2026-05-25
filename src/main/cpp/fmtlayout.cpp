@@ -27,6 +27,7 @@
 
 #include <fmt/format.h>
 #include <fmt/chrono.h>
+#include <iterator>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;

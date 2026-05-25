@@ -541,8 +541,8 @@ public:
 	void testLayoutSizeEdgeCases()
 	{
 		const size_t maxSize = (std::numeric_limits<size_t>::max)();
-		LOGUNIT_ASSERT_EQUAL(0U, priv::doubledLayoutSize(0));
-		LOGUNIT_ASSERT_EQUAL(2U, priv::doubledLayoutSize(1));
+		LOGUNIT_ASSERT_EQUAL(static_cast<size_t>(0), priv::doubledLayoutSize(0));
+		LOGUNIT_ASSERT_EQUAL(static_cast<size_t>(2), priv::doubledLayoutSize(1));
 		LOGUNIT_ASSERT_EQUAL(maxSize - 1, priv::doubledLayoutSize(maxSize / 2));
 		LOGUNIT_ASSERT_EQUAL(maxSize, priv::doubledLayoutSize((maxSize / 2) + 1));
 		LOGUNIT_ASSERT_EQUAL(maxSize, priv::doubledLayoutSize(maxSize));
