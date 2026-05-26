@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/date.h>
+#include <log4cxx/private/layout_priv.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -57,7 +58,7 @@ HTMLLayout::HTMLLayout()
 	: m_priv(std::make_unique<HTMLLayoutPrivate>())
 {
 	m_priv->dateFormat.setTimeZone(TimeZone::getGMT());
-	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
+	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 }
 
 HTMLLayout::~HTMLLayout() {}
@@ -76,14 +77,14 @@ void HTMLLayout::setOption(const LogString& option,
 			LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, false));
-		m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
+		m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 	}
 }
 
 void HTMLLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
-	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
+	priv::reserveFormattedEvent(output, m_priv->expectedPatternLength, lsMsg.size());
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("<tr>"));
 	output.append(LOG4CXX_EOL);

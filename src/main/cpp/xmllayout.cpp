@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/ndc.h>
+#include <log4cxx/private/layout_priv.h>
 
 
 using namespace LOG4CXX_NS;
@@ -53,7 +54,7 @@ IMPLEMENT_LOG4CXX_OBJECT(XMLLayout)
 XMLLayout::XMLLayout()
 	: m_priv(std::make_unique<XMLLayoutPrivate>())
 {
-	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
+	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 }
 
 XMLLayout::~XMLLayout() {}
@@ -64,20 +65,20 @@ void XMLLayout::setOption(const LogString& option,
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, false));
-		m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
+		m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 	}
 
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("PROPERTIES"), LOG4CXX_STR("properties")))
 	{
 		setProperties(OptionConverter::toBoolean(value, false));
-		m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
+		m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 	}
 }
 
 void XMLLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
-	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
+	priv::reserveFormattedEvent(output, m_priv->expectedPatternLength, lsMsg.size());
 	output.append(LOG4CXX_STR("<log4j:event logger=\""));
 	Transform::appendLegalCharacters(output, event->getLoggerName());
 	output.append(LOG4CXX_STR("\" timestamp=\""));
@@ -193,4 +194,3 @@ bool XMLLayout::getProperties()
 {
 	return m_priv->properties;
 }
-

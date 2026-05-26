@@ -48,6 +48,7 @@
 #include <log4cxx/pattern/propertiespatternconverter.h>
 #include <log4cxx/pattern/throwableinformationpatternconverter.h>
 #include <log4cxx/pattern/threadusernamepatternconverter.h>
+#include <log4cxx/private/layout_priv.h>
 
 
 using namespace LOG4CXX_NS;
@@ -114,7 +115,7 @@ void PatternLayout::setConversionPattern(const LogString& pattern)
 void PatternLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
-	output.reserve(m_priv->expectedPatternLength + lsMsg.size());
+	priv::reserveFormattedEvent(output, m_priv->expectedPatternLength, lsMsg.size());
 
 	for (auto item : m_priv->patternConverters)
 	{
@@ -188,7 +189,7 @@ void PatternLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS 
 			m_priv->patternConverters.push_back(eventConverter);
 		}
 	}
-	m_priv->expectedPatternLength = getFormattedEventCharacterCount() * 2;
+	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 }
 
 #define RULES_PUT(spec, cls) \
@@ -268,5 +269,4 @@ pattern::PatternConverterPtr PatternLayout::createColorStartPatternConverter(con
 
 	return colorPatternConverter;
 }
-
 

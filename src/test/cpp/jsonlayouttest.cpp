@@ -20,8 +20,10 @@
 #include <log4cxx/jsonlayout.h>
 #include <log4cxx/ndc.h>
 #include <log4cxx/mdc.h>
+#include <log4cxx/private/layout_priv.h>
 
 #include <iostream>
+#include <limits>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 
@@ -61,6 +63,9 @@ LOGUNIT_CLASS(JSONLayoutTest), public JSONLayout
 	LOGUNIT_TEST(testFormatWithPrettyPrint);
 	LOGUNIT_TEST(testGetSetLocationInfo);
 	LOGUNIT_TEST(testAppendQuotedEscapedString);
+	LOGUNIT_TEST(testLayoutSizeOverflowGuards);
+	LOGUNIT_TEST(testLayoutSizeEdgeCases);
+	LOGUNIT_TEST(testReserveFormattedEventSizing);
 	LOGUNIT_TEST_SUITE_END();
 
 
@@ -520,8 +525,50 @@ public:
 		appendQuotedEscapedString(escapedQuoted0xD822Name, problemNameLS);
 		LOGUNIT_ASSERT_EQUAL(expectedQuotedEscapedName, escapedQuoted0xD822Name);
 	}
+
+	void testLayoutSizeOverflowGuards()
+	{
+		const size_t maxSize = (std::numeric_limits<size_t>::max)();
+		LOGUNIT_ASSERT_EQUAL(maxSize, priv::doubledLayoutSize(maxSize));
+		LOGUNIT_ASSERT_EQUAL(maxSize - 1, priv::doubledLayoutSize((maxSize - 1) / 2));
+
+		LogString output;
+		const size_t initialCapacity = output.capacity();
+		priv::reserveFormattedEvent(output, output.max_size(), 1);
+		LOGUNIT_ASSERT_EQUAL(initialCapacity, output.capacity());
+	}
+
+	void testLayoutSizeEdgeCases()
+	{
+		const size_t maxSize = (std::numeric_limits<size_t>::max)();
+		LOGUNIT_ASSERT_EQUAL(static_cast<size_t>(0), priv::doubledLayoutSize(0));
+		LOGUNIT_ASSERT_EQUAL(static_cast<size_t>(2), priv::doubledLayoutSize(1));
+		LOGUNIT_ASSERT_EQUAL(maxSize - 1, priv::doubledLayoutSize(maxSize / 2));
+		LOGUNIT_ASSERT_EQUAL(maxSize, priv::doubledLayoutSize((maxSize / 2) + 1));
+		LOGUNIT_ASSERT_EQUAL(maxSize, priv::doubledLayoutSize(maxSize));
+	}
+
+	void testReserveFormattedEventSizing()
+	{
+		LogString output;
+		const size_t initialCapacity = output.capacity();
+
+		priv::reserveFormattedEvent(output, 16, 8);
+		LOGUNIT_ASSERT(output.capacity() >= 24);
+		LOGUNIT_ASSERT(output.capacity() >= initialCapacity);
+
+		const size_t maxSize = output.max_size();
+		const size_t fixedSize = 16;
+		const size_t boundaryMessageSize = maxSize - fixedSize;
+		LOGUNIT_ASSERT_EQUAL(maxSize, fixedSize + boundaryMessageSize);
+		LOGUNIT_ASSERT(boundaryMessageSize <= maxSize);
+		LOGUNIT_ASSERT(fixedSize <= maxSize - boundaryMessageSize);
+
+		const size_t capacityBeforeSkip = output.capacity();
+		priv::reserveFormattedEvent(output, 16, (std::numeric_limits<size_t>::max)());
+		LOGUNIT_ASSERT_EQUAL(capacityBeforeSkip, output.capacity());
+	}
 };
 
 
 LOGUNIT_TEST_SUITE_REGISTRATION(JSONLayoutTest);
-
