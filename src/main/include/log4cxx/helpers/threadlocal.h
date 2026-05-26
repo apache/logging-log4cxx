@@ -17,6 +17,7 @@
 
 #ifndef _LOG4CXX_HELPERS_THREAD_LOCAL_H
 #define _LOG4CXX_HELPERS_THREAD_LOCAL_H
+#if LOG4CXX_ABI_VERSION <= 15
 
 #include <log4cxx/log4cxx.h>
 #include <log4cxx/helpers/pool.h>
@@ -40,6 +41,8 @@ namespace helpers
 {
 
 /**
+ * @deprecated This class is deprecated and will be removed in a future version.
+ *
  *  This class provides thread-local variables.  This class is similar in function
  *  to java.lang.ThreadLocal.
  */
@@ -82,5 +85,7 @@ class LOG4CXX_EXPORT ThreadLocal
 };
 } // namespace helpers
 } // namespace log4cxx
+
+#endif // LOG4CXX_ABI_VERSION <= 15
 
 #endif //_LOG4CXX_HELPERS_THREAD_LOCAL_H

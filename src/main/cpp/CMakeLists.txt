@@ -212,7 +212,6 @@ target_sources(log4cxx
   system.cpp
   systemerrwriter.cpp
   systemoutwriter.cpp
-  threadlocal.cpp
   threadpatternconverter.cpp
   threadusernamepatternconverter.cpp
   threadspecificdata.cpp
@@ -229,7 +228,12 @@ target_sources(log4cxx
   zipcompressaction.cpp
   ${extra_classes}
 )
-
+if(${log4cxx_ABI_VER} LESS 16)
+  target_sources(log4cxx
+    PRIVATE
+    threadlocal.cpp
+  )
+endif()
 if(LOG4CXX_EVENTS_AT_EXIT)
   target_sources(log4cxx
     PRIVATE atexitregistry.cpp
