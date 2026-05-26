@@ -29,23 +29,31 @@ using namespace LOG4CXX_NS::helpers;
 
 struct File::FilePrivate{
 	FilePrivate()
-	{}
+	{
+		set_apr_path();
+	}
 
 	FilePrivate(const LogString& path)
 		: path(path)
-	{}
+	{
+		set_apr_path();
+	}
 
 	FilePrivate(const LogString& path, bool autoDelete)
 		: path(path)
 		, autoDelete(autoDelete)
-	{}
+	{
+		set_apr_path();
+	}
 
 	LogString path;
 	bool autoDelete{ false };
 	Pool p;
-	char* apr_path{ nullptr };
-	char* getPath();
-	static char* convertBackSlashes(char*);
+	const char* apr_path{ nullptr };
+	std::string encodedPath;
+
+	const char* getPath() const;
+	void set_apr_path();
 };
 
 File::File() :
@@ -130,7 +138,7 @@ File& File::operator=(const File& src)
 
 	m_priv->path.assign(src.m_priv->path);
 	m_priv->autoDelete = src.m_priv->autoDelete;
-
+	m_priv->set_apr_path();
 	return *this;
 }
 
@@ -151,7 +159,7 @@ LogString File::getPath() const
 File& File::setPath(const LogString& newName)
 {
 	m_priv->path.assign(newName);
-	m_priv->apr_path = nullptr;
+	m_priv->set_apr_path();
 	return *this;
 }
 
@@ -168,23 +176,33 @@ LogString File::getName() const
 	return m_priv->path;
 }
 
-char* File::FilePrivate::getPath()
+const char* File::FilePrivate::getPath() const
 {
-	if (this->apr_path)
-		return this->apr_path;
+	return this->apr_path;
+}
+
+void File::FilePrivate::set_apr_path()
+{
+	this->encodedPath.clear();
 	int style = APR_FILEPATH_ENCODING_UNKNOWN;
 	apr_filepath_encoding(&style, this->p.getAPRPool());
-
 	if (style == APR_FILEPATH_ENCODING_UTF8)
 	{
-		this->apr_path = Transcoder::encodeUTF8(this->path, this->p);
+		Transcoder::encodeUTF8(this->path, this->encodedPath);
 	}
 	else
 	{
-		this->apr_path = Transcoder::encode(this->path, this->p);
+		Transcoder::encode(this->path, this->encodedPath);
 	}
 
-	return convertBackSlashes(this->apr_path);
+	for (auto& c : this->encodedPath)
+	{
+		if (c == '\\')
+		{
+			c = '/';
+		}
+	}
+	this->apr_path = this->encodedPath.c_str();
 }
 
 const char* File::getAPRPath() const
@@ -204,19 +222,6 @@ bool File::exists() const
 	apr_finfo_t finfo;
 	apr_status_t rv = apr_stat(&finfo, m_priv->getPath(), 0, m_priv->p.getAPRPool());
 	return rv == APR_SUCCESS;
-}
-
-char* File::FilePrivate::convertBackSlashes(char* src)
-{
-	for (char* c = src; *c != 0; c++)
-	{
-		if (*c == '\\')
-		{
-			*c = '/';
-		}
-	}
-
-	return src;
 }
 
 bool File::deleteFile() const
