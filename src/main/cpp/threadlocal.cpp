@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#if LOG4CXX_ABI_VERSION <= 15
 
 #include "log4cxx/helpers/threadlocal.h"
 #include "apr_thread_proc.h"
@@ -72,3 +73,5 @@ void* ThreadLocal::get()
 #endif
 	return retval;
 }
+
+#endif // LOG4CXX_ABI_VERSION <= 15
