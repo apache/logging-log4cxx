@@ -104,14 +104,13 @@ bool ZipCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) cons
 		}
 	}
 
-	const char** args = (const char**)
-		apr_palloc(aprpool, 5 * sizeof(*args));
+	const char* args[5];
 	int i = 0;
 
 	args[i++] = "zip";
 	args[i++] = "-q";
-	args[i++] = Transcoder::encode(priv->destination.getPath(), tempPool);
-	args[i++] = Transcoder::encode(priv->source.getPath(), tempPool);
+	args[i++] = priv->destination.getAPRPath();
+	args[i++] = priv->source.getAPRPath();
 	args[i++] = NULL;
 
 	if (priv->destination.exists())

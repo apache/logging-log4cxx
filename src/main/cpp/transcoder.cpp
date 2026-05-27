@@ -85,6 +85,7 @@ void Transcoder::encodeUTF8(const LogString& src, std::string& dst)
 #endif
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 char* Transcoder::encodeUTF8(const LogString& src, Pool& p)
 {
 #if LOG4CXX_LOGCHAR_IS_UTF8
@@ -95,7 +96,7 @@ char* Transcoder::encodeUTF8(const LogString& src, Pool& p)
 	return p.pstrdup(tmp);
 #endif
 }
-
+#endif
 
 void Transcoder::encodeUTF8(unsigned int sv, ByteBuffer& dst)
 {
@@ -360,6 +361,7 @@ void Transcoder::decode(const std::string& src, LogString& dst)
 #endif
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 char* Transcoder::encode(const LogString& src, Pool& p)
 {
 #if LOG4CXX_CHARSET_UTF8 && LOG4CXX_LOGCHAR_IS_UTF8
@@ -370,7 +372,7 @@ char* Transcoder::encode(const LogString& src, Pool& p)
 	return p.pstrdup(tmp);
 #endif
 }
-
+#endif
 
 
 void Transcoder::encode(const LogString& src, std::string& dst)

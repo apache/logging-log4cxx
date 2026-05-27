@@ -126,12 +126,11 @@ bool GZCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const
 
 		priv->destination.setAutoDelete(true);
 
-		const char** args = (const char**)
-			apr_palloc(aprpool, 4 * sizeof(*args));
+		const char* args[4];
 		int i = 0;
 		args[i++] = "gzip";
 		args[i++] = "-c";
-		args[i++] = Transcoder::encode(priv->source.getPath(), tempPool);
+		args[i++] = priv->source.getAPRPath();
 		args[i++] = NULL;
 
 		apr_proc_t pid;

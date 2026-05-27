@@ -210,7 +210,7 @@ void Transformer::transform(const File& in, const File& out,
 
 		//
 		//    specify the input file
-		args[i++] = Transcoder::encode(in.getPath(), p);
+		args[i++] = in.getAPRPath();
 		args[i] = NULL;
 
 
