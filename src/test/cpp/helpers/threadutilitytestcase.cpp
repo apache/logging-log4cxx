@@ -22,6 +22,8 @@
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/logmanager.h>
+#include <atomic>
+#include <chrono>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -33,6 +35,7 @@ LOGUNIT_CLASS(ThreadUtilityTest)
 	LOGUNIT_TEST(testNullFunctions);
 	LOGUNIT_TEST(testCustomFunctions);
 	LOGUNIT_TEST(testDefaultFunctions);
+	LOGUNIT_TEST(testPeriodicTaskRestartsAfterEmptyQueue);
 #if LOG4CXX_HAS_PTHREAD_SETNAME || defined(_WIN32)
 	LOGUNIT_TEST(testThreadNameLogging);
 #endif
@@ -107,6 +110,45 @@ public:
 		t.join();
 	}
 
+	void testPeriodicTaskRestartsAfterEmptyQueue()
+	{
+		auto thrUtil = ThreadUtility::instance();
+		const LogString firstTask(LOG4CXX_STR("ThreadUtilityTest.first"));
+		const LogString secondTask(LOG4CXX_STR("ThreadUtilityTest.second"));
+		std::atomic<int> firstRuns{0};
+		std::atomic<int> secondRuns{0};
+
+		thrUtil->removeAllPeriodicTasks();
+		thrUtil->addPeriodicTask(firstTask, [thrUtil, firstTask, &firstRuns]() {
+			++firstRuns;
+			thrUtil->removePeriodicTask(firstTask);
+		}, std::chrono::milliseconds(1));
+
+		for (int i = 0; i < 100 && firstRuns.load() == 0; ++i)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+		LOGUNIT_ASSERT_EQUAL(1, firstRuns.load());
+
+		for (int i = 0; i < 100 && thrUtil->hasPeriodicTask(firstTask); ++i)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+		LOGUNIT_ASSERT(!thrUtil->hasPeriodicTask(firstTask));
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+		thrUtil->addPeriodicTask(secondTask, [&secondRuns]() {
+			++secondRuns;
+		}, std::chrono::milliseconds(1));
+
+		for (int i = 0; i < 100 && secondRuns.load() == 0; ++i)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+		thrUtil->removePeriodicTask(secondTask);
+		LOGUNIT_ASSERT(0 < secondRuns.load());
+	}
+
 	void testThreadNameLogging()
 	{
 		auto layout = std::make_shared<PatternLayout>(LOG4CXX_STR("%T %m%n"));
@@ -124,4 +166,3 @@ public:
 
 
 LOGUNIT_TEST_SUITE_REGISTRATION(ThreadUtilityTest);
-
