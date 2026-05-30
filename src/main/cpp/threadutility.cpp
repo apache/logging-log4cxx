@@ -400,7 +400,10 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				break;
 			this->jobs.erase(pItem);
 			if (this->jobs.empty())
+			{
+				this->threadIsActive = false;
 				return;
+			}
 		}
 
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
