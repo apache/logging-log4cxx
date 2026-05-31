@@ -623,7 +623,12 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 #elif LOG4CXX_LOGCHAR_IS_UTF8
 
 		//  advance past this character and all continuation characters
-		while ((*(++iter) & 0xC0) == 0x80);
+		do
+		{
+			++iter;
+		}
+		while (iter != src.end() &&
+			   (*iter & 0xC0) == 0x80);
 
 #else
 #error logchar is unrecognized

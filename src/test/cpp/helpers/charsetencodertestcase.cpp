@@ -21,6 +21,11 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/outputstreamwriter.h>
+#include <log4cxx/helpers/outputstream.h>
+#include <log4cxx/helpers/fileoutputstream.h>
+#include <log4cxx/helpers/fileinputstream.h>
+#include <log4cxx/file.h>
 #include <apr.h>
 #include <apr_errno.h>
 #include <condition_variable>
@@ -38,6 +43,7 @@ LOGUNIT_CLASS(CharsetEncoderTestCase)
 	LOGUNIT_TEST(encode3);
 	LOGUNIT_TEST(encode4);
 	LOGUNIT_TEST(encode5);
+	LOGUNIT_TEST(utf8Recovery);
 	LOGUNIT_TEST(thread1);
 	LOGUNIT_TEST_SUITE_END();
 
@@ -233,6 +239,45 @@ public:
 			msg.append(LOG4CXX_STR("en_US.UTF-8"));
 			LogLog::warn(msg);
 		}
+	}
+
+	/**
+	 * Regression test: write malformed UTF-8 through OutputStreamWriter
+	 * using a non-trivial encoder and assert the replacement character
+	 * is emitted (Transcoder::LOSSCHAR). This is deterministic and does
+	 * not rely on process crash.
+	 */
+	void utf8Recovery()
+	{
+		File(LOG4CXX_STR("output")).mkdirs();
+
+		// Use FileOutputStream + OutputStreamWriter with US-ASCII encoder
+		OutputStreamPtr fos = FileOutputStreamPtr(
+			new FileOutputStream(LOG4CXX_STR("output/utf8Recovery.txt")));
+		CharsetEncoderPtr enc(CharsetEncoder::getEncoder(LOG4CXX_STR("US-ASCII")));
+		OutputStreamWriterPtr osw = OutputStreamWriterPtr(
+			new OutputStreamWriter(fos, enc));
+
+		// Minimal malformed UTF-8: a single lead byte 0xC2 with no continuation
+		LogString s;
+		s.append(1, static_cast<logchar>(0xC2));
+
+		// Write and flush
+		osw->write(s);
+		osw->flush();
+		fos->close();
+
+		// Read back the raw byte and assert the encoder emitted LOSSCHAR.
+		InputStreamPtr fis = FileInputStreamPtr(
+			new FileInputStream(LOG4CXX_STR("output/utf8Recovery.txt")));
+		char raw[4] = { 0, 0, 0, 0 };
+		ByteBuffer buf(raw, sizeof(raw));
+		int read = fis->read(buf);
+
+		LOGUNIT_ASSERT_EQUAL(1, read);
+		LOGUNIT_ASSERT_EQUAL((size_t)1, buf.position());
+		LOGUNIT_ASSERT_EQUAL((unsigned char) Transcoder::LOSSCHAR,
+			(unsigned char) raw[0]);
 	}
 
 	class ThreadPackage
