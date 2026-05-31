@@ -23,6 +23,7 @@
 #include "log4cxx/helpers/loglog.h"
 #include "log4cxx/helpers/transcoder.h"
 
+#include <atomic>
 #include <signal.h>
 #include <mutex>
 #include <list>
@@ -79,22 +80,16 @@ struct ThreadUtility::priv_data
 	std::thread               thread;
 	std::condition_variable   interrupt;
 	std::mutex                interrupt_mutex;
-	bool                      terminated{ false };
+	std::atomic<bool>         terminated{ false };
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
-	bool                      threadIsActive{ false };
+	std::atomic<bool>         threadIsActive{ false };
 
 	void doPeriodicTasks();
 
-	void setTerminated()
-	{
-		std::lock_guard<std::mutex> lock(interrupt_mutex);
-		terminated = true;
-	}
-
 	void stopThread()
 	{
-		setTerminated();
+		terminated.store(true);
 		interrupt.notify_all();
 		if (thread.joinable())
 			thread.join();
@@ -273,14 +268,18 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, f, 0, false} );
 
 	// Restart thread if it has stopped.
-	if (!m_priv->threadIsActive && m_priv->thread.joinable())
+	if (!m_priv->threadIsActive.load() && m_priv->thread.joinable())
 		m_priv->thread.join();
 
 	if (!m_priv->thread.joinable())
 	{
-		m_priv->terminated = false;
-		m_priv->threadIsActive = true;
-		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), std::bind(&priv_data::doPeriodicTasks, m_priv.get()));
+		m_priv->terminated.store(false);
+		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), [this]()
+			{
+				m_priv->threadIsActive.store(true);
+				m_priv->doPeriodicTasks();
+				m_priv->threadIsActive.store(false);
+			});
 	}
 	else
 		m_priv->interrupt.notify_one();
@@ -351,7 +350,7 @@ void ThreadUtility::removePeriodicTasksMatching(const LogString& namePrefix)
 // Run ready tasks
 void ThreadUtility::priv_data::doPeriodicTasks()
 {
-	while (!this->terminated)
+	while (!this->terminated.load())
 	{
 		auto currentTime = std::chrono::system_clock::now();
 		TimePoint nextOperationTime = currentTime + this->maxDelay;
@@ -359,7 +358,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 			std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
 			for (auto& item : this->jobs)
 			{
-				if (this->terminated)
+				if (this->terminated.load())
 					return;
 				if (item.removed)
 					;
@@ -400,16 +399,12 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				break;
 			this->jobs.erase(pItem);
 			if (this->jobs.empty())
-			{
-				this->threadIsActive = false;
 				return;
-			}
 		}
 
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime);
 	}
-    this->threadIsActive = false;
 }
 
 } //namespace helpers
