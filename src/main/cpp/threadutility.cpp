@@ -96,7 +96,7 @@ struct ThreadUtility::priv_data
 
 	void stopThread()
 	{
-		LOGLOG_DEBUG(m_priv->log, "stopThread");
+		LOGLOG_DEBUG(log, "stopThread");
 		setTerminated();
 		interrupt.notify_all();
 		if (thread.joinable())
