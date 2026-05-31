@@ -96,7 +96,7 @@ struct ThreadUtility::priv_data
 
 	void stopThread()
 	{
-		LOGLOG_DEBUG(Logger::getLogger("ThreadUtility"), "stopThread");
+		LOGLOG_DEBUG(m_priv->log, "stopThread");
 		setTerminated();
 		interrupt.notify_all();
 		if (thread.joinable())
@@ -130,7 +130,6 @@ auto ThreadUtility::instancePtr() -> ManagerPtr
 		( []() -> ObjectPtr
 			{ return std::make_shared<Manager>(); }
 		);
-	result->value().m_priv->log = Logger::getLogger("ThreadUtility");
 	return result;
 }
 
@@ -270,7 +269,9 @@ ThreadStartPost ThreadUtility::postStartFunction()
  */
 void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()> f, const Period& delay)
 {
-	LOGLOG_DEBUG(Logger::getLogger("ThreadUtility"), LOG4CXX_STR("addPeriodicTask: ") << name);
+	if (!m_priv->log)
+		m_priv->log = Logger::getLogger("ThreadUtility");
+	LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("addPeriodicTask: ") << name);
 	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	if (m_priv->maxDelay < delay)
 		m_priv->maxDelay = delay;
@@ -313,7 +314,7 @@ bool ThreadUtility::hasPeriodicTask(const LogString& name)
  */
 void ThreadUtility::removeAllPeriodicTasks()
 {
-	LOGLOG_DEBUG(Logger::getLogger("ThreadUtility"), "removeAllPeriodicTasks");
+	LOGLOG_DEBUG(m_priv->log, "removeAllPeriodicTasks");
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 		while (!m_priv->jobs.empty())
@@ -327,7 +328,7 @@ void ThreadUtility::removeAllPeriodicTasks()
  */
 void ThreadUtility::removePeriodicTask(const LogString& name)
 {
-	LOGLOG_DEBUG(Logger::getLogger("ThreadUtility"), LOG4CXX_STR("removePeriodicTask: ") << name);
+	LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("removePeriodicTask: ") << name);
 	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	auto pItem = std::find_if(m_priv->jobs.begin(), m_priv->jobs.end()
 		, [&name](const priv_data::NamedPeriodicFunction& item)
