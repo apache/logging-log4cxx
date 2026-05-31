@@ -84,6 +84,7 @@ struct ThreadUtility::priv_data
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
 	std::atomic<bool>         threadIsActive{ false };
+	LoggerPtr                 log;
 
 	void doPeriodicTasks();
 
@@ -129,6 +130,7 @@ auto ThreadUtility::instancePtr() -> ManagerPtr
 		( []() -> ObjectPtr
 			{ return std::make_shared<Manager>(); }
 		);
+	result->value().m_priv->log = Logger::getLogger("ThreadUtility");
 	return result;
 }
 
