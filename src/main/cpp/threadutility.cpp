@@ -87,9 +87,15 @@ struct ThreadUtility::priv_data
 
 	void doPeriodicTasks();
 
+	void setTerminated()
+	{
+		std::lock_guard<std::recursive_mutex> lock(job_mutex);
+		terminated.store(true);
+	}
+
 	void stopThread()
 	{
-		terminated.store(true);
+		setTerminated();
 		interrupt.notify_all();
 		if (thread.joinable())
 			thread.join();
@@ -274,9 +280,9 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 	if (!m_priv->thread.joinable())
 	{
 		m_priv->terminated.store(false);
+		m_priv->threadIsActive.store(true);
 		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), [this]()
 			{
-				m_priv->threadIsActive.store(true);
 				m_priv->doPeriodicTasks();
 				m_priv->threadIsActive.store(false);
 			});
