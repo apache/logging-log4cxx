@@ -23,6 +23,8 @@ set(HELPER_TESTS
     charsetencodertestcase
     consolewritertestcase
     cyclicbuffertestcase
+    datagrampackettest
+    datagramsockettestcase
     datetimedateformattestcase
     filewatchdogtest
     inetaddresstestcase

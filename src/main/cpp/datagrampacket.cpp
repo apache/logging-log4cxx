@@ -17,31 +17,57 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/datagrampacket.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace LOG4CXX_NS::helpers;
+
+namespace
+{
+void validateBuffer(void* buf, int offset, int length)
+{
+	if (offset < 0)
+	{
+		throw IllegalArgumentException(LOG4CXX_STR("DatagramPacket offset must be non-negative"));
+	}
+
+	if (length < 0)
+	{
+		throw IllegalArgumentException(LOG4CXX_STR("DatagramPacket length must be non-negative"));
+	}
+
+	if (buf == nullptr && length != 0)
+	{
+		throw NullPointerException(LOG4CXX_STR("DatagramPacket buffer must not be null for a non-empty packet"));
+	}
+}
+}
 
 struct DatagramPacket::DatagramPacketPriv
 {
 	DatagramPacketPriv(void* buf1, int length1)
 		: buf(buf1), offset(0), length(length1), address(), port(0)
 	{
+		validateBuffer(buf, offset, length);
 	}
 
 	DatagramPacketPriv(void* buf1, int length1, InetAddressPtr address1,
 		int port1)
 		: buf(buf1), offset(0), length(length1), address(address1), port(port1)
 	{
+		validateBuffer(buf, offset, length);
 	}
 
 	DatagramPacketPriv(void* buf1, int offset1, int length1)
 		: buf(buf1), offset(offset1), length(length1), address(), port(0)
 	{
+		validateBuffer(buf, offset, length);
 	}
 
 	DatagramPacketPriv(void* buf1, int offset1, int length1,
 		InetAddressPtr address1, int port1)
 		: buf(buf1), offset(offset1), length(length1), address(address1), port(port1)
 	{
+		validateBuffer(buf, offset, length);
 	}
 
 	/** the data for this packet. */
@@ -129,11 +155,13 @@ void DatagramPacket::setAddress(InetAddressPtr address1)
 
 void DatagramPacket::setData(void* buf1)
 {
+	validateBuffer(buf1, m_priv->offset, m_priv->length);
 	m_priv->buf = buf1;
 }
 
 void DatagramPacket::setData(void* buf1, int offset1, int length1)
 {
+	validateBuffer(buf1, offset1, length1);
 	m_priv->buf = buf1;
 	m_priv->offset = offset1;
 	m_priv->length = length1;
@@ -141,6 +169,7 @@ void DatagramPacket::setData(void* buf1, int offset1, int length1)
 
 void DatagramPacket::setLength(int length1)
 {
+	validateBuffer(m_priv->buf, m_priv->offset, length1);
 	m_priv->length = length1;
 }
 
