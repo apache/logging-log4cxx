@@ -20,6 +20,7 @@
 
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/inetaddress.h>
+#include <cstddef>
 
 namespace LOG4CXX_NS
 {
@@ -44,6 +45,7 @@ class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 		LOG4CXX_CAST_ENTRY(DatagramPacket)
 		END_LOG4CXX_CAST_MAP()
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/** Constructs a DatagramPacket for receiving packets of length
 		<code>length</code>. */
 		DatagramPacket(void* buf, int length);
@@ -62,6 +64,26 @@ class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 		specified port number on the specified host. */
 		DatagramPacket(void* buf, int offset, int length, InetAddressPtr address,
 			int port);
+#else
+		/** Constructs a DatagramPacket for receiving packets of length
+		<code>length</code>. */
+		DatagramPacket(void* buf, std::size_t length);
+
+		/** Constructs a datagram packet for sending packets of length
+		<code>length</code> to the specified port number on the specified
+		host. */
+		DatagramPacket(void* buf, std::size_t length, InetAddressPtr address, int port);
+
+		/** Constructs a DatagramPacket for receiving packets of length
+		<code>length</code>, specifying an offset into the buffer. */
+		DatagramPacket(void* buf, std::size_t offset, std::size_t length);
+
+		/** Constructs a datagram packet for sending packets of length
+		<code>length</code> with offset <code>offset</code> to the
+		specified port number on the specified host. */
+		DatagramPacket(void* buf, std::size_t offset, std::size_t length, InetAddressPtr address,
+			int port);
+#endif
 
 		~DatagramPacket();
 
@@ -72,6 +94,7 @@ class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 		/** Returns the data received or the data to be sent. */
 		void* getData() const;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/** Returns the length of the data to be sent or the length of the
 		data received. */
 		int getLength() const;
@@ -79,6 +102,15 @@ class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 		/** Returns the offset of the data to be sent or the offset of the
 		data received. */
 		int getOffset() const;
+#else
+		/** Returns the length of the data to be sent or the length of the
+		data received. */
+		std::size_t getLength() const;
+
+		/** Returns the offset of the data to be sent or the offset of the
+		data received. */
+		std::size_t getOffset() const;
+#endif
 
 		/** Returns the port number on the remote host to which this
 		 datagram is being sent or from which the datagram was received. */
@@ -89,11 +121,19 @@ class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 		/** Set the data buffer for this packet. */
 		void setData(void* buf1);
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/** Set the data buffer for this packet. */
 		void setData(void* buf1, int offset1, int length1);
 
 		/** Set the length for this packet. */
 		void setLength(int length1);
+#else
+		/** Set the data buffer for this packet. */
+		void setData(void* buf1, std::size_t offset1, std::size_t length1);
+
+		/** Set the length for this packet. */
+		void setLength(std::size_t length1);
+#endif
 
 		void setPort(int port1);
 
