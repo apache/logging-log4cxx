@@ -288,6 +288,7 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 		m_priv->threadIsActive.store(true);
 		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), [this]()
 			{
+				LOGLOG_DEBUG(m_priv->log, "doPeriodicTasks: " << "started");
 				m_priv->doPeriodicTasks();
 				LOGLOG_DEBUG(m_priv->log, "doPeriodicTasks: " << "stopped");
 				m_priv->threadIsActive.store(false);
@@ -364,7 +365,6 @@ void ThreadUtility::removePeriodicTasksMatching(const LogString& namePrefix)
 // Run ready tasks
 void ThreadUtility::priv_data::doPeriodicTasks()
 {
-	LOGLOG_DEBUG(this->log, "doPeriodicTasks: " << "started");
 	while (!this->terminated.load())
 	{
 		auto currentTime = std::chrono::system_clock::now();
