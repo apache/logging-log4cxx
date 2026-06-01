@@ -34,7 +34,7 @@ jobs:
             multiprocess: ON
             cfstring: OFF
             next_abi: OFF
-            exitevents: ON
+            exitevents: OFF
           - name: osx-15-clang
             os: macos-15
             cxx: clang++
@@ -43,7 +43,7 @@ jobs:
             multiprocess: OFF
             cfstring: ON
             next_abi: OFF
-            exitevents: ON
+            exitevents: OFF
           - name: osx-26-clang
             os: macos-26
             cxx: clang++
@@ -52,6 +52,7 @@ jobs:
             multiprocess: OFF
             cfstring: ON
             next_abi: ON
+            exitevents: ON
           - name: osx-g++
             os: macos-latest
             cxx: g++-14
