@@ -34,6 +34,7 @@ jobs:
             multiprocess: ON
             cfstring: OFF
             next_abi: OFF
+            exitevents: ON
           - name: osx-15-clang
             os: macos-15
             cxx: clang++
@@ -42,6 +43,7 @@ jobs:
             multiprocess: OFF
             cfstring: ON
             next_abi: OFF
+            exitevents: ON
           - name: osx-26-clang
             os: macos-26
             cxx: clang++
@@ -58,6 +60,7 @@ jobs:
             multiprocess: OFF
             cfstring: ON
             next_abi: OFF
+            exitevents: OFF
 
     steps:
     - uses: actions/checkout@v4
@@ -87,6 +90,7 @@ jobs:
           -DLOG4CXX_ENABLE_ODBC=${{ matrix.odbc }} \
           -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=${{ matrix.multiprocess }} \
           -DLOG4CXX_CFSTRING=${{ matrix.cfstring }} \
+          -DLOG4CXX_EVENTS_AT_EXIT=${{ matrix.exitevents }} \
           -DLOG4CXX_BUILD_NEXT_ABI=${{ matrix.next_abi }} \
           -DCMAKE_BUILD_TYPE=Debug \
           ..

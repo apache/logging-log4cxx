@@ -32,6 +32,14 @@ LOGUNIT_CLASS(FileWatchdogTest)
 	LOGUNIT_TEST_SUITE(FileWatchdogTest);
 	LOGUNIT_TEST(testShutdownDelay);
 	LOGUNIT_TEST_SUITE_END();
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 private:
 	class MockWatchdog : public FileWatchdog

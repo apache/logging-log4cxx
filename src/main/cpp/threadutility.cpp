@@ -289,6 +289,7 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), [this]()
 			{
 				m_priv->doPeriodicTasks();
+				LOGLOG_DEBUG(m_priv->log, "doPeriodicTasks: " << "stopped");
 				m_priv->threadIsActive.store(false);
 			});
 	}
@@ -328,7 +329,6 @@ void ThreadUtility::removeAllPeriodicTasks()
  */
 void ThreadUtility::removePeriodicTask(const LogString& name)
 {
-	LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("removePeriodicTask: ") << name);
 	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	auto pItem = std::find_if(m_priv->jobs.begin(), m_priv->jobs.end()
 		, [&name](const priv_data::NamedPeriodicFunction& item)
@@ -336,6 +336,7 @@ void ThreadUtility::removePeriodicTask(const LogString& name)
 		);
 	if (m_priv->jobs.end() != pItem)
 	{
+		LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("removePeriodicTask: ") << name);
 		pItem->removed = true;
 		m_priv->interrupt.notify_one();
 	}
@@ -363,6 +364,7 @@ void ThreadUtility::removePeriodicTasksMatching(const LogString& namePrefix)
 // Run ready tasks
 void ThreadUtility::priv_data::doPeriodicTasks()
 {
+	LOGLOG_DEBUG(this->log, "doPeriodicTasks: " << "started");
 	while (!this->terminated.load())
 	{
 		auto currentTime = std::chrono::system_clock::now();
@@ -410,6 +412,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				);
 			if (this->jobs.end() == pItem)
 				break;
+			LOGLOG_DEBUG(this->log, LOG4CXX_STR("doPeriodicTasks: erase ") << pItem->name);
 			this->jobs.erase(pItem);
 			if (this->jobs.empty())
 				return;
