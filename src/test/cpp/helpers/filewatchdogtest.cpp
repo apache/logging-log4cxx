@@ -72,6 +72,8 @@ public:
 		}
 		apr_time_t delta = apr_time_now() - start;
 		LOGUNIT_ASSERT(delta < 30000000);
+		// wait 50 ms for periodic task thread to exit
+		apr_sleep(50000);
 	}
 
 };

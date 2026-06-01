@@ -22,6 +22,10 @@
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/logmanager.h>
+#if !defined(LOG4CXX)
+	#define LOG4CXX 1
+#endif
+#include <log4cxx/private/log4cxx_private.h>
 #include <atomic>
 #include <chrono>
 
@@ -147,6 +151,8 @@ public:
 		}
 		thrUtil->removePeriodicTask(secondTask);
 		LOGUNIT_ASSERT(0 < secondRuns.load());
+		// wait 30 ms for periodic task thread to exit
+		std::this_thread::sleep_for(std::chrono::milliseconds(30));
 	}
 
 	void testThreadNameLogging()
