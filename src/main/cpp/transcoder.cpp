@@ -298,7 +298,11 @@ unsigned int Transcoder::decode(const std::string& src,
 				// is not a Unicode code point. Without this bound, encodeUTF16
 				// later silently aliases the bogus value to a valid in-range
 				// code point — a substitution-collision filter-bypass primitive.
-				if (rv > 0xFFFF && rv <= 0x10FFFF)
+				// Lead bytes F8..FF are never valid UTF-8, but the & 0x07 mask
+				// discards their high bits, so without the (ch1 & 0xF8) == 0xF0
+				// guard F8 BF BF BF would alias to U+3FFFF instead of being
+				// rejected.
+				if ((ch1 & 0xF8) == 0xF0 && rv > 0xFFFF && rv <= 0x10FFFF)
 				{
 					return rv;
 				}
