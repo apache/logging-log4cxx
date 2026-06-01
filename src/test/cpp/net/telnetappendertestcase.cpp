@@ -189,7 +189,7 @@ private:
 		{
 			LOGUNIT_FAIL("apr_procattr_create");
 		}
-		if (apr_procattr_cmdtype_set(*attr, APR_PROGRAM) != APR_SUCCESS)
+		if (apr_procattr_cmdtype_set(*attr, APR_PROGRAM_ENV) != APR_SUCCESS)
 		{
 			LOGUNIT_FAIL("apr_procattr_cmdtype_set");
 		}
