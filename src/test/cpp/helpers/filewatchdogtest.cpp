@@ -16,6 +16,7 @@
  */
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/filewatchdog.h>
+#include <log4cxx/helpers/loglog.h>
 #include "../logunit.h"
 #include "apr_time.h"
 
