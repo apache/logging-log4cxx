@@ -194,6 +194,11 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 		fwrp->setFileNamePattern(this->fileName + LOG4CXX_STR(".%i"));
 		this->rollingPolicy = fwrp;
 	}
+	else if (auto fwrp = LOG4CXX_NS::cast<FixedWindowRollingPolicy>(this->rollingPolicy))
+	{
+		if (fwrp->getFileNamePattern() == LOG4CXX_STR(".%i"))
+			fwrp->setFileNamePattern(this->fileName + LOG4CXX_STR(".%i"));
+	}
 
 	//
 	//  if no explicit triggering policy and rolling policy is both.

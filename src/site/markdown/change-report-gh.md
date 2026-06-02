@@ -63,6 +63,7 @@ Release 1.8.0 includes the following new features:
    , [#634](https://github.com/apache/logging-log4cxx/pull/634)
    , [#642](https://github.com/apache/logging-log4cxx/pull/642)
    , [#645](https://github.com/apache/logging-log4cxx/pull/645)
+   , [#669](https://github.com/apache/logging-log4cxx/pull/669)
 
 The following issues have been addressed:
 
@@ -88,6 +89,9 @@ The following issues have been addressed:
 
 * Console appender truncated a message containing an embedded null character
    \[[#643](https://github.com/apache/logging-log4cxx/pull/643)\]
+
+* RollingFileAppender could name the rolled file ".1"
+   \[[#697](https://github.com/apache/logging-log4cxx/issues/697)\]
 
 ## Release 1.7.0 - 2026-04-04 {#rel_1_7_0}
 
