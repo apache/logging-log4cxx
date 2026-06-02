@@ -70,6 +70,7 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(testDecodeUTF8_RejectAboveMax);
 	LOGUNIT_TEST(testDecodeUTF8_MaxBoundary);
 	LOGUNIT_TEST(testDecodeUTF8_RejectInvalidLeadByte);
+	LOGUNIT_TEST(testDecodeUTF8_FFFF_KeepsFollowingByte);
 	LOGUNIT_TEST(testEncodeUTF16BE_BMP);
 	LOGUNIT_TEST(testEncodeUTF16BE_Supplementary);
 	LOGUNIT_TEST(testEncodeUTF16LE_Supplementary);
@@ -463,6 +464,22 @@ public:
 			bool hasLoss = out.find(Transcoder::LOSSCHAR) != LogString::npos;
 			LOGUNIT_ASSERT_EQUAL(c.reject, hasLoss);
 		}
+	}
+
+	/**
+	 * U+FFFF (EF BF BF) is a legal three-byte sequence whose scalar value
+	 * collides with the 0xFFFF error sentinel returned by Transcoder::decode.
+	 * decode() consumes all three bytes and returns 0xFFFF, but decodeUTF8
+	 * mistakes that for a decode failure (which leaves the iterator parked)
+	 * and advances the iterator a second time. The byte following U+FFFF is
+	 * therefore silently dropped. Here the trailing 'A' must survive.
+	 */
+	void testDecodeUTF8_FFFF_KeepsFollowingByte()
+	{
+		std::string src("\xEF\xBF\xBF\x41"); // U+FFFF then 'A'
+		LogString out;
+		Transcoder::decodeUTF8(src, out);
+		LOGUNIT_ASSERT(out.find(LOG4CXX_STR("A")) != LogString::npos);
 	}
 
 	void testEncodeUTF16BE_BMP()

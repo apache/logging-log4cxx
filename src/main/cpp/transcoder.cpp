@@ -46,6 +46,7 @@ void Transcoder::decodeUTF8(const std::string& src, LogString& dst)
 
 	while (iter != src.end())
 	{
+		std::string::const_iterator start = iter;
 		unsigned int sv = decode(src, iter);
 
 		if (sv != 0xFFFF)
@@ -55,7 +56,16 @@ void Transcoder::decodeUTF8(const std::string& src, LogString& dst)
 		else
 		{
 			dst.append(1, LOSSCHAR);
-			iter++;
+
+			// decode() returns 0xFFFF both for a decode error (iter left at
+			// start) and for a successfully decoded U+FFFF (iter already
+			// advanced past EF BF BF).  Only advance here in the former case,
+			// otherwise the byte following U+FFFF is skipped and, at end of
+			// input, iter is pushed past src.end().
+			if (iter == start)
+			{
+				iter++;
+			}
 		}
 	}
 }
