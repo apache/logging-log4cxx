@@ -69,6 +69,7 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(testDecodeUTF8_U0800);
 	LOGUNIT_TEST(testDecodeUTF8_RejectAboveMax);
 	LOGUNIT_TEST(testDecodeUTF8_MaxBoundary);
+	LOGUNIT_TEST(testDecodeUTF8_RejectInvalidLeadByte);
 	LOGUNIT_TEST(testEncodeUTF16BE_BMP);
 	LOGUNIT_TEST(testEncodeUTF16BE_Supplementary);
 	LOGUNIT_TEST(testEncodeUTF16LE_Supplementary);
@@ -425,6 +426,34 @@ public:
 			{ "\xF5\x80\x80\x80", 4, true  }, // F5 lead: rv = 0x140000 (reject)
 			{ "\xF6\x80\x80\x80", 4, true  }, // F6 lead: rv = 0x180000 (reject)
 			{ "\xF7\xBF\xBF\xBF", 4, true  }, // F7 lead: rv = 0x1FFFFF (reject)
+		};
+		for (auto& c : cases)
+		{
+			std::string src(c.bytes, c.len);
+			LogString out;
+			Transcoder::decodeUTF8(src, out);
+			bool hasLoss = out.find(Transcoder::LOSSCHAR) != LogString::npos;
+			LOGUNIT_ASSERT_EQUAL(c.reject, hasLoss);
+		}
+	}
+
+	/**
+	 * Lead bytes F8..FF never start a valid UTF-8 sequence. The four-byte
+	 * branch masks the lead byte with 0x07, discarding those high bits, so
+	 * F8 BF BF BF used to slip past the U+10FFFF bound and decode to U+3FFFF
+	 * (and FB/FC likewise to other in-range planes) — the same aliasing
+	 * filter-bypass that the F5..F7 rejection guards against. Each byte of an
+	 * invalid lead sequence must be replaced with Transcoder::LOSSCHAR.
+	 */
+	void testDecodeUTF8_RejectInvalidLeadByte()
+	{
+		struct { const char* bytes; size_t len; bool reject; } cases[] =
+		{
+			{ "\xF0\x9F\x98\x80", 4, false }, // U+1F600 — valid four-byte
+			{ "\xF8\xBF\xBF\xBF", 4, true  }, // F8 lead: masked to U+3FFFF (reject)
+			{ "\xFB\xBF\xBF\xBF", 4, true  }, // FB lead: masked to U+FFFFF (reject)
+			{ "\xFC\x8F\xBF\xBF", 4, true  }, // FC lead: masked to U+10FFFF (reject)
+			{ "\xFF\xBF\xBF\xBF", 4, true  }, // FF lead (reject)
 		};
 		for (auto& c : cases)
 		{
