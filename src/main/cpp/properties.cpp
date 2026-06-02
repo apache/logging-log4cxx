@@ -20,9 +20,27 @@
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
+#include <cctype>
+#include <algorithm>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
+
+template <typename Char>
+struct Properties::Less
+{
+	bool operator()(const std::basic_string<Char>& str1, const std::basic_string<Char>& str2) const
+	{
+		return std::lexicographical_compare
+			( str1.begin(), str1.end()
+			, str2.begin(), str2.end()
+			, [](Char c1, Char c2)
+				{
+					return std::tolower(c1) < std::tolower(c2);
+				}
+			);
+	}
+};
 
 class PropertyParser
 {
