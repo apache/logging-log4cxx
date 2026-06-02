@@ -83,18 +83,20 @@ struct ThreadUtility::priv_data
 	std::atomic<bool>         terminated{ false };
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
-	bool                      threadIsActive{ false };
+	std::atomic<bool>         threadIsActive{ false };
+	LoggerPtr                 log;
 
 	void doPeriodicTasks();
 
 	void setTerminated()
 	{
-		std::lock_guard<std::mutex> lock(interrupt_mutex);
+		std::lock_guard<std::recursive_mutex> lock(job_mutex);
 		terminated.store(true);
 	}
 
 	void stopThread()
 	{
+		LOGLOG_DEBUG(log, "stopThread");
 		setTerminated();
 		interrupt.notify_all();
 		if (thread.joinable())
@@ -267,6 +269,9 @@ ThreadStartPost ThreadUtility::postStartFunction()
  */
 void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()> f, const Period& delay)
 {
+	if (!m_priv->log)
+		m_priv->log = Logger::getLogger("ThreadUtility");
+	LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("addPeriodicTask: ") << name);
 	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	if (m_priv->maxDelay < delay)
 		m_priv->maxDelay = delay;
@@ -274,14 +279,20 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 	m_priv->jobs.push_back( priv_data::NamedPeriodicFunction{name, delay, currentTime + delay, f, 0, false} );
 
 	// Restart thread if it has stopped.
-	if (!m_priv->threadIsActive && m_priv->thread.joinable())
+	if (!m_priv->threadIsActive.load() && m_priv->thread.joinable())
 		m_priv->thread.join();
 
 	if (!m_priv->thread.joinable())
 	{
 		m_priv->terminated.store(false);
-		m_priv->threadIsActive = true;
-		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), std::bind(&priv_data::doPeriodicTasks, m_priv.get()));
+		m_priv->threadIsActive.store(true);
+		m_priv->thread = createThread(LOG4CXX_STR("log4cxx"), [this]()
+			{
+				LOGLOG_DEBUG(m_priv->log, "doPeriodicTasks: " << "started");
+				m_priv->doPeriodicTasks();
+				LOGLOG_DEBUG(m_priv->log, "doPeriodicTasks: " << "stopped");
+				m_priv->threadIsActive.store(false);
+			});
 	}
 	else
 		m_priv->interrupt.notify_one();
@@ -305,6 +316,7 @@ bool ThreadUtility::hasPeriodicTask(const LogString& name)
  */
 void ThreadUtility::removeAllPeriodicTasks()
 {
+	LOGLOG_DEBUG(m_priv->log, "removeAllPeriodicTasks");
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 		while (!m_priv->jobs.empty())
@@ -325,6 +337,7 @@ void ThreadUtility::removePeriodicTask(const LogString& name)
 		);
 	if (m_priv->jobs.end() != pItem)
 	{
+		LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("removePeriodicTask: ") << name);
 		pItem->removed = true;
 		m_priv->interrupt.notify_one();
 	}
@@ -399,18 +412,15 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				);
 			if (this->jobs.end() == pItem)
 				break;
+			LOGLOG_DEBUG(this->log, LOG4CXX_STR("doPeriodicTasks: erase ") << pItem->name);
 			this->jobs.erase(pItem);
 			if (this->jobs.empty())
-			{
-				this->threadIsActive = false;
 				return;
-			}
 		}
 
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime);
 	}
-    this->threadIsActive = false;
 }
 
 } //namespace helpers

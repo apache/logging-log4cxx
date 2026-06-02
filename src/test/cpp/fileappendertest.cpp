@@ -159,6 +159,7 @@ public:
 	{
 		int requiredMsgCount = 100;
 		auto logger = getLogger(LOG4CXX_STR("100message"));
+		LOGLOG_DEBUG(logger, "writeFinalBufferOutput: " << "configuing");
 
 		// Set up a new file
 		LogString dir{ LOG4CXX_STR("output/newdir") };
@@ -174,10 +175,12 @@ public:
 		logger->setAdditivity(false);
 		logger->addAppender(writer);
 
+		LOGLOG_DEBUG(logger, "writeFinalBufferOutput: " << "started");
 		for ( int x = 0; x < requiredMsgCount; x++ )
 		{
 			LOG4CXX_INFO( logger, "This is test message " << x );
 		}
+		LOGLOG_DEBUG(logger, "writeFinalBufferOutput: " << "stopped");
 	}
 
 	void checkFinalBufferOutput()
@@ -247,7 +250,7 @@ private:
 		{
 			LOGUNIT_FAIL("apr_procattr_create");
 		}
-		if (apr_procattr_cmdtype_set(*attr, APR_PROGRAM) != APR_SUCCESS)
+		if (apr_procattr_cmdtype_set(*attr, APR_PROGRAM_ENV) != APR_SUCCESS)
 		{
 			LOGUNIT_FAIL("apr_procattr_cmdtype_set");
 		}

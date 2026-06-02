@@ -16,6 +16,7 @@
  */
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/filewatchdog.h>
+#include <log4cxx/helpers/loglog.h>
 #include "../logunit.h"
 #include "apr_time.h"
 
@@ -32,6 +33,14 @@ LOGUNIT_CLASS(FileWatchdogTest)
 	LOGUNIT_TEST_SUITE(FileWatchdogTest);
 	LOGUNIT_TEST(testShutdownDelay);
 	LOGUNIT_TEST_SUITE_END();
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 private:
 	class MockWatchdog : public FileWatchdog
@@ -63,6 +72,8 @@ public:
 		}
 		apr_time_t delta = apr_time_now() - start;
 		LOGUNIT_ASSERT(delta < 30000000);
+		// wait 50 ms for periodic task thread to exit
+		apr_sleep(50000);
 	}
 
 };
