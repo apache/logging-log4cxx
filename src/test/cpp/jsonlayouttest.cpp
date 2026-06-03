@@ -53,6 +53,9 @@ LOGUNIT_CLASS(JSONLayoutTest), public JSONLayout
 	LOGUNIT_TEST(testIgnoresThrowable);
 	LOGUNIT_TEST(testAppendQuotedEscapedStringWithPrintableChars);
 	LOGUNIT_TEST(testAppendQuotedEscapedStringWithControlChars);
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	LOGUNIT_TEST(testAppendQuotedEscapedStringWithInvalidByte);
+#endif
 	LOGUNIT_TEST(testAppendSerializedMDC);
 	LOGUNIT_TEST(testAppendSerializedMDCWithPrettyPrint);
 	LOGUNIT_TEST(testAppendSerializedNDC);
@@ -185,6 +188,22 @@ public:
 		appendQuotedEscapedString(esc_escaped, esc);
 		LOGUNIT_ASSERT_EQUAL(esc_expected, esc_escaped);
 	}
+
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	/**
+	 * An undecodable byte must be replaced and the text following it kept,
+	 * not dropped along with the rest of the input.
+	 */
+	void testAppendQuotedEscapedStringWithInvalidByte()
+	{
+		logchar in[] = {'A', (logchar) 0xFF, 'B', 0};
+		LogString expected(LOG4CXX_STR("\"A\\ufffdB\""));
+		LogString actual;
+
+		appendQuotedEscapedString(actual, in);
+		LOGUNIT_ASSERT_EQUAL(expected, actual);
+	}
+#endif
 
 	/**
 	 * Tests appendSerializedMDC.

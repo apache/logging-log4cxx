@@ -45,7 +45,17 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 		auto lastCodePoint = nextCodePoint;
 		auto ch = Transcoder::decode(input, nextCodePoint);
 		if (nextCodePoint == lastCodePoint) // failed to decode input?
-			nextCodePoint = input.end();
+		{
+			// Skip the undecodable run and keep escaping the remaining input
+			// instead of discarding it; the run collapses to one replacement.
+			for (++nextCodePoint; nextCodePoint != input.end(); ++nextCodePoint)
+			{
+				auto probe = nextCodePoint;
+				Transcoder::decode(input, probe);
+				if (probe != nextCodePoint) // next unit starts a decodable sequence
+					break;
+			}
+		}
 		else if (0xD800 <= ch && ch <= 0xDFFF)
 		{
 			// RFC 3629 §3 explicitly forbids surrogate-half values in UTF-8
@@ -140,7 +150,15 @@ void Transform::appendEscapingCDATA(
 		auto ch = Transcoder::decode(input, nextCodePoint);
 		if (nextCodePoint == lastCodePoint) // failed to decode input?
 		{
-			nextCodePoint = input.end();
+			// Skip the undecodable run and keep escaping the remaining input
+			// instead of discarding it; the run collapses to one replacement.
+			for (++nextCodePoint; nextCodePoint != input.end(); ++nextCodePoint)
+			{
+				auto probe = nextCodePoint;
+				Transcoder::decode(input, probe);
+				if (probe != nextCodePoint) // next unit starts a decodable sequence
+					break;
+			}
 			ch = 0xFFFD; // The Unicode replacement character
 		}
 		else if (CDATA_END[0] == ch && input.end() != nextCodePoint)
