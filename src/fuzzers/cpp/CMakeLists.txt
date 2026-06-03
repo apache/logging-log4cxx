@@ -24,6 +24,7 @@ set(ALL_LOG4CXX_FUZZERS
     TimeBasedRollingPolicyFuzzer
     PatternConverterFuzzer
     DOMConfiguratorFuzzer
+    TranscoderFuzzer
 )
 
 # Get the most recent Git commit ID
