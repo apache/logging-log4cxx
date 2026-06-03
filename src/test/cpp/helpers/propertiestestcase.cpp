@@ -306,7 +306,7 @@ public:
 		LOGUNIT_ASSERT_EQUAL(keyCount, 2);
 #else
 		LOGUNIT_ASSERT_EQUAL(keyCount, 1);
-		LOGUNIT_ASSERT_EQUAL(properties.get(keys.front()), LOG4CXX_STR("value2"));
+		LOGUNIT_ASSERT_EQUAL(properties.get(LOG4CXX_STR("key")), LOG4CXX_STR("value2"));
 #endif
 	}
 
