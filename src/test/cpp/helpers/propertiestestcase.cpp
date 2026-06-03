@@ -44,6 +44,7 @@ LOGUNIT_CLASS(PropertiesTestCase)
 	LOGUNIT_TEST(testCRLF);
 	LOGUNIT_TEST(testLF);
 	LOGUNIT_TEST(testMixedLineEndings);
+	LOGUNIT_TEST(testCaseSensitivity);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -293,6 +294,20 @@ public:
 		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("hi this is a test")), value1);
 		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("something")), value2);
 		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("some_value")), value3);
+	}
+
+	void testCaseSensitivity(){
+		Properties properties;
+		properties.setProperty(LOG4CXX_STR("key"), LOG4CXX_STR("value1"));
+		properties.setProperty(LOG4CXX_STR("Key"), LOG4CXX_STR("value2"));
+		auto keys = properties.propertyNames();
+		auto keyCount = static_cast<int>(keys.size());
+#if LOG4CXX_ABI_VERSION < 15
+		LOGUNIT_ASSERT_EQUAL(keyCount, 2);
+#else
+		LOGUNIT_ASSERT_EQUAL(keyCount, 1);
+		LOGUNIT_ASSERT_EQUAL(properties.get(LOG4CXX_STR("key")), LOG4CXX_STR("value2"));
+#endif
 	}
 
 };

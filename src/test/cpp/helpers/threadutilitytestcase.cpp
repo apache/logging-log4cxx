@@ -163,6 +163,8 @@ public:
 		auto logger = LogManager::getRootLogger();
 		logger->addAppender(appender);
 		std::thread t = ThreadUtility::instance()->createThread( LOG4CXX_STR("FooName"), [logger]() {
+			// wait 30 ms for thread name change to be effected
+			std::this_thread::sleep_for(std::chrono::milliseconds(30));
 			LOG4CXX_DEBUG(logger, "Test message");
 		});
 		t.join();

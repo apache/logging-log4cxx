@@ -32,7 +32,12 @@ namespace helpers
 class LOG4CXX_EXPORT Properties
 {
 	private:
-		typedef std::map<LogString, LogString> PropertyMap;
+		template <typename Char> struct Less;
+#if LOG4CXX_ABI_VERSION < 15
+		using PropertyMap = std::map<LogString, LogString>;
+#else
+		using PropertyMap = std::map<LogString, LogString, Less<logchar> >;
+#endif
 		PropertyMap* properties;
 
 	public: // ...structors
