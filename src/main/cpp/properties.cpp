@@ -36,7 +36,7 @@ struct Properties::Less
 			, str2.begin(), str2.end()
 			, [](Char c1, Char c2)
 				{
-					return std::tolower(c1) < std::tolower(c2);
+					return std::tolower(static_cast<unsigned char>(c1)) < std::tolower(static_cast<unsigned char>(c2));
 				}
 			);
 	}
