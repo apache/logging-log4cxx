@@ -88,6 +88,18 @@ void AsyncBuffer::initializeForFmt(const WideStringViewType& format_string, Wide
 #endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 #endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 
+#if LOG4CXX_ABI_VERSION <= 15
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+void AsyncBuffer::initializeForFmt(StringViewType&& format_string, FmtArgStore&& args)
+{ initializeForFmt(format_string, std::move(args)); }
+
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+void AsyncBuffer::initializeForFmt(WideStringViewType&& format_string, WideFmtArgStore&& args)
+{ initializeForFmt(format_string, std::move(args)); }
+#endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+#endif // LOG4CXX_ABI_VERSION <= 15
+
 /** An empty buffer.
 */
 AsyncBuffer::AsyncBuffer()
