@@ -44,8 +44,8 @@ struct AsyncBuffer::Private
 	StringViewType fmt_string;
 	FmtArgStore    fmt_args;
 
-	Private(StringViewType&& format_string, FmtArgStore&& args)
-		: fmt_string{ std::move(format_string) }
+	Private(const StringViewType& format_string, FmtArgStore&& args)
+		: fmt_string{ format_string }
 		, fmt_args{ std::move(args) }
 	{}
 
@@ -53,8 +53,8 @@ struct AsyncBuffer::Private
 	WideStringViewType fmt_wstring;
 	WideFmtArgStore    fmt_wargs;
 
-	Private(WideStringViewType&& format_string, WideFmtArgStore&& args)
-		: fmt_wstring{ std::move(format_string) }
+	Private(const WideStringViewType& format_string, WideFmtArgStore&& args)
+		: fmt_wstring{ format_string }
 		, fmt_wargs{ std::move(args) }
 	{}
 #endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
@@ -63,25 +63,25 @@ struct AsyncBuffer::Private
 };
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
-void AsyncBuffer::initializeForFmt(StringViewType&& format_string, FmtArgStore&& args)
+void AsyncBuffer::initializeForFmt(const StringViewType& format_string, FmtArgStore&& args)
 {
 	if (!m_priv)
-		m_priv = std::make_unique<Private>(std::move(format_string), std::move(args));
+		m_priv = std::make_unique<Private>(format_string, std::move(args));
 	else
 	{
-		m_priv->fmt_string = std::move(format_string);
+		m_priv->fmt_string = format_string;
 		m_priv->fmt_args = std::move(args);
 	}
 }
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
-void AsyncBuffer::initializeForFmt(WideStringViewType&& format_string, WideFmtArgStore&& args)
+void AsyncBuffer::initializeForFmt(const WideStringViewType& format_string, WideFmtArgStore&& args)
 {
 	if (!m_priv)
-		m_priv = std::make_unique<Private>(std::move(format_string), std::move(args));
+		m_priv = std::make_unique<Private>(format_string, std::move(args));
 	else
 	{
-		m_priv->fmt_wstring = std::move(format_string);
+		m_priv->fmt_wstring = format_string;
 		m_priv->fmt_wargs = std::move(args);
 	}
 }
