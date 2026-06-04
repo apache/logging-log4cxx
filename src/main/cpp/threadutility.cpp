@@ -369,39 +369,86 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 	{
 		auto currentTime = std::chrono::system_clock::now();
 		TimePoint nextOperationTime = currentTime + this->maxDelay;
+
+		while (true)
 		{
-			std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-			for (auto& item : this->jobs)
+			std::function<void()> taskCallback;
+			LogString taskName;
+			Period taskDelay;
+			bool foundTask = false;
+
 			{
-				if (this->terminated.load())
-					return;
-				if (item.removed)
-					;
-				else if (item.nextRun <= currentTime)
+				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+				for (auto& item : this->jobs)
 				{
-					try
+					if (this->terminated.load())
+						return;
+
+					if (!item.removed && item.nextRun <= currentTime)
 					{
-						item.f();
-						item.nextRun = std::chrono::system_clock::now() + item.delay;
-						if (item.nextRun < nextOperationTime)
-							nextOperationTime = item.nextRun;
-						item.errorCount = 0;
-					}
-					catch (std::exception& ex)
-					{
-						LogLog::warn(item.name, ex);
-						++item.errorCount;
-					}
-					catch (...)
-					{
-						LogLog::warn(item.name + LOG4CXX_STR(" threw an exception"));
-						++item.errorCount;
+						taskCallback = item.f;
+						taskName = item.name;
+						taskDelay = item.delay;
+						foundTask = true;
+						break;
 					}
 				}
-				else if (item.nextRun < nextOperationTime)
-					nextOperationTime = item.nextRun;
+			}
+
+			if (!foundTask)
+			{
+				break;
+			}
+
+			bool success = false;
+			try
+			{
+				taskCallback();
+				success = true;
+			}
+			catch (std::exception& ex)
+			{
+				LogLog::warn(taskName, ex);
+			}
+			catch (...)
+			{
+				LogLog::warn(taskName + LOG4CXX_STR(" threw an exception"));
+			}
+
+			{
+				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+					, [&taskName](const NamedPeriodicFunction& item)
+					{ return !item.removed && taskName == item.name; }
+					);
+
+				if (pItem != this->jobs.end())
+				{
+					if (success)
+					{
+						pItem->nextRun = std::chrono::system_clock::now() + taskDelay;
+						pItem->errorCount = 0;
+					}
+					else
+					{
+						++pItem->errorCount;
+					}
+				}
 			}
 		}
+
+		// Update nextOperationTime under the lock
+		{
+			std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+			for (const auto& item : this->jobs)
+			{
+				if (!item.removed && item.nextRun < nextOperationTime)
+				{
+					nextOperationTime = item.nextRun;
+				}
+			}
+		}
+
 		// Delete removed and faulty tasks
 		while (1)
 		{
