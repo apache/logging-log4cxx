@@ -15,6 +15,10 @@
 # limitations under the License.
 #
 cmake_minimum_required(VERSION 3.13)
+if(DEFINED VCPKG_TARGET_TRIPLET)
+  # Prevent vcpkg copying an old log4cxx.dll to test build directories
+  set(VCPKG_APPLOCAL_DEPS OFF CACHE BOOL "Disable vcpkg auto copying of DLLs")
+endif()
 include(src/cmake/projectVersionDetails.cmake)
 project(log4cxx VERSION ${log4cxx_VER} LANGUAGES CXX)
 include(CTest)
