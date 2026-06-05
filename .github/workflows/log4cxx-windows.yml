@@ -78,7 +78,7 @@ jobs:
       shell: pwsh
       run: |
         $Env:PATH += ";C:\msys64\usr\bin"
-        pacman --noconfirm -S zip mingw-w64-x86_64-ntldd
+        pacman --noconfirm -S zip
 
     - name: 'run cmake'
       shell: pwsh
@@ -132,4 +132,4 @@ jobs:
       timeout-minutes: 10
       run: |
         cd build
-        ctest -C Release -V
+        ctest -C Release --output-on-failure

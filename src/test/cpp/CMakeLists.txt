@@ -135,10 +135,6 @@ if(LOG4CXX_CFSTRING)
   set(CFSTR_TESTS filetestcase messagebuffertest leveltestcase streamtestcase transcodertestcase)
 endif()
 foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
-    if(DEFINED VCPKG_TARGET_TRIPLET)
-      # stop vcpkg from polluting the CTest test wrapper scripts
-      set_property(TARGET ${testName} PROPERTY ENVIRONMENT "")
-    endif()
     if (${testName} STREQUAL "qtconfigurationtest")
         target_include_directories(${testName} PRIVATE $<TARGET_PROPERTY:log4cxx-qt,INCLUDE_DIRECTORIES>)
         target_compile_definitions(${testName} PRIVATE "QT_NO_KEYWORDS")
@@ -159,18 +155,16 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
       target_link_libraries(${testName} PRIVATE ${ESMTP_LIBRARIES})
     endif()
 
+    add_test(NAME ${testName}
+        COMMAND ${testName}
+        WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
+    )
+    set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
     if(WIN32)
-        add_test(NAME ${testName}
-            COMMAND ldd "$<TARGET_FILE:${testName}>"
-            WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
-        )
-        set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
         set_target_properties(${testName} PROPERTIES
           VS_DEBUGGER_WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
-          FOLDER UnitTests
-        )
-        set_target_properties(${testName} PROPERTIES
           VS_DEBUGGER_COMMAND_ARGUMENTS "-v"
+          FOLDER UnitTests
         )
         if(${testName} STREQUAL optionconvertertestcase)
             set_target_properties(${testName} PROPERTIES
@@ -195,11 +189,6 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             set_target_properties(${testName} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
         endif()
     else()
-        add_test(NAME ${testName}
-            COMMAND ${testName} -v
-            WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
-        )
-        set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
         if(${testName} STREQUAL optionconvertertestcase)
             set_tests_properties(optionconvertertestcase PROPERTIES
                 ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"

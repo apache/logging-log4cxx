@@ -2,7 +2,7 @@
 function(get_target_environment_path varName)
   get_filename_component(APR_DLL_DIR "${APR_DLL}" DIRECTORY)
   get_filename_component(APR_UTIL_DLL_DIR "${APR_UTIL_DLL}" DIRECTORY)
-  set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>;")
+  set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>")
   set(PATH_FOR_TESTS "${LOG4CXX_DLL_DIR}" "${CMAKE_PROGRAM_PATH}" "${APR_DLL_DIR}" "${APR_UTIL_DLL_DIR}")
   if(EXPAT_LIBRARY)
     get_filename_component(EXPAT_LIB_DIR "${EXPAT_LIBRARY}" DIRECTORY)
