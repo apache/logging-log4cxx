@@ -128,4 +128,4 @@ jobs:
       timeout-minutes: 10
       run: |
         cd build
-        ctest -C Release --output-on-failure
+        ctest -C Release -V
