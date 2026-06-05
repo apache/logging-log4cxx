@@ -62,6 +62,24 @@ namespace SimpleDateFormatImpl
 typedef void (*incrementFunction)(tm& time, apr_time_exp_t& apr_time);
 
 /**
+ * Append \c names[index] only when \c index is within bounds.
+ *
+ * The day/month/AM-PM name tables have a fixed size, but the index comes
+ * directly from an apr_time_exp_t field (tm_wday, tm_mon, tm_hour). APR's
+ * time-explosion arithmetic can overflow and yield an out-of-range field for
+ * extreme apr_time_t inputs, in which case the previous code performed an
+ * out-of-bounds std::vector read (std::vector::operator[] is unchecked).
+ */
+static inline void appendName(LogString& s,
+	const std::vector<LogString>& names, int index)
+{
+	if (0 <= index && static_cast<std::vector<LogString>::size_type>(index) < names.size())
+	{
+		s.append(names[index]);
+	}
+}
+
+/**
  * Abstract inner class representing one format token
  * (one or more instances of a character).
  */
@@ -302,7 +320,7 @@ class AbbreviatedMonthNameToken : public PatternToken
 
 		void format(LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
 		{
-			s.append( names[tm.tm_mon] );
+			appendName( s, names, tm.tm_mon );
 		}
 
 	private:
@@ -321,7 +339,7 @@ class FullMonthNameToken : public PatternToken
 
 		void format( LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
 		{
-			s.append( names[tm.tm_mon] );
+			appendName( s, names, tm.tm_mon );
 		}
 
 	private:
@@ -415,7 +433,7 @@ class AbbreviatedDayNameToken : public PatternToken
 
 		void format( LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
 		{
-			s.append( names[tm.tm_wday] );
+			appendName( s, names, tm.tm_wday );
 		}
 
 	private:
@@ -435,7 +453,7 @@ class FullDayNameToken : public PatternToken
 
 		void format( LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
 		{
-			s.append( names[tm.tm_wday] );
+			appendName( s, names, tm.tm_wday );
 		}
 
 	private:
@@ -551,7 +569,7 @@ class AMPMToken : public PatternToken
 
 		void format( LogString& s, const apr_time_exp_t& tm, Pool& /* p */ ) const
 		{
-			s.append( names[tm.tm_hour / 12] );
+			appendName( s, names, tm.tm_hour / 12 );
 		}
 
 	private:
