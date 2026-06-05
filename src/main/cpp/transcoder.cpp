@@ -218,111 +218,12 @@ size_t Transcoder::encodeUTF16LE(unsigned int ch, char* dst)
 unsigned int Transcoder::decode(const std::string& src,
 	std::string::const_iterator& iter)
 {
-	std::string::const_iterator start(iter);
-	unsigned char ch1 = *(iter++);
-
-	if (ch1 <= 0x7F)
-	{
-		return ch1;
-	}
-
-	//
-	//   should not have continuation character here
-	//
-	if ((ch1 & 0xC0) != 0x80 && iter != src.end())
-	{
-		unsigned char ch2 = *(iter++);
-
-		//
-		//   should be continuation
-		if ((ch2 & 0xC0) != 0x80)
-		{
-			iter = start;
-			return 0xFFFF;
-		}
-
-		if ((ch1 & 0xE0) == 0xC0)
-		{
-			if ((ch2 & 0xC0) == 0x80)
-			{
-				unsigned int rv = ((ch1 & 0x1F) << 6) + (ch2 & 0x3F);
-
-				if (rv >= 0x80)
-				{
-					return rv;
-				}
-			}
-
-			iter = start;
-			return 0xFFFF;
-		}
-
-		if (iter != src.end())
-		{
-			unsigned char ch3 = *(iter++);
-
-			//
-			//   should be continuation
-			//
-			if ((ch3 & 0xC0) != 0x80)
-			{
-				iter = start;
-				return 0xFFFF;
-			}
-
-			if ((ch1 & 0xF0) == 0xE0)
-			{
-				unsigned rv = ((ch1 & 0x0F) << 12)
-					+ ((ch2 & 0x3F) << 6)
-					+ (ch3 & 0x3F);
-
-				// RFC 3629 §3 prohibits UTF-8 encodings of the UTF-16 surrogate
-				// halves (U+D800..U+DFFF); accepting them lets malformed Unicode
-				// cross the decode boundary into LogString and downstream output.
-				if (rv < 0x800 || (0xD800 <= rv && rv <= 0xDFFF))
-				{
-					iter = start;
-					return 0xFFFF;
-				}
-
-				return rv;
-			}
-
-			if (iter != src.end())
-			{
-				unsigned char ch4 = *(iter++);
-
-				if ((ch4 & 0xC0) != 0x80)
-				{
-					iter = start;
-					return 0xFFFF;
-				}
-
-				unsigned int rv = ((ch1 & 0x07) << 18)
-					+ ((ch2 & 0x3F) << 12)
-					+ ((ch3 & 0x3F) << 6)
-					+ (ch4 & 0x3F);
-
-				// RFC 3629 §3 caps UTF-8 at U+10FFFF; lead bytes F5..F7 (and
-				// F4 with an over-high trailer) produce rv > 0x10FFFF, which
-				// is not a Unicode code point. Without this bound, encodeUTF16
-				// later silently aliases the bogus value to a valid in-range
-				// code point — a substitution-collision filter-bypass primitive.
-				// Lead bytes F8..FF are never valid UTF-8, but the & 0x07 mask
-				// discards their high bits, so without the (ch1 & 0xF8) == 0xF0
-				// guard F8 BF BF BF would alias to U+3FFFF instead of being
-				// rejected.
-				if ((ch1 & 0xF8) == 0xF0 && rv > 0xFFFF && rv <= 0x10FFFF)
-				{
-					return rv;
-				}
-
-			}
-		}
-	}
-
-	iter = start;
-	return 0xFFFF;
+	auto index = iter - src.begin();
+	auto remaining = src.size() - index;
+	ByteBuffer buf(const_cast<char*>(&src[index]), remaining);
+	auto result = CharsetDecoder::getUTF8CodePoint(buf);
+	iter += remaining - buf.remaining();
+	return result;
 }
 
 

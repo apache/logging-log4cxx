@@ -79,9 +79,9 @@ class LOG4CXX_EXPORT CharsetDecoder : public Object
 		/**
 		 *  Decodes as many bytes as possible from \c in,
 		 *  appending the result onto \c out.
-		 *  @param in a null terminated string.
+		 *  @param in the bytes to decode.
 		 *  @param out the string onto which characters are appended.
-		 *  @return APR_SUCCESS if not encoding errors were found.
+		 *  @return APR_SUCCESS if no encoding errors were found.
 		 */
 		virtual log4cxx_status_t decode(ByteBuffer& in, LogString& out) = 0;
 
@@ -92,7 +92,7 @@ class LOG4CXX_EXPORT CharsetDecoder : public Object
 		 *  @param in a null terminated string.
 		 *  @param maxByteCount the limit on the size of \c in.
 		 *  @param out the string onto which characters are appended.
-		 *  @return APR_SUCCESS if not encoding errors were found.
+		 *  @return APR_SUCCESS if no encoding errors were found.
 		 */
 		log4cxx_status_t decode(const char* in, size_t maxByteCount, LogString& out);
 
@@ -103,6 +103,13 @@ class LOG4CXX_EXPORT CharsetDecoder : public Object
 		{
 			return (stat != 0);
 		}
+
+		/**
+		 *  The first code point in \c in.
+		 *  @param in the bytes to decode.
+		 *  @return the code point value, if successful, otherwise 0xFFFF. The \c in cursor position is updated if successful.
+		 */
+		static unsigned int getUTF8CodePoint(ByteBuffer& in);
 
 	private:
 		/**
