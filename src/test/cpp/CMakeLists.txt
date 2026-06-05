@@ -156,7 +156,7 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     endif()
 
     add_test(NAME ${testName}
-        COMMAND ${testName}
+        COMMAND ${testName} -v
         WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
     )
     set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
