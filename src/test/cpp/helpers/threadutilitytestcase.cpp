@@ -40,6 +40,7 @@ LOGUNIT_CLASS(ThreadUtilityTest)
 	LOGUNIT_TEST(testCustomFunctions);
 	LOGUNIT_TEST(testDefaultFunctions);
 	LOGUNIT_TEST(testPeriodicTaskRestartsAfterEmptyQueue);
+	LOGUNIT_TEST(testNoDeadlockDuringTaskExecution);
 #if LOG4CXX_HAS_PTHREAD_SETNAME || defined(_WIN32)
 	LOGUNIT_TEST(testThreadNameLogging);
 #endif
@@ -153,6 +154,38 @@ public:
 		LOGUNIT_ASSERT(0 < secondRuns.load());
 		// wait 30 ms for periodic task thread to exit
 		std::this_thread::sleep_for(std::chrono::milliseconds(30));
+	}
+
+	void testNoDeadlockDuringTaskExecution()
+	{
+		auto thrUtil = ThreadUtility::instance();
+		const LogString slowTask(LOG4CXX_STR("ThreadUtilityTest.slow"));
+		std::atomic<bool> taskRunning{false};
+		std::atomic<bool> releaseTask{false};
+
+		thrUtil->removeAllPeriodicTasks();
+		// A callback that blocks, as a reconnect attempt would when the log server is offline
+		thrUtil->addPeriodicTask(slowTask, [&taskRunning, &releaseTask]() {
+			taskRunning = true;
+			for (int i = 0; i < 500 && !releaseTask.load(); ++i)
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}, std::chrono::milliseconds(1));
+
+		// Wait for the callback to start executing
+		for (int i = 0; i < 100 && !taskRunning.load(); ++i)
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		LOGUNIT_ASSERT(taskRunning.load());
+
+		// removePeriodicTask() must return while the slow callback is still running
+		auto startTime = std::chrono::steady_clock::now();
+		thrUtil->removePeriodicTask(slowTask);
+		auto elapsed = std::chrono::steady_clock::now() - startTime;
+
+		releaseTask = true;
+		LOGUNIT_ASSERT(std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() < 1000);
+
+		// wait for the periodic task thread to settle
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 
 	void testThreadNameLogging()
