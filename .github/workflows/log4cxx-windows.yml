@@ -78,7 +78,7 @@ jobs:
       shell: pwsh
       run: |
         $Env:PATH += ";C:\msys64\usr\bin"
-        pacman --noconfirm -S zip
+        pacman --noconfirm -S zip mingw-w64-x86_64-ntldd
 
     - name: 'run cmake'
       shell: pwsh

@@ -159,12 +159,12 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
       target_link_libraries(${testName} PRIVATE ${ESMTP_LIBRARIES})
     endif()
 
-    add_test(NAME ${testName}
-        COMMAND ${testName} -v
-        WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
-    )
-    set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
     if(WIN32)
+        add_test(NAME ${testName}
+            COMMAND ldd ${testName}
+            WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
+        )
+        set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
         set_target_properties(${testName} PROPERTIES
           VS_DEBUGGER_WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
           FOLDER UnitTests
@@ -195,6 +195,11 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             set_target_properties(${testName} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
         endif()
     else()
+        add_test(NAME ${testName}
+            COMMAND ${testName} -v
+            WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
+        )
+        set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
         if(${testName} STREQUAL optionconvertertestcase)
             set_tests_properties(optionconvertertestcase PROPERTIES
                 ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
