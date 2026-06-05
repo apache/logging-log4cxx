@@ -93,6 +93,9 @@ The following issues have been addressed:
 * RollingFileAppender could name the rolled file ".1"
    \[[#697](https://github.com/apache/logging-log4cxx/issues/697)\]
 
+* {fmt} library version 11 and 12 incompatibility
+   \[[#700](https://github.com/apache/logging-log4cxx/issues/700)\]
+
 ## Release 1.7.0 - 2026-04-04 {#rel_1_7_0}
 
 Release 1.7.0 includes the following new features:
