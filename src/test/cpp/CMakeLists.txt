@@ -161,7 +161,7 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
 
     if(WIN32)
         add_test(NAME ${testName}
-            COMMAND ldd ${testName}
+            COMMAND ldd "$<TARGET_FILE:${testName}>"
             WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
         )
         set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
