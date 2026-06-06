@@ -82,7 +82,7 @@ class LOG4CXX_EXPORT Transcoder
 		static void encode(unsigned int ch, std::string& dst);
 
 		/**
-		 *    Append the LogString equivalent of \c src onto \c dst..
+		 *    Append the LogString equivalent of \c src onto \c dst.
 		 */
 		static void decode(const std::string& src, LogString& dst);
 
