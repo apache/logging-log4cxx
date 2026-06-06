@@ -512,6 +512,7 @@ void Transcoder::decode(const std::wstring& src, LogString& dst)
 
 	while (i != src.end())
 	{
+		std::wstring::const_iterator start = i;
 		unsigned int cp = decode(src, i);
 
 		if (cp != 0xFFFF)
@@ -521,7 +522,10 @@ void Transcoder::decode(const std::wstring& src, LogString& dst)
 		else
 		{
 			dst.append(1, LOSSCHAR);
-			i++;
+			if (i == start)
+			{
+				i++;
+			}
 		}
 	}
 
@@ -536,6 +540,7 @@ void Transcoder::encode(const LogString& src, std::wstring& dst)
 
 	for (LogString::const_iterator i = src.begin(); i != src.end();)
 	{
+		LogString::const_iterator start = i;
 		unsigned int cp = Transcoder::decode(src, i);
 
 		if (cp != 0xFFFF)
@@ -545,7 +550,10 @@ void Transcoder::encode(const LogString& src, std::wstring& dst)
 		else
 		{
 			dst.append(1, LOSSCHAR);
-			i++;
+			if (i == start)
+			{
+				i++;
+			}
 		}
 	}
 
@@ -610,8 +618,21 @@ void Transcoder::decode(const std::basic_string<UniChar>& src, LogString& dst)
 	for (std::basic_string<UniChar>::const_iterator i = src.begin();
 		i != src.end();)
 	{
+		std::basic_string<UniChar>::const_iterator start = i;
 		unsigned int cp = decode(src, i);
-		encode(cp, dst);
+
+		if (cp != 0xFFFF)
+		{
+			encode(cp, dst);
+		}
+		else
+		{
+			dst.append(1, LOSSCHAR);
+			if (i == start)
+			{
+				i++;
+			}
+		}
 	}
 
 #endif
@@ -626,8 +647,21 @@ void Transcoder::encode(const LogString& src, std::basic_string<UniChar>& dst)
 	for (LogString::const_iterator i = src.begin();
 		i != src.end();)
 	{
+		LogString::const_iterator start = i;
 		unsigned int cp = decode(src, i);
-		encode(cp, dst);
+
+		if (cp != 0xFFFF)
+		{
+			encode(cp, dst);
+		}
+		else
+		{
+			encode(LOSSCHAR, dst);
+			if (i == start)
+			{
+				i++;
+			}
+		}
 	}
 
 #endif
@@ -666,8 +700,20 @@ void Transcoder::decode(const CFStringRef& src, LogString& dst)
 		CFStringGetCharacters(src, CFRangeMake(0, length), &tmp[0]);
 		for (auto i = tmp.begin(); i != tmp.end(); )
 		{
+			auto start = i;
 			unsigned int cp = decodeUTF16(tmp, i);
-			encode(cp, dst);
+			if (cp != 0xFFFF)
+			{
+				encode(cp, dst);
+			}
+			else
+			{
+				dst.append(1, LOSSCHAR);
+				if (i == start)
+				{
+					i++;
+				}
+			}
 		}
 	}
 }

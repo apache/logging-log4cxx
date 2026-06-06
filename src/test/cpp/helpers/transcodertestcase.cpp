@@ -74,12 +74,17 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(testEncodeUTF16BE_BMP);
 	LOGUNIT_TEST(testEncodeUTF16BE_Supplementary);
 	LOGUNIT_TEST(testEncodeUTF16LE_Supplementary);
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
+	LOGUNIT_TEST(testEncodeWString_FFFF_KeepsFollowingByte);
+#endif
 #if LOG4CXX_UNICHAR_API
 	LOGUNIT_TEST(udecode2);
 	LOGUNIT_TEST(udecode4);
 	LOGUNIT_TEST(uencode1);
 	LOGUNIT_TEST(uencode3);
 	LOGUNIT_TEST(uencode5);
+	LOGUNIT_TEST(testDecodeUniChar_Malformed_DoesNotHang);
+	LOGUNIT_TEST(testEncodeUniChar_Malformed_DoesNotHang);
 #endif
 #if LOG4CXX_LOGCHAR_IS_UTF8
 	LOGUNIT_TEST(encodeCharsetName1);
@@ -520,6 +525,22 @@ public:
 		LOGUNIT_ASSERT_EQUAL((unsigned char) 0xDE, (unsigned char) raw[3]);
 	}
 
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
+	void testEncodeWString_FFFF_KeepsFollowingByte()
+	{
+		LogString src;
+#if LOG4CXX_LOGCHAR_IS_UTF8
+		src = "\xEF\xBF\xBF\x41"; // U+FFFF then 'A'
+#else
+		src.append(1, 0xFFFF);
+		src.append(1, 0x41);
+#endif
+		std::wstring out;
+		Transcoder::encode(src, out);
+		LOGUNIT_ASSERT(out.find(L"A") != std::wstring::npos);
+	}
+#endif
+
 
 #if LOG4CXX_UNICHAR_API
 	void udecode2()
@@ -578,6 +599,28 @@ public:
 		//   should be lossless
 		//
 		LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), encoded);
+	}
+
+	void testDecodeUniChar_Malformed_DoesNotHang()
+	{
+		const UniChar malformed[] = { 0xD800, 'A', 0 };
+		LogString decoded;
+		Transcoder::decode(malformed, decoded);
+		LOGUNIT_ASSERT(decoded.find(LOG4CXX_STR("A")) != LogString::npos);
+	}
+
+	void testEncodeUniChar_Malformed_DoesNotHang()
+	{
+		LogString src;
+#if LOG4CXX_LOGCHAR_IS_UTF8
+		src = "\xED\xA0\x80\x41"; // U+D800 then 'A'
+#else
+		src.append(1, 0xD800);
+		src.append(1, 0x41);
+#endif
+		std::basic_string<UniChar> out;
+		Transcoder::encode(src, out);
+		LOGUNIT_ASSERT(out.find('A') != std::basic_string<UniChar>::npos);
 	}
 #endif
 
