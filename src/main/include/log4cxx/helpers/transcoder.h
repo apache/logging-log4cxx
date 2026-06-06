@@ -69,13 +69,14 @@ class LOG4CXX_EXPORT Transcoder
 
 
 		/**
-		 *   Decodes next character from a UTF-8 string.
-		 *   @param in string from which the character is extracted.
-		 *   @param iter iterator addressing start of character, will be
-		 *   advanced to next character if successful.
-		 *   @return scalar value (UCS-4) or 0xFFFF if invalid sequence.
+		 *   Increment \c iter past the next code point in \c str.
+		 *   @pre \c iter is a valid, dereferenceable iterator.
+		 *   @pre \c iter and the end of \c str are in the same sequence.
+		 *   @param str contains the code point to which \c iter refers.
+		 *   @param iter the start of the current code point.
+		 *   @return the code point value or 0xFFFF if not a valid sequence.
 		 */
-		static unsigned int decode(const std::string& in,
+		static unsigned int decode(const std::string& str,
 			std::string::const_iterator& iter);
 
 		/**
@@ -118,13 +119,14 @@ class LOG4CXX_EXPORT Transcoder
 		static wchar_t* wencode(const LogString& src, LOG4CXX_NS::helpers::Pool& p);
 
 		/**
-		 *   Decodes next character from a wstring.
-		 *   @param in string from which the character is extracted.
-		 *   @param iter iterator addressing start of character, will be
-		 *   advanced to next character if successful.
-		 *   @return scalar value (UCS-4) or 0xFFFF if invalid sequence.
+		 *   Increment \c iter past the next code point in \c str.
+		 *   @pre \c iter is a valid, dereferenceable iterator.
+		 *   @pre \c iter and the end of \c str are in the same sequence.
+		 *   @param str contains the code point to which \c iter refers.
+		 *   @param iter the start of the current code point.
+		 *   @return the code point value or 0xFFFF if not a valid sequence.
 		 */
-		static unsigned int decode(const std::wstring& in,
+		static unsigned int decode(const std::wstring& str,
 			std::wstring::const_iterator& iter);
 
 		/**
@@ -142,13 +144,14 @@ class LOG4CXX_EXPORT Transcoder
 		static void encode(const LogString& src, std::basic_string<UniChar>& dst);
 
 		/**
-		 *   Decodes next character from a UniChar string.
-		 *   @param in string from which the character is extracted.
-		 *   @param iter iterator addressing start of character, will be
-		 *   advanced to next character if successful.
-		 *   @return scalar value (UCS-4) or 0xFFFF if invalid sequence.
+		 *   Increment \c iter past the next code point in \c str.
+		 *   @pre \c iter is a valid, dereferenceable iterator.
+		 *   @pre \c iter and the end of \c str are in the same sequence.
+		 *   @param str contains the code point to which \c iter refers.
+		 *   @param iter the start of the current code point.
+		 *   @return the code point value or 0xFFFF if not a valid sequence.
 		 */
-		static unsigned int decode(const std::basic_string<UniChar>& in,
+		static unsigned int decode(const std::basic_string<UniChar>& str,
 			std::basic_string<UniChar>::const_iterator& iter);
 
 		/**

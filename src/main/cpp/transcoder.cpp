@@ -218,9 +218,9 @@ size_t Transcoder::encodeUTF16LE(unsigned int ch, char* dst)
 unsigned int Transcoder::decode(const std::string& src,
 	std::string::const_iterator& iter)
 {
-	auto index = iter - src.begin();
-	auto remaining = src.size() - index;
-	ByteBuffer buf(const_cast<char*>(&src[index]), remaining);
+	auto offset = iter - src.begin();
+	auto remaining = src.size() - offset;
+	ByteBuffer buf(const_cast<char*>(src.data() + offset), remaining);
 	auto result = CharsetDecoder::getUTF8CodePoint(buf);
 	iter += remaining - buf.remaining();
 	return result;
