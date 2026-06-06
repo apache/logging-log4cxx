@@ -370,6 +370,8 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		auto currentTime = std::chrono::system_clock::now();
 		TimePoint nextOperationTime = currentTime + this->maxDelay;
 
+		// Run each due task with job_mutex released, so a long-running callback
+		// (e.g. a reconnect blocked on network I/O) does not stall removePeriodicTask()
 		while (true)
 		{
 			std::function<void()> taskCallback;
@@ -377,29 +379,31 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 			Period taskDelay;
 			bool foundTask = false;
 
+			// Take a copy of the next due task while holding the lock
 			{
+				if (this->terminated.load())
+					return;
 				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-				for (auto& item : this->jobs)
+				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+					, [currentTime](const NamedPeriodicFunction& item)
+					{ return !item.removed && item.nextRun <= currentTime; }
+					);
+				if (pItem != this->jobs.end())
 				{
-					if (this->terminated.load())
-						return;
-
-					if (!item.removed && item.nextRun <= currentTime)
-					{
-						taskCallback = item.f;
-						taskName = item.name;
-						taskDelay = item.delay;
-						foundTask = true;
-						break;
-					}
+					taskCallback = pItem->f;
+					taskName = pItem->name;
+					taskDelay = pItem->delay;
+					foundTask = true;
 				}
 			}
 
+			// No more tasks are due, leave the loop
 			if (!foundTask)
 			{
 				break;
 			}
 
+			// Execute the callback outside the lock
 			bool success = false;
 			try
 			{
@@ -415,6 +419,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				LogLog::warn(taskName + LOG4CXX_STR(" threw an exception"));
 			}
 
+			// Re-find the task (it may have been removed while running) and reschedule it
 			{
 				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
 				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
@@ -424,15 +429,12 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 
 				if (pItem != this->jobs.end())
 				{
+					// Always push nextRun out, so a failing task waits before the next retry
+					pItem->nextRun = std::chrono::system_clock::now() + taskDelay;
 					if (success)
-					{
-						pItem->nextRun = std::chrono::system_clock::now() + taskDelay;
 						pItem->errorCount = 0;
-					}
 					else
-					{
 						++pItem->errorCount;
-					}
 				}
 			}
 		}
@@ -465,6 +467,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				return;
 		}
 
+		// Wait until the next task is due or an add/remove/shutdown wakes us
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime);
 	}
