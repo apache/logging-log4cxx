@@ -28,10 +28,7 @@ namespace helpers
 class ByteBuffer;
 class Pool;
 /**
-*    Simple transcoder for converting between
-*      external char and wchar_t strings and
-*      internal strings.
-*
+*    Methods for converting between external and internal strings.
 */
 class LOG4CXX_EXPORT Transcoder
 {
@@ -39,11 +36,11 @@ class LOG4CXX_EXPORT Transcoder
 
 
 		/**
-		 *   Appends this specified string of UTF-8 characters to LogString.
+		 *   Append the UTF-8 characters in \c src onto \c dst.
 		 */
 		static void decodeUTF8(const std::string& src, LogString& dst);
 		/**
-		 *    Converts the LogString to a UTF-8 string.
+		 *    Append \src onto \c dst as a UTF-8 string.
 		 */
 		static void encodeUTF8(const LogString& src, std::string& dst);
 #if LOG4CXX_ABI_VERSION <= 15
@@ -55,15 +52,15 @@ class LOG4CXX_EXPORT Transcoder
 		static char* encodeUTF8(const LogString& src, LOG4CXX_NS::helpers::Pool& p);
 #endif
 		/**
-		 *    Append UCS-4 code point to a byte buffer as UTF-8.
+		 *    Append the code point \c sv to \c dst as UTF-8.
 		 */
 		static void encodeUTF8(unsigned int sv, ByteBuffer& dst);
 		/**
-		 *    Append UCS-4 code point to a byte buffer as UTF-16LE.
+		 *    Append the code point \c sv to \c dst as UTF-16LE.
 		 */
 		static void encodeUTF16LE(unsigned int sv, ByteBuffer& dst);
 		/**
-		 *    Append UCS-4 code point to a byte buffer as UTF-16BE.
+		 *    Append the code point \c sv to \c dst as UTF-16BE.
 		 */
 		static void encodeUTF16BE(unsigned int sv, ByteBuffer& dst);
 
@@ -80,9 +77,7 @@ class LOG4CXX_EXPORT Transcoder
 			std::string::const_iterator& iter);
 
 		/**
-		  *   Appends UCS-4 value to a UTF-8 string.
-		  *   @param ch UCS-4 value.
-		  *   @param dst destination.
+		  *   Append the UTF8 equivalent to \c ch onto \c dst.
 		  */
 		static void encode(unsigned int ch, std::string& dst);
 
@@ -93,8 +88,8 @@ class LOG4CXX_EXPORT Transcoder
 		static void decode(const std::string& src, LogString& dst);
 
 		/**
-		 *     Appends a LogString to a string in the current
-		 *        code-page.  Unrepresentable characters may be
+		 *     Append the UTF8 equivalent to \c src onto \c dst.
+		 *        Unrepresentable characters may be
 		 *        replaced with loss characters.
 		*/
 		static void encode(const LogString& src, std::string& dst);
@@ -130,9 +125,7 @@ class LOG4CXX_EXPORT Transcoder
 			std::wstring::const_iterator& iter);
 
 		/**
-		  *   Appends UCS-4 value to a UTF-8 string.
-		  *   @param ch UCS-4 value.
-		  *   @param dst destination.
+		  *   Append the wchar_t equivalent to \c ch onto \c dst.
 		  */
 		static void encode(unsigned int ch, std::wstring& dst);
 
@@ -155,9 +148,7 @@ class LOG4CXX_EXPORT Transcoder
 			std::basic_string<UniChar>::const_iterator& iter);
 
 		/**
-		  *   Appends UCS-4 value to a UTF-8 string.
-		  *   @param ch UCS-4 value.
-		  *   @param dst destination.
+		  *   Append the UniChar equivalent to \c ch onto \c dst.
 		  */
 		static void encode(unsigned int ch, std::basic_string<UniChar>& dst);
 
@@ -171,15 +162,13 @@ class LOG4CXX_EXPORT Transcoder
 		enum { LOSSCHAR = 0x3F };
 
 		/**
-		 *   Returns a logchar value given a character literal in the ASCII charset.
-		 *   Used to implement the LOG4CXX_STR macro for EBCDIC and UNICHAR.
+		 *   The logchar equivalent to \c ch.
 		 */
-		static logchar decode(char v);
+		static logchar decode(char ch);
 		/**
-		 *   Returns a LogString given a string literal in the ASCII charset.
-		 *   Used to implement the LOG4CXX_STR macro for EBCDIC and UNICHAR.
+		 *   The LogString equivalent to the characters in the null terminated bytes at \c str.
 		 */
-		static LogString decode(const char* v);
+		static LogString decode(const char* str);
 
 		/**
 		 *   Encodes a charset name in the default encoding
