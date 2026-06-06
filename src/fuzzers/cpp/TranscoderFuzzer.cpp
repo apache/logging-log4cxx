@@ -254,10 +254,13 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 		std::string::const_iterator it = bytes.begin();
 		while (it != bytes.end())
 		{
+			auto old_it = it;
 			unsigned int sv = Transcoder::decode(bytes, it);
 			if (sv == 0xFFFF)
 			{
-				++it; // mirror decodeUTF8's recovery advance on a bad sequence
+				// mirror decodeUTF8's recovery advance on a bad sequence
+				if (old_it == it)
+					++it;
 				continue;
 			}
 			checkUTF16RoundTrip(sv);
