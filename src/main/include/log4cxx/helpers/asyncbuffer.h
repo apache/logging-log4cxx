@@ -204,7 +204,7 @@ public: // Modifiers
 	{
 		auto store = FmtArgStore();
 		( store.push_back(std::forward<Args>(args)), ...);
-		initializeForFmt(std::move(fmt_str), std::move(store));
+		initializeForFmt(fmt_str, std::move(store));
 	}
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
@@ -215,7 +215,7 @@ public: // Modifiers
 	{
 		auto store = WideFmtArgStore();
 		( store.push_back(std::forward<Args>(args)), ...);
-		initializeForFmt(std::move(fmt_str), std::move(store));
+		initializeForFmt(fmt_str, std::move(store));
 	}
 #endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 #endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
@@ -251,12 +251,22 @@ private:
 #endif // !LOG4CXX_CONCEPTS
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+	void initializeForFmt(const StringViewType& format_string, FmtArgStore&& args);
+
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+	void initializeForFmt(const WideStringViewType& format_string, WideFmtArgStore&& args);
+#endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
+#endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+
+#if LOG4CXX_ABI_VERSION <= 15
+#if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 	void initializeForFmt(StringViewType&& format_string, FmtArgStore&& args);
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 	void initializeForFmt(WideStringViewType&& format_string, WideFmtArgStore&& args);
 #endif // LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 #endif // LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
+#endif // LOG4CXX_ABI_VERSION <= 15
 };
 
 } // namespace helpers

@@ -23,21 +23,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [windows-2022, windows-2025, windows-2025-qt]
+        name: [windows-2022, windows-2025-fmt, windows-2025-qt]
         include:
           - name: windows-2022
             os: windows-2022
             qt: OFF
             next_abi: OFF
-          - name: windows-2025
+            vcpkg_ref: 2025.07.25
+          - name: windows-2025-fmt
             os: windows-2025
             qt: OFF
             next_abi: ON
+            vcpkg_options: fmt
+            vcpkg_ref: 2026.05.25
           - name: windows-2025-qt
             os: windows-2025
             qt: ON
-            qt_component: qtbase
+            vcpkg_options: qtbase
             next_abi: OFF
+            vcpkg_ref: 2026.05.25
 
     steps:
     - uses: actions/checkout@v4
@@ -50,7 +54,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: vcpkg
-        key: ${{ runner.os }}-${{ matrix.name }}-cache-x64
+        key: ${{ matrix.name }}-${{ matrix.vcpkg_ref }}-x64
 
     - name: 'Checkout VCPKG'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
@@ -58,7 +62,7 @@ jobs:
       with:
         repository: microsoft/vcpkg
         path: vcpkg
-        ref: 2025.07.25
+        ref: ${{ matrix.vcpkg_ref }}
 
     - name: 'Configure Dependencies'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
@@ -67,7 +71,7 @@ jobs:
       run: |
         cd vcpkg
         ./bootstrap-vcpkg.bat
-        ./vcpkg install apr apr-util fmt ${{ matrix.qt_component }} --triplet=x64-windows
+        ./vcpkg install apr apr-util ${{ matrix.vcpkg_options }} --triplet=x64-windows
 
     - name: 'Install zip'
       id: install-zip
