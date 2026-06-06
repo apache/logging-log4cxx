@@ -20,16 +20,18 @@ jobs:
   job:
     name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 38
     strategy:
       fail-fast: false
       matrix:
-        name: [windows-2022, windows-2025]
+        name: [windows-2022, windows-2025-fmt]
         include:
           - name: windows-2022
             os: windows-2022
+            vcpkg_ref: 2025.07.25
           - name: windows-2025
             os: windows-2025
+            vcpkg_options: fmt
+            vcpkg_ref: 2026.05.25
 
     steps:
     - uses: actions/checkout@v4
@@ -42,7 +44,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vcpkg
-        key: ${{ runner.os }}-${{ matrix.name }}-cache-x64-static
+        key: ${{ matrix.name }}-${{ matrix.vcpkg_ref }}-x64-static
 
     - name: 'Checkout VCPKG'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
@@ -50,7 +52,7 @@ jobs:
       with:
         repository: microsoft/vcpkg
         path: vcpkg
-        ref: 2025.07.25
+        ref: ${{ matrix.vcpkg_ref }}
 
     - name: 'Configure Dependencies'
       if: steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
@@ -59,7 +61,7 @@ jobs:
       run: |
         cd vcpkg
         ./bootstrap-vcpkg.bat
-        ./vcpkg install apr apr-util --triplet=x64-windows-static
+        ./vcpkg install apr apr-util ${{ matrix.vcpkg_options }} --triplet=x64-windows-static
 
     - name: 'Install zip'
       id: install-zip
@@ -71,10 +73,7 @@ jobs:
     - name: 'run cmake - static'
       shell: pwsh
       run: |
-        $THISDIR=Get-Location
-        cd main
-        mkdir build
-        cd build
+        $ROOT=Get-Location
         cmake `
             -DLOG4CXX_TEST_ONLY_BUILD=1 `
             -DVCPKG_TARGET_TRIPLET=x64-windows-static `
@@ -82,12 +81,14 @@ jobs:
             -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=on `
             -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin `
             "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-            ..
+           -S "$ROOT/main" `
+           -B "$ROOT/build"
 
-        cmake --build .
+        cmake --build "$ROOT/build" --config Debug
 
     - name: run unit tests
       shell: pwsh
+      timeout-minutes: 10
       run: |
         cd main
         cd build
