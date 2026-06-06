@@ -74,6 +74,7 @@ The following issues have been addressed:
    , [#664](https://github.com/apache/logging-log4cxx/pull/664)
    , [#669](https://github.com/apache/logging-log4cxx/pull/669)
    , [#670](https://github.com/apache/logging-log4cxx/pull/670)
+   , [#711](https://github.com/apache/logging-log4cxx/pull/711)
 
 * A lack of robustness dealing with values near numeric limits  
    * [#633](https://github.com/apache/logging-log4cxx/pull/633)
@@ -92,6 +93,9 @@ The following issues have been addressed:
 
 * RollingFileAppender could name the rolled file ".1"
    \[[#697](https://github.com/apache/logging-log4cxx/issues/697)\]
+
+* {fmt} library version 11 and 12 incompatibility
+   \[[#700](https://github.com/apache/logging-log4cxx/issues/700)\]
 
 ## Release 1.7.0 - 2026-04-04 {#rel_1_7_0}
 

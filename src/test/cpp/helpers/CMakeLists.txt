@@ -31,6 +31,7 @@ set(HELPER_TESTS
     optionconvertertestcase
     propertiestestcase
     relativetimedateformattestcase
+    simpledateformattestcase
     stringhelpertestcase
     stringtokenizertestcase
     timezonetestcase
