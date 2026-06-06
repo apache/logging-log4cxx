@@ -82,13 +82,12 @@ class LOG4CXX_EXPORT Transcoder
 		static void encode(unsigned int ch, std::string& dst);
 
 		/**
-		 *    Appends string in the current code-page
-		 *       to a LogString.
+		 *    Append the LogString equivalent of \c src onto \c dst..
 		 */
 		static void decode(const std::string& src, LogString& dst);
 
 		/**
-		 *     Append the UTF8 equivalent to \c src onto \c dst.
+		 *     Append the UTF8 equivalent of \c src onto \c dst.
 		 *        Unrepresentable characters may be
 		 *        replaced with loss characters.
 		*/
@@ -109,8 +108,15 @@ class LOG4CXX_EXPORT Transcoder
 
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
+		/**
+		 *    Append the LogString equivalent of \c src onto \c dst.
+		 */
 		static void decode(const std::wstring& src, LogString& dst);
+		/**
+		 *    Append the equivalent of \c src onto \c dst.
+		 */
 		static void encode(const LogString& src, std::wstring& dst);
+		/// A null-terminated equivalent of \c src.
 		static wchar_t* wencode(const LogString& src, LOG4CXX_NS::helpers::Pool& p);
 
 		/**
@@ -133,7 +139,13 @@ class LOG4CXX_EXPORT Transcoder
 
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
+		/**
+		 *    Append the LogString equivalent of \c src onto \c dst.
+		 */
 		static void decode(const std::basic_string<UniChar>& src, LogString& dst);
+		/**
+		 *    Append the equivalent of \c src onto \c dst.
+		 */
 		static void encode(const LogString& src, std::basic_string<UniChar>& dst);
 
 		/**
@@ -155,7 +167,11 @@ class LOG4CXX_EXPORT Transcoder
 #endif
 
 #if LOG4CXX_CFSTRING_API
+		/**
+		 *    Append the LogString equivalent of \c src onto \c dst.
+		 */
 		static void decode(const CFStringRef& src, LogString& dst);
+		/// A CFStringRef equivalent of \c src.
 		static CFStringRef encode(const LogString& src);
 #endif
 
