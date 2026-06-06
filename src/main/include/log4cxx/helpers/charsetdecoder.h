@@ -105,11 +105,11 @@ class LOG4CXX_EXPORT CharsetDecoder : public Object
 		}
 
 		/**
-		 *  The first code point in \c in.
-		 *  @param in the bytes to decode.
-		 *  @return the code point value, if successful, otherwise 0xFFFF. The \c in cursor position is updated if successful.
+		 *  Increment the \c buf cursor position past the next UTF8 code point in \c buf.
+		 *  @param buf the bytes to decode.
+		 *  @return the code point value, if successful, otherwise 0xFFFF. The \c buf cursor position is only incremented if successful.
 		 */
-		static unsigned int getUTF8CodePoint(ByteBuffer& in);
+		static unsigned int getUTF8CodePoint(ByteBuffer& buf);
 
 	private:
 		/**
