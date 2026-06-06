@@ -163,19 +163,10 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     if(WIN32)
         set_target_properties(${testName} PROPERTIES
           VS_DEBUGGER_WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
+          VS_DEBUGGER_COMMAND_ARGUMENTS "-v"
           FOLDER UnitTests
         )
-        set_target_properties(${testName} PROPERTIES
-          VS_DEBUGGER_COMMAND_ARGUMENTS "-v"
-        )
-        if(${testName} STREQUAL socketservertestcase)
-            set_target_properties(${testName} PROPERTIES
-              VS_DEBUGGER_ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}\nPATH=${ESCAPED_PATH}"
-            )
-            set_tests_properties(socketservertestcase PROPERTIES
-                ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${ESCAPED_PATH}"
-            )
-        elseif(${testName} STREQUAL optionconvertertestcase)
+        if(${testName} STREQUAL optionconvertertestcase)
             set_target_properties(${testName} PROPERTIES
               VS_DEBUGGER_ENVIRONMENT "TOTO=wonderful\nkey1=value1\nkey2=value2\nPATH=${ESCAPED_PATH}"
             )
@@ -184,10 +175,10 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
            )
         else()
             set_target_properties(${testName} PROPERTIES
-              VS_DEBUGGER_ENVIRONMENT "key1=value1\nkey2=value2\nPATH=${ESCAPED_PATH}"
+              VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
             )
            set_tests_properties(${testName} PROPERTIES
-                ENVIRONMENT "key1=value1;key2=value2;PATH=${ESCAPED_PATH}"
+                ENVIRONMENT "PATH=${ESCAPED_PATH}"
            )
         endif()
         if(NOT BUILD_SHARED_LIBS)
@@ -198,18 +189,10 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             set_target_properties(${testName} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
         endif()
     else()
-        if(${testName} STREQUAL socketservertestcase)
-            set_tests_properties(socketservertestcase PROPERTIES
-                ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}"
-            )
-        elseif(${testName} STREQUAL optionconvertertestcase)
+        if(${testName} STREQUAL optionconvertertestcase)
             set_tests_properties(optionconvertertestcase PROPERTIES
                 ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
             )
-        else()
-           set_tests_properties(${testName} PROPERTIES
-                ENVIRONMENT "key1=value1;key2=value2"
-           )
         endif()
     endif()
 endforeach()
