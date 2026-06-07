@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#if !(defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
+#if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
 #include <windows.h>
 #include <Heapapi.h>
 #include <log4cxx/nt/nteventlogappender.h>
