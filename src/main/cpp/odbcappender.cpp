@@ -43,7 +43,7 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	#if defined(WIN32) || defined(_WIN32)
 		#include <windows.h>
 	#endif
@@ -88,7 +88,7 @@ const char* SQLException::formatMessage(short fHandleType,
 {
 	std::string strReturn(prolog);
 	strReturn.append(" - ");
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	SQLCHAR       SqlState[6];
 	SQLCHAR       Msg[SQL_MAX_MESSAGE_LENGTH];
 	SQLINTEGER    NativeError;
@@ -220,7 +220,7 @@ bool ODBCAppender::requiresLayout() const
 
 void ODBCAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-#if !LOG4CXX_HAVE_ODBC
+#if !LOG4CXX_HAVE_ODBC || LOG4CXX_LOGCHAR_IS_UNICHAR
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
 #else
 	if (_priv->mappedName.empty())
@@ -262,7 +262,7 @@ void ODBCAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 
 void ODBCAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	_priv->buffer.push_back(event);
 
 	if (_priv->buffer.size() >= _priv->bufferSize)
@@ -292,7 +292,7 @@ void ODBCAppender::closeConnection(ODBCAppender::SQLHDBC /* con */)
 
 ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 {
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	SQLRETURN ret;
 
 	if (_priv->env == SQL_NULL_HENV)
@@ -373,7 +373,7 @@ void ODBCAppender::close()
 {
 	if (_priv->setClosed())
 	{
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 		if (!_priv->buffer.empty() && 0 == _priv->preparedStatement)
 		{
 			Pool p;
@@ -397,7 +397,7 @@ void ODBCAppender::ODBCAppenderPriv::close()
 			e, ErrorCode::GENERIC_FAILURE);
 	}
 
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 
 	if (this->connection != SQL_NULL_HDBC)
 	{
@@ -413,7 +413,7 @@ void ODBCAppender::ODBCAppenderPriv::close()
 #endif
 }
 
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 {
 	auto ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &this->preparedStatement);
@@ -614,7 +614,7 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 
 void ODBCAppender::flushBuffer(Pool& p)
 {
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	if (0 == _priv->preparedStatement)
 		_priv->setPreparedStatement(getConnection(p), p);
 	_priv->flushBuffer(p);
@@ -629,7 +629,7 @@ void ODBCAppender::ODBCAppenderPriv::flushBuffer(Pool& p)
 	{
 		if (this->parameterValue.empty())
 			this->errorHandler->error(LOG4CXX_STR("ODBCAppender column mappings not defined"));
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 		else try
 		{
 			this->setParameterValues(logEvent, p);

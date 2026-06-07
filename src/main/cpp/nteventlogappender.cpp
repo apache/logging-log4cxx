@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-#if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
+#if !(defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
 #include <windows.h>
 #include <Heapapi.h>
 #include <log4cxx/nt/nteventlogappender.h>
+#if !LOG4CXX_LOGCHAR_IS_UNICHAR
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
@@ -413,5 +414,6 @@ const LogString& NTEventLogAppender::getServer() const
 {
 	return priv->server;
 }
+#endif // !LOG4CXX_LOGCHAR_IS_UNICHAR
 
 #endif // WIN32
