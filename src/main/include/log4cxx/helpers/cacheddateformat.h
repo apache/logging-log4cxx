@@ -119,8 +119,8 @@ class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 		/**
 		 * Formats a Date into a date/time string.
 		 *
-		 *  @param date the date to format.
-		 *  @param sbuf the string buffer to write to.
+		 *  @param tm the date/time to format.
+		 *  @param toAppendTo the string buffer to write to.
 		 */
 		void format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const override;
 

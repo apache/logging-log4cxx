@@ -300,7 +300,7 @@ class TrivialCharsetDecoder : public CharsetDecoder
 };
 
 /**
-*    Converts from UTF-8 to std::wstring
+*    Converts from UTF-8 to LogString
 *
 */
 class UTF8CharsetDecoder : public CharsetDecoder
@@ -319,28 +319,15 @@ class UTF8CharsetDecoder : public CharsetDecoder
 			LogString& out)
 		{
 			auto availableByteCount = in.remaining();
-			std::string tmp(in.current(), availableByteCount);
-			std::string::const_iterator nextCodePoint = tmp.begin();
-
-			while (nextCodePoint != tmp.end())
+			while (0 < availableByteCount)
 			{
-				auto lastCodePoint = nextCodePoint;
-				auto sv = Transcoder::decode(tmp, nextCodePoint);
-
-				if (sv == 0xFFFF || nextCodePoint == lastCodePoint)
-				{
-					size_t offset = nextCodePoint - tmp.begin();
-					in.increment_position(offset);
+				auto sv = getUTF8CodePoint(in);
+				auto nextAvailableByteCount = in.remaining();
+				if (sv == 0xFFFF || nextAvailableByteCount == availableByteCount)
 					return APR_BADCH;
-				}
-				else
-				{
-					Transcoder::encode(sv, out);
-				}
+				Transcoder::encode(sv, out);
+				availableByteCount = nextAvailableByteCount;
 			}
-
-			in.increment_position(availableByteCount);
-
 			return APR_SUCCESS;
 		}
 
@@ -607,8 +594,90 @@ log4cxx_status_t CharsetDecoder::decode(const char* in, size_t maxByteCount, Log
 	return decode(buf, out);
 }
 
+unsigned int CharsetDecoder::getUTF8CodePoint(ByteBuffer& in)
+{
+	auto availableByteCount = in.remaining();
+	if (0 == availableByteCount)
+		return 0xFFFF;
 
+	auto pChar = in.current();
+	auto ch1 = static_cast<unsigned char>(*pChar);
+	if (ch1 <= 0x7F)
+	{
+		in.increment_position(1);
+		return ch1;
+	}
 
+	//
+	//   should not have continuation character here
+	//
+	if ((ch1 & 0xC0) != 0x80 && 1 < availableByteCount)
+	{
+		auto ch2 = static_cast<unsigned char>(*(pChar + 1));
+		if ((ch2 & 0xC0) != 0x80) // not a continuation?
+			return 0xFFFF;
 
+		if ((ch1 & 0xE0) == 0xC0)
+		{
+			unsigned int rv = ((ch1 & 0x1F) << 6) + (ch2 & 0x3F);
+			if (rv >= 0x80)
+			{
+				in.increment_position(2);
+				return rv;
+			}
+			return 0xFFFF;
+		}
 
+		if (2 < availableByteCount)
+		{
+			auto ch3 = static_cast<unsigned char>(*(pChar + 2));
+			if ((ch3 & 0xC0) != 0x80) // not a continuation?
+				return 0xFFFF;
 
+			if ((ch1 & 0xF0) == 0xE0)
+			{
+				unsigned int rv = ((ch1 & 0x0F) << 12)
+					+ ((ch2 & 0x3F) << 6)
+					+ (ch3 & 0x3F);
+
+				// RFC 3629 §3 prohibits UTF-8 encodings of the UTF-16 surrogate
+				// halves (U+D800..U+DFFF); accepting them lets malformed Unicode
+				// cross the decode boundary into LogString and downstream output.
+				if (rv < 0x800 || (0xD800 <= rv && rv <= 0xDFFF))
+					return 0xFFFF;
+
+				in.increment_position(3);
+				return rv;
+			}
+
+			if (3 < availableByteCount)
+			{
+				auto ch4 = static_cast<unsigned char>(*(pChar + 3));
+				if ((ch4 & 0xC0) != 0x80) // not a continuation?
+					return 0xFFFF;
+
+				unsigned int rv = ((ch1 & 0x07) << 18)
+					+ ((ch2 & 0x3F) << 12)
+					+ ((ch3 & 0x3F) << 6)
+					+ (ch4 & 0x3F);
+
+				// RFC 3629 §3 caps UTF-8 at U+10FFFF; lead bytes F5..F7 (and
+				// F4 with an over-high trailer) produce rv > 0x10FFFF, which
+				// is not a Unicode code point. Without this bound, encodeUTF16
+				// later silently aliases the bogus value to a valid in-range
+				// code point — a substitution-collision filter-bypass primitive.
+				// Lead bytes F8..FF are never valid UTF-8, but the & 0x07 mask
+				// discards their high bits, so without the (ch1 & 0xF8) == 0xF0
+				// guard F8 BF BF BF would alias to U+3FFFF instead of being
+				// rejected.
+				if ((ch1 & 0xF8) == 0xF0 && rv > 0xFFFF && rv <= 0x10FFFF)
+				{
+					in.increment_position(4);
+					return rv;
+				}
+
+			}
+		}
+	}
+	return 0xFFFF;
+}
