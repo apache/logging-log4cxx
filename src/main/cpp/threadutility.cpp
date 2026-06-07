@@ -369,39 +369,88 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 	{
 		auto currentTime = std::chrono::system_clock::now();
 		TimePoint nextOperationTime = currentTime + this->maxDelay;
+
+		// Run each due task with job_mutex released, so a long-running callback
+		// (e.g. a reconnect blocked on network I/O) does not stall removePeriodicTask()
+		while (true)
 		{
-			std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-			for (auto& item : this->jobs)
+			std::function<void()> taskCallback;
+			LogString taskName;
+			Period taskDelay;
+			bool foundTask = false;
+
+			// Take a copy of the next due task while holding the lock
 			{
 				if (this->terminated.load())
 					return;
-				if (item.removed)
-					;
-				else if (item.nextRun <= currentTime)
+				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+					, [currentTime](const NamedPeriodicFunction& item)
+					{ return !item.removed && item.nextRun <= currentTime; }
+					);
+				if (pItem != this->jobs.end())
 				{
-					try
-					{
-						item.f();
-						item.nextRun = std::chrono::system_clock::now() + item.delay;
-						if (item.nextRun < nextOperationTime)
-							nextOperationTime = item.nextRun;
-						item.errorCount = 0;
-					}
-					catch (std::exception& ex)
-					{
-						LogLog::warn(item.name, ex);
-						++item.errorCount;
-					}
-					catch (...)
-					{
-						LogLog::warn(item.name + LOG4CXX_STR(" threw an exception"));
-						++item.errorCount;
-					}
+					taskCallback = pItem->f;
+					taskName = pItem->name;
+					taskDelay = pItem->delay;
+					foundTask = true;
 				}
-				else if (item.nextRun < nextOperationTime)
-					nextOperationTime = item.nextRun;
+			}
+
+			// No more tasks are due, leave the loop
+			if (!foundTask)
+			{
+				break;
+			}
+
+			// Execute the callback outside the lock
+			bool success = false;
+			try
+			{
+				taskCallback();
+				success = true;
+			}
+			catch (std::exception& ex)
+			{
+				LogLog::warn(taskName, ex);
+			}
+			catch (...)
+			{
+				LogLog::warn(taskName + LOG4CXX_STR(" threw an exception"));
+			}
+
+			// Re-find the task (it may have been removed while running) and reschedule it
+			{
+				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+					, [&taskName](const NamedPeriodicFunction& item)
+					{ return !item.removed && taskName == item.name; }
+					);
+
+				if (pItem != this->jobs.end())
+				{
+					// Always push nextRun out, so a failing task waits before the next retry
+					pItem->nextRun = std::chrono::system_clock::now() + taskDelay;
+					if (success)
+						pItem->errorCount = 0;
+					else
+						++pItem->errorCount;
+				}
 			}
 		}
+
+		// Update nextOperationTime under the lock
+		{
+			std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+			for (const auto& item : this->jobs)
+			{
+				if (!item.removed && item.nextRun < nextOperationTime)
+				{
+					nextOperationTime = item.nextRun;
+				}
+			}
+		}
+
 		// Delete removed and faulty tasks
 		while (1)
 		{
@@ -418,6 +467,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				return;
 		}
 
+		// Wait until the next task is due or an add/remove/shutdown wakes us
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime);
 	}
