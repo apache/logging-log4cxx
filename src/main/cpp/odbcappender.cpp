@@ -351,18 +351,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 			, wPwd, SQL_NTS
 			);
 #else
-		SQLWCHAR* wURL, *wUser = nullptr, *wPwd = nullptr;
-		encode(&wURL, _priv->databaseURL, p);
-		if (!_priv->databaseUser.empty())
-			encode(&wUser, _priv->databaseUser, p);
-		if (!_priv->databasePassword.empty())
-			encode(&wPwd, _priv->databasePassword, p);
-
-		ret = SQLConnectW( _priv->connection
-			, wURL, SQL_NTS
-			, wUser, SQL_NTS
-			, wPwd, SQL_NTS
-			);
+	#error ODBCAppender is not supported when logchar is unichar
 #endif
 
 		if (ret < 0)
@@ -438,9 +427,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 #elif LOG4CXX_LOGCHAR_IS_UTF8
 	ret = SQLPrepareA(this->preparedStatement, (SQLCHAR*)this->sqlStatement.c_str(), SQL_NTS);
 #else
-	SQLWCHAR* wsql;
-	encode(&wsql, this->sqlStatement, p);
-	ret = SQLPrepareW(this->preparedStatement, wsql, SQL_NTS);
+	#error ODBCAppender is not supported when logchar is unichar
 #endif
 	if (ret < 0)
 	{
@@ -689,44 +676,6 @@ void ODBCAppender::setSql(const LogString& s)
 	if (0 != currentQuote)
 		throw IllegalArgumentException(LogString(LOG4CXX_STR("Unmatched ")) + currentQuote + LOG4CXX_STR(" in SQL statement"));
     _priv->sqlStatement = s;
-}
-
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
-void ODBCAppender::encode(wchar_t** dest, const LogString& src, Pool& p)
-{
-	*dest = Transcoder::wencode(src, p);
-}
-#endif
-
-void ODBCAppender::encode(unsigned short** dest,
-	const LogString& src, Pool& p)
-{
-	//  worst case double number of characters from UTF-8 or wchar_t
-	*dest = (unsigned short*)
-		p.palloc((src.size() + 1) * 2 * sizeof(unsigned short));
-	unsigned short* current = *dest;
-
-	for (LogString::const_iterator i = src.begin();
-		i != src.end();)
-	{
-		unsigned int sv = Transcoder::decode(src, i);
-
-		if (sv < 0x10000)
-		{
-			*current++ = (unsigned short) sv;
-		}
-		else
-		{
-			unsigned char u = (unsigned char) (sv >> 16);
-			unsigned char w = (unsigned char) (u - 1);
-			unsigned short hs = (0xD800 + ((w & 0xF) << 6) + ((sv & 0xFFFF) >> 10));
-			unsigned short ls = (0xDC00 + (sv & 0x3FF));
-			*current++ = (unsigned short) hs;
-			*current++ = (unsigned short) ls;
-		}
-	}
-
-	*current = 0;
 }
 
 const LogString& ODBCAppender::getSql() const
