@@ -1,5 +1,12 @@
 # This module checks compiler and standard library support
 #
+include(CheckCXXCompilerFlag)
+
+# Does the compiler support the Safe Buffers diagnostic -Wunsafe-buffer-usage?
+# (Clang >= 16.)  Used to enforce, on a per-file basis, that translation units
+# migrated to the Safe Buffers Programming Model stay free of unchecked raw
+# pointer/array arithmetic.  See LOG4CXX_ENABLE_SAFE_BUFFERS.
+check_cxx_compiler_flag("-Wunsafe-buffer-usage" LOG4CXX_HAS_WUNSAFE_BUFFER_USAGE)
 
 # Does the compiler support thread_local?
 if(MINGW)

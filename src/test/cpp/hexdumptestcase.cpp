@@ -28,6 +28,7 @@ LOGUNIT_CLASS(HexdumpTestCase)
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test_newline);
 	LOGUNIT_TEST(test_newline2);
+	LOGUNIT_TEST(test_empty);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -97,6 +98,15 @@ public:
 				LOG4CXX_EOL;
 
 		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddStartingNewline | HexdumpFlags::AddEndingNewline);
+		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
+	}
+
+	// A zero-length buffer must not read any bytes and produces no rows.
+	// This exercises the lower bound of the Safe Buffers view used internally.
+	void test_empty()
+	{
+		LogString expectedOutput;
+		LogString dumped = log4cxx::hexdump(nullptr, 0);
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
 	}
 
