@@ -1047,8 +1047,12 @@ void Logger::addEvent(const LevelPtr& level1, std::basic_string<UniChar>&& messa
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;
+#if LOG4CXX_LOGCHAR_IS_UNICHAR
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, location, std::move(message));
+#else
 	LOG4CXX_DECODE_UNICHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, location, std::move(msg));
+#endif
 	callAppenders(event);
 }
 
@@ -1087,8 +1091,12 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;
+#if LOG4CXX_LOGCHAR_IS_UNICHAR
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, message, location);
+#else
 	LOG4CXX_DECODE_UNICHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, location, std::move(msg));
+#endif
 	callAppenders(event);
 }
 
@@ -1096,9 +1104,14 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 {
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;
+#if LOG4CXX_LOGCHAR_IS_UNICHAR
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, message,
+			LocationInfo::getLocationUnavailable());
+#else
 	LOG4CXX_DECODE_UNICHAR(msg, message);
 	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, msg,
 			LocationInfo::getLocationUnavailable());
+#endif
 	callAppenders(event);
 }
 
