@@ -227,7 +227,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 	{
 		LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
 		if(FAILED(win32Func.SetThreadDescription(static_cast<HANDLE>(nativeHandle), wthreadName.c_str())))
-			LogLog::error( LOG4CXX_STR(Unable to set thread name") );
+			LogLog::error( LOG4CXX_STR("Unable to set thread name") );
 	}
 #endif
 }

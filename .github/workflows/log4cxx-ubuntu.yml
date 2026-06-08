@@ -107,7 +107,7 @@ jobs:
       run: |
         ROOT=`pwd`
         set -x
-        [ ${{ matrix.logchar }} == unicode ] && OPTIONAL_API=-DLOG4CXX_UNICHAR=1
+        [ ${{ matrix.logchar }} == unicode ] && OPTIONAL_API=-DLOG4CXX_UNICHAR=ON
         cmake \
           -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
           -DLOG4CXX_TEST_ONLY_BUILD=1 \
