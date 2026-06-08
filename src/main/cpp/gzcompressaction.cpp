@@ -153,12 +153,18 @@ bool GZCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const
 			return true;
 		}
 
-		apr_proc_wait(&pid, NULL, NULL, APR_WAIT);
+		int exitCode = 0;
+		apr_proc_wait(&pid, &exitCode, NULL, APR_WAIT);
 		stat = apr_file_close(child_out);
 
 		if (stat != APR_SUCCESS)
 		{
 			throw IOException(stat);
+		}
+
+		if (exitCode != APR_SUCCESS)
+		{
+			throw IOException(exitCode);
 		}
 
 		priv->destination.setAutoDelete(false);
