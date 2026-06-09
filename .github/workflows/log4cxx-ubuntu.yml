@@ -37,7 +37,7 @@ jobs:
             multithread: OFF
             exitevents: OFF
             fuzzers: OFF
-            logchar: unichar
+            logchar: utf-8
             next_abi: OFF
           - name: ubuntu22-clang
             os: ubuntu-22.04
