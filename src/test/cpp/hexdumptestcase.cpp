@@ -76,8 +76,9 @@ public:
 		unsigned char test1_str[] = {
 		  0x74, 0x65, 0x73, 0x74, 0x31
 		};
-		LogString expectedOutput = LOG4CXX_STR("\x0D\x0A0");
-		expectedOutput += LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|\x0D\x0A");
+		LogString expectedOutput = LOG4CXX_EOL;
+		expectedOutput += LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|");
+		expectedOutput += LOG4CXX_EOL;
 
 		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddNewline);
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
@@ -88,8 +89,9 @@ public:
 		unsigned char test1_str[] = {
 		  0x74, 0x65, 0x73, 0x74, 0x31
 		};
-		LogString expectedOutput = LOG4CXX_STR("\x0D\x0A0");
-		expectedOutput += LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|\x0D\x0A");
+		LogString expectedOutput = LOG4CXX_EOL;
+		expectedOutput += LOG4CXX_STR("00000000  74 65 73 74 31                                    |test1|");
+		expectedOutput += LOG4CXX_EOL;
 
 		LogString dumped = log4cxx::hexdump(test1_str, sizeof(test1_str), HexdumpFlags::AddStartingNewline | HexdumpFlags::AddEndingNewline);
 		LOGUNIT_ASSERT_EQUAL(expectedOutput, dumped);
