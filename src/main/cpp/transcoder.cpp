@@ -461,6 +461,7 @@ void Transcoder::encode(const LogString& src, std::wstring& dst)
 #endif
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 wchar_t* Transcoder::wencode(const LogString& src, Pool& p)
 {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
@@ -474,7 +475,7 @@ wchar_t* Transcoder::wencode(const LogString& src, Pool& p)
 	std::memcpy(dst, tmp.data(), tmp.length() * sizeof(wchar_t));
 	return dst;
 }
-
+#endif
 
 unsigned int Transcoder::decode(const std::wstring& in,
 	std::wstring::const_iterator& iter)

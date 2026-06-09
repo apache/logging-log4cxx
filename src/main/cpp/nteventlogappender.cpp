@@ -19,6 +19,7 @@
 #include <windows.h>
 #include <Heapapi.h>
 #include <log4cxx/nt/nteventlogappender.h>
+#if !LOG4CXX_LOGCHAR_IS_UNICHAR
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
@@ -222,9 +223,9 @@ void NTEventLogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 	}
 
 	LogString oss;
-	Pool tempPool;
 	this->m_priv->layout->format(oss, event);
-	wchar_t* msgs = Transcoder::wencode(oss, tempPool);
+	auto msgs = oss.c_str();
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 	BOOL bSuccess = ::ReportEventW(
 			priv->hEventLog,
 			getEventType(event),
@@ -235,7 +236,20 @@ void NTEventLogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 			0,
 			(LPCWSTR*) &msgs,
 			NULL);
-
+#elif LOG4CXX_LOGCHAR_IS_UTF8
+	BOOL bSuccess = ::ReportEventA(
+			priv->hEventLog,
+			getEventType(event),
+			getEventCategory(event),
+			0x1000,
+			priv->pCurrentUserSID,
+			1,
+			0,
+			(LPCSTR*)&msgs,
+			NULL);
+#else
+	#error NTEventLogAppender is not supported when logchar is unichar
+#endif
 	if (!bSuccess)
 	{
 		LogLog::error(getErrorString(LOG4CXX_STR("ReportEvent")));
@@ -400,5 +414,6 @@ const LogString& NTEventLogAppender::getServer() const
 {
 	return priv->server;
 }
+#endif // !LOG4CXX_LOGCHAR_IS_UNICHAR
 
 #endif // WIN32

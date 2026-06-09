@@ -43,7 +43,7 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	#if defined(WIN32) || defined(_WIN32)
 		#include <windows.h>
 	#endif
@@ -88,7 +88,7 @@ const char* SQLException::formatMessage(short fHandleType,
 {
 	std::string strReturn(prolog);
 	strReturn.append(" - ");
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	SQLCHAR       SqlState[6];
 	SQLCHAR       Msg[SQL_MAX_MESSAGE_LENGTH];
 	SQLINTEGER    NativeError;
@@ -220,7 +220,7 @@ bool ODBCAppender::requiresLayout() const
 
 void ODBCAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
-#if !LOG4CXX_HAVE_ODBC
+#if !LOG4CXX_HAVE_ODBC || LOG4CXX_LOGCHAR_IS_UNICHAR
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
 #else
 	if (_priv->mappedName.empty())
@@ -262,7 +262,7 @@ void ODBCAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 
 void ODBCAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	_priv->buffer.push_back(event);
 
 	if (_priv->buffer.size() >= _priv->bufferSize)
@@ -292,7 +292,7 @@ void ODBCAppender::closeConnection(ODBCAppender::SQLHDBC /* con */)
 
 ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 {
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	SQLRETURN ret;
 
 	if (_priv->env == SQL_NULL_HENV)
@@ -351,18 +351,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 			, wPwd, SQL_NTS
 			);
 #else
-		SQLWCHAR* wURL, *wUser = nullptr, *wPwd = nullptr;
-		encode(&wURL, _priv->databaseURL, p);
-		if (!_priv->databaseUser.empty())
-			encode(&wUser, _priv->databaseUser, p);
-		if (!_priv->databasePassword.empty())
-			encode(&wPwd, _priv->databasePassword, p);
-
-		ret = SQLConnectW( _priv->connection
-			, wURL, SQL_NTS
-			, wUser, SQL_NTS
-			, wPwd, SQL_NTS
-			);
+	#error ODBCAppender is not supported when logchar is unichar
 #endif
 
 		if (ret < 0)
@@ -384,7 +373,7 @@ void ODBCAppender::close()
 {
 	if (_priv->setClosed())
 	{
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 		if (!_priv->buffer.empty() && 0 == _priv->preparedStatement)
 		{
 			Pool p;
@@ -408,7 +397,7 @@ void ODBCAppender::ODBCAppenderPriv::close()
 			e, ErrorCode::GENERIC_FAILURE);
 	}
 
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 
 	if (this->connection != SQL_NULL_HDBC)
 	{
@@ -424,7 +413,7 @@ void ODBCAppender::ODBCAppenderPriv::close()
 #endif
 }
 
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 {
 	auto ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &this->preparedStatement);
@@ -438,9 +427,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 #elif LOG4CXX_LOGCHAR_IS_UTF8
 	ret = SQLPrepareA(this->preparedStatement, (SQLCHAR*)this->sqlStatement.c_str(), SQL_NTS);
 #else
-	SQLWCHAR* wsql;
-	encode(&wsql, this->sqlStatement, p);
-	ret = SQLPrepareW(this->preparedStatement, wsql, SQL_NTS);
+	#error ODBCAppender is not supported when logchar is unichar
 #endif
 	if (ret < 0)
 	{
@@ -627,7 +614,7 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 
 void ODBCAppender::flushBuffer(Pool& p)
 {
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	if (0 == _priv->preparedStatement)
 		_priv->setPreparedStatement(getConnection(p), p);
 	_priv->flushBuffer(p);
@@ -642,7 +629,7 @@ void ODBCAppender::ODBCAppenderPriv::flushBuffer(Pool& p)
 	{
 		if (this->parameterValue.empty())
 			this->errorHandler->error(LOG4CXX_STR("ODBCAppender column mappings not defined"));
-#if LOG4CXX_HAVE_ODBC
+#if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 		else try
 		{
 			this->setParameterValues(logEvent, p);
@@ -689,44 +676,6 @@ void ODBCAppender::setSql(const LogString& s)
 	if (0 != currentQuote)
 		throw IllegalArgumentException(LogString(LOG4CXX_STR("Unmatched ")) + currentQuote + LOG4CXX_STR(" in SQL statement"));
     _priv->sqlStatement = s;
-}
-
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
-void ODBCAppender::encode(wchar_t** dest, const LogString& src, Pool& p)
-{
-	*dest = Transcoder::wencode(src, p);
-}
-#endif
-
-void ODBCAppender::encode(unsigned short** dest,
-	const LogString& src, Pool& p)
-{
-	//  worst case double number of characters from UTF-8 or wchar_t
-	*dest = (unsigned short*)
-		p.palloc((src.size() + 1) * 2 * sizeof(unsigned short));
-	unsigned short* current = *dest;
-
-	for (LogString::const_iterator i = src.begin();
-		i != src.end();)
-	{
-		unsigned int sv = Transcoder::decode(src, i);
-
-		if (sv < 0x10000)
-		{
-			*current++ = (unsigned short) sv;
-		}
-		else
-		{
-			unsigned char u = (unsigned char) (sv >> 16);
-			unsigned char w = (unsigned char) (u - 1);
-			unsigned short hs = (0xD800 + ((w & 0xF) << 6) + ((sv & 0xFFFF) >> 10));
-			unsigned short ls = (0xDC00 + (sv & 0x3FF));
-			*current++ = (unsigned short) hs;
-			*current++ = (unsigned short) ls;
-		}
-	}
-
-	*current = 0;
 }
 
 const LogString& ODBCAppender::getSql() const

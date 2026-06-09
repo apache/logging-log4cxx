@@ -116,9 +116,10 @@ class LOG4CXX_EXPORT Transcoder
 		 *    Append the equivalent of \c src onto \c dst.
 		 */
 		static void encode(const LogString& src, std::wstring& dst);
+#if LOG4CXX_ABI_VERSION <= 15
 		/// A null-terminated equivalent of \c src.
 		static wchar_t* wencode(const LogString& src, LOG4CXX_NS::helpers::Pool& p);
-
+#endif
 		/**
 		 *   Increment \c iter past the next code point in \c str.
 		 *   @pre \c iter is a valid, dereferenceable iterator.
