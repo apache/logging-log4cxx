@@ -60,11 +60,12 @@ public:
 		  0x73, 0x20, 0x6f, 0x76, 0x65, 0x72, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6c,
 		  0x61, 0x7a, 0x79, 0x20, 0x64, 0x6f, 0x67
 		};
-		LogString expectedOutput = LOG4CXX_STR(
-				"00000000  54 68 65 20 71 75 69 63  6b 20 62 72 6f 77 6e 20  |The quick brown |\x0D\x0A"
-				"00000010  66 6f 78 20 6a 75 6d 70  73 20 6f 76 65 72 20 74  |fox jumps over t|\x0D\x0A"
-				"00000020  68 65 20 6c 61 7a 79 20  64 6f 67                 |he lazy dog|"
-				);
+		LogString expectedOutput = 
+						  LOG4CXX_STR("00000000  54 68 65 20 71 75 69 63  6b 20 62 72 6f 77 6e 20  |The quick brown |");
+		expectedOutput += LOG4CXX_EOL;
+		expectedOutput += LOG4CXX_STR("00000010  66 6f 78 20 6a 75 6d 70  73 20 6f 76 65 72 20 74  |fox jumps over t|");
+		expectedOutput += LOG4CXX_EOL;
+		expectedOutput += LOG4CXX_STR("00000020  68 65 20 6c 61 7a 79 20  64 6f 67                 |he lazy dog|");
 
 		// Hexdump up until the NULL char
 		LogString dumped = log4cxx::hexdump(quick_brown_fox, sizeof(quick_brown_fox));
