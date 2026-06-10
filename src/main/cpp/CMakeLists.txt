@@ -264,3 +264,34 @@ endif()
 if(${ENABLE_FMT_LAYOUT})
     target_link_libraries(log4cxx PUBLIC fmt::fmt)
 endif()
+
+# --- Safe Buffers Programming Model enforcement ------------------------------
+# Translation units below have been migrated to the Safe Buffers Programming
+# Model: raw C buffers and pointer arithmetic over untrusted input are replaced
+# by bounds-aware views/containers (e.g. std::span).  Compiling them with
+# Clang's -Wunsafe-buffer-usage prevents the unsafe patterns from being
+# reintroduced.  Append a file to this list once it has been migrated.
+set(LOG4CXX_SAFE_BUFFERS_SOURCES
+  hexdump.cpp
+)
+
+option(LOG4CXX_ENABLE_SAFE_BUFFERS
+  "Compile Safe-Buffers-migrated sources with -Wunsafe-buffer-usage (Clang)" OFF)
+option(LOG4CXX_SAFE_BUFFERS_AS_ERROR
+  "Treat -Wunsafe-buffer-usage as an error in Safe-Buffers-migrated sources" OFF)
+
+if(LOG4CXX_ENABLE_SAFE_BUFFERS)
+  if(LOG4CXX_HAS_WUNSAFE_BUFFER_USAGE)
+    set(_safe_buffers_flags -Wunsafe-buffer-usage)
+    if(LOG4CXX_SAFE_BUFFERS_AS_ERROR)
+      list(APPEND _safe_buffers_flags -Werror=unsafe-buffer-usage)
+    endif()
+    set_source_files_properties(${LOG4CXX_SAFE_BUFFERS_SOURCES}
+      PROPERTIES COMPILE_OPTIONS "${_safe_buffers_flags}")
+    message(STATUS "Safe Buffers enforcement enabled for: ${LOG4CXX_SAFE_BUFFERS_SOURCES}")
+  else()
+    message(WARNING
+      "LOG4CXX_ENABLE_SAFE_BUFFERS is ON but the compiler does not support "
+      "-Wunsafe-buffer-usage; Safe Buffers enforcement is disabled.")
+  endif()
+endif()
