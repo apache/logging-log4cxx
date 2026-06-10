@@ -28,6 +28,7 @@
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/exception.h>
 #include <filesystem>
 #include <fstream>
 #include <apr_thread_proc.h>
@@ -214,10 +215,7 @@ public:
 			{
 				LogString msg = LOG4CXX_STR("child: ");
 				helpers::StringHelper::toString(i, msg);
-				msg += LOG4CXX_STR("; exit code: ");
-				helpers::StringHelper::toString(exitCode, msg);
-				msg += LOG4CXX_STR("; reason: ");
-				helpers::StringHelper::toString(reason, msg);
+				msg += LOG4CXX_STR("; ") + helpers::SubProcessFailure::makeMessage(LOG4CXX_STR("child"), exitCode, reason);
 				helpers::LogLog::debug(msg);
 			}
 			LOGUNIT_ASSERT_EQUAL(exitCode, 0);

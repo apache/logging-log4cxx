@@ -154,7 +154,8 @@ bool GZCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const
 		}
 
 		int exitCode = 0;
-		apr_proc_wait(&pid, &exitCode, NULL, APR_WAIT);
+		apr_exit_why_e reason;
+		apr_proc_wait(&pid, &exitCode, &reason, APR_WAIT);
 		stat = apr_file_close(child_out);
 
 		if (stat != APR_SUCCESS)
@@ -162,9 +163,9 @@ bool GZCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const
 			throw IOException(stat);
 		}
 
-		if (exitCode != APR_SUCCESS)
+		if (exitCode != 0)
 		{
-			throw IOException(exitCode);
+			throw SubProcessFailure(LOG4CXX_STR("gzip"), exitCode, reason);
 		}
 
 		priv->destination.setAutoDelete(false);

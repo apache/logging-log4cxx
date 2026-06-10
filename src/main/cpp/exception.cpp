@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <apr_errno.h>
+#include <apr_thread_proc.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -160,6 +161,43 @@ IOException& IOException::operator=(const IOException& src)
 LogString IOException::formatMessage(log4cxx_status_t stat)
 {
 	return makeMessage(LOG4CXX_STR("IO Exception"), stat);
+}
+
+SubProcessFailure::SubProcessFailure(const LogString& processName, int exitCode, int exitWhy)
+	: Exception(makeMessage(processName, exitCode, exitWhy))
+{
+}
+
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+SubProcessFailure::SubProcessFailure(const char* processName, int exitCode, int exitWhy)
+	: Exception(makeMessage(Transcoder::decode(processName), exitCode, exitWhy))
+{
+}
+#endif
+
+SubProcessFailure::SubProcessFailure(const SubProcessFailure& src)
+	: Exception(src)
+{
+}
+
+SubProcessFailure& SubProcessFailure::operator=(const SubProcessFailure& src)
+{
+	Exception::operator=(src);
+	return *this;
+}
+
+LogString SubProcessFailure::makeMessage(const LogString& processName, int exitCode, int exitWhy)
+{
+	LogString msg = processName;
+	msg += LOG4CXX_STR(" exit code: ");
+	LogString codeStr;
+	StringHelper::toString(exitCode, codeStr);
+	msg += codeStr;
+	if (APR_PROC_SIGNAL == exitWhy || APR_PROC_SIGNAL_CORE == exitWhy)
+	{
+		msg += LOG4CXX_STR("; exited due to a signal");
+	}
+	return msg;
 }
 
 LogString Exception::makeMessage(const LogString& type, log4cxx_status_t stat)
