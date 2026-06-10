@@ -97,13 +97,20 @@ void APRDatagramSocket::receive(DatagramPacketPtr& p)
 
 	// receive the datagram packet
 	apr_size_t len = p->getLength();
+	auto data = static_cast<char*>(p->getData());
+	if (data != nullptr)
+	{
+		data += p->getOffset();
+	}
 	status = apr_socket_recvfrom(addr, _priv->socket, 0,
-			(char*)p->getData(), &len);
+			data, &len);
 
 	if (status != APR_SUCCESS)
 	{
 		throw IOException(status);
 	}
+
+	p->setLength(static_cast<int>(len));
 }
 
 void APRDatagramSocket::send(DatagramPacketPtr& p)
@@ -124,8 +131,13 @@ void APRDatagramSocket::send(DatagramPacketPtr& p)
 
 	// send the datagram packet
 	apr_size_t len = p->getLength();
+	auto data = static_cast<char*>(p->getData());
+	if (data != nullptr)
+	{
+		data += p->getOffset();
+	}
 	status = apr_socket_sendto(_priv->socket, addr, 0,
-			(char*)p->getData(), &len);
+			data, &len);
 
 	if (status != APR_SUCCESS)
 	{
