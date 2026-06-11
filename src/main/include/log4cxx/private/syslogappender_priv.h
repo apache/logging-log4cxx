@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/helpers/syslogwriter.h>
+#include <vector>
 
 #include "appenderskeleton_priv.h"
 
@@ -94,4 +95,9 @@ struct SyslogAppender::SyslogAppenderPriv : public AppenderSkeleton::AppenderSke
 };
 
 }
+namespace detail
+{
+std::vector<LogString> splitSyslogPackets(const LogString& msg, size_t maxMessageLength);
+}
+
 }
