@@ -108,6 +108,19 @@ class LOG4CXX_EXPORT IOException : public Exception
 		static LogString formatMessage(log4cxx_status_t stat);
 };
 
+class LOG4CXX_EXPORT SubProcessFailure : public Exception
+{
+	public:
+		SubProcessFailure(const LogString& processName, int exitCode, int exitWhy);
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+		SubProcessFailure(const char* processName, int exitCode, int exitWhy);
+#endif
+		SubProcessFailure(const SubProcessFailure& src);
+		SubProcessFailure& operator=(const SubProcessFailure&);
+
+		static LogString makeMessage(const LogString& processName, int exitCode, int exitWhy);
+};
+
 class LOG4CXX_EXPORT MissingResourceException : public Exception
 {
 	public:

@@ -27,6 +27,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/spi/configurator.h>
 #include <apr_thread_proc.h>
@@ -172,11 +173,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			apr_proc_wait(&pid, &exitCode, &reason, APR_WAIT);
 			if (exitCode != 0 && helpers::LogLog::isDebugEnabled())
 			{
-				LogString msg = LOG4CXX_STR("child exit code: ");
-				helpers::StringHelper::toString(exitCode, msg);
-				msg += LOG4CXX_STR("; reason: ");
-				helpers::StringHelper::toString(reason, msg);
-				helpers::LogLog::debug(msg);
+				helpers::LogLog::debug(helpers::SubProcessFailure::makeMessage(LOG4CXX_STR("child"), exitCode, reason));
 			}
 			LOGUNIT_ASSERT_EQUAL(exitCode, 0);
 		}

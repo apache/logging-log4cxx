@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
@@ -200,11 +201,7 @@ public:
 		apr_proc_wait(&pid, &exitCode, &reason, APR_WAIT);
 		if (exitCode != 0)
 		{
-			LogString msg = LOG4CXX_STR("child exit code: ");
-			helpers::StringHelper::toString(exitCode, msg);
-			msg += LOG4CXX_STR("; reason: ");
-			helpers::StringHelper::toString(reason, msg);
-			helpers::LogLog::warn(msg);
+			helpers::LogLog::warn(helpers::SubProcessFailure::makeMessage(LOG4CXX_STR("child"), exitCode, reason));
 		}
 		LOGUNIT_ASSERT_EQUAL(exitCode, 0);
 
