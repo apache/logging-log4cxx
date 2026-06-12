@@ -189,7 +189,7 @@ void ThreadUtility::preThreadBlockSignals()
 
 	if ( pthread_sigmask(SIG_SETMASK, &set, &old_mask) < 0 )
 	{
-		LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
+		LogLog::error( LOG4CXX_STR("Unable to set thread sigmask") );
 		sigmask_valid = false;
 	}
 	else
@@ -207,7 +207,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 #if LOG4CXX_HAS_PTHREAD_SETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
 	LOG4CXX_ENCODE_CHAR(sthreadName, threadName);
 	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
-		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
+		LogLog::error(LOG4CXX_STR("Unable to set thread name"));
 	}
 #elif defined(_WIN32)
 	typedef HRESULT (WINAPI *TSetThreadDescription)(HANDLE, PCWSTR);
@@ -227,7 +227,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 	{
 		LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
 		if(FAILED(win32Func.SetThreadDescription(static_cast<HANDLE>(nativeHandle), wthreadName.c_str())))
-			LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
+			LogLog::error( LOG4CXX_STR("Unable to set thread name") );
 	}
 #endif
 }
@@ -241,7 +241,7 @@ void ThreadUtility::postThreadUnblockSignals()
 	{
 		if ( pthread_sigmask(SIG_SETMASK, &old_mask, nullptr) < 0 )
 		{
-			LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
+			LogLog::error( LOG4CXX_STR("Unable to set thread sigmask") );
 		}
 	}
 
