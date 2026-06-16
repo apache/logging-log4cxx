@@ -61,7 +61,7 @@ jobs:
           sed
           zip
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: log4cxx
