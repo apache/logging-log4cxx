@@ -19,6 +19,7 @@
 #include <log4cxx/private/serversocket_priv.h>
 #include <log4cxx/private/aprserversocket.h>
 
+using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 /**  Creates a server socket on a specified port.
