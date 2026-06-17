@@ -80,7 +80,7 @@ jobs:
             next_abi: OFF
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: main

@@ -29,7 +29,7 @@ jobs:
       SONAR_SERVER_URL: "https://sonarcloud.io"
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false # do not persist auth token in the local git config
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
