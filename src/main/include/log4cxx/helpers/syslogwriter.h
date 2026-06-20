@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/datagramsocket.h>
+#include <vector>
 
 namespace LOG4CXX_NS
 {
@@ -37,6 +38,7 @@ class LOG4CXX_EXPORT SyslogWriter
 		SyslogWriter(const LogString& syslogHost, int syslogHostPort = SYSLOG_PORT);
 		~SyslogWriter();
 		void write(const LogString& string);
+
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(SyslogWriterPrivate, m_priv)
