@@ -94,10 +94,10 @@ struct SyslogAppender::SyslogAppenderPriv : public AppenderSkeleton::AppenderSke
 	int maxMessageLength;
 };
 
-}
 namespace detail
 {
 std::vector<LogString> splitSyslogPackets(const LogString& msg, size_t maxMessageLength);
 }
 
+}
 }

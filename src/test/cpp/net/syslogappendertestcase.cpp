@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+#define LOG4CXX_TEST 1
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/net/syslogappender.h>
 #include <log4cxx/private/syslogappender_priv.h>
@@ -98,7 +99,7 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 			const LogString message(17, static_cast<logchar>('A'));
 			const auto packets = log4cxx::net::detail::splitSyslogPackets(message, maxMessageLength);
 
-			LOGUNIT_ASSERT_EQUAL(5U, packets.size());
+			LOGUNIT_ASSERT_EQUAL((size_t) 5, packets.size());
 			LOGUNIT_ASSERT_EQUAL(makePacket(4u, 1u, 5u), packets[0]);
 			LOGUNIT_ASSERT_EQUAL(makePacket(4u, 2u, 5u), packets[1]);
 			LOGUNIT_ASSERT_EQUAL(makePacket(4u, 3u, 5u), packets[2]);
@@ -116,7 +117,7 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 			const LogString message(19999, static_cast<logchar>('A'));
 			const auto packets = log4cxx::net::detail::splitSyslogPackets(message, maxMessageLength);
 
-			LOGUNIT_ASSERT_EQUAL(19999U, packets.size());
+			LOGUNIT_ASSERT_EQUAL((size_t) 19999, packets.size());
 			LOGUNIT_ASSERT_EQUAL(makePacket(1u, 1u, 19999u), packets.front());
 			LOGUNIT_ASSERT_EQUAL(makePacket(1u, 9999u, 19999u), packets[9998]);
 			LOGUNIT_ASSERT_EQUAL(makePacket(1u, 10000u, 19999u), packets[9999]);
@@ -133,7 +134,7 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 			const LogString message(10000, static_cast<logchar>('A'));
 			const auto packets = log4cxx::net::detail::splitSyslogPackets(message, maxMessageLength);
 
-			LOGUNIT_ASSERT_EQUAL(770U, packets.size());
+			LOGUNIT_ASSERT_EQUAL((size_t) 770, packets.size());
 			LOGUNIT_ASSERT_EQUAL(LogString(13, static_cast<logchar>('A')), packets.front());
 			LOGUNIT_ASSERT_EQUAL(LogString(3, static_cast<logchar>('A')), packets.back());
 			for (const auto& packet : packets)
