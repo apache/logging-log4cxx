@@ -96,7 +96,7 @@ struct SyslogAppender::SyslogAppenderPriv : public AppenderSkeleton::AppenderSke
 
 namespace detail
 {
-std::vector<LogString> splitSyslogPackets(const LogString& msg, size_t maxMessageLength);
+LOG4CXX_EXPORT std::vector<LogString> splitSyslogPackets(const LogString& msg, size_t maxMessageLength);
 }
 
 }
