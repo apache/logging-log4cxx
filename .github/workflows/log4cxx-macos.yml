@@ -55,7 +55,7 @@ jobs:
             exitevents: ON
           - name: osx-g++
             os: macos-latest
-            cxx: g++-14
+            cxx: g++-15
             odbc: OFF
             qt: OFF
             multiprocess: OFF
