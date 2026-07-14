@@ -86,7 +86,7 @@ jobs:
       run: |
         VERSION=`ls apache-log4cxx-*.tar.gz | sed -Ee 's/.*apache-log4cxx-([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
         echo "Extracting files from apache-log4cxx-$VERSION.tar.gz..."
-        tar xf apache-log4cxx-$VERSION.tar.gz "--transform=s,apache-log4cxx-$VERSION/,test-files," || exit
+        tar xf apache-log4cxx-$VERSION.tar.gz "--transform=s,apache-log4cxx-$VERSION,test-files," || exit
 
         cmake -S test-files -B test-build || exit
         cmake --build test-build || exit
