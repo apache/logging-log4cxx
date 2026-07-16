@@ -41,7 +41,7 @@ jobs:
 
     - name: 'Restore Prebuilt Dependencies'
       id: restore-vcpkg-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v5
       with:
         path: vcpkg
         key: ${{ matrix.name }}-${{ matrix.vcpkg_ref }}-x64-static
