@@ -33,6 +33,7 @@ LOGUNIT_CLASS(MDCTestCase)
 	LOGUNIT_TEST_SUITE(MDCTestCase);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
+	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -73,6 +74,16 @@ public:
 		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.30J %m") };
 		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()));
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  MDC.LayoutTest - {\"key1\":\"value1\"} Message"), output);
+	}
+
+	/// A maximum field length of zero must suppress all MDC content instead of underflowing.
+	void test3()
+	{
+		MDC item1("key1", "value1");
+		LogString output;
+		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.0J %m") };
+		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()));
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  MDC.LayoutTest -  Message"), output);
 	}
 };
 

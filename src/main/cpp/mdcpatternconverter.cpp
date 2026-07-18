@@ -51,7 +51,9 @@ void MDCPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 		const size_t separCount = 2;
 		const size_t quoteCount = 2;
 		LogString separ = LOG4CXX_STR("{");
-		size_t remainingLength = info.getMaxLength() - 1;
+		size_t remainingLength = info.getMaxLength() > 0
+			? static_cast<size_t>(info.getMaxLength()) - 1
+			: 0;
 		for (auto key : event->getMDCKeySet())
 		{
 			LogString value;
