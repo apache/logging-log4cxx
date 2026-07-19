@@ -19,6 +19,8 @@
 #include <log4cxx/mdc.h>
 #include <log4cxx/file.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/pattern/formattinginfo.h>
+#include <log4cxx/pattern/mdcpatternconverter.h>
 #include <log4cxx/patternlayout.h>
 #include "insertwide.h"
 #include "logunit.h"
@@ -76,14 +78,18 @@ public:
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  MDC.LayoutTest - {\"key1\":\"value1\"} Message"), output);
 	}
 
-	/// A maximum field length of zero must suppress all MDC content instead of underflowing.
+	/// A maximum field length of zero must suppress all MDC content.
 	void test3()
 	{
+		pattern::MDCPatternConverter converter;
+		bool leftAlign{false};
+		const int minLength{0}, maxLength{0};
+		converter.setFormattingInfo(std::make_shared<pattern::FormattingInfo>(leftAlign, minLength, maxLength));
 		MDC item1("key1", "value1");
+		auto e = std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable());
 		LogString output;
-		PatternLayout l{ LOG4CXX_STR("%-5p %c - %.0J %m") };
-		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()));
-		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("INFO  MDC.LayoutTest -  Message"), output);
+		converter.format(e, output);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR(""), output);
 	}
 };
 
