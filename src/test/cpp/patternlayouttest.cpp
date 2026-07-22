@@ -63,7 +63,9 @@ using namespace log4cxx::helpers;
 LOGUNIT_CLASS(PatternLayoutTest)
 {
 	LOGUNIT_TEST_SUITE(PatternLayoutTest);
+#if ENABLE_2GB_STRING_TESTING
 	LOGUNIT_TEST(test2GbMessageFormatting);
+#endif
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test3);
