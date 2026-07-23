@@ -35,7 +35,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
 #include <apr_strings.h>
-#include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/loglog.h>
 #include "testchar.h"
 #include "logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
@@ -63,7 +63,9 @@ using namespace log4cxx::helpers;
 LOGUNIT_CLASS(PatternLayoutTest)
 {
 	LOGUNIT_TEST_SUITE(PatternLayoutTest);
+#if ENABLE_2GB_STRING_TESTING
 	LOGUNIT_TEST(test2GbMessageFormatting);
+#endif
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test3);
@@ -106,7 +108,16 @@ public:
 
 	void test2GbMessageFormatting()
 	{
-		LogString msg(size_t(INT_MAX) + 1000, 'E');
+		LogString msg;
+		try
+		{
+			msg.append(size_t(INT_MAX) + 1000, 'E');
+		}
+		catch (const std::exception& ex)
+		{
+			LOGLOG_DEBUG(logger, ex.what() << " - skipping 2Gb message formatting test");
+			return;
+		}
 		msg[msg.length() - 1] = 'X';
 		LogString output1;
 		PatternLayout l1{ LOG4CXX_STR("%-5p %c{2} - %.30m") };
