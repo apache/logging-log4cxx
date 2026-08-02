@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <stdexcept>
 
+using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Writer)
