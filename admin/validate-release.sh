@@ -4,7 +4,7 @@ set -e
 
 VERSION=$1
 if [ -z "$VERSION" ] ; then
-  VERSION=1.7.0
+  VERSION=1.8.1
 fi
 
 if [ -z "$STAGE" ] ; then
