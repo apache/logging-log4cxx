@@ -555,7 +555,7 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 		else if (SQL_C_WCHAR == item.paramType)
 		{
 			LogString sbuf;
-			item.converter->format(event, sbuf, p);
+			item.converter->format(event, sbuf);
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 			std::wstring& tmp = sbuf;
 #else
@@ -571,7 +571,7 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 		else if (SQL_C_CHAR == item.paramType)
 		{
 			LogString sbuf;
-			item.converter->format(event, sbuf, p);
+			item.converter->format(event, sbuf);
 #if LOG4CXX_LOGCHAR_IS_UTF8
 			std::string& tmp = sbuf;
 #else
