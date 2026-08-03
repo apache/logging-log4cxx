@@ -67,7 +67,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			LogManager::shutdown();
 		}
 
-		AppenderSkeleton* createAppenderSkeleton() const
+		AppenderSkeleton* createAppenderSkeleton() const override
 		{
 			return new log4cxx::net::SocketAppender();
 		}

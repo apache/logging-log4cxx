@@ -82,10 +82,9 @@ public: // Support classes
 				{
 					if (basePolicy->getPatternConverterList().size())
 					{
-						Pool p;
 						ObjectPtr obj = std::make_shared<Date>(apr_time_now());
 						LogString fileNamePattern;
-						(*(basePolicy->getPatternConverterList().begin()))->format(obj, fileNamePattern, p);
+						(*(basePolicy->getPatternConverterList().begin()))->format(obj, fileNamePattern);
 						filePrefix.clear();
 						Transcoder::encode(fileNamePattern, filePrefix);
 					}
