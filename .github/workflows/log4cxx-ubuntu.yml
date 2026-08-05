@@ -107,6 +107,7 @@ jobs:
       run: |
         ROOT=`pwd`
         set -x
+        [ ${{ matrix.logchar }} == unichar ] && OPTIONAL_API=-DLOG4CXX_UNICHAR=ON
         cmake \
           -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} \
           -DLOG4CXX_TEST_ONLY_BUILD=1 \
@@ -116,7 +117,7 @@ jobs:
           -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=${{ matrix.multiprocess }} \
           -DLOG4CXX_EVENTS_AT_EXIT=${{ matrix.exitevents }} \
           -DBUILD_FUZZERS=${{ matrix.fuzzers }} \
-          -DLOG4CXX_CHAR=${{ matrix.logchar }} \
+          -DLOG4CXX_CHAR=${{ matrix.logchar }} $OPTIONAL_API \
           -DLOG4CXX_BUILD_NEXT_ABI=${{ matrix.next_abi }} \
           -DCMAKE_INSTALL_PREFIX=$ROOT/lib \
           -S $ROOT/main \
