@@ -19,9 +19,9 @@ on:
   push:
     branches:
       - master
-#  pull_request:
-#    branches:
-#      - master
+  pull_request:
+    branches:
+      - master
 
 permissions: read-all
 
@@ -69,6 +69,13 @@ jobs:
         sha512sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha512"
         sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
         gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.zip"
+
+    - name: 'Clean up GPG keyring'
+      if: always()
+      run: |
+        # Wipe private/public key material
+        gpg --batch --yes --delete-secret-keys "LOGGING_GPG_KEY_ID" || true
+        gpg --batch --yes --delete-keys "LOGGING_GPG_KEY_ID" || true
 
     - uses: actions/upload-artifact@v4
       if: always()
