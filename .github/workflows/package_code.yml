@@ -73,9 +73,17 @@ jobs:
     - name: 'Clean up GPG keyring'
       if: always()
       run: |
-        # Wipe private/public key material
-        gpg --batch --yes --delete-secret-keys "LOGGING_GPG_KEY_ID" || true
-        gpg --batch --yes --delete-keys "LOGGING_GPG_KEY_ID" || true
+        # Extract secret key fingerprints dynamically from the keyring
+        FINGERPRINTS=$(gpg --list-secret-keys --with-colons | awk -F: '$1=="fpr" {print $10}')
+        if [ -z "$FINGERPRINTS" ]; then
+          echo "No secret keys found in keyring to delete."
+        else
+          for fpr in $FINGERPRINTS; do
+            echo "Deleting secret key: $fpr"
+            gpg --batch --yes --delete-secret-keys "$fpr" || true
+            gpg --batch --yes --delete-keys "$fpr" || true
+          done
+        fi
 
     - uses: actions/upload-artifact@v4
       if: always()
