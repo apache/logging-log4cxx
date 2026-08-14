@@ -36,13 +36,9 @@ jobs:
         persist-credentials: false # do not persist auth token in the local git config
         path: clean-checkout
 
-    # Using `setup-java` as temporary workaround, since `crazy-max` is not authorized
-    - name: Setup GPG
-      uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
-      with:
-        distribution: temurin
-        java-version: 17
-        gpg-private-key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+    - name: Import GPG Key
+      run: |
+        echo "${{ secrets.LOGGING_GPG_SECRET_KEY }}" | gpg --batch --import
 
 # Consider using CPack when it supports a white-list for included files
 #    - name: 'Install minimum dependencies'
