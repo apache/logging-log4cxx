@@ -31,29 +31,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: clean-checkout
 
-    # Using `setup-java` as temporary workaround, since `crazy-max` is not authorized
-    - name: Setup GPG
-      uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73   # 3.7.0
-      with:
-        distribution: temurin
-        java-version: 17
-        gpg-private-key: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+    - name: Import GPG Key
+      run: |
+        echo "${{ secrets.LOGGING_GPG_SECRET_KEY }}" | gpg --batch --import
 
-# Consider using CPack when it supports a white-list for included files
-#    - name: 'Install minimum dependencies'
-#      run: |
-#        sudo apt-get install -y libapr1-dev libaprutil1-dev
-#
-#    - name: 'Create release files'
-#      run: |
-#        cmake -B package -S clean-checkout -DAPACHE_MAINTAINER=yes -DCPACK_PACKAGE_DIRECTORY=`pwd`
-#        cmake --build package --target dist
-#
     - name: 'Create release files'
       run: |
         cd clean-checkout
@@ -70,7 +56,22 @@ jobs:
         sha256sum "apache-log4cxx-$VERSION.zip" > "apache-log4cxx-$VERSION.zip.sha256"
         gpg --armor --detach-sign --yes --pinentry-mode error "apache-log4cxx-$VERSION.zip"
 
-    - uses: actions/upload-artifact@v4
+    - name: 'Clean up GPG keyring'
+      if: always()
+      run: |
+        # Extract secret key fingerprints dynamically from the keyring
+        FINGERPRINTS=$(gpg --list-secret-keys --with-colons | awk -F: '$1=="fpr" {print $10}')
+        if [ -z "$FINGERPRINTS" ]; then
+          echo "No secret keys found in keyring to delete."
+        else
+          for fpr in $FINGERPRINTS; do
+            echo "Deleting secret key: $fpr"
+            gpg --batch --yes --delete-secret-keys "$fpr" || true
+            gpg --batch --yes --delete-keys "$fpr" || true
+          done
+        fi
+
+    - uses: actions/upload-artifact@v7
       if: always()
       with:
         name: 'release_files'
@@ -82,7 +83,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libapr1-dev libaprutil1-dev
 
-    - name: 'test archive'
+    - name: 'Test the archive'
       run: |
         VERSION=`ls apache-log4cxx-*.tar.gz | sed -Ee 's/.*apache-log4cxx-([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
         echo "Extracting files from apache-log4cxx-$VERSION.tar.gz..."
