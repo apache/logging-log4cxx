@@ -19,9 +19,9 @@ on:
   push:
     branches:
       - master
-#  pull_request:
-#    branches:
-#      - master
+  pull_request:
+    branches:
+      - master
 
 permissions: read-all
 
@@ -31,14 +31,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false # do not persist auth token in the local git config
         path: clean-checkout
 
     # Using `setup-java` as temporary workaround, since `crazy-max` is not authorized
     - name: Setup GPG
-      uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73   # 3.7.0
+      uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
       with:
         distribution: temurin
         java-version: 17
