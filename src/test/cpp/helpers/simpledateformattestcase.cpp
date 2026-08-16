@@ -110,7 +110,7 @@ public:
 		, (apr_time_t) APR_INT64_C(-9000000000000000000)
 		};
 
-		const logchar* patterns[] =
+		const LogString patterns[] =
 		{ LOG4CXX_STR("EEE")
 		, LOG4CXX_STR("EEEE")
 		, LOG4CXX_STR("MMM")
