@@ -202,9 +202,13 @@ public:
 
 	void encode3_1()
 	{
-		// Test invalid multibyte string
+		// Test invalid codepoint
 		std::wstring encoded;
+#if defined(__STDC_ISO_10646__)
+		Transcoder::encode(0x110000, encoded);
+#else
 		Transcoder::encode(0xDfff, encoded);
+#endif
 		std::wstring::const_iterator i = encoded.begin();
 		LOGUNIT_ASSERT_EQUAL(((unsigned int) 0xFFFF), Transcoder::decode(encoded, i));
 	}
