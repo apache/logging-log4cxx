@@ -31,8 +31,8 @@ class CharsetEncoder;
 LOG4CXX_PTR_DEF(CharsetEncoder);
 
 /**
-*   An engine to transform LogStrings into bytes
-*     for the specific character set.
+*   An abstract base for classes that transform LogString codepoints
+*     to the byte sequence representation of the codepoints.
 */
 class LOG4CXX_EXPORT CharsetEncoder : public Object
 {
@@ -75,23 +75,23 @@ class LOG4CXX_EXPORT CharsetEncoder : public Object
 		static CharsetEncoderPtr getUTF8Encoder();
 
 		/**
-		* Encodes a string replacing unmappable
-		* characters with escape sequences.
-		*
-		*/
+		 * Use \c enc to encode into \c out codepoints of \c src until \c out is full or an invalid value is encountered.
+		 * If encoding is stopped by an invalid value,
+		 * a replacement character is added to \out
+		 * and \c iter is advanced past the invalid value.
+		 * @pre \c iter is a valid, dereferenceable iterator.
+		 * @pre \c iter and the end of \c src are in the same sequence.
+		 */
 		static void encode(CharsetEncoderPtr& enc,
 			const LogString& src,
 			LogString::const_iterator& iter,
 			ByteBuffer& dst);
 
 		/**
-		 * Encodes as many characters from the input string as possible
-		 *   to the output buffer.
-		     *  @param in input string
-		 *  @param iter position in string to start.
-		 *  @param out output buffer.
-		 *  @return APR_SUCCESS unless a character can not be represented in
-		 *    the encoding.
+		 * Encode into \c out codepoints of \c in until \c out is full or an invalid value is encountered.
+		 *   @pre \c iter is a valid, dereferenceable iterator.
+		 *   @pre \c iter and the end of \c in are in the same sequence.
+		 *   @return APR_SUCCESS unless an invalid value is encountered
 		 */
 		virtual log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT CharsetEncoder : public Object
 #if 15 < LOG4CXX_ABI_VERSION
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
-		 *  @return APR_SUCCESS unless \c codePoint can not be represented in the encoding.
+		 * @return APR_SUCCESS unless \c codePoint cannot be represented by this charset or \c out is full.
 		 */
 		virtual log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) = 0;
 #endif
