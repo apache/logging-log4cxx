@@ -228,7 +228,7 @@ class WcstombsCharsetEncoder : public CharsetEncoder
 		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
 		{
 			apr_status_t result = APR_SUCCESS;
-			if (codePoint <= 0x10FFFF)
+			if (codePoint <= 0x10FFFF && MB_LEN_MAX <= out.remaining())
 			{
 				auto ch = static_cast<wchar_t>(codePoint);
 				auto converted = wcstombs(out.current(), &ch, 1);
@@ -294,7 +294,9 @@ class USASCIICharsetEncoder : public CharsetEncoder
 		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
 		{
 			apr_status_t result = APR_SUCCESS;
-			if (codePoint <= 0x7F)
+			if (out.remaining() < 1)
+				result = APR_BADARG;
+			else if (codePoint <= 0x7F)
 				out.put(static_cast<char>(codePoint));
 			else if (Transcoder::LOSSCHAR == codePoint)
 				out.put('?');
@@ -346,7 +348,9 @@ class ISOLatinCharsetEncoder : public CharsetEncoder
 		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
 		{
 			apr_status_t result = APR_SUCCESS;
-			if (codePoint <= 0xFF)
+			if (out.remaining() < 1)
+				result = APR_BADARG;
+			else if (codePoint <= 0xFF)
 				out.put(static_cast<char>(codePoint));
 			else if (Transcoder::LOSSCHAR == codePoint)
 				out.put('?');
@@ -400,7 +404,9 @@ class TrivialCharsetEncoder : public CharsetEncoder
 		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
 		{
 			apr_status_t result = APR_SUCCESS;
-			if (codePoint <= 0xFF)
+			if (out.remaining() < 1)
+				result = APR_BADARG;
+			else if (codePoint <= 0xFF)
 				out.put(static_cast<char>(codePoint));
 			else if (Transcoder::LOSSCHAR == codePoint)
 				out.put('?');
