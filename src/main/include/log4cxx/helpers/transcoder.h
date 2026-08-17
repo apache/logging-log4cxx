@@ -44,7 +44,7 @@ class LOG4CXX_EXPORT Transcoder
 		 *   the invalid sequence if not a valid sequence.
 		 */
 			template <typename T>
-		static unsigned int getCodePoint(const T& str, T::const_iterator& nextCodePoint)
+		static unsigned int getCodePoint(const T& str, typename T::const_iterator& nextCodePoint)
 		{
 			auto lastCodePoint = nextCodePoint;
 			auto ch = decode(str, nextCodePoint);

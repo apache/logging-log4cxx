@@ -222,7 +222,25 @@ class WcstombsCharsetEncoder : public CharsetEncoder
 			return stat;
 		}
 
-
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (codePoint <= 0x10FFFF)
+			{
+				auto ch = static_cast<wchar_t>(codePoint);
+				auto converted = wcstombs(out.current(), &ch, 1);
+				if (static_cast<std::size_t>(-1) == converted)
+					result = APR_BADARG;
+				else
+					out.increment_position(converted);
+			}
+			else
+				result = APR_BADARG;
+			return result;
+		}
 
 	private:
 		WcstombsCharsetEncoder(const WcstombsCharsetEncoder&);
