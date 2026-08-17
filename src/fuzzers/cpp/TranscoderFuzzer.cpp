@@ -136,7 +136,7 @@ namespace
 
 			if (CharsetDecoder::isError(stat))
 			{
-				out.append(1, (logchar) Transcoder::LOSSCHAR);
+				Transcoder::encode(Transcoder::LOSSCHAR, out);
 				buf.increment_position(1);
 			}
 			else if (buf.position() == before)

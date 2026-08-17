@@ -223,27 +223,14 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 	for (auto nextCodePoint = start; input.end() != nextCodePoint; )
 	{
 		auto lastCodePoint = nextCodePoint;
-		auto ch = Transcoder::decode(input, nextCodePoint);
-		if (nextCodePoint == lastCodePoint) // failed to decode input?
-		{
-			// Skip the undecodable run and keep escaping the remaining input
-			// instead of discarding it; the run collapses to one replacement.
-			for (++nextCodePoint; nextCodePoint != input.end(); ++nextCodePoint)
-			{
-				auto probe = nextCodePoint;
-				Transcoder::decode(input, probe);
-				if (probe != nextCodePoint) // next unit starts a decodable sequence
-					break;
-			}
-			ch = 0xFFFD; // The Unicode replacement character
-		}
-		else if ((0xD800 <= ch && ch <= 0xDFFF) || 0x10FFFF < ch)
+		auto ch = Transcoder::getCodePoint(input, nextCodePoint);
+		if ((0xD800 <= ch && ch <= 0xDFFF) || 0x10FFFF < ch)
 		{
 			ch = 0xFFFD; // The Unicode replacement character
 		}
 		else if (0x22 == ch || 0x5c == ch) // double quote or backslash?
 			;
-		else if (0x20 <= ch) // not a control character?
+		else if (0x20 <= ch && 0xFFFD != ch) // not a control character or the replacement character?
 			continue;
 
 		if (start != lastCodePoint)

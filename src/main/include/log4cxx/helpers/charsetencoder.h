@@ -97,6 +97,13 @@ class LOG4CXX_EXPORT CharsetEncoder : public Object
 			LogString::const_iterator& iter,
 			ByteBuffer& out) = 0;
 
+#if 15 < LOG4CXX_ABI_VERSION
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 *  @return APR_SUCCESS unless \c codePoint can not be represented in the encoding.
+		 */
+		virtual log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) = 0;
+#endif
 		/**
 		 *   Resets any internal state.
 		 */

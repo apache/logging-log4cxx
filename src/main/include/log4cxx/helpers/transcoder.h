@@ -33,7 +33,38 @@ class Pool;
 class LOG4CXX_EXPORT Transcoder
 {
 	public:
-
+		/**
+		 *   Increment \c nextCodePoint past one \c str code point.
+		 *   @pre \c nextCodePoint is a valid, dereferenceable iterator.
+		 *   @pre \c nextCodePoint and the end of \c str are in the same sequence.
+		 *   @post \c <code>[old_nextCodePoint = nextCodePoint] (old_nextCodePoint < nextCodePoint)</code> // \c nextCodePoint is always advanced
+		 *   @param str contains the code point to which \c nextCodePoint refers.
+		 *   @param nextCodePoint the start of the current code point.
+		 *   @return the code point value or 0xFFFD and \c iter is advanced past
+		 *   the invalid sequence if not a valid sequence.
+		 */
+			template <typename T>
+		static unsigned int getCodePoint(const T& str, T::const_iterator& nextCodePoint)
+		{
+			auto lastCodePoint = nextCodePoint;
+			auto ch = decode(str, nextCodePoint);
+			if (nextCodePoint == lastCodePoint) // failed to decode input?
+			{
+				// Skip the undecodable run and keep escaping the remaining input
+				// instead of discarding it; the run collapses to one replacement.
+				for (++nextCodePoint; nextCodePoint != str.end(); ++nextCodePoint)
+				{
+					auto probe = nextCodePoint;
+					decode(str, probe);
+					if (probe != nextCodePoint) // next unit starts a decodable sequence
+						break;
+				}
+				ch = 0xFFFD; // The Unicode replacement character
+			}
+			else if (0xFFFF == ch)
+				ch = 0xFFFD;
+			return ch;
+		}
 
 		/**
 		 *   Append the UTF-8 characters in \c src onto \c dst.
@@ -71,7 +102,7 @@ class LOG4CXX_EXPORT Transcoder
 		 *   @pre \c iter and the end of \c str are in the same sequence.
 		 *   @param str contains the code point to which \c iter refers.
 		 *   @param iter the start of the current code point.
-		 *   @return the code point value or 0xFFFF if not a valid sequence.
+		 *   @return if a valid sequence, the code point value; otherwise, 0xFFFF and leave \c iter unchanged.
 		 */
 		static unsigned int decode(const std::string& str,
 			std::string::const_iterator& iter);
@@ -80,6 +111,9 @@ class LOG4CXX_EXPORT Transcoder
 		  *   Append the UTF8 equivalent to \c ch onto \c dst.
 		  */
 		static void encode(unsigned int ch, std::string& dst);
+
+		/// Does \c str contain the Unicode replacement character
+		static bool hasReplacementCharacter(const std::string& str);
 
 		/**
 		 *    Append the LogString equivalent of \c src onto \c dst.
@@ -126,7 +160,7 @@ class LOG4CXX_EXPORT Transcoder
 		 *   @pre \c iter and the end of \c str are in the same sequence.
 		 *   @param str contains the code point to which \c iter refers.
 		 *   @param iter the start of the current code point.
-		 *   @return the code point value or 0xFFFF if not a valid sequence.
+		 *   @return if a valid sequence, the code point value; otherwise, 0xFFFF and leave \c iter unchanged.
 		 */
 		static unsigned int decode(const std::wstring& str,
 			std::wstring::const_iterator& iter);
@@ -136,6 +170,8 @@ class LOG4CXX_EXPORT Transcoder
 		  */
 		static void encode(unsigned int ch, std::wstring& dst);
 
+		/// Does \c str contain the Unicode replacement character
+		static bool hasReplacementCharacter(const std::wstring& str);
 #endif
 
 
@@ -155,7 +191,7 @@ class LOG4CXX_EXPORT Transcoder
 		 *   @pre \c iter and the end of \c str are in the same sequence.
 		 *   @param str contains the code point to which \c iter refers.
 		 *   @param iter the start of the current code point.
-		 *   @return the code point value or 0xFFFF if not a valid sequence.
+		 *   @return if a valid sequence, the code point value; otherwise, 0xFFFF and leave \c iter unchanged.
 		 */
 		static unsigned int decode(const std::basic_string<UniChar>& str,
 			std::basic_string<UniChar>::const_iterator& iter);
@@ -165,6 +201,8 @@ class LOG4CXX_EXPORT Transcoder
 		  */
 		static void encode(unsigned int ch, std::basic_string<UniChar>& dst);
 
+		/// Does \c str contain the Unicode replacement character
+		static bool hasReplacementCharacter(const std::basic_string<UniChar>& str);
 #endif
 
 #if LOG4CXX_CFSTRING_API
@@ -176,8 +214,7 @@ class LOG4CXX_EXPORT Transcoder
 		static CFStringRef encode(const LogString& src);
 #endif
 
-		enum { LOSSCHAR = 0x3F };
-
+		enum { LOSSCHAR = 0xFFFD }; // Unicode replacement character
 		/**
 		 *   The logchar equivalent to \c ch.
 		 */

@@ -292,21 +292,10 @@ void TelnetAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 
 		while (msgIter != msg.end())
 		{
-			log4cxx_status_t stat = _priv->encoder->encode(msg, msgIter, buf);
+			CharsetEncoder::encode(_priv->encoder, msg, msgIter, buf);
 			buf.flip();
 			write(buf);
 			buf.clear();
-
-			if (CharsetEncoder::isError(stat))
-			{
-				LogString unrepresented(1, 0x3F /* '?' */);
-				LogString::const_iterator unrepresentedIter(unrepresented.begin());
-				stat = _priv->encoder->encode(unrepresented, unrepresentedIter, buf);
-				buf.flip();
-				write(buf);
-				buf.clear();
-				msgIter++;
-			}
 		}
 	}
 }
