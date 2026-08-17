@@ -109,10 +109,12 @@ class LOG4CXX_EXPORT CharsetEncoder : public Object
 		 */
 		virtual void reset();
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		 *   Flushes the encoder.
 		 */
 		virtual void flush(ByteBuffer& out);
+#endif
 
 		/**
 		 *   Determines if the return value from encode indicates

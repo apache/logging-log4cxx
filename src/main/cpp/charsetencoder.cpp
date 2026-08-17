@@ -722,9 +722,11 @@ void CharsetEncoder::reset()
 {
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void CharsetEncoder::flush(ByteBuffer& /* out */ )
 {
 }
+#endif
 
 void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 	const LogString& src,
