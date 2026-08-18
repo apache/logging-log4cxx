@@ -61,8 +61,11 @@ class LOG4CXX_EXPORT Transcoder
 				}
 				ch = 0xFFFD; // The Unicode replacement character
 			}
-			else if (0xFFFF == ch)
-				ch = 0xFFFD;
+			else if ( (0xD800 <= ch && ch <= 0xDFFF) // UTF-16 surrogate-range
+					|| 0xFFFF == ch || 0x10FFFF < ch)
+			{
+				ch = 0xFFFD; // The Unicode replacement character
+			}
 			return ch;
 		}
 

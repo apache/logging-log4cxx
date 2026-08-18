@@ -200,17 +200,23 @@ public:
 		LOGUNIT_ASSERT_EQUAL(std::wstring(L"Hello"), encoded.substr(BUFSIZE - 3));
 	}
 
+	// Test invalid codepoints
 	void encode3_1()
 	{
-		// Test invalid codepoint
-		std::wstring encoded;
+		unsigned int replacementCharacter = Transcoder::LOSSCHAR;
+		std::wstring encodedD800(1, 0xD800);
+		std::wstring::const_iterator iD800 = encodedD800.begin();
+		LOGUNIT_ASSERT_EQUAL(replacementCharacter, Transcoder::getCodePoint(encodedD800, iD800));
+
+		std::wstring encodedDFFF(1, 0xDFFF);
+		std::wstring::const_iterator iDFFF = encodedDFFF.begin();
+		LOGUNIT_ASSERT_EQUAL(replacementCharacter, Transcoder::getCodePoint(encodedDFFF, iDFFF));
+
 #if defined(__STDC_ISO_10646__)
-		Transcoder::encode(0x110000, encoded);
-#else
-		Transcoder::encode(0xDfff, encoded);
+		std::wstring encoded110000(1, 0x110000);
+		std::wstring::const_iterator i110000 = encoded110000.begin();
+		LOGUNIT_ASSERT_EQUAL(replacementCharacter, Transcoder::decode(encoded110000, i110000));
 #endif
-		std::wstring::const_iterator i = encoded.begin();
-		LOGUNIT_ASSERT_EQUAL(((unsigned int) 0xFFFF), Transcoder::decode(encoded, i));
 	}
 #endif
 

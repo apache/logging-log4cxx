@@ -44,12 +44,7 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 	{
 		auto lastCodePoint = nextCodePoint;
 		auto ch = Transcoder::getCodePoint(input, nextCodePoint);
-		if (0xD800 <= ch && ch <= 0xDFFF)
-		{
-			// RFC 3629 §3 explicitly forbids surrogate-half values in UTF-8
-			ch = 0xFFFD;
-		}
-		else if (((0x20 <= ch && ch <= 0xD7FF) &&
+		if (((0x20 <= ch && ch <= 0xD7FF) &&
 				specials[0] != ch &&
 				specials[1] != ch &&
 				specials[2] != ch &&

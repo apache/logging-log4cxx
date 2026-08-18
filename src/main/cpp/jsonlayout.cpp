@@ -224,11 +224,7 @@ void JSONLayout::appendItem(const LogString& input, LogString& buf)
 	{
 		auto lastCodePoint = nextCodePoint;
 		auto ch = Transcoder::getCodePoint(input, nextCodePoint);
-		if ((0xD800 <= ch && ch <= 0xDFFF) || 0x10FFFF < ch)
-		{
-			ch = 0xFFFD; // The Unicode replacement character
-		}
-		else if (0x22 == ch || 0x5c == ch) // double quote or backslash?
+		if (0x22 == ch || 0x5c == ch) // double quote or backslash?
 			;
 		else if (0x20 <= ch && 0xFFFD != ch) // not a control character or the replacement character?
 			continue;
