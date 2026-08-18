@@ -39,7 +39,6 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
-
 void Transcoder::decodeUTF8(const std::string& src, LogString& dst)
 {
 	std::string::const_iterator iter = src.begin();
@@ -196,6 +195,37 @@ unsigned int Transcoder::decode(const std::string& src,
 	auto result = CharsetDecoder::getUTF8CodePoint(buf);
 	iter += remaining - buf.remaining();
 	return result;
+}
+
+	template <typename T>
+unsigned int decodeCodePoint(const typename std::basic_string<T>& str, typename std::basic_string<T>::const_iterator& nextCodePoint)
+{
+	auto lastCodePoint = nextCodePoint;
+	auto ch = Transcoder::decode(str, nextCodePoint);
+	if (nextCodePoint == lastCodePoint) // failed to decode input?
+	{
+		// Skip the undecodable run and keep escaping the remaining input
+		// instead of discarding it; the run collapses to one replacement.
+		for (++nextCodePoint; nextCodePoint != str.end(); ++nextCodePoint)
+		{
+			auto probe = nextCodePoint;
+			Transcoder::decode(str, probe);
+			if (probe != nextCodePoint) // next unit starts a decodable sequence
+				break;
+		}
+		ch = 0xFFFD; // The Unicode replacement character
+	}
+	else if ( (0xD800 <= ch && ch <= 0xDFFF) // UTF-16 surrogate-range
+			|| 0xFFFF == ch || 0x10FFFF < ch)
+	{
+		ch = 0xFFFD; // The Unicode replacement character
+	}
+	return ch;
+}
+
+unsigned int Transcoder::getCodePoint(const std::string& str, std::string::const_iterator& nextCodePoint)
+{
+	return decodeCodePoint<char>(str, nextCodePoint);
 }
 
 void Transcoder::encode(unsigned int sv, std::string& dst)
@@ -437,6 +467,11 @@ unsigned int Transcoder::decode(const std::wstring& in,
 #endif
 }
 
+unsigned int Transcoder::getCodePoint(const std::wstring& str, std::wstring::const_iterator& nextCodePoint)
+{
+	return decodeCodePoint<wchar_t>(str, nextCodePoint);
+}
+
 void Transcoder::encode(unsigned int sv, std::wstring& dst)
 {
 #if defined(__STDC_ISO_10646__)
@@ -527,6 +562,11 @@ unsigned int Transcoder::decode(const std::basic_string<UniChar>& in,
 	std::basic_string<UniChar>::const_iterator& iter)
 {
 	return decodeUTF16(in, iter);
+}
+
+unsigned int Transcoder::getCodePoint(const std::basic_string<UniChar>& str, std::basic_string<UniChar>::const_iterator& nextCodePoint)
+{
+	return decodeCodePoint<UniChar>(str, nextCodePoint);
 }
 
 void Transcoder::encode(unsigned int sv, std::basic_string<UniChar>& dst)
