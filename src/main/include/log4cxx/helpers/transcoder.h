@@ -69,22 +69,21 @@ class LOG4CXX_EXPORT Transcoder
 		 *   @pre \c iter and the end of \c str are in the same sequence.
 		 *   @param str contains the code point to which \c iter refers.
 		 *   @param iter the start of the current code point.
-		 *   @return if a valid sequence, the code point value; otherwise, 0xFFFF and leave \c iter unchanged.
+		 *   @return if a valid sequence, the decoded value; otherwise, 0xFFFF and leave \c iter unchanged.
 		 */
 		static unsigned int decode(const std::string& str,
 			std::string::const_iterator& iter);
 
 		/**
-		 *   Increment \c nextCodePoint past one \c str code point.
-		 *   @pre \c nextCodePoint is a valid, dereferenceable iterator.
-		 *   @pre \c nextCodePoint and the end of \c str are in the same sequence.
-		 *   @post \c <code>[old_nextCodePoint = nextCodePoint] (old_nextCodePoint < nextCodePoint)</code> // \c nextCodePoint is always advanced
-		 *   @param str contains the code point to which \c nextCodePoint refers.
-		 *   @param nextCodePoint the start of the current code point.
-		 *   @return the code point value or 0xFFFD and \c iter is advanced past
-		 *   the invalid sequence if not a valid sequence.
+		 *   Increment \c pCodePoint past one \c str code point.
+		 *   @pre \c pCodePoint is a valid, dereferenceable iterator.
+		 *   @pre \c pCodePoint and the end of \c str are in the same sequence.
+		 *   @post \c <code>[old_pCodePoint = pCodePoint] (old_pCodePoint < pCodePoint)</code> // \c pCodePoint is always advanced
+		 *   @param str contains the code point to which \c pCodePoint refers.
+		 *   @param pCodePoint the start of the current code point.
+		 *   @return the code point value or 0xFFFD if not a valid sequence; \c pCodePoint is always advanced.
 		 */
-		static unsigned int getCodePoint(const std::string& str, std::string::const_iterator& nextCodePoint);
+		static unsigned int getCodePoint(const std::string& str, std::string::const_iterator& pCodePoint);
 
 		/**
 		  *   Append the UTF8 equivalent to \c ch onto \c dst.
@@ -139,22 +138,21 @@ class LOG4CXX_EXPORT Transcoder
 		 *   @pre \c iter and the end of \c str are in the same sequence.
 		 *   @param str contains the code point to which \c iter refers.
 		 *   @param iter the start of the current code point.
-		 *   @return if a valid sequence, the code point value; otherwise, 0xFFFF and leave \c iter unchanged.
+		 *   @return if a valid sequence, the decoded value; otherwise, 0xFFFF and leave \c iter unchanged.
 		 */
 		static unsigned int decode(const std::wstring& str,
 			std::wstring::const_iterator& iter);
 
 		/**
-		 *   Increment \c nextCodePoint past one \c str code point.
-		 *   @pre \c nextCodePoint is a valid, dereferenceable iterator.
-		 *   @pre \c nextCodePoint and the end of \c str are in the same sequence.
-		 *   @post \c <code>[old_nextCodePoint = nextCodePoint] (old_nextCodePoint < nextCodePoint)</code> // \c nextCodePoint is always advanced
-		 *   @param str contains the code point to which \c nextCodePoint refers.
-		 *   @param nextCodePoint the start of the current code point.
-		 *   @return the code point value or 0xFFFD and \c iter is advanced past
-		 *   the invalid sequence if not a valid sequence.
+		 *   Increment \c pCodePoint past one \c str code point.
+		 *   @pre \c pCodePoint is a valid, dereferenceable iterator.
+		 *   @pre \c pCodePoint and the end of \c str are in the same sequence.
+		 *   @post \c <code>[old_pCodePoint = pCodePoint] (old_pCodePoint < pCodePoint)</code> // \c pCodePoint is always advanced
+		 *   @param str contains the code point to which \c pCodePoint refers.
+		 *   @param pCodePoint the start of the current code point.
+		 *   @return the code point value or 0xFFFD if not a valid sequence; \c pCodePoint is always advanced.
 		 */
-		static unsigned int getCodePoint(const std::wstring& str, std::wstring::const_iterator& nextCodePoint);
+		static unsigned int getCodePoint(const std::wstring& str, std::wstring::const_iterator& pCodePoint);
 
 		/**
 		  *   Append the wchar_t equivalent to \c ch onto \c dst.
@@ -182,22 +180,21 @@ class LOG4CXX_EXPORT Transcoder
 		 *   @pre \c iter and the end of \c str are in the same sequence.
 		 *   @param str contains the code point to which \c iter refers.
 		 *   @param iter the start of the current code point.
-		 *   @return if a valid sequence, the code point value; otherwise, 0xFFFF and leave \c iter unchanged.
+		 *   @return if a valid sequence, the decoded value; otherwise, 0xFFFF and leave \c iter unchanged.
 		 */
 		static unsigned int decode(const std::basic_string<UniChar>& str,
 			std::basic_string<UniChar>::const_iterator& iter);
 
 		/**
-		 *   Increment \c nextCodePoint past one \c str code point.
-		 *   @pre \c nextCodePoint is a valid, dereferenceable iterator.
-		 *   @pre \c nextCodePoint and the end of \c str are in the same sequence.
-		 *   @post \c <code>[old_nextCodePoint = nextCodePoint] (old_nextCodePoint < nextCodePoint)</code> // \c nextCodePoint is always advanced
-		 *   @param str contains the code point to which \c nextCodePoint refers.
-		 *   @param nextCodePoint the start of the current code point.
-		 *   @return the code point value or 0xFFFD and \c iter is advanced past
-		 *   the invalid sequence if not a valid sequence.
+		 *   Increment \c pCodePoint past one \c str code point.
+		 *   @pre \c pCodePoint is a valid, dereferenceable iterator.
+		 *   @pre \c pCodePoint and the end of \c str are in the same sequence.
+		 *   @post \c <code>[old_pCodePoint = pCodePoint] (old_pCodePoint < pCodePoint)</code> // \c pCodePoint is always advanced
+		 *   @param str contains the code point to which \c pCodePoint refers.
+		 *   @param pCodePoint the start of the current code point.
+		 *   @return the code point value or 0xFFFD if not a valid sequence; \c pCodePoint is always advanced.
 		 */
-		static unsigned int getCodePoint(const std::basic_string<UniChar>& str, std::basic_string<UniChar>::const_iterator& nextCodePoint);
+		static unsigned int getCodePoint(const std::basic_string<UniChar>& str, std::basic_string<UniChar>::const_iterator& pCodePoint);
 
 		/**
 		  *   Append the UniChar equivalent to \c ch onto \c dst.
