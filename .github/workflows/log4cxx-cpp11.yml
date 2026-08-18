@@ -20,7 +20,6 @@ jobs:
   job:
     name: log4cxx-cpp11
     runs-on: ubuntu-latest
-    timeout-minutes: 38
     steps:
     - uses: actions/checkout@v6
       with:
@@ -29,7 +28,6 @@ jobs:
 
     - name: 'Configure Dependencies - Ubuntu'
       run: |
-        sudo apt-get update
         sudo apt-get install -y libapr1-dev libaprutil1-dev libesmtp-dev
 
     - name: 'run cmake - *nix'
@@ -42,6 +40,7 @@ jobs:
 
     - name: run unit tests
       shell: pwsh
+      timeout-minutes: 10
       run: |
         cd main
         cd build
