@@ -215,7 +215,7 @@ public:
 #if defined(__STDC_ISO_10646__)
 		std::wstring encoded110000(1, 0x110000);
 		std::wstring::const_iterator i110000 = encoded110000.begin();
-		LOGUNIT_ASSERT_EQUAL(replacementCharacter, Transcoder::decode(encoded110000, i110000));
+		LOGUNIT_ASSERT_EQUAL(replacementCharacter, Transcoder::getCodePoint(encoded110000, i110000));
 #endif
 	}
 #endif

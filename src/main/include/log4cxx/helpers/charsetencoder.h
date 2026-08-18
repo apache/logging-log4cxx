@@ -77,7 +77,7 @@ class LOG4CXX_EXPORT CharsetEncoder : public Object
 		/**
 		 * Use \c enc to encode into \c out codepoints of \c src until \c out is full or an invalid value is encountered.
 		 * If encoding is stopped by an invalid value,
-		 * a replacement character is added to \out
+		 * a replacement character is added to \c out
 		 * and \c iter is advanced past the invalid value.
 		 * @pre \c iter is a valid, dereferenceable iterator.
 		 * @pre \c iter and the end of \c src are in the same sequence.
