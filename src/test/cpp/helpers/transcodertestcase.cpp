@@ -200,17 +200,23 @@ public:
 		LOGUNIT_ASSERT_EQUAL(std::wstring(L"Hello"), encoded.substr(BUFSIZE - 3));
 	}
 
+	// Test invalid codepoints
 	void encode3_1()
 	{
-		// Test invalid multibyte string
-		LogString greeting;
-		greeting.push_back( logchar(0xff) );
-		std::wstring encoded;
-		Transcoder::encode(greeting, encoded);
+		unsigned int replacementCharacter = Transcoder::LOSSCHAR;
+		std::wstring encodedD800(1, 0xD800);
+		std::wstring::const_iterator iD800 = encodedD800.begin();
+		LOGUNIT_ASSERT_EQUAL(replacementCharacter, Transcoder::getCodePoint(encodedD800, iD800));
 
-		std::wstring expected;
-		expected.push_back( log4cxx::helpers::Transcoder::LOSSCHAR );
-		LOGUNIT_ASSERT_EQUAL(encoded, expected );
+		std::wstring encodedDFFF(1, 0xDFFF);
+		std::wstring::const_iterator iDFFF = encodedDFFF.begin();
+		LOGUNIT_ASSERT_EQUAL(replacementCharacter, Transcoder::getCodePoint(encodedDFFF, iDFFF));
+
+#if defined(__STDC_ISO_10646__)
+		std::wstring encoded110000(1, 0x110000);
+		std::wstring::const_iterator i110000 = encoded110000.begin();
+		LOGUNIT_ASSERT_EQUAL(replacementCharacter, Transcoder::getCodePoint(encoded110000, i110000));
+#endif
 	}
 #endif
 
@@ -306,7 +312,7 @@ public:
 		std::string src(1, char(0x80));
 		LogString out;
 		Transcoder::decodeUTF8(src, out);
-		LOGUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);
+		LOGUNIT_ASSERT(Transcoder::hasReplacementCharacter(out));
 	}
 
 	void testDecodeUTF8_3()
@@ -314,7 +320,7 @@ public:
 		std::string src("\xC2");
 		LogString out;
 		Transcoder::decodeUTF8(src, out);
-		LOGUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);
+		LOGUNIT_ASSERT(Transcoder::hasReplacementCharacter(out));
 	}
 
 	void testDecodeUTF8_4()
@@ -333,8 +339,7 @@ public:
 	 * (U+D800..U+DFFF). The three-byte sequences ED A0 80 .. ED BF BF must
 	 * not decode to the corresponding surrogate code points: doing so lets
 	 * lone surrogates enter LogString and be re-emitted by JSON/XML layouts,
-	 * propagating malformed Unicode past the parsing boundary. Each byte of
-	 * the invalid sequence is replaced with Transcoder::LOSSCHAR.
+	 * propagating malformed Unicode past the parsing boundary.
 	 */
 	void testDecodeUTF8_RejectSurrogate()
 	{
@@ -342,12 +347,7 @@ public:
 		std::string src("\xED\xA0\x80");
 		LogString out;
 		Transcoder::decodeUTF8(src, out);
-
-		LogString expected;
-		expected.append(1, Transcoder::LOSSCHAR);
-		expected.append(1, Transcoder::LOSSCHAR);
-		expected.append(1, Transcoder::LOSSCHAR);
-		LOGUNIT_ASSERT_EQUAL(expected, out);
+		LOGUNIT_ASSERT(Transcoder::hasReplacementCharacter(out));
 	}
 
 	/**
@@ -364,11 +364,7 @@ public:
 		std::string src("\xE0\xA0\x80");
 		LogString out;
 		Transcoder::decodeUTF8(src, out);
-
-		LogString expected;
-		Transcoder::encode(0x0800, expected);
-		LOGUNIT_ASSERT_EQUAL(expected, out);
-		LOGUNIT_ASSERT(out.find(Transcoder::LOSSCHAR) == LogString::npos);
+		LOGUNIT_ASSERT(!Transcoder::hasReplacementCharacter(out));
 	}
 
 	/**
@@ -392,8 +388,7 @@ public:
 			std::string src(c.bytes, c.len);
 			LogString out;
 			Transcoder::decodeUTF8(src, out);
-			bool hasLoss = out.find(Transcoder::LOSSCHAR) != LogString::npos;
-			LOGUNIT_ASSERT_EQUAL(c.reject, hasLoss);
+			LOGUNIT_ASSERT_EQUAL(c.reject, Transcoder::hasReplacementCharacter(out));
 		}
 	}
 
@@ -412,10 +407,7 @@ public:
 		LogString out;
 		Transcoder::decodeUTF8(src, out);
 
-		LogString expected;
-		for (int i = 0; i < 4; ++i)
-			expected.append(1, Transcoder::LOSSCHAR);
-		LOGUNIT_ASSERT_EQUAL(expected, out);
+		LOGUNIT_ASSERT(Transcoder::hasReplacementCharacter(out));
 	}
 
 	/**
@@ -438,8 +430,7 @@ public:
 			std::string src(c.bytes, c.len);
 			LogString out;
 			Transcoder::decodeUTF8(src, out);
-			bool hasLoss = out.find(Transcoder::LOSSCHAR) != LogString::npos;
-			LOGUNIT_ASSERT_EQUAL(c.reject, hasLoss);
+			LOGUNIT_ASSERT_EQUAL(c.reject, Transcoder::hasReplacementCharacter(out));
 		}
 	}
 
@@ -448,8 +439,7 @@ public:
 	 * branch masks the lead byte with 0x07, discarding those high bits, so
 	 * F8 BF BF BF used to slip past the U+10FFFF bound and decode to U+3FFFF
 	 * (and FB/FC likewise to other in-range planes) — the same aliasing
-	 * filter-bypass that the F5..F7 rejection guards against. Each byte of an
-	 * invalid lead sequence must be replaced with Transcoder::LOSSCHAR.
+	 * filter-bypass that the F5..F7 rejection guards against.
 	 */
 	void testDecodeUTF8_RejectInvalidLeadByte()
 	{
@@ -466,8 +456,7 @@ public:
 			std::string src(c.bytes, c.len);
 			LogString out;
 			Transcoder::decodeUTF8(src, out);
-			bool hasLoss = out.find(Transcoder::LOSSCHAR) != LogString::npos;
-			LOGUNIT_ASSERT_EQUAL(c.reject, hasLoss);
+			LOGUNIT_ASSERT_EQUAL(c.reject, Transcoder::hasReplacementCharacter(out));
 		}
 	}
 

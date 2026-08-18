@@ -35,6 +35,12 @@
 	#include <stdlib.h>
 #endif
 
+#if 15 < LOG4CXX_ABI_VERSION
+#define LOG4CXX_16_VIRTUAL_SPECIFIER override
+#else
+#define LOG4CXX_16_VIRTUAL_SPECIFIER
+#endif
+
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
@@ -82,7 +88,7 @@ class APRCharsetEncoder : public CharsetEncoder
 
 		virtual log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
-			ByteBuffer& out)
+			ByteBuffer& out) override
 		{
 			apr_status_t stat;
 			size_t outbytes_left = out.remaining();
@@ -116,6 +122,19 @@ class APRCharsetEncoder : public CharsetEncoder
 			return stat;
 		}
 
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (codePoint <= 0x10FFFF)
+				Transcoder::encodeUTF8(codePoint, out);
+			else
+				result = APR_BADARG;
+			return result;
+		}
+
 	private:
 		APRCharsetEncoder(const APRCharsetEncoder&);
 		APRCharsetEncoder& operator=(const APRCharsetEncoder&);
@@ -141,7 +160,7 @@ class WcstombsCharsetEncoder : public CharsetEncoder
 		 */
 		log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
-			ByteBuffer& out)
+			ByteBuffer& out) override
 		{
 			log4cxx_status_t stat = APR_SUCCESS;
 
@@ -203,7 +222,25 @@ class WcstombsCharsetEncoder : public CharsetEncoder
 			return stat;
 		}
 
-
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (codePoint <= 0x10FFFF && MB_LEN_MAX <= out.remaining())
+			{
+				auto ch = static_cast<wchar_t>(codePoint);
+				auto converted = wcstombs(out.current(), &ch, 1);
+				if (static_cast<std::size_t>(-1) == converted)
+					result = APR_BADARG;
+				else
+					out.increment_position(converted);
+			}
+			else
+				result = APR_BADARG;
+			return result;
+		}
 
 	private:
 		WcstombsCharsetEncoder(const WcstombsCharsetEncoder&);
@@ -224,7 +261,7 @@ class USASCIICharsetEncoder : public CharsetEncoder
 
 		virtual log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
-			ByteBuffer& out)
+			ByteBuffer& out) override
 		{
 			log4cxx_status_t stat = APR_SUCCESS;
 
@@ -251,6 +288,23 @@ class USASCIICharsetEncoder : public CharsetEncoder
 			return stat;
 		}
 
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (out.remaining() < 1)
+				result = APR_BADARG;
+			else if (codePoint <= 0x7F)
+				out.put(static_cast<char>(codePoint));
+			else if (Transcoder::LOSSCHAR == codePoint)
+				out.put('?');
+			else
+				result = APR_BADARG;
+			return result;
+		}
+
 	private:
 		USASCIICharsetEncoder(const USASCIICharsetEncoder&);
 		USASCIICharsetEncoder& operator=(const USASCIICharsetEncoder&);
@@ -268,31 +322,41 @@ class ISOLatinCharsetEncoder : public CharsetEncoder
 
 		virtual log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
-			ByteBuffer& out)
+			ByteBuffer& out) override
 		{
 			log4cxx_status_t stat = APR_SUCCESS;
 
-			if (iter != in.end())
+			while (out.remaining() > 0 && iter != in.end())
 			{
-				while (out.remaining() > 0 && iter != in.end())
+				LogString::const_iterator prev(iter);
+				unsigned int sv = Transcoder::decode(in, iter);
+				if (sv <= 0xFF)
+					out.put(static_cast<char>(sv));
+				else
 				{
-					LogString::const_iterator prev(iter);
-					unsigned int sv = Transcoder::decode(in, iter);
-
-					if (sv <= 0xFF)
-					{
-						out.put((char) sv);
-					}
-					else
-					{
-						iter = prev;
-						stat = APR_BADARG;
-						break;
-					}
+					iter = prev;
+					stat = APR_BADARG;
+					break;
 				}
 			}
-
 			return stat;
+		}
+
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (out.remaining() < 1)
+				result = APR_BADARG;
+			else if (codePoint <= 0xFF)
+				out.put(static_cast<char>(codePoint));
+			else if (Transcoder::LOSSCHAR == codePoint)
+				out.put('?');
+			else
+				result = APR_BADARG;
+			return result;
 		}
 
 	private:
@@ -313,7 +377,7 @@ class TrivialCharsetEncoder : public CharsetEncoder
 
 		virtual log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
-			ByteBuffer& out)
+			ByteBuffer& out) override
 		{
 			if (iter != in.end())
 			{
@@ -334,14 +398,28 @@ class TrivialCharsetEncoder : public CharsetEncoder
 			return APR_SUCCESS;
 		}
 
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (out.remaining() < 1)
+				result = APR_BADARG;
+			else if (codePoint <= 0xFF)
+				out.put(static_cast<char>(codePoint));
+			else if (Transcoder::LOSSCHAR == codePoint)
+				out.put('?');
+			else
+				result = APR_BADARG;
+			return result;
+		}
+
 	private:
 		TrivialCharsetEncoder(const TrivialCharsetEncoder&);
 		TrivialCharsetEncoder& operator=(const TrivialCharsetEncoder&);
 };
 
-#if LOG4CXX_LOGCHAR_IS_UTF8
-typedef TrivialCharsetEncoder UTF8CharsetEncoder;
-#else
 /**
  *  Converts a LogString to UTF-8.
  */
@@ -354,28 +432,34 @@ class UTF8CharsetEncoder : public CharsetEncoder
 
 		virtual log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
-			ByteBuffer& out)
+			ByteBuffer& out) override
 		{
 			while (iter != in.end() && out.remaining() >= 8)
 			{
-				unsigned int sv = Transcoder::decode(in, iter);
-
-				if (sv == 0xFFFF)
-				{
-					return APR_BADARG;
-				}
-
+				auto sv = Transcoder::getCodePoint(in, iter);
 				Transcoder::encodeUTF8(sv, out);
 			}
 
 			return APR_SUCCESS;
 		}
 
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (codePoint <= 0x10FFFF)
+				Transcoder::encodeUTF8(codePoint, out);
+			else
+				result = APR_BADARG;
+			return result;
+		}
+
 	private:
 		UTF8CharsetEncoder(const UTF8CharsetEncoder&);
 		UTF8CharsetEncoder& operator=(const UTF8CharsetEncoder&);
 };
-#endif
 
 /**
  *   Encodes a LogString to UTF16-BE.
@@ -389,21 +473,28 @@ class UTF16BECharsetEncoder : public CharsetEncoder
 
 		virtual log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
-			ByteBuffer& out)
+			ByteBuffer& out) override
 		{
 			while (iter != in.end() && out.remaining() >= 4)
 			{
-				unsigned int sv = Transcoder::decode(in, iter);
-
-				if (sv == 0xFFFF)
-				{
-					return APR_BADARG;
-				}
-
+				auto sv = Transcoder::getCodePoint(in, iter);
 				Transcoder::encodeUTF16BE(sv, out);
 			}
 
 			return APR_SUCCESS;
+		}
+
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (codePoint <= 0x10FFFF)
+				Transcoder::encodeUTF16BE(codePoint, out);
+			else
+				result = APR_BADARG;
+			return result;
 		}
 
 	private:
@@ -424,21 +515,28 @@ class UTF16LECharsetEncoder : public CharsetEncoder
 
 		virtual log4cxx_status_t encode(const LogString& in,
 			LogString::const_iterator& iter,
-			ByteBuffer& out)
+			ByteBuffer& out) override
 		{
 			while (iter != in.end() && out.remaining() >= 4)
 			{
-				unsigned int sv = Transcoder::decode(in, iter);
-
-				if (sv == 0xFFFF)
-				{
-					return APR_BADARG;
-				}
-
+				auto sv = Transcoder::getCodePoint(in, iter);
 				Transcoder::encodeUTF16LE(sv, out);
 			}
 
 			return APR_SUCCESS;
+		}
+
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (codePoint <= 0x10FFFF)
+				Transcoder::encodeUTF16LE(codePoint, out);
+			else
+				result = APR_BADARG;
+			return result;
 		}
 	private:
 		UTF16LECharsetEncoder(const UTF16LECharsetEncoder&);
@@ -479,10 +577,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 			// Encode characters that may require multiple bytes
 			while (nextCodePoint != in.end() && byteCount < availableByteCount && MB_CUR_MAX <= (availableByteCount - byteCount))
 			{
-				LogString::const_iterator lastCodePoint = nextCodePoint;
-				auto ch = Transcoder::decode(in, nextCodePoint);
-				if (nextCodePoint == lastCodePoint) // invalid input sequence?
-					nextCodePoint = in.end();
+				auto ch = Transcoder::getCodePoint(in, nextCodePoint);
 				auto n = std::wcrtomb(current, ch, &this->state);
 				if (static_cast<std::size_t>(-1) == n) // not a valid wide character?
 				{
@@ -493,6 +588,25 @@ class LocaleCharsetEncoder : public CharsetEncoder
 				current += n;
 			}
 			out.increment_position(byteCount);
+			return result;
+		}
+
+		/**
+		 * Add onto \c out an encoded equivalent of \c codePoint.
+		 */
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		{
+			apr_status_t result = APR_SUCCESS;
+			if (MB_CUR_MAX <= out.remaining())
+			{
+				auto n = std::wcrtomb(out.current(), codePoint, &this->state);
+				if (static_cast<std::size_t>(-1) == n) // not a valid wide character?
+					result = APR_BADARG;
+				else
+					out.increment_position(n);
+			}
+			else
+				result = APR_BADARG;
 			return result;
 		}
 
@@ -535,7 +649,11 @@ CharsetEncoderPtr CharsetEncoder::getDefaultEncoder()
 CharsetEncoder* CharsetEncoder::createDefaultEncoder()
 {
 #if LOG4CXX_CHARSET_UTF8
+#if LOG4CXX_LOGCHAR_IS_UTF8
+	return new TrivialCharsetEncoder();
+#else
 	return new UTF8CharsetEncoder();
+#endif
 #elif LOG4CXX_CHARSET_ISO88591
 	return new ISOLatinCharsetEncoder();
 #elif LOG4CXX_CHARSET_USASCII
@@ -604,10 +722,11 @@ void CharsetEncoder::reset()
 {
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 void CharsetEncoder::flush(ByteBuffer& /* out */ )
 {
 }
-
+#endif
 
 void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 	const LogString& src,
@@ -633,7 +752,32 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 #else
 #error logchar is unrecognized
 #endif
-		dst.put(Transcoder::LOSSCHAR);
+#if 15 < LOG4CXX_ABI_VERSION
+		enc->encode(Transcoder::LOSSCHAR, dst);
+#else // LOG4CXX_ABI_VERSION <= 15
+		if (auto p = dynamic_cast<TrivialCharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+		else if (auto p = dynamic_cast<UTF8CharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+		else if (auto p = dynamic_cast<LocaleCharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+		else if (auto p = dynamic_cast<USASCIICharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+		else if (auto p = dynamic_cast<ISOLatinCharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+		else if (auto p = dynamic_cast<UTF16BECharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+		else if (auto p = dynamic_cast<UTF16LECharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+#if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_WCSTOMBS
+		else if (auto p = dynamic_cast<WcstombsCharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+#endif //  LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_WCSTOMBS
+#if APR_HAS_XLATE
+		else if (auto p = dynamic_cast<APRCharsetEncoder*>(enc.get()))
+			p->encode(Transcoder::LOSSCHAR, dst);
+#endif //  APR_HAS_XLATE
+#endif // LOG4CXX_ABI_VERSION <= 15
 	}
 }
 

@@ -80,10 +80,10 @@ jobs:
 
     - name: 'Configure Dependencies'
       run: |
-        sudo apt-get update
         sudo apt-get install -y libapr1-dev libaprutil1-dev
 
     - name: 'Test the archive'
+      timeout-minutes: 10
       run: |
         VERSION=`ls apache-log4cxx-*.tar.gz | sed -Ee 's/.*apache-log4cxx-([0-9]*)\.([0-9]*)\.([0-9]*).*/\1.\2.\3/'`
         echo "Extracting files from apache-log4cxx-$VERSION.tar.gz..."

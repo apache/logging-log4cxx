@@ -118,7 +118,6 @@ void OutputStreamWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
 		}
 
 		CharsetEncoder::encode(m_priv->enc, str, iter, buf);
-		m_priv->enc->flush(buf);
 		buf.flip();
 		m_priv->out->write(buf);
 	}

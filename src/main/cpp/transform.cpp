@@ -43,31 +43,14 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 	for (auto nextCodePoint = start; input.end() != nextCodePoint; )
 	{
 		auto lastCodePoint = nextCodePoint;
-		auto ch = Transcoder::decode(input, nextCodePoint);
-		if (nextCodePoint == lastCodePoint) // failed to decode input?
-		{
-			// Skip the undecodable run and keep escaping the remaining input
-			// instead of discarding it; the run collapses to one replacement.
-			for (++nextCodePoint; nextCodePoint != input.end(); ++nextCodePoint)
-			{
-				auto probe = nextCodePoint;
-				Transcoder::decode(input, probe);
-				if (probe != nextCodePoint) // next unit starts a decodable sequence
-					break;
-			}
-		}
-		else if (0xD800 <= ch && ch <= 0xDFFF)
-		{
-			// RFC 3629 §3 explicitly forbids surrogate-half values in UTF-8
-			ch = 0xFFFF;
-		}
-		else if (((0x20 <= ch && ch <= 0xD7FF) &&
+		auto ch = Transcoder::getCodePoint(input, nextCodePoint);
+		if (((0x20 <= ch && ch <= 0xD7FF) &&
 				specials[0] != ch &&
 				specials[1] != ch &&
 				specials[2] != ch &&
 				specials[3] != ch) ||
 			(0x9 == ch || 0xA == ch || 0xD == ch) ||
-			(0xE000 <= ch && ch <= 0xFFFD) ||
+			(0xE000 <= ch && ch < 0xFFFD) ||
 			(0x10000 <= ch && ch <= 0x10FFFF))
 		{
 			LogString escaped;
@@ -104,8 +87,8 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 				buf.append(LOG4CXX_STR("&gt;"));
 				break;
 
-			case 0xFFFF: // invalid sequence
-				Transform::appendCharacterReference(buf, 0xFFFD); // The Unicode replacement character
+			case 0xFFFD: // The Unicode replacement character
+				Transform::appendCharacterReference(buf, 0xFFFD);
 				break;
 
 			default:
@@ -147,21 +130,8 @@ void Transform::appendEscapingCDATA(
 	{
 		bool cdataEnd = false;
 		auto lastCodePoint = nextCodePoint;
-		auto ch = Transcoder::decode(input, nextCodePoint);
-		if (nextCodePoint == lastCodePoint) // failed to decode input?
-		{
-			// Skip the undecodable run and keep escaping the remaining input
-			// instead of discarding it; the run collapses to one replacement.
-			for (++nextCodePoint; nextCodePoint != input.end(); ++nextCodePoint)
-			{
-				auto probe = nextCodePoint;
-				Transcoder::decode(input, probe);
-				if (probe != nextCodePoint) // next unit starts a decodable sequence
-					break;
-			}
-			ch = 0xFFFD; // The Unicode replacement character
-		}
-		else if (CDATA_END[0] == ch && input.end() != nextCodePoint)
+		auto ch = Transcoder::getCodePoint(input, nextCodePoint);
+		if (CDATA_END[0] == ch && input.end() != nextCodePoint)
 		{
 			lastCodePoint = nextCodePoint;
 			if (CDATA_END[1] != Transcoder::decode(input, nextCodePoint) ||
@@ -176,7 +146,7 @@ void Transform::appendEscapingCDATA(
 		}
 		else if ((0x20 <= ch && ch <= 0xD7FF) ||
 				(0x9 == ch || 0xA == ch || 0xD == ch) ||
-				(0xE000 <= ch && ch <= 0xFFFD) ||
+				(0xE000 <= ch && ch < 0xFFFD) ||
 				(0x10000 <= ch && ch <= 0x10FFFF))
 		{
 			continue;

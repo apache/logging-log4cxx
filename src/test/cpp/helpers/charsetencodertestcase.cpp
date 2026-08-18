@@ -243,8 +243,8 @@ public:
 
 	/**
 	 * Regression test: write malformed UTF-8 through OutputStreamWriter
-	 * using a non-trivial encoder and assert the replacement character
-	 * is emitted (Transcoder::LOSSCHAR). This is deterministic and does
+	 * using a non-trivial encoder and assert the encoder specific
+	 * replacement character is emitted. This is deterministic and does
 	 * not rely on process crash.
 	 */
 	void utf8Recovery()
@@ -276,8 +276,7 @@ public:
 
 		LOGUNIT_ASSERT_EQUAL(1, read);
 		LOGUNIT_ASSERT_EQUAL((size_t)1, buf.position());
-		LOGUNIT_ASSERT_EQUAL((unsigned char) Transcoder::LOSSCHAR,
-			(unsigned char) raw[0]);
+		LOGUNIT_ASSERT_EQUAL('?', raw[0]);
 	}
 
 	class ThreadPackage

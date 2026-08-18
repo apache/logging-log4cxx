@@ -20,7 +20,6 @@ jobs:
   job:
     name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 38
     strategy:
       fail-fast: false
       matrix:
@@ -98,6 +97,7 @@ jobs:
         cmake --build .
 
     - name: run unit tests
+      timeout-minutes: 10
       run: |
         cd main
         cd build

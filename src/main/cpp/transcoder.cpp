@@ -39,34 +39,14 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
-
 void Transcoder::decodeUTF8(const std::string& src, LogString& dst)
 {
 	std::string::const_iterator iter = src.begin();
 
 	while (iter != src.end())
 	{
-		std::string::const_iterator start = iter;
-		unsigned int sv = decode(src, iter);
-
-		if (sv != 0xFFFF)
-		{
-			encode(sv, dst);
-		}
-		else
-		{
-			dst.append(1, LOSSCHAR);
-
-			// decode() returns 0xFFFF both for a decode error (iter left at
-			// start) and for a successfully decoded U+FFFF (iter already
-			// advanced past EF BF BF).  Only advance here in the former case,
-			// otherwise the byte following U+FFFF is skipped and, at end of
-			// input, iter is pushed past src.end().
-			if (iter == start)
-			{
-				iter++;
-			}
-		}
+		auto sv = getCodePoint(src, iter);
+		encode(sv, dst);
 	}
 }
 
@@ -79,17 +59,8 @@ void Transcoder::encodeUTF8(const LogString& src, std::string& dst)
 
 	while (iter != src.end())
 	{
-		unsigned int sv = decode(src, iter);
-
-		if (sv != 0xFFFF)
-		{
-			encode(sv, dst);
-		}
-		else
-		{
-			dst.append(1, LOSSCHAR);
-			iter++;
-		}
+		unsigned int sv = getCodePoint(src, iter);
+		encode(sv, dst);
 	}
 
 #endif
@@ -226,6 +197,36 @@ unsigned int Transcoder::decode(const std::string& src,
 	return result;
 }
 
+	template <typename T>
+unsigned int decodeCodePoint(const typename std::basic_string<T>& str, typename std::basic_string<T>::const_iterator& nextCodePoint)
+{
+	auto lastCodePoint = nextCodePoint;
+	auto ch = Transcoder::decode(str, nextCodePoint);
+	if (nextCodePoint == lastCodePoint) // failed to decode input?
+	{
+		// Skip the undecodable run and keep escaping the remaining input
+		// instead of discarding it; the run collapses to one replacement.
+		for (++nextCodePoint; nextCodePoint != str.end(); ++nextCodePoint)
+		{
+			auto probe = nextCodePoint;
+			Transcoder::decode(str, probe);
+			if (probe != nextCodePoint) // next unit starts a decodable sequence
+				break;
+		}
+		ch = 0xFFFD; // The Unicode replacement character
+	}
+	else if ( (0xD800 <= ch && ch <= 0xDFFF) // UTF-16 surrogate-range
+			|| 0xFFFF == ch || 0x10FFFF < ch)
+	{
+		ch = 0xFFFD; // The Unicode replacement character
+	}
+	return ch;
+}
+
+unsigned int Transcoder::getCodePoint(const std::string& str, std::string::const_iterator& nextCodePoint)
+{
+	return decodeCodePoint<char>(str, nextCodePoint);
+}
 
 void Transcoder::encode(unsigned int sv, std::string& dst)
 {
@@ -234,6 +235,11 @@ void Transcoder::encode(unsigned int sv, std::string& dst)
 	dst.append(tmp, bytes);
 }
 
+/// Does \c str contain the Unicode replacement character
+bool Transcoder::hasReplacementCharacter(const std::string& str)
+{
+	return str.npos != str.find("\xEF\xBF\xBD");
+}
 
 void Transcoder::decode(const std::string& src, LogString& dst)
 {
@@ -265,7 +271,7 @@ void Transcoder::decode(const std::string& src, LogString& dst)
 
 			if (CharsetDecoder::isError(stat))
 			{
-				dst.append(1, LOSSCHAR);
+				encode(LOSSCHAR, dst);
 				buf.increment_position(1);
 			}
 		}
@@ -323,7 +329,7 @@ void Transcoder::encode(const LogString& src, std::string& dst)
 
 			if (CharsetEncoder::isError(stat))
 			{
-				dst.append(1, LOSSCHAR);
+				encode(LOSSCHAR, dst);
 				iter++;
 			}
 		}
@@ -413,21 +419,8 @@ void Transcoder::decode(const std::wstring& src, LogString& dst)
 
 	while (i != src.end())
 	{
-		std::wstring::const_iterator start = i;
-		unsigned int cp = decode(src, i);
-
-		if (cp != 0xFFFF)
-		{
-			encode(cp, dst);
-		}
-		else
-		{
-			dst.append(1, LOSSCHAR);
-			if (i == start)
-			{
-				i++;
-			}
-		}
+		auto cp = getCodePoint(src, i);
+		encode(cp, dst);
 	}
 
 #endif
@@ -441,21 +434,8 @@ void Transcoder::encode(const LogString& src, std::wstring& dst)
 
 	for (LogString::const_iterator i = src.begin(); i != src.end();)
 	{
-		LogString::const_iterator start = i;
-		unsigned int cp = Transcoder::decode(src, i);
-
-		if (cp != 0xFFFF)
-		{
-			encode(cp, dst);
-		}
-		else
-		{
-			dst.append(1, LOSSCHAR);
-			if (i == start)
-			{
-				i++;
-			}
-		}
+		unsigned int cp = getCodePoint(src, i);
+		encode(cp, dst);
 	}
 
 #endif
@@ -487,6 +467,10 @@ unsigned int Transcoder::decode(const std::wstring& in,
 #endif
 }
 
+unsigned int Transcoder::getCodePoint(const std::wstring& str, std::wstring::const_iterator& nextCodePoint)
+{
+	return decodeCodePoint<wchar_t>(str, nextCodePoint);
+}
 
 void Transcoder::encode(unsigned int sv, std::wstring& dst)
 {
@@ -506,6 +490,11 @@ void Transcoder::encode(unsigned int sv, std::wstring& dst)
 #endif
 }
 
+/// Does \c str contain the Unicode replacement character
+bool Transcoder::hasReplacementCharacter(const std::wstring& str)
+{
+	return str.npos != str.find(LOSSCHAR);
+}
 #endif
 
 
@@ -529,7 +518,7 @@ void Transcoder::decode(const std::basic_string<UniChar>& src, LogString& dst)
 		}
 		else
 		{
-			dst.append(1, LOSSCHAR);
+			encode(LOSSCHAR, dst);
 			if (i == start)
 			{
 				i++;
@@ -575,11 +564,21 @@ unsigned int Transcoder::decode(const std::basic_string<UniChar>& in,
 	return decodeUTF16(in, iter);
 }
 
+unsigned int Transcoder::getCodePoint(const std::basic_string<UniChar>& str, std::basic_string<UniChar>::const_iterator& nextCodePoint)
+{
+	return decodeCodePoint<UniChar>(str, nextCodePoint);
+}
+
 void Transcoder::encode(unsigned int sv, std::basic_string<UniChar>& dst)
 {
 	encodeUTF16(sv, dst);
 }
 
+/// Does \c str contain the Unicode replacement character
+bool Transcoder::hasReplacementCharacter(const std::basic_string<UniChar>& str)
+{
+	return str.npos != str.find(LOSSCHAR);
+}
 #endif
 
 #if LOG4CXX_CFSTRING_API
@@ -610,7 +609,7 @@ void Transcoder::decode(const CFStringRef& src, LogString& dst)
 			}
 			else
 			{
-				dst.append(1, LOSSCHAR);
+				encode(LOSSCHAR, dst);
 				if (i == start)
 				{
 					i++;
@@ -672,7 +671,7 @@ std::string Transcoder::encodeCharsetName(const LogString& val)
 		}
 		else
 		{
-			out.append(1, LOSSCHAR);
+			out.append(1, '?');
 		}
 	}
 

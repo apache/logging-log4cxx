@@ -255,7 +255,7 @@ void TelnetAppender::write(ByteBuffer& buf)
 
 void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, Pool& p)
 {
-	size_t bytesSize = msg.size() * 2;
+	size_t bytesSize = msg.size() * 2 + 10;
 	char* bytes = p.pstralloc(bytesSize);
 
 	LogString::const_iterator msgIter(msg.begin());
@@ -263,7 +263,7 @@ void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, 
 
 	while (msgIter != msg.end())
 	{
-		_priv->encoder->encode(msg, msgIter, buf);
+		CharsetEncoder::encode(_priv->encoder, msg, msgIter, buf);
 		buf.flip();
 		socket->write(buf);
 		buf.clear();
@@ -282,7 +282,7 @@ void TelnetAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 		else
 			msg = event->getRenderedMessage();
 		msg.append(LOG4CXX_STR("\r\n"));
-		size_t bytesSize = msg.size() * 2;
+		size_t bytesSize = msg.size() * 2 + 10;
 		char* bytes = tempPool.pstralloc(bytesSize);
 
 		LogString::const_iterator msgIter(msg.begin());
@@ -292,21 +292,10 @@ void TelnetAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 
 		while (msgIter != msg.end())
 		{
-			log4cxx_status_t stat = _priv->encoder->encode(msg, msgIter, buf);
+			CharsetEncoder::encode(_priv->encoder, msg, msgIter, buf);
 			buf.flip();
 			write(buf);
 			buf.clear();
-
-			if (CharsetEncoder::isError(stat))
-			{
-				LogString unrepresented(1, 0x3F /* '?' */);
-				LogString::const_iterator unrepresentedIter(unrepresented.begin());
-				stat = _priv->encoder->encode(unrepresented, unrepresentedIter, buf);
-				buf.flip();
-				write(buf);
-				buf.clear();
-				msgIter++;
-			}
 		}
 	}
 }

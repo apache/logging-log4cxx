@@ -51,7 +51,6 @@ jobs:
 
       - name: 'Configure Dependencies - Ubuntu'
         run: |
-          sudo apt-get update
           sudo apt-get install -y libapr1-dev libaprutil1-dev
 
       - name: Install Build Wrapper
