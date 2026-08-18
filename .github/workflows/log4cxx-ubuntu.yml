@@ -67,7 +67,7 @@ jobs:
           - name: ubuntu26-clang
             os: ubuntu-26.04
             cxx: clang++
-            fmt: ON
+            fmt: OFF
             qt: OFF
             qt6: OFF
             odbc: OFF
