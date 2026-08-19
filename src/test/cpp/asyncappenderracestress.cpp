@@ -18,6 +18,9 @@
 #include "logunit.h"
 
 #include <log4cxx/asyncappender.h>
+#include <log4cxx/level.h>
+#include <log4cxx/helpers/asyncbuffer.h>
+#include <log4cxx/spi/loggingevent.h>
 
 #include <atomic>
 #include <memory>
@@ -30,6 +33,9 @@ LOGUNIT_CLASS(AsyncAppenderRaceStressTestCase)
 	LOGUNIT_TEST_SUITE(AsyncAppenderRaceStressTestCase);
 	LOGUNIT_TEST(raceGetSetBufferSize);
 	LOGUNIT_TEST(raceGetSetBlocking);
+#if ENABLE_4000_THREAD_SANITIZER_TESTING
+	LOGUNIT_TEST(raceDeferredMessageRendering);
+#endif
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -110,6 +116,58 @@ public:
 
 		writer.join();
 		reader.join();
+	}
+
+	// A LoggingEvent created via the deferred-render (AsyncBuffer) API may be
+	// rendered concurrently, e.g. by an AsyncAppender dispatcher thread and by
+	// the logging thread when the event is also routed to a synchronous
+	// appender.  The message must be rendered exactly once: both threads must
+	// observe the same, complete message.
+	//
+	// Expected behavior:
+	// - Without single-shot rendering, ThreadSanitizer reports data races in
+	//   renderMessage (and the assertions below can observe torn messages).
+	// - With renderMessage guarded by std::call_once, ThreadSanitizer is clean
+	//   and both threads observe identical messages.
+	void raceDeferredMessageRendering()
+	{
+		for (int i = 0; i < 2000; ++i)
+		{
+			helpers::AsyncBuffer buf;
+			buf << "test message " << i;
+			auto event = std::make_shared<spi::LoggingEvent>
+				( LOG4CXX_STR("test.logger")
+				, Level::getInfo()
+				, LOG4CXX_LOCATION
+				, std::move(buf)
+				);
+
+			std::atomic<int> ready{ 0 };
+			std::atomic<bool> start{ false };
+			LogString first, second;
+
+			std::thread t1([&]()
+			{
+				ready.fetch_add(1, std::memory_order_release);
+				while (!start.load(std::memory_order_acquire)) {}
+				first = event->getRenderedMessage();
+			});
+			std::thread t2([&]()
+			{
+				ready.fetch_add(1, std::memory_order_release);
+				while (!start.load(std::memory_order_acquire)) {}
+				second = event->getRenderedMessage();
+			});
+
+			while (ready.load(std::memory_order_acquire) != 2) {}
+			start.store(true, std::memory_order_release);
+
+			t1.join();
+			t2.join();
+
+			LOGUNIT_ASSERT(!first.empty());
+			LOGUNIT_ASSERT_EQUAL(first, second);
+		}
 	}
 };
 
