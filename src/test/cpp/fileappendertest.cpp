@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/fileoutputstream.h>
+#include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include "logunit.h"
@@ -64,6 +65,7 @@ LOGUNIT_CLASS(FileAppenderTest)
 	LOGUNIT_TEST(testDirectoryCreation);
 	LOGUNIT_TEST(testgetSetThreshold);
 	LOGUNIT_TEST(testIsAsSevereAsThreshold);
+	LOGUNIT_TEST(testFlushTaskRemovedAfterRename);
 	LOGUNIT_TEST(testPeriodicFlush);
 	LOGUNIT_TEST(writeFinalBufferOutput);
 	LOGUNIT_TEST(checkFinalBufferOutput);
@@ -123,6 +125,33 @@ public:
 		FileAppenderPtr appender = FileAppenderPtr(new FileAppender());
 		LevelPtr debug = Level::getDebug();
 		LOGUNIT_ASSERT(appender->isAsSevereAsThreshold(debug));
+	}
+
+	/**
+	 * The periodic flush task must not outlive its appender:
+	 * it references the appender's output buffer.  Renaming the appender
+	 * after activateOptions() previously orphaned the task (it was keyed
+	 * by the mutable appender name), leaving it to flush through freed
+	 * memory every bufferedSeconds after the appender was destroyed.
+	 */
+	void testFlushTaskRemovedAfterRename()
+	{
+		LogString initialName(LOG4CXX_STR("flushTaskRemovalTest"));
+		{
+			auto appender = std::make_shared<FileAppender>();
+			appender->setName(initialName);
+			appender->setFile(LOG4CXX_STR("output/newdir/flushtask.log"));
+			appender->setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
+			appender->setBufferedIO(true);
+			appender->setBufferedSeconds(1);
+			appender->activateOptions();
+			appender->setName(LOG4CXX_STR("someOtherName"));
+		}
+		// No flush task registered under any name may survive the appender
+		LOGUNIT_ASSERT(!ThreadUtility::instance()->hasPeriodicTask(initialName));
+		LOGUNIT_ASSERT(!ThreadUtility::instance()->hasPeriodicTask(LOG4CXX_STR("someOtherName")));
+		// Wait for background thread to stop
+		ThreadUtility::instance()->removeAllPeriodicTasks();
 	}
 
 	// Check a file is periodically flushed

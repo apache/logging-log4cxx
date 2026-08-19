@@ -80,7 +80,9 @@ FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
 FileAppender::~FileAppender()
 {
 	if (auto p = _priv->taskManager.lock())
-		p->value().removePeriodicTask(getName());
+		p->value().removePeriodicTask(_priv->flushTaskName);
+	if (_priv->flushTask)
+		_priv->flushTask->detach(); // Blocks until any in-flight flush completes
 }
 
 void FileAppender::setAppend(bool fileAppend1)
@@ -196,15 +198,27 @@ void FileAppender::activateOptionsInternal()
 	{
 		_priv->activateOptions();
 		if (auto p = _priv->taskManager.lock())
-			p->value().removePeriodicTask(getName());
+			p->value().removePeriodicTask(_priv->flushTaskName);
 
 		if (!_priv->bufferedIO)
 			;
 		else if (0 < _priv->bufferedSeconds)
 		{
 			auto taskManager = ThreadUtility::instancePtr();
-			taskManager->value().addPeriodicTask(getName()
-				, std::bind(&WriterAppenderPriv::flush, _priv)
+			if (!_priv->flushTask)
+			{
+				_priv->flushTask = std::make_shared<FileAppenderPriv::FlushTask>();
+				_priv->flushTask->priv = _priv;
+			}
+			// Key the task by a unique name: the appender may be renamed after
+			// activation or share its name with another appender, and the
+			// destructor must deregister this task, not another appender's.
+			_priv->flushTaskName = getName();
+			_priv->flushTaskName.append(1, (logchar) 0x23 /* '#' */);
+			StringHelper::toString(reinterpret_cast<size_t>(m_priv.get()), _priv->flushTaskName);
+			auto flushTask = _priv->flushTask;
+			taskManager->value().addPeriodicTask(_priv->flushTaskName
+				, [flushTask]() { flushTask->run(); }
 				, std::chrono::seconds(_priv->bufferedSeconds)
 				);
 			_priv->taskManager = taskManager;

@@ -21,6 +21,8 @@
 #include <log4cxx/private/writerappender_priv.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/helpers/threadutility.h>
+#include <memory>
+#include <mutex>
 
 namespace LOG4CXX_NS
 {
@@ -67,6 +69,44 @@ struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPri
 	Only used when <code>bufferedIO == true</code>.
 	*/
 	int bufferedSeconds{ 5 };
+
+	/**
+	Control block shared with the periodic output buffer flush task.
+	The flush task only reaches this appender through the control block,
+	and the pointer in it is cleared (under the control block mutex)
+	before this structure is destroyed, so a flush that is already
+	executing when the appender is destroyed can never touch freed
+	memory and a flush scheduled afterwards is a no-op.
+	Only used when <code>bufferedIO == true</code>.
+	*/
+	struct FlushTask
+	{
+		std::mutex mtx;
+		WriterAppenderPriv* priv{ nullptr };
+
+		void run()
+		{
+			std::lock_guard<std::mutex> lock(mtx);
+			if (priv)
+				priv->flush();
+		}
+
+		/** Detach from the appender, blocking until any in-flight flush completes. */
+		void detach()
+		{
+			std::lock_guard<std::mutex> lock(mtx);
+			priv = nullptr;
+		}
+	};
+	std::shared_ptr<FlushTask> flushTask;
+
+	/**
+	The (unique) name the periodic flush task was registered under.
+	Captured at registration time so the task is deregistered correctly
+	even if the appender is renamed after activateOptions() or shares
+	its name with another appender.
+	*/
+	LogString flushTaskName;
 
 	/**
 	Manages asynchronous output buffer flush.
