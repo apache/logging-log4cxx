@@ -119,7 +119,6 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		cc | (\ref asciiCheck "1") | - |
 		bcc | (\ref asciiCheck "1") | - |
 		subject | {any} | - |
-		subject | {any} | - |
 		buffersize | {int} | 512 |
 		evaluatorClass | (\ref AppenderSkeleton "2") | - |
 
