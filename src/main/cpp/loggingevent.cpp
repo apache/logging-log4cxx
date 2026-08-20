@@ -16,6 +16,7 @@
  */
 
 #include <chrono>
+#include <mutex>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/ndc.h>
 
@@ -147,15 +148,30 @@ struct LoggingEvent::LoggingEventPrivate
 	 */
 	helpers::AsyncBuffer messageAppender;
 
+	/** Ensures the deferred message is rendered exactly once.
+	 *
+	 *  A LoggingEvent may be shared between threads, e.g. when it is
+	 *  queued to an AsyncAppender dispatcher while the logging thread
+	 *  formats the same event for a synchronous appender.  Without this,
+	 *  two threads could pass the empty() check concurrently: one clears
+	 *  the closure vector while the other iterates it, and both
+	 *  move-assign \c message - a concurrent free/assign of the same
+	 *  heap buffer.
+	 */
+	std::once_flag renderOnce;
+
 	void renderMessage()
 	{
-		if (!this->messageAppender.empty())
+		std::call_once(this->renderOnce, [this]()
 		{
-			helpers::LogCharMessageBuffer buf;
-			this->messageAppender.renderMessage(buf);
-			this->message = buf.extract_str(buf);
-			this->messageAppender.clear();
-		}
+			if (!this->messageAppender.empty())
+			{
+				helpers::LogCharMessageBuffer buf;
+				this->messageAppender.renderMessage(buf);
+				this->message = buf.extract_str(buf);
+				this->messageAppender.clear();
+			}
+		});
 	}
 };
 
