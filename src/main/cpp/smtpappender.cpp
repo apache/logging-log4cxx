@@ -222,8 +222,7 @@ class SMTPMessage
 			const LogString msg, Pool& p)
 		{
 			message = smtp_add_message(session);
-			current_len = msg.length();
-			body = current = toMessage(msg, p);
+			body = current = toMessage(msg, p, current_len);
 			messagecbState = 0;
 			smtp_set_reverse_path(message, toAscii(from, p));
 			addRecipients(to, "To", p);
@@ -273,8 +272,9 @@ class SMTPMessage
 		/**
 		 *   Message bodies can only contain US-ASCII characters and
 		 *   CR and LFs can only occur together.
+		 *   On return \c lenOut holds the length of the converted body.
 		 */
-		static const char* toMessage(const LogString& str, Pool& p)
+		static const char* toMessage(const LogString& str, Pool& p, size_t& lenOut)
 		{
 			//
 			//    count the number of carriage returns and line feeds
@@ -301,9 +301,10 @@ class SMTPMessage
 			for (unsigned int c : str)
 			{
 				//
-				//   replace non-ASCII characters with '?'
+				//   replace non-ASCII characters and embedded NULs with '?'
+				//   (a NUL octet must never act as a body terminator)
 				//
-				if (c > 0x7F)
+				if (c > 0x7F || c == 0)
 				{
 					*current++ = 0x3F; // '?'
 				}
@@ -335,6 +336,7 @@ class SMTPMessage
 			}
 
 			*current = 0;
+			lenOut = current - retval;
 			return retval;
 		}
 
@@ -362,7 +364,11 @@ class SMTPMessage
 
 				if (pThis->current)
 				{
-					*len = strnlen_s(pThis->current, pThis->current_len);
+					// Use the stored post-conversion length: strnlen_s over the
+					// pre-conversion length truncates at an embedded NUL and
+					// undercounts the CRLF-expanded body, silently dropping the
+					// newest content from the alert email.
+					*len = static_cast<int>(pThis->current_len);
 				}
 
 				retval = pThis->current;
