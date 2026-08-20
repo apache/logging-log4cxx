@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/properties.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/appender.h>
 
 
@@ -81,8 +82,19 @@ void PropertySetter::setProperty(const LogString& option, const LogString& value
 	{
 		if (LogLog::isDebugEnabled())
 		{
+			// Do not echo secret-bearing option values (e.g. the ODBCAppender
+			// "Password", SMTPAppender "SMTPPassword" or DBAppender
+			// "DriverParams" options) into diagnostic output: internal debug
+			// output routinely flows into console/log pipelines with weaker
+			// access control than the configuration file itself.
+			LogString lowerOption(StringHelper::toLowerCase(option));
+			bool sensitive =
+				lowerOption.find(LOG4CXX_STR("password")) != LogString::npos ||
+				lowerOption.find(LOG4CXX_STR("driverparams")) != LogString::npos;
 			LogLog::debug(LOG4CXX_STR("Setting option name=[") +
-				option + LOG4CXX_STR("], value=[") + value + LOG4CXX_STR("]"));
+				option + LOG4CXX_STR("], value=[") +
+				(sensitive ? LogString(LOG4CXX_STR("****")) : value) +
+				LOG4CXX_STR("]"));
 		}
 		OptionHandlerPtr handler = LOG4CXX_NS::cast<OptionHandler>(obj);
 		handler->setOption(option, value);

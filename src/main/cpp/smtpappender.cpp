@@ -101,6 +101,7 @@ class SMTPSession
 			int smtpPort,
 			const LogString& smtpUsername,
 			const LogString& smtpPassword,
+			bool allowPlainTextAuth,
 			Pool& p) : session(0), authctx(0),
 			user(toAscii(smtpUsername, p)),
 			pwd(toAscii(smtpPassword, p))
@@ -124,6 +125,20 @@ class SMTPSession
 
 			if (*user || *pwd)
 			{
+				// Secure by default: never send AUTH credentials over an
+				// unencrypted connection. Require STARTTLS before
+				// authenticating unless the operator explicitly opted in
+				// to plain-text authentication via the
+				// AllowPlainTextAuthentication option.
+				if (!allowPlainTextAuth && !smtp_starttls_enable(session, Starttls_REQUIRED))
+				{
+					// The destructor does not run when a constructor throws
+					smtp_destroy_session(session);
+					auth_destroy_context(authctx);
+					throw Exception("SMTPAppender: STARTTLS is unavailable in this libESMTP build;"
+						" refusing to send SMTP credentials in clear text."
+						" Set AllowPlainTextAuthentication=true to override.");
+				}
 				smtp_auth_set_context(session, authctx);
 			}
 		}
@@ -441,6 +456,8 @@ struct SMTPAppender::SMTPPriv : public AppenderSkeletonPrivate
 	bool locationInfo;
 	helpers::CyclicBuffer cb;
 	spi::TriggeringEventEvaluatorPtr evaluator;
+	// Whether AUTH credentials may be sent without STARTTLS (see setOption)
+	bool allowPlainTextAuth{false};
 };
 
 #define _priv static_cast<SMTPPriv*>(m_priv.get())
@@ -598,6 +615,12 @@ void SMTPAppender::setOption(const LogString& option,
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SMTPPORT"), LOG4CXX_STR("smtpport")))
 	{
 		setSMTPPort(OptionConverter::toInt(value, 25));
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ALLOWPLAINTEXTAUTHENTICATION"), LOG4CXX_STR("allowplaintextauthentication")))
+	{
+		// Explicit opt-out from the STARTTLS-before-AUTH requirement;
+		// only for servers that cannot offer TLS on a trusted network.
+		_priv->allowPlainTextAuth = OptionConverter::toBoolean(value, false);
 	}
 	else
 	{
@@ -777,7 +800,7 @@ void SMTPAppender::sendBuffer(Pool& p)
 
 		_priv->layout->appendFooter(sbuf);
 
-		SMTPSession session(_priv->smtpHost, _priv->smtpPort, _priv->smtpUsername, _priv->smtpPassword, p);
+		SMTPSession session(_priv->smtpHost, _priv->smtpPort, _priv->smtpUsername, _priv->smtpPassword, _priv->allowPlainTextAuth, p);
 
 		SMTPMessage message(session, _priv->from, _priv->to, _priv->cc,
 			_priv->bcc, _priv->subject, sbuf, p);

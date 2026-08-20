@@ -23,7 +23,10 @@
     <param name="to" value="${LOG4CXX_TEST_EMAIL_RECIPIENT}" />
     <param name="subject" value="Test message" />
     <param name="SMTPHost" value="${LOG4CXX_TEST_SMTP_HOST_NAME}"/>
-    <param name="SMTPPort" value="587"/>
+    <param name="SMTPPort" value="${LOG4CXX_TEST_SMTP_HOST_PORT}"/>
+    <param name="SMTPUserName"     value="${LOG4CXX_TEST_SMTP_HOST_ACCOUNT}" />
+    <param name="SMTPUserPassword" value="${LOG4CXX_TEST_SMTP_HOST_ACCOUNT_PASSWORD}" />
+    <param name="AllowPlainTextAuthentication" value="${LOG4CXX_TEST_SMTP_HOST_PLAIN_TEXT_CREDENTIALS}" />
     <triggeringPolicy class="org.apache.log4j.net.SMTPAppenderTest$MockTriggeringEventEvaluator"/>
 
     <layout class="org.apache.log4j.PatternLayout">
