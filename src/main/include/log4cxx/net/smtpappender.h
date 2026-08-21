@@ -131,6 +131,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
 
+		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief AppenderSkeleton::activateOptions()
 
