@@ -127,8 +127,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setTo(LOG4CXX_STR("you@example.invalid"));
 			appender->setFrom(LOG4CXX_STR("me@example.invalid"));
 			appender->setLayout(std::make_shared<SimpleLayout>());
-			Pool p;
-			appender->activateOptions(p);
+			appender->activateOptions();
 			auto root = Logger::getRootLogger();
 			root->addAppender(appender);
 			LOG4CXX_INFO(root, "Hello, World.");
