@@ -103,7 +103,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		MaxConnections | {int} | 20 |
 		Encoding | C,UTF-8,UTF-16,UTF-16BE,UTF-16LE,646,US-ASCII,ISO646-US,ANSI_X3.4-1968,ISO-8859-1,ISO-LATIN-1 | UTF-8 |
 		ReuseAddress | True,False | False |
-		NonBlocking | True,False | False |
+		NonBlocking | True,False | True |
 
 		\sa AppenderSkeleton::setOption()
 		*/
@@ -156,7 +156,12 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		/**
 		Use \c newValue for the behaviour when the TCP send buffer (on an accepted socket connection) is full.
 
-		When true, the socket connection is closed if the write would block.
+		When true (the default), the socket connection is closed if the write would block.
+
+		Setting \c newValue to \c false is an explicit opt-out that must only be
+		used when every telnet client is trusted to read promptly: a blocking
+		connection lets a client that stops reading stall the send indefinitely,
+		blocking every thread that logs through this appender.
 
 		\sa setOption
 		*/

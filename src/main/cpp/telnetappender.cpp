@@ -71,7 +71,9 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 	int port;
 	LogString hostname;
 	bool reuseAddress = false;
-	bool nonBlocking = false;
+	// Secure default: never let an unauthenticated peer that stops reading
+	// block the logging pipeline (see setNonBlocking for the opt-out).
+	bool nonBlocking = true;
 	ConnectionList connections;
 	LogString encoding;
 	LOG4CXX_NS::helpers::CharsetEncoderPtr encoder;

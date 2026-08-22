@@ -22,8 +22,15 @@
 #include "../appenderskeletontestcase.h"
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/logmanager.h>
+#include <log4cxx/file.h>
 #include <log4cxx/simplelayout.h>
+#include <log4cxx/spi/configurator.h>
+#include <log4cxx/helpers/fileinputstream.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
+#include <log4cxx/helpers/system.h>
+#include <fstream>
 
 namespace LOG4CXX_NS
 {
@@ -79,13 +86,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testSubjectStripsCRLF);
 		LOGUNIT_TEST(testAddressFieldsStripCRLF);
 		LOGUNIT_TEST(testCleanFieldsArePreserved);
-//#define LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
-#ifdef LOG4CXX_TEST_EMAIL_AND_SMTP_HOST_ARE_IN_ENVIRONMENT_VARIABLES
-		// This test requires the following environment variables:
-		// LOG4CXX_TEST_EMAIL_RECIPIENT - where the email is sent
-		// LOG4CXX_TEST_SMTP_HOST_NAME - the email server
-		LOGUNIT_TEST(testValid);
-#endif
+		LOGUNIT_TEST(testWithSMTPServer);
 		LOGUNIT_TEST_SUITE_END();
 
 
@@ -126,8 +127,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setTo(LOG4CXX_STR("you@example.invalid"));
 			appender->setFrom(LOG4CXX_STR("me@example.invalid"));
 			appender->setLayout(std::make_shared<SimpleLayout>());
-			Pool p;
-			appender->activateOptions(p);
+			appender->activateOptions();
 			auto root = Logger::getRootLogger();
 			root->addAppender(appender);
 			LOG4CXX_INFO(root, "Hello, World.");
@@ -212,8 +212,42 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 				appender.getTo());
 		}
 
-		void testValid()
+		void testWithSMTPServer()
 		{
+			LogString credentialsFileNameVar = LOG4CXX_STR("SMTP_TEST_CREDENTIALS_FILE_PATH");
+			auto credentialsFileName = helpers::System::getProperty(credentialsFileNameVar);
+			if (credentialsFileName.empty())
+			{
+				helpers::LogLog::warn(
+					LOG4CXX_STR("Set the " + credentialsFileNameVar + " environment variable"
+					" and re-run testWithSMTPServer to initialise it with the required values")
+					);
+				return;
+			}
+			File credentialsFile(credentialsFileName);
+			if (!credentialsFile.exists())
+			{
+				std::ofstream f(credentialsFileName);
+				const char credentials[] =
+					"LOG4CXX_TEST_EMAIL_RECIPIENT=\n"
+					"LOG4CXX_TEST_SMTP_HOST_NAME=\n"
+					"LOG4CXX_TEST_SMTP_HOST_PORT=587\n"
+					"LOG4CXX_TEST_SMTP_HOST_ACCOUNT=\n"
+					"LOG4CXX_TEST_SMTP_HOST_ACCOUNT_PASSWORD=\n"
+					"LOG4CXX_TEST_SMTP_HOST_PLAIN_TEXT_CREDENTIALS=false\n"
+					;
+				f.write(credentials, sizeof (credentials));
+				f.close();
+				LOGUNIT_ASSERT(credentialsFile.exists());
+				helpers::LogLog::warn(LOG4CXX_STR("Enter credentials into '") + credentialsFileName + LOG4CXX_STR("' and re-run testWithSMTPServer"));
+				return;
+			}
+			auto credentialsStream = std::make_shared<helpers::FileInputStream>(credentialsFile);
+			helpers::Properties& credentials = spi::Configurator::properties();
+			credentials.load(credentialsStream);
+			LOGUNIT_ASSERT(!credentials.getProperty(LOG4CXX_STR("LOG4CXX_TEST_SMTP_HOST_NAME")).empty());
+			LOGUNIT_ASSERT(!credentials.getProperty(LOG4CXX_STR("LOG4CXX_TEST_SMTP_HOST_PORT")).empty());
+			LOGUNIT_ASSERT(!credentials.getProperty(LOG4CXX_STR("LOG4CXX_TEST_EMAIL_RECIPIENT")).empty());
 			auto status = xml::DOMConfigurator::configure("input/xml/smtpAppenderValid.xml");
 			LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 			auto root = Logger::getRootLogger();
