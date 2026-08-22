@@ -16,17 +16,11 @@ name: Generate release files
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-#  pull_request:
-#    branches:
-#      - master
 
 permissions: read-all
 
 jobs:
-  job1:
+  generate_signed_archives:
     name: 'Package code for release'
     runs-on: ubuntu-latest
 
@@ -72,12 +66,16 @@ jobs:
         fi
 
     - uses: actions/upload-artifact@v7
-      if: always()
       with:
         name: 'release_files'
         path: |
           apache-log4cxx-*
 
+  test_one_archive:
+    name: 'Check by building and testing'
+    runs-on: ubuntu-latest
+
+    steps:
     - name: 'Configure Dependencies'
       run: |
         sudo apt-get install -y libapr1-dev libaprutil1-dev
