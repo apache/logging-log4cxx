@@ -2,17 +2,12 @@
 
 set -e
 
-VERSION=$1
-if [ -z "$VERSION" ] ; then
-  VERSION=1.8.1
-fi
-
-BRANCH=$2
+BRANCH=$1
 if [ -z "$BRANCH" ] ; then
   BRANCH=master
 fi
 
-ARTEFACT_DIRECTORY=$3
+ARTEFACT_DIRECTORY=$2
 if [ -z "$ARTEFACT_DIRECTORY" ] ; then
   if [ "$BRANCH" == master ] ; then
     ARTEFACT_DIRECTORY="$HOME/apache-dist-logging-dev"

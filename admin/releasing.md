@@ -30,7 +30,7 @@ Steps
     - `git tag v1.8.1-RC1`
     - `git push origin tag v1.8.1-RC1`
 1. Download the packaged release files from Github (with the 'logging-log4cxx' source code tree root as the working directory)
-    - `sh admin/generate_and_download.sh 1.8.1 master "$HOME/apache-dist-logging-dev"`
+    - `sh admin/generate_and_download.sh master "$HOME/apache-dist-logging-dev"`
 1. Send the 8 new artifacts to svn
     - `cd $HOME/apache-dist-logging-dev/log4cxx`
     - `mv release_files 1.8.1`
