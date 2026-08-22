@@ -23,7 +23,7 @@ fi
 
 WORKFLOW="package_code.yml"
 echo "Triggering workflow..."
-gh workflow run "$WORKFLOW" --ref $BRANCH
+gh workflow run "$WORKFLOW" --ref "$BRANCH"
 
 # Give GitHub a few seconds to register and start the run
 sleep 8

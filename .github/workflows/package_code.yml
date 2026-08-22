@@ -20,8 +20,8 @@ on:
 permissions: read-all
 
 jobs:
-  generate_signed_archives:
-    name: 'Package code for release'
+  job1:
+    name: 'Package the code, then test an achive'
     runs-on: ubuntu-latest
 
     steps:
@@ -71,11 +71,6 @@ jobs:
         path: |
           apache-log4cxx-*
 
-  test_one_archive:
-    name: 'Check by building and testing'
-    runs-on: ubuntu-latest
-
-    steps:
     - name: 'Configure Dependencies'
       run: |
         sudo apt-get install -y libapr1-dev libaprutil1-dev
