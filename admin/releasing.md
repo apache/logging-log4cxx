@@ -12,7 +12,7 @@ Prerequisites
 * The web-site for the new version has been published to https://logging.staged.apache.org/log4cxx (using [this procedure](staging.md) )
 * An e-mail has been sent to dev@logging.apache.org announcing the intention to release
 * Your e-mail client can send mail from your `@apache.org` address. (Refer: https://eventmesh.apache.org/community/how-to-use-email/)
-* You have installed packages for git, svn, and the GitHub client CLI (gh) on your system
+* You have installed packages for git, svn and the [GitHub CLI](https://cli.github.com/) on your system
 
 Steps
 -----

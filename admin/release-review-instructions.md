@@ -9,7 +9,7 @@ Prerequisites
 ----------
 
 * A C++ compiler is available on your system
-* cmake, APR and APR-Util are installed on your system
+* cmake, APR-Util and the [GitHub CLI](https://cli.github.com/) are installed on your system
 * [GNU Privacy Guard](https://www.gnupg.org/) is installed on your system
 * You have imported the [Apache Logging KEYS file](https://dist.apache.org/repos/dist/release/logging/KEYS)
 
@@ -25,41 +25,13 @@ Additional Prerequisites (Windows only)
 Steps
 -----
 
-1. Download, verify check-sums, verify signatures, build and test
-    - Save to your system a verification script from https://github.com/apache/logging-log4cxx/blob/master/admin
-      - Linux, MacOS: `validate-release.sh`
-      - Windows: `validate-release.ps1`
-    - Run the script
-      - Linux, MacOS:
-        - `sh validate-release.sh 1.8.1`
-      - Windows:
-        - `.\validate-release.ps1 1.8.1`
-    - For success, the final output line needs to include:
-        - `100% tests passed, 0 tests failed out of 68`
-1. Download the packaged release files from Github
-    - Open https://github.com/apache/logging-log4cxx/commits/v1.8.1-RC1 in your web browser
-    - Click the green tick mark on the top commit
-        - The `All checks have passed` pop-up window will display
-    - Click the "Details" link on the row next to `Generate release files / Package code for release`
-        - The `Package for release` log window will display
-    - Click the `>` to the left of `Run action/upload-artifact`
-        - The numbered steps will display
-    - Click the link next to `Artifact download URL:`
-        - The browser will download the file `release_files.zip` onto your system
-1. Confirm the artifacts were sourced from Github using these commands
-    - Linux, MacOS (bash):
-      - `cd /tmp/log4cxx-1.8.1`
-      - `unzip $HOME/Downloads/release_files.zip -d github`
-      - `ARCHIVE=apache-log4cxx-1.8.1`
-      - `for TYPE in tar.gz zip; do`
-      - `diff {,github/}$ARCHIVE.$TYPE.sha512 && echo "$ARCHIVE.$TYPE.sha512: OK"`
-      - `done`
-    - Windows (powershell):
-      - `Set-Location -Path "${ENV:TEMP}\log4cxx-1.8.1"`
-      - `Expand-Archive -Path "${ENV:HOMEPATH}\Downloads\release_files.zip" -DestinationPath "github"`
-      - `$ARCHIVE="apache-log4cxx-1.8.1"`
-      - `foreach ($TYPE in @("tar.gz", "zip")) {`
-      - `` if (@(Get-Content -Path "$ARCHIVE.$TYPE.sha512")[0]` ``
-      - `-eq @(Get-Content -Path "github\$ARCHIVE.$TYPE.sha512")[0]) {`
-      - `Write-Output "$ARCHIVE.$TYPE.sha512: OK" } }`
-
+1. Save to your system a verification script from https://github.com/apache/logging-log4cxx/blob/master/admin
+   - Linux, MacOS: `validate-release.sh`
+   - Windows: `validate-release.ps1`
+1. Run the script that will download files, verify check-sums, verify signatures, check provenance, build and test
+   - Linux, MacOS:
+	 - `sh validate-release.sh 1.8.1`
+   - Windows:
+	 - `.\validate-release.ps1 1.8.1`
+1. For success, the final output line needs to include:
+	- `100% tests passed, 0 tests failed out of ...`

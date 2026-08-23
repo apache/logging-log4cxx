@@ -31,6 +31,22 @@ if (-not (Test-Path -Path "$TEST_DIRECTORY" -PathType Container))
 }
 Set-Location -Path "$TEST_DIRECTORY"
 
+$WORKFLOW="package_code"
+Write-Output "Downloading GitHub $WORKFLOW artifacts ..."
+if (Test-Path "release_files") { Remove-Item "release_files" -Recurse -Force }
+# Get the latest Run ID
+$RUN_ID = (gh run list --repo apache/logging-log4cxx --workflow="$WORKFLOW.yml" --limit 1 --json databaseId --jq '.[0].databaseId')
+if ( !$? ) { Write-Error "Failed to find a Github $WORKFLOW run id" -ErrorAction Stop }
+
+# Download the GitHub artifacts
+gh run download --repo apache/logging-log4cxx "$RUN_ID"
+if ( !$? -or (-not (Test-Path "release_files")) )
+{ Write-Error "Failed to download Github $WORKFLOW run $RUN_ID artifacts"  -ErrorAction Stop }
+if (-not (Test-Path "release_files\$ARCHIVE.tar.gz.sha512") )
+{
+  Write-Error  "$ARCHIVE.tar.gz.sha512 not found in GitHub $WORKFLOW run $RUN_ID artifacts" -ErrorAction Stop
+}
+
 $FULL_DL="$BASE_DL/$VERSION/$ARCHIVE"
 $ARCHIVE_TYPES = @("tar.gz", "zip")
 foreach ($ARCHIVE_TYPE in $ARCHIVE_TYPES)
@@ -61,6 +77,20 @@ foreach ($ARCHIVE_TYPE in $ARCHIVE_TYPES)
   Write-Output "Validating $ARCHIVE.$ARCHIVE_TYPE signature..."
   gpg --verify "$ARCHIVE.$ARCHIVE_TYPE.asc"
   if (!$? ) { exit 1 }
+
+  Write-Output "Checking provenance"
+  if (-not (Test-Path -Path "release_files\$ARCHIVE.$ARCHIVE_TYPE.sha512"))
+  {
+     Write-Error "release_files\$ARCHIVE.$ARCHIVE_TYPE.sha512: not found" -ErrorAction Stop
+  }
+  if (@(Get-Content -Path "$ARCHIVE.$ARCHIVE_TYPE.sha512")[0] -eq @(Get-Content -Path "release_files\$ARCHIVE.$ARCHIVE_TYPE.sha512")[0])
+  {
+     Write-Output "$ARCHIVE.$ARCHIVE_TYPE is from a GitHub workflow"
+  }
+  else
+  {
+    Write-Error "$ARCHIVE.$ARCHIVE_TYPE is not from a GitHub workflow" -ErrorAction Stop
+  }
 }
 
 if (Test-Path "$ARCHIVE") { Remove-Item -Recurse "$ARCHIVE" }

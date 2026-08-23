@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -24,8 +24,27 @@ fi
 test -d "$TEST_DIRECTORY" || mkdir "$TEST_DIRECTORY"
 cd "$TEST_DIRECTORY"
 
-FULL_DL="$BASE_DL/$VERSION/$ARCHIVE"
+WORKFLOW="package_code"
+echo "Downloading $WORKFLOW artifacts ..."
+# Get the latest Run ID
+RUN_ID=$(gh run list --repo apache/logging-log4cxx --workflow="$WORKFLOW.yml" --limit 1 --json databaseId --jq '.[0].databaseId')
+if [ $? -ne 0 ]; then
+  echo "Failed to find a GitHub $WORKFLOW run id"
+  exit 1
+fi
+# Download the artifacts
+test -d release_files && rm -rf release_files
+gh run download --repo apache/logging-log4cxx "$RUN_ID"
+if [ $? -ne 0 ] || [ ! -d release_files ]; then
+  echo "Failed to download GitHub $WORKFLOW run $RUN_ID artifacts"
+  exit 1
+fi
+if [ ! -f "release_files/$ARCHIVE.tar.gz.sha512" ] ; then
+  echo "$ARCHIVE.tar.gz.sha512 not found in GitHub $WORKFLOW run $RUN_ID artifacts"
+  exit 1
+fi
 
+FULL_DL="$BASE_DL/$VERSION/$ARCHIVE"
 for ARCHIVE_TYPE in "tar.gz" "zip" ; do
   test -f "$ARCHIVE.$ARCHIVE_TYPE" && rm "$ARCHIVE.$ARCHIVE_TYPE"
   wget "$FULL_DL.$ARCHIVE_TYPE" || exit $?
@@ -39,6 +58,14 @@ for ARCHIVE_TYPE in "tar.gz" "zip" ; do
   done
   echo "Validating signature..."
   gpg --verify "$ARCHIVE.$ARCHIVE_TYPE.asc" || exit $?
+
+  echo "Checking provenance ..."
+  if diff {,release_files/}$ARCHIVE.$ARCHIVE_TYPE.sha512 ; then
+    echo "$ARCHIVE.$ARCHIVE_TYPE is from a GitHub workflow"
+  else
+    echo "$ARCHIVE.$ARCHIVE_TYPE is not from a GitHub workflow"
+    exit 1
+  fi
 done
 
 if cmake --version >/dev/null  ; then
