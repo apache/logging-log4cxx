@@ -75,6 +75,7 @@ LogString stripSmtpControl(const LogString& value, const logchar* field)
 	}
 	return out;
 }
+
 } // namespace
 
 namespace LOG4CXX_NS
@@ -102,13 +103,13 @@ class SMTPSession
 			const LogString& smtpUsername,
 			const LogString& smtpPassword,
 			bool allowPlainTextAuth,
-			Pool& p) : session(0), authctx(0),
-			user(toAscii(smtpUsername, p)),
-			pwd(toAscii(smtpPassword, p))
+			Pool& p
+			)
+			: user{toAscii(smtpUsername, p)}
+			, pwd{toAscii(smtpPassword, p)}
 		{
 			auth_client_init();
 			session = smtp_create_session();
-
 			if (session == 0)
 			{
 				throw Exception("Could not initialize session.");
@@ -118,6 +119,8 @@ class SMTPSession
 			host.append(1, ':');
 			host.append(p.itoa(smtpPort));
 			smtp_set_server(session, host.c_str());
+			smtp_set_monitorcb(session, monitor_cb, (void*)this, 1);
+			smtp_set_eventcb(session, event_cb, (void*)this);
 
 			authctx = auth_create_context();
 			auth_set_mechanism_flags(authctx, AUTH_PLUGIN_PLAIN, 0);
@@ -149,17 +152,26 @@ class SMTPSession
 			auth_destroy_context(authctx);
 		}
 
-		void send(Pool& p)
+		void send()
 		{
 			int status = smtp_start_session(session);
 
 			if (!status)
 			{
-				size_t bufSize = 128;
-				char* buf = p.pstralloc(bufSize);
-				smtp_strerror(smtp_errno(), buf, bufSize);
-				throw Exception(buf);
+				static const size_t smtp_msgSize = 128;
+				char smtp_msg[smtp_msgSize];
+				smtp_strerror(smtp_errno(), smtp_msg, smtp_msgSize);
+				char msg[2 * smtp_msgSize];
+				snprintf(msg, sizeof (msg), "%s (sessionState %d isActive? %d tlsStarted? %d)"
+					, smtp_msg, sessionState, isActive, tlsStarted);
+				throw Exception(msg);
 			}
+			else if (incorrectAuthentication)
+				throw Exception("Incorrect authentication data");
+			else if (relayDenied)
+				throw Exception("Relay Denied");
+			else if (!certificateProblem.empty())
+				throw Exception(("X509 error: " + certificateProblem).c_str());
 		}
 
 		operator smtp_session_t()
@@ -189,10 +201,16 @@ class SMTPSession
 	private:
 		SMTPSession(SMTPSession&);
 		SMTPSession& operator=(SMTPSession&);
-		smtp_session_t session;
-		auth_context_t authctx;
+		smtp_session_t session{0};
+		auth_context_t authctx{0};
 		char* user;
 		char* pwd;
+		int sessionState{0};
+		bool isActive{false};
+		bool tlsStarted{false};
+		bool incorrectAuthentication{false};
+		bool relayDenied{false};
+		std::string certificateProblem;
 
 		/**
 		 *   This method is called if the SMTP server requests authentication.
@@ -200,7 +218,7 @@ class SMTPSession
 		static int authinteract(auth_client_request_t request, char** result, int fields,
 			void* arg)
 		{
-			SMTPSession* pThis = (SMTPSession*) arg;
+			auto pThis = static_cast<SMTPSession*>(arg);
 
 			for (int i = 0; i < fields; i++)
 			{
@@ -219,7 +237,140 @@ class SMTPSession
 			return 1;
 		}
 
+		static void monitor_cb(const char *buf, int buflen, int writing, void *arg)
+		{
+			auto pThis = static_cast<SMTPSession*>(arg);
+			if (writing)
+				pThis->isActive = true;
+			else if (auto smtp_response = atoi(buf))
+			{
+				if (535 == smtp_response)
+					pThis->incorrectAuthentication = true;
+				if (550 == smtp_response)
+					pThis->relayDenied = true;
+			}
 
+			if (LogLog::isDebugEnabled())
+			{
+				while (0 < buflen && std::isspace(buf[buflen - 1]))
+					--buflen;
+				std::string data(buf, buflen);
+				LOG4CXX_DECODE_CHAR(lsData, data);
+				LogString type = writing ? LOG4CXX_STR("send") : LOG4CXX_STR("recv");
+				LogLog::debug(LOG4CXX_STR("SMTP ") + type + LOG4CXX_STR(" [") + lsData + LOG4CXX_STR("]"));
+			}
+		}
+
+		static void event_cb (smtp_session_t session /* unused */, int event_no, void *arg,...)
+		{
+			auto pThis = static_cast<SMTPSession*>(arg);
+			va_list alist;
+			va_start(alist, arg);
+			switch (event_no)
+			{
+			case SMTP_EV_CONNECT:
+			case SMTP_EV_MAILSTATUS:
+			case SMTP_EV_RCPTSTATUS:
+			case SMTP_EV_MESSAGEDATA:
+			case SMTP_EV_MESSAGESENT:
+			case SMTP_EV_DISCONNECT:
+				pThis->sessionState = event_no;
+				break;
+			case SMTP_EV_WEAK_CIPHER:
+			{
+				auto bitsRequired = va_arg(alist, long);
+				pThis->certificateProblem = "weak cipher";
+				if (auto ok = va_arg(alist, int*))
+					*ok = 1; // Accept the problem
+				break;
+			}
+			case SMTP_EV_STARTTLS_OK:
+				pThis->tlsStarted = true;
+				break;
+			case SMTP_EV_INVALID_PEER_CERTIFICATE:
+				pThis->certificateProblem = get_X509_error(va_arg(alist, long));
+				if (auto ok = va_arg(alist, int*))
+					*ok = 1; // Accept the problem
+				break;
+			case SMTP_EV_NO_PEER_CERTIFICATE:
+				pThis->certificateProblem = "no peer certificate";
+				if (auto ok = va_arg(alist, int*))
+					*ok = 1;
+				break;
+			case SMTP_EV_WRONG_PEER_CERTIFICATE:
+				pThis->certificateProblem = "wrong peer certificate";
+				if (auto ok = va_arg(alist, int*))
+					*ok = 1; // Accept the problem
+				break;
+			case SMTP_EV_NO_CLIENT_CERTIFICATE:
+				pThis->certificateProblem = "no client certificate";
+				if (auto ok = va_arg(alist, int*))
+					*ok = 1; // Accept the problem
+				break;
+			}
+			va_end(alist);
+		}
+
+		static std::string get_X509_error(long verifyResult)
+		{
+			switch (verifyResult)
+			{
+			case 2: return "unable to get issuer cert";
+			case 3: return "unable to get crl";
+			case 4: return "unable to decrypt cert signature";
+			case 5: return "unable to decrypt crl signature";
+			case 6: return "unable to decode issuer public key";
+			case 7: return "cert signature failure";
+			case 8: return "crl signature failure";
+			case 9: return "cert not yet valid";
+			case 10: return "cert has expired";
+			case 11: return "crl not yet valid";
+			case 12: return "crl has expired";
+			case 13: return "error in cert not before field";
+			case 14: return "error in cert not after field";
+			case 15: return "error in crl last update field";
+			case 16: return "error in crl next update field";
+			case 17: return "out of mem";
+			case 18: return "depth zero self signed cert";
+			case 19: return "self signed cert in chain";
+			case 20: return "unable to get issuer cert locally";
+			case 21: return "unable to verify leaf signature";
+			case 22: return "cert chain too long";
+			case 23: return "cert revoked";
+			case 24: return "invalid ca";
+			case 25: return "path length exceeded";
+			case 26: return "invalid purpose";
+			case 27: return "cert untrusted";
+			case 28: return "cert rejected";
+			case 29: return "subject issuer mismatch";
+			case 30: return "akid skid mismatch";
+			case 31: return "akid issuer serial mismatch";
+			case 32: return "keyusage no certsign";
+			case 33: return "unable to get crl issuer";
+			case 34: return "unhandled critical extension";
+			case 35: return "keyusage no crl sign";
+			case 36: return "unhandled critical crl extension";
+			case 37: return "invalid non ca";
+			case 38: return "proxy path length exceeded";
+			case 39: return "keyusage no digital signature";
+			case 40: return "proxy certificates not allowed";
+			case 41: return "invalid extension";
+			case 42: return "invalid policy extension";
+			case 43: return "no explicit policy";
+			case 44: return "different crl scope";
+			case 45: return "unsupported extension feature";
+			case 46: return "unnested resource";
+			case 47: return "permitted violation";
+			case 48: return "excluded violation";
+			case 49: return "subtree minmax";
+			case 51: return "unsupported constraint type";
+			case 52: return "unsupported constraint syntax";
+			case 53: return "unsupported name syntax";
+			case 54: return "crl path validation error";
+			case 50: return "application verification";
+			}
+			return "unknown";
+		}
 };
 
 /**
@@ -789,8 +940,7 @@ void SMTPAppender::sendBuffer(Pool& p)
 {
 #if LOG4CXX_HAVE_LIBESMTP
 
-	// Note: this code already owns the monitor for this
-	// appender. This frees us from needing to synchronize on 'cb'.
+	// This thread owns the mutex for this appender, hence no need to synchronize on 'cb'.
 	try
 	{
 		LogString sbuf;
@@ -811,7 +961,7 @@ void SMTPAppender::sendBuffer(Pool& p)
 		SMTPMessage message(session, _priv->from, _priv->to, _priv->cc,
 			_priv->bcc, _priv->subject, sbuf, p);
 
-		session.send(p);
+		session.send();
 
 	}
 	catch (std::exception& e)
