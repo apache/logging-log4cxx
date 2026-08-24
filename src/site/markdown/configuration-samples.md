@@ -147,10 +147,10 @@ log4j.rootCategory=INFO, A1
 log4j.asynchronous.root=true
 
 log4j.appender.A1=org.apache.log4j.RollingFileAppender
+log4j.appender.A1.BufferedIO=true
 log4j.appender.A1.MaxFileSize=5MB
 log4j.appender.A1.MaxBackupIndex=12
 log4j.appender.A1.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log
-log4j.appender.A1.Append=true
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %.30c - %m%n
 
@@ -288,41 +288,7 @@ to store a log file per executable in a product related logs directory:
 - Windows, "C:\Users\XXXXX\AppData\Local\companyName\productName\logs"
 - Non-Windows, "/var/local/companyName/productName/logs"
 
-~~~{.xml}
-<?xml version="1.0" encoding="UTF-8" ?>
-<!--log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true" -->
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-
-  <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
-    <param name="Target" value="System.out"/>
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%c - %Y%m%y%n"/>
-    </layout>
-  </appender>
-
-  <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log" />
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
-    </layout>
-  </appender>
-
-  <root asynchronous="true" >
-     <priority value="info" />
-     <appender-ref ref="ConsoleAppender"/>
-     <appender-ref ref="FileAppender"/>
-  </root>
-
-  <logger name="com" >
-     <priority value="debug"/>
-  </logger>
-
-  <logger name="com.example" >
-     <priority value="trace"/>
-  </logger>
-
-</log4j:configuration>
-~~~
+\include MyApp4.xml
 
 Sample output:
 

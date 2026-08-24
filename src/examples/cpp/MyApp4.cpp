@@ -14,34 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "com/foo/config.h"
+#include "com/foo/bar.h"
 
-#include <log4cxx/rolling/manualtriggeringpolicy.h>
-#include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/optionconverter.h>
-
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::rolling;
-using namespace LOG4CXX_NS::helpers;
-
-IMPLEMENT_LOG4CXX_OBJECT(ManualTriggeringPolicy)
-
-ManualTriggeringPolicy::ManualTriggeringPolicy()
-{
-}
-
-bool ManualTriggeringPolicy::isTriggeringEvent(Appender* /* appender */,
-	const LOG4CXX_NS::spi::LoggingEventPtr& /* event */,
-	const LogString& /* file */,
-	size_t /* fileLength */ )
-{
-	return false;
-}
-
-void ManualTriggeringPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS  )
-{
-}
-
-void ManualTriggeringPolicy::setOption(const LogString& option, const LogString& value )
-{
-	TriggeringPolicy::setOption(option, value);
+int main() {
+	int result = EXIT_SUCCESS;
+	try {
+		auto logger = com::foo::getLogger("MyApp");
+		LOG4CXX_INFO(logger, "Entering application.");
+		com::foo::Bar bar;
+		bar.doIt();
+		LOG4CXX_INFO(logger, "Exiting application.");
+	}
+	catch(std::exception&) {
+		result = EXIT_FAILURE;
+	}
+	return result;
 }

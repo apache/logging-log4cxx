@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream ndc-example custom-appender MyApp1 MyApp2)
+set(ALL_LOG4CXX_EXAMPLES auto-configured console delayedloop stream ndc-example custom-appender MyApp1 MyApp2 MyApp4)
 if(NOT LOG4CXX_DOMCONFIGURATOR_SUPPORT)
     list(REMOVE_ITEM ALL_LOG4CXX_EXAMPLES delayedloop custom-appender)
 endif()
@@ -40,6 +40,9 @@ foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
     add_executable(${PROGRAM_NAME} ${exampleName}.cpp)
     if(${exampleName} STREQUAL MyApp2)
         target_sources(${PROGRAM_NAME} PRIVATE com/foo/config2.cpp com/foo/bar.cpp)
+    endif()
+    if(${exampleName} STREQUAL MyApp4)
+        target_sources(${PROGRAM_NAME} PRIVATE com/foo/config4.cpp com/foo/bar.cpp)
     endif()
     if(${exampleName} STREQUAL MyApp-qt)
         target_sources(${PROGRAM_NAME} PRIVATE com/foo/config-qt.cpp com/foo/bar-qt.cpp)

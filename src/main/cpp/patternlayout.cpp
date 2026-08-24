@@ -164,6 +164,8 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
 											LOG4CXX_STR("tracecolor"))){
 		m_priv->m_traceColor = value;
 	}
+	else
+		Layout::setOption(option, value);
 }
 
 void PatternLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )

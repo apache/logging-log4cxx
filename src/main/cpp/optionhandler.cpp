@@ -16,6 +16,7 @@
  */
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/loglog.h>
 
 using namespace LOG4CXX_NS;
 
@@ -33,3 +34,8 @@ void spi::OptionHandler::activateOptions(helpers::Pool&)
 	activateOptions();
 }
 #endif
+
+void spi::OptionHandler::setOption(const LogString& option, const LogString& value)
+{
+	helpers::LogLog::warn(LOG4CXX_STR("Unknown option ") + option);
+}

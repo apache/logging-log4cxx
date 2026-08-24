@@ -72,6 +72,8 @@ void LevelRangeFilter::setOption(const LogString& option,
 	{
 		priv->acceptOnMatch = OptionConverter::toBoolean(value, priv->acceptOnMatch);
 	}
+	else
+		Filter::setOption(option, value);
 }
 
 Filter::FilterDecision LevelRangeFilter::decide(

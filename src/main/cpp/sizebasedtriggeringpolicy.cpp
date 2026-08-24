@@ -60,4 +60,6 @@ void SizeBasedTriggeringPolicy::setOption(const LogString& option, const LogStri
 	{
 		maxFileSize = OptionConverter::toFileSize(value, 10 * 1024 * 1024);
 	}
+	else
+		TriggeringPolicy::setOption(option, value);
 }

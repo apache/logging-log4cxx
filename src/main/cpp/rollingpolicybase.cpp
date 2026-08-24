@@ -82,6 +82,8 @@ void RollingPolicyBase::setOption(const LogString& option, const LogString& valu
 	{
 		m_priv->createIntermediateDirectories = OptionConverter::toBoolean(value, false);
 	}
+	else
+		RollingPolicy::setOption(option, value);
 }
 
 void RollingPolicyBase::setFileNamePattern(const LogString& fnp)

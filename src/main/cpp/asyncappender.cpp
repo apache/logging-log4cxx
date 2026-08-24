@@ -325,12 +325,12 @@ void AsyncAppender::setOption(const LogString& option,
 		setLocationInfo(OptionConverter::toBoolean(value, false));
 	}
 
-	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
 		setBufferSize(OptionConverter::toInt(value, DEFAULT_BUFFER_SIZE));
 	}
 
-	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BLOCKING"), LOG4CXX_STR("blocking")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BLOCKING"), LOG4CXX_STR("blocking")))
 	{
 		setBlocking(OptionConverter::toBoolean(value, true));
 	}

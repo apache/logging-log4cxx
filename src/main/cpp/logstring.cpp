@@ -15,33 +15,11 @@
  * limitations under the License.
  */
 
-#include <log4cxx/rolling/manualtriggeringpolicy.h>
-#include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/optionconverter.h>
-
-using namespace LOG4CXX_NS;
-using namespace LOG4CXX_NS::rolling;
-using namespace LOG4CXX_NS::helpers;
-
-IMPLEMENT_LOG4CXX_OBJECT(ManualTriggeringPolicy)
-
-ManualTriggeringPolicy::ManualTriggeringPolicy()
+#include <log4cxx/log4cxx.h>
+#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API
+#include <log4cxx/private/numpunct_unichar.h>
+namespace std
 {
+	LOG4CXX_EXPORT locale::id numpunct<::LOG4CXX_NS::UniChar>::id;
 }
-
-bool ManualTriggeringPolicy::isTriggeringEvent(Appender* /* appender */,
-	const LOG4CXX_NS::spi::LoggingEventPtr& /* event */,
-	const LogString& /* file */,
-	size_t /* fileLength */ )
-{
-	return false;
-}
-
-void ManualTriggeringPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS  )
-{
-}
-
-void ManualTriggeringPolicy::setOption(const LogString& option, const LogString& value )
-{
-	TriggeringPolicy::setOption(option, value);
-}
+#endif

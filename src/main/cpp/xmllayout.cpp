@@ -73,6 +73,8 @@ void XMLLayout::setOption(const LogString& option,
 		setProperties(OptionConverter::toBoolean(value, false));
 		m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 	}
+	else
+		Layout::setOption(option, value);
 }
 
 void XMLLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const

@@ -49,7 +49,8 @@ void Filter::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 }
 
-void Filter::setOption(const LogString&, const LogString&)
+void Filter::setOption(const LogString& option, const LogString& value)
 {
+	OptionHandler::setOption(option, value);
 }
 

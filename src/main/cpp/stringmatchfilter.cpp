@@ -62,6 +62,8 @@ void StringMatchFilter::setOption(const LogString& option,
 	{
 		priv->acceptOnMatch = OptionConverter::toBoolean(value, priv->acceptOnMatch);
 	}
+	else
+		Filter::setOption(option, value);
 }
 
 Filter::FilterDecision StringMatchFilter::decide(
