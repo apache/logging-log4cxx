@@ -20,7 +20,7 @@
 int main() {
 	int result = EXIT_SUCCESS;
 	try {
-		auto logger = com::foo::getLogger("MyApp");
+		auto logger = com::foo::getLogger("com.MyApp");
 		LOG4CXX_INFO(logger, "Entering application.");
 		com::foo::Bar bar;
 		bar.doIt();

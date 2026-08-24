@@ -12,6 +12,7 @@
 
   <appender name="FileAppender" class="org.apache.log4j.RollingFileAppender">
     <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log" />
+    <param name="BufferedIO" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
     </layout>
@@ -26,15 +27,15 @@
 
   <root asynchronous="true" >
      <priority value="info" />
-     <appender-ref ref="ConsoleAppender"/>
      <appender-ref ref="FileAppender"/>
   </root>
 
   <logger name="com" >
      <priority value="debug"/>
+     <appender-ref ref="ConsoleAppender"/>
   </logger>
 
-  <logger name="com.example" >
+  <logger name="com.foo" >
      <priority value="trace"/>
   </logger>
 
