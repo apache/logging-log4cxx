@@ -18,8 +18,9 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/basicconfigurator.h>
+#include <log4cxx/fileappender.h>
 
-using namespace log4cxx;
+using namespace LOG4CXX_NS;
 
 namespace
 {
@@ -71,7 +72,13 @@ public:
 	void test1()
 	{
 		LOGUNIT_ASSERT(logger);
-		LOGUNIT_ASSERT(logger->isDebugEnabled());
+		auto rootLogger = logger->getParent()->getParent();
+		LOGUNIT_ASSERT(rootLogger);
+		auto appender = rootLogger->getAppender(LOG4CXX_STR("A1"));
+		LOGUNIT_ASSERT(appender);
+		auto fileAppender = LOG4CXX_NS::cast<FileAppender>(appender);
+		LOGUNIT_ASSERT(fileAppender);
+		LOGUNIT_ASSERT(fileAppender->getBufferedIO());
 	}
 };
 

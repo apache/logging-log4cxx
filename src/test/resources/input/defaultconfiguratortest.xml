@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true">
 
-  <appender name="FileAppender" class="org.apache.log4j.RollingFileAppender">
+  <appender name="A1" class="org.apache.log4j.RollingFileAppender">
     <param name="file" value="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.log" />
     <param name="BufferedIO" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
@@ -18,7 +18,7 @@
 
   <root>
      <priority value="info" />
-     <appender-ref ref="FileAppender"/>
+     <appender-ref ref="A1"/>
   </root>
 
   <logger name="com" >
