@@ -6,6 +6,7 @@ if (-not $VERSION) { $VERSION = "1.8.1" }
 $STAGE="dev"
 #$STAGE="release"
 if ( ${ENV:STAGE} ) { $STAGE = ${ENV:STAGE} }
+$CheckProvenance=( $STAGE -eq "dev" )
 
 $BASE_DL="https://dist.apache.org/repos/dist/$STAGE/logging/log4cxx"
 if ( ${ENV:BASE_DL} ) { $BASE_DL = ${ENV:BASE_DL} }
@@ -25,11 +26,39 @@ catch
   Write-Error "The gpg program directory must be included the PATH environment variable" -ErrorAction Stop
 }
 
+
 if (-not (Test-Path -Path "$TEST_DIRECTORY" -PathType Container))
 {
   New-Item -ItemType Directory -Path "$TEST_DIRECTORY" -ErrorAction Stop
 }
 Set-Location -Path "$TEST_DIRECTORY"
+
+if ( $CheckProvenance )
+{
+  try
+  {
+    gh --version | Out-Null
+    $WORKFLOW="package_code"
+    Write-Output "Downloading GitHub $WORKFLOW artifacts ..."
+    if (Test-Path "release_files") { Remove-Item "release_files" -Recurse -Force }
+    # Get the latest Run ID
+    $RUN_ID = (gh run list --repo apache/logging-log4cxx --workflow="$WORKFLOW.yml" --limit 1 --json databaseId --jq '.[0].databaseId')
+    if ( !$? ) { Write-Error "Failed to find a Github $WORKFLOW run id" -ErrorAction Stop }
+
+    # Download the GitHub artifacts
+    gh run download --repo apache/logging-log4cxx "$RUN_ID"
+    if ( !$? -or (-not (Test-Path "release_files")) )
+    { Write-Error "Failed to download Github $WORKFLOW run $RUN_ID artifacts"  -ErrorAction Stop }
+    if (-not (Test-Path "release_files\$ARCHIVE.tar.gz.sha512") )
+    {
+      Write-Error  "$ARCHIVE.tar.gz.sha512 not found in GitHub $WORKFLOW run $RUN_ID artifacts" -ErrorAction Stop
+    }
+  }
+  catch
+  {
+    Write-Output "GitHub CLI program (gh) is not available - provenance checks will be skipped"
+  }
+}
 
 $FULL_DL="$BASE_DL/$VERSION/$ARCHIVE"
 $ARCHIVE_TYPES = @("tar.gz", "zip")
@@ -61,6 +90,19 @@ foreach ($ARCHIVE_TYPE in $ARCHIVE_TYPES)
   Write-Output "Validating $ARCHIVE.$ARCHIVE_TYPE signature..."
   gpg --verify "$ARCHIVE.$ARCHIVE_TYPE.asc"
   if (!$? ) { exit 1 }
+
+  if ( Test-Path -Path "release_files\$ARCHIVE.$ARCHIVE_TYPE.sha512" )
+  {
+    Write-Output "Checking provenance"
+    if (@(Get-Content -Path "$ARCHIVE.$ARCHIVE_TYPE.sha512")[0] -eq @(Get-Content -Path "release_files\$ARCHIVE.$ARCHIVE_TYPE.sha512")[0])
+    {
+       Write-Output "$ARCHIVE.$ARCHIVE_TYPE is from a GitHub workflow"
+    }
+    else
+    {
+      Write-Error "$ARCHIVE.$ARCHIVE_TYPE is not from a GitHub workflow" -ErrorAction Stop
+    }
+  }
 }
 
 if (Test-Path "$ARCHIVE") { Remove-Item -Recurse "$ARCHIVE" }

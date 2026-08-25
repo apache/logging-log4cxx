@@ -16,18 +16,12 @@ name: Generate release files
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-#  pull_request:
-#    branches:
-#      - master
 
 permissions: read-all
 
 jobs:
   job1:
-    name: 'Package code for release'
+    name: 'Package the code, then test an achive'
     runs-on: ubuntu-latest
 
     steps:
@@ -72,7 +66,6 @@ jobs:
         fi
 
     - uses: actions/upload-artifact@v7
-      if: always()
       with:
         name: 'release_files'
         path: |
