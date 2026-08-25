@@ -142,6 +142,8 @@ public:
 	{
 		LOGUNIT_ASSERT_EQUAL(m_status, spi::ConfigurationStatus::Configured);
 		LOGUNIT_ASSERT(File(m_configFile).exists());
+		// wait 2 sec to ensure the modification time is different to that held in the WatchDog
+		apr_sleep(2000000);
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
