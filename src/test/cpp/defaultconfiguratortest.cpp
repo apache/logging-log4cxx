@@ -72,8 +72,13 @@ public:
 	void test1()
 	{
 		LOGUNIT_ASSERT(logger);
-		auto rootLogger = logger->getParent()->getParent();
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("com.test"), logger->getName());
+		auto comLogger = logger->getParent();
+		LOGUNIT_ASSERT(comLogger);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("com"), comLogger->getName());
+		auto rootLogger = comLogger->getParent();
 		LOGUNIT_ASSERT(rootLogger);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("root"), rootLogger->getName());
 		auto appender = rootLogger->getAppender(LOG4CXX_STR("A1"));
 		LOGUNIT_ASSERT(appender);
 		auto fileAppender = LOG4CXX_NS::cast<FileAppender>(appender);
