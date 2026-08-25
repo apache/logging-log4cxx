@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true" -->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+  <appender name="A1" class="org.apache.log4j.ConsoleAppender">
+    <param name="Target" value="System.out"/>
+    <param name="Threshold" value="info"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%c - %Y%m%y%n"/>
+    </layout>
+  </appender>
+
+  <appender name="A2" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log" />
+    <param name="BufferedIO" value="true" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
+    </layout>
+    <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+       <param name="fileNamePattern" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.%i.log"/>
+       <param name="minIndex" value="0"/>
+    </rollingPolicy>
+    <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+      <param name="maxFileSize" value="4MB" />
+    </triggeringPolicy>
+  </appender>
+
+  <root asynchronous="true" >
+     <priority value="info" />
+     <appender-ref ref="A2"/>
+  </root>
+
+  <logger name="com" >
+     <priority value="debug"/>
+     <appender-ref ref="A1"/>
+  </logger>
+
+  <logger name="com.foo" >
+     <priority value="trace"/>
+  </logger>
+
+</log4j:configuration>

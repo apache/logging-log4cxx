@@ -147,10 +147,10 @@ log4j.rootCategory=INFO, A1
 log4j.asynchronous.root=true
 
 log4j.appender.A1=org.apache.log4j.RollingFileAppender
+log4j.appender.A1.BufferedIO=true
 log4j.appender.A1.MaxFileSize=5MB
 log4j.appender.A1.MaxBackupIndex=12
 log4j.appender.A1.File=${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log
-log4j.appender.A1.Append=true
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5p %.30c - %m%n
 
@@ -262,75 +262,47 @@ Sample output:
 
 This example shows how you can configure logging for a particular category.
 
-Assume that our loggers are in our code as such:
-
-~~~{.cpp}
-	log4cxx::LoggerPtr root = log4cxx::Logger::getRootLogger();
-	log4cxx::LoggerPtr com  = log4cxx::Logger::getLogger( "com" );
-	log4cxx::LoggerPtr com_example = log4cxx::Logger::getLogger( "com.example" );
-
-	LOG4CXX_INFO( root, "Hello there!" );
-	LOG4CXX_DEBUG( com, "com logger debug" );
-	LOG4CXX_DEBUG( com_example, "com.example debug message" );
-	LOG4CXX_TRACE( com, "com debug message" );
-	LOG4CXX_TRACE( com_example, "com.example trace message" );
-~~~
-
-For this configuration, we have set any logger that is at the `com` level or below
-to be debug.  However, we have also set the logger `com.example` to have a more
-verbose `trace` level to see more information from that particular logger.
-The log file will be created in a program data directory
-where the path uses the program vendor and product name.
-
 The following Log4cxx 1.6 configuration file uses
 the variables added in the \ref com/foo/config4.cpp example
 to store a log file per executable in a product related logs directory:
 - Windows, "C:\Users\XXXXX\AppData\Local\companyName\productName\logs"
 - Non-Windows, "/var/local/companyName/productName/logs"
 
-~~~{.xml}
-<?xml version="1.0" encoding="UTF-8" ?>
-<!--log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true" -->
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+For this configuration, we have set loggers at the `com` level or below to be a `debug` level.
+we have also set the logger `com.foo` to have the more
+verbose `trace` level to see more information from that particular logger.
+All events are sent to the `A2` appender attached to the `root` logger,
+a file appender, but the `threshold` attached to the `A1` appender
+limits events to only `info` and above appearing on standard output.
 
-  <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
-    <param name="Target" value="System.out"/>
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%c - %Y%m%y%n"/>
-    </layout>
-  </appender>
+The `asynchronous` attribute on the `root` logger tells Log4cxx
+to do `A2` appender output in a background thread.
+The `BufferedIO` property on the `A2` appender
+helps stop the ring-buffer from becoming full.
 
-  <appender name="FileAppender" class="org.apache.log4j.FileAppender">
-    <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log" />
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %c %-5p - %m%n" />
-    </layout>
-  </appender>
+\include MyApp4.xml
 
-  <root asynchronous="true" >
-     <priority value="info" />
-     <appender-ref ref="ConsoleAppender"/>
-     <appender-ref ref="FileAppender"/>
-  </root>
+Assume that our loggers are in our code as such:
 
-  <logger name="com" >
-     <priority value="debug"/>
-  </logger>
+~~~{.cpp}
+	log4cxx::LoggerPtr root = log4cxx::Logger::getRootLogger();
+	log4cxx::LoggerPtr com  = log4cxx::Logger::getLogger( "com" );
+	log4cxx::LoggerPtr com_foo = log4cxx::Logger::getLogger( "com.foo" );
 
-  <logger name="com.example" >
-     <priority value="trace"/>
-  </logger>
-
-</log4j:configuration>
+	LOG4CXX_INFO( root, "Hello there!" );
+	LOG4CXX_DEBUG( com, "some debug" );
+	LOG4CXX_DEBUG( com_foo, "another debug message" );
+	LOG4CXX_TRACE( com, "a trace message" );
+	LOG4CXX_TRACE( com_foo, "a submodule trace message" );
 ~~~
 
-Sample output:
+Sample file content:
 
 ~~~
 [2020-12-24 16:05:48] root INFO  - Hello there!
-[2020-12-24 16:05:48] com DEBUG - com logger debug
-[2020-12-24 16:05:48] com.example DEBUG - com.example debug message
-[2020-12-24 16:05:48] com.example TRACE - com.example trace message
+[2020-12-24 16:05:48] com DEBUG - some debug
+[2020-12-24 16:05:48] com.foo DEBUG - another debug message
+[2020-12-24 16:05:48] com.foo TRACE - a submodule trace message
 ~~~
 
 ### XML Example 4 {#xml-example-4}
