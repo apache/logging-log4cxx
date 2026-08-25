@@ -2,7 +2,7 @@
 <!--log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="true" -->
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-  <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+  <appender name="A1" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out"/>
     <param name="Threshold" value="info"/>
     <layout class="org.apache.log4j.PatternLayout">
@@ -10,7 +10,7 @@
     </layout>
   </appender>
 
-  <appender name="FileAppender" class="org.apache.log4j.RollingFileAppender">
+  <appender name="A2" class="org.apache.log4j.RollingFileAppender">
     <param name="file" value="${LocalAppData}/${CURRENT_VENDOR_FOLDER}/${CURRENT_PRODUCT_FOLDER}/logs/${PROGRAM_FILE_PATH.STEM}.log" />
     <param name="BufferedIO" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
@@ -27,12 +27,12 @@
 
   <root asynchronous="true" >
      <priority value="info" />
-     <appender-ref ref="FileAppender"/>
+     <appender-ref ref="A2"/>
   </root>
 
   <logger name="com" >
      <priority value="debug"/>
-     <appender-ref ref="ConsoleAppender"/>
+     <appender-ref ref="A1"/>
   </logger>
 
   <logger name="com.foo" >

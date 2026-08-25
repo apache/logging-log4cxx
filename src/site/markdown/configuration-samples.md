@@ -262,41 +262,47 @@ Sample output:
 
 This example shows how you can configure logging for a particular category.
 
-Assume that our loggers are in our code as such:
-
-~~~{.cpp}
-	log4cxx::LoggerPtr root = log4cxx::Logger::getRootLogger();
-	log4cxx::LoggerPtr com  = log4cxx::Logger::getLogger( "com" );
-	log4cxx::LoggerPtr com_example = log4cxx::Logger::getLogger( "com.example" );
-
-	LOG4CXX_INFO( root, "Hello there!" );
-	LOG4CXX_DEBUG( com, "com logger debug" );
-	LOG4CXX_DEBUG( com_example, "com.example debug message" );
-	LOG4CXX_TRACE( com, "com debug message" );
-	LOG4CXX_TRACE( com_example, "com.example trace message" );
-~~~
-
-For this configuration, we have set any logger that is at the `com` level or below
-to be debug.  However, we have also set the logger `com.example` to have a more
-verbose `trace` level to see more information from that particular logger.
-The log file will be created in a program data directory
-where the path uses the program vendor and product name.
-
 The following Log4cxx 1.6 configuration file uses
 the variables added in the \ref com/foo/config4.cpp example
 to store a log file per executable in a product related logs directory:
 - Windows, "C:\Users\XXXXX\AppData\Local\companyName\productName\logs"
 - Non-Windows, "/var/local/companyName/productName/logs"
 
+For this configuration, we have set loggers at the `com` level or below to be a `debug` level.
+we have also set the logger `com.foo` to have the more
+verbose `trace` level to see more information from that particular logger.
+All events are sent to the `A2` appender attached to the `root` logger,
+a file appender, but the `threshold` attached to the `A1` appender
+limits events to only `info` and above appearing on standard output.
+
+The `asynchronous` attribute on the `root` logger tells Log4cxx
+to do `A2` appender output in a background thread.
+The `BufferedIO` property on the `A2` appender
+helps stop the ring-buffer from becoming full.
+
 \include MyApp4.xml
 
-Sample output:
+Assume that our loggers are in our code as such:
+
+~~~{.cpp}
+	log4cxx::LoggerPtr root = log4cxx::Logger::getRootLogger();
+	log4cxx::LoggerPtr com  = log4cxx::Logger::getLogger( "com" );
+	log4cxx::LoggerPtr com_foo = log4cxx::Logger::getLogger( "com.foo" );
+
+	LOG4CXX_INFO( root, "Hello there!" );
+	LOG4CXX_DEBUG( com, "some debug" );
+	LOG4CXX_DEBUG( com_foo, "another debug message" );
+	LOG4CXX_TRACE( com, "a trace message" );
+	LOG4CXX_TRACE( com_foo, "a submodule trace message" );
+~~~
+
+Sample file content:
 
 ~~~
 [2020-12-24 16:05:48] root INFO  - Hello there!
-[2020-12-24 16:05:48] com DEBUG - com logger debug
-[2020-12-24 16:05:48] com.example DEBUG - com.example debug message
-[2020-12-24 16:05:48] com.example TRACE - com.example trace message
+[2020-12-24 16:05:48] com DEBUG - some debug
+[2020-12-24 16:05:48] com.foo DEBUG - another debug message
+[2020-12-24 16:05:48] com.foo TRACE - a submodule trace message
 ~~~
 
 ### XML Example 4 {#xml-example-4}
