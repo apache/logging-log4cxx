@@ -113,8 +113,8 @@ public:
 		LogManager::shutdown();
 		LOG4CXX_ENCODE_CHAR(configFile, m_configFile);
 		apr_file_remove(configFile.c_str(), m_pool.getAPRPool());
-		// wait 0.2 sec to ensure the file is really gone on Windows
-		apr_sleep(200000);
+		// wait 0.5 sec to ensure the file is really gone on Windows/MacOS
+		apr_sleep(500000);
 	}
 
 	void testSetup()
