@@ -270,7 +270,7 @@ ThreadStartPost ThreadUtility::postStartFunction()
 void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()> f, const Period& delay)
 {
 	if (!m_priv->log)
-		m_priv->log = Logger::getLogger("ThreadUtility");
+		m_priv->log = LogLog::getLogger("ThreadUtility");
 	LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("addPeriodicTask: ") << name);
 	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	if (m_priv->maxDelay < delay)

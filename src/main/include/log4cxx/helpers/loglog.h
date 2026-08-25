@@ -132,6 +132,11 @@ class LOG4CXX_EXPORT LogLog
 		*/
 		static void warn(const LogString&  msg, const std::exception& ex);
 
+		/**
+		A \c name category for internal logging.
+		*/
+		static LoggerPtr getLogger(const LogString& name);
+
 	private:
 		static void emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix);
 		static void emit_log(const LogString& prefix, const std::exception& ex, const LogString& suffix);
