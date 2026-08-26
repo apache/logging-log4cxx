@@ -307,8 +307,8 @@ void Hierarchy::ensureIsConfigured(std::function<void()> configurator)
 	std::lock_guard<std::recursive_mutex> lock(m_priv->configuredMutex);
 	if (!m_priv->configured && m_priv->alreadyTriedMethod != configurator.target_type().name())
 	{
-		configurator();
 		m_priv->alreadyTriedMethod = configurator.target_type().name();
+		configurator();
 	}
 }
 

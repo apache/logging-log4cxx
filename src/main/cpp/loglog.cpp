@@ -17,6 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/logmanager.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <iostream>
 #if !defined(LOG4CXX)
@@ -185,6 +186,11 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 		emit_log(p->errorPrefix, msg, p->suffix);
 		emit_log(p->errorPrefix, e, p->suffix);
 	}
+}
+
+LoggerPtr LogLog::getLogger(const LogString& name)
+{
+	return LogManager::getLoggerRepository()->getLogger(name);
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UTF8

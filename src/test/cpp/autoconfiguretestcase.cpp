@@ -113,8 +113,8 @@ public:
 		LogManager::shutdown();
 		LOG4CXX_ENCODE_CHAR(configFile, m_configFile);
 		apr_file_remove(configFile.c_str(), m_pool.getAPRPool());
-		// wait 0.2 sec to ensure the file is really gone on Windows
-		apr_sleep(200000);
+		// wait 1 sec to ensure the WatchDog will reload the configuration
+		apr_sleep(1000000);
 	}
 
 	void testSetup()
