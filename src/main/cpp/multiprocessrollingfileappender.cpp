@@ -90,7 +90,11 @@ public: // Support classes
 					}
 				}
 				std::string lockFileName = filePrefix + ".lock";
-				auto stat = apr_file_open(&m_parent->lock_file, lockFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_parent->pool.getAPRPool());
+				// Create the lock file with owner-only permissions: the cooperating
+				// processes run under the same uid, and any other local user able to
+				// take a shared fcntl lock on a world-readable lock file could block
+				// rollover (and with it every logging thread) indefinitely.
+				auto stat = apr_file_open(&m_parent->lock_file, lockFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_FPROT_UREAD | APR_FPROT_UWRITE, m_parent->pool.getAPRPool());
 				if (stat != APR_SUCCESS)
 				{
 					LogString err;
@@ -153,6 +157,12 @@ void MultiprocessRollingFileAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_
 {
 	if (_priv->activateOptions())
 	{
+		// FileAppender::activateOptionsInternal() closes any existing writer,
+		// destroying the FileOutputStream (and the pool) that owns the cached
+		// apr_file_t, before opening the new file (which may fail).  Clear the
+		// cache first so a failed open cannot leave it dangling;
+		// createWriter() re-caches the handle on success.
+		_priv->log_file = NULL;
 		FileAppender::activateOptionsInternal();
 	}
 
@@ -283,6 +293,13 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend()))
 		{
 			_priv->close();
+			// The cached apr_file_t was allocated from the pool of the
+			// FileOutputStream that close() just destroyed.  Clear it now:
+			// any failure (e.g. ENOSPC/EACCES opening the new active file
+			// throws, and subAppend merely logs the exception) would leave a
+			// dangling handle that isAlreadyRolled()/getCurrentFileSize()
+			// pass to apr_file_info_get() on the next append.
+			_priv->log_file = NULL;
 			if (rollover1->getActiveFileName() == fileName)
 			{
 				bool success = true; // A synchronous action is not required
@@ -387,6 +404,11 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const Trigge
 void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 {
 	_priv->close();
+	// Clear the cached apr_file_t: it was allocated from the pool of the
+	// FileOutputStream that close() just destroyed, and the FileOutputStream
+	// constructor below throws on open failure (leaving this appender without
+	// a writer until a later reopen succeeds).
+	_priv->log_file = NULL;
 #if USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
 		pTimeBased->loadLastFileName();
