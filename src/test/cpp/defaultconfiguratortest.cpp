@@ -19,6 +19,7 @@
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/fileappender.h>
+#include <log4cxx/helpers/filesystempath.h>
 
 using namespace LOG4CXX_NS;
 
@@ -32,6 +33,12 @@ namespace
 			{
 				// Check every 5 seconds for configuration file changes
 				DefaultConfigurator::setConfigurationWatchSeconds(5);
+#if !LOG4CXX_HAS_FILESYSTEM_PATH
+				auto& props = spi::Configurator::properties();
+				props.setProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.STEM"), LOG4CXX_STR("defaultconfiguratortest"));
+				props.setProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.PARENT_PATH"), LOG4CXX_STR("output"));
+#endif
+
 
 				// Look for a configuration file in the current working directory
 				// and the same directory as the program
