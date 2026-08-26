@@ -35,7 +35,7 @@ jobs:
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_STANDARD=11 -DLOG4CXX_ENABLE_ESMTP=ON -DCMAKE_CXX_COMPILER=g++-14 ..
+        cmake -DCMAKE_CXX_STANDARD=11 -DLOG4CXX_ENABLE_ESMTP=ON ..
         cmake --build .
 
     - name: run unit tests
