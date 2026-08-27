@@ -51,6 +51,8 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		If \c repository is not provided,
 		the spi::LoggerRepository held by LogManager is used.
 
+		@warning Concurrent calls from multiple thread is *undefined behavior*.
+
 		@param configFileName The file to parse
 		@param repository Holds the Logger instances.
 		*/
@@ -78,6 +80,9 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		- PROGRAM_FILE_PATH.FILENAME
 		- PROGRAM_FILE_PATH.STEM
 		- PROGRAM_FILE_PATH.EXTENSION
+
+		@warning This method is not thread-safe.
+		@return a mutable map - modification and use must be confined to a single thread.
 		*/
 		static helpers::Properties& properties();
 

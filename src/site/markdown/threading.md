@@ -22,9 +22,12 @@ Threading {#threading}
 -->
 [TOC]
 
-Log4cxx is designed to be thread-safe under under normal usage.  This
-means that logging itself is always thread-safe, however there are
-certain circumstances that can cause threading issues with Log4cxx.
+Log4cxx is designed to be thread-safe under under normal usage.
+This means that multiple threads can concurrently send logging events to appenders.
+Log4cxx *requires* that configuration occurs in a single-threaded context
+(typically during application startup before worker threads are spawned
+or in a single watch-dog thread).
+However there are certain circumstances that can cause threading issues with Log4cxx.
 
 ## Unexpected Exit {#unexpected-exit}
 
