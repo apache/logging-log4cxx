@@ -52,7 +52,7 @@ class QuotedMessagePatternConverter : public LoggingEventPatternConverter
 				toAppendTo += m_quote;
 				startIndex = endIndex + 1;
 			}
-			toAppendTo.append(input.substr(startIndex));
+			toAppendTo.append(input, startIndex, input.npos);
 		}
 };
 }
