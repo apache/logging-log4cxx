@@ -180,7 +180,7 @@ struct LoggingEvent::LoggingEventPrivate
 			}
 			rendered.store(renderedValue, std::memory_order_release);
 		}
-		else while (renderedValue != rendered.load(std::memory_order_acquire))
+		else for (int i = 0; i < 10 && renderedValue != rendered.load(std::memory_order_relaxed); ++i)
 			std::this_thread::yield();
 	}
 };
