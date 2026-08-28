@@ -33,6 +33,7 @@
 #include <log4cxx/helpers/messagebuffer.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/optional.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <atomic>
 #include <memory>
 #include <thread>
@@ -188,10 +189,9 @@ struct LoggingEvent::LoggingEventPrivate
 					this->messageAppender.clear();
 
 				}
-				catch (std::exception& e)
+				catch (const std::exception& e)
 				{
-					LOG4CXX_DECODE_CHAR(msg, e.what());
-					this->message = msg;
+					helpers::Transcoder::decode(e.what(), this->message);
 				}
 				catch (...)
 				{
