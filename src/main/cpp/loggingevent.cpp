@@ -33,6 +33,9 @@
 #include <log4cxx/helpers/messagebuffer.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/optional.h>
+#include <atomic>
+#include <memory>
+#include <thread>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;
@@ -158,11 +161,17 @@ struct LoggingEvent::LoggingEventPrivate
 	 *  move-assign \c message - a concurrent free/assign of the same
 	 *  heap buffer.
 	 */
-	std::once_flag renderOnce;
+	std::atomic<int> rendered{ 0 } ;
 
 	void renderMessage()
 	{
-		std::call_once(this->renderOnce, [this]()
+		int unrenderedValue{ 0 };
+		int isActiveValue{ 1 };
+		int renderedValue{ 2 };
+		if (rendered.compare_exchange_strong(unrenderedValue, isActiveValue
+				, std::memory_order_relaxed
+				, std::memory_order_relaxed
+				))
 		{
 			if (!this->messageAppender.empty())
 			{
@@ -171,7 +180,13 @@ struct LoggingEvent::LoggingEventPrivate
 				this->message = buf.extract_str(buf);
 				this->messageAppender.clear();
 			}
-		});
+			rendered.compare_exchange_strong(isActiveValue, renderedValue
+				, std::memory_order_relaxed
+				, std::memory_order_relaxed
+				);
+		}
+		else while (renderedValue != rendered.load(std::memory_order_relaxed))
+			std::this_thread::yield();
 	}
 };
 
