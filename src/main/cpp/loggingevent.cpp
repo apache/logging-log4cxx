@@ -156,7 +156,7 @@ struct LoggingEvent::LoggingEventPrivate
 	 */
 	helpers::AsyncBuffer messageAppender;
 
-	/** Ensures the deferred message is RenderingCompleted exactly once.
+	/** Ensures an async message is rendered exactly once.
 	 *
 	 *  A LoggingEvent may be shared between threads, e.g. when it is
 	 *  queued to an AsyncAppender dispatcher while the logging thread
@@ -179,24 +179,23 @@ struct LoggingEvent::LoggingEventPrivate
 		uint8_t unrenderedState{ RenderingRequired };
 		if (renderState.compare_exchange_strong(unrenderedState, RenderingActive, std::memory_order_acquire))
 		{
-			if (!this->messageAppender.empty())
+			if (this->messageAppender.empty())
+				;
+			else try
 			{
-				try
-				{
-					helpers::LogCharMessageBuffer buf;
-					this->messageAppender.renderMessage(buf);
-					this->message = buf.extract_str(buf);
-					this->messageAppender.clear();
+				helpers::LogCharMessageBuffer buf;
+				this->messageAppender.renderMessage(buf);
+				this->message = buf.extract_str(buf);
+				this->messageAppender.clear();
 
-				}
-				catch (const std::exception& e)
-				{
-					helpers::Transcoder::decode(e.what(), this->message);
-				}
-				catch (...)
-				{
-					this->message = LOG4CXX_STR("mesage rendering failed");
-				}
+			}
+			catch (const std::exception& e)
+			{
+				helpers::Transcoder::decode(e.what(), this->message);
+			}
+			catch (...)
+			{
+				this->message = LOG4CXX_STR("mesage rendering failed");
 			}
 			renderState.store(RenderingCompleted, std::memory_order_release);
 		}
