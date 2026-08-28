@@ -161,17 +161,14 @@ struct LoggingEvent::LoggingEventPrivate
 	 *  move-assign \c message - a concurrent free/assign of the same
 	 *  heap buffer.
 	 */
-	std::atomic<int> rendered{ 0 } ;
+	std::atomic<uint8_t> rendered{ 0 } ;
 
 	void renderMessage()
 	{
-		int unrenderedValue{ 0 };
-		int isActiveValue{ 1 };
-		int renderedValue{ 2 };
-		if (rendered.compare_exchange_strong(unrenderedValue, isActiveValue
-				, std::memory_order_relaxed
-				, std::memory_order_relaxed
-				))
+		uint8_t unrenderedValue{ 0 };
+		uint8_t isActiveValue{ 1 };
+		uint8_t renderedValue{ 2 };
+		if (rendered.compare_exchange_strong(unrenderedValue, isActiveValue, std::memory_order_acquire))
 		{
 			if (!this->messageAppender.empty())
 			{
@@ -180,12 +177,9 @@ struct LoggingEvent::LoggingEventPrivate
 				this->message = buf.extract_str(buf);
 				this->messageAppender.clear();
 			}
-			rendered.compare_exchange_strong(isActiveValue, renderedValue
-				, std::memory_order_relaxed
-				, std::memory_order_relaxed
-				);
+			rendered.store(renderedValue, std::memory_order_acquire);
 		}
-		else while (renderedValue != rendered.load(std::memory_order_relaxed))
+		else while (renderedValue != rendered.load(std::memory_order_acquire))
 			std::this_thread::yield();
 	}
 };
