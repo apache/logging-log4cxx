@@ -193,6 +193,37 @@ class PatternAbbreviatorFragment
 
 			return nextDot;
 		}
+
+		/**
+		 * Abbreviate all '.' separated elements of \c buf from \c startPos.
+		 * @param buf buffer to receive element.
+		 * @param startPos starting index of name element.
+		 */
+		void abbreviateAll(LogString& buf, LogString::size_type startPos) const
+		{
+			logchar separ = 0x2E; /* '.' */
+			LogString abbreviation;
+			abbreviation.reserve(buf.length());
+			auto pos = startPos;
+			LogString::size_type nextDot;
+			while (pos < buf.length() && buf.npos != (nextDot = buf.find(separ, pos)))
+			{
+				if (pos + charCount < nextDot)
+				{
+					abbreviation.append(buf.begin() + pos, buf.begin() + (pos + charCount));
+					if (ellipsis != 0x00)
+						abbreviation.append(1, ellipsis);
+				}
+				else
+					abbreviation.append(buf.begin() + pos, buf.begin() + nextDot);
+				abbreviation.append(1, separ);
+				pos = nextDot + 1;
+			}
+			if (pos < buf.length())
+				abbreviation.append(buf.begin() + pos, buf.end());
+			buf.erase(buf.begin() + startPos, buf.end());
+			buf.append(abbreviation);
+		}
 };
 
 /**
@@ -246,15 +277,9 @@ class PatternAbbreviator : public NameAbbreviator
 			}
 
 			//
-			//   last pattern in executed repeatedly
+			//   apply the last pattern to all the remaining name parts
 			//
-			PatternAbbreviatorFragment terminalFragment =
-				fragments[fragments.size() - 1];
-
-			while (pos < buf.length())
-			{
-				pos = terminalFragment.abbreviate(buf, pos);
-			}
+			fragments.back().abbreviateAll(buf, pos);
 		}
 };
 }
