@@ -89,7 +89,7 @@ class MaxElementAbbreviator : public NameAbbreviator
 		 * Create new instance.
 		 * @param count maximum number of path elements to output.
 		 */
-		MaxElementAbbreviator(const int count1) : count(count1)
+		MaxElementAbbreviator(const int count1) : count(count1 < 1 ? 1 : count1)
 		{
 		}
 
