@@ -33,6 +33,10 @@
 #include <log4cxx/helpers/messagebuffer.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/optional.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <atomic>
+#include <memory>
+#include <thread>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::spi;
@@ -43,6 +47,7 @@ struct LoggingEvent::LoggingEventPrivate
 	LoggingEventPrivate(const ThreadSpecificData::NamePairPtr p = ThreadSpecificData::getNames()) :
 		timeStamp(0),
 		pNames(p)
+		, renderState(RenderingRequired)
 	{
 	}
 
@@ -59,7 +64,8 @@ struct LoggingEvent::LoggingEventPrivate
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
 		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
-		pNames(p)
+		pNames(p),
+		renderState(RenderingCompleted)
 	{
 	}
 
@@ -77,6 +83,7 @@ struct LoggingEvent::LoggingEventPrivate
 		, chronoTimeStamp(std::chrono::microseconds(timeStamp))
 		, pNames(p)
 		, messageAppender(std::move(messageAppenderArg))
+		, renderState(RenderingRequired)
 	{
 	}
 
@@ -91,7 +98,8 @@ struct LoggingEvent::LoggingEventPrivate
 		timeStamp(Date::currentTime()),
 		locationInfo(locationInfo1),
 		chronoTimeStamp(std::chrono::microseconds(timeStamp)),
-		pNames(p)
+		pNames(p),
+		renderState(RenderingCompleted)
 	{
 	}
 
@@ -148,7 +156,7 @@ struct LoggingEvent::LoggingEventPrivate
 	 */
 	helpers::AsyncBuffer messageAppender;
 
-	/** Ensures the deferred message is rendered exactly once.
+	/** Ensures an async message is rendered exactly once.
 	 *
 	 *  A LoggingEvent may be shared between threads, e.g. when it is
 	 *  queued to an AsyncAppender dispatcher while the logging thread
@@ -157,21 +165,42 @@ struct LoggingEvent::LoggingEventPrivate
 	 *  the closure vector while the other iterates it, and both
 	 *  move-assign \c message - a concurrent free/assign of the same
 	 *  heap buffer.
+	 * Note: use of std::call_once was found to degrade throughput by up to 120%
 	 */
-	std::once_flag renderOnce;
+	std::atomic<uint8_t> renderState;
+	static const uint8_t RenderingRequired = 0;
+	static const uint8_t RenderingActive = 1;
+	static const uint8_t RenderingCompleted = 2;
 
 	void renderMessage()
 	{
-		std::call_once(this->renderOnce, [this]()
+		if (renderState.load(std::memory_order_acquire) == RenderingCompleted)
+			return;
+		uint8_t unrenderedState{ RenderingRequired };
+		if (renderState.compare_exchange_strong(unrenderedState, RenderingActive, std::memory_order_acquire))
 		{
-			if (!this->messageAppender.empty())
+			if (this->messageAppender.empty())
+				;
+			else try
 			{
 				helpers::LogCharMessageBuffer buf;
 				this->messageAppender.renderMessage(buf);
 				this->message = buf.extract_str(buf);
 				this->messageAppender.clear();
+
 			}
-		});
+			catch (const std::exception& e)
+			{
+				helpers::Transcoder::decode(e.what(), this->message);
+			}
+			catch (...)
+			{
+				this->message = LOG4CXX_STR("mesage rendering failed");
+			}
+			renderState.store(RenderingCompleted, std::memory_order_release);
+		}
+		else while (renderState.load(std::memory_order_acquire) != RenderingCompleted)
+			std::this_thread::yield();
 	}
 };
 

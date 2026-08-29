@@ -127,7 +127,7 @@ public:
 	// Expected behavior:
 	// - Without single-shot rendering, ThreadSanitizer reports data races in
 	//   renderMessage (and the assertions below can observe torn messages).
-	// - With renderMessage guarded by std::call_once, ThreadSanitizer is clean
+	// - With renderMessage guarded by std::atomic, ThreadSanitizer is clean
 	//   and both threads observe identical messages.
 	void raceDeferredMessageRendering()
 	{
