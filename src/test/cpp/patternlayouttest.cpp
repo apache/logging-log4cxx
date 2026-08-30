@@ -39,6 +39,7 @@
 #include "testchar.h"
 #include "logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/stringhelper.h>
 
 
@@ -82,6 +83,23 @@ LOGUNIT_CLASS(PatternLayoutTest)
 	LOGUNIT_TEST(test14);
 	LOGUNIT_TEST(testMDC1);
 	LOGUNIT_TEST(testMDC2);
+	LOGUNIT_TEST(testAbbreviateNoDots);
+	LOGUNIT_TEST(testAbbreviatePrecisionExceedsSegments);
+	LOGUNIT_TEST(testAbbreviateKeepLastTwoSegments);
+	LOGUNIT_TEST(testAbbreviateKeepLastSegmentOnly);
+	LOGUNIT_TEST(testAbbreviatePrecisionZero);
+	LOGUNIT_TEST(testAbbreviateEachSegmentToOneChar);
+	LOGUNIT_TEST(testAbbreviateEachSegmentToTwoChars);
+	LOGUNIT_TEST(testAbbreviateShortSegmentUnchanged);
+	LOGUNIT_TEST(testAbbreviateConsecutiveDots);
+	LOGUNIT_TEST(testAbbreviateLeadingDot);
+	LOGUNIT_TEST(testAbbreviateTrailingDot);
+	LOGUNIT_TEST(testAbbreviateEmptyName);
+	LOGUNIT_TEST(testAbbreviateSegmentEqualToCharCountBoundary);
+	LOGUNIT_TEST(testAbbreviateSegmentOneCharOverBoundary);
+	LOGUNIT_TEST(testAbbreviateManySegmentsDeepHierarchy);
+	LOGUNIT_TEST(testAbbreviateLongFinalSegmentPreserved);
+	LOGUNIT_TEST(testAbbreviateIdempotentOnAlreadyAbbreviated);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
@@ -565,6 +583,334 @@ public:
 		root->debug(LOG4CXX_TEST_STR("finished mdc pattern test"));
 
 		LOGUNIT_ASSERT(Compare::compare(OUTPUT_FILE, WITNESS_FILE));
+	}
+
+	/*
+	 * Tests for logger-name abbreviation, exercised via %c{precision} in PatternLayout.
+	 */
+
+	/**
+	 * No dots at all: name shorter than or equal to any precision should be
+	 * returned unchanged (nextDot == npos path, no truncation possible).
+	 */
+	void testAbbreviateNoDots()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{2}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("NoDotsHere")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("NoDotsHere")), result);
+	}
+
+	/**
+	 * Precision larger than number of segments: entire name is preserved,
+	 * exercising the "keep trailing/last element(s) whole" path.
+	 */
+	void testAbbreviatePrecisionExceedsSegments()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{5}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org.apache.log4cxx")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("org.apache.log4cxx")), result);
+	}
+
+	/**
+	 * Standard case: precision 2 keeps the last two dotted segments and
+	 * drops the leading ones entirely (no ellipsis involved at this level).
+	 */
+	void testAbbreviateKeepLastTwoSegments()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{2}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org.apache.log4cxx.PatternLayout")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("log4cxx.PatternLayout")), result);
+	}
+
+	/**
+	 * Precision 1 keeps only the final segment; every prior segment,
+	 * however long, must be dropped by abbreviate()'s erase/rewrite step.
+	 */
+	void testAbbreviateKeepLastSegmentOnly()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{1}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("com.example.verylongcompany.module.ClassName")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("ClassName")), result);
+	}
+
+	/**
+	 * Precision 0: degenerate case, only the final element remains
+	 * (mirrors log4j semantics where 0 behaves like 1 for the last element).
+	 */
+	void testAbbreviatePrecisionZero()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{0}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("a.b.c.d.Ending")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Ending")), result);
+	}
+
+	/**
+	 * Fractional / dotted-count abbreviator ("%c{1.}" family): each retained
+	 * leading segment is itself truncated to 1 character plus a trailing dot,
+	 * directly exercising the charCount/erase/insert logic inside abbreviate().
+	 */
+	void testAbbreviateEachSegmentToOneChar()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{1.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org.apache.log4cxx.PatternLayout")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("o.a.l.PatternLayout")), result);
+	}
+
+	/**
+	 * Segment truncated to 2 characters ("%c{2.}"): checks charCount > 1
+	 * truncation path (nextDot - startPos > charCount) rather than the
+	 * charCount == 1 special case.
+	 */
+	void testAbbreviateEachSegmentToTwoChars()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{2.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org.apache.log4cxx.PatternLayout")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("or.ap.lo.PatternLayout")), result);
+	}
+
+	/**
+	 * Segment shorter than or equal to charCount is left untouched
+	 * (the "(nextDot - startPos) > charCount" guard should skip erase/insert).
+	 */
+	void testAbbreviateShortSegmentUnchanged()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{3.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("a.bb.ccc.LongFinalSegment")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		// "a" (1<=3), "bb" (2<=3), "ccc" (3<=3) all pass through unabbreviated
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("a.bb.ccc.LongFinalSegment")), result);
+	}
+
+	/**
+	 * Consecutive dots produce a zero-length segment; abbreviate() must
+	 * not throw or corrupt the buffer, and should leave the empty
+	 * segment as-is (nextDot - startPos == 0, not > charCount).
+	 */
+	void testAbbreviateConsecutiveDots()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{1.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org..apache.Logger")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("o..a.Logger")), result);
+	}
+
+	/**
+	 * Leading dot creates an empty first segment; verifies startPos handling
+	 * at position 0 doesn't underflow or mis-index into the buffer.
+	 */
+	void testAbbreviateLeadingDot()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{1.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR(".apache.Logger")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR(".a.Logger")), result);
+	}
+
+	/**
+	 * Trailing dot with nothing after it: the final "segment" after the
+	 * last dot is empty, and nextDot == npos is never reached for that
+	 * position, so the loop must still terminate correctly.
+	 */
+	void testAbbreviateTrailingDot()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{1.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org.apache.")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("o.a.")), result);
+	}
+
+	/**
+	 * Empty logger name: startPos == buf.size() from the start, find()
+	 * immediately returns npos, function must be a no-op.
+	 */
+	void testAbbreviateEmptyName()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{2}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("")), result);
+	}
+
+	/**
+	 * Single-character segments equal to charCount exactly: boundary check
+	 * on "> charCount" vs ">= charCount" (should NOT truncate when equal,
+	 * since the guard is strictly "(nextDot - startPos) > charCount").
+	 */
+	void testAbbreviateSegmentEqualToCharCountBoundary()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{2.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("ab.cd.RestOfName")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		// "ab" (len 2 == charCount 2) and "cd" (len 2 == charCount 2) both
+		// pass through untouched; only the final segment is never abbreviated.
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("ab.cd.RestOfName")), result);
+	}
+
+	/**
+	 * Segment exactly one character longer than charCount: smallest case
+	 * that must actually trigger the erase/insert (or rewrite) path.
+	 */
+	void testAbbreviateSegmentOneCharOverBoundary()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{2.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("abc.de.RestOfName")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		// "abc" (len 3 > 2) truncates to "ab"; "de" (len 2 == 2) stays whole.
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("ab.de.RestOfName")), result);
+	}
+
+	/**
+	 * Many short segments (deep package hierarchy): the classic case that
+	 * exposes O(n*k) blowup in an erase/insert-per-segment implementation.
+	 */
+	void testAbbreviateManySegmentsDeepHierarchy()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{1.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.FinalClass")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL
+			( LogString(LOG4CXX_STR("a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.FinalClass"))
+			, result
+			);
+	}
+
+	/**
+	 * Very long single final segment combined with many short leading ones:
+	 * ensures the tail (unabbreviated, no trailing dot) is copied intact
+	 * even when it is far longer than charCount, since the last element is
+	 * never subject to truncation regardless of length.
+	 */
+	void testAbbreviateLongFinalSegmentPreserved()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{1.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("x.y.z.ThisIsAVeryLongFinalClassNameThatShouldNotBeTruncatedAtAll")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL
+			( LogString(LOG4CXX_STR("x.y.z.ThisIsAVeryLongFinalClassNameThatShouldNotBeTruncatedAtAll"))
+			, result
+			);
+	}
+
+	/**
+	 * Idempotency / stability check: running the same abbreviation pattern
+	 * against an already-abbreviated name should be a no-op, since every
+	 * remaining segment is already <= charCount.
+	 */
+	void testAbbreviateIdempotentOnAlreadyAbbreviated()
+	{
+		PatternLayout layout(LOG4CXX_STR("%c{1.}"));
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("o.a.l.PatternLayout")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("o.a.l.PatternLayout")), result);
 	}
 
 	std::string createMessage(Pool & pool, int i)
