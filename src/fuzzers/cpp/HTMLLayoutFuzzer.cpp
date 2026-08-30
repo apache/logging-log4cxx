@@ -71,7 +71,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	std::string val4 = fdp.ConsumeRandomLengthString(MaxValueLength);
 	std::string ndcMessage = fdp.ConsumeRandomLengthString(MaxKeyLength);
 	std::string loggerStr = fdp.ConsumeRandomLengthString(MaxKeyLength);
-	std::string contentStr = fdp.ConsumeRemainingBytesAsString(MaxMessageLength);
+	std::string contentStr = fdp.ConsumeRemainingBytesAsString();
 
 	LogString key1, key2, val1, val2, logger, content;
 

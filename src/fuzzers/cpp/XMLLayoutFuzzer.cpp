@@ -52,7 +52,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	std::string loggerString = fdp.ConsumeRandomLengthString(MaxKeyLength);
 	std::string propkey = fdp.ConsumeRandomLengthString(MaxKeyLength);
 	std::string propval = fdp.ConsumeRandomLengthString(MaxValueLength);
-	std::string content = fdp.ConsumeRemainingBytesAsString(MaxMessageLength);
+	std::string content = fdp.ConsumeRemainingBytesAsString();
 
 	log4cxx::LevelPtr level = log4cxx::Level::getInfo();
 	log4cxx::NDC::push(ndcMessage);
