@@ -28,6 +28,13 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+namespace
+{
+	const int MaxKeyLength = 50;
+	const int MaxValueLength = 500;
+	const int MaxMessageLength = 2000;
+}
+
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// Setup HTMLLayout
 	HTMLLayout layout;
@@ -41,30 +48,30 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	}
 	// Optional threadinfo
 	if (fdp.ConsumeBool()) {
-		LOG4CXX_DECODE_CHAR(title, fdp.ConsumeRandomLengthString());
+		LOG4CXX_DECODE_CHAR(title, fdp.ConsumeRandomLengthString(MaxValueLength));
 		layout.setOption(LOG4CXX_STR("TITLE"), title);
 	}
 
 	// Header
 	if (fdp.ConsumeBool()) {
-		std::string headerStr = fdp.ConsumeRandomLengthString();
+		std::string headerStr = fdp.ConsumeRandomLengthString(MaxValueLength);
 		LogString header;
 		Transcoder::decode(headerStr, header);
 		layout.appendHeader(header, p);
 	}
 
 	// Create random strings we need later
-	std::string key1Str = fdp.ConsumeRandomLengthString();
-	std::string val1Str = fdp.ConsumeRandomLengthString();
-	std::string key2Str = fdp.ConsumeRandomLengthString();
-	std::string val2Str = fdp.ConsumeRandomLengthString();
-	std::string key3 = fdp.ConsumeRandomLengthString();
-	std::string val3 = fdp.ConsumeRandomLengthString();
-	std::string key4 = fdp.ConsumeRandomLengthString();
-	std::string val4 = fdp.ConsumeRandomLengthString();
-	std::string ndcMessage = fdp.ConsumeRandomLengthString();
-	std::string loggerStr = fdp.ConsumeRandomLengthString();
-	std::string contentStr = fdp.ConsumeRemainingBytesAsString();
+	std::string key1Str = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val1Str = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string key2Str = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val2Str = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string key3 = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val3 = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string key4 = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val4 = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string ndcMessage = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string loggerStr = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string contentStr = fdp.ConsumeRemainingBytesAsString(MaxMessageLength);
 
 	LogString key1, key2, val1, val2, logger, content;
 

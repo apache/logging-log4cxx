@@ -30,6 +30,12 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+namespace
+{
+	const int MaxKeyLength = 50;
+	const int MaxValueLength = 500;
+	const int MaxMessageLength = 2000;
+}
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// Setup XMLLayout
@@ -38,15 +44,15 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
 	// Create random strings
 	FuzzedDataProvider fdp(data, size);
-	std::string key1 = fdp.ConsumeRandomLengthString();
-	std::string val1 = fdp.ConsumeRandomLengthString();
-	std::string key2 = fdp.ConsumeRandomLengthString();
-	std::string val2 = fdp.ConsumeRandomLengthString();
-	std::string ndcMessage = fdp.ConsumeRandomLengthString();
-	std::string loggerString = fdp.ConsumeRandomLengthString();
-	std::string propkey = fdp.ConsumeRandomLengthString();
-	std::string propval = fdp.ConsumeRandomLengthString();
-	std::string content = fdp.ConsumeRemainingBytesAsString();
+	std::string key1 = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val1 = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string key2 = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string val2 = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string ndcMessage = fdp.ConsumeRandomLengthString(MaxMessageLength);
+	std::string loggerString = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string propkey = fdp.ConsumeRandomLengthString(MaxKeyLength);
+	std::string propval = fdp.ConsumeRandomLengthString(MaxValueLength);
+	std::string content = fdp.ConsumeRemainingBytesAsString(MaxMessageLength);
 
 	log4cxx::LevelPtr level = log4cxx::Level::getInfo();
 	log4cxx::NDC::push(ndcMessage);

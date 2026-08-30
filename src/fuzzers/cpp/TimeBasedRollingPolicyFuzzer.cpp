@@ -28,6 +28,10 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::rolling;
+namespace
+{
+	const int MaxMessageLength = 2000;
+}
 
 // A fuzzer for TimeBasedRollingPolicy
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
@@ -65,7 +69,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
                 rfa->rollover(pool);
             }
 
-            LOG4CXX_DEBUG(logger, fdp.ConsumeRandomLengthString());
+            LOG4CXX_DEBUG(logger, fdp.ConsumeRandomLengthString(MaxMessageLength));
     }
 
     // Cleanup
