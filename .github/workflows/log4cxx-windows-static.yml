@@ -18,7 +18,7 @@ on: [push, pull_request]
 
 jobs:
   job:
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
+    name: static-${{ matrix.name }}-build-and-test
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -90,8 +90,7 @@ jobs:
       shell: pwsh
       timeout-minutes: 10
       run: |
-        cd main
-        cd build
-        ctest -C Debug --output-on-failure
+        $ROOT=Get-Location
+        ctest --test-dir "$ROOT/build" -C Debug --output-on-failure
 
 
