@@ -80,7 +80,7 @@ jobs:
             -DBUILD_SHARED_LIBS=off `
             -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=on `
             -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin `
-            "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+            "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
            -S "$ROOT/main" `
            -B "$ROOT/build"
 
