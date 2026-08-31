@@ -28,7 +28,7 @@ jobs:
           - name: windows-2022
             os: windows-2022
             vcpkg_ref: 2025.07.25
-          - name: windows-2025
+          - name: windows-2025-fmt
             os: windows-2025
             vcpkg_options: fmt
             vcpkg_ref: 2026.05.25
