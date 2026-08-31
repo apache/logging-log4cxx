@@ -58,8 +58,9 @@ class LOG4CXX_EXPORT NamePatternConverter : public LoggingEventPatternConverter
 			const std::vector<LogString>& options);
 
 		/**
-		 * Abbreviate name in string buffer.
-		 * @param nameStart starting position of name to abbreviate.
+		 * Modify \c buf by abbreviating the name at index \c nameStart.
+		 * @pre !buf.empty() && nameStart < buf.length()
+		 * @param nameStart an index into \c buf of the name.
 		 * @param buf string buffer containing name.
 		 */
 		void abbreviate(LogString::size_type nameStart, LogString& buf) const;

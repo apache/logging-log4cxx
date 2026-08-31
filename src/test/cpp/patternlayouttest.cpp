@@ -95,6 +95,7 @@ LOGUNIT_CLASS(PatternLayoutTest)
 	LOGUNIT_TEST(testAbbreviateLeadingDot);
 	LOGUNIT_TEST(testAbbreviateTrailingDot);
 	LOGUNIT_TEST(testAbbreviateEmptyName);
+	LOGUNIT_TEST(testAbbreviateDegenerateName);
 	LOGUNIT_TEST(testAbbreviateSegmentEqualToCharCountBoundary);
 	LOGUNIT_TEST(testAbbreviateSegmentOneCharOverBoundary);
 	LOGUNIT_TEST(testAbbreviateManySegmentsDeepHierarchy);
@@ -780,16 +781,18 @@ public:
 	 */
 	void testAbbreviateTrailingDot()
 	{
-		PatternLayout layout(LOG4CXX_STR("%c{1.}"));
 		auto event = std::make_shared<spi::LoggingEvent>
 			( LOG4CXX_STR("org.apache.")
 			, Level::getInfo()
 			, LOG4CXX_STR("msg")
 			, LOG4CXX_LOCATION
 			);
-		LogString result;
-		layout.format(result, event);
-		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("o.a.")), result);
+		LogString maxElementCharCountResult;
+		PatternLayout(LOG4CXX_STR("%c{1.}")).format(maxElementCharCountResult, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("o.a.")), maxElementCharCountResult);
+		LogString maxElementCountResult;
+		PatternLayout(LOG4CXX_STR("%c{2}")).format(maxElementCountResult, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("apache.")), maxElementCountResult);
 	}
 
 	/**
@@ -798,16 +801,37 @@ public:
 	 */
 	void testAbbreviateEmptyName()
 	{
-		PatternLayout layout(LOG4CXX_STR("%c{2}"));
 		auto event = std::make_shared<spi::LoggingEvent>
 			( LOG4CXX_STR("")
 			, Level::getInfo()
 			, LOG4CXX_STR("msg")
 			, LOG4CXX_LOCATION
 			);
-		LogString result;
-		layout.format(result, event);
-		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("")), result);
+		LogString maxElementCountResult;
+		PatternLayout(LOG4CXX_STR("%c{2}")).format(maxElementCountResult, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("")), maxElementCountResult);
+		LogString maxElementCharCountResult;
+		PatternLayout(LOG4CXX_STR("%c{1.}")).format(maxElementCharCountResult, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("")), maxElementCharCountResult);
+	}
+
+	/**
+	 * Degenerate logger name.
+	 */
+	void testAbbreviateDegenerateName()
+	{
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR(".")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+		LogString maxElementCountResult;
+		PatternLayout(LOG4CXX_STR("%c{1}")).format(maxElementCountResult, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR(".")), maxElementCountResult);
+		LogString maxElementCharCountResult;
+		PatternLayout(LOG4CXX_STR("%c{1.}")).format(maxElementCharCountResult, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR(".")), maxElementCharCountResult);
 	}
 
 	/**

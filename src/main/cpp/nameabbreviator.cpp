@@ -94,28 +94,22 @@ class MaxElementAbbreviator : public NameAbbreviator
 		}
 
 		/**
-		 * Abbreviate name.
-		 * @param buf buffer to append abbreviation.
-		 * @param nameStart start of name to abbreviate.
+		 * {@inheritDoc}
 		 */
 		void abbreviate(LogString::size_type nameStart, LogString& buf) const override
 		{
-			// We substract 1 from 'len' when assigning to 'end' to avoid out of
-			// bounds exception in return r.substring(end+1, len). This can happen if
-			// precision is 1 and the logger name ends with a dot.
-			LogString::size_type end = buf.length() - 1;
-
-			for (LogString::size_type i = count; i > 0; i--)
+			logchar separ = 0x2E; // '.'
+			LogString::size_type end = buf.length();
+			for (LogString::size_type i = count; nameStart < end && 0 < i; --i)
 			{
-				end = buf.rfind(0x2E /* '.' */, end - 1);
-
-				if ((end == LogString::npos) || (end < nameStart))
+				end = buf.rfind(separ, end - 1);
+				if (LogString::npos == end)
 				{
 					return;
 				}
 			}
-
-			buf.erase(buf.begin() + nameStart, buf.begin() + (end + 1));
+			if (nameStart < end + 1 && end + 1 < buf.length())
+				buf.erase(buf.begin() + nameStart, buf.begin() + (end + 1));
 		}
 };
 
@@ -259,9 +253,7 @@ class PatternAbbreviator : public NameAbbreviator
 		}
 
 		/**
-		 * Abbreviate name.
-		 * @param buf buffer that abbreviated name is appended.
-		 * @param nameStart start of name.
+		 * {@inheritDoc}
 		 */
 		void abbreviate(LogString::size_type nameStart, LogString& buf) const override
 		{
@@ -279,7 +271,8 @@ class PatternAbbreviator : public NameAbbreviator
 			//
 			//   apply the last pattern to all the remaining name parts
 			//
-			fragments.back().abbreviateAll(buf, pos);
+			if (pos < buf.length())
+				fragments.back().abbreviateAll(buf, pos);
 		}
 };
 }
