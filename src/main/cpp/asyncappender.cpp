@@ -197,9 +197,22 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	std::thread dispatcher;
 
 	/**
+	 * Serializes join()/joinable()/move-assignment on \c dispatcher:
+	 * concurrent use of those operations on the same std::thread object
+	 * is a data race with undefined behaviour.
+	 */
+	std::mutex dispatcherMutex;
+
+	/**
+	 * The dispatcher's thread id (written while holding \c dispatcherMutex,
+	 * readable by logging threads without touching the thread object).
+	 */
+	std::atomic<std::thread::id> dispatcherId{ std::thread::id() };
+
+	/**
 	 * Used to determine when to restart dispatch thread.
 	*/
-	bool dispatcherActive{ false };
+	std::atomic<bool> dispatcherActive{ false };
 
 	/**
 	 * Used to determine whether to restart dispatch thread.
@@ -216,24 +229,32 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 */
 	void checkDispatcher(const LogString& appenderName)
 	{
+		if (this->dispatcherActive) // Fast path: no lock while the dispatcher is running
+			return;
+
+		// A stopped (or not yet started) dispatcher may be observed by several
+		// logging threads concurrently; serialize all join()/joinable()/
+		// move-assignment on the thread object.
+		std::lock_guard<std::mutex> lock(this->dispatcherMutex);
+
 		// Restart dispatcher if it has stopped by an exception in an attached appender.
 		if (!this->dispatcherActive && this->dispatcher.joinable())
+		{
 			this->dispatcher.join();
+			this->dispatcherId = std::thread::id();
+		}
 
 		if (!this->dispatcher.joinable() && this->dispatcherStartCount <= 1)
 		{
-			std::lock_guard<std::recursive_mutex> lock(this->mutex);
-			if (!this->dispatcher.joinable())
-			{
-				++this->dispatcherStartCount;
-				this->dispatcherActive = true;
-				this->dispatcher = ThreadUtility::instance()->createThread
-					( LOG4CXX_STR("AsyncAppender")
-					, &AsyncAppender::AsyncAppenderPriv::dispatch
-					, this
-					, appenderName
-					);
-			}
+			++this->dispatcherStartCount;
+			this->dispatcherActive = true;
+			this->dispatcher = ThreadUtility::instance()->createThread
+				( LOG4CXX_STR("AsyncAppender")
+				, &AsyncAppender::AsyncAppenderPriv::dispatch
+				, this
+				, appenderName
+				);
+			this->dispatcherId = this->dispatcher.get_id();
 		}
 	}
 
@@ -242,9 +263,18 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		bufferNotEmpty.notify_all();
 		bufferNotFull.notify_all();
 
-		if (dispatcher.joinable())
+		// Move the thread object out under the lock but join outside it:
+		// the exiting dispatcher may still need bufferMutex, and a thread
+		// blocked on dispatcherMutex may be holding bufferMutex.
+		std::thread stoppedDispatcher;
 		{
-			dispatcher.join();
+			std::lock_guard<std::mutex> lock(dispatcherMutex);
+			stoppedDispatcher = std::move(dispatcher);
+			dispatcherId = std::thread::id();
+		}
+		if (stoppedDispatcher.joinable())
+		{
+			stoppedDispatcher.join();
 		}
 	}
 
@@ -359,7 +389,7 @@ void AsyncAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 
 	priv->checkDispatcher(getName());
 
-	if (priv->dispatcher.get_id() == std::this_thread::get_id()) // From an appender attached to this?
+	if (priv->dispatcherId.load() == std::this_thread::get_id()) // From an appender attached to this?
 	{
 		std::unique_lock<std::mutex> lock(priv->bufferMutex);
 		auto loggerName = event->getLoggerName();
@@ -520,7 +550,9 @@ void AsyncAppender::setBufferSize(int size)
 	}
 
 	std::lock_guard<std::mutex> lock(priv->bufferMutex);
-	if (priv->dispatcher.joinable())
+	// Use the atomic thread id (not the thread object) so no lock ordering
+	// with dispatcherMutex is needed here.
+	if (priv->dispatcherId.load() != std::thread::id())
 	{
 		throw RuntimeException(LOG4CXX_STR("AsyncAppender buffer size cannot be changed now"));
 	}
@@ -668,6 +700,12 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 			this->discardMap.clear();
 		}
 
+		// A fault in an attached appender must not permanently disable this
+		// dispatch thread: producers using the default Blocking=true would
+		// hang forever once the ring buffer fills. Reset the failure budget
+		// for each batch so a transient fault (e.g. a temporarily full disk)
+		// only limits retries within the current batch.
+		failureCount = 0;
 		for (auto item : events)
 		{
 			try
@@ -690,8 +728,6 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 			}
 		}
 		++iterationCount;
-		if (1 < failureCount)
-			break;
 	}
 	if (LogLog::isDebugEnabled())
 	{
