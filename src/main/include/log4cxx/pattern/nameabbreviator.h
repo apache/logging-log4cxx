@@ -70,10 +70,10 @@ class LOG4CXX_EXPORT NameAbbreviator : public LOG4CXX_NS::helpers::Object
 		static NameAbbreviatorPtr getDefaultAbbreviator();
 
 		/**
-		 * Abbreviates a name in a StringBuffer.
-		 *
-		 * @param nameStart starting position of name in buf.
-		 * @param buf buffer, may not be null.
+		 * Modify \c buf by abbreviating the name at index \c nameStart.
+		 * @pre !buf.empty() && nameStart < buf.length()
+		 * @param nameStart an index into \c buf of the name.
+		 * @param buf string buffer containing name.
 		 */
 		virtual void abbreviate(LogString::size_type nameStart, LogString& buf) const = 0;
 
