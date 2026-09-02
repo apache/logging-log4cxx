@@ -139,10 +139,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	using BaseType = AppenderSkeleton::AppenderSkeletonPrivate;
 	AsyncAppenderPriv()
 		: AppenderSkeletonPrivate()
-		, buffer(DEFAULT_BUFFER_SIZE)
 		, bufferSize(DEFAULT_BUFFER_SIZE)
-		, dispatcher()
-		, locationInfo(false)
 		, blocking(true)
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{if (setClosed()) stopDispatcher();})
@@ -246,6 +243,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 		if (!this->dispatcher.joinable() && this->dispatcherStartCount <= 1)
 		{
+			this->buffer.resize(this->bufferSize);
 			++this->dispatcherStartCount;
 			this->dispatcherActive = true;
 			this->dispatcher = ThreadUtility::instance()->createThread
@@ -283,7 +281,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	/**
 	 * Should location info be included in dispatched messages.
 	*/
-	bool locationInfo;
+	bool locationInfo{ true };
 
 	/**
 	 * Does appender block when buffer is full.
@@ -541,7 +539,6 @@ void AsyncAppender::setLocationInfo(bool flag)
 	priv->locationInfo = flag;
 }
 
-
 void AsyncAppender::setBufferSize(int size)
 {
 	if (size < 0)
@@ -550,15 +547,7 @@ void AsyncAppender::setBufferSize(int size)
 	}
 
 	std::lock_guard<std::mutex> lock(priv->bufferMutex);
-	// Use the atomic thread id (not the thread object) so no lock ordering
-	// with dispatcherMutex is needed here.
-	if (priv->dispatcherId.load() != std::thread::id())
-	{
-		throw RuntimeException(LOG4CXX_STR("AsyncAppender buffer size cannot be changed now"));
-	}
 	priv->bufferSize = (size < 1) ? 1 : size;
-	priv->buffer.resize(priv->bufferSize);
-	priv->bufferNotFull.notify_all();
 }
 
 int AsyncAppender::getBufferSize() const
