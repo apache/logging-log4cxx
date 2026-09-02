@@ -38,6 +38,7 @@
 #include <log4cxx/file.h>
 #include <ostream>
 #include <thread>
+#include <atomic>
 #include <fstream>
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
@@ -125,6 +126,36 @@ class BlockableVectorAppender : public VectorAppender
 LOG4CXX_PTR_DEF(BlockableVectorAppender);
 
 /**
+ * Vector appender that throws on the first \c failureCount calls to append.
+ */
+class TransientlyFailingVectorAppender : public VectorAppender
+{
+	private:
+		std::atomic<int> failuresRemaining;
+	public:
+		TransientlyFailingVectorAppender(int failureCount)
+			: failuresRemaining(failureCount)
+		{
+		}
+
+		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
+		{
+			if (0 < failuresRemaining--)
+			{
+				throw RuntimeException(LOG4CXX_STR("Intentional transient exception"));
+			}
+			VectorAppender::append( LOG4CXX_APPEND_PARAMETERS );
+		}
+
+		/** Goes negative once an append call has succeeded. */
+		int remainingFailures() const
+		{
+			return failuresRemaining;
+		}
+};
+LOG4CXX_PTR_DEF(TransientlyFailingVectorAppender);
+
+/**
  * An appender that adds logging events
  */
 class LoggingVectorAppender : public VectorAppender
@@ -162,6 +193,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testEventFlush);
 		LOGUNIT_TEST(testMultiThread);
 		LOGUNIT_TEST(testBadAppender);
+		LOGUNIT_TEST(testDispatcherRecoversFromAppenderExceptions);
 		LOGUNIT_TEST(testBufferOverflowBehavior);
 		LOGUNIT_TEST(testLoggingAppender);
 #if LOG4CXX_HAS_DOMCONFIGURATOR
@@ -424,6 +456,49 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			// Check a message was received
 			auto& v = vectorAppender->getVector();
 			LOGUNIT_ASSERT(0 < v.size());
+		}
+
+		/**
+		 * Checks the dispatch thread survives exceptions thrown by an
+		 * attached appender. Regression test: two exceptions at any two
+		 * points in the dispatch thread's lifetime used to stop dispatching
+		 * permanently, after which producers using the default Blocking=true
+		 * hung forever once the buffer filled.
+		 */
+		void testDispatcherRecoversFromAppenderExceptions()
+		{
+			// Configure Log4cxx
+			AsyncAppenderPtr async;
+			auto r = LogManager::getLoggerRepository();
+			r->ensureIsConfigured([r, &async]()
+			{
+				async = std::make_shared<AsyncAppender>();
+				async->setName(LOG4CXX_STR("async-testDispatcherRecovers"));
+				async->activateOptions();
+				r->getRootLogger()->addAppender(async);
+				r->setConfigured(true);
+			});
+			LOGUNIT_ASSERT(async);
+			// The old code tolerated only 4 exceptions over the appender lifetime
+			// (2 per dispatch thread incarnation, one restart allowed)
+			auto failingAppender = std::make_shared<TransientlyFailingVectorAppender>(4);
+			failingAppender->setName(LOG4CXX_STR("async-transientlyFailingVector"));
+			async->addAppender(failingAppender);
+
+			// Log messages until one has been delivered (bounded wait)
+			auto root = r->getRootLogger();
+			for (int i = 0; 0 <= failingAppender->remainingFailures() && i < 100; i++)
+			{
+				LOG4CXX_INFO_ASYNC(root, "message" << i);
+				std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+			}
+			LOG4CXX_INFO_ASYNC(root, "final message");
+			async->close();
+
+			// Check dispatching recovered once the transient fault cleared
+			auto& v = failingAppender->getVector();
+			LOGUNIT_ASSERT(!v.empty());
+			LOGUNIT_ASSERT(v.back()->getRenderedMessage() == LOG4CXX_STR("final message"));
 		}
 
 		/**
