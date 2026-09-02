@@ -18,7 +18,7 @@ on: [push, pull_request]
 
 jobs:
   job:
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
+    name: ${{ matrix.name }}-build-and-test
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
