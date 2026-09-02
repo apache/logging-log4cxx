@@ -18,7 +18,7 @@ on: [push, pull_request]
 
 jobs:
   job:
-    name: ${{ matrix.os }}-${{ matrix.cxx }}-build-and-test
+    name: static-${{ matrix.name }}-build-and-test
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -28,7 +28,7 @@ jobs:
           - name: windows-2022
             os: windows-2022
             vcpkg_ref: 2025.07.25
-          - name: windows-2025
+          - name: windows-2025-fmt
             os: windows-2025
             vcpkg_options: fmt
             vcpkg_ref: 2026.05.25
@@ -80,7 +80,9 @@ jobs:
             -DBUILD_SHARED_LIBS=off `
             -DLOG4CXX_MULTIPROCESS_ROLLING_FILE_APPENDER=on `
             -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin `
-            "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+            "-DCMAKE_TOOLCHAIN_FILE=$ROOT/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+            "-DVCPKG_TARGET_TRIPLET=x64-windows-static" `
+            "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug" `
            -S "$ROOT/main" `
            -B "$ROOT/build"
 
@@ -90,8 +92,7 @@ jobs:
       shell: pwsh
       timeout-minutes: 10
       run: |
-        cd main
-        cd build
-        ctest -C Debug --output-on-failure
+        $ROOT=Get-Location
+        ctest --test-dir "$ROOT/build" -C Debug --output-on-failure
 
 

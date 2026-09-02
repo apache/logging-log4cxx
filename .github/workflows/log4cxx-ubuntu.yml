@@ -86,6 +86,7 @@ jobs:
 
     - name: 'Configure Dependencies'
       run: |
+        sudo apt-get update
         sudo apt-get install -y libapr1-dev libaprutil1-dev
         if [ ${{ matrix.fmt }} == ON ]; then sudo apt-get install -y libfmt-dev; fi
         if [ ${{ matrix.odbc }} == ON ]; then sudo apt-get install -y unixodbc-dev; fi
