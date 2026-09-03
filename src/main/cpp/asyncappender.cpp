@@ -400,13 +400,13 @@ void AsyncAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 	else while (true)
 	{
 		auto pendingCount = priv->eventCount - priv->dispatchedCount;
-		if (0 <= pendingCount && pendingCount < priv->bufferSize)
+		if (0 <= pendingCount && pendingCount < priv->buffer.size())
 		{
 			// Claim a slot in the ring buffer
 			auto oldEventCount = priv->eventCount++;
 			auto index = oldEventCount % priv->buffer.size();
 			// Wait for a free slot
-			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount)
+			while (priv->buffer.size() <= oldEventCount - priv->dispatchedCount)
 				std::this_thread::yield(); // Allow the dispatch thread to free a slot
 			// Write to the ring buffer
 			priv->buffer[index] = AsyncAppenderPriv::EventData{event, pendingCount};
@@ -440,7 +440,7 @@ void AsyncAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 			priv->bufferNotFull.wait(lock, [this]()
 			{
 				priv->checkDispatcher(getName());
-				return priv->eventCount - priv->dispatchedCount < priv->bufferSize;
+				return priv->eventCount - priv->dispatchedCount < priv->buffer.size();
 			});
 			--priv->blockedCount;
 			discard = false;
@@ -546,14 +546,14 @@ void AsyncAppender::setBufferSize(int size)
 		throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
 	}
 
-	std::lock_guard<std::mutex> lock(priv->bufferMutex);
+	std::lock_guard<std::mutex> lock(priv->dispatcherMutex);
 	priv->bufferSize = (size < 1) ? 1 : size;
 }
 
 int AsyncAppender::getBufferSize() const
 {
-	std::lock_guard<std::mutex> lock(priv->bufferMutex);
-	return priv->bufferSize;
+	std::lock_guard<std::mutex> lock(priv->dispatcherMutex);
+	return priv->buffer.empty() ? priv->bufferSize : static_cast<int>(priv->buffer.size());
 }
 
 void AsyncAppender::setBlocking(bool value)
@@ -649,13 +649,13 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 	size_t waitCount = 0;
 	size_t producerBlockedCount = 0;
 	int failureCount = 0;
-	std::vector<size_t> pendingCountHistogram(this->bufferSize, 0);
+	std::vector<size_t> pendingCountHistogram(this->buffer.size(), 0);
 	bool isActive = true;
 
 	while (isActive)
 	{
 		LoggingEventList events;
-		events.reserve(this->bufferSize);
+		events.reserve(this->buffer.size());
 		for (int count = 0; count < 2 && this->dispatchedCount == this->commitCount; ++count)
 			std::this_thread::yield(); // Wait a bit
 		if (this->dispatchedCount == this->commitCount)
@@ -668,7 +668,7 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 		}
 		isActive = !this->isClosed();
 
-		while (events.size() < this->bufferSize && this->dispatchedCount != this->commitCount)
+		while (events.size() < this->buffer.size() && this->dispatchedCount != this->commitCount)
 		{
 			auto index = this->dispatchedCount % this->buffer.size();
 			const auto& data = this->buffer[index];
