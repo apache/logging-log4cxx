@@ -97,7 +97,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 
 	// Call the target API
 	log4cxx::LogString result;
-	layout.format(result, event, p);
+	layout.format(result, event);
 
 	// Clean up
 	log4cxx::NDC::clear();
