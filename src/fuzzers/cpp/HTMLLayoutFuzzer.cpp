@@ -38,7 +38,6 @@ namespace
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// Setup HTMLLayout
 	HTMLLayout layout;
-	Pool p;
 
 	FuzzedDataProvider fdp(data, size);
 
@@ -57,7 +56,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 		std::string headerStr = fdp.ConsumeRandomLengthString(MaxValueLength);
 		LogString header;
 		Transcoder::decode(headerStr, header);
-		layout.appendHeader(header, p);
+		layout.appendHeader(header);
 	}
 
 	// Create random strings we need later
