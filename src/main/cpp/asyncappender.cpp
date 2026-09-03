@@ -139,10 +139,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	using BaseType = AppenderSkeleton::AppenderSkeletonPrivate;
 	AsyncAppenderPriv()
 		: AppenderSkeletonPrivate()
-		, buffer(DEFAULT_BUFFER_SIZE)
 		, bufferSize(DEFAULT_BUFFER_SIZE)
-		, dispatcher()
-		, locationInfo(false)
 		, blocking(true)
 #if LOG4CXX_EVENTS_AT_EXIT
 		, atExitRegistryRaii([this]{if (setClosed()) stopDispatcher();})
@@ -197,9 +194,22 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	std::thread dispatcher;
 
 	/**
+	 * Serializes join()/joinable()/move-assignment on \c dispatcher:
+	 * concurrent use of those operations on the same std::thread object
+	 * is a data race with undefined behaviour.
+	 */
+	std::mutex dispatcherMutex;
+
+	/**
+	 * The dispatcher's thread id (written while holding \c dispatcherMutex,
+	 * readable by logging threads without touching the thread object).
+	 */
+	std::atomic<std::thread::id> dispatcherId{ std::thread::id() };
+
+	/**
 	 * Used to determine when to restart dispatch thread.
 	*/
-	bool dispatcherActive{ false };
+	std::atomic<bool> dispatcherActive{ false };
 
 	/**
 	 * Used to determine whether to restart dispatch thread.
@@ -216,24 +226,33 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	 */
 	void checkDispatcher(const LogString& appenderName)
 	{
+		if (this->dispatcherActive) // Fast path: no lock while the dispatcher is running
+			return;
+
+		// A stopped (or not yet started) dispatcher may be observed by several
+		// logging threads concurrently; serialize all join()/joinable()/
+		// move-assignment on the thread object.
+		std::lock_guard<std::mutex> lock(this->dispatcherMutex);
+
 		// Restart dispatcher if it has stopped by an exception in an attached appender.
 		if (!this->dispatcherActive && this->dispatcher.joinable())
+		{
 			this->dispatcher.join();
+			this->dispatcherId = std::thread::id();
+		}
 
 		if (!this->dispatcher.joinable() && this->dispatcherStartCount <= 1)
 		{
-			std::lock_guard<std::recursive_mutex> lock(this->mutex);
-			if (!this->dispatcher.joinable())
-			{
-				++this->dispatcherStartCount;
-				this->dispatcherActive = true;
-				this->dispatcher = ThreadUtility::instance()->createThread
-					( LOG4CXX_STR("AsyncAppender")
-					, &AsyncAppender::AsyncAppenderPriv::dispatch
-					, this
-					, appenderName
-					);
-			}
+			this->buffer.resize(this->bufferSize);
+			++this->dispatcherStartCount;
+			this->dispatcherActive = true;
+			this->dispatcher = ThreadUtility::instance()->createThread
+				( LOG4CXX_STR("AsyncAppender")
+				, &AsyncAppender::AsyncAppenderPriv::dispatch
+				, this
+				, appenderName
+				);
+			this->dispatcherId = this->dispatcher.get_id();
 		}
 	}
 
@@ -242,9 +261,18 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		bufferNotEmpty.notify_all();
 		bufferNotFull.notify_all();
 
-		if (dispatcher.joinable())
+		// Move the thread object out under the lock but join outside it:
+		// the exiting dispatcher may still need bufferMutex, and a thread
+		// blocked on dispatcherMutex may be holding bufferMutex.
+		std::thread stoppedDispatcher;
 		{
-			dispatcher.join();
+			std::lock_guard<std::mutex> lock(dispatcherMutex);
+			stoppedDispatcher = std::move(dispatcher);
+			dispatcherId = std::thread::id();
+		}
+		if (stoppedDispatcher.joinable())
+		{
+			stoppedDispatcher.join();
 		}
 	}
 
@@ -253,7 +281,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 	/**
 	 * Should location info be included in dispatched messages.
 	*/
-	bool locationInfo;
+	bool locationInfo{ true };
 
 	/**
 	 * Does appender block when buffer is full.
@@ -359,7 +387,7 @@ void AsyncAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 
 	priv->checkDispatcher(getName());
 
-	if (priv->dispatcher.get_id() == std::this_thread::get_id()) // From an appender attached to this?
+	if (priv->dispatcherId.load() == std::this_thread::get_id()) // From an appender attached to this?
 	{
 		std::unique_lock<std::mutex> lock(priv->bufferMutex);
 		auto loggerName = event->getLoggerName();
@@ -372,13 +400,13 @@ void AsyncAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 	else while (true)
 	{
 		auto pendingCount = priv->eventCount - priv->dispatchedCount;
-		if (0 <= pendingCount && pendingCount < priv->bufferSize)
+		if (0 <= pendingCount && pendingCount < priv->buffer.size())
 		{
 			// Claim a slot in the ring buffer
 			auto oldEventCount = priv->eventCount++;
 			auto index = oldEventCount % priv->buffer.size();
 			// Wait for a free slot
-			while (priv->bufferSize <= oldEventCount - priv->dispatchedCount)
+			while (priv->buffer.size() <= oldEventCount - priv->dispatchedCount)
 				std::this_thread::yield(); // Allow the dispatch thread to free a slot
 			// Write to the ring buffer
 			priv->buffer[index] = AsyncAppenderPriv::EventData{event, pendingCount};
@@ -412,7 +440,7 @@ void AsyncAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 			priv->bufferNotFull.wait(lock, [this]()
 			{
 				priv->checkDispatcher(getName());
-				return priv->eventCount - priv->dispatchedCount < priv->bufferSize;
+				return priv->eventCount - priv->dispatchedCount < priv->buffer.size();
 			});
 			--priv->blockedCount;
 			discard = false;
@@ -511,7 +539,6 @@ void AsyncAppender::setLocationInfo(bool flag)
 	priv->locationInfo = flag;
 }
 
-
 void AsyncAppender::setBufferSize(int size)
 {
 	if (size < 0)
@@ -519,20 +546,14 @@ void AsyncAppender::setBufferSize(int size)
 		throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
 	}
 
-	std::lock_guard<std::mutex> lock(priv->bufferMutex);
-	if (priv->dispatcher.joinable())
-	{
-		throw RuntimeException(LOG4CXX_STR("AsyncAppender buffer size cannot be changed now"));
-	}
+	std::lock_guard<std::mutex> lock(priv->dispatcherMutex);
 	priv->bufferSize = (size < 1) ? 1 : size;
-	priv->buffer.resize(priv->bufferSize);
-	priv->bufferNotFull.notify_all();
 }
 
 int AsyncAppender::getBufferSize() const
 {
-	std::lock_guard<std::mutex> lock(priv->bufferMutex);
-	return priv->bufferSize;
+	std::lock_guard<std::mutex> lock(priv->dispatcherMutex);
+	return priv->buffer.empty() ? priv->bufferSize : static_cast<int>(priv->buffer.size());
 }
 
 void AsyncAppender::setBlocking(bool value)
@@ -628,13 +649,13 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 	size_t waitCount = 0;
 	size_t producerBlockedCount = 0;
 	int failureCount = 0;
-	std::vector<size_t> pendingCountHistogram(this->bufferSize, 0);
+	std::vector<size_t> pendingCountHistogram(this->buffer.size(), 0);
 	bool isActive = true;
 
 	while (isActive)
 	{
 		LoggingEventList events;
-		events.reserve(this->bufferSize);
+		events.reserve(this->buffer.size());
 		for (int count = 0; count < 2 && this->dispatchedCount == this->commitCount; ++count)
 			std::this_thread::yield(); // Wait a bit
 		if (this->dispatchedCount == this->commitCount)
@@ -647,7 +668,7 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 		}
 		isActive = !this->isClosed();
 
-		while (events.size() < this->bufferSize && this->dispatchedCount != this->commitCount)
+		while (events.size() < this->buffer.size() && this->dispatchedCount != this->commitCount)
 		{
 			auto index = this->dispatchedCount % this->buffer.size();
 			const auto& data = this->buffer[index];
@@ -668,6 +689,12 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 			this->discardMap.clear();
 		}
 
+		// A fault in an attached appender must not permanently disable this
+		// dispatch thread: producers using the default Blocking=true would
+		// hang forever once the ring buffer fills. Reset the failure budget
+		// for each batch so a transient fault (e.g. a temporarily full disk)
+		// only limits retries within the current batch.
+		failureCount = 0;
 		for (auto item : events)
 		{
 			try
@@ -690,8 +717,6 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 			}
 		}
 		++iterationCount;
-		if (1 < failureCount)
-			break;
 	}
 	if (LogLog::isDebugEnabled())
 	{

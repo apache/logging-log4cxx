@@ -36,6 +36,7 @@ LOGUNIT_CLASS(MDCTestCase)
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test3);
+	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -90,6 +91,16 @@ public:
 		LogString output;
 		converter.format(e, output);
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR(""), output);
+	}
+
+	/// A quote character in MDC content must be doubled in a quoted context.
+	void test4()
+	{
+		MDC item1("key1", "it's");
+		LogString output;
+		PatternLayout l{ LOG4CXX_STR("%J{'}") };
+		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()));
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("{\"key1\":\"it''s\"}"), output);
 	}
 };
 

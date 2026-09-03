@@ -83,11 +83,22 @@ void MDCPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 	if (!m_priv->style.empty()) // In a quoted context?
 	{
 		auto quote = m_priv->style.front();
-		size_t endIndex;
-		while ((endIndex = toAppendTo.find(quote, startIndex)) != toAppendTo.npos)
+		if (toAppendTo.find(quote, startIndex) != toAppendTo.npos)
 		{
-			toAppendTo.insert(endIndex + 1, 1, quote);
-			startIndex = endIndex + 2;
+			// Duplicate each quote character in a single linear pass:
+			// repeated single-character insert() shifts the tail of the
+			// output buffer on every quote, which is quadratic in the
+			// (attacker-controllable) MDC content length.
+			LogString input = toAppendTo.substr(startIndex);
+			toAppendTo.resize(startIndex);
+			size_t endIndex, index = 0;
+			while ((endIndex = input.find(quote, index)) != input.npos)
+			{
+				toAppendTo.append(input, index, endIndex - index + 1);
+				toAppendTo += quote;
+				index = endIndex + 1;
+			}
+			toAppendTo.append(input, index, LogString::npos);
 		}
 	}
 }

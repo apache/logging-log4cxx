@@ -42,7 +42,8 @@ PatternConverterPtr LoggerPatternConverter::newInstance(
 
 void LoggerPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
-	int initialLength = (int)toAppendTo.length();
+	auto initialLength = toAppendTo.length();
 	toAppendTo.append(event->getLoggerName());
-	abbreviate(initialLength, toAppendTo);
+	if (initialLength < toAppendTo.length())
+		abbreviate(initialLength, toAppendTo);
 }

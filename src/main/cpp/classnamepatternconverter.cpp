@@ -42,7 +42,8 @@ PatternConverterPtr ClassNamePatternConverter::newInstance(
 
 void ClassNamePatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
 {
-	int initialLength = (int)toAppendTo.length();
+	auto initialLength = toAppendTo.length();
 	append(toAppendTo, event->getLocationInformation().getClassName());
-	abbreviate(initialLength, toAppendTo);
+	if (initialLength < toAppendTo.length())
+		abbreviate(initialLength, toAppendTo);
 }

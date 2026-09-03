@@ -201,7 +201,12 @@ int TimeBasedRollingPolicy::createMMapFile(const std::string& fileName, LOG4CXX_
 {
 	m_priv->_mapFileName = createFile(fileName, MMAP_FILE_SUFFIX, pool);
 
-	apr_status_t stat = apr_file_open(&m_priv->_file_map, m_priv->_mapFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_priv->_mmapPool.getAPRPool());
+	// Create the coordination file with owner-only permissions: the
+	// cooperating processes share the same uid (embedded in the file name),
+	// and any other local user able to take a shared fcntl lock on a
+	// world-readable coordination file could block rollover (and with it
+	// every logging thread) indefinitely.
+	apr_status_t stat = apr_file_open(&m_priv->_file_map, m_priv->_mapFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_FPROT_UREAD | APR_FPROT_UWRITE, m_priv->_mmapPool.getAPRPool());
 
 	if (stat != APR_SUCCESS)
 	{
@@ -407,7 +412,8 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover( LOG4CXX_ROLLING_POLICY_
 			{
 				LOG4CXX_ENCODE_CHAR(mapFile, m_priv->_fileNamePattern);
 				const std::string lockname = createFile(mapFile, LOCK_FILE_SUFFIX, m_priv->_mmapPool);
-				apr_status_t stat = apr_file_open(&m_priv->_lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, m_priv->_mmapPool.getAPRPool());
+				// Owner-only permissions: see the comment in createMMapFile.
+				apr_status_t stat = apr_file_open(&m_priv->_lock_file, lockname.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_FPROT_UREAD | APR_FPROT_UWRITE, m_priv->_mmapPool.getAPRPool());
 
 				if (stat != APR_SUCCESS)
 				{

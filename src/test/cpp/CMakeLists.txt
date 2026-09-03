@@ -49,6 +49,7 @@ set(ALL_LOG4CXX_TESTS
     asyncappendertestcase
     asyncappenderracestress
     consoleappendertestcase
+    defaultconfiguratortest
     decodingtest
     encodingtest
     fileappendertest

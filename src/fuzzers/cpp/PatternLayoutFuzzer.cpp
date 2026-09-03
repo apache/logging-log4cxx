@@ -16,10 +16,6 @@
  */
 
 #include <iostream>		// for `cout`, `endl`
-#include <cstdlib>		// for `exit()`, `EXIT_FAILURE`
-#include <unistd.h>		// for `readlink`, `chdir`
-#include <libgen.h> 	// for `dirname`
-#include <limits.h>		// for `PATH_MAX`
 #include <iomanip>		// for `put_time()`
 #include <ctime>		// for `time()`
 #include <fuzzer/FuzzedDataProvider.h>
@@ -53,9 +49,9 @@ public:
 		return true;
 	}
 
-	void append(const spi::LoggingEventPtr& event, helpers::Pool& pool) override {
+	void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override {
 		LogString msg;
-		getLayout()->format(msg, event, pool);
+		getLayout()->format(msg, event);
 	}
 
 	void setOption(const LogString& option, const LogString& value) override {}
@@ -63,8 +59,6 @@ public:
 }; // class
 
 IMPLEMENT_LOG4CXX_OBJECT(EncodingAppender)
-
-LOG4CXX_PTR_DEF(EncodingAppender);
 
 } // namespace
 
@@ -75,26 +69,6 @@ static std::tm* logTimeBuffer;
 	logTimeBuffer = std::localtime(&logTime); \
 	stream << std::put_time(logTimeBuffer, "%Y-%m-%d %H:%M:%S") << " [" << __FILE_NAME__ << ":" << __LINE__ << "] "
 
-static void findExecutablePath(char* buffer) {
-    ssize_t length = readlink("/proc/self/exe", buffer, PATH_MAX);
-    if (length == -1) {
-    	LOG(std::cerr) << "ERROR: Failed to find the executable path" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-	buffer[length] = '\0';
-}
-
-static void chdirExecutableHome() {
-    char executablePath[PATH_MAX];
-    findExecutablePath(executablePath);
-    char* executableHome = dirname(executablePath);
-	if (chdir(executableHome) != 0) {
-		LOG(std::cerr) << "DEBUG: Executable path: " << executablePath << std::endl;
-		LOG(std::cerr) << "DEBUG: Executable home: " << executableHome << std::endl;
-		LOG(std::cerr) << "ERROR: Failed to `chdir()` the executable path" << std::endl;
-	}
-}
-
 static int INITIALIZED = 0;
 
 static void init() {
@@ -102,8 +76,8 @@ static void init() {
 		return;
 	}
 	LOG(std::cout) << "INFO: Produced using the Git commit ID: " << GIT_COMMIT_ID << std::endl;
-	chdirExecutableHome();
-	PropertyConfigurator::configure("PatternLayoutFuzzer.properties");
+	auto programFilePath = spi::Configurator::properties().getProperty(LOG4CXX_STR("PROGRAM_FILE_PATH.PARENT_PATH"));
+	PropertyConfigurator::configure(programFilePath + LOG4CXX_STR("/PatternLayoutFuzzer.properties"));
 	INITIALIZED = 1;
 }
 

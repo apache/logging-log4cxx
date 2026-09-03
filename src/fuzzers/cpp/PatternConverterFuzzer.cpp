@@ -81,8 +81,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// create strings from "data".
 	FuzzedDataProvider fdp(data, size);
 
-	auto loggerStr = fdp.ConsumeRandomLengthString();
-	auto contentStr = fdp.ConsumeRandomLengthString();
+	auto loggerStr = fdp.ConsumeRandomLengthString(MaximumNameByteCount);
+	auto contentStr = fdp.ConsumeRandomLengthString(MaximumOptionByteCount);
 
 	LogString logger, content;
 	Transcoder::decode(loggerStr, logger);

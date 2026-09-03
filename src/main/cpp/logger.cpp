@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/lazyptr.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
@@ -70,7 +71,7 @@ struct Logger::LoggerPrivate
 	// Loggers need to know what Hierarchy they are in
 	spi::LoggerRepository* repositoryRaw;
 
-	helpers::AppenderAttachableImpl aai;
+	LazyPtr<AppenderAttachableImpl> aai;
 
 	/** Additivity is set to true by default, that is children inherit
 	        the appenders of their ancestors by default. If this variable is
@@ -105,7 +106,7 @@ Logger::~Logger()
 
 void Logger::addAppender(const AppenderPtr newAppender)
 {
-	m_priv->aai.addAppender(newAppender);
+	m_priv->aai->addAppender(newAppender);
 	if (auto rep = getHierarchy())
 	{
 		rep->fireAddAppenderEvent(this, newAppender.get());
@@ -114,7 +115,9 @@ void Logger::addAppender(const AppenderPtr newAppender)
 
 bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender)
 {
-	bool result = m_priv->aai.replaceAppender(oldAppender, newAppender);
+	bool result = false;
+	if (auto p = m_priv->aai.get_ptr())
+		result = p->replaceAppender(oldAppender, newAppender);
 	if (result)
 	{
 		if (auto rep = getHierarchy())
@@ -125,7 +128,7 @@ bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& 
 
 void Logger::replaceAppenders( const AppenderList& newList)
 {
-	m_priv->aai.replaceAppenders(newList);
+	m_priv->aai->replaceAppenders(newList);
 
 	if (auto rep = getHierarchy())
 	{
@@ -149,7 +152,8 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event) const
 		logger != 0;
 		logger = logger->m_priv->parent.get())
 	{
-		writes += logger->m_priv->aai.appendLoopOnAppenders(event);
+		if (auto p = logger->m_priv->aai.get_ptr())
+			writes += p->appendLoopOnAppenders(event);
 
 		if (!logger->m_priv->additive)
 		{
@@ -304,12 +308,18 @@ bool Logger::getAdditivity() const
 
 AppenderList Logger::getAllAppenders() const
 {
-	return m_priv->aai.getAllAppenders();
+	AppenderList result;
+	if (auto p = m_priv->aai.get_ptr())
+		result = p->getAllAppenders();
+	return result;
 }
 
 AppenderPtr Logger::getAppender(const LogString& name1) const
 {
-	return m_priv->aai.getAppender(name1);
+	AppenderPtr result;
+	if (auto p = m_priv->aai.get_ptr())
+		result = p->getAppender(name1);
+	return result;
 }
 
 const LevelPtr& Logger::getEffectiveLevel() const
@@ -399,7 +409,10 @@ const LevelPtr& Logger::getLevel() const
 
 bool Logger::isAttached(const AppenderPtr appender) const
 {
-	return m_priv->aai.isAttached(appender);
+	bool result{ false };
+	if (auto p = m_priv->aai.get_ptr())
+		result = p->isAttached(appender);
+	return result;
 }
 
 bool Logger::isThresholdEqualTo(const LevelPtr& level) const
@@ -609,31 +622,39 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
-	AppenderList currentAppenders = m_priv->aai.getAllAppenders();
-	m_priv->aai.removeAllAppenders();
+	if (auto p = m_priv->aai.get_ptr())
+	{
+		auto currentAppenders = p->getAllAppenders();
+		p->removeAllAppenders();
 
-	auto rep = getHierarchy();
-	if(rep){
-		for(AppenderPtr appender : currentAppenders){
-			rep->fireRemoveAppenderEvent(this, appender.get());
+		auto rep = getHierarchy();
+		if(rep){
+			for(AppenderPtr appender : currentAppenders){
+				rep->fireRemoveAppenderEvent(this, appender.get());
+			}
 		}
 	}
 }
 
 void Logger::removeAppender(const AppenderPtr appender)
 {
-	m_priv->aai.removeAppender(appender);
-	if (auto rep = getHierarchy())
+	if (auto p = m_priv->aai.get_ptr())
 	{
-		rep->fireRemoveAppenderEvent(this, appender.get());
+		p->removeAppender(appender);
+		if (auto rep = getHierarchy())
+		{
+			rep->fireRemoveAppenderEvent(this, appender.get());
+		}
 	}
 }
 
 void Logger::removeAppender(const LogString& name1)
 {
-	AppenderPtr appender = m_priv->aai.getAppender(name1);
-	if(appender){
-		removeAppender(appender);
+	if (auto p = m_priv->aai.get_ptr())
+	{
+		if (auto appender = p->getAppender(name1)) {
+			removeAppender(appender);
+		}
 	}
 }
 

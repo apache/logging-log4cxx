@@ -51,6 +51,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 	public:
 		MultiprocessRollingFileAppender();
 
+		using RollingFileAppender::activateOptions;
 		/**
 		\copybrief FileAppender::activateOptions()
 

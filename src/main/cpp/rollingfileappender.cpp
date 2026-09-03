@@ -81,6 +81,7 @@ void RollingFileAppender::setOption(const LogString& option, const LogString& va
 
 int RollingFileAppender::getMaxBackupIndex() const
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	int result = 1;
 	if (auto fwrp = LOG4CXX_NS::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy))
 		result = fwrp->getMaxIndex();
@@ -89,6 +90,7 @@ int RollingFileAppender::getMaxBackupIndex() const
 
 void RollingFileAppender::setMaxBackupIndex(int maxBackups)
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	auto fwrp = LOG4CXX_NS::cast<FixedWindowRollingPolicy>(_priv->rollingPolicy);
 	if (!fwrp)
 	{
@@ -101,6 +103,7 @@ void RollingFileAppender::setMaxBackupIndex(int maxBackups)
 
 size_t RollingFileAppender::getMaximumFileSize() const
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	size_t result = 10 * 1024 * 1024;
 	if (auto sbtp = LOG4CXX_NS::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy))
 		result = sbtp->getMaxFileSize();
@@ -109,6 +112,7 @@ size_t RollingFileAppender::getMaximumFileSize() const
 
 void RollingFileAppender::setMaximumFileSize(size_t maxFileSize)
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	auto sbtp = LOG4CXX_NS::cast<SizeBasedTriggeringPolicy>(_priv->triggeringPolicy);
 	if (!sbtp)
 	{
@@ -163,6 +167,7 @@ LogString RollingFileAppender::makeFileNamePattern(const LogString& datePattern)
 
 void RollingFileAppender::setDatePattern(const LogString& newPattern)
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	auto tbrp = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy);
 	if (!tbrp)
 	{
@@ -484,6 +489,7 @@ void RollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
  */
 RollingPolicyPtr RollingFileAppender::getRollingPolicy() const
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	return _priv->rollingPolicy;
 }
 
@@ -492,6 +498,7 @@ RollingPolicyPtr RollingFileAppender::getRollingPolicy() const
  */
 TriggeringPolicyPtr RollingFileAppender::getTriggeringPolicy() const
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	return _priv->triggeringPolicy;
 }
 
@@ -500,6 +507,7 @@ TriggeringPolicyPtr RollingFileAppender::getTriggeringPolicy() const
  */
 void RollingFileAppender::setRollingPolicy(const RollingPolicyPtr& policy)
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	_priv->rollingPolicy = policy;
 }
 
@@ -508,6 +516,7 @@ void RollingFileAppender::setRollingPolicy(const RollingPolicyPtr& policy)
  */
 void RollingFileAppender::setTriggeringPolicy(const TriggeringPolicyPtr& policy)
 {
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	_priv->triggeringPolicy = policy;
 }
 

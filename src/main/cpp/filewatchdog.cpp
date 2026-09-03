@@ -162,8 +162,11 @@ void FileWatchdog::setDelay(long delay1){
 	}
 }
 
-void FileWatchdog::setFile(const File& filename)
+void FileWatchdog::setFile(const File& newValue)
 {
-    m_priv->file = filename;
-	m_priv->lastModif = 0;
+	if (m_priv->file.getPath() != newValue.getPath())
+	{
+		m_priv->file = newValue;
+		m_priv->lastModif = 0;
+	}
 }
