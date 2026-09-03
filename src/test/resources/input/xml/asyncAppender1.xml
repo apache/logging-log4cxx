@@ -25,7 +25,6 @@
   <appender name="ASYNC" class="org.apache.log4j.AsyncAppender">
     <param name="BufferSize" value="100"/>
     <param name="Blocking" value="false"/>
-    <param name="LocationInfo" value="true"/>
     <appender-ref ref="VECTOR"/>
   </appender>
 
