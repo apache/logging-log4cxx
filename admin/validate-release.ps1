@@ -68,6 +68,7 @@ $PREVIOUS_GPG_HOME="${ENV:GNUPGHOME}"
 $GPG_HOME="$TEST_DIRECTORY/.gpg"
 $LOGGING_KEYS="$GPG_HOME/KEYS"
 ${ENV:GNUPGHOME}="$GPG_HOME"
+trap { ${ENV:GNUPGHOME}="$PREVIOUS_GPG_HOME" }
 if (-not (Test-Path -Path "$GPG_HOME" -PathType Container))
 {
   New-Item -ItemType Directory -Path "$GPG_HOME" -ErrorAction Stop | Out-Null
@@ -105,11 +106,7 @@ foreach ($ARCHIVE_TYPE in $ARCHIVE_TYPES)
   }
   Write-Output "Validating $ARCHIVE.$ARCHIVE_TYPE signature..."
   gpg --batch --verify "$ARCHIVE.$ARCHIVE_TYPE.asc" "$ARCHIVE.$ARCHIVE_TYPE"
-  if (!$? )
-  {
-    ${ENV:GNUPGHOME}="$PREVIOUS_GPG_HOME"
-    exit 1
-  }
+  if (!$? ) { exit 1 }
 
   if ( Test-Path -Path "release_files\$ARCHIVE.$ARCHIVE_TYPE.sha512" )
   {
@@ -120,7 +117,6 @@ foreach ($ARCHIVE_TYPE in $ARCHIVE_TYPES)
     }
     else
     {
-      ${ENV:GNUPGHOME}="$PREVIOUS_GPG_HOME"
       Write-Error "$ARCHIVE.$ARCHIVE_TYPE is not from a GitHub workflow" -ErrorAction Stop
     }
   }
