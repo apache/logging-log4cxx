@@ -10,7 +10,13 @@ fi
 if [ -z "$STAGE" ] ; then
   STAGE=dev # Alternatively release
 fi
-CheckProvenance=$(( $STAGE == "dev" ? 1 : 0 ))
+if [ -z "$CheckProvenance" ] ; then
+  if [ $STAGE == "dev" ] ; then
+    CheckProvenance=1
+  else
+    CheckProvenance=0
+  fi
+fi
 
 if [ -z "$BASE_DL" ] ; then
   BASE_DL=https://dist.apache.org/repos/dist/$STAGE/logging/log4cxx
@@ -25,7 +31,7 @@ fi
 test -d "$TEST_DIRECTORY" || mkdir "$TEST_DIRECTORY"
 cd "$TEST_DIRECTORY"
 
-if $CheckProvenance ; then
+if (( $CheckProvenance )) ; then
   if gh --version >> /dev/null ; then
     WORKFLOW="package_code"
     echo "Downloading $WORKFLOW artifacts ..."
@@ -51,6 +57,18 @@ if $CheckProvenance ; then
   fi
 fi
 
+# Create a temporary gpg home directory, so only the downloaded KEYS are used to verify the signature.
+PREVIOUS_GPG_HOME="$GNUPGHOME"
+GPG_HOME="$TEST_DIRECTORY/.gpg"
+LOGGING_KEYS="$GPG_HOME/KEYS"
+GNUPGHOME="$GPG_HOME"
+export GNUPGHOME
+if [ ! -d "$GPG_HOME" ] ; then
+  mkdir "$GPG_HOME" && chmod 0700 "$GPG_HOME"
+  wget -O "$LOGGING_KEYS" "https://downloads.apache.org/logging/KEYS"
+  gpg --batch --quiet --import "$LOGGING_KEYS"
+fi
+
 FULL_DL="$BASE_DL/$VERSION/$ARCHIVE"
 for ARCHIVE_TYPE in "tar.gz" "zip" ; do
   test -f "$ARCHIVE.$ARCHIVE_TYPE" && rm "$ARCHIVE.$ARCHIVE_TYPE"
@@ -64,7 +82,7 @@ for ARCHIVE_TYPE in "tar.gz" "zip" ; do
     "${SUM}sum" --check  "$ARCHIVE.$ARCHIVE_TYPE.$SUM" || exit $?
   done
   echo "Validating signature..."
-  gpg --verify "$ARCHIVE.$ARCHIVE_TYPE.asc" || exit $?
+  gpg --batch --verify "$ARCHIVE.$ARCHIVE_TYPE.asc" "$ARCHIVE.$ARCHIVE_TYPE"
 
   if [ -f release_files/$ARCHIVE.$ARCHIVE_TYPE.sha512 ] ; then
     echo "Checking provenance ..."
