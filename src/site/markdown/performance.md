@@ -111,14 +111,14 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 | Appending int+float using FMT, pattern: \%m\%n/threads:6 | 537 ns | 3036 ns | 212844 |
 | Appending int+10float using FMT, pattern: \%m\%n | 1671 ns | 1671 ns | 417402 |
 | Appending int+10float using FMT, pattern: \%m\%n/threads:6 | 1275 ns | 7297 ns | 96222 |
-| Async, Sending int+10float using FMT and AsyncBuffer | 784 ns | 783 ns | 891953 |
-| Async, Sending int+10float using FMT and AsyncBuffer/threads:6 | 1375 ns | 7692 ns | 88554 |
-| Async, Sending int+10float using operator<< and AsyncBuffer | 1211 ns | 1211 ns | 578034 |
-| Async, Sending int+10float using operator<< and AsyncBuffer/threads:6 | 1351 ns | 7670 ns | 90912 |
-| Logging int+float using MessageBuffer, pattern: \%d \%m\%n | 1073 ns | 1073 ns | 656652 |
-| Logging int+float using MessageBuffer, pattern: \%d \%m\%n/threads:6 | 1083 ns | 4895 ns | 142776 |
-| Logging int+float using MessageBuffer, JSON | 1394 ns | 1394 ns | 507493 |
-| Logging int+float using MessageBuffer, JSON/threads:6 | 2110 ns | 6827 ns | 104646 |
+| Async, Sending int+10float using FMT and AsyncBuffer | 816 ns | 816 ns | 854294 |
+| Async, Sending int+10float using FMT and AsyncBuffer/threads:6 | 1323 ns | 7367 ns | 91818 |
+| Async, Sending int+10float using operator<< and AsyncBuffer | 1136 ns | 1136 ns | 617814 |
+| Async, Sending int+10float using operator<< and AsyncBuffer/threads:6 | 1343 ns | 7572 ns | 89124 |
+| Logging int+float using MessageBuffer, pattern: \%d \%m\%n | 1238 ns | 1238 ns | 563189 |
+| Logging int+float using MessageBuffer, pattern: \%d \%m\%n/threads:6 | 1323 ns | 7367 ns | 91818 |
+| Logging int+float using MessageBuffer, JSON | 4376 ns | 4376 ns | 160363 |
+| Logging int+float using MessageBuffer, JSON/threads:6 | 6580 ns | 11587 ns | 58260 |
 | Multiprocess logging int+float using MessageBuffer, pattern: \%d \%m\%n | 3253 ns | 3253 ns | 214839 |
 
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
