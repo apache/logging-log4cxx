@@ -91,8 +91,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 	// Create the event
 	auto level = Level::getInfo();
 
-	Pool p;
-
 	auto event = std::make_shared<LoggingEvent>(
 			logger, level, content, LOG4CXX_LOCATION);
 	// Select a converter and invoke it.
@@ -104,62 +102,62 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
 			Transcoder::decode(nameStr, name);
 			Transcoder::decode(opionStr, option);
 
-			PropertiesPatternConverter(name, option).format(event, logger, p);
+			PropertiesPatternConverter(name, option).format(event, logger);
 			break;
 		}
 		case 1: {
-			LoggerPatternConverter(createOptions(&fdp)).format(event, logger, p);
+			LoggerPatternConverter(createOptions(&fdp)).format(event, logger);
 			break;
 		}
 		case 2: {
-			ClassNamePatternConverter(createOptions(&fdp)).format(event, logger, p);
+			ClassNamePatternConverter(createOptions(&fdp)).format(event, logger);
 			break;
 		}
 		case 3: {
-			DatePatternConverter(createOptions(&fdp)).format(event, logger, p);
+			DatePatternConverter(createOptions(&fdp)).format(event, logger);
 			break;
 		}
 		case 4: {
-			FullLocationPatternConverter().format(event, logger, p);
+			FullLocationPatternConverter().format(event, logger);
 			break;
 		}
 		case 5: {
-			LineLocationPatternConverter().format(event, logger, p);
+			LineLocationPatternConverter().format(event, logger);
 			break;
 		}
 		case 6: {
-			MessagePatternConverter().format(event, logger, p);
+			MessagePatternConverter().format(event, logger);
 			break;
 		}
 		case 7: {
-			LineSeparatorPatternConverter().format(event, logger, p);
+			LineSeparatorPatternConverter().format(event, logger);
 			break;
 		}
 		case 8: {
-			MethodLocationPatternConverter().format(event, logger, p);
+			MethodLocationPatternConverter().format(event, logger);
 			break;
 		}
 		case 9: {
-			LevelPatternConverter().format(event, logger, p);
+			LevelPatternConverter().format(event, logger);
 		}
 		case 10: {
-			RelativeTimePatternConverter().format(event, logger, p);
+			RelativeTimePatternConverter().format(event, logger);
 			break;
 		}
 		case 11: {
-			ThreadPatternConverter().format(event, logger, p);
+			ThreadPatternConverter().format(event, logger);
 			break;
 		}
 		case 12: {
-			ThreadUsernamePatternConverter().format(event, logger, p);
+			ThreadUsernamePatternConverter().format(event, logger);
 			break;
 		}
 		case 13: {
-			NDCPatternConverter().format(event, logger, p);
+			NDCPatternConverter().format(event, logger);
 			break;
 		}
 		case 14: {
-			ThrowableInformationPatternConverter(fdp.ConsumeBool()).format(event, logger, p);
+			ThrowableInformationPatternConverter(fdp.ConsumeBool()).format(event, logger);
 			break;
 		}
 	}

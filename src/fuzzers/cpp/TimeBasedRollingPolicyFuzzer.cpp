@@ -61,12 +61,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     logger->addAppender(rfa);
     
     // Log and rollover
-    Pool pool;
     for (int i = 0; i < 10; i++)
     {
             if (i == 4 || i == 9)
             {
-                rfa->rollover(pool);
+                rfa->rollover();
             }
 
             LOG4CXX_DEBUG(logger, fdp.ConsumeRandomLengthString(MaxMessageLength));
