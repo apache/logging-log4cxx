@@ -81,110 +81,18 @@ char* Transcoder::encodeUTF8(const LogString& src, Pool& p)
 
 void Transcoder::encodeUTF8(unsigned int sv, ByteBuffer& dst)
 {
-	size_t bytes = encodeUTF8(sv, dst.current());
-	dst.increment_position(bytes);
-}
-
-
-size_t Transcoder::encodeUTF8(unsigned int ch, char* dst)
-{
-	if (ch < 0x80)
-	{
-		dst[0] = (char) ch;
-		return 1;
-	}
-	else if (ch < 0x800)
-	{
-		dst[0] = (char) (0xC0 + (ch >> 6));
-		dst[1] = (char) (0x80 + (ch & 0x3F));
-		return 2;
-	}
-	else if (ch < 0x10000)
-	{
-		dst[0] = (char) (0xE0 + (ch >> 12));
-		dst[1] = (char) (0x80 + ((ch >> 6) & 0x3F));
-		dst[2] = (char) (0x80 + (ch & 0x3F));
-		return 3;
-	}
-	else if (ch <= 0x10FFFF)
-	{
-		dst[0] = (char) (0xF0 + (ch >> 18));
-		dst[1] = (char) (0x80 + ((ch >> 12) & 0x3F));
-		dst[2] = (char) (0x80 + ((ch >> 6) & 0x3F));
-		dst[3] = (char) (0x80 + (ch & 0x3F));
-		return 4;
-	}
-	else
-	{
-		//
-		//  output UTF-8 encoding of 0xFFFF
-		//
-		dst[0] = (char) 0xEF;
-		dst[1] = (char) 0xBF;
-		dst[2] = (char) 0xBF;
-		return 3;
-	}
+	dst.increment_position(CharsetEncoder::putUTF8CodePoint(sv, dst.current()));
 }
 
 void Transcoder::encodeUTF16BE(unsigned int sv, ByteBuffer& dst)
 {
-	size_t bytes = encodeUTF16BE(sv, dst.current());
-	dst.increment_position(bytes);
-}
-
-
-size_t Transcoder::encodeUTF16BE(unsigned int ch, char* dst)
-{
-	if (ch <= 0xFFFF)
-	{
-		dst[0] = (char) (ch >> 8);
-		dst[1] = (char) (ch & 0xFF);
-		return 2;
-	}
-
-	if (ch <= 0x10FFFF)
-	{
-		unsigned char w = (unsigned char) ((ch >> 16) - 1);
-		dst[0] = (char) (0xD8 + (w >> 2));
-		dst[1] = (char) (((w & 0x03) << 6) + ((ch >> 10) & 0x3F));
-		dst[2] = (char) (0xDC + ((ch >> 8) & 0x03));
-		dst[3] = (char) (ch & 0xFF);
-		return 4;
-	}
-
-	dst[0] = dst[1] = (char) 0xFF;
-	return 2;
+	dst.increment_position(CharsetEncoder::putUTF16BECodePoint(sv, dst.current()));
 }
 
 void Transcoder::encodeUTF16LE(unsigned int sv, ByteBuffer& dst)
 {
-	size_t bytes = encodeUTF16LE(sv, dst.current());
-	dst.increment_position(bytes);
+	dst.increment_position(CharsetEncoder::putUTF16LECodePoint(sv, dst.current()));
 }
-
-size_t Transcoder::encodeUTF16LE(unsigned int ch, char* dst)
-{
-	if (ch <= 0xFFFF)
-	{
-		dst[1] = (char) (ch >> 8);
-		dst[0] = (char) (ch & 0xFF);
-		return 2;
-	}
-
-	if (ch <= 0x10FFFF)
-	{
-		unsigned char w = (unsigned char) ((ch >> 16) - 1);
-		dst[1] = (char) (0xD8 + (w >> 2));
-		dst[0] = (char) (((w & 0x03) << 6) + ((ch >> 10) & 0x3F));
-		dst[3] = (char) (0xDC + ((ch >> 8) & 0x03));
-		dst[2] = (char) (ch & 0xFF);
-		return 4;
-	}
-
-	dst[0] = dst[1] = (char) 0xFF;
-	return 2;
-}
-
 
 unsigned int Transcoder::decode(const std::string& src,
 	std::string::const_iterator& iter)
@@ -231,7 +139,7 @@ unsigned int Transcoder::getCodePoint(const std::string& str, std::string::const
 void Transcoder::encode(unsigned int sv, std::string& dst)
 {
 	char tmp[8];
-	size_t bytes = encodeUTF8(sv, tmp);
+	size_t bytes = CharsetEncoder::putUTF8CodePoint(sv, tmp);
 	dst.append(tmp, bytes);
 }
 
@@ -314,9 +222,9 @@ void Transcoder::encode(const LogString& src, std::string& dst)
 	}
 
 #endif
-
 	if (iter != src.end())
 	{
+		static const int BUFSIZE = 256;
 		char buf[BUFSIZE];
 		ByteBuffer out(buf, BUFSIZE);
 
