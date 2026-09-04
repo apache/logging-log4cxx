@@ -115,10 +115,10 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 | Async, Sending int+10float using FMT and AsyncBuffer/threads:6 | 1323 ns | 7367 ns | 91818 |
 | Async, Sending int+10float using operator<< and AsyncBuffer | 1136 ns | 1136 ns | 617814 |
 | Async, Sending int+10float using operator<< and AsyncBuffer/threads:6 | 1343 ns | 7572 ns | 89124 |
-| Logging int+float using MessageBuffer, pattern: \%d \%m\%n | 1238 ns | 1238 ns | 563189 |
-| Logging int+float using MessageBuffer, pattern: \%d \%m\%n/threads:6 | 1323 ns | 7367 ns | 91818 |
-| Logging int+float using MessageBuffer, JSON | 4376 ns | 4376 ns | 160363 |
-| Logging int+float using MessageBuffer, JSON/threads:6 | 6580 ns | 11587 ns | 58260 |
+| Logging int+float using MessageBuffer, pattern: \%d \%m\%n | 1077 ns | 1077 ns | 647893 |
+| Logging int+float using MessageBuffer, pattern: \%d \%m\%n/threads:6 | 1237 ns | 5354 ns | 123270 |
+| Logging int+float using MessageBuffer, JSON | 2045 ns | 2045 ns | 343733 |
+| Logging int+float using MessageBuffer, JSON/threads:6 | 5108 ns | 9806 ns | 72228 |
 | Multiprocess logging int+float using MessageBuffer, pattern: \%d \%m\%n | 3253 ns | 3253 ns | 214839 |
 
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
