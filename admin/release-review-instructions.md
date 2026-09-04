@@ -11,7 +11,6 @@ Prerequisites
 * A C++ compiler is available on your system
 * cmake, APR-Util and the [GitHub CLI](https://cli.github.com/) are installed on your system
 * [GNU Privacy Guard](https://www.gnupg.org/) is installed on your system
-* You have imported the [Apache Logging KEYS file](https://dist.apache.org/repos/dist/release/logging/KEYS)
 
 Additional Prerequisites (Windows only)
 ----------
