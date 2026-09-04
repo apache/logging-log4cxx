@@ -16,7 +16,7 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/charsetencoder.h>
-#include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/private/bytebuffer_priv.h>
 #include <log4cxx/helpers/exception.h>
 #include <apr_xlate.h>
 #include <log4cxx/helpers/stringhelper.h>

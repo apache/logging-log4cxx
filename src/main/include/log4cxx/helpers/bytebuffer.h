@@ -110,7 +110,8 @@ class LOG4CXX_EXPORT ByteBuffer
 		/// @returns true if \c byteValue was stored in the buffer.
 		bool put(char byteValue);
 
-
+		/// Internal use only
+		ByteBufferPriv& impl();
 	private:
 		ByteBuffer(const ByteBuffer&);
 		ByteBuffer& operator=(const ByteBuffer&);
