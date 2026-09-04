@@ -325,7 +325,7 @@ class UTF8CharsetDecoder : public CharsetDecoder
 			auto availableByteCount = in.remaining();
 			while (0 < availableByteCount)
 			{
-				auto sv = getUTF8CodePoint(in_param);
+				auto sv = getUTF8CodePoint(in);
 				auto nextAvailableByteCount = in.remaining();
 				if (sv == 0xFFFF || nextAvailableByteCount == availableByteCount)
 					return APR_BADCH;
@@ -601,9 +601,8 @@ log4cxx_status_t CharsetDecoder::decode(const char* in, size_t maxByteCount, Log
 	return decode(buf, out);
 }
 
-unsigned int CharsetDecoder::getUTF8CodePoint(ByteBuffer& in_param)
+unsigned int CharsetDecoder::getUTF8CodePoint(ByteBufferPriv& in)
 {
-	auto& in = in_param.impl();
 	auto availableByteCount = in.remaining();
 	if (0 == availableByteCount)
 		return 0xFFFF;

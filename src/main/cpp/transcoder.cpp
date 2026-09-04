@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <stdlib.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/private/bytebuffer_priv.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/charsetencoder.h>
 #include <log4cxx/helpers/stringhelper.h>
@@ -191,7 +191,7 @@ unsigned int Transcoder::decode(const std::string& src,
 {
 	auto offset = iter - src.begin();
 	auto remaining = src.size() - offset;
-	ByteBuffer buf(const_cast<char*>(src.data() + offset), remaining);
+	ByteBufferPriv buf(const_cast<char*>(src.data() + offset), remaining);
 	auto result = CharsetDecoder::getUTF8CodePoint(buf);
 	iter += remaining - buf.remaining();
 	return result;

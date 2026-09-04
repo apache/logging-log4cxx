@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 #include <log4cxx/helpers/bytebuffer.h>
+#include <cstring> // memmove
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
-struct ByteBuffer::ByteBufferPriv
+struct LOG4CXX_NS::helpers::ByteBufferPriv
 {
 private: // Attributes
 	char* base;
@@ -56,13 +57,13 @@ public: // Modifiers
 #endif
 };
 
-void ByteBuffer::ByteBufferPriv::clear()
+void ByteBufferPriv::clear()
 {
 	this->lim = this->cap;
 	this->pos = 0;
 }
 
-void ByteBuffer::ByteBufferPriv::carry()
+void ByteBufferPriv::carry()
 {
 	auto available = remaining();
 	memmove(this->base, current(), available);
@@ -70,13 +71,13 @@ void ByteBuffer::ByteBufferPriv::carry()
 	this->pos = available;
 }
 
-void ByteBuffer::ByteBufferPriv::flip()
+void ByteBufferPriv::flip()
 {
 	this->lim = this->pos;
 	this->pos = 0;
 }
 
-bool ByteBuffer::ByteBufferPriv::put(char byte)
+bool ByteBufferPriv::put(char byte)
 {
 	if (this->pos < this->lim)
 	{
@@ -87,42 +88,42 @@ bool ByteBuffer::ByteBufferPriv::put(char byte)
 	return false;
 }
 
-char* ByteBuffer::ByteBufferPriv::data()
+char* ByteBufferPriv::data()
 {
 	return this->base;
 }
 
-const char* ByteBuffer::ByteBufferPriv::data() const
+const char* ByteBufferPriv::data() const
 {
 	return this->base;
 }
 
-char* ByteBuffer::ByteBufferPriv::current()
+char* ByteBufferPriv::current()
 {
 	return this->base + this->pos;
 }
 
-const char* ByteBuffer::ByteBufferPriv::current() const
+const char* ByteBufferPriv::current() const
 {
 	return this->base + this->pos;
 }
 
-size_t ByteBuffer::ByteBufferPriv::limit() const
+size_t ByteBufferPriv::limit() const
 {
 	return this->lim;
 }
 
-size_t ByteBuffer::ByteBufferPriv::position() const
+size_t ByteBufferPriv::position() const
 {
 	return this->pos;
 }
 
-size_t ByteBuffer::ByteBufferPriv::remaining() const
+size_t ByteBufferPriv::remaining() const
 {
 	return this->lim - this->pos;
 }
 
-size_t ByteBuffer::ByteBufferPriv::increment_position(size_t byteCount)
+size_t ByteBufferPriv::increment_position(size_t byteCount)
 {
     auto available = remaining();
     this->pos += byteCount < available ? byteCount : available;

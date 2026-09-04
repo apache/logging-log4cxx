@@ -33,7 +33,7 @@ ByteBuffer::~ByteBuffer()
 {
 }
 
-ByteBuffer::ByteBufferPriv& ByteBuffer::impl()
+ByteBufferPriv& ByteBuffer::impl()
 {
     return *m_priv;
 }
