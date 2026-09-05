@@ -51,14 +51,17 @@ class LOG4CXX_EXPORT Transcoder
 #endif
 		/**
 		 *    Append the code point \c sv to \c dst as UTF-8.
+		 *    @pre 4 <= dst.remaining()
 		 */
 		static void encodeUTF8(unsigned int sv, ByteBuffer& dst);
 		/**
 		 *    Append the code point \c sv to \c dst as UTF-16LE.
+		 *    @pre 4 <= dst.remaining()
 		 */
 		static void encodeUTF16LE(unsigned int sv, ByteBuffer& dst);
 		/**
 		 *    Append the code point \c sv to \c dst as UTF-16BE.
+		 *    @pre 4 <= dst.remaining()
 		 */
 		static void encodeUTF16BE(unsigned int sv, ByteBuffer& dst);
 
@@ -231,16 +234,9 @@ class LOG4CXX_EXPORT Transcoder
 		static std::string encodeCharsetName(const LogString& charsetName);
 
 	private:
-
-	private:
 		Transcoder();
 		Transcoder(const Transcoder&);
 		Transcoder& operator=(const Transcoder&);
-		enum { BUFSIZE = 256 };
-		static size_t encodeUTF8(unsigned int ch, char* dst);
-		static size_t encodeUTF16BE(unsigned int ch, char* dst);
-		static size_t encodeUTF16LE(unsigned int ch, char* dst);
-
 };
 }
 }

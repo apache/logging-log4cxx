@@ -27,7 +27,7 @@ namespace helpers
 class CharsetDecoder;
 LOG4CXX_PTR_DEF(CharsetDecoder);
 class ByteBuffer;
-
+struct ByteBufferPriv;
 
 /**
 *   An abstract engine to transform a sequences of bytes in a specific charset
@@ -109,7 +109,7 @@ class LOG4CXX_EXPORT CharsetDecoder : public Object
 		 *  @param buf the bytes to decode.
 		 *  @return the code point value, if successful, otherwise 0xFFFF. The \c buf cursor position is only incremented if successful.
 		 */
-		static unsigned int getUTF8CodePoint(ByteBuffer& buf);
+		static unsigned int getUTF8CodePoint(ByteBufferPriv& buf);
 
 	private:
 		/**

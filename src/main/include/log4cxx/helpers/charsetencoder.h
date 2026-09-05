@@ -131,7 +131,29 @@ class LOG4CXX_EXPORT CharsetEncoder : public Object
 		*/
 		static bool isTriviallyCopyable(const LogString& src, const CharsetEncoderPtr& enc);
 
+		/**
+		 *  Add UTF-8 bytes to \c dst corresponding to \c ch.
+		 *  @pre dst is a writable address for 4 consecutive bytes
+		 *  @param ch the code point value.
+		 *  @param dst storage for upto 4 bytes.
+		 */
+		static size_t putUTF8CodePoint(unsigned int ch, char* dst);
 
+		/**
+		 *  Add UTF-16 big-endian bytes to \c dst corresponding to \c ch.
+		 *  @pre dst is a writable address for 4 consecutive bytes
+		 *  @param ch the code point value.
+		 *  @param dst storage for upto 4 bytes.
+		 */
+		static size_t putUTF16BECodePoint(unsigned int ch, char* dst);
+
+		/**
+		 *  Add UTF-16 little-endian bytes to \c dst corresponding to \c ch.
+		 *  @pre dst is a writable address for 4 consecutive bytes
+		 *  @param ch the code point value.
+		 *  @param dst storage for upto 4 bytes.
+		 */
+		static size_t putUTF16LECodePoint(unsigned int ch, char* dst);
 	private:
 		/**
 		*   Private copy constructor.

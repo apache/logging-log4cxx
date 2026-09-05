@@ -18,7 +18,7 @@
 #include <log4cxx/private/string_c11.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/charsetdecoder.h>
-#include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/private/bytebuffer_priv.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/loglog.h>
@@ -87,9 +87,10 @@ class APRCharsetDecoder : public CharsetDecoder
 		{
 		}
 
-		virtual log4cxx_status_t decode(ByteBuffer& in,
+		virtual log4cxx_status_t decode(ByteBuffer& in_param,
 			LogString& out)
 		{
+			auto& in = in_param.impl();
 			enum { BUFSIZE = 256 };
 			logchar buf[BUFSIZE];
 			const apr_size_t initial_outbytes_left = BUFSIZE * sizeof(logchar);
@@ -167,9 +168,10 @@ class MbstowcsCharsetDecoder : public CharsetDecoder
 			return APR_SUCCESS;
 		}
 
-		virtual log4cxx_status_t decode(ByteBuffer& in,
+		virtual log4cxx_status_t decode(ByteBuffer& in_param,
 			LogString& out)
 		{
+			auto& in = in_param.impl();
 			log4cxx_status_t stat = APR_SUCCESS;
 			enum { BUFSIZE = 256 };
 			wchar_t wbuf[BUFSIZE];
@@ -276,9 +278,10 @@ class TrivialCharsetDecoder : public CharsetDecoder
 		{
 		}
 
-		virtual log4cxx_status_t decode(ByteBuffer& in,
+		virtual log4cxx_status_t decode(ByteBuffer& in_param,
 			LogString& out)
 		{
+			auto& in = in_param.impl();
 			size_t remaining = in.remaining();
 
 			if ( remaining > 0)
@@ -315,9 +318,10 @@ class UTF8CharsetDecoder : public CharsetDecoder
 		}
 
 	private:
-		virtual log4cxx_status_t decode(ByteBuffer& in,
+		virtual log4cxx_status_t decode(ByteBuffer& in_param,
 			LogString& out)
 		{
+			auto& in = in_param.impl();
 			auto availableByteCount = in.remaining();
 			while (0 < availableByteCount)
 			{
@@ -352,9 +356,10 @@ class ISOLatinCharsetDecoder : public CharsetDecoder
 		}
 
 	private:
-		virtual log4cxx_status_t decode(ByteBuffer& in,
+		virtual log4cxx_status_t decode(ByteBuffer& in_param,
 			LogString& out)
 		{
+			auto& in = in_param.impl();
 			auto availableByteCount = in.remaining();
 			auto src = in.current();
 			auto srcEnd = src + availableByteCount;
@@ -394,9 +399,10 @@ class USASCIICharsetDecoder : public CharsetDecoder
 
 	private:
 
-		virtual log4cxx_status_t decode(ByteBuffer& in,
+		virtual log4cxx_status_t decode(ByteBuffer& in_param,
 			LogString& out)
 		{
+			auto& in = in_param.impl();
 			log4cxx_status_t stat = APR_SUCCESS;
 
 			auto availableByteCount = in.remaining();
@@ -439,8 +445,9 @@ class LocaleCharsetDecoder : public CharsetDecoder
 		LocaleCharsetDecoder() : state()
 		{
 		}
-		log4cxx_status_t decode(ByteBuffer& in, LogString& out) override
+		log4cxx_status_t decode(ByteBuffer& in_param, LogString& out) override
 		{
+			auto& in = in_param.impl();
 			log4cxx_status_t result = APR_SUCCESS;
 			auto p = in.current();
 			auto availableByteCount = in.remaining();
@@ -594,7 +601,7 @@ log4cxx_status_t CharsetDecoder::decode(const char* in, size_t maxByteCount, Log
 	return decode(buf, out);
 }
 
-unsigned int CharsetDecoder::getUTF8CodePoint(ByteBuffer& in)
+unsigned int CharsetDecoder::getUTF8CodePoint(ByteBufferPriv& in)
 {
 	auto availableByteCount = in.remaining();
 	if (0 == availableByteCount)

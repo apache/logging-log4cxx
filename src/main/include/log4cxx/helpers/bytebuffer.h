@@ -26,6 +26,7 @@ namespace LOG4CXX_NS
 
 namespace helpers
 {
+struct ByteBufferPriv;
 
 /**
 * An area of memory and a cursor into that memory.
@@ -40,7 +41,7 @@ namespace helpers
 class LOG4CXX_EXPORT ByteBuffer
 {
 	private:
-		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ByteBufferPriv, m_priv)
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(std::unique_ptr<ByteBufferPriv>, m_priv);
 
 	public:
 		/// A \c capacity sized area of memory at \c data.
@@ -110,7 +111,8 @@ class LOG4CXX_EXPORT ByteBuffer
 		/// @returns true if \c byteValue was stored in the buffer.
 		bool put(char byteValue);
 
-
+		/// Internal use only
+		ByteBufferPriv& impl();
 	private:
 		ByteBuffer(const ByteBuffer&);
 		ByteBuffer& operator=(const ByteBuffer&);

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/private/bytebuffer_priv.h>
 #if LOG4CXX_ABI_VERSION <= 15
 #include <log4cxx/helpers/exception.h>
 #endif
@@ -23,17 +23,6 @@
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
-
-struct ByteBuffer::ByteBufferPriv
-{
-	ByteBufferPriv(char* data1, size_t capacity) :
-		base(data1), pos(0), lim(capacity), cap(capacity) {}
-
-	char* base;
-	size_t pos;
-	size_t lim;
-	size_t cap;
-};
 
 ByteBuffer::ByteBuffer(char* data1, size_t capacity)
 	: m_priv(std::make_unique<ByteBufferPriv>(data1, capacity))
@@ -44,24 +33,24 @@ ByteBuffer::~ByteBuffer()
 {
 }
 
+ByteBufferPriv& ByteBuffer::impl()
+{
+    return *m_priv;
+}
+
 void ByteBuffer::clear()
 {
-	m_priv->lim = m_priv->cap;
-	m_priv->pos = 0;
+	m_priv->clear();
 }
 
 void ByteBuffer::carry()
 {
-	auto available = remaining();
-	memmove(m_priv->base, current(), available);
-	m_priv->lim = m_priv->cap;
-	m_priv->pos = available;
+	m_priv->carry();
 }
 
 void ByteBuffer::flip()
 {
-	m_priv->lim = m_priv->pos;
-	m_priv->pos = 0;
+	m_priv->flip();
 }
 
 #if LOG4CXX_ABI_VERSION <= 15
@@ -95,53 +84,45 @@ void ByteBuffer::limit(size_t newLimit)
 
 bool ByteBuffer::put(char byte)
 {
-	if (m_priv->pos < m_priv->lim)
-	{
-		m_priv->base[m_priv->pos++] = byte;
-		return true;
-	}
-
-	return false;
+	return m_priv->put(byte);
 }
 
 char* ByteBuffer::data()
 {
-	return m_priv->base;
+	return m_priv->data();
 }
 
 const char* ByteBuffer::data() const
 {
-	return m_priv->base;
+	return m_priv->data();
 }
 
 char* ByteBuffer::current()
 {
-	return m_priv->base + m_priv->pos;
+	return m_priv->current();
 }
 
 const char* ByteBuffer::current() const
 {
-	return m_priv->base + m_priv->pos;
+	return m_priv->current();
 }
 
 size_t ByteBuffer::limit() const
 {
-	return m_priv->lim;
+	return m_priv->limit();
 }
 
 size_t ByteBuffer::position() const
 {
-	return m_priv->pos;
+	return m_priv->position();
 }
 
 size_t ByteBuffer::remaining() const
 {
-	return m_priv->lim - m_priv->pos;
+	return m_priv->remaining();
 }
 
 size_t ByteBuffer::increment_position(size_t byteCount)
 {
-    auto available = remaining();
-    m_priv->pos += byteCount < available ? byteCount : available;
-    return remaining();
+    return m_priv->increment_position(byteCount);
 }
