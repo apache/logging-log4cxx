@@ -43,7 +43,11 @@ void appendValidCharacters(LogString& buf, const LogString& input, CharProcessor
 	for (auto nextCodePoint = start; input.end() != nextCodePoint; )
 	{
 		auto lastCodePoint = nextCodePoint;
-		auto ch = Transcoder::getCodePoint(input, nextCodePoint);
+		auto ch = static_cast<unsigned int>(*nextCodePoint);
+		if (ch <= 0x7f)
+			++nextCodePoint;
+		else
+			ch = Transcoder::getCodePoint(input, nextCodePoint);
 		if (((0x20 <= ch && ch <= 0xD7FF) &&
 				specials[0] != ch &&
 				specials[1] != ch &&
