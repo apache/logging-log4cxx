@@ -408,16 +408,8 @@ int SyslogAppender::getFacility(
 
 void SyslogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 {
-	if  (!isAsSevereAsThreshold(event->getLevel()))
-	{
-		return;
-	}
-
 	LogString msg;
-	std::string encoded;
 	_priv->layout->format(msg, event);
-
-	Transcoder::encode(msg, encoded);
 	auto packets = detail::splitSyslogPackets(msg, static_cast<size_t>(_priv->maxMessageLength));
 	if (packets.empty() && !msg.empty())
 	{

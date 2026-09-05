@@ -75,6 +75,8 @@ void LocationInfoFilter::setOption(  const LogString& option,
 		LOG4CXX_ENCODE_CHAR(sName, value);
 		priv->methodName = sName;
 	}
+	else
+		Filter::setOption(option, value);
 }
 
 Filter::FilterDecision LocationInfoFilter::decide(

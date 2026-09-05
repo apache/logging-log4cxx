@@ -78,8 +78,7 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		other may be activated only when #activateOptions is
 		called.
 		*/
-		virtual void setOption(const LogString& option,
-			const LogString& value) = 0;
+		virtual void setOption(const LogString& option, const LogString& value);
 
 }; // class OptionConverter
 }  // namespace spi

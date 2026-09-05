@@ -217,6 +217,8 @@ void AppenderSkeleton::setOption(const LogString& option,
 		m_priv->exceptionTriggeringMessage = value;
 	}
 #endif
+	else
+		Appender::setOption(option, value);
 }
 
 const spi::ErrorHandlerPtr AppenderSkeleton::getErrorHandler() const

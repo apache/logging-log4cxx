@@ -79,6 +79,8 @@ void FMTLayout::setOption(const LogString& option, const LogString& value)
 	{
 		m_priv->conversionPattern = helpers::OptionConverter::convertSpecialChars(value);
 	}
+	else
+		Layout::setOption(option, value);
 }
 
 void FMTLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
