@@ -117,8 +117,8 @@ The "Iterations" column derivation is explained in [Google Benchmark documentati
 | Async, Sending int+10float using operator<< and AsyncBuffer/threads:6 | 1343 ns | 7572 ns | 89124 |
 | Logging int+float using MessageBuffer, pattern: \%d \%m\%n | 1077 ns | 1077 ns | 647893 |
 | Logging int+float using MessageBuffer, pattern: \%d \%m\%n/threads:6 | 1237 ns | 5354 ns | 123270 |
-| Logging int+float using MessageBuffer, JSON | 2045 ns | 2045 ns | 343733 |
-| Logging int+float using MessageBuffer, JSON/threads:6 | 5108 ns | 9806 ns | 72228 |
+| Logging int+float using MessageBuffer, JSON | 1596 ns | 1596 ns | 446706 |
+| Logging int+float using MessageBuffer, JSON/threads:6 | 2108 ns | 6908 ns | 101208 |
 | Multiprocess logging int+float using MessageBuffer, pattern: \%d \%m\%n | 3253 ns | 3253 ns | 214839 |
 
 -# The "Appending" benchmarks just format the message (using PatternLayout) then discard the result.
