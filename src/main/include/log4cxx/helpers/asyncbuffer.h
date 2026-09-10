@@ -397,8 +397,6 @@ LOG4CXX_INFO_ASYNC(m_log, surface->GetName()
 			logger->addInfoEvent(std::move(buf << message), LOG4CXX_LOCATION);\
 		}} while (0)
 
-#endif
-
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT
 /**
 Add a new logging event containing a message defined by \c fmt and <code>...</code> to attached appender(s) if \c logger is enabled for <code>INFO</code> events.
@@ -601,3 +599,5 @@ LOG4CXX_FATAL_FMT_ASYNC(m_log, "{} is not supported", m_renderSystem->getName())
 #endif
 
 /**@} Logging macro group */
+
+#endif // LOG4CXX_ASYNC_BUFFER_H
