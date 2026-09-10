@@ -19,7 +19,6 @@
 
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/level.h>
-#include <log4cxx/helpers/asyncbuffer.h>
 #include <log4cxx/spi/loggingevent.h>
 
 #include <atomic>
