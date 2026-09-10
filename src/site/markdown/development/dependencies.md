@@ -92,27 +92,11 @@ All the above CMake options default to OFF except for the {fmt} library options.
 If the {fmt} library is found (by *find_package(fmt 7.1 QUIET)*) when Log4cxx is built,
 the options *ENABLE_FMT_ASYNC* and *ENABLE_FMT_LAYOUT* default to *ON*.
 
-## A note on C++ version and Boost
-
-By default, Log4cxx requests C++20 features.  This is to
-avoid 3rd party dependencies as much as possible.  If C++17 is not
-available, a search for Boost will be taken and those libraries will be used
-instead.  If you would prefer to use Boost, there are two options you have:
-
-1. Pass *-DPREFER_BOOST=ON* to CMake when compiling.  This will ignore the
- results of the tests that check for the standard version of components that
- are required.  Note that this will switch all components, regardless of the
- C++ version in effect at compile time.
-2. Revert to an earlier standard using *-DCMAKE_CXX_STANDARD=11* for example.
- This will still to check for standard versions of required components, but
- it will fall back to using Boost for newer components added in C++17.
-
 # Licenses(direct dependencies only)
 
 | Dependency | License |
 |------------|---------|
 | APR, APR-util | *Apache License, Version 2.0* |
-| Boost | *Boost License, Version 1.0* |
 | {fmt} | *MIT* |
 | unixodbc | *LGPL* |
 | libesmtp | *LGPL* |

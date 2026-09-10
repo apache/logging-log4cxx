@@ -192,10 +192,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
                @ONLY
 )
 list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h)
-configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
-               ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h
-)
-list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/boost-std-configuration.h)
 
 if(WIN32)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in

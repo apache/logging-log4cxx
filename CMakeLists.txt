@@ -66,10 +66,8 @@ find_package(APR REQUIRED)
 option(APU_STATIC "Link to the APR-Util static library" OFF)
 find_package(APR-Util REQUIRED)
 
-if(NOT MSVC)
-  # The pthread library is used to name threads and mask signals
-  find_package(Threads REQUIRED)
-endif(NOT MSVC)
+# The pthread library is used to name threads and mask signals
+find_package(Threads REQUIRED)
 
 option(LOG4CXX_ENABLE_ODBC "Support logging via ODBC" OFF)
 if(LOG4CXX_ENABLE_ODBC)
@@ -317,11 +315,8 @@ message(STATUS "  DOMConfigurator support ......... : ${LOG4CXX_DOMCONFIGURATOR_
 message(STATUS "  Qt support ...................... : ${LOG4CXX_QT_SUPPORT}")
 message(STATUS "  LOG4CXX_XXXX_ASYNC macros ....... : ON")
 message(STATUS "  LOG4CXX_XXXX_FMT_ASYNC macros ... : ${ENABLE_FMT_ASYNC}")
-message(STATUS "C++ version and Boost settings:")
-message(STATUS "  Prefer boost: ................... : ${PREFER_BOOST}")
 message(STATUS "  make_unique implementation :..... : ${STD_MAKE_UNIQUE_IMPL}")
-message(STATUS "  filesystem implementation ....... : ${FILESYSTEM_IMPL}")
-message(STATUS "  format implementation ........... : ${LOG4CXX_FORMAT_NAMESPACE}::format")
+message(STATUS "  default format implementation ... : ${LOG4CXX_FORMAT_NAMESPACE}::format")
 message(STATUS "  thread_local support? ........... : ${HAS_THREAD_LOCAL}")
 
 if(BUILD_TESTING)
