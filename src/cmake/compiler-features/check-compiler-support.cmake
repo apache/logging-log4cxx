@@ -20,7 +20,7 @@ else()
 endif()
 
 # Does the standard library support std::make_unique<T>>?
-try_compile(STD_MAKE_UNIQUE_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
+try_compile(STD_MAKE_UNIQUE_FOUND "${CMAKE_BINARY_DIR}/Testing/make-unique-test"
     "${CMAKE_CURRENT_LIST_DIR}/test-make-unique.cpp")
 if( ${STD_MAKE_UNIQUE_FOUND} )
     set(STD_MAKE_UNIQUE_IMPL "std::make_unique")

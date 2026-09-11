@@ -36,7 +36,6 @@ Building with CMake {#build-cmake}
 | APU_STATIC=yes       | Link to the APR-Util static library. By default, the Log4cxx shared library is linked to the APR-Util shared library. If BUILD_SHARED_LIBS=off, the static APR-Util library is used.     |
 | APR_STATIC=yes       | Link to the APR static library. By default, the Log4cxx shared library is linked to the APR shared library. If BUILD_SHARED_LIBS=off, the static APR library is always used.        |
 | LOG4CXX_TEST_PROGRAM_PATH=path | An extra path to prepend to the PATH for test programs.  Log4cxx requires zip, sed, and grep on the PATH in order for the tests to work properly.                          |
-| PREFER_BOOST=on      | Prefer the Boost version of dependent libraries over standard library |
 | LOG4CXX_QT_SUPPORT=ON | Enable QString API and log4cxx::qt namespace methods, requires QtCore, choice of ON, OFF (default).                   |
 | LOG4CXX_EVENTS_AT_EXIT=ON | Prevent static data cleanup to allow event logging during application exit. |
 | LOG4CXX_FORMAT_NAMESPACE=std | Set LOG4CXX_FORMAT_NS=std when not provided in [target_compile_definitions](https://cmake.org/cmake/help/latest/command/target_compile_definitions.html). LOG4CXX_FORMAT_NS is used in `LOG4CXX_[level]_FMT` logging macros.  |
