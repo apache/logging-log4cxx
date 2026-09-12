@@ -91,6 +91,8 @@ struct ThreadUtility::priv_data
 
 	bool findRunnableTask(NamedPeriodicFunction *foundTask);
 
+	void scheduleNextRun(const LogString& name, const Period& delay, bool success);
+
 	void setTerminated()
 	{
 		std::lock_guard<std::recursive_mutex> lock(job_mutex);
@@ -387,7 +389,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 			if (!this->findRunnableTask(&task)) // No tasks due?
 				break;
 
-			// Execute the callback outside the lock
+			// Execute the callback outside any lock
 			bool success = false;
 			try
 			{
@@ -403,24 +405,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				LogLog::warn(task.name + LOG4CXX_STR(" threw an exception"));
 			}
 
-			// Re-find the task (it may have been removed while running) and reschedule it
-			{
-				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
-					, [&task](const NamedPeriodicFunction& item)
-					{ return !item.removed && task.name == item.name; }
-					);
-
-				if (pItem != this->jobs.end())
-				{
-					// Always push nextRun out, so a failing task waits before the next retry
-					pItem->nextRun = std::chrono::system_clock::now() + task.delay;
-					if (success)
-						pItem->errorCount = 0;
-					else
-						++pItem->errorCount;
-				}
-			}
+			this->scheduleNextRun(task.name, task.delay, success);
 		}
 
 		// Update nextOperationTime under the lock
@@ -476,6 +461,25 @@ bool ThreadUtility::priv_data::findRunnableTask(NamedPeriodicFunction *foundTask
 		result = true;
 	}
 	return result;
+}
+
+void ThreadUtility::priv_data::scheduleNextRun(const LogString& name, const Period& delay, bool success)
+{
+	std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+	auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+		, [&name](const NamedPeriodicFunction& item)
+		{ return !item.removed && name == item.name; }
+		);
+
+	if (pItem != this->jobs.end())
+	{
+		// Always push nextRun out, so a failing task waits before the next retry
+		pItem->nextRun = std::chrono::system_clock::now() + delay;
+		if (success)
+			pItem->errorCount = 0;
+		else
+			++pItem->errorCount;
+	}
 }
 
 } //namespace helpers
