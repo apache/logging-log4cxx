@@ -165,10 +165,13 @@ public:
 
 		thrUtil->removeAllPeriodicTasks();
 		// A callback that blocks, as a reconnect attempt would when the log server is offline
-		thrUtil->addPeriodicTask(slowTask, [&taskRunning, &releaseTask]() {
+		auto logger= LogLog::getLogger(LOG4CXX_STR("testTask"));
+		thrUtil->addPeriodicTask(slowTask, [&taskRunning, &releaseTask, &logger]() {
+			LOGLOG_DEBUG(logger, LOG4CXX_STR("started"));
 			taskRunning = true;
 			for (int i = 0; i < 500 && !releaseTask.load(); ++i)
 				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			LOGLOG_DEBUG(logger, LOG4CXX_STR("stopped"));
 		}, std::chrono::milliseconds(1));
 
 		// Wait for the callback to start executing
