@@ -78,7 +78,9 @@ struct ThreadUtility::priv_data
 	JobStore                  jobs;
 	std::recursive_mutex      job_mutex;
 	std::thread               thread;
-	std::condition_variable_any interrupt;
+	std::condition_variable   interrupt;
+	std::mutex                interrupt_mutex;
+	bool                      wakeup{ false };
 	std::atomic<bool>         terminated{ false };
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
@@ -89,19 +91,24 @@ struct ThreadUtility::priv_data
 
 	bool findRunnableTask(NamedPeriodicFunction *foundTask);
 
-	bool hasReadyOrRemovedTask();
-
 	void setTerminated()
 	{
 		std::lock_guard<std::recursive_mutex> lock(job_mutex);
 		terminated.store(true);
+	}
+	
+	void wakeThread()
+	{
+		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
+		this->wakeup = true;
+		this->interrupt.notify_all();
 	}
 
 	void stopThread()
 	{
 		LOGLOG_DEBUG(log, "stopThread");
 		setTerminated();
-		interrupt.notify_all();
+		wakeThread();
 		if (thread.joinable())
 			thread.join();
 	}
@@ -298,7 +305,7 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 			});
 	}
 	else
-		m_priv->interrupt.notify_one();
+		m_priv->wakeThread();
 }
 
 /**
@@ -342,7 +349,7 @@ void ThreadUtility::removePeriodicTask(const LogString& name)
 	{
 		LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("removePeriodicTask: ") << name);
 		pItem->removed = true;
-		m_priv->interrupt.notify_one();
+		m_priv->wakeThread();
 	}
 }
 
@@ -362,7 +369,7 @@ void ThreadUtility::removePeriodicTasksMatching(const LogString& namePrefix)
 			break;
 		pItem->removed = true;
 	}
-	m_priv->interrupt.notify_one();
+	m_priv->wakeThread();
 }
 
 // Run ready tasks
@@ -379,7 +386,6 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 			NamedPeriodicFunction task;
 			{
 				// Take a copy of the next due task while holding the lock
-				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
 				if (!this->findRunnableTask(&task)) // No tasks due?
 					break;
 			}
@@ -449,15 +455,17 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		}
 
 		// Wait until the next task is due or an add/remove/shutdown wakes us
-		std::unique_lock<std::recursive_mutex> lock(this->job_mutex);
+		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime
-			, [this]{ return this->terminated.load() || this->hasReadyOrRemovedTask(); }
+			, [this]{ return this->terminated.load() || this->wakeup; }
 			);
+		this->wakeup = false;
 	}
 }
 
 bool ThreadUtility::priv_data::findRunnableTask(NamedPeriodicFunction *foundTask)
 {
+	std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
 	bool result = false;
 	auto currentTime = std::chrono::system_clock::now();
 	auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
@@ -471,16 +479,6 @@ bool ThreadUtility::priv_data::findRunnableTask(NamedPeriodicFunction *foundTask
 		result = true;
 	}
 	return result;
-}
-
-bool ThreadUtility::priv_data::hasReadyOrRemovedTask()
-{
-	auto currentTime = std::chrono::system_clock::now();
-	auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
-		, [currentTime](const NamedPeriodicFunction& item)
-		{ return item.removed || item.nextRun <= currentTime; }
-		);
-	return pItem != this->jobs.end();
 }
 
 } //namespace helpers
