@@ -384,11 +384,8 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		while (!this->terminated.load())
 		{
 			NamedPeriodicFunction task;
-			{
-				// Take a copy of the next due task while holding the lock
-				if (!this->findRunnableTask(&task)) // No tasks due?
-					break;
-			}
+			if (!this->findRunnableTask(&task)) // No tasks due?
+				break;
 
 			// Execute the callback outside the lock
 			bool success = false;
@@ -457,7 +454,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		// Wait until the next task is due or an add/remove/shutdown wakes us
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime
-			, [this]{ return this->terminated.load() || this->wakeup; }
+			, [this]{ return this->wakeup; }
 			);
 		this->wakeup = false;
 	}
