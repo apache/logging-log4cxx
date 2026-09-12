@@ -87,7 +87,9 @@ struct ThreadUtility::priv_data
 
 	void doPeriodicTasks();
 
-	bool hasTask(NamedPeriodicFunction *foundTask = 0);
+	bool findRunnableTask(NamedPeriodicFunction *foundTask);
+
+	bool hasReadyOrRemovedTask();
 
 	void setTerminated()
 	{
@@ -378,7 +380,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 			{
 				// Take a copy of the next due task while holding the lock
 				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-				if (!this->hasTask(&task)) // No tasks due?
+				if (!this->findRunnableTask(&task)) // No tasks due?
 					break;
 			}
 
@@ -449,12 +451,12 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		// Wait until the next task is due or an add/remove/shutdown wakes us
 		std::unique_lock<std::recursive_mutex> lock(this->job_mutex);
 		this->interrupt.wait_until(lock, nextOperationTime
-			, [this]{ return this->terminated.load() || this->hasTask(); }
+			, [this]{ return this->terminated.load() || this->hasReadyOrRemovedTask(); }
 			);
 	}
 }
 
-bool ThreadUtility::priv_data::hasTask(NamedPeriodicFunction *foundTask)
+bool ThreadUtility::priv_data::findRunnableTask(NamedPeriodicFunction *foundTask)
 {
 	bool result = false;
 	auto currentTime = std::chrono::system_clock::now();
@@ -469,6 +471,16 @@ bool ThreadUtility::priv_data::hasTask(NamedPeriodicFunction *foundTask)
 		result = true;
 	}
 	return result;
+}
+
+bool ThreadUtility::priv_data::hasReadyOrRemovedTask()
+{
+	auto currentTime = std::chrono::system_clock::now();
+	auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+		, [currentTime](const NamedPeriodicFunction& item)
+		{ return item.removed || item.nextRun <= currentTime; }
+		);
+	return pItem != this->jobs.end();
 }
 
 } //namespace helpers
