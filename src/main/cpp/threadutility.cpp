@@ -78,8 +78,7 @@ struct ThreadUtility::priv_data
 	JobStore                  jobs;
 	std::recursive_mutex      job_mutex;
 	std::thread               thread;
-	std::condition_variable   interrupt;
-	std::mutex                interrupt_mutex;
+	std::condition_variable_any interrupt;
 	std::atomic<bool>         terminated{ false };
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
@@ -87,6 +86,8 @@ struct ThreadUtility::priv_data
 	LoggerPtr                 log;
 
 	void doPeriodicTasks();
+
+	bool hasTask(NamedPeriodicFunction *foundTask = 0);
 
 	void setTerminated()
 	{
@@ -367,70 +368,48 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 {
 	while (!this->terminated.load())
 	{
-		auto currentTime = std::chrono::system_clock::now();
-		TimePoint nextOperationTime = currentTime + this->maxDelay;
+		TimePoint nextOperationTime = std::chrono::system_clock::now() + this->maxDelay;
 
 		// Run each due task with job_mutex released, so a long-running callback
 		// (e.g. a reconnect blocked on network I/O) does not stall removePeriodicTask()
-		while (true)
+		while (!this->terminated.load())
 		{
-			std::function<void()> taskCallback;
-			LogString taskName;
-			Period taskDelay;
-			bool foundTask = false;
-
-			// Take a copy of the next due task while holding the lock
+			NamedPeriodicFunction task;
 			{
-				if (this->terminated.load())
-					return;
+				// Take a copy of the next due task while holding the lock
 				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
-					, [currentTime](const NamedPeriodicFunction& item)
-					{ return !item.removed && item.nextRun <= currentTime; }
-					);
-				if (pItem != this->jobs.end())
-				{
-					taskCallback = pItem->f;
-					taskName = pItem->name;
-					taskDelay = pItem->delay;
-					foundTask = true;
-				}
-			}
-
-			// No more tasks are due, leave the loop
-			if (!foundTask)
-			{
-				break;
+				if (!this->hasTask(&task)) // No tasks due?
+					break;
 			}
 
 			// Execute the callback outside the lock
 			bool success = false;
 			try
 			{
-				taskCallback();
+				task.f();
 				success = true;
 			}
 			catch (std::exception& ex)
 			{
-				LogLog::warn(taskName, ex);
+				LogLog::warn(task.name, ex);
 			}
 			catch (...)
 			{
-				LogLog::warn(taskName + LOG4CXX_STR(" threw an exception"));
+				LogLog::warn(task.name + LOG4CXX_STR(" threw an exception"));
 			}
 
 			// Re-find the task (it may have been removed while running) and reschedule it
 			{
 				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
 				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
-					, [&taskName](const NamedPeriodicFunction& item)
-					{ return !item.removed && taskName == item.name; }
+					, [&task](const NamedPeriodicFunction& item)
+					{ return !item.removed && task.name == item.name; }
 					);
 
 				if (pItem != this->jobs.end())
 				{
 					// Always push nextRun out, so a failing task waits before the next retry
-					pItem->nextRun = std::chrono::system_clock::now() + taskDelay;
+					pItem->nextRun = std::chrono::system_clock::now() + task.delay;
 					if (success)
 						pItem->errorCount = 0;
 					else
@@ -468,9 +447,28 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 		}
 
 		// Wait until the next task is due or an add/remove/shutdown wakes us
-		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
-		this->interrupt.wait_until(lock, nextOperationTime);
+		std::unique_lock<std::recursive_mutex> lock(this->job_mutex);
+		this->interrupt.wait_until(lock, nextOperationTime
+			, [this]{ return this->terminated.load() || this->hasTask(); }
+			);
 	}
+}
+
+bool ThreadUtility::priv_data::hasTask(NamedPeriodicFunction *foundTask)
+{
+	bool result = false;
+	auto currentTime = std::chrono::system_clock::now();
+	auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+		, [currentTime](const NamedPeriodicFunction& item)
+		{ return !item.removed && item.nextRun <= currentTime; }
+		);
+	if (pItem != this->jobs.end())
+	{
+		if (foundTask)
+			*foundTask = *pItem;
+		result = true;
+	}
+	return result;
 }
 
 } //namespace helpers
