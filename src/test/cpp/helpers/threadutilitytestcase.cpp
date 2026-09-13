@@ -172,6 +172,7 @@ public:
 			for (int i = 0; i < 500 && !releaseTask.load(); ++i)
 				std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			LOGLOG_DEBUG(logger, LOG4CXX_STR("stopped"));
+			taskRunning = false;
 		}, std::chrono::milliseconds(1));
 
 		// Wait for the callback to start executing
@@ -187,8 +188,10 @@ public:
 		releaseTask = true;
 		LOGUNIT_ASSERT(std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count() < 1000);
 
-		// wait for the periodic task thread to settle
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		// wait for the lambda task thread to complete
+		for (int i = 0; i < 100 && taskRunning.load(); ++i)
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		LOGUNIT_ASSERT(!taskRunning.load());
 	}
 
 	void testThreadNameLogging()
