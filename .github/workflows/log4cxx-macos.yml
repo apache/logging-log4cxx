@@ -34,7 +34,6 @@ jobs:
             cfstring: OFF
             next_abi: OFF
             exitevents: OFF
-            test_until_fail: threadutilitytestcase
           - name: osx-15-clang
             os: macos-15
             cxx: clang++
