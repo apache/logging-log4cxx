@@ -152,8 +152,13 @@ public:
 		}
 		thrUtil->removePeriodicTask(secondTask);
 		LOGUNIT_ASSERT(0 < secondRuns.load());
-		// wait 30 ms for periodic task thread to exit
-		std::this_thread::sleep_for(std::chrono::milliseconds(30));
+
+		// Wait until periodic tasks are destroyed
+		for (int i = 0; i < 100 && thrUtil->isProcessingThreadActive(); ++i)
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+		LOGUNIT_ASSERT(!thrUtil->isProcessingThreadActive());
 	}
 
 	void testNoDeadlockDuringTaskExecution()

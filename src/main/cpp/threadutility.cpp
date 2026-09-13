@@ -311,6 +311,14 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 }
 
 /**
+ * Is this currently running a background thread?
+ */
+bool ThreadUtility::isProcessingThreadActive() const
+{
+	return m_priv->threadIsActive.load();
+}
+
+/**
  * Is this already running a \c taskName periodic task?
  */
 bool ThreadUtility::hasPeriodicTask(const LogString& name)
