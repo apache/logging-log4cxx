@@ -102,3 +102,10 @@ jobs:
         cd main
         cd build
         ctest -C Debug --output-on-failure
+        if [ -n "${{ matrix.test_until_fail }}" ]; then
+          runNo=1
+          while ctest -C Debug --output-on-failure -R ${{ matrix.test_until_fail }} ; do
+            runNo=`expr $runNo + 1`
+          done
+          echo "$runNo failed"
+        fi

@@ -165,6 +165,11 @@ class LOG4CXX_EXPORT ThreadUtility
 		bool hasPeriodicTask(const LogString& taskName);
 
 		/**
+		 * Is the processing thread running?
+		 */
+		bool isProcessingThreadActive() const;
+
+		/**
 		 * Remove all periodic tasks and stop the processing thread
 		 */
 		void removeAllPeriodicTasks();

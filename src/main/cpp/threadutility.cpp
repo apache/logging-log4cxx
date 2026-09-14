@@ -80,6 +80,7 @@ struct ThreadUtility::priv_data
 	std::thread               thread;
 	std::condition_variable   interrupt;
 	std::mutex                interrupt_mutex;
+	bool                      wakeup{ false };
 	std::atomic<bool>         terminated{ false };
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
@@ -88,17 +89,28 @@ struct ThreadUtility::priv_data
 
 	void doPeriodicTasks();
 
+	bool findRunnableTask(NamedPeriodicFunction *foundTask);
+
+	void scheduleNextRun(const LogString& name, const Period& delay, bool success);
+
 	void setTerminated()
 	{
 		std::lock_guard<std::recursive_mutex> lock(job_mutex);
 		terminated.store(true);
+	}
+	
+	void wakeThread()
+	{
+		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
+		this->wakeup = true;
+		this->interrupt.notify_all();
 	}
 
 	void stopThread()
 	{
 		LOGLOG_DEBUG(log, "stopThread");
 		setTerminated();
-		interrupt.notify_all();
+		wakeThread();
 		if (thread.joinable())
 			thread.join();
 	}
@@ -295,7 +307,15 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 			});
 	}
 	else
-		m_priv->interrupt.notify_one();
+		m_priv->wakeThread();
+}
+
+/**
+ * Is this currently running a background thread?
+ */
+bool ThreadUtility::isProcessingThreadActive() const
+{
+	return m_priv->threadIsActive.load();
 }
 
 /**
@@ -339,7 +359,7 @@ void ThreadUtility::removePeriodicTask(const LogString& name)
 	{
 		LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("removePeriodicTask: ") << name);
 		pItem->removed = true;
-		m_priv->interrupt.notify_one();
+		m_priv->wakeThread();
 	}
 }
 
@@ -359,7 +379,7 @@ void ThreadUtility::removePeriodicTasksMatching(const LogString& namePrefix)
 			break;
 		pItem->removed = true;
 	}
-	m_priv->interrupt.notify_one();
+	m_priv->wakeThread();
 }
 
 // Run ready tasks
@@ -367,76 +387,33 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 {
 	while (!this->terminated.load())
 	{
-		auto currentTime = std::chrono::system_clock::now();
-		TimePoint nextOperationTime = currentTime + this->maxDelay;
+		TimePoint nextOperationTime = std::chrono::system_clock::now() + this->maxDelay;
 
 		// Run each due task with job_mutex released, so a long-running callback
 		// (e.g. a reconnect blocked on network I/O) does not stall removePeriodicTask()
-		while (true)
+		while (!this->terminated.load())
 		{
-			std::function<void()> taskCallback;
-			LogString taskName;
-			Period taskDelay;
-			bool foundTask = false;
-
-			// Take a copy of the next due task while holding the lock
-			{
-				if (this->terminated.load())
-					return;
-				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
-					, [currentTime](const NamedPeriodicFunction& item)
-					{ return !item.removed && item.nextRun <= currentTime; }
-					);
-				if (pItem != this->jobs.end())
-				{
-					taskCallback = pItem->f;
-					taskName = pItem->name;
-					taskDelay = pItem->delay;
-					foundTask = true;
-				}
-			}
-
-			// No more tasks are due, leave the loop
-			if (!foundTask)
-			{
+			NamedPeriodicFunction task;
+			if (!this->findRunnableTask(&task)) // No tasks due?
 				break;
-			}
 
-			// Execute the callback outside the lock
+			// Execute the callback outside any lock
 			bool success = false;
 			try
 			{
-				taskCallback();
+				task.f();
 				success = true;
 			}
 			catch (std::exception& ex)
 			{
-				LogLog::warn(taskName, ex);
+				LogLog::warn(task.name, ex);
 			}
 			catch (...)
 			{
-				LogLog::warn(taskName + LOG4CXX_STR(" threw an exception"));
+				LogLog::warn(task.name + LOG4CXX_STR(" threw an exception"));
 			}
 
-			// Re-find the task (it may have been removed while running) and reschedule it
-			{
-				std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
-				auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
-					, [&taskName](const NamedPeriodicFunction& item)
-					{ return !item.removed && taskName == item.name; }
-					);
-
-				if (pItem != this->jobs.end())
-				{
-					// Always push nextRun out, so a failing task waits before the next retry
-					pItem->nextRun = std::chrono::system_clock::now() + taskDelay;
-					if (success)
-						pItem->errorCount = 0;
-					else
-						++pItem->errorCount;
-				}
-			}
+			this->scheduleNextRun(task.name, task.delay, success);
 		}
 
 		// Update nextOperationTime under the lock
@@ -469,7 +446,47 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 
 		// Wait until the next task is due or an add/remove/shutdown wakes us
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
-		this->interrupt.wait_until(lock, nextOperationTime);
+		this->interrupt.wait_until(lock, nextOperationTime
+			, [this]{ return this->wakeup; }
+			);
+		this->wakeup = false;
+	}
+}
+
+bool ThreadUtility::priv_data::findRunnableTask(NamedPeriodicFunction *foundTask)
+{
+	std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+	bool result = false;
+	auto currentTime = std::chrono::system_clock::now();
+	auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+		, [currentTime](const NamedPeriodicFunction& item)
+		{ return !item.removed && item.nextRun <= currentTime; }
+		);
+	if (pItem != this->jobs.end())
+	{
+		if (foundTask)
+			*foundTask = *pItem;
+		result = true;
+	}
+	return result;
+}
+
+void ThreadUtility::priv_data::scheduleNextRun(const LogString& name, const Period& delay, bool success)
+{
+	std::lock_guard<std::recursive_mutex> lock(this->job_mutex);
+	auto pItem = std::find_if(this->jobs.begin(), this->jobs.end()
+		, [&name](const NamedPeriodicFunction& item)
+		{ return !item.removed && name == item.name; }
+		);
+
+	if (pItem != this->jobs.end())
+	{
+		// Always push nextRun out, so a failing task waits before the next retry
+		pItem->nextRun = std::chrono::system_clock::now() + delay;
+		if (success)
+			pItem->errorCount = 0;
+		else
+			++pItem->errorCount;
 	}
 }
 
