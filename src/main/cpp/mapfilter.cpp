@@ -63,6 +63,8 @@ void MapFilter::setOption(  const LogString& option,
 	{
 		priv->keyVals[option] = value;
 	}
+	else
+		Filter::setOption(option, value);
 }
 
 Filter::FilterDecision MapFilter::decide(

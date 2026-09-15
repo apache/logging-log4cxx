@@ -41,6 +41,7 @@ void ManualTriggeringPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PA
 {
 }
 
-void ManualTriggeringPolicy::setOption(const LogString& /* option */, const LogString& /* value */ )
+void ManualTriggeringPolicy::setOption(const LogString& option, const LogString& value )
 {
+	TriggeringPolicy::setOption(option, value);
 }

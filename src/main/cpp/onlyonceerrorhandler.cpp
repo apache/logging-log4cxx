@@ -47,8 +47,9 @@ void OnlyOnceErrorHandler::activateOptions(Pool&)
 }
 #endif
 
-void OnlyOnceErrorHandler::setOption(const LogString&, const LogString&)
+void OnlyOnceErrorHandler::setOption(const LogString& option, const LogString& value)
 {
+	ErrorHandler::setOption(option, value);
 }
 
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,

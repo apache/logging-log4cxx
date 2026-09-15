@@ -61,6 +61,8 @@ void LevelMatchFilter::setOption(const LogString& option,
 	{
 		priv->acceptOnMatch = OptionConverter::toBoolean(value, priv->acceptOnMatch);
 	}
+	else
+		Filter::setOption(option, value);
 }
 
 void LevelMatchFilter::setLevelToMatch(const LogString& levelToMatch1)

@@ -666,7 +666,6 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(asyncAppender);
 			LOGUNIT_ASSERT_EQUAL(100, asyncAppender->getBufferSize());
 			LOGUNIT_ASSERT_EQUAL(false, asyncAppender->getBlocking());
-			LOGUNIT_ASSERT_EQUAL(true, asyncAppender->getLocationInfo());
 			auto nestedAppenders = asyncAppender->getAllAppenders();
 			LOGUNIT_ASSERT_EQUAL(1, int(nestedAppenders.size()));
 

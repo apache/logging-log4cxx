@@ -174,8 +174,9 @@ void FallbackErrorHandler::activateOptions(Pool&)
 }
 #endif
 
-void FallbackErrorHandler::setOption(const LogString&, const LogString&)
+void FallbackErrorHandler::setOption(const LogString& option, const LogString& value)
 {
+	ErrorHandler::setOption(option, value);
 }
 
 bool FallbackErrorHandler::errorReported() const

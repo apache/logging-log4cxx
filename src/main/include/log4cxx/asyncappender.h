@@ -157,10 +157,12 @@ class LOG4CXX_EXPORT AsyncAppender :
 		*/
 		AppenderPtr getAppender(const LogString& name) const override;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		 * The current value of the (unused) <b>LocationInfo</b> option.
 		*/
 		bool getLocationInfo() const;
+#endif
 		/**
 		* Determines if specified appender is attached.
 		* @param appender appender.
@@ -199,13 +201,14 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 */
 		void replaceAppenders(const AppenderList& newList) LOG4CXX_16_VIRTUAL_SPECIFIER;
 
+#if LOG4CXX_ABI_VERSION <= 15
 		/**
 		* The <b>LocationInfo</b> attribute is provided for compatibility
 		* with log4j and has no effect on the log output.
 		* @param flag new value.
 		*/
 		void setLocationInfo(bool flag);
-
+#endif
 		/**
 		* Use \c newSize (a non-negative integer value) for
 		* the number of [logging events](@ref spi::LoggingEvent) the ring buffer can hold.

@@ -119,8 +119,9 @@ void FilterBasedTriggeringPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORM
 	}
 }
 
-void FilterBasedTriggeringPolicy::setOption(const LogString& /* option */, const LogString& /* value */ )
+void FilterBasedTriggeringPolicy::setOption(const LogString& option, const LogString& value )
 {
+	TriggeringPolicy::setOption(option, value);
 }
 
 
