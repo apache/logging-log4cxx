@@ -95,7 +95,7 @@ public: // Operators
 #endif // LOG4CXX_WCHAR_T_API
 		else
 			static_assert(false, "operator<<(std::ostream&) overload must be provided");
-#else // !LOG4CXX_LOGCHAR_IS_UTF8
+#elif LOG4CXX_LOGCHAR_IS_WCHAR
 		if constexpr (requires(std::wostream& buf, T v) { buf << v; })
 		{
 			append([value](WideMessageBuffer& msgBuf)
@@ -112,7 +112,12 @@ public: // Operators
 		}
 		else
 			static_assert(false, "operator<<(std::wostream&) overload must be provided");
-#endif // !LOG4CXX_LOGCHAR_IS_UTF8
+#else // LOG4CXX_LOGCHAR_IS_WCHAR
+		append([value](LogCharMessageBuffer& msgBuf)
+			{
+				msgBuf << value;
+			});
+#endif // !LOG4CXX_LOGCHAR_IS_UTF8&& !LOG4CXX_LOGCHAR_IS_WCHAR
 #else // !LOG4CXX_CONCEPTS
 		append([value](LogCharMessageBuffer& msgBuf)
 			{

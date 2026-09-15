@@ -54,7 +54,7 @@ namespace
 // owns SMTP wire-format sanitization (see SMTPSession::toAscii, which silently
 // rewrites non-ASCII to '?'); strip CR/LF in the public setters so the same
 // boundary is enforced regardless of how the value reaches the appender.
-LogString stripSmtpControl(const LogString& value, const logchar* field)
+LogString stripSmtpControl(const LogString& value, const LogString& field)
 {
 	if (value.find_first_of(LOG4CXX_STR("\r\n")) == LogString::npos)
 	{

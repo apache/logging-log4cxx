@@ -159,7 +159,7 @@ void AsyncBuffer::renderMessage(LogCharMessageBuffer& msg) const
 				LOG4CXX_DECODE_WCHAR(lsMsg, wideBuf.extract_str(wideBuf));
 				msg << lsMsg;
 			}
-#else // !LOG4CXX_LOGCHAR_IS_UTF8
+#elif LOG4CXX_LOGCHAR_IS_WCHAR
 			if (auto pRenderer = std::get_if<WideMessageBufferAppender>(&renderer))
 				(*pRenderer)(msg);
 			else
@@ -169,6 +169,8 @@ void AsyncBuffer::renderMessage(LogCharMessageBuffer& msg) const
 				LOG4CXX_DECODE_CHAR(lsMsg, narrowBuf.extract_str(narrowBuf));
 				msg << lsMsg;
 			}
+#else
+			msg << LOG4CXX_STR("Unichar is not supported");
 #endif // !LOG4CXX_LOGCHAR_IS_UTF8
 		}
 #else // !LOG4CXX_CONCEPTS
