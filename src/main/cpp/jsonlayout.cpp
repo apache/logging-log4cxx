@@ -127,6 +127,8 @@ void JSONLayout::setOption(const LogString& option, const LogString& value)
 	{
 		setPrettyPrint(OptionConverter::toBoolean(value, false));
 	}
+	else
+		Layout::setOption(option, value);
 }
 
 void JSONLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const

@@ -63,6 +63,14 @@ namespace LOG4CXX_NS
  *  </tr>
  *  <tr>
  *      <td align="center">
+ *        <p><strong>d</strong></p>
+ *      </td>
+ *      <td>
+ *          Use {d:%Y-%m-%d %H:%M:%S} to output date and time.
+ *      </td>
+ *  </tr>
+ *  <tr>
+ *      <td align="center">
  *          <p><strong>C</strong></p>
  *          <p><strong>class</strong></p>
  *      </td>

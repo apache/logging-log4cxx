@@ -278,11 +278,12 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 	void close();
 
+#if LOG4CXX_ABI_VERSION <= 15
 	/**
 	 * Should location info be included in dispatched messages.
 	*/
 	bool locationInfo{ true };
-
+#endif
 	/**
 	 * Does appender block when buffer is full.
 	*/
@@ -348,17 +349,19 @@ void AsyncAppender::addAppender(const AppenderPtr newAppender)
 void AsyncAppender::setOption(const LogString& option,
 	const LogString& value)
 {
+#if LOG4CXX_ABI_VERSION <= 15
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, false));
 	}
-
+	else
+#endif
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
 		setBufferSize(OptionConverter::toInt(value, DEFAULT_BUFFER_SIZE));
 	}
 
-	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BLOCKING"), LOG4CXX_STR("blocking")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BLOCKING"), LOG4CXX_STR("blocking")))
 	{
 		setBlocking(OptionConverter::toBoolean(value, true));
 	}
@@ -529,6 +532,7 @@ void AsyncAppender::replaceAppenders( const AppenderList& newList)
 	priv->appenders.replaceAppenders(newList);
 }
 
+#if LOG4CXX_ABI_VERSION <= 15
 bool AsyncAppender::getLocationInfo() const
 {
 	return priv->locationInfo;
@@ -538,6 +542,7 @@ void AsyncAppender::setLocationInfo(bool flag)
 {
 	priv->locationInfo = flag;
 }
+#endif
 
 void AsyncAppender::setBufferSize(int size)
 {
