@@ -50,7 +50,7 @@ class LOG4CXX_EXPORT SimpleLayout : public Layout
 		<pre> INFO - "A message"
 		</pre>
 		*/
-		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
+		void format( LogString& output, const spi::LoggingEventPtr& event ) const override;
 
 		/**
 		The SimpleLayout does not handle the throwable contained within

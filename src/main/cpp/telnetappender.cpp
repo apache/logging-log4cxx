@@ -121,7 +121,7 @@ TelnetAppender::~TelnetAppender()
 		_priv->close();
 }
 
-void TelnetAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void TelnetAppender::activateOptions(  )
 {
 	if (_priv->serverSocket == NULL)
 	{
@@ -269,7 +269,7 @@ void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, 
 	}
 }
 
-void TelnetAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void TelnetAppender::append( const spi::LoggingEventPtr& event )
 {
 	++_priv->eventCount;
 	if (0 < _priv->activeConnections)

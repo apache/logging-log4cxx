@@ -62,7 +62,7 @@ SocketAppenderSkeleton::~SocketAppenderSkeleton()
 {
 }
 
-void SocketAppenderSkeleton::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void SocketAppenderSkeleton::activateOptions(  )
 {
 	_priv->connect();
 }

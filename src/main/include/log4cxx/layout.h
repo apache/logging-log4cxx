@@ -44,7 +44,6 @@ class LOG4CXX_EXPORT Layout
 		Implement this method to create your own layout format.
 		*/
 		virtual void format(LogString& output, const spi::LoggingEventPtr& event) const = 0;
-#define LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS LogString& output, const spi::LoggingEventPtr& event
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
@@ -62,7 +61,6 @@ class LOG4CXX_EXPORT Layout
 		nothing.
 		*/
 		virtual void appendHeader(LogString& output);
-#define LOG4CXX_APPEND_HEADER_FORMAL_PARAMETERS LogString& output
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
@@ -74,7 +72,6 @@ class LOG4CXX_EXPORT Layout
 		nothing.
 		*/
 		virtual void appendFooter(LogString& output);
-#define LOG4CXX_APPEND_FOOTER_FORMAL_PARAMETERS LogString& output
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
@@ -98,7 +95,7 @@ class LOG4CXX_EXPORT Layout
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 	protected:
 		/**
 		 * The expected length of a formatted event excluding the message text

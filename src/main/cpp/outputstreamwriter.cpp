@@ -71,17 +71,17 @@ OutputStreamWriter::~OutputStreamWriter()
 {
 }
 
-void OutputStreamWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
+void OutputStreamWriter::close(  )
 {
 	m_priv->out->close();
 }
 
-void OutputStreamWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
+void OutputStreamWriter::flush(  )
 {
 	m_priv->out->flush();
 }
 
-void OutputStreamWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
+void OutputStreamWriter::write( const LogString& str )
 {
 	if (str.empty())
 		return;

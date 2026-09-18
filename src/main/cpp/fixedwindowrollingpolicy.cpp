@@ -99,7 +99,7 @@ void FixedWindowRollingPolicy::setOption(const LogString& option,
 /**
  * {@inheritDoc}
  */
-void FixedWindowRollingPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void FixedWindowRollingPolicy::activateOptions(  )
 {
 	priv->activateOptions(getFormatSpecifiers());
 
@@ -127,7 +127,7 @@ void FixedWindowRollingPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_
 /**
  * {@inheritDoc}
  */
-RolloverDescriptionPtr FixedWindowRollingPolicy::initialize( LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS )
+RolloverDescriptionPtr FixedWindowRollingPolicy::initialize( const LogString& currentActiveFile, bool append )
 {
 	LogString newActiveFile(currentActiveFile);
 	priv->explicitActiveFile = false;
@@ -154,7 +154,7 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize( LOG4CXX_ROLLING_POL
 /**
  * {@inheritDoc}
  */
-RolloverDescriptionPtr FixedWindowRollingPolicy::rollover( LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS )
+RolloverDescriptionPtr FixedWindowRollingPolicy::rollover( const LogString& currentActiveFile, bool append )
 {
 	RolloverDescriptionPtr desc;
 

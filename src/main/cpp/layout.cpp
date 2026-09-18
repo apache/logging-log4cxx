@@ -67,6 +67,6 @@ size_t Layout::getFormattedEventCharacterCount() const
 	return text.size();
 }
 
-void Layout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void Layout::activateOptions(  )
 {
 }

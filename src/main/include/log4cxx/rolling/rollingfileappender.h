@@ -153,7 +153,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		   Implements the configured roll over behaviour.
@@ -176,7 +176,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		/**
 		 Actual writing occurs here.
 		*/
-		void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void subAppend( const spi::LoggingEventPtr& event ) override;
 
 		bool rolloverInternal();
 

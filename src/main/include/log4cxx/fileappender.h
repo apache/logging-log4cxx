@@ -124,7 +124,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		If there was already an opened file, then the previous file
 		is closed first.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		\copybrief AppenderSkeleton::setOption()

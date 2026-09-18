@@ -90,7 +90,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 		Create the socket handler and wait for connections.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 
 		/**
@@ -173,7 +173,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 	protected:
 		/** Send \c event to each connected client.
 		*/
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void append( const spi::LoggingEventPtr& event ) override;
 
 	private:
 		//   prevent copy and assignment statements

@@ -19,6 +19,6 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
-void spi::ErrorHandler::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void spi::ErrorHandler::activateOptions(  )
 {
 }

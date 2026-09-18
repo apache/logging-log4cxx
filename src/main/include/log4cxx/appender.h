@@ -84,8 +84,6 @@ class LOG4CXX_EXPORT Appender
 		 Loggers will call the <code>doAppend</code> method of appender
 		 implementations in order to log.
 		*/
-#define LOG4CXX_APPEND_FORMAL_PARAMETERS const spi::LoggingEventPtr& event
-#define LOG4CXX_APPEND_PARAMETERS event
 		virtual void doAppend(const spi::LoggingEventPtr& event) = 0;
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.

@@ -31,16 +31,16 @@ SystemOutWriter::~SystemOutWriter()
 {
 }
 
-void SystemOutWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
+void SystemOutWriter::close(  )
 {
 }
 
-void SystemOutWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
+void SystemOutWriter::flush(  )
 {
 	fflush(stdout);
 }
 
-void SystemOutWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
+void SystemOutWriter::write( const LogString& str )
 {
 	helpers::writeToConsole(str, stdout);
 }

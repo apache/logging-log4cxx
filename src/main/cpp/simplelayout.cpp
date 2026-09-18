@@ -26,7 +26,7 @@ IMPLEMENT_LOG4CXX_OBJECT(SimpleLayout)
 
 
 
-void SimpleLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
+void SimpleLayout::format( LogString& output, const spi::LoggingEventPtr& event ) const
 {
 	output.append(event->getLevel()->toString());
 	output.append(LOG4CXX_STR(" - "));

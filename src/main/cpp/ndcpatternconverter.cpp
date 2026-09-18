@@ -39,7 +39,7 @@ PatternConverterPtr NDCPatternConverter::newInstance(
 	return std::make_shared<NDCPatternConverter>();
 }
 
-void NDCPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void NDCPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	LogString value;
 	if (event->getNDC(value))

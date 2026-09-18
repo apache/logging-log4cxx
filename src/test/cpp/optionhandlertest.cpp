@@ -34,7 +34,7 @@ public:
 	void close() override
 	{}
 
-	void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
+	void append( const spi::LoggingEventPtr& event ) override
 	{
 		helpers::LogLog::debug(LOG4CXX_STR("ABI_15_Appender::append"));
 	}
@@ -66,7 +66,7 @@ public:
 	void close() override
 	{}
 
-	void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
+	void append( const spi::LoggingEventPtr& event ) override
 	{
 		helpers::LogLog::debug(LOG4CXX_STR("BaseAppender::append"));
 	}
@@ -77,10 +77,10 @@ public:
 	}
 
 	using AppenderSkeleton::activateOptions;
-	void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override
+	void activateOptions(  ) override
 	{
 		helpers::LogLog::debug(LOG4CXX_STR("BaseAppender::activateOptions"));
-		AppenderSkeleton::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_PARAMETER );
+		AppenderSkeleton::activateOptions(  );
 		m_activated = true;
 	}
 

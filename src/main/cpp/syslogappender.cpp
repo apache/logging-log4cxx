@@ -406,7 +406,7 @@ int SyslogAppender::getFacility(
 	}
 }
 
-void SyslogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void SyslogAppender::append( const spi::LoggingEventPtr& event )
 {
 	LogString msg;
 	_priv->layout->format(msg, event);

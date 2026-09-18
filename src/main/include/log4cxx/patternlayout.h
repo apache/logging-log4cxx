@@ -485,7 +485,7 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 
 		Calls createPatternParser
 		 */
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
@@ -527,7 +527,7 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		/**
 		 * Produces a formatted string as specified by the conversion pattern.
 		 */
-		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
+		void format( LogString& output, const spi::LoggingEventPtr& event ) const override;
 
 	protected:
 		virtual LOG4CXX_NS::pattern::PatternMap getFormatSpecifiers();

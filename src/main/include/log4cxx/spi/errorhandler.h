@@ -133,7 +133,7 @@ class LOG4CXX_EXPORT ErrorHandler
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 };
 

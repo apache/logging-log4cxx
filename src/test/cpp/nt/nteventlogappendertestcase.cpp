@@ -88,7 +88,7 @@ class NTEventLogAppenderTestCase : public AppenderSkeletonTestCase
 
 				LoggingEventPtr event(new LoggingEvent(
 						LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));
-				appender->doAppend( LOG4CXX_APPEND_PARAMETERS );
+				appender->doAppend( event );
 			}
 			hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");
 			LOGUNIT_ASSERT(hEventLog != NULL);

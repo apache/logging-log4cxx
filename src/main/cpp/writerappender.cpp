@@ -54,7 +54,7 @@ WriterAppender::~WriterAppender()
 		_priv->close();
 }
 
-void WriterAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void WriterAppender::activateOptions(  )
 {
 	_priv->activateOptions();
 }
@@ -74,7 +74,7 @@ void WriterAppender::WriterAppenderPriv::activateOptions()
 	}
 }
 
-void WriterAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void WriterAppender::append( const spi::LoggingEventPtr& event )
 {
 
 	if (!checkEntryConditions())
@@ -82,7 +82,7 @@ void WriterAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 		return;
 	}
 
-	subAppend( LOG4CXX_APPEND_PARAMETERS );
+	subAppend( event );
 }
 
 /**
@@ -192,7 +192,7 @@ void WriterAppender::setEncoding(const LogString& enc)
 	_priv->encoding = enc;
 }
 
-void WriterAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void WriterAppender::subAppend( const spi::LoggingEventPtr& event )
 {
 #if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
 	if (event->getRenderedMessage() == _priv->exceptionTriggeringMessage)

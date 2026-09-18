@@ -40,7 +40,7 @@ public:
 		return false;
 	}
 
-	void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override {
+	void append( const spi::LoggingEventPtr& event ) override {
 		// This gets called whenever there is a valid event for our appender.
 	}
 

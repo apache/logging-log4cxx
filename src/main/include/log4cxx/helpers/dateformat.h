@@ -48,7 +48,6 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		* @param toAppendTo string to which the date/time string is appended.
 		* @param tm date to be formatted.
 		*/
-#define LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS LogString& toAppendTo, log4cxx_time_t tm
 		virtual void format(LogString& toAppendTo, log4cxx_time_t tm) const = 0;
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
@@ -71,7 +70,6 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		* format the milliseconds.
 		*/
 		virtual void numberFormat(LogString& toAppendTo, int n) const;
-#define LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS LogString& toAppendTo, int n
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/

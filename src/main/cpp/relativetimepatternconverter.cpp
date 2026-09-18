@@ -41,7 +41,7 @@ PatternConverterPtr RelativeTimePatternConverter::newInstance(
 	return def;
 }
 
-void RelativeTimePatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void RelativeTimePatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	log4cxx_time_t delta = (event->getTimeStamp() - LoggingEvent::getStartTime()) / 1000;
 	StringHelper::toString(delta, toAppendTo);

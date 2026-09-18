@@ -798,7 +798,7 @@ bool SMTPAppender::asciiCheck(const LogString& value, const LogString& field)
 /**
 Activate the specified options, such as the smtp host, the
 recipient, from, etc. */
-void SMTPAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void SMTPAppender::activateOptions(  )
 {
 	if (_priv->layout == 0)
 	{
@@ -837,7 +837,7 @@ void SMTPAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 Perform SMTPAppender specific appending actions, mainly adding
 the event to a cyclic buffer and checking if the event triggers
 an e-mail to be sent. */
-void SMTPAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void SMTPAppender::append( const spi::LoggingEventPtr& event )
 {
 	if (!checkEntryConditions())
 	{

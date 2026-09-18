@@ -153,7 +153,7 @@ MultiprocessRollingFileAppender::MultiprocessRollingFileAppender()
 /**
  * Prepare instance of use.
  */
-void MultiprocessRollingFileAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void MultiprocessRollingFileAppender::activateOptions(  )
 {
 	if (_priv->activateOptions())
 	{
@@ -410,7 +410,7 @@ void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 /**
  * {@inheritDoc}
 */
-void MultiprocessRollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
@@ -440,7 +440,7 @@ void MultiprocessRollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETER
 	else if (isAlreadyRolled(fileName, &_priv->fileLength))
 		reopenFile(fileName);
 
-	FileAppender::subAppend( LOG4CXX_APPEND_PARAMETERS );
+	FileAppender::subAppend( event );
 }
 
 /**

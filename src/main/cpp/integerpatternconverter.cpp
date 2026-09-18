@@ -38,7 +38,7 @@ PatternConverterPtr IntegerPatternConverter::newInstance(
 	return std::make_shared<IntegerPatternConverter>();
 }
 
-void IntegerPatternConverter::format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) const
+void IntegerPatternConverter::format( const helpers::ObjectPtr& obj, LogString& toAppendTo ) const
 {
 	IntegerPtr i = LOG4CXX_NS::cast<Integer>(obj);
 

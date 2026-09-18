@@ -70,13 +70,13 @@ class LOG4CXX_EXPORT InputStreamReader : public Reader
 		/**
 		 * Close the stream.
 		 */
-		void close( LOG4CXX_CLOSE_READER_FORMAL_PARAMETERS ) override;
+		void close(  ) override;
 
 		using Reader::read;
 		/**
 		 * @return The complete stream contents as a LogString.
 		 */
-		LogString read( LOG4CXX_READ_READER_FORMAL_PARAMETERS ) override;
+		LogString read(  ) override;
 
 		/**
 		 * @return The name of the character encoding being used by this stream.

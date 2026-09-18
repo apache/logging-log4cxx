@@ -252,7 +252,7 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
 		/**
 		 * Append the attributes of \c event onto \c output as specified by the conversion pattern.
 		 */
-		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
+		void format( LogString& output, const spi::LoggingEventPtr& event ) const override;
 
 		bool ignoresThrowable() const override
 		{
@@ -265,7 +265,7 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
 
 		Calculates the length of the formtted output.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

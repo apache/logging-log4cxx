@@ -44,11 +44,8 @@ class LOG4CXX_EXPORT OutputStream : public Object
 
 	public:
 		virtual void close() = 0;
-#define LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS
 		virtual void flush() = 0;
-#define LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS
 		virtual void write(ByteBuffer& buf) = 0;
-#define LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS ByteBuffer& buf
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/

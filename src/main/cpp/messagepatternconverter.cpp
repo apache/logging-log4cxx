@@ -42,7 +42,7 @@ class QuotedMessagePatternConverter : public LoggingEventPatternConverter
 		using LoggingEventPatternConverter::format;
 
 		// Duplicate any quote character in the event message
-		void format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const override
+		void format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const override
 		{
 			auto& input = event->getRenderedMessage();
 			size_t endIndex, startIndex = 0;
@@ -73,7 +73,7 @@ PatternConverterPtr MessagePatternConverter::newInstance(
 	return std::make_shared<QuotedMessagePatternConverter>(options.front().front());
 }
 
-void MessagePatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void MessagePatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	auto& msg = event->getRenderedMessage();
 	auto& info = getFormattingInfo();

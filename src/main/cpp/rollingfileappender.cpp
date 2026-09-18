@@ -180,7 +180,7 @@ void RollingFileAppender::setDatePattern(const LogString& newPattern)
 /**
  * Prepare instance of use.
  */
-void RollingFileAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void RollingFileAppender::activateOptions(  )
 {
 	if (_priv->activateOptions())
 	{
@@ -442,7 +442,7 @@ bool RollingFileAppender::rolloverInternal()
 /**
  * {@inheritDoc}
 */
-void RollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void RollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
@@ -469,7 +469,7 @@ void RollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 		}
 	}
 
-	FileAppender::subAppend( LOG4CXX_APPEND_PARAMETERS );
+	FileAppender::subAppend( event );
 }
 
 /**
@@ -555,7 +555,7 @@ class CountingOutputStream : public OutputStream
 		/**
 		 * {@inheritDoc}
 		 */
-		void close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS ) override
+		void close(  ) override
 		{
 			os->close();
 			rfa = 0;
@@ -564,7 +564,7 @@ class CountingOutputStream : public OutputStream
 		/**
 		 * {@inheritDoc}
 		 */
-		void flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS ) override
+		void flush(  ) override
 		{
 			os->flush();
 		}
@@ -572,7 +572,7 @@ class CountingOutputStream : public OutputStream
 		/**
 		 * {@inheritDoc}
 		 */
-		void write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS ) override
+		void write( ByteBuffer& buf ) override
 		{
 			os->write(buf);
 

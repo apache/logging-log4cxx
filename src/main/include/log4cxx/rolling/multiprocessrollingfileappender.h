@@ -57,7 +57,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		   Implements the usual roll over behaviour.
@@ -80,7 +80,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		/**
 		 Actual writing occurs here.
 		*/
-		void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void subAppend( const spi::LoggingEventPtr& event ) override;
 
 	protected:
 		/**

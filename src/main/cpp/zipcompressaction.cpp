@@ -58,7 +58,7 @@ ZipCompressAction::ZipCompressAction(const File& src,
 {
 }
 
-bool ZipCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const
+bool ZipCompressAction::execute(  ) const
 {
 	if (!priv->source.exists())
 	{

@@ -51,13 +51,11 @@ class LOG4CXX_EXPORT Reader : public Object
 		 * Closes the stream.
 		 */
 		virtual void close() = 0;
-#define LOG4CXX_CLOSE_READER_FORMAL_PARAMETERS
 
 		/**
 		 * @return The complete stream contents as a LogString.
 		 */
 		virtual LogString read() = 0;
-#define LOG4CXX_READ_READER_FORMAL_PARAMETERS
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/

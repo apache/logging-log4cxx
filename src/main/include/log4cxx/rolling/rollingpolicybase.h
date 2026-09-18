@@ -61,7 +61,7 @@ class LOG4CXX_EXPORT RollingPolicyBase
 
 		Converts the file name pattern to a collection of formaters.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS  ) override;
+		void activateOptions(   ) override;
 
 		/**
 		A map from a name to the object implementing the (date or index) formatting.

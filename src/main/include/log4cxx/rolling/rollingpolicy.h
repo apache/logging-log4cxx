@@ -55,7 +55,6 @@ class LOG4CXX_EXPORT RollingPolicy :
 		 * no initialization needed.
 		 */
 		virtual RolloverDescriptionPtr initialize(const LogString& currentActiveFile, bool append) = 0;
-#define LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS const LogString& currentActiveFile, bool append
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
@@ -74,7 +73,6 @@ class LOG4CXX_EXPORT RollingPolicy :
 		 * at this time.
 		 */
 		virtual RolloverDescriptionPtr rollover(const LogString& currentActiveFile, bool append) = 0;
-#define LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS const LogString& currentActiveFile, bool append
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/

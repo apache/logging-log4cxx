@@ -296,7 +296,7 @@ TimeBasedRollingPolicy::TimeBasedRollingPolicy() :
 
 TimeBasedRollingPolicy::~TimeBasedRollingPolicy(){}
 
-void TimeBasedRollingPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void TimeBasedRollingPolicy::activateOptions(  )
 {
 	// find out period from the filename pattern
 	if (getFileNamePattern().length() > 0)
@@ -353,7 +353,7 @@ LOG4CXX_NS::pattern::PatternMap TimeBasedRollingPolicy::getFormatSpecifiers() co
 /**
  * {@inheritDoc}
  */
-RolloverDescriptionPtr TimeBasedRollingPolicy::initialize( LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS )
+RolloverDescriptionPtr TimeBasedRollingPolicy::initialize( const LogString& currentActiveFile, bool append )
 {
 	Date now;
 	log4cxx_time_t n = now.getTime();
@@ -382,7 +382,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize( LOG4CXX_ROLLING_POLIC
 	}
 }
 
-RolloverDescriptionPtr TimeBasedRollingPolicy::rollover( LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS )
+RolloverDescriptionPtr TimeBasedRollingPolicy::rollover( const LogString& currentActiveFile, bool append )
 {
 	Date now;
 	log4cxx_time_t n = now.getTime();

@@ -97,7 +97,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 
 		\sa RollingPolicyBase::activateOptions()
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		\copybrief RollingPolicyBase::setOption()
@@ -125,13 +125,13 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		/**
 		 * {@inheritDoc}
 		 */
-		RolloverDescriptionPtr initialize( LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS ) override;
+		RolloverDescriptionPtr initialize( const LogString& currentActiveFile, bool append ) override;
 
 		using RollingPolicy::rollover;
 		/**
 		 * {@inheritDoc}
 		 */
-		RolloverDescriptionPtr rollover( LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS ) override;
+		RolloverDescriptionPtr rollover( const LogString& currentActiveFile, bool append ) override;
 
 	protected:
 		/**

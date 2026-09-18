@@ -47,7 +47,7 @@ RollingPolicyBase::~RollingPolicyBase()
 {
 }
 
-void RollingPolicyBase::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS  )
+void RollingPolicyBase::activateOptions(   )
 {
 	m_priv->activateOptions(getFormatSpecifiers());
 }

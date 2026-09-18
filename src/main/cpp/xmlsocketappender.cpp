@@ -71,7 +71,7 @@ int XMLSocketAppender::getDefaultPort() const
 }
 
 
-void XMLSocketAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void XMLSocketAppender::append( const spi::LoggingEventPtr& event )
 {
 	if (_priv->outputSink)
 	{

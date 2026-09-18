@@ -336,12 +336,12 @@ void AsyncAppender::setOption(const LogString& option,
 }
 
 
-void AsyncAppender::doAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void AsyncAppender::doAppend( const spi::LoggingEventPtr& event )
 {
-	doAppendImpl( LOG4CXX_APPEND_PARAMETERS );
+	doAppendImpl( event );
 }
 
-void AsyncAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void AsyncAppender::append( const spi::LoggingEventPtr& event )
 {
 	if (priv->bufferSize <= 0)
 	{

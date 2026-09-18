@@ -175,7 +175,7 @@ void NTEventLogAppender::setOption(const LogString& option, const LogString& val
 	}
 }
 
-void NTEventLogAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void NTEventLogAppender::activateOptions( )
 {
 	if (priv->source.empty())
 	{
@@ -214,7 +214,7 @@ void NTEventLogAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAME
 	}
 }
 
-void NTEventLogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void NTEventLogAppender::append( const spi::LoggingEventPtr& event )
 {
 	if (priv->hEventLog == NULL)
 	{

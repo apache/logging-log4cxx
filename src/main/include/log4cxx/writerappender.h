@@ -54,7 +54,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		Derived appenders should override this method if option structure
 		requires it.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS  ) override;
+		void activateOptions(   ) override;
 
 		/**
 		If the <b>ImmediateFlush</b> option is set to
@@ -88,7 +88,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		layout.
 
 		*/
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void append( const spi::LoggingEventPtr& event ) override;
 
 
 	protected:
@@ -152,7 +152,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		 Actual writing occurs here.
 		*/
-		virtual void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS );
+		virtual void subAppend( const spi::LoggingEventPtr& event );
 
 
 	private:

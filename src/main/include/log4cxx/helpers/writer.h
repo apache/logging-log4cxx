@@ -44,11 +44,8 @@ class LOG4CXX_EXPORT Writer : public Object
 
 	public:
 		virtual void close() = 0;
-#define LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS
 		virtual void flush() = 0;
-#define LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS
 		virtual void write(const LogString& str) = 0;
-#define LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS const LogString& str
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/

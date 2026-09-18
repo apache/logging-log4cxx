@@ -43,7 +43,7 @@ class LOG4CXX_EXPORT StrftimeDateFormat : public DateFormat
 		~StrftimeDateFormat();
 
 		using DateFormat::format;
-		void format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const override;
+		void format( LogString& toAppendTo, log4cxx_time_t tm ) const override;
 
 		/**
 		*    Set time zone.

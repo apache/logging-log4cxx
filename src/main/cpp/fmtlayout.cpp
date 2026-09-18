@@ -83,12 +83,12 @@ void FMTLayout::setOption(const LogString& option, const LogString& value)
 		Layout::setOption(option, value);
 }
 
-void FMTLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void FMTLayout::activateOptions(  )
 {
 	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 }
 
-void FMTLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
+void FMTLayout::format( LogString& output, const spi::LoggingEventPtr& event ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	priv::reserveFormattedEvent(output, m_priv->expectedPatternLength, lsMsg.size());

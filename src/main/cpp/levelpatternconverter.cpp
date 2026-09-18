@@ -41,7 +41,7 @@ PatternConverterPtr LevelPatternConverter::newInstance(
 	return std::make_shared<LevelPatternConverter>();
 }
 
-void LevelPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void LevelPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	toAppendTo.append(event->getLevel()->toString());
 }

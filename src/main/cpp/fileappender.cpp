@@ -159,7 +159,7 @@ void FileAppender::setOption(const LogString& option,
 	}
 }
 
-void FileAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void FileAppender::activateOptions(  )
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	activateOptionsInternal();

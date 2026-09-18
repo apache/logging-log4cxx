@@ -61,15 +61,13 @@ class LOG4CXX_EXPORT LoggingEventPatternConverter : public PatternConverter
 		 * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
 		 */
 		virtual void format(const spi::LoggingEventPtr& event, LogString& toAppendTo) const = 0;
-#define LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS const spi::LoggingEventPtr& event, LogString& toAppendTo
-#define LOG4CXX_FORMAT_EVENT_PARAMETERS event, toAppendTo
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
 		[[deprecated("Use format() without a Pool parameter instead")]]
 		void format(const spi::LoggingEventPtr& event, LogString& toAppendTo, helpers::Pool& p) const;
 
-		void format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) const override;
+		void format( const helpers::ObjectPtr& obj, LogString& toAppendTo ) const override;
 
 		/**
 		 * Normally pattern converters are not meant to handle Exceptions although

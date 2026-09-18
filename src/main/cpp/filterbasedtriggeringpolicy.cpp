@@ -111,7 +111,7 @@ LOG4CXX_NS::spi::FilterPtr& FilterBasedTriggeringPolicy::getFilter()
 /**
  *  Prepares the instance for use.
  */
-void FilterBasedTriggeringPolicy::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void FilterBasedTriggeringPolicy::activateOptions(  )
 {
 	for (LOG4CXX_NS::spi::FilterPtr f = m_priv->headFilter; f != NULL; f = f->getNext())
 	{

@@ -54,7 +54,6 @@ class Action : public virtual LOG4CXX_NS::helpers::Object
 		 * @return true if successful.
 		 */
 		virtual bool execute() const = 0;
-#define LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/

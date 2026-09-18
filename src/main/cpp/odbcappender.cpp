@@ -218,7 +218,7 @@ bool ODBCAppender::requiresLayout() const
 	return false;
 }
 
-void ODBCAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void ODBCAppender::activateOptions(  )
 {
 #if !LOG4CXX_HAVE_ODBC || LOG4CXX_LOGCHAR_IS_UNICHAR
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
@@ -260,7 +260,7 @@ void ODBCAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 }
 
 
-void ODBCAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void ODBCAppender::append( const spi::LoggingEventPtr& event )
 {
 #if LOG4CXX_HAVE_ODBC && !LOG4CXX_LOGCHAR_IS_UNICHAR
 	_priv->buffer.push_back(event);

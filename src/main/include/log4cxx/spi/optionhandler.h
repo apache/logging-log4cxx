@@ -49,8 +49,6 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		the <code>File</code> and <b>Append</b> options both of
 		which are ambiguous until the other is also set.
 		*/
-#define LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS
-#define LOG4CXX_ACTIVATE_OPTIONS_PARAMETER
 		virtual void activateOptions() = 0;
 		/**
 		@deprecated This function is deprecated and will be removed in a future version.

@@ -50,7 +50,7 @@ class CountingAppender : public AppenderSkeleton
 		void close() override
 		{}
 
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
+		void append( const spi::LoggingEventPtr& event ) override
 		{
 			counter++;
 		}

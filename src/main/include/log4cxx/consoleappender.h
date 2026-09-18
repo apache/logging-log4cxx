@@ -88,7 +88,7 @@ class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 		/**
 		\copybrief WriterAppender::setOption()
 
