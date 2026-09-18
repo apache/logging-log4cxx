@@ -179,8 +179,6 @@ namespace
 				break; // defensive: success without progress
 			}
 		}
-
-		encoder->flush(out);
 	}
 }
 
