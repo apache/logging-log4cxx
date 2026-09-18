@@ -69,11 +69,6 @@ class LOG4CXX_EXPORT Logger
 		<p>It is intended to be only used by factory-classes.
 		*/
 		Logger(const LogString& name);
-#if LOG4CXX_ABI_VERSION <= 15
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		Logger(helpers::Pool& pool, const LogString& name);
-#endif
 		~Logger();
 
 
@@ -87,23 +82,6 @@ class LOG4CXX_EXPORT Logger
 		void addAppender(const AppenderPtr newAppender) override;
 
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		Call the appenders in the hierrachy starting at
-		<code>this</code>.  If no appenders could be found, emit a
-		warning.
-
-		<p>This method calls all the appenders inherited from the
-		hierarchy circumventing any evaluation of whether to log or not
-		to log the particular log request.
-
-		@param event the event to log.
-		@param p memory pool for any allocations needed to process request.
-		@deprecated This function is deprecated and will be removed in a future version.
-		*/
-		[[ deprecated( "Pool is no longer required" ) ]]
-		void callAppenders(const spi::LoggingEventPtr& event, helpers::Pool& p) const;
-#endif
 		/**
 		Send \c event to all appenders attached to this or attached to a parent of this.
 		If no appenders are found, emit a warning.
@@ -854,13 +832,6 @@ class LOG4CXX_EXPORT Logger
 		*/
 		virtual const LevelPtr& getEffectiveLevel() const;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		Return the the LoggerRepository where this
-		<code>Logger</code> is attached.
-		*/
-		spi::LoggerRepository* getLoggerRepository() const;
-#endif
 
 		/**
 		* Get the logger name.
@@ -911,12 +882,10 @@ class LOG4CXX_EXPORT Logger
 		*/
 		const LevelPtr& getLevel() const;
 
-#if 15 < LOG4CXX_ABI_VERSION
 		/**
 		The object that holds all Logger instances.
 		*/
 		static spi::LoggerRepositoryPtr getLoggerRepository();
-#endif
 
 		/**
 		* Retrieve a logger by name in current encoding.
@@ -2257,11 +2226,7 @@ LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 #endif
 
 #ifndef LOG4CXX_FMT_VA_ARG
-#if __cplusplus >= 202002L
-	#define LOG4CXX_FMT_VA_ARG(...) __VA_OPT__(,) __VA_ARGS__
-#else
 	#define LOG4CXX_FMT_VA_ARG(...) , __VA_ARGS__
-#endif
 #endif
 
 /** @addtogroup LoggingMacros Logging macros

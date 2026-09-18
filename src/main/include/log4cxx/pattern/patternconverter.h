@@ -71,17 +71,6 @@ class LOG4CXX_EXPORT PatternConverter : public virtual helpers::Object
 		 * @param obj holds the attributes, may not be null.
 		 * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
 		 */
-#if LOG4CXX_ABI_VERSION <= 15
-		void format(const helpers::ObjectPtr& obj, LogString& toAppendTo) const;
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to format() without a helpers::Pool parameter.
-		*/
-		virtual void format(const helpers::ObjectPtr& obj,
-			LogString& toAppendTo,
-			helpers::Pool& p) const = 0;
-#define LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS const helpers::ObjectPtr& obj, LogString& toAppendTo, helpers::Pool& p
-#else
 		virtual void format(const helpers::ObjectPtr& obj, LogString& toAppendTo) const = 0;
 #define LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS const helpers::ObjectPtr& obj, LogString& toAppendTo
 		/**
@@ -89,7 +78,6 @@ class LOG4CXX_EXPORT PatternConverter : public virtual helpers::Object
 		*/
 		[[deprecated("Use format() without a Pool parameter instead")]]
 		virtual void format(const helpers::ObjectPtr& obj, LogString& toAppendTo, helpers::Pool& p) const;
-#endif
 
 		/**
 		 * This method returns the name of the conversion pattern.

@@ -54,19 +54,6 @@ void AppenderSkeleton::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETE
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void AppenderSkeleton::finalize()
-{
-	// An appender might be closed then garbage collected. There is no
-	// point in closing twice.
-	if (m_priv->closed)
-	{
-		return;
-	}
-
-	close();
-}
-#endif
 
 void AppenderSkeleton::addFilter(const spi::FilterPtr newFilter)
 {

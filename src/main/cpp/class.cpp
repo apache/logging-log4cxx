@@ -89,12 +89,6 @@ uint32_t libraryVersion()
 }
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-LOG4CXX_EXPORT uint32_t libraryVersion()
-{
-	return  LOG4CXX_NS::libraryVersion();
-}
-#endif
 
 Class::Class()
 {
@@ -104,12 +98,6 @@ Class::~Class()
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-LogString Class::toString() const
-{
-	return getName();
-}
-#endif
 
 Object* Class::newInstance() const
 {

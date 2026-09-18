@@ -42,10 +42,6 @@ class LOG4CXX_EXPORT RootLogger : public Logger
 		*/
 		RootLogger(const LevelPtr& level);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		[[ deprecated( "Pool is no longer required" ) ]]
-		RootLogger(helpers::Pool& pool, const LevelPtr level);
-#endif
 
 		~RootLogger() {}
 

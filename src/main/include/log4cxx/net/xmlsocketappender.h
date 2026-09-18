@@ -62,12 +62,6 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		*/
 		static int DEFAULT_RECONNECTION_DELAY;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		Unused
-		*/
-		static const int MAX_EVENT_LEN;
-#endif
 
 		DECLARE_LOG4CXX_OBJECT(XMLSocketAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -81,11 +75,7 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		/**
 		Connects to remote server at <code>address</code> and <code>port</code>.
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-		XMLSocketAppender(helpers::InetAddressPtr address, int port);
-#else
 		XMLSocketAppender(const helpers::InetAddressPtr& address, int port);
-#endif
 
 		/**
 		Connects to remote server at <code>host</code> and <code>port</code>.
@@ -94,7 +84,6 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 
 		using SocketAppenderSkeleton::activateOptions;
 
-#if 15 < LOG4CXX_ABI_VERSION
 		/**
 		* This appender has a default layout.
 		* @returns false
@@ -103,20 +92,8 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		{
 			return false;
 		}
-#endif
 
 	protected:
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		@deprecated This method will be removed in a future version.
-		*/
-		void setSocket(LOG4CXX_NS::helpers::SocketPtr& socket, helpers::Pool& p) override;
-
-		/**
-		@deprecated This method will be removed in a future version.
-		*/
-		void cleanUp(helpers::Pool& p) override;
-#endif
 		int getDefaultDelay() const override;
 
 		int getDefaultPort() const override;
@@ -128,9 +105,6 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		XMLSocketAppender(const XMLSocketAppender&);
 		XMLSocketAppender& operator=(const XMLSocketAppender&);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		struct XMLSocketAppenderPriv;
-#endif
 }; // class XMLSocketAppender
 
 LOG4CXX_PTR_DEF(XMLSocketAppender);

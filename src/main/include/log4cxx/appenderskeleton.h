@@ -36,12 +36,7 @@ namespace LOG4CXX_NS
 *  support for threshold filtering and support for general filters.
 * */
 class LOG4CXX_EXPORT AppenderSkeleton
-#if LOG4CXX_ABI_VERSION <= 15
-	: public virtual Appender
-	, public virtual helpers::Object
-#else
 	: public Appender
-#endif
 {
 	protected:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(AppenderSkeletonPrivate, m_priv)
@@ -77,14 +72,6 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		AppenderSkeleton(const LayoutPtr& layout);
 		virtual ~AppenderSkeleton();
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		Finalize this appender by calling the derived class'
-		<code>close</code> method.
-		*/
-		[[ deprecated( "The derived appender destructor needs to implement its cleanup" ) ]]
-		void finalize();
-#endif
 
 		using spi::OptionHandler::activateOptions;
 		/**

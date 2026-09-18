@@ -26,9 +26,6 @@ namespace LOG4CXX_NS
 {
 namespace helpers
 {
-#if LOG4CXX_ABI_VERSION <= 15
-class Pool;
-#endif
 /**
 String manipulation routines
 */
@@ -53,17 +50,6 @@ class LOG4CXX_EXPORT StringHelper
 		/// See <a href=https://en.cppreference.com/cpp/string/basic_string/stol>std::stoll</a> for more details.
 		static int64_t toInt64(const LogString& s);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		static void toString(int i, Pool& pool, LogString& dst);
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		static void toString(int64_t i, Pool& pool, LogString& dst);
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		static void toString(size_t i, Pool& pool, LogString& dst);
-#endif
 		/// Append a textual version of \c i to \c dst.
 		static void toString(int i, LogString& dst);
 		/// Append a textual version of \c i to \c dst.

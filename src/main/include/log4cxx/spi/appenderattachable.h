@@ -72,7 +72,6 @@ class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
 		 */
 		virtual void removeAppender(const LogString& name) = 0;
 
-#if 15 < LOG4CXX_ABI_VERSION
 		/**
 		 * Replace \c oldAppender  with \c newAppender.
 		 * @return true if oldAppender was replaced with newAppender.
@@ -83,7 +82,6 @@ class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
 		 * Replace any previously added appenders with \c newList.
 		 */
 		virtual void replaceAppenders(const AppenderList& newList) = 0;
-#endif
 
 		// Dtor
 		virtual ~AppenderAttachable() {}

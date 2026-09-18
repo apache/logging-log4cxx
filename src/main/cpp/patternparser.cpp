@@ -112,16 +112,6 @@ size_t PatternParser::extractOptions(const LogString& pattern, LogString::size_t
 	return i;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void PatternParser::parse(
-	const LogString& pattern,
-	std::vector<PatternConverterPtr>& patternConverters,
-	std::vector<FormattingInfoPtr>& formattingInfos,
-	const PatternMap& rules)
-{
-	patternConverters = parse(pattern, rules);
-}
-#endif
 
 PatternConverterList PatternParser::parse
 	( const LogString&      pattern

@@ -246,38 +246,15 @@ documented.
 
 */
 class LOG4CXX_EXPORT PropertyConfigurator
-#if LOG4CXX_ABI_VERSION <= 15
-	: virtual public spi::Configurator
-	, virtual public helpers::Object
-#else
 	: public spi::Configurator
-#endif
 {
-#if 15 < LOG4CXX_ABI_VERSION
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(PrivateData, m_priv)
-#else
-	protected:
-
-		/**
-		Used internally to keep track of configured appenders.
-		*/
-		std::map<LogString, AppenderPtr>* registry;
-
-		/**
-		Used to create new instances of logger
-		*/
-		LOG4CXX_DECLARE_PRIVATE_MEMBER(spi::LoggerFactoryPtr, loggerFactory)
-#endif
 	public:
 		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
 		BEGIN_LOG4CXX_CAST_MAP()
-#if 15 < LOG4CXX_ABI_VERSION
 		LOG4CXX_CAST_ENTRY(PropertyConfigurator)
 		LOG4CXX_CAST_ENTRY_CHAIN(spi::Configurator)
-#else
-		LOG4CXX_CAST_ENTRY(spi::Configurator)
-#endif
 		END_LOG4CXX_CAST_MAP()
 
 		PropertyConfigurator();
@@ -296,11 +273,7 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     configFileName
-#if LOG4CXX_ABI_VERSION <= 15
-			, spi::LoggerRepositoryPtr        repository
-#else
 			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
-#endif
 			) override;
 
 		/**
@@ -309,16 +282,6 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		*/
 		static spi::ConfigurationStatus configure(const File& configFilename);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		Like {@link #configureAndWatch(const File& configFilename, long delay)}
-		except that the
-		default delay as defined by helpers::FileWatchdog#DEFAULT_DELAY
-		is used.
-		@param configFilename A file in key=value format.
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const File& configFilename);
-#endif
 		/**
 		Read configuration options from \c configFilename (if it exists).
 		Stores Logger instances in the spi::LoggerRepository held by LogManager.

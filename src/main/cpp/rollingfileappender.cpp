@@ -301,12 +301,6 @@ bool RollingFileAppender::rollover()
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	return rolloverInternal();
 }
-#if LOG4CXX_ABI_VERSION <= 15
-bool RollingFileAppender::rollover(Pool& )
-{
-	return rollover();
-}
-#endif
 
 bool RollingFileAppender::rolloverInternal()
 {
@@ -444,12 +438,6 @@ bool RollingFileAppender::rolloverInternal()
 
 	return false;
 }
-#if LOG4CXX_ABI_VERSION <= 15
-bool RollingFileAppender::rolloverInternal(Pool&)
-{
-	return rolloverInternal();
-}
-#endif
 
 /**
  * {@inheritDoc}

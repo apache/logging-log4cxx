@@ -45,14 +45,3 @@ void SystemOutWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
 	helpers::writeToConsole(str, stdout);
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void SystemOutWriter::write(const LogString& str)
-{
-	helpers::writeToConsole(str, stdout);
-}
-
-void SystemOutWriter::flush()
-{
-	fflush(stdout);
-}
-#endif

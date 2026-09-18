@@ -164,20 +164,6 @@ void DatePatternConverter::format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) con
 	}
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-/**
- * Append formatted date to string buffer.
- * @param date date
- * @param toAppendTo buffer to which formatted date is appended.
- */
-void DatePatternConverter::format(
-	const DatePtr& date,
-	LogString& toAppendTo,
-	Pool& p) const
-{
-	priv->df->format(toAppendTo, date->getTime(), p);
-}
-#endif
 void DatePatternConverter::format(const DatePtr& date, LogString& toAppendTo) const
 {
 	priv->df->format(toAppendTo, date->getTime());

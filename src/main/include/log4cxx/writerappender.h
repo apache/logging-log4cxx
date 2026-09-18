@@ -43,12 +43,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		This default constructor does nothing.*/
 		WriterAppender();
 	protected:
-#if LOG4CXX_ABI_VERSION <= 15
-		WriterAppender(const LayoutPtr& layout, helpers::WriterPtr& writer);
-		WriterAppender(const LayoutPtr& layout);
-#else
 		WriterAppender(const LayoutPtr& layout, const helpers::WriterPtr& writer = helpers::WriterPtr());
-#endif
 		WriterAppender(std::unique_ptr<WriterAppenderPriv> priv);
 
 	public:
@@ -116,13 +111,6 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		void close() override;
 
 	protected:
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		 * Close the underlying {@link log4cxx::helpers::Writer}.
-		 * */
-		[[ deprecated( "Use WriterAppenderPriv::close" ) ]]
-		void closeWriter();
-#endif
 
 		/**
 		    Returns an OutputStreamWriter when passed an OutputStream.  The
@@ -157,23 +145,6 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		  <p>Send log output to \c writer which must be open and be writable.
-
-		  <p>The helpers::Writer will be closed when the
-		  appender instance is closed.
-
-		  <b>WARNING:</b> Logging to an unopened Writer will fail.
-
-		  @param writer An already opened Writer.
-		*/
-		[[ deprecated( "Use WriterAppenderPriv::setWriter" ) ]]
-		void setWriter(const helpers::WriterPtr& writer);
-
-		[[ deprecated( "Use WriterAppenderPriv::getWriter" ) ]]
-		const helpers::WriterPtr getWriter() const;
-#endif
 
 		bool requiresLayout() const override;
 
@@ -184,25 +155,6 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		virtual void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS );
 
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		Write a footer as produced by the embedded layout's
-		Layout#appendFooter method.  */
-		[[ deprecated( "Specialize Layout instead of Appender" ) ]]
-		virtual void writeFooter(helpers::Pool& p);
-
-		/**
-		Write a header as produced by the embedded layout's
-		Layout#appendHeader method.  */
-		[[ deprecated( "Specialize Layout instead of Appender" ) ]]
-		virtual void writeHeader(helpers::Pool& p);
-
-		/**
-		 * Set the writer.  Mutex must already be held.
-		 */
-		[[ deprecated( "Use WriterAppenderPriv::setWriter" ) ]]
-		void setWriterInternal(const helpers::WriterPtr& writer);
-#endif
 	private:
 		//
 		//  prevent copy and assignment

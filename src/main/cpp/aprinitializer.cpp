@@ -32,9 +32,6 @@
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS;
 
-#if LOG4CXX_ABI_VERSION <= 15
-bool APRInitializer::isDestructed = false;
-#endif
 
 using IdentifiedObject = std::pair<size_t, ObjectPtr>;
 
@@ -67,12 +64,6 @@ void tlsDestructImpl(void* ptr)
 }
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-extern "C" void tlsDestruct(void* ptr)
-{
-	tlsDestructImpl(ptr);
-}
-#endif
 
 namespace
 {
@@ -105,20 +96,12 @@ APRInitializer::APRInitializer() :
 
 APRInitializer::~APRInitializer()
 {
-#if LOG4CXX_ABI_VERSION <= 15
-	isDestructed = true;
-#endif
 #if APR_HAS_THREADS
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
 	apr_threadkey_private_delete(m_priv->tlsKey);
 #endif
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void APRInitializer::unregisterAll()
-{
-}
-#endif
 
 APRInitializer& APRInitializer::getInstance()
 {
@@ -128,12 +111,6 @@ APRInitializer& APRInitializer::getInstance()
 }
 
 
-#if LOG4CXX_ABI_VERSION <= 15
-log4cxx_time_t APRInitializer::initialize()
-{
-	return getInstance().m_priv->startTime;
-}
-#endif
 
 log4cxx_time_t APRInitializer::getStartTime()
 {
@@ -150,15 +127,6 @@ apr_threadkey_t* APRInitializer::getTlsKey()
 	return getInstance().m_priv->tlsKey;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void APRInitializer::registerCleanup(FileWatchdog* watchdog)
-{
-}
-
-void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
-{
-}
-#endif
 
 void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)
 {

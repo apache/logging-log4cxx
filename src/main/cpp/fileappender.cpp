@@ -435,11 +435,3 @@ bool FileAppender::getAppend() const
 	return _priv->fileAppend;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void FileAppender::activateOptionsInternal(helpers::Pool& )
-{ activateOptionsInternal(); }
-void FileAppender::setFileInternal(const LogString& file, bool append,
-	bool bufferedIO, size_t bufferSize,
-	helpers::Pool&)
-{ setFileInternal(file, append, bufferedIO, bufferSize); }
-#endif

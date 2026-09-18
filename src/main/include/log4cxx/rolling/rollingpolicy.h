@@ -54,18 +54,6 @@ class LOG4CXX_EXPORT RollingPolicy :
 		 * @return Description of the initialization, may be null to indicate
 		 * no initialization needed.
 		 */
-#if LOG4CXX_ABI_VERSION <= 15
-		RolloverDescriptionPtr initialize(const LogString& currentActiveFile, bool append);
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to initialize() without a helpers::Pool parameter.
-		*/
-		virtual RolloverDescriptionPtr initialize(
-			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			LOG4CXX_NS::helpers::Pool& pool) = 0;
-#define LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS const LogString& currentActiveFile, bool append, helpers::Pool& p
-#else
 		virtual RolloverDescriptionPtr initialize(const LogString& currentActiveFile, bool append) = 0;
 #define LOG4CXX_ROLLING_POLICY_INITIALIZE_FORMAL_PARAMETERS const LogString& currentActiveFile, bool append
 		/**
@@ -73,7 +61,6 @@ class LOG4CXX_EXPORT RollingPolicy :
 		*/
 		[[deprecated("Use initialize() without a Pool parameter instead")]]
 		RolloverDescriptionPtr initialize(const LogString& currentActiveFile, bool append, helpers::Pool& pool);
-#endif
 
 		/**
 		 * Prepare for a rollover.  This method is called prior to
@@ -86,18 +73,6 @@ class LOG4CXX_EXPORT RollingPolicy :
 		 * @return Description of pending rollover, may be null to indicate no rollover
 		 * at this time.
 		 */
-#if LOG4CXX_ABI_VERSION <= 15
-		RolloverDescriptionPtr rollover(const LogString& currentActiveFile, bool append);
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to rollover() without a helpers::Pool parameter.
-		*/
-		virtual RolloverDescriptionPtr rollover(
-			const   LogString&              currentActiveFile,
-			const   bool                    append,
-			LOG4CXX_NS::helpers::Pool& pool) = 0;
-#define LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS const LogString& currentActiveFile, bool append, helpers::Pool& p
-#else
 		virtual RolloverDescriptionPtr rollover(const LogString& currentActiveFile, bool append) = 0;
 #define LOG4CXX_ROLLING_POLICY_ROLLOVER_FORMAL_PARAMETERS const LogString& currentActiveFile, bool append
 		/**
@@ -105,7 +80,6 @@ class LOG4CXX_EXPORT RollingPolicy :
 		*/
 		[[deprecated("Use rollover() without a Pool parameter instead")]]
 		RolloverDescriptionPtr rollover(const LogString& currentActiveFile, bool append, helpers::Pool& pool);
-#endif
 };
 
 LOG4CXX_PTR_DEF(RollingPolicy);

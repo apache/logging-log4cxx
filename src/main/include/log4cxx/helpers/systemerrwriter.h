@@ -47,10 +47,6 @@ class LOG4CXX_EXPORT SystemErrWriter : public Writer
 		using Writer::write;
 		void write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS ) override;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		static void write(const LogString& str);
-		static void flush();
-#endif
 	private:
 		SystemErrWriter(const SystemErrWriter&);
 		SystemErrWriter& operator=(const SystemErrWriter&);

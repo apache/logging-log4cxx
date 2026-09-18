@@ -69,15 +69,7 @@ void PatternConverter::setFormattingInfo(const FormattingInfoPtr& newValue)
 	m_priv->info = newValue;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void PatternConverter::format(const helpers::ObjectPtr& obj, LogString& toAppendTo) const
-{
-	helpers::Pool p;
-	format(obj, toAppendTo, p);
-}
-#else
 void PatternConverter::format(const helpers::ObjectPtr& obj, LogString& toAppendTo, helpers::Pool&) const
 {
 	format(obj, toAppendTo);
 }
-#endif

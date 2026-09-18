@@ -52,11 +52,6 @@ void ServerSocket::setSoTimeout(int newVal)
 	m_priv->timeout = newVal;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-ServerSocketUniquePtr ServerSocket::create(int port){
-	return std::make_unique<APRServerSocket>(port);
-}
-#endif
 
 ServerSocketUniquePtr ServerSocket::create(int port, bool reuseAddress, const LogString& hostname){
 	return std::make_unique<APRServerSocket>(port, reuseAddress, hostname);

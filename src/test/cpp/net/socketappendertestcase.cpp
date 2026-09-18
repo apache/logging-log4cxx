@@ -46,9 +46,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
 		LOGUNIT_TEST(testRetryConnectDefault);
-#if 15 < LOG4CXX_ABI_VERSION
 		LOGUNIT_TEST(testRetryConnectBSD);
-#endif
 		LOGUNIT_TEST_SUITE_END();
 
 #ifdef _DEBUG
@@ -81,10 +79,8 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setRemoteHost(LOG4CXX_STR("localhost"));
 			appender->setReconnectionDelay(millisecondDelay);
 			appender->setPort(tcpPort);
-#if 15 < LOG4CXX_ABI_VERSION
 			if (!socketImpl.empty())
 				appender->setSocketSubclass(socketImpl);
-#endif
 			appender->activateOptions();
 
 			BasicConfigurator::configure(appender);
@@ -197,12 +193,10 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			testRetryConnect();
 		}
 
-#if 15 < LOG4CXX_ABI_VERSION
 		void testRetryConnectBSD()
 		{
 			testRetryConnect(LOG4CXX_STR("BSDSocket"));
 		}
-#endif
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(SocketAppenderTestCase);

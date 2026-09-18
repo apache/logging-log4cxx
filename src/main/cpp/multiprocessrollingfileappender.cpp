@@ -260,12 +260,6 @@ bool MultiprocessRollingFileAppender::rollover()
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	return synchronizedRollover();
 }
-#if LOG4CXX_ABI_VERSION <= 15
-bool MultiprocessRollingFileAppender::rollover(Pool& p)
-{
-	return rollover();
-}
-#endif
 
 /**
  * Coordinate a rollover with other processes
@@ -391,12 +385,6 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 
 	return result;
 }
-#if LOG4CXX_ABI_VERSION <= 15
-bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const TriggeringPolicyPtr& trigger)
-{
-	return synchronizedRollover(trigger);
-}
-#endif
 
 /**
  * re-open \c fileName (used after it has been renamed)

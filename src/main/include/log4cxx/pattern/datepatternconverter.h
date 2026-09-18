@@ -92,11 +92,6 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 		 * Append to \c toAppendTo a textual version of \c date.
 		 */
 		void format(const helpers::DatePtr& date, LogString& toAppendTo) const;
-#if LOG4CXX_ABI_VERSION <= 15
-		void format(const helpers::DatePtr& date,
-			LogString& toAppendTo,
-			helpers::Pool& p) const;
-#endif
 };
 
 LOG4CXX_PTR_DEF(DatePatternConverter);

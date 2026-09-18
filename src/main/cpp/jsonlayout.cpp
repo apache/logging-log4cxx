@@ -460,10 +460,3 @@ void JSONLayout::appendSerializedLocationInfo(LogString& buf, const LoggingEvent
 	buf.append(LOG4CXX_STR("}"));
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void JSONLayout::appendSerializedLocationInfo(LogString& buf,
-	const LoggingEventPtr& event, Pool& p) const
-{
-	appendSerializedLocationInfo(buf, event);
-}
-#endif

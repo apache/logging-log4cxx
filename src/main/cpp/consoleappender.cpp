@@ -58,12 +58,7 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& targe
 {
 	setLayout(layout);
 	setTarget(target);
-#if LOG4CXX_ABI_VERSION <= 15
-	Pool p;
-	ConsoleAppender::activateOptions(p);
-#else
 	ConsoleAppender::activateOptions();
-#endif
 }
 
 ConsoleAppender::~ConsoleAppender()

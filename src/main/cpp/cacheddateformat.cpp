@@ -231,15 +231,6 @@ int CachedDateFormat::findMillisecondStart(
 
 	return NO_MILLISECONDS;
 }
-#if LOG4CXX_ABI_VERSION <= 15
-int CachedDateFormat::findMillisecondStart(
-	log4cxx_time_t time, const LogString& formatted,
-	const DateFormatPtr& formatter,
-	Pool& pool)
-{
-	return findMillisecondStart(time, formatted, formatter);
-}
-#endif
 
 /**
  * Formats a millisecond count into a date/time string.

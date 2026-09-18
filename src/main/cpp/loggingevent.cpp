@@ -320,13 +320,6 @@ void LoggingEvent::LoadDC() const
 	}
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void LoggingEvent::getMDCCopy() const
-{
-	if (!m_priv->dc)
-		LoadDC();
-}
-#endif
 
 bool LoggingEvent::getProperty(const LogString& key, LogString& dest) const
 {

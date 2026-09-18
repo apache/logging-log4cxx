@@ -74,9 +74,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 		 */
 		bool rollover();
-#if LOG4CXX_ABI_VERSION <= 15
-		bool rollover(LOG4CXX_NS::helpers::Pool& p);
-#endif
 
 	protected:
 
@@ -104,9 +101,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		 * @return true if this process perfomed the rollover.
 		 */
 		bool synchronizedRollover(const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
-#if LOG4CXX_ABI_VERSION <= 15
-		bool synchronizedRollover(helpers::Pool& p, const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
-#endif
 
 		/**
 		 * Set the length of current active log file to \c length bytes.

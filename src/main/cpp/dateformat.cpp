@@ -42,15 +42,7 @@ void DateFormat::numberFormat(LogString& toAppendTo, int n) const
 	StringHelper::toString(n, toAppendTo);
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void DateFormat::format(LogString& toAppendTo, log4cxx_time_t tm) const
-{
-	helpers::Pool p;
-	format(toAppendTo, tm, p);
-}
-#else
 void DateFormat::format(LogString& toAppendTo, log4cxx_time_t tm, Pool& p) const
 {
 	format(toAppendTo, tm);
 }
-#endif

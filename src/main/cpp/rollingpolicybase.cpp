@@ -127,15 +127,6 @@ void RollingPolicyBase::formatFileName(
 		item->getFormattingInfo().adjustField(startField, toAppendTo);
 	}
 }
-#if LOG4CXX_ABI_VERSION <= 15
-void RollingPolicyBase::formatFileName(
-	const ObjectPtr& obj,
-	LogString& toAppendTo,
-	Pool& pool) const
-{
-	formatFileName(obj, toAppendTo);
-}
-#endif
 
 PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const
 {

@@ -32,18 +32,5 @@ Reader::~Reader()
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void Reader::close()
-{
-	Pool p;
-	close(p);
-}
-LogString Reader::read()
-{
-	Pool p;
-	return read(p);
-}
-#else
 void Reader::close(Pool&) { close(); }
 LogString Reader::read(Pool&) { return read(); }
-#endif

@@ -459,11 +459,6 @@ void SyslogAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 	}
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void SyslogAppender::activateOptions(Pool&)
-{
-}
-#endif
 
 void SyslogAppender::setOption(const LogString& option, const LogString& value)
 {

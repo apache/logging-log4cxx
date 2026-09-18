@@ -22,18 +22,6 @@ using namespace LOG4CXX_NS::rolling;
 
 IMPLEMENT_LOG4CXX_OBJECT(RollingPolicy)
 
-#if LOG4CXX_ABI_VERSION <= 15
-RolloverDescriptionPtr RollingPolicy::initialize(const LogString& currentActiveFile, bool append)
-{
-	helpers::Pool p;
-	return initialize(currentActiveFile, append, p);
-}
-RolloverDescriptionPtr RollingPolicy::rollover(const LogString& currentActiveFile, bool append)
-{
-	helpers::Pool p;
-	return rollover(currentActiveFile, append, p);
-}
-#else
 RolloverDescriptionPtr RollingPolicy::initialize(const LogString& currentActiveFile, bool append, helpers::Pool&)
 {
 	return initialize(currentActiveFile, append);
@@ -42,4 +30,3 @@ RolloverDescriptionPtr RollingPolicy::rollover(const LogString& currentActiveFil
 {
 	return rollover(currentActiveFile, append);
 }
-#endif

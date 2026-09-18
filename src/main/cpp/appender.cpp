@@ -21,15 +21,7 @@ using namespace LOG4CXX_NS;
 
 IMPLEMENT_LOG4CXX_OBJECT(Appender)
 
-#if LOG4CXX_ABI_VERSION <= 15
-void Appender::doAppend(const spi::LoggingEventPtr& event)
-{
-	helpers::Pool p;
-	doAppend(event, p);
-}
-#else
 void Appender::doAppend(const spi::LoggingEventPtr& event, helpers::Pool&)
 {
 	doAppend(event);
 }
-#endif

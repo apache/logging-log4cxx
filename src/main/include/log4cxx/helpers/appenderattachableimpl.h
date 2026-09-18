@@ -45,10 +45,6 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 *   Create new instance.
 		 */
 		AppenderAttachableImpl();
-#if LOG4CXX_ABI_VERSION <= 15
-		[[ deprecated( "Pool is no longer required" ) ]]
-		AppenderAttachableImpl(Pool& pool);
-#endif
 		~AppenderAttachableImpl();
 
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachableImpl)
@@ -63,15 +59,6 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		void addAppender(const AppenderPtr newAppender) override;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		 Call the <code>doAppend</code> method on all attached appenders.
-		@deprecated This function is deprecated and will be removed in a future version.
-		*/
-		[[ deprecated( "Pool is no longer required" ) ]]
-		int appendLoopOnAppenders(const spi::LoggingEventPtr& event,
-			LOG4CXX_NS::helpers::Pool& p);
-#endif
 		/**
 		 Send \c event to all attached appenders.
 		*/

@@ -35,10 +35,8 @@ using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
 
-#if 15 < LOG4CXX_ABI_VERSION
 namespace
 {
-#endif
 
 /**
  * The default buffer size is set to 128 events.
@@ -74,23 +72,10 @@ class DiscardSummary
 		/** Move values from \c src into a new instance.
 		*/
 		DiscardSummary(DiscardSummary&& src);
-#if 15 < LOG4CXX_ABI_VERSION
 		/** Copy constructor.  */
 		DiscardSummary(const DiscardSummary&) = delete;
 		/** Assignment operator. */
 		DiscardSummary& operator=(const DiscardSummary&) = delete;
-#else
-		/**
-		 * Create new instance.
-		 *
-		 * @param event event, may not be null.
-		*/
-		DiscardSummary(const LoggingEventPtr& event);
-		/** Copy constructor.  */
-		DiscardSummary(const DiscardSummary& src);
-		/** Assignment operator. */
-		DiscardSummary& operator=(const DiscardSummary& src);
-#endif
 
 		/**
 		 * Add discarded event to summary.
@@ -106,12 +91,6 @@ class DiscardSummary
 		 */
 		LoggingEventPtr createEvent();
 
-#if LOG4CXX_ABI_VERSION <= 15
-		LoggingEventPtr createEvent(Pool&);
-		static
-		::LOG4CXX_NS::spi::LoggingEventPtr createEvent(::LOG4CXX_NS::helpers::Pool& p,
-			size_t discardedCount);
-#endif
 
 		/**
 		* The number of messages discarded.
@@ -121,9 +100,7 @@ class DiscardSummary
 
 typedef std::map<LogString, DiscardSummary> DiscardMap;
 
-#if 15 < LOG4CXX_ABI_VERSION
 }
-#endif
 
 #ifdef __cpp_lib_hardware_interference_size
 	using std::hardware_constructive_interference_size;
@@ -278,12 +255,6 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 	void close();
 
-#if LOG4CXX_ABI_VERSION <= 15
-	/**
-	 * Should location info be included in dispatched messages.
-	*/
-	bool locationInfo{ true };
-#endif
 	/**
 	 * Does appender block when buffer is full.
 	*/
@@ -349,13 +320,6 @@ void AsyncAppender::addAppender(const AppenderPtr newAppender)
 void AsyncAppender::setOption(const LogString& option,
 	const LogString& value)
 {
-#if LOG4CXX_ABI_VERSION <= 15
-	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
-	{
-		setLocationInfo(OptionConverter::toBoolean(value, false));
-	}
-	else
-#endif
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
 		setBufferSize(OptionConverter::toInt(value, DEFAULT_BUFFER_SIZE));
@@ -532,17 +496,6 @@ void AsyncAppender::replaceAppenders( const AppenderList& newList)
 	priv->appenders.replaceAppenders(newList);
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-bool AsyncAppender::getLocationInfo() const
-{
-	return priv->locationInfo;
-}
-
-void AsyncAppender::setLocationInfo(bool flag)
-{
-	priv->locationInfo = flag;
-}
-#endif
 
 void AsyncAppender::setBufferSize(int size)
 {
@@ -588,24 +541,6 @@ DiscardSummary::DiscardSummary(DiscardSummary&& other)
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-DiscardSummary::DiscardSummary(const LoggingEventPtr& event) :
-	maxEvent(event), count(1)
-{
-}
-
-DiscardSummary::DiscardSummary(const DiscardSummary& src) :
-	maxEvent(src.maxEvent), count(src.count)
-{
-}
-
-DiscardSummary& DiscardSummary::operator=(const DiscardSummary& src)
-{
-	maxEvent = src.maxEvent;
-	count = src.count;
-	return *this;
-}
-#endif
 
 void DiscardSummary::add(const LoggingEventPtr& event)
 {
@@ -627,25 +562,6 @@ LoggingEventPtr DiscardSummary::createEvent()
 		, LocationInfo::getLocationUnavailable()
 		);
 }
-#if LOG4CXX_ABI_VERSION <= 15
-LoggingEventPtr DiscardSummary::createEvent(Pool&)
-{ return createEvent(); }
-
-::LOG4CXX_NS::spi::LoggingEventPtr
-DiscardSummary::createEvent(::LOG4CXX_NS::helpers::Pool& p,
-	size_t discardedCount)
-{
-	LogString msg(LOG4CXX_STR("Discarded "));
-	StringHelper::toString(discardedCount, msg);
-	msg.append(LOG4CXX_STR(" messages due to a full event buffer"));
-
-	return std::make_shared<LoggingEvent>(
-				LOG4CXX_STR(""),
-				LOG4CXX_NS::Level::getError(),
-				msg,
-				LocationInfo::getLocationUnavailable() );
-}
-#endif
 
 void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 {

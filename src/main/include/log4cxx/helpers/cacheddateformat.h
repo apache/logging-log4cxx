@@ -108,13 +108,6 @@ class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 		static int findMillisecondStart(
 			log4cxx_time_t time, const LogString& formatted,
 			const helpers::DateFormatPtr& formatter);
-#if LOG4CXX_ABI_VERSION <= 15
-		[[deprecated("Use findMillisecondStart() without a Pool parameter instead")]]
-		static int findMillisecondStart(
-			log4cxx_time_t time, const LogString& formatted,
-			const LOG4CXX_NS::helpers::DateFormatPtr& formatter,
-			LOG4CXX_NS::helpers::Pool& pool);
-#endif
 		using DateFormat::format;
 		/**
 		 * Formats a Date into a date/time string.

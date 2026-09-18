@@ -138,13 +138,8 @@ namespace rolling
  * <code>RollingFileAppender</code>.
  */
 class LOG4CXX_EXPORT TimeBasedRollingPolicy
-#if LOG4CXX_ABI_VERSION <= 15
-	: public virtual RollingPolicyBase
-	, public virtual TriggeringPolicy
-#else
 	: public RollingPolicyBase
 	, public virtual TriggeringPolicy
-#endif
 {
 		DECLARE_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
 		BEGIN_LOG4CXX_CAST_MAP()

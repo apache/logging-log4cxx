@@ -113,7 +113,6 @@ private:
 	bool m_activated{ false };
 };
 
-#if 15 < LOG4CXX_ABI_VERSION
 class ABI_16_Appender : public BaseAppender
 {
 public:
@@ -132,18 +131,13 @@ private:
 	bool m_activated{ false };
 };
 
-#endif
 
 LOGUNIT_CLASS(OptionHandlerTest)
 {
 	LOGUNIT_TEST_SUITE(OptionHandlerTest);
 	LOGUNIT_TEST(ABI_15_AppenderTest);
 	LOGUNIT_TEST(ABI_15_Specialized_AppenderTest);
-#if LOG4CXX_ABI_VERSION <= 15
-	LOGUNIT_TEST(ABI_15_Specialized_Appender_unagumented_activate_Test);
-#else
 	LOGUNIT_TEST(ABI_16_AppenderTest);
-#endif
 	LOGUNIT_TEST_SUITE_END();
 public:
 
@@ -169,19 +163,6 @@ public:
 		LOGUNIT_ASSERT(a15s.isActivated());
 	}
 
-#if LOG4CXX_ABI_VERSION <= 15
-	/**
-	 * Checks all levels of the appender heirarchy are activated
-	 */
-	void ABI_15_Specialized_Appender_unagumented_activate_Test()
-	{
-		helpers::Pool p;
-		ABI_15_Specialized_Appender a15s;
-		a15s.activateOptions();
-		LOGUNIT_ASSERT(a15s.isActivated());
-	}
-
-#else
 	/**
 	 * Checks all levels of the appender heirarchy are activated
 	 */
@@ -191,7 +172,6 @@ public:
 		a16.activateOptions();
 		LOGUNIT_ASSERT(a16.isActivated());
 	}
-#endif
 
 };
 

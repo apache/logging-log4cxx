@@ -22,11 +22,7 @@
 #include <log4cxx/helpers/outputstream.h>
 #include <log4cxx/helpers/charsetencoder.h>
 
-#if 15 < LOG4CXX_ABI_VERSION
 #define LOG4CXX_16_CONST const
-#else
-#define LOG4CXX_16_CONST 
-#endif
 
 namespace LOG4CXX_NS
 {

@@ -273,16 +273,6 @@ void ODBCAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 #endif
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) const
-{
-    return LogString();
-}
-
-void ODBCAppender::execute(const LogString& sql, LOG4CXX_NS::helpers::Pool& p)
-{
-}
-#endif
 
 /* The default behavior holds a single connection open until the appender
 is closed (typically when garbage collected).*/

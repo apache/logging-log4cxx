@@ -75,14 +75,6 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 
 		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		\copybrief AppenderSkeleton::activateOptions()
-
-		No action is performed in this implementation.
-		*/
-		void activateOptions(helpers::Pool& p) override;
-#endif
 		/**
 		\copybrief AppenderSkeleton::setOption()
 

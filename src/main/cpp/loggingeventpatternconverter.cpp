@@ -53,15 +53,7 @@ bool LoggingEventPatternConverter::handlesThrowable() const
 	return false;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void LoggingEventPatternConverter::format(const spi::LoggingEventPtr& event, LogString& toAppendTo) const
-{
-	helpers::Pool p;
-	format(event, toAppendTo, p);
-}
-#else
 void LoggingEventPatternConverter::format(const spi::LoggingEventPtr& event, LogString& toAppendTo, helpers::Pool&) const
 {
 	format(event, toAppendTo);
 }
-#endif

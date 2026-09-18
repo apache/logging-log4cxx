@@ -20,20 +20,11 @@
 
 using namespace LOG4CXX_NS;
 
-#if LOG4CXX_ABI_VERSION <= 15
-void spi::OptionHandler::activateOptions()
-{
-	// Ensure any ABI 15 overriden activateOptions is invoked
-	helpers::Pool p;
-	activateOptions(p);
-}
-#else
 void spi::OptionHandler::activateOptions(helpers::Pool&)
 {
 	// Redirect to the ABI 16 activateOptions
 	activateOptions();
 }
-#endif
 
 void spi::OptionHandler::setOption(const LogString& option, const LogString& value)
 {

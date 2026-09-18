@@ -16,9 +16,6 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/private/bytebuffer_priv.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/helpers/exception.h>
-#endif
 #include <cstring>
 
 using namespace LOG4CXX_NS;
@@ -53,34 +50,6 @@ void ByteBuffer::flip()
 	m_priv->flip();
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void ByteBuffer::position(size_t newPosition)
-{
-	if (newPosition < m_priv->lim)
-	{
-		m_priv->pos = newPosition;
-	}
-	else
-	{
-		m_priv->pos = m_priv->lim;
-	}
-}
-
-void ByteBuffer::limit(size_t newLimit)
-{
-	if (newLimit > m_priv->cap)
-	{
-		throw IllegalArgumentException(LOG4CXX_STR("newLimit"));
-	}
-
-	m_priv->lim = newLimit;
-
-	if (m_priv->pos > m_priv->lim)
-	{
-		m_priv->pos = m_priv->lim;
-	}
-}
-#endif
 
 bool ByteBuffer::put(char byte)
 {

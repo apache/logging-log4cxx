@@ -43,11 +43,7 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnection
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-SocketAppenderSkeleton::SocketAppenderSkeleton(helpers::InetAddressPtr address, int port, int reconnectionDelay)
-#else
 SocketAppenderSkeleton::SocketAppenderSkeleton(const helpers::InetAddressPtr& address, int port, int reconnectionDelay)
-#endif
 	: AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(address, port, reconnectionDelay))
 {
 }
@@ -131,12 +127,10 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 	{
 		setReconnectionDelay(OptionConverter::toInt(value, getDefaultDelay()));
 	}
-#if 15 < LOG4CXX_ABI_VERSION
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SOCKETSUBCLASS"), LOG4CXX_STR("socketsubclass")))
 	{
 		setSocketSubclass(value);
 	}
-#endif
 	else
 	{
 		AppenderSkeleton::setOption(option, value);
@@ -173,12 +167,6 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::fireConnector()
 	this->taskManager = taskManager;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void SocketAppenderSkeleton::fireConnector()
-{
-	_priv->fireConnector();
-}
-#endif
 
 void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::retryConnect()
 {
@@ -321,7 +309,6 @@ int SocketAppenderSkeleton::getReconnectionDelay() const
 	return _priv->reconnectionDelay;
 }
 
-#if 15 < LOG4CXX_ABI_VERSION
 void SocketAppenderSkeleton::setSocketSubclass(const LogString& newValue)
 {
 	_priv->socketSubclass = newValue;
@@ -331,4 +318,3 @@ const LogString& SocketAppenderSkeleton::getSocketSubclass() const
 {
 	return _priv->socketSubclass;
 }
-#endif

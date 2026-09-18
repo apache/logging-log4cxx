@@ -245,12 +245,6 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 
 		void setFileInternal(const LogString& file);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		void activateOptionsInternal(helpers::Pool& p);
-		void setFileInternal(const LogString& file, bool append,
-			bool bufferedIO, size_t bufferSize,
-			helpers::Pool& p);
-#endif
 	private:
 		FileAppender(const FileAppender&);
 		FileAppender& operator=(const FileAppender&);

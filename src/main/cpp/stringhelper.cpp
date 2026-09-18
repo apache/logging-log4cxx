@@ -214,8 +214,3 @@ LogString StringHelper::format(const LogString& pattern, const std::vector<LogSt
 	return result;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void StringHelper::toString(int n, Pool& pool, LogString& dst) { toString(n, dst); }
-void StringHelper::toString(int64_t n, Pool& pool, LogString& dst) { toString(n, dst); }
-void StringHelper::toString(size_t n, Pool& pool, LogString& dst) { toString(n, dst); }
-#endif

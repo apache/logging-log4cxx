@@ -30,29 +30,6 @@ LogString Layout::getContentType() const
 	return LOG4CXX_STR("text/plain");
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void Layout::format(LogString& output, const spi::LoggingEventPtr& event) const
-{
-	Pool p;
-	format(output, event, p);
-}
-
-void Layout::appendHeader(LogString&, LOG4CXX_NS::helpers::Pool&) {}
-
-void Layout::appendHeader(LogString& output)
-{
-	Pool p;
-	appendHeader(output, p);
-}
-
-void Layout::appendFooter(LogString&, LOG4CXX_NS::helpers::Pool&) {}
-
-void Layout::appendFooter(LogString& output)
-{
-	Pool p;
-	appendFooter(output, p);
-}
-#else
 void Layout::format(LogString& output, const spi::LoggingEventPtr& event, helpers::Pool&) const
 {
 	format(output, event);
@@ -73,7 +50,6 @@ void Layout::appendFooter(LogString& output, helpers::Pool&)
 void Layout::appendFooter(LogString& output)
 {
 }
-#endif
 
 /**
  * The expected length of a formatted event excluding the message text
@@ -91,8 +67,6 @@ size_t Layout::getFormattedEventCharacterCount() const
 	return text.size();
 }
 
-#if 15 < LOG4CXX_ABI_VERSION
 void Layout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
 {
 }
-#endif

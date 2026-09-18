@@ -46,14 +46,3 @@ void SystemErrWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
 	helpers::writeToConsole(str, stderr);
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void SystemErrWriter::write(const LogString& str)
-{
-	helpers::writeToConsole(str, stderr);
-}
-
-void SystemErrWriter::flush()
-{
-	fflush(stderr);
-}
-#endif

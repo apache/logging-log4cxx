@@ -40,12 +40,7 @@ LOG4CXX_LIST_DEF(PatternConverterList, LOG4CXX_NS::pattern::PatternConverterPtr)
  *
  */
 class LOG4CXX_EXPORT RollingPolicyBase
-#if LOG4CXX_ABI_VERSION <= 15
-	: public virtual RollingPolicy
-	, public virtual helpers::Object
-#else
 	: public RollingPolicy
-#endif
 {
 	protected:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(RollingPolicyBase)
@@ -123,10 +118,6 @@ class LOG4CXX_EXPORT RollingPolicyBase
 		LOG4CXX_NS::pattern::PatternConverterPtr getIntegerPatternConverter() const;
 		LOG4CXX_NS::pattern::PatternConverterPtr getDatePatternConverter() const;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		void formatFileName(const helpers::ObjectPtr& obj,
-			LogString& buf, helpers::Pool& p) const;
-#endif
 };
 
 LOG4CXX_PTR_DEF(RollingPolicyBase);

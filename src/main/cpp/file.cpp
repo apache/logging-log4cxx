@@ -210,12 +210,6 @@ const char* File::getAPRPath() const
 	return m_priv->getPath();
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-log4cxx_status_t File::open(apr_file_t** file, int flags, int perm, helpers::Pool& p) const
-{
-	return apr_file_open(file, m_priv->getPath(), flags, perm, p.getAPRPool());
-}
-#endif
 
 bool File::exists() const
 {
@@ -347,13 +341,3 @@ bool File::getAutoDelete() const{
 	return m_priv->autoDelete;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-bool File::exists(helpers::Pool& p) const { return exists(); }
-size_t File::length(helpers::Pool& p) const { return length(); }
-log4cxx_time_t File::lastModified(helpers::Pool& p) const { return lastModified(); }
-std::vector<LogString> File::list(helpers::Pool& p) const { return list(); }
-bool File::deleteFile(helpers::Pool& p) const { return deleteFile(); }
-bool File::renameTo(const File& dest, helpers::Pool& p) const { return renameTo(dest); }
-LogString File::getParent(helpers::Pool& p) const { return getParent(); }
-bool File::mkdirs(helpers::Pool& p) const { return mkdirs(); }
-#endif

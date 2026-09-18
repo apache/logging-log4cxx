@@ -41,14 +41,6 @@ class LOG4CXX_EXPORT Transcoder
 		 *    Append \src onto \c dst as a UTF-8 string.
 		 */
 		static void encodeUTF8(const LogString& src, std::string& dst);
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		 *    Converts the LogString to a UTF-8 string.
-		 * @deprecated This function is deprecated and will be removed in a future version.
-		 */
-		[[ deprecated( "Use the encodeUTF8() without a Pool parameter" ) ]]
-		static char* encodeUTF8(const LogString& src, LOG4CXX_NS::helpers::Pool& p);
-#endif
 		/**
 		 *    Append the code point \c sv to \c dst as UTF-8.
 		 *    @pre 4 <= dst.remaining()
@@ -108,18 +100,6 @@ class LOG4CXX_EXPORT Transcoder
 		*/
 		static void encode(const LogString& src, std::string& dst);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		  *     Encodes the specified LogString to the current
-		  *       character set.
-		  * @deprecated This function is deprecated and will be removed in a future version.
-		  *      @param src string to encode.
-		  *      @param p pool from which to allocate return value.
-		  *      @return pool allocated string.
-		  */
-		[[ deprecated( "Use an encode() without a Pool parameter" ) ]]
-		static char* encode(const LogString& src, LOG4CXX_NS::helpers::Pool& p);
-#endif
 
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
@@ -131,10 +111,6 @@ class LOG4CXX_EXPORT Transcoder
 		 *    Append the equivalent of \c src onto \c dst.
 		 */
 		static void encode(const LogString& src, std::wstring& dst);
-#if LOG4CXX_ABI_VERSION <= 15
-		/// A null-terminated equivalent of \c src.
-		static wchar_t* wencode(const LogString& src, LOG4CXX_NS::helpers::Pool& p);
-#endif
 		/**
 		 *   Increment \c iter past the next code point in \c str.
 		 *   @pre \c iter is a valid, dereferenceable iterator.

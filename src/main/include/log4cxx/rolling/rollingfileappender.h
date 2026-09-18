@@ -170,9 +170,6 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 		 */
 		bool rollover();
-#if LOG4CXX_ABI_VERSION <= 15
-		bool rollover(LOG4CXX_NS::helpers::Pool& p);
-#endif
 
 	protected:
 
@@ -182,9 +179,6 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
 
 		bool rolloverInternal();
-#if LOG4CXX_ABI_VERSION <= 15
-		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p);
-#endif
 
 	public:
 		/**

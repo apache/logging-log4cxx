@@ -36,12 +36,7 @@ first error in an appender and ignoring all following errors.
 from being flooded with error messages when logging fails
 */
 class LOG4CXX_EXPORT OnlyOnceErrorHandler
-#if LOG4CXX_ABI_VERSION <= 15
-	: public virtual spi::ErrorHandler
-	, public virtual helpers::Object
-#else
 	: public spi::ErrorHandler
-#endif
 {
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(OnlyOnceErrorHandlerPrivate, m_priv)
@@ -49,13 +44,8 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler
 	public:
 		DECLARE_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
 		BEGIN_LOG4CXX_CAST_MAP()
-#if 15 < LOG4CXX_ABI_VERSION
 		LOG4CXX_CAST_ENTRY(OnlyOnceErrorHandler)
 		LOG4CXX_CAST_ENTRY_CHAIN(spi::ErrorHandler)
-#else
-		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
-		LOG4CXX_CAST_ENTRY(spi::ErrorHandler)
-#endif
 		END_LOG4CXX_CAST_MAP()
 
 		OnlyOnceErrorHandler();
@@ -68,14 +58,6 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler
 		void setLogger(const LoggerPtr& logger) override;
 
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		\copybrief spi::OptionHandler::activateOptions()
-
-		No action is performed in this implementation.
-		*/
-		void activateOptions(helpers::Pool& p) override;
-#endif
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
@@ -117,11 +99,7 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler
 		/**
 		Has an error been reported?
 		*/
-#if 15 < LOG4CXX_ABI_VERSION
 		bool errorReported() const override;
-#else
-		bool errorReported() const;
-#endif
 };
 }  // namespace helpers
 } // namespace log4cxx
