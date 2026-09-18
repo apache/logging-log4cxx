@@ -14,7 +14,9 @@
 # limitations under the License.
 name: abi-compatibility
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+
 #on:
 #  push:
 #    branches:
