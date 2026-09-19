@@ -17,9 +17,7 @@
 
 # Build the log4cxx library
 add_library(log4cxx)
-if(${log4cxx_ABI_VER} GREATER 15)
-  set_target_properties(log4cxx PROPERTIES CXX_VISIBILITY_PRESET hidden)
-endif()
+set_target_properties(log4cxx PROPERTIES CXX_VISIBILITY_PRESET hidden)
 set(PRIVATE_COMPILE_DEFINITIONS)
 set(PUBLIC_COMPILE_DEFINITIONS)
 if(BUILD_SHARED_LIBS)
@@ -228,12 +226,6 @@ target_sources(log4cxx
   zipcompressaction.cpp
   ${extra_classes}
 )
-if(${log4cxx_ABI_VER} LESS 16)
-  target_sources(log4cxx
-    PRIVATE
-    threadlocal.cpp
-  )
-endif()
 if(LOG4CXX_EVENTS_AT_EXIT)
   target_sources(log4cxx
     PRIVATE atexitregistry.cpp
