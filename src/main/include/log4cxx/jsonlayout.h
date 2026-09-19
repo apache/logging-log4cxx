@@ -40,10 +40,6 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		void appendSerializedNDC(LogString& buf,
 			const spi::LoggingEventPtr& event) const;
 		void appendSerializedLocationInfo(LogString& buf, const spi::LoggingEventPtr& event) const;
-#if LOG4CXX_ABI_VERSION <= 15
-		void appendSerializedLocationInfo(LogString& buf,
-			const spi::LoggingEventPtr& event, LOG4CXX_NS::helpers::Pool& p) const;
-#endif
 	public:
 		static void appendItem(const LogString& item, LogString& toAppendTo);
 		DECLARE_LOG4CXX_OBJECT(JSONLayout)
@@ -108,7 +104,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 
 		Calculates the length of the formtted output.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
@@ -125,7 +121,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		/**
 		Append the attributes of \c event as a JSON map onto \c output.
 		*/
-		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
+		void format( LogString& output, const spi::LoggingEventPtr& event ) const override;
 
 		/**
 		The JSON layout handles the throwable contained in logging

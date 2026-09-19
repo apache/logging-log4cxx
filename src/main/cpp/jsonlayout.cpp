@@ -105,7 +105,7 @@ LogString JSONLayout::getContentType() const
 	return LOG4CXX_STR("application/json");
 }
 
-void JSONLayout::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void JSONLayout::activateOptions(  )
 {
 	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
 }
@@ -131,7 +131,7 @@ void JSONLayout::setOption(const LogString& option, const LogString& value)
 		Layout::setOption(option, value);
 }
 
-void JSONLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
+void JSONLayout::format( LogString& output, const spi::LoggingEventPtr& event ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	priv::reserveFormattedEvent(output, m_priv->expectedPatternLength, lsMsg.size());
@@ -460,10 +460,3 @@ void JSONLayout::appendSerializedLocationInfo(LogString& buf, const LoggingEvent
 	buf.append(LOG4CXX_STR("}"));
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void JSONLayout::appendSerializedLocationInfo(LogString& buf,
-	const LoggingEventPtr& event, Pool& p) const
-{
-	appendSerializedLocationInfo(buf, event);
-}
-#endif

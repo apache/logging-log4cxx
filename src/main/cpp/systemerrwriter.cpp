@@ -32,28 +32,17 @@ SystemErrWriter::~SystemErrWriter()
 {
 }
 
-void SystemErrWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
+void SystemErrWriter::close(  )
 {
 }
 
-void SystemErrWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
+void SystemErrWriter::flush(  )
 {
 	fflush(stderr);
 }
 
-void SystemErrWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
+void SystemErrWriter::write( const LogString& str )
 {
 	helpers::writeToConsole(str, stderr);
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void SystemErrWriter::write(const LogString& str)
-{
-	helpers::writeToConsole(str, stderr);
-}
-
-void SystemErrWriter::flush()
-{
-	fflush(stderr);
-}
-#endif

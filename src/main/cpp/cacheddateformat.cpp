@@ -231,15 +231,6 @@ int CachedDateFormat::findMillisecondStart(
 
 	return NO_MILLISECONDS;
 }
-#if LOG4CXX_ABI_VERSION <= 15
-int CachedDateFormat::findMillisecondStart(
-	log4cxx_time_t time, const LogString& formatted,
-	const DateFormatPtr& formatter,
-	Pool& pool)
-{
-	return findMillisecondStart(time, formatted, formatter);
-}
-#endif
 
 /**
  * Formats a millisecond count into a date/time string.
@@ -247,7 +238,7 @@ int CachedDateFormat::findMillisecondStart(
  *  @param now Number of milliseconds after midnight 1 Jan 1970 GMT.
  *  @param sbuf the string buffer to write to
  */
-void CachedDateFormat::format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const
+void CachedDateFormat::format( LogString& toAppendTo, log4cxx_time_t tm ) const
 {
 
 	//
@@ -347,7 +338,7 @@ void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone)
 
 
 
-void CachedDateFormat::numberFormat( LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS ) const
+void CachedDateFormat::numberFormat( LogString& toAppendTo, int n ) const
 {
 	m_priv->formatter->numberFormat(toAppendTo, n);
 }

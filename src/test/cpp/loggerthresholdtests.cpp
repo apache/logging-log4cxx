@@ -19,11 +19,7 @@
 #include <log4cxx/hierarchy.h>
 #include <log4cxx/level.h>
 #include "logunit.h"
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/defaultloggerfactory.h>
-#else
 #include <log4cxx/spi/loggerfactory.h>
-#endif
 #include <log4cxx/helpers/transcoder.h>
 
 /****
@@ -1902,11 +1898,7 @@ public:
 		LoggerPtr root = hierarchy->getRootLogger();
 		root->setLevel(Level::getWarn());
 		spi::LoggerFactoryPtr factory =
-#if LOG4CXX_ABI_VERSION <= 15
-			std::make_shared<DefaultLoggerFactory>();
-#else
 			std::make_shared<spi::LoggerFactory>();
-#endif
 		LoggerPtr logger1 = hierarchy->getLogger(LOG4CXX_STR("factory.test1"), factory);
 		LoggerPtr logger2 = hierarchy->getLogger(LOG4CXX_STR("factory.test2"), factory);
 

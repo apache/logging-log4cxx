@@ -49,18 +49,6 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		the <code>File</code> and <b>Append</b> options both of
 		which are ambiguous until the other is also set.
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-#define LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS helpers::Pool& p
-#define LOG4CXX_ACTIVATE_OPTIONS_PARAMETER p
-		void activateOptions();
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to activateOptions() without parameters.
-		*/
-		virtual void activateOptions(helpers::Pool&) = 0;
-#else
-#define LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS
-#define LOG4CXX_ACTIVATE_OPTIONS_PARAMETER
 		virtual void activateOptions() = 0;
 		/**
 		@deprecated This function is deprecated and will be removed in a future version.
@@ -68,7 +56,6 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		*/
 		[[deprecated("Use activateOptions() without parameters instead")]]
 		void activateOptions(helpers::Pool&);
-#endif
 
 		/**
 		Set <code>option</code> to <code>value</code>.
@@ -85,10 +72,6 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 } // namespace log4cxx
 
 
-#if 15 < LOG4CXX_ABI_VERSION
 #define LOG4CXX_16_VIRTUAL_SPECIFIER override
-#else
-#define LOG4CXX_16_VIRTUAL_SPECIFIER
-#endif
 
 #endif //_LOG4CXX_SPI_OPTION_HANDLER_H

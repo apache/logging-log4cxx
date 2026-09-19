@@ -856,7 +856,7 @@ SimpleDateFormat::~SimpleDateFormat()
 }
 
 
-void SimpleDateFormat::format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const
+void SimpleDateFormat::format( LogString& toAppendTo, log4cxx_time_t tm ) const
 {
 	helpers::Pool tempPool;
 	apr_time_exp_t exploded;

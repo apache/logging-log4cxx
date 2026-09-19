@@ -78,7 +78,7 @@ class NullPointerAppender : public AppenderSkeleton
 		/**
 		 * @{inheritDoc}
 		 */
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
+		void append( const spi::LoggingEventPtr& event ) override
 		{
 			throw RuntimeException(LOG4CXX_STR("Intentional Exception"));
 		}
@@ -111,10 +111,10 @@ class BlockableVectorAppender : public VectorAppender
 		/**
 		 * {@inheritDoc}
 		 */
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
+		void append( const spi::LoggingEventPtr& event ) override
 		{
 			std::lock_guard<std::mutex> lock( blocker );
-			VectorAppender::append( LOG4CXX_APPEND_PARAMETERS );
+			VectorAppender::append( event );
 		}
 
 		std::mutex& getBlocker()
@@ -138,13 +138,13 @@ class TransientlyFailingVectorAppender : public VectorAppender
 		{
 		}
 
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
+		void append( const spi::LoggingEventPtr& event ) override
 		{
 			if (0 < failuresRemaining--)
 			{
 				throw RuntimeException(LOG4CXX_STR("Intentional transient exception"));
 			}
-			VectorAppender::append( LOG4CXX_APPEND_PARAMETERS );
+			VectorAppender::append( event );
 		}
 
 		/** Goes negative once an append call has succeeded. */
@@ -161,10 +161,10 @@ LOG4CXX_PTR_DEF(TransientlyFailingVectorAppender);
 class LoggingVectorAppender : public VectorAppender
 {
 	LoggerInstancePtr logger{ "LoggingVectorAppender" };
-	void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override
+	void append( const spi::LoggingEventPtr& event ) override
 	{
 		auto& lsMsg = event->getRenderedMessage();
-		VectorAppender::append( LOG4CXX_APPEND_PARAMETERS );
+		VectorAppender::append( event );
 		if (LogString::npos != lsMsg.find(LOG4CXX_STR("World")))
 		{
 			LOG4CXX_LOGLS(logger, Level::getError(), LOG4CXX_STR("Some appender error"));

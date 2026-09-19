@@ -110,32 +110,3 @@ void PropertySetter::activate()
 	}
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void PropertySetter::setProperties(const helpers::ObjectPtr& obj,
-	helpers::Properties& properties,
-	const LogString& prefix,
-	Pool&)
-{
-	PropertySetter(obj).setProperties(properties, prefix);
-}
-
-
-void PropertySetter::setProperties(helpers::Properties& properties,
-	const LogString& prefix,
-	Pool&)
-{
-	setProperties(properties, prefix);
-}
-
-void PropertySetter::setProperty(const LogString& option,
-	const LogString& value,
-	Pool&)
-{
-	setProperty(option, value);
-}
-
-void PropertySetter::activate(Pool& p)
-{
-	activate();
-}
-#endif

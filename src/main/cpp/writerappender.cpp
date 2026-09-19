@@ -36,25 +36,11 @@ WriterAppender::WriterAppender() :
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-WriterAppender::WriterAppender(const LayoutPtr& layout, helpers::WriterPtr& writer)
-	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout, writer))
-{
-	Pool p;
-	activateOptions(p);
-}
-
-WriterAppender::WriterAppender(const LayoutPtr& layout)
-	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout))
-{
-}
-#else
 WriterAppender::WriterAppender(const LayoutPtr& layout, const helpers::WriterPtr& writer)
 	: AppenderSkeleton(std::make_unique<WriterAppenderPriv>(layout, writer))
 {
 	activateOptions();
 }
-#endif
 
 WriterAppender::WriterAppender(std::unique_ptr<WriterAppenderPriv> priv)
 	: AppenderSkeleton (std::move(priv))
@@ -68,7 +54,7 @@ WriterAppender::~WriterAppender()
 		_priv->close();
 }
 
-void WriterAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void WriterAppender::activateOptions(  )
 {
 	_priv->activateOptions();
 }
@@ -88,7 +74,7 @@ void WriterAppender::WriterAppenderPriv::activateOptions()
 	}
 }
 
-void WriterAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void WriterAppender::append( const spi::LoggingEventPtr& event )
 {
 
 	if (!checkEntryConditions())
@@ -96,7 +82,7 @@ void WriterAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 		return;
 	}
 
-	subAppend( LOG4CXX_APPEND_PARAMETERS );
+	subAppend( event );
 }
 
 /**
@@ -132,15 +118,6 @@ void WriterAppender::close()
 		_priv->close();
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-/**
- * Close the underlying {@link java.io.Writer}.
- * */
-void WriterAppender::closeWriter()
-{
-	 _priv->close();
-}
-#endif
 
 void WriterAppender::WriterAppenderPriv::close()
 {
@@ -215,7 +192,7 @@ void WriterAppender::setEncoding(const LogString& enc)
 	_priv->encoding = enc;
 }
 
-void WriterAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void WriterAppender::subAppend( const spi::LoggingEventPtr& event )
 {
 #if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
 	if (event->getRenderedMessage() == _priv->exceptionTriggeringMessage)
@@ -236,17 +213,6 @@ void WriterAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 }
 
 
-#if LOG4CXX_ABI_VERSION <= 15
-void WriterAppender::writeHeader(Pool& p)
-{
-	_priv->writeHeader();
-}
-
-void WriterAppender::writeFooter(Pool& p)
-{
-	_priv->writeFooter();
-}
-#endif
 
 void WriterAppender::WriterAppenderPriv::writeFooter()
 {
@@ -269,17 +235,6 @@ void WriterAppender::WriterAppenderPriv::writeHeader()
 }
 
 
-#if LOG4CXX_ABI_VERSION <= 15
-void WriterAppender::setWriter(const WriterPtr& newWriter)
-{
-	_priv->setWriter(newWriter);
-}
-
-void WriterAppender::setWriterInternal(const WriterPtr& newWriter)
-{
-	_priv->writer = newWriter;
-}
-#endif
 
 bool WriterAppender::requiresLayout() const
 {
@@ -309,8 +264,3 @@ bool WriterAppender::getImmediateFlush() const
 	return _priv->immediateFlush;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-const LOG4CXX_NS::helpers::WriterPtr WriterAppender::getWriter() const{
-	return _priv->writer;
-}
-#endif

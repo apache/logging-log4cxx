@@ -53,23 +53,12 @@ class Action : public virtual LOG4CXX_NS::helpers::Object
 		 *
 		 * @return true if successful.
 		 */
-#if LOG4CXX_ABI_VERSION <= 15
-		bool execute() const;
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to execute() without a helpers::Pool parameter.
-		*/
-		virtual bool execute(helpers::Pool& pool) const = 0;
-#define LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS helpers::Pool& p
-#else
 		virtual bool execute() const = 0;
-#define LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
 		[[deprecated("Use execute() without a Pool parameter instead")]]
 		bool execute(helpers::Pool& pool) const;
-#endif
 
 		/* Call execute() if not already closed.
 		*/
@@ -88,11 +77,6 @@ class Action : public virtual LOG4CXX_NS::helpers::Object
 		*/
 		LogString getName() const;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		void reportException(const std::exception&);
-
-		void run(helpers::Pool& pool);
-#endif
 
 };
 

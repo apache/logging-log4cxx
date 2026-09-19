@@ -32,7 +32,7 @@ OutputDebugStringAppender::OutputDebugStringAppender()
 {
 }
 
-void OutputDebugStringAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void OutputDebugStringAppender::append( const spi::LoggingEventPtr& event )
 {
 	LogString buf;
 	this->m_priv->layout->format(buf, event);

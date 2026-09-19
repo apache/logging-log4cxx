@@ -19,9 +19,6 @@
 #define _LOG4CXX_VARIA_FALLBACK_ERROR_HANDLER_H
 
 #include <log4cxx/spi/errorhandler.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/logger.h>
-#endif
 
 namespace LOG4CXX_NS
 {
@@ -41,11 +38,7 @@ Here is a sample configuration file that installs this error handler:
 \include async-fall-back-example.xml
 */
 class LOG4CXX_EXPORT FallbackErrorHandler
-#if LOG4CXX_ABI_VERSION <= 15
-	: public virtual spi::ErrorHandler
-#else
 	: public spi::ErrorHandler
-#endif
 {
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FallbackErrorHandlerPrivate, m_priv)
@@ -73,14 +66,6 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 		*/
 		void setLogger(const LoggerPtr& logger) override;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		\copybrief spi::OptionHandler::activateOptions()
-
-		No action is performed in this implementation.
-		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
-#endif
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
@@ -120,11 +105,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 		/**
 		Has an error been reported?
 		*/
-#if 15 < LOG4CXX_ABI_VERSION
 		bool errorReported() const override;
-#else
-		bool errorReported() const;
-#endif
 };
 LOG4CXX_PTR_DEF(FallbackErrorHandler);
 

@@ -47,41 +47,15 @@ class LOG4CXX_EXPORT Reader : public Object
 		virtual ~Reader();
 
 	public:
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		 * Closes the stream.
-		 */
-		void close();
-
-		/**
-		 * @return The complete stream contents as a LogString.
-		 */
-		LogString read();
-
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to close() without a helpers::Pool parameter.
-		*/
-		virtual void close(Pool& p) = 0;
-#define LOG4CXX_CLOSE_READER_FORMAL_PARAMETERS helpers::Pool& p
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to read() without a helpers::Pool parameter.
-		*/
-		virtual LogString read(Pool& p) = 0;
-#define LOG4CXX_READ_READER_FORMAL_PARAMETERS helpers::Pool& p
-#else
 		/**
 		 * Closes the stream.
 		 */
 		virtual void close() = 0;
-#define LOG4CXX_CLOSE_READER_FORMAL_PARAMETERS
 
 		/**
 		 * @return The complete stream contents as a LogString.
 		 */
 		virtual LogString read() = 0;
-#define LOG4CXX_READ_READER_FORMAL_PARAMETERS
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
@@ -92,7 +66,6 @@ class LOG4CXX_EXPORT Reader : public Object
 		*/
 		[[deprecated("Use read() without a Pool parameter instead")]]
 		LogString read(Pool& p);
-#endif
 
 	private:
 		Reader(const Reader&);

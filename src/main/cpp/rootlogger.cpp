@@ -30,12 +30,6 @@ RootLogger::RootLogger(const LevelPtr& level1)
 	setLevel(level1);
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-RootLogger::RootLogger(Pool&, const LevelPtr level)
-	: RootLogger(level)
-{
-}
-#endif
 
 const LevelPtr& RootLogger::getEffectiveLevel() const
 {

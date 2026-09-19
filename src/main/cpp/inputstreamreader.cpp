@@ -65,12 +65,12 @@ InputStreamReader::~InputStreamReader()
 {
 }
 
-void InputStreamReader::close( LOG4CXX_CLOSE_READER_FORMAL_PARAMETERS )
+void InputStreamReader::close(  )
 {
 	m_priv->in->close();
 }
 
-LogString InputStreamReader::read( LOG4CXX_READ_READER_FORMAL_PARAMETERS )
+LogString InputStreamReader::read(  )
 {
 	const size_t BUFSIZE = 4096;
 	char stackStorage[BUFSIZE];

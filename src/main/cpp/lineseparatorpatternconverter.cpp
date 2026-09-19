@@ -39,12 +39,12 @@ PatternConverterPtr LineSeparatorPatternConverter::newInstance(
 	return std::make_shared<LineSeparatorPatternConverter>();
 }
 
-void LineSeparatorPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void LineSeparatorPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	toAppendTo.append(LOG4CXX_EOL);
 }
 
-void LineSeparatorPatternConverter::format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) const
+void LineSeparatorPatternConverter::format( const helpers::ObjectPtr& obj, LogString& toAppendTo ) const
 {
 	toAppendTo.append(LOG4CXX_EOL);
 }

@@ -38,7 +38,7 @@ PatternConverterPtr FileLocationPatternConverter::newInstance(
 	return std::make_shared<FileLocationPatternConverter>();
 }
 
-void FileLocationPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void FileLocationPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	append(toAppendTo, event->getLocationInformation().getFileName());
 }

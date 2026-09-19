@@ -37,10 +37,6 @@ struct APRServerSocket::APRServerSocketPriv : public ServerSocketPrivate {
 	apr_pollset_t* pSet{ 0 };
 };
 
-#if LOG4CXX_ABI_VERSION <= 15
-APRServerSocket::APRServerSocket(int port) : 
-	APRServerSocket(port, false, {}) {}
-#endif
 
 APRServerSocket::APRServerSocket(int port, bool reuseAddress, const LogString& hostname) :
 	ServerSocket(std::make_unique<APRServerSocketPriv>()){

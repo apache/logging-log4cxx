@@ -66,18 +66,6 @@ void Transcoder::encodeUTF8(const LogString& src, std::string& dst)
 #endif
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-char* Transcoder::encodeUTF8(const LogString& src, Pool& p)
-{
-#if LOG4CXX_LOGCHAR_IS_UTF8
-	return p.pstrdup(src);
-#else
-	std::string tmp;
-	encodeUTF8(src, tmp);
-	return p.pstrdup(tmp);
-#endif
-}
-#endif
 
 void Transcoder::encodeUTF8(unsigned int sv, ByteBuffer& dst)
 {
@@ -190,18 +178,6 @@ void Transcoder::decode(const std::string& src, LogString& dst)
 #endif
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-char* Transcoder::encode(const LogString& src, Pool& p)
-{
-#if LOG4CXX_CHARSET_UTF8 && LOG4CXX_LOGCHAR_IS_UTF8
-	return p.pstrdup(src);
-#else
-	std::string tmp;
-	encode(src, tmp);
-	return p.pstrdup(tmp);
-#endif
-}
-#endif
 
 
 void Transcoder::encode(const LogString& src, std::string& dst)
@@ -349,21 +325,6 @@ void Transcoder::encode(const LogString& src, std::wstring& dst)
 #endif
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-wchar_t* Transcoder::wencode(const LogString& src, Pool& p)
-{
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-	const std::wstring& tmp = src;
-#else
-	std::wstring tmp;
-	encode(src, tmp);
-#endif
-	wchar_t* dst = (wchar_t*) p.palloc((tmp.length() + 1) * sizeof(wchar_t));
-	dst[tmp.length()] = 0;
-	std::memcpy(dst, tmp.data(), tmp.length() * sizeof(wchar_t));
-	return dst;
-}
-#endif
 
 unsigned int Transcoder::decode(const std::wstring& in,
 	std::wstring::const_iterator& iter)

@@ -45,7 +45,7 @@ void Filter::setNext(const FilterPtr& newNext)
 	m_priv->next = newNext;
 }
 
-void Filter::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void Filter::activateOptions(  )
 {
 }
 

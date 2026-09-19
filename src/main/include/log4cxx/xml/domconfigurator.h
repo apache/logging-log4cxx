@@ -20,18 +20,6 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/appender.h>
-#include <log4cxx/layout.h>
-#include <log4cxx/logger.h>
-#include <log4cxx/helpers/properties.h>
-#include <log4cxx/helpers/charsetdecoder.h>
-#include <log4cxx/spi/filter.h>
-#include <log4cxx/rolling/triggeringpolicy.h>
-#include <log4cxx/rolling/rollingpolicy.h>
-#include <log4cxx/config/propertysetter.h>
-#include <map>
-#endif
 #include <log4cxx/file.h>
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
@@ -64,155 +52,11 @@ files. You can enable log4cxx internal logging by setting the
 <p>There are sample XML files included in the package.
 */
 class LOG4CXX_EXPORT DOMConfigurator
-#if LOG4CXX_ABI_VERSION <= 15
-	: virtual public spi::Configurator
-#else
 	: public spi::Configurator
-#endif
 {
 	public:
 		~DOMConfigurator();
 
-#if LOG4CXX_ABI_VERSION <= 15
-	protected:
-		typedef std::map<LogString, AppenderPtr> AppenderMap;
-		/**
-		Used internally to parse appenders by IDREF name.
-		*/
-		AppenderPtr findAppenderByName(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* elem,
-			apr_xml_doc* doc,
-			const LogString& appenderName,
-			AppenderMap& appenders);
-
-		/**
-		Used internally to parse appenders by IDREF element.
-		*/
-		AppenderPtr findAppenderByReference(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* appenderRef,
-			apr_xml_doc* doc,
-			AppenderMap& appenders);
-
-		/**
-		Used internally to parse an appender element.
-		*/
-		AppenderPtr parseAppender(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* appenderElement,
-			apr_xml_doc* doc,
-			AppenderMap& appenders);
-
-		/**
-		Used internally to parse an {@link spi::ErrorHandler ErrorHandler } element.
-		*/
-		void parseErrorHandler(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* element,
-			AppenderPtr& appender,
-			apr_xml_doc* doc,
-			AppenderMap& appenders);
-
-		/**
-		 Used internally to parse a filter element.
-		*/
-		void parseFilters(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* element,
-			std::vector<LOG4CXX_NS::spi::FilterPtr>& filters);
-
-		/**
-		Used internally to parse a logger element.
-		*/
-		void parseLogger(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* loggerElement,
-			apr_xml_doc* doc,
-			AppenderMap& appenders);
-
-		/**
-		 Used internally to parse the logger factory element.
-		*/
-		void parseLoggerFactory(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* factoryElement);
-
-		/**
-		 Used internally to parse the logger factory element.
-		*/
-		LOG4CXX_NS::helpers::ObjectPtr parseTriggeringPolicy(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* factoryElement);
-
-		/**
-		 Used internally to parse the logger factory element.
-		*/
-		LOG4CXX_NS::rolling::RollingPolicyPtr parseRollingPolicy(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* factoryElement);
-
-		/**
-		 Used internally to parse the root logger element.
-		*/
-		void parseRoot(LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* rootElement, apr_xml_doc* doc, AppenderMap& appenders);
-
-		/**
-		 Used internally to parse the children of a logger element.
-		*/
-		void parseChildrenOfLoggerElement(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* catElement,
-			LoggerPtr logger, bool isRoot,
-			apr_xml_doc* doc,
-			AppenderMap& appenders );
-
-		/**
-		 Used internally to parse a layout element.
-		*/
-		LayoutPtr parseLayout(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* layout_element);
-
-		/**
-		 Used internally to parse a level  element.
-		*/
-		void parseLevel(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* element,
-			LoggerPtr logger, bool isRoot);
-
-		void setParameter(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* elem,
-			LOG4CXX_NS::config::PropertySetter& propSetter);
-
-		/**
-		 Used internally to configure the log4cxx framework from
-		 an in-memory representation of an XML document.
-		*/
-		void parse(
-			LOG4CXX_NS::helpers::Pool& p,
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem* element,
-			apr_xml_doc* doc,
-			AppenderMap& appenders);
-#endif // LOG4CXX_ABI_VERSION <= 15
 
 	public:
 		DOMConfigurator();
@@ -222,110 +66,6 @@ class LOG4CXX_EXPORT DOMConfigurator
 		LOG4CXX_CAST_ENTRY(spi::Configurator)
 		END_LOG4CXX_CAST_MAP()
 
-#if LOG4CXX_ABI_VERSION <= 15
-		DOMConfigurator(LOG4CXX_NS::helpers::Pool& p);
-
-		/**
-		A static version of #doConfigure.
-		*/
-		static spi::ConfigurationStatus configure(const char* filename) { return configure(std::string(filename)); }
-		/**
-		A static version of #doConfigure.
-		*/
-		static spi::ConfigurationStatus configure(const std::string& filename);
-#if LOG4CXX_WCHAR_T_API
-		/**
-		A static version of #doConfigure.
-		*/
-		static spi::ConfigurationStatus configure(const wchar_t* filename) { return configure(std::wstring(filename)); }
-		/**
-		A static version of #doConfigure.
-		*/
-		static spi::ConfigurationStatus configure(const std::wstring& filename);
-#endif
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-		/**
-		A static version of #doConfigure.
-		*/
-		static spi::ConfigurationStatus configure(const std::basic_string<UniChar>& filename);
-#endif
-#if LOG4CXX_CFSTRING_API
-		/**
-		A static version of #doConfigure.
-		*/
-		static spi::ConfigurationStatus configure(const CFStringRef& filename);
-#endif
-		/**
-		Like #configureAndWatch(const File& filename, long delay)
-		except that the default delay as defined by
-		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
-		@param configFilename A configuration file in XML format.
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename);
-#if LOG4CXX_WCHAR_T_API
-		/**
-		Like #configureAndWatch(const File& filename, long delay)
-		except that the default delay as defined by
-		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
-		@param configFilename A configuration file in XML format.
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename);
-#endif
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-		/**
-		Like #configureAndWatch(const File& filename, long delay)
-		except that the default delay as defined by
-		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
-		@param configFilename A configuration file in XML format.
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename);
-#endif
-#if LOG4CXX_CFSTRING_API
-		/**
-		Like #configureAndWatch(const File& filename, long delay)
-		except that the default delay as defined by
-		log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
-		@param configFilename A configuration file in XML format.
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename);
-#endif
-		/**
-		Read the configuration file <code>configFilename</code> if it
-		exists. Moreover, a thread will be created that will periodically
-		check if <code>configFilename</code> has been created or
-		modified. The period is determined by the <code>delay</code>
-		argument. If a change or file creation is detected, then
-		<code>configFilename</code> is read to configure log4cxx.
-
-		The thread will be stopped by a LogManager::shutdown call.
-
-		@param configFilename A configuration file in XML format.
-		@param delay The delay in milliseconds to wait between each check.
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const std::string& configFilename,
-			long delay);
-#if LOG4CXX_WCHAR_T_API
-		/**
-		Refer #configureAndWatch(const File& filename, long delay)
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const std::wstring& configFilename,
-			long delay);
-#endif
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-		/**
-		Refer #configureAndWatch(const File& filename, long delay)
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const std::basic_string<UniChar>& configFilename,
-			long delay);
-#endif
-#if LOG4CXX_CFSTRING_API
-		/**
-		Refer #configureAndWatch(const File& filename, long delay)
-		*/
-		static spi::ConfigurationStatus configureAndWatch(const CFStringRef& configFilename,
-			long delay);
-#endif
-#endif // LOG4CXX_ABI_VERSION <= 15
 
 		/**
 		Interpret \c filename as an XML file and set up Log4cxx accordingly.
@@ -341,11 +81,7 @@ class LOG4CXX_EXPORT DOMConfigurator
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     filename
-#if LOG4CXX_ABI_VERSION <= 15
-			, spi::LoggerRepositoryPtr        repository
-#else
 			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
-#endif
 			) override;
 
 		/**
@@ -370,15 +106,6 @@ class LOG4CXX_EXPORT DOMConfigurator
 		*/
 		static spi::ConfigurationStatus configureAndWatch(const File& configFilename, long delay = 0);
 
-#if LOG4CXX_ABI_VERSION <= 15
-	protected:
-		static LogString getAttribute(
-			LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-			apr_xml_elem*,
-			const std::string& attrName);
-
-		LogString subst(const LogString& value);
-#endif
 
 	private:
 		//   prevent assignment or copy statements

@@ -20,10 +20,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/hierarchy.h>
 #include <log4cxx/logmanager.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/logger.h>
-#include <log4cxx/asyncappender.h>
-#endif
 #include <list>
 
 using namespace LOG4CXX_NS;
@@ -123,16 +119,7 @@ void FallbackErrorHandler::error
 				+ backupLocked->getName() + LOG4CXX_STR("] in [")
 				+ item.first + LOG4CXX_STR("]."));
 		}
-#if LOG4CXX_ABI_VERSION <= 15
-		bool ok{ false };
-		if (auto logger = LOG4CXX_NS::cast<Logger>(holderLocked))
-			ok = logger->replaceAppender(primaryLocked, backupLocked);
-		else if (auto asyncAppender = LOG4CXX_NS::cast<AsyncAppender>(holderLocked))
-			ok = asyncAppender->replaceAppender(primaryLocked, backupLocked);
-		if (!ok)
-#else
 		if (!holderLocked->replaceAppender(primaryLocked, backupLocked))
-#endif
 		{
 			LogLog::debug(LOG4CXX_STR("FB: Failed to replace [")
 				+ primaryLocked->getName() + LOG4CXX_STR("] with [")
@@ -168,11 +155,6 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 	m_priv->backup.push_back(backup1);
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void FallbackErrorHandler::activateOptions(Pool&)
-{
-}
-#endif
 
 void FallbackErrorHandler::setOption(const LogString& option, const LogString& value)
 {

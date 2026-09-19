@@ -93,12 +93,6 @@ Logger::Logger(const LogString& name1)
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-Logger::Logger(Pool& p, const LogString& name)
-	: Logger(name)
-{
-}
-#endif
 
 Logger::~Logger()
 {
@@ -168,12 +162,6 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event) const
 		rep->emitNoAppenderWarning(this);
 	}
 }
-#if LOG4CXX_ABI_VERSION <= 15
-void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool&) const
-{
-    callAppenders(event);
-}
-#endif
 
 void Logger::closeNestedAppenders()
 {
@@ -338,17 +326,10 @@ const LevelPtr& Logger::getEffectiveLevel() const
 #endif
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-LoggerRepository* Logger::getLoggerRepository() const
-{
-	return m_priv->repositoryRaw;
-}
-#else
 LoggerRepositoryPtr Logger::getLoggerRepository()
 {
 	return LogManager::getLoggerRepository();
 }
-#endif
 
 LoggerRepository* Logger::getHierarchy() const
 {

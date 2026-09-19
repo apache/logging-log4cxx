@@ -153,7 +153,7 @@ MultiprocessRollingFileAppender::MultiprocessRollingFileAppender()
 /**
  * Prepare instance of use.
  */
-void MultiprocessRollingFileAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void MultiprocessRollingFileAppender::activateOptions(  )
 {
 	if (_priv->activateOptions())
 	{
@@ -260,12 +260,6 @@ bool MultiprocessRollingFileAppender::rollover()
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	return synchronizedRollover();
 }
-#if LOG4CXX_ABI_VERSION <= 15
-bool MultiprocessRollingFileAppender::rollover(Pool& p)
-{
-	return rollover();
-}
-#endif
 
 /**
  * Coordinate a rollover with other processes
@@ -391,12 +385,6 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 
 	return result;
 }
-#if LOG4CXX_ABI_VERSION <= 15
-bool MultiprocessRollingFileAppender::synchronizedRollover(Pool& p, const TriggeringPolicyPtr& trigger)
-{
-	return synchronizedRollover(trigger);
-}
-#endif
 
 /**
  * re-open \c fileName (used after it has been renamed)
@@ -422,7 +410,7 @@ void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 /**
  * {@inheritDoc}
 */
-void MultiprocessRollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
@@ -452,7 +440,7 @@ void MultiprocessRollingFileAppender::subAppend( LOG4CXX_APPEND_FORMAL_PARAMETER
 	else if (isAlreadyRolled(fileName, &_priv->fileLength))
 		reopenFile(fileName);
 
-	FileAppender::subAppend( LOG4CXX_APPEND_PARAMETERS );
+	FileAppender::subAppend( event );
 }
 
 /**

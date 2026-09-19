@@ -56,12 +56,8 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)
 		BEGIN_LOG4CXX_CAST_MAP()
-#if 15 < LOG4CXX_ABI_VERSION
 		LOG4CXX_CAST_ENTRY(Hierarchy)
 		LOG4CXX_CAST_ENTRY_CHAIN(spi::LoggerRepository)
-#else
-		LOG4CXX_CAST_ENTRY(spi::LoggerRepository)
-#endif
 		END_LOG4CXX_CAST_MAP()
 
 	private:
@@ -81,11 +77,7 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		 * Remove a previously added HierarchyEventListener.
 		 *
 		 */
-#if LOG4CXX_ABI_VERSION <= 15
-		void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
-#else
 		void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
-#endif
 
 		/**
 		 * Call \c configurator if not yet configured and \c configurator has not already been tried.
@@ -231,19 +223,6 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		*/
 		void updateChildren(const Logger* parent);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		 * @deprecated This function is deprecated and will be removed in a future version.
-		*/
-		[[ deprecated( "Storing appenders is longer supported" ) ]]
-		void clearAppenders();
-
-		/**
-		 * @deprecated This function is deprecated and will be removed in a future version.
-		*/
-		[[ deprecated( "Storing appenders is longer supported" ) ]]
-		void addAppender(AppenderPtr appender);
-#endif
 		/**
 		Remove the \c name Logger from the hierarchy.
 
@@ -255,11 +234,7 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
 		@returns true if \c name Logger was removed from the hierarchy.
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-		bool removeLogger(const LogString& name, bool ifNotUsed = true);
-#else
 		bool removeLogger(const LogString& name, bool ifNotUsed = true) override;
-#endif
 
 	private:
 

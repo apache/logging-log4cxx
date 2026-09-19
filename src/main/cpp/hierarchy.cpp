@@ -16,9 +16,6 @@
  */
 
 #include <log4cxx/hierarchy.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/defaultloggerfactory.h>
-#endif
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/helpers/stringhelper.h>
@@ -61,9 +58,6 @@ struct Hierarchy::HierarchyPrivate
 	LoggerMap loggers;
 	ProvisionNodeMap provisionNodes;
 
-#if LOG4CXX_ABI_VERSION <= 15
-	std::vector<AppenderPtr> allAppenders;
-#endif
 	mutable std::mutex listenerMutex;
 
 	const char* alreadyTriedMethod{ NULL };
@@ -226,11 +220,7 @@ LevelPtr Hierarchy::getThreshold() const
 
 LoggerPtr Hierarchy::getLogger(const LogString& name)
 {
-#if LOG4CXX_ABI_VERSION <= 15
-	static WideLife<spi::LoggerFactoryPtr> defaultFactory = std::make_shared<DefaultLoggerFactory>();
-#else
 	static WideLife<spi::LoggerFactoryPtr> defaultFactory = std::make_shared<LoggerFactory>();
-#endif
 	return getLogger(name, defaultFactory);
 }
 
@@ -249,11 +239,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	}
 	if (!result && factory)
 	{
-#if LOG4CXX_ABI_VERSION <= 15
-		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
-#else
 		LoggerPtr logger(factory->makeNewLoggerInstance(name));
-#endif
 		logger->setHierarchy(this);
 		m_priv->loggers.insert(LoggerMap::value_type(name, logger));
 
@@ -464,17 +450,6 @@ HierarchyPtr Hierarchy::create()
 	return ret;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void Hierarchy::clearAppenders()
-{
-	m_priv->allAppenders.clear();
-}
-
-void Hierarchy::addAppender(AppenderPtr appender)
-{
-	m_priv->allAppenders.push_back(appender);
-}
-#endif
 
 bool Hierarchy::removeLogger(const LogString& name, bool ifNotUsed)
 {

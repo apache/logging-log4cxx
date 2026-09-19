@@ -39,15 +39,15 @@ ByteArrayOutputStream::~ByteArrayOutputStream()
 {
 }
 
-void ByteArrayOutputStream::close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS )
+void ByteArrayOutputStream::close(  )
 {
 }
 
-void ByteArrayOutputStream::flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS )
+void ByteArrayOutputStream::flush(  )
 {
 }
 
-void ByteArrayOutputStream::write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS )
+void ByteArrayOutputStream::write( ByteBuffer& buf )
 {
 	const size_t count = buf.remaining();
 

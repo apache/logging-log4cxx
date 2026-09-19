@@ -22,11 +22,7 @@ using namespace LOG4CXX_NS::helpers;
 
 namespace
 {
-#if LOG4CXX_ABI_VERSION <= 15
-using PacketSizeType = int;
-#else
 using PacketSizeType = std::size_t;
-#endif
 }
 
 struct DatagramPacket::DatagramPacketPriv

@@ -35,11 +35,7 @@
 	#include <stdlib.h>
 #endif
 
-#if 15 < LOG4CXX_ABI_VERSION
 #define LOG4CXX_16_VIRTUAL_SPECIFIER override
-#else
-#define LOG4CXX_16_VIRTUAL_SPECIFIER
-#endif
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -731,11 +727,6 @@ void CharsetEncoder::reset()
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void CharsetEncoder::flush(ByteBuffer& /* out */ )
-{
-}
-#endif
 
 void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 	const LogString& src,
@@ -761,32 +752,7 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 #else
 #error logchar is unrecognized
 #endif
-#if 15 < LOG4CXX_ABI_VERSION
 		enc->encode(Transcoder::LOSSCHAR, dst);
-#else // LOG4CXX_ABI_VERSION <= 15
-		if (auto p = dynamic_cast<TrivialCharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-		else if (auto p = dynamic_cast<UTF8CharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-		else if (auto p = dynamic_cast<LocaleCharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-		else if (auto p = dynamic_cast<USASCIICharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-		else if (auto p = dynamic_cast<ISOLatinCharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-		else if (auto p = dynamic_cast<UTF16BECharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-		else if (auto p = dynamic_cast<UTF16LECharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-#if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_WCSTOMBS
-		else if (auto p = dynamic_cast<WcstombsCharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-#endif //  LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_WCSTOMBS
-#if APR_HAS_XLATE
-		else if (auto p = dynamic_cast<APRCharsetEncoder*>(enc.get()))
-			p->encode(Transcoder::LOSSCHAR, dst);
-#endif //  APR_HAS_XLATE
-#endif // LOG4CXX_ABI_VERSION <= 15
 	}
 }
 

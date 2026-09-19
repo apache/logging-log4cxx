@@ -141,12 +141,12 @@ class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
                 /**
                 Activate the specified options.
                 */
-                void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+                void activateOptions(  ) override;
 
                 /**
                 * Adds the event to the buffer.  When full the buffer is flushed.
                 */
-                void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+                void append( const spi::LoggingEventPtr& event ) override;
 
                 void close() override;
 

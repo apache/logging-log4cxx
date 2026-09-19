@@ -50,23 +50,10 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout)
 
 AppenderSkeleton::~AppenderSkeleton() {}
 
-void AppenderSkeleton::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void AppenderSkeleton::activateOptions(  )
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void AppenderSkeleton::finalize()
-{
-	// An appender might be closed then garbage collected. There is no
-	// point in closing twice.
-	if (m_priv->closed)
-	{
-		return;
-	}
-
-	close();
-}
-#endif
 
 void AppenderSkeleton::addFilter(const spi::FilterPtr newFilter)
 {
@@ -94,14 +81,14 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 	return ((level == 0) || level->isGreaterOrEqual(m_priv->threshold));
 }
 
-void AppenderSkeleton::doAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void AppenderSkeleton::doAppend( const spi::LoggingEventPtr& event )
 {
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
-	doAppendImpl( LOG4CXX_APPEND_PARAMETERS );
+	doAppendImpl( event );
 }
 
-void AppenderSkeleton::doAppendImpl( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void AppenderSkeleton::doAppendImpl( const spi::LoggingEventPtr& event )
 {
 	if (m_priv->closed)
 	{
@@ -110,7 +97,7 @@ void AppenderSkeleton::doAppendImpl( LOG4CXX_APPEND_FORMAL_PARAMETERS )
 	}
 	else if (isAsSevereAsThreshold(event->getLevel()) && isAccepted(event))
 	{
-		append( LOG4CXX_APPEND_PARAMETERS );
+		append( event );
 	}
 }
 

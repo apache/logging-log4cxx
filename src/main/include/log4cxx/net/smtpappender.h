@@ -141,13 +141,13 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		<li>a non-ascii character is detected where not permitted</li>
 		</ul>.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		Perform SMTPAppender specific appending actions, mainly adding
 		the event to a cyclic buffer and checking if the event triggers
 		an e-mail to be sent. */
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void append( const spi::LoggingEventPtr& event ) override;
 
 
 		void close() override;

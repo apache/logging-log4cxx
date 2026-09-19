@@ -83,7 +83,7 @@ void HTMLLayout::setOption(const LogString& option,
 		Layout::setOption(option, value);
 }
 
-void HTMLLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
+void HTMLLayout::format( LogString& output, const spi::LoggingEventPtr& event ) const
 {
 	auto& lsMsg = event->getRenderedMessage();
 	priv::reserveFormattedEvent(output, m_priv->expectedPatternLength, lsMsg.size());
@@ -174,7 +174,7 @@ void HTMLLayout::format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const
 	}
 }
 
-void HTMLLayout::appendHeader( LOG4CXX_APPEND_HEADER_FORMAL_PARAMETERS )
+void HTMLLayout::appendHeader( LogString& output )
 {
 	output.append(LOG4CXX_STR("<!DOCTYPE HTML PUBLIC "));
 	output.append(LOG4CXX_STR("\"-//W3C//DTD HTML 4.01 Transitional//EN\" "));
@@ -239,7 +239,7 @@ void HTMLLayout::appendHeader( LOG4CXX_APPEND_HEADER_FORMAL_PARAMETERS )
 	output.append(LOG4CXX_EOL);
 }
 
-void HTMLLayout::appendFooter( LOG4CXX_APPEND_FOOTER_FORMAL_PARAMETERS  )
+void HTMLLayout::appendFooter( LogString& output  )
 {
 	output.append(LOG4CXX_STR("</table>"));
 	output.append(LOG4CXX_EOL);

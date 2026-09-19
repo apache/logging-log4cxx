@@ -20,9 +20,6 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/inetaddress.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/helpers/socket.h>
-#endif
 
 
 namespace LOG4CXX_NS
@@ -92,11 +89,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		/**
 		Connects to remote server at <code>address</code> and <code>port</code>.
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-		SocketAppenderSkeleton(helpers::InetAddressPtr address, int port, int reconnectionDelay);
-#else
 		SocketAppenderSkeleton(const helpers::InetAddressPtr& address, int port, int reconnectionDelay);
-#endif
 		/**
 		Connects to remote server at <code>host</code> and <code>port</code>.
 		*/
@@ -108,21 +101,10 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
 		Connects to the specified <b>RemoteHost</b> and <b>Port</b>.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		void close() override;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		* This appender does not use a layout. Hence, this method
-		* returns <code>false</code>.
-		*
-		     */
-		bool requiresLayout() const override
-		{
-			return false;
-		}
-#endif
 		/**
 		* The <b>RemoteHost</b> option takes a string value which should be
 		* the host name of the server where a
@@ -174,12 +156,6 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		*/
 		int getReconnectionDelay() const;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		@deprecated This method will be removed in a future version.
-		*/
-		void fireConnector();
-#else
 		/**
 		* Use \c newSubclass as the helpers::Socket interface instead of the default implementation.
 		* */
@@ -189,7 +165,6 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		The class name used for the helpers::Socket interface implemention.
 		*/
 		const LogString& getSocketSubclass() const;
-#endif
 
 		/**
 		\copybrief AppenderSkeleton::setOption()
@@ -214,17 +189,6 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 	protected:
 		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		@deprecated This method will be removed in a future version.
-		*/
-		virtual void setSocket(helpers::SocketPtr& socket, helpers::Pool& p) = 0;
-
-		/**
-		@deprecated This method will be removed in a future version.
-		*/
-		virtual void cleanUp(LOG4CXX_NS::helpers::Pool& p) = 0;
-#endif
 		virtual int getDefaultDelay() const = 0;
 
 		virtual int getDefaultPort() const = 0;

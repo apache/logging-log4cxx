@@ -60,7 +60,7 @@ GZCompressAction::GZCompressAction(const File& src,
 
 GZCompressAction::~GZCompressAction() {}
 
-bool GZCompressAction::execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const
+bool GZCompressAction::execute(  ) const
 {
 	if (priv->source.exists())
 	{

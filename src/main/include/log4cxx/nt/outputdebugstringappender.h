@@ -42,7 +42,7 @@ class LOG4CXX_EXPORT OutputDebugStringAppender : public AppenderSkeleton
 
 		void close() override {}
 
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void append( const spi::LoggingEventPtr& event ) override;
 };
 }
 }
