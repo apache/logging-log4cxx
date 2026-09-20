@@ -290,7 +290,7 @@ class USASCIICharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (out.remaining() < 1)
@@ -345,7 +345,7 @@ class ISOLatinCharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (out.remaining() < 1)
@@ -402,7 +402,7 @@ class TrivialCharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (out.remaining() < 1)
@@ -448,7 +448,7 @@ class UTF8CharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (codePoint <= 0x10FFFF && 4 <= out.remaining())
@@ -490,7 +490,7 @@ class UTF16BECharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (codePoint <= 0x10FFFF && 4 <= out.remaining())
@@ -533,7 +533,7 @@ class UTF16LECharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (codePoint <= 0x10FFFF && 4 <= out.remaining())
@@ -599,7 +599,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (MB_CUR_MAX <= out.remaining())

@@ -72,6 +72,5 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 } // namespace log4cxx
 
 
-#define LOG4CXX_16_VIRTUAL_SPECIFIER override
 
 #endif //_LOG4CXX_SPI_OPTION_HANDLER_H

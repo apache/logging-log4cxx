@@ -1842,12 +1842,12 @@ class LOG4CXX_EXPORT Logger
 		 * Replace \c oldAppender  with \c newAppender.
 		 * @return true if oldAppender was replaced with newAppender.
 		 */
-		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) LOG4CXX_16_VIRTUAL_SPECIFIER;
+		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) override;
 
 		/**
 		 * Replace all previously added appenders with \c newList.
 		 */
-		void replaceAppenders(const AppenderList& newList) LOG4CXX_16_VIRTUAL_SPECIFIER;
+		void replaceAppenders(const AppenderList& newList) override;
 
 		/**
 		 Set the additivity flag for this logger.

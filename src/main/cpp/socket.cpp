@@ -51,7 +51,7 @@ void Socket::setAttributes(const InetAddressPtr& newAddress, int newPort)
 }
 
 
-SocketUniquePtr Socket::create(LOG4CXX_16_CONST InetAddressPtr& address, int port, const LogString& concreteClassName)
+SocketUniquePtr Socket::create(const InetAddressPtr& address, int port, const LogString& concreteClassName)
 {
 	if (!concreteClassName.empty())
 	{

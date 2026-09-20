@@ -21,7 +21,6 @@
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/pool.h>
 
-#define LOG4CXX_16_CONST const
 
 
 namespace LOG4CXX_NS
@@ -92,6 +91,5 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 } // namespace helpers
 } // namespace log4cxx
 
-#define LOG4CXX_16_VIRTUAL_SPECIFIER override
 
 #endif // _LOG4CXX_HELPERS_SOCKET_H

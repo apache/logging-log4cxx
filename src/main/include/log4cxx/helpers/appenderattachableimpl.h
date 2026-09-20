@@ -100,12 +100,12 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 * Replace \c oldAppender  with \c newAppender.
 		 * @return true if oldAppender was replaced with newAppender.
 		 */
-		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) LOG4CXX_16_VIRTUAL_SPECIFIER;
+		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) override;
 
 		/**
 		 * Replace any previously added appenders with \c newList.
 		 */
-		void replaceAppenders(const AppenderList& newList) LOG4CXX_16_VIRTUAL_SPECIFIER;
+		void replaceAppenders(const AppenderList& newList) override;
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)

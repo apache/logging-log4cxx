@@ -58,7 +58,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 		@param name used in log messages.
 		@param clx has a collection of appenders.
 		*/
-		void addAppenderHolder(const LogString& name, const spi::AppenderAttachablePtr& clx) LOG4CXX_16_VIRTUAL_SPECIFIER;
+		void addAppenderHolder(const LogString& name, const spi::AppenderAttachablePtr& clx) override;
 
 		/**
 		<em>Adds</em> the logger passed as parameter to the list of
