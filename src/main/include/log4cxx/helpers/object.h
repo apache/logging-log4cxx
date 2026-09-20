@@ -43,15 +43,15 @@
 	class Clazz##object : public LOG4CXX_NS::helpers::Class\
 	{\
 		public:\
-			LogString getName() const override { return LOG4CXX_STR(#object); }\
+			::LOG4CXX_NS::LogString getName() const override { return LOG4CXX_STR(#object); }\
 			object* newInstance() const override\
 			{\
 				return new object();\
 			}\
 	};\
-	const helpers::Class& getClass() const override;\
-	static const helpers::Class& getStaticClass(); \
-	static const helpers::ClassRegistration& registerClass();
+	const ::LOG4CXX_NS::helpers::Class& getClass() const override;\
+	static const ::LOG4CXX_NS::helpers::Class& getStaticClass(); \
+	static const ::LOG4CXX_NS::helpers::ClassRegistration& registerClass();
 
 #define DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
 	public:\
@@ -70,7 +70,7 @@
 		return classReg; \
 	}\
 	namespace LOG4CXX_NS { namespace classes { \
-	const helpers::ClassRegistration& object##Registration = object::registerClass(); \
+	const ::LOG4CXX_NS::helpers::ClassRegistration& object##Registration = object::registerClass(); \
 	} }
 
 
@@ -140,15 +140,15 @@ std::shared_ptr<Ret> cast(const std::shared_ptr<Type>& incoming)
 }
 
 #define BEGIN_LOG4CXX_CAST_MAP()\
-	const void * cast(const helpers::Class& clazz) const override\
+	const void * cast(const ::LOG4CXX_NS::helpers::Class& clazz) const override\
 	{\
 		const void * object = 0;\
-		if (&clazz == &helpers::Object::getStaticClass()) return (const helpers::Object *)this;
+		if (&clazz == &::LOG4CXX_NS::helpers::Object::getStaticClass()) return (const ::LOG4CXX_NS::helpers::Object *)this;
 
 #define END_LOG4CXX_CAST_MAP()\
 	return object;\
 	}\
-	bool instanceof(const helpers::Class& clazz) const override\
+	bool instanceof(const ::LOG4CXX_NS::helpers::Class& clazz) const override\
 	{ return cast(clazz) != 0; }
 
 #define LOG4CXX_CAST_ENTRY(Interface)\
