@@ -38,7 +38,7 @@ public:
 		return false;
 	}
 
-	void append( const spi::LoggingEventPtr& event ) override {
+	void append( const log4cxx::spi::LoggingEventPtr& event ) override {
 		// This gets called whenever there is a valid event for our appender.
 	}
 
