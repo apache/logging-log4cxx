@@ -81,30 +81,8 @@ LogString Action::getName() const
 	return m_priv->actionName;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-bool Action::execute() const
-{
-	helpers::Pool p;
-	return execute(p);
-}
-
-/**
- * Capture exception.
- *
- * @param ex exception.
- */
-void Action::reportException(const std::exception& /* ex */)
-{
-}
-
-void Action::run(helpers::Pool&)
-{
-	run();
-}
-#else
 bool Action::execute(helpers::Pool&) const
 {
 	return execute();
 }
 
-#endif

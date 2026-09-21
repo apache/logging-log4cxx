@@ -24,11 +24,7 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/defaultloggerfactory.h>
-#else
 #include <log4cxx/spi/loggerfactory.h>
-#endif
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/config/propertysetter.h>
@@ -90,7 +86,6 @@ IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 using RegistryType = std::map<LogString, AppenderPtr>;
 using RegistryPtr = std::unique_ptr<RegistryType>;
 
-#if 15 < LOG4CXX_ABI_VERSION
 struct PropertyConfigurator::PrivateData
 {
 
@@ -111,29 +106,16 @@ struct PropertyConfigurator::PrivateData
 };
 PropertyConfigurator::PropertyConfigurator()
 	: m_priv{ std::make_unique<PrivateData>() }
-#else
-#define m_priv this
-PropertyConfigurator::PropertyConfigurator()
-	: registry(new std::map<LogString, AppenderPtr>())
-	, loggerFactory(new DefaultLoggerFactory())
-#endif
 {
 }
 
 PropertyConfigurator::~PropertyConfigurator()
 {
-#if LOG4CXX_ABI_VERSION <= 15
-	delete registry;
-#endif
 }
 
 spi::ConfigurationStatus PropertyConfigurator::doConfigure
 	( const File&                     configFileName
-#if LOG4CXX_ABI_VERSION <= 15
-	, spi::LoggerRepositoryPtr        repository
-#else
 	, const spi::LoggerRepositoryPtr& repository
-#endif
 	)
 {
 	auto result = spi::ConfigurationStatus::NotConfigured;
@@ -158,11 +140,7 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure
 	try
 	{
 		result = doConfigure(props, repository ? repository : LogManager::getLoggerRepository());
-#if LOG4CXX_ABI_VERSION <= 15
-		if (m_priv->registry->empty())
-#else
 		if (!m_priv->appenderAdded)
-#endif
 		{
 			LogLog::warn(LOG4CXX_STR("[") + configFileName.getPath()
 				+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()
@@ -188,12 +166,6 @@ spi::ConfigurationStatus PropertyConfigurator::configure(helpers::Properties& pr
 	return PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(const File& configFilename)
-{
-	return configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
-}
-#endif
 
 spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 	const File& configFilename, long delay)
@@ -255,11 +227,7 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 	configureLoggerFactory(properties);
 	parseCatsAndRenderers(properties, hierarchy);
 	LogLog::debug(LOG4CXX_STR("Finished configuring."));
-#if LOG4CXX_ABI_VERSION <= 15
-	auto result = m_priv->registry->empty()
-#else
 	auto result = !m_priv->appenderAdded
-#endif
 		? spi::ConfigurationStatus::NotConfigured
 		: spi::ConfigurationStatus::Configured;
 
@@ -278,11 +246,7 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 		auto instance = OptionConverter::instantiateByClassName
 			( StringHelper::trim(factoryClassName)
 			, LoggerFactory::getStaticClass()
-#if LOG4CXX_ABI_VERSION <= 15
-			, std::make_shared<DefaultLoggerFactory>()
-#else
 			, std::make_shared<LoggerFactory>()
-#endif
 			);
 
 		m_priv->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
@@ -445,10 +409,8 @@ void PropertyConfigurator::parseLogger(
 				async->addAppender(appender);
 		}
 	}
-#if 15 < LOG4CXX_ABI_VERSION
 	if (!newappenders.empty())
 		m_priv->appenderAdded = true;
-#endif
 	if (async && !newappenders.empty())
 	{
 		if (LogLog::isDebugEnabled())

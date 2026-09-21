@@ -29,11 +29,7 @@
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
 #include <log4cxx/spi/loggerfactory.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/defaultloggerfactory.h>
-#else
 #include <log4cxx/spi/loggerfactory.h>
-#endif
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -77,11 +73,7 @@ public: // Types
 public: // Attributes
 	Properties props = Configurator::properties();
 	LoggerRepositoryPtr repository;
-#if LOG4CXX_ABI_VERSION <= 15
-	LoggerFactoryPtr loggerFactory{ std::make_shared<DefaultLoggerFactory>() };
-#else
 	LoggerFactoryPtr loggerFactory{ std::make_shared<LoggerFactory>() };
-#endif
 	bool appenderAdded{ false };
 	AppenderMap	appenders;
 	Pool p;
@@ -603,11 +595,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseLoggerFactory(apr_xml_elem* f
 		auto obj = OptionConverter::instantiateByClassName
 			( StringHelper::trim(className)
 			, LoggerFactory::getStaticClass()
-#if LOG4CXX_ABI_VERSION <= 15
-			, std::make_shared<DefaultLoggerFactory>()
-#else
 			, std::make_shared<LoggerFactory>()
-#endif
 			);
 		this->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>(obj);
 		PropertySetter propSetter(this->loggerFactory);
@@ -963,11 +951,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::setParameter(apr_xml_elem* elem, P
 
 spi::ConfigurationStatus DOMConfigurator::doConfigure
 	( const File&                     filename
-#if LOG4CXX_ABI_VERSION <= 15
-	, spi::LoggerRepositoryPtr        repository
-#else
 	, const spi::LoggerRepositoryPtr& repository
-#endif
 	)
 {
 	m_priv = std::make_unique<DOMConfiguratorPrivate>
@@ -1041,69 +1025,6 @@ spi::ConfigurationStatus DOMConfigurator::configure(const File& filename)
 	return DOMConfigurator().doConfigure(filename, LogManager::getLoggerRepository());
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-spi::ConfigurationStatus DOMConfigurator::configure(const std::string& filename)
-{
-	File file(filename);
-	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-}
-
-#if LOG4CXX_WCHAR_T_API
-spi::ConfigurationStatus DOMConfigurator::configure(const std::wstring& filename)
-{
-	File file(filename);
-	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-}
-#endif
-
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-spi::ConfigurationStatus DOMConfigurator::configure(const std::basic_string<UniChar>& filename)
-{
-	File file(filename);
-	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-}
-#endif
-
-#if LOG4CXX_CFSTRING_API
-spi::ConfigurationStatus DOMConfigurator::configure(const CFStringRef& filename)
-{
-	File file(filename);
-	return DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-}
-#endif
-
-
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename)
-{
-	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
-}
-
-#if LOG4CXX_WCHAR_T_API
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename)
-{
-	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
-}
-#endif
-
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename)
-{
-	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
-}
-#endif
-
-#if LOG4CXX_CFSTRING_API
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& filename)
-{
-	return configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
-}
-#endif
-
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
-{
-	return configureAndWatch(File(filename), delay);
-}
-#endif // LOG4CXX_ABI_VERSION <= 15
 
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& file, long delay)
 {
@@ -1112,37 +1033,6 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& file, lo
 	return status;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-#if LOG4CXX_WCHAR_T_API
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
-{
-	File file(filename);
-	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-	XMLWatchdog::startWatching(file, delay);
-	return status;
-}
-#endif
-
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename, long delay)
-{
-	File file(filename);
-	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-	XMLWatchdog::startWatching(file, delay);
-	return status;
-}
-#endif
-
-#if LOG4CXX_CFSTRING_API
-spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
-{
-	File file(filename);
-	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-	XMLWatchdog::startWatching(file, delay);
-	return status;
-}
-#endif
-#endif // LOG4CXX_ABI_VERSION <= 15
 
 void DOMConfigurator::DOMConfiguratorPrivate::parse(apr_xml_elem* element)
 {
@@ -1289,102 +1179,3 @@ LogString DOMConfigurator::DOMConfiguratorPrivate::getAttribute(apr_xml_elem* el
 	return attrValue;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-AppenderPtr DOMConfigurator::findAppenderByName(LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	apr_xml_doc* doc,
-	const LogString& appenderName,
-	AppenderMap& appenders)
-{ return AppenderPtr{}; }
-AppenderPtr DOMConfigurator::findAppenderByReference(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* appenderRef,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
-{ return AppenderPtr{}; }
-AppenderPtr DOMConfigurator::parseAppender(Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* appenderElement,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
-{ return AppenderPtr{}; }
-void DOMConfigurator::parseErrorHandler(Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	AppenderPtr& appender,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
-{}
-void DOMConfigurator::parseFilters(Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	std::vector<LOG4CXX_NS::spi::FilterPtr>& filters)
-{}
-void DOMConfigurator::parseLogger(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* loggerElement,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
-{}
-void DOMConfigurator::parseLoggerFactory(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* factoryElement)
-{}
-void DOMConfigurator::parseRoot(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* rootElement,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
-{}
-void DOMConfigurator::parseChildrenOfLoggerElement(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
-{}
-LayoutPtr DOMConfigurator::parseLayout (
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* layout_element)
-{ return LayoutPtr{}; }
-ObjectPtr DOMConfigurator::parseTriggeringPolicy (
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* policy_element)
-{ return ObjectPtr{}; }
-RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* policy_element)
-{ return RollingPolicyPtr{}; }
-void DOMConfigurator::parseLevel(
-	LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element, LoggerPtr logger, bool isRoot)
-{}
-void DOMConfigurator::setParameter(LOG4CXX_NS::helpers::Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* elem,
-	PropertySetter& propSetter)
-{}
-void DOMConfigurator::parse(
-	Pool& p,
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	apr_xml_doc* doc,
-	AppenderMap& appenders)
-{}
-LogString DOMConfigurator::getAttribute(
-	LOG4CXX_NS::helpers::CharsetDecoderPtr& utf8Decoder,
-	apr_xml_elem* element,
-	const std::string& attrName)
-{ return LogString{}; }
-LogString DOMConfigurator::subst(const LogString& value)
-{ return LogString{}; }
-#endif

@@ -57,7 +57,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		   Implements the usual roll over behaviour.
@@ -74,16 +74,13 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 		 */
 		bool rollover();
-#if LOG4CXX_ABI_VERSION <= 15
-		bool rollover(LOG4CXX_NS::helpers::Pool& p);
-#endif
 
 	protected:
 
 		/**
 		 Actual writing occurs here.
 		*/
-		void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void subAppend( const spi::LoggingEventPtr& event ) override;
 
 	protected:
 		/**
@@ -95,7 +92,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		 @param os output stream, may not be null.
 		 @return new writer.
 		 */
-		helpers::WriterPtr createWriter(LOG4CXX_16_CONST helpers::OutputStreamPtr& os) override;
+		helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
 
 	private:
 		/**
@@ -104,9 +101,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		 * @return true if this process perfomed the rollover.
 		 */
 		bool synchronizedRollover(const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
-#if LOG4CXX_ABI_VERSION <= 15
-		bool synchronizedRollover(helpers::Pool& p, const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
-#endif
 
 		/**
 		 * Set the length of current active log file to \c length bytes.

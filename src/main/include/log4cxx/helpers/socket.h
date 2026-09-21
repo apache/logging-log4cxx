@@ -21,11 +21,6 @@
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/pool.h>
 
-#if 15 < LOG4CXX_ABI_VERSION
-#define LOG4CXX_16_CONST const
-#else
-#define LOG4CXX_16_CONST
-#endif
 
 
 namespace LOG4CXX_NS
@@ -59,7 +54,6 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 
 		virtual size_t write(ByteBuffer&) = 0;
 
-#if 15 < LOG4CXX_ABI_VERSION
 		/**
 		Use \c newValue for the behaviour when the network buffer (on an accepted socket connection) is full.
 
@@ -72,7 +66,6 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 
 		/// Is this available for use?
 		virtual bool is_open() = 0;
-#endif
 
 		/** Close this socket. */
 		virtual void close() = 0;
@@ -88,12 +81,7 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 
 		/** Create a concrete instance of this class
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-		static SocketUniquePtr create(InetAddressPtr& address, int port);
-		static SocketUniquePtr create(LOG4CXX_16_CONST InetAddressPtr& address, int port, const LogString& concreteClassName);
-#else
 		static SocketUniquePtr create(const InetAddressPtr& address, int port, const LogString& concreteClassName = {});
-#endif
 	private:
 		Socket(const Socket&);
 		Socket& operator=(const Socket&);
@@ -103,10 +91,5 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 } // namespace helpers
 } // namespace log4cxx
 
-#if 15 < LOG4CXX_ABI_VERSION
-#define LOG4CXX_16_VIRTUAL_SPECIFIER override
-#else
-#define LOG4CXX_16_VIRTUAL_SPECIFIER
-#endif
 
 #endif // _LOG4CXX_HELPERS_SOCKET_H

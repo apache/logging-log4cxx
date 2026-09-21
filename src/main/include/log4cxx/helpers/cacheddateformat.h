@@ -108,13 +108,6 @@ class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 		static int findMillisecondStart(
 			log4cxx_time_t time, const LogString& formatted,
 			const helpers::DateFormatPtr& formatter);
-#if LOG4CXX_ABI_VERSION <= 15
-		[[deprecated("Use findMillisecondStart() without a Pool parameter instead")]]
-		static int findMillisecondStart(
-			log4cxx_time_t time, const LogString& formatted,
-			const LOG4CXX_NS::helpers::DateFormatPtr& formatter,
-			LOG4CXX_NS::helpers::Pool& pool);
-#endif
 		using DateFormat::format;
 		/**
 		 * Formats a Date into a date/time string.
@@ -122,7 +115,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 		 *  @param tm the date/time to format.
 		 *  @param toAppendTo the string buffer to write to.
 		 */
-		void format( LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS ) const override;
+		void format( LogString& toAppendTo, log4cxx_time_t tm ) const override;
 
 	private:
 		/**
@@ -152,7 +145,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public helpers::DateFormat
 		* @param toAppendTo string to which the numeric string is appended.
 		* @param n integer value.
 		*/
-		void numberFormat( LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS ) const override;
+		void numberFormat( LogString& toAppendTo, int n ) const override;
 
 		/**
 		 * Gets maximum cache validity for the specified SimpleDateTime

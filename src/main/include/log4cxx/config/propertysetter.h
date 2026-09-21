@@ -102,28 +102,6 @@ class LOG4CXX_EXPORT PropertySetter
 
 		void activate();
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		*/
-		[[deprecated("Use setProperties() without a Pool parameter instead")]]
-		static void setProperties(const helpers::ObjectPtr& obj, helpers::Properties& properties, const LogString& prefix, helpers::Pool& p);
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		*/
-		[[deprecated("Use setProperties() without a Pool parameter instead")]]
-		void setProperties(helpers::Properties& properties, const LogString& prefix, helpers::Pool& p);
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		*/
-		[[deprecated("Use setProperty() without a Pool parameter instead")]]
-		void setProperty(const LogString& option, const LogString& value, helpers::Pool& p);
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		*/
-		[[deprecated("Use activate() without a Pool parameter instead")]]
-		void activate(helpers::Pool& p);
-#endif
 }; // class PropertySetter
 }  // namespace config;
 } // namespace log4cxx

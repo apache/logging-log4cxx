@@ -48,23 +48,12 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		* @param toAppendTo string to which the date/time string is appended.
 		* @param tm date to be formatted.
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-#define LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS LogString& toAppendTo, log4cxx_time_t tm, helpers::Pool& p
-		void format(LogString& toAppendTo, log4cxx_time_t tm) const;
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to format() without a helpers::Pool parameter.
-		*/
-		virtual void format(LogString& toAppendTo, log4cxx_time_t tm, LOG4CXX_NS::helpers::Pool& p) const = 0;
-#else
-#define LOG4CXX_FORMAT_TIME_FORMAL_PARAMETERS LogString& toAppendTo, log4cxx_time_t tm
 		virtual void format(LogString& toAppendTo, log4cxx_time_t tm) const = 0;
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
 		[[deprecated("Use format() without a Pool parameter instead")]]
 		void format(LogString& toAppendTo, log4cxx_time_t tm, helpers::Pool& p) const;
-#endif
 
 		/**
 		* Sets the time zone.
@@ -80,23 +69,12 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		* @remarks This method is used by CachedDateFormat to
 		* format the milliseconds.
 		*/
-#if LOG4CXX_ABI_VERSION <= 15
-		void numberFormat(LogString& toAppendTo, int n) const;
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		*/
-		[[deprecated("Use numberFormat() without a Pool parameter instead")]]
-		virtual void numberFormat(LogString& toAppendTo, int n, LOG4CXX_NS::helpers::Pool& p) const;
-#define LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS LogString& toAppendTo, int n, helpers::Pool& p
-#else
 		virtual void numberFormat(LogString& toAppendTo, int n) const;
-#define LOG4CXX_FORMAT_NUMBER_FORMAL_PARAMETERS LogString& toAppendTo, int n
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
 		[[deprecated("Use numberFormat() without a Pool parameter instead")]]
 		void numberFormat(LogString& toAppendTo, int n, helpers::Pool& p) const;
-#endif
 
 	protected:
 		/**

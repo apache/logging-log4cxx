@@ -179,28 +179,14 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		Activate the specified options.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		* Adds the event to the buffer.  When full the buffer is flushed.
 		*/
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void append( const spi::LoggingEventPtr& event ) override;
 
 	protected:
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		* To be removed.
-		*/
-		LogString getLogStatement(const spi::LoggingEventPtr& event,
-			helpers::Pool& p) const;
-
-		/**
-		*
-		* To be removed.
-		* */
-		virtual void execute(const LogString& sql,
-			LOG4CXX_NS::helpers::Pool& p) /*throw(SQLException)*/;
-#endif
 		/**
 		* Override this to return the connection to a pool, or to clean up the
 		* resource.

@@ -42,7 +42,7 @@ PatternConverterPtr MDCPatternConverter::newInstance(
 	return std::make_shared<MDCPatternConverter>(LogString(), options.front());
 }
 
-void MDCPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void MDCPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	size_t startIndex = toAppendTo.size();
 	auto& info = getFormattingInfo();

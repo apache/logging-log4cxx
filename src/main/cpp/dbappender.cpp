@@ -154,15 +154,11 @@ void DBAppender::setOption(const LogString& option, const LogString& value){
     }
 }
 
-void DBAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void DBAppender::activateOptions(  )
 {
     apr_status_t stat = apr_dbd_get_driver(_priv->m_pool.getAPRPool(),
                                            _priv->driverName.c_str(),
-#if 15 < LOG4CXX_ABI_VERSION
                                            &_priv->m_driver);
-#else
-                                           const_cast<const apr_dbd_driver_t**>(&_priv->m_driver));
-#endif
 
     if(stat != APR_SUCCESS){
         LogString errMsg = LOG4CXX_STR("Unable to get driver named ");
@@ -223,7 +219,7 @@ void DBAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
     }
 }
 
-void DBAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS ){
+void DBAppender::append( const spi::LoggingEventPtr& event ){
 	std::vector<std::string> ls_args;
     std::vector<const char*> args;
     int stat;

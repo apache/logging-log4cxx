@@ -58,12 +58,7 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& targe
 {
 	setLayout(layout);
 	setTarget(target);
-#if LOG4CXX_ABI_VERSION <= 15
-	Pool p;
-	ConsoleAppender::activateOptions(p);
-#else
 	ConsoleAppender::activateOptions();
-#endif
 }
 
 ConsoleAppender::~ConsoleAppender()
@@ -114,7 +109,7 @@ void ConsoleAppender::targetWarn(const LogString& val)
 	LogLog::warn(LOG4CXX_STR("Using previously set target, System.out by default."));
 }
 
-void ConsoleAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void ConsoleAppender::activateOptions(  )
 {
 	if (StringHelper::equalsIgnoreCase(_priv->target,
 			LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))

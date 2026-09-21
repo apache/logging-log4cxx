@@ -37,7 +37,7 @@ PatternConverterPtr Num343PatternConverter::newInstance(
 }
 
 
-void Num343PatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void Num343PatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	toAppendTo.append(LOG4CXX_STR("343"));
 }

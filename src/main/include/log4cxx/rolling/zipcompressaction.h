@@ -48,7 +48,7 @@ class ZipCompressAction : public Action
 		/**
 		 * Compress the file.
 		 */
-		bool execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const override;
+		bool execute(  ) const override;
 
 		/**
 		 * Set to true to throw an IOException on a fork failure.  By default, this

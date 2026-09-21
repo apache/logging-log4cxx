@@ -37,17 +37,17 @@ class LOG4CXX_EXPORT APRSocket : public helpers::Socket
 		/** Creates a stream socket and connects it to the specified port
 		number at the specified IP address.
 		*/
-		APRSocket(LOG4CXX_16_CONST InetAddressPtr& address, int port);
+		APRSocket(const InetAddressPtr& address, int port);
 		APRSocket(apr_socket_t*, apr_pool_t* pool);
 		size_t write(ByteBuffer&) override;
 
-		void setNonBlocking(bool newValue) LOG4CXX_16_VIRTUAL_SPECIFIER;
+		void setNonBlocking(bool newValue) override;
 
 		/// Is this available for use?
-		bool is_open() LOG4CXX_16_VIRTUAL_SPECIFIER;
+		bool is_open() override;
 
 		/// Establish a connection on this socket.
-		void open() LOG4CXX_16_VIRTUAL_SPECIFIER;
+		void open() override;
 
 		/// Disconnect this socket.
 		void close() override;

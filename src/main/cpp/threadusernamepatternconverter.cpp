@@ -39,7 +39,7 @@ PatternConverterPtr ThreadUsernamePatternConverter::newInstance(
 	return std::make_shared<ThreadUsernamePatternConverter>();
 }
 
-void ThreadUsernamePatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void ThreadUsernamePatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	toAppendTo.append(event->getThreadUserName());
 }

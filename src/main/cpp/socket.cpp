@@ -50,15 +50,9 @@ void Socket::setAttributes(const InetAddressPtr& newAddress, int newPort)
 	m_priv->port = newPort;
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-SocketUniquePtr Socket::create(InetAddressPtr& address, int port){
-	return std::make_unique<APRSocket>(address, port);
-}
-#endif
 
-SocketUniquePtr Socket::create(LOG4CXX_16_CONST InetAddressPtr& address, int port, const LogString& concreteClassName)
+SocketUniquePtr Socket::create(const InetAddressPtr& address, int port, const LogString& concreteClassName)
 {
-#if 15 < LOG4CXX_ABI_VERSION
 	if (!concreteClassName.empty())
 	{
 		if (LogLog::isDebugEnabled())
@@ -82,7 +76,6 @@ SocketUniquePtr Socket::create(LOG4CXX_16_CONST InetAddressPtr& address, int por
 			return result;
 		}
 	}
-#endif
 	return std::make_unique<APRSocket>(address, port);
 }
 

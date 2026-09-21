@@ -78,12 +78,6 @@ FormattingInfoPtr FormattingInfo::getDefault()
  * @param fieldStart start of field in buffer.
  * @param buffer buffer to be modified.
  */
-#if LOG4CXX_ABI_VERSION <= 15
-void FormattingInfo::format(const int fieldStart, LogString& buffer) const
-{
-	adjustField(static_cast<LogString::size_type>(std::max(fieldStart, 0)), buffer);
-}
-#endif
 void FormattingInfo::adjustField(const LogString::size_type fieldStart, LogString& buffer) const
 {
 	if (fieldStart > buffer.length())

@@ -48,7 +48,7 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 
 		Calls <a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-registereventsourcew">RegisterEventSource</a>.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 		void close() override;
 
 		/**
@@ -99,7 +99,7 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		typedef void SID;
 		typedef void* HANDLE;
 
-		void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void append( const spi::LoggingEventPtr& event ) override;
 		static unsigned short getEventType(const spi::LoggingEventPtr& event);
 		static unsigned short getEventCategory(const spi::LoggingEventPtr& event);
 		/*

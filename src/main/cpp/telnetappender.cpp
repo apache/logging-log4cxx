@@ -24,9 +24,6 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
-#if LOG4CXX_ABI_VERSION <= 15
-#include <log4cxx/private/aprsocket.h>
-#endif
 #include <mutex>
 #include <thread>
 #include <vector>
@@ -124,7 +121,7 @@ TelnetAppender::~TelnetAppender()
 		_priv->close();
 }
 
-void TelnetAppender::activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS )
+void TelnetAppender::activateOptions(  )
 {
 	if (_priv->serverSocket == NULL)
 	{
@@ -272,7 +269,7 @@ void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, 
 	}
 }
 
-void TelnetAppender::append( LOG4CXX_APPEND_FORMAL_PARAMETERS )
+void TelnetAppender::append( const spi::LoggingEventPtr& event )
 {
 	++_priv->eventCount;
 	if (0 < _priv->activeConnections)
@@ -311,12 +308,7 @@ void TelnetAppender::acceptConnections()
 		try
 		{
 			SocketPtr newClient = _priv->serverSocket->accept();
-#if 15 < LOG4CXX_ABI_VERSION
 			newClient->setNonBlocking(_priv->nonBlocking);
-#else
-			if (auto p = dynamic_cast<APRSocket*>(newClient.get()))
-				p->setNonBlocking(_priv->nonBlocking);
-#endif
 			bool done = _priv->closed;
 
 			if (done)

@@ -45,10 +45,6 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 *   Create new instance.
 		 */
 		AppenderAttachableImpl();
-#if LOG4CXX_ABI_VERSION <= 15
-		[[ deprecated( "Pool is no longer required" ) ]]
-		AppenderAttachableImpl(Pool& pool);
-#endif
 		~AppenderAttachableImpl();
 
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachableImpl)
@@ -63,15 +59,6 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		void addAppender(const AppenderPtr newAppender) override;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		 Call the <code>doAppend</code> method on all attached appenders.
-		@deprecated This function is deprecated and will be removed in a future version.
-		*/
-		[[ deprecated( "Pool is no longer required" ) ]]
-		int appendLoopOnAppenders(const spi::LoggingEventPtr& event,
-			LOG4CXX_NS::helpers::Pool& p);
-#endif
 		/**
 		 Send \c event to all attached appenders.
 		*/
@@ -113,12 +100,12 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 * Replace \c oldAppender  with \c newAppender.
 		 * @return true if oldAppender was replaced with newAppender.
 		 */
-		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) LOG4CXX_16_VIRTUAL_SPECIFIER;
+		bool replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender) override;
 
 		/**
 		 * Replace any previously added appenders with \c newList.
 		 */
-		void replaceAppenders(const AppenderList& newList) LOG4CXX_16_VIRTUAL_SPECIFIER;
+		void replaceAppenders(const AppenderList& newList) override;
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)

@@ -104,12 +104,6 @@ XFactory::XFactory()
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-LoggerPtr XFactory::makeNewLoggerInstance(helpers::Pool&, const LogString& name) const
-{
-	return LoggerPtr(new XLogger(name));
-}
-#endif
 
 LoggerPtr XFactory::makeNewLoggerInstance(const LogString& name) const
 {

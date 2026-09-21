@@ -36,12 +36,7 @@ namespace LOG4CXX_NS
 *  support for threshold filtering and support for general filters.
 * */
 class LOG4CXX_EXPORT AppenderSkeleton
-#if LOG4CXX_ABI_VERSION <= 15
-	: public virtual Appender
-	, public virtual helpers::Object
-#else
 	: public Appender
-#endif
 {
 	protected:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(AppenderSkeletonPrivate, m_priv)
@@ -52,14 +47,14 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		method to perform actual logging. See also AppenderSkeleton::doAppend
 		method.
 		*/
-		virtual void append( LOG4CXX_APPEND_FORMAL_PARAMETERS ) = 0;
+		virtual void append( const spi::LoggingEventPtr& event ) = 0;
 
 		/**
 		* Compare \c event level against the appender threshold and check that \c event is accepted.
 		* If \c event is accepted, delegate log output to the subclass implementation of
 		* the AppenderSkeleton#append method.
 		* */
-		void doAppendImpl( LOG4CXX_APPEND_FORMAL_PARAMETERS );
+		void doAppendImpl( const spi::LoggingEventPtr& event );
 		/**
 		* Does no attached filter deny \c event or does an attached filter accept \c event?
 		*/
@@ -77,14 +72,6 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		AppenderSkeleton(const LayoutPtr& layout);
 		virtual ~AppenderSkeleton();
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		Finalize this appender by calling the derived class'
-		<code>close</code> method.
-		*/
-		[[ deprecated( "The derived appender destructor needs to implement its cleanup" ) ]]
-		void finalize();
-#endif
 
 		using spi::OptionHandler::activateOptions;
 		/**
@@ -94,7 +81,7 @@ class LOG4CXX_EXPORT AppenderSkeleton
 
 		@deprecated The \c pool parameter is not required and will be removed in a future version.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()
@@ -166,7 +153,7 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		*
 		* Reimplement this method in your appender if you use a different concurrency control technique.
 		* */
-		void doAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void doAppend( const spi::LoggingEventPtr& event ) override;
 
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.

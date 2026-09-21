@@ -133,19 +133,6 @@ class LOG4CXX_EXPORT File
 		 */
 		File& setPath(const LogString& newVAlue);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		 *  Open this file.
-		 *  See <a href="https://apr.apache.org/docs/apr/1.7/group__apr__file__io.html#gabda14cbf242fb4fe99055434213e5446">apr_file_open</a> for details.
-		 *  @param file allocated APR file handle.
-		 *  @param flags flags.
-		 *  @param perm permissions.
-		 *  @return APR_SUCCESS if successful.
-		 * @deprecated This function is deprecated and will be removed in a future version.
-		 */
-		[[ deprecated( "open is no longer supported" ) ]]
-		log4cxx_status_t open(apr_file_t** file, int flags,	int perm, helpers::Pool& p) const;
-#endif
 
 		/**
 		 *   List files if current file is a directory.
@@ -190,32 +177,6 @@ class LOG4CXX_EXPORT File
 		 */
 		bool getAutoDelete() const;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		bool exists(helpers::Pool& p) const;
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		size_t length(helpers::Pool& p) const;
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		log4cxx_time_t lastModified(helpers::Pool& p) const;
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		std::vector<LogString> list(helpers::Pool& p) const;
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		bool deleteFile(helpers::Pool& p) const;
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		bool renameTo(const File& dest, helpers::Pool& p) const;
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		LogString getParent(helpers::Pool& p) const;
-		/// @deprecated This function is deprecated and will be removed in a future version.
-		[[ deprecated( "Pool is no longer required" ) ]]
-		bool mkdirs(helpers::Pool& p) const;
-#endif
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilePrivate, m_priv)
 };

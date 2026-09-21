@@ -52,18 +52,9 @@ FileRenameAction::FileRenameAction(const File& toRename,
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-bool FileRenameAction::execute(Pool&) const
-{
-	if (!priv->renameEmptyFile && 0 == priv->source.length())
-		return false;
-	return priv->source.renameTo(priv->destination);
-}
-#else
 bool FileRenameAction::execute()const
 {
 	if (priv->renameEmptyFile || 0 != priv->source.length())
 		return priv->source.renameTo(priv->destination);
 	return false;
 }
-#endif

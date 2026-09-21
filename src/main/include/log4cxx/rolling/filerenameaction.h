@@ -48,7 +48,7 @@ class FileRenameAction : public Action
 		/**
 		 * Perform rename.
 		 */
-		bool execute( LOG4CXX_EXECUTE_ACTION_FORMAL_PARAMETERS ) const override;
+		bool execute(  ) const override;
 };
 
 LOG4CXX_PTR_DEF(FileRenameAction);

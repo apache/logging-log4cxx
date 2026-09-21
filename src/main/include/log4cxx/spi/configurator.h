@@ -40,11 +40,9 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Configurator)
-#if 15 < LOG4CXX_ABI_VERSION
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(Configurator)
 		END_LOG4CXX_CAST_MAP()
-#endif
 
 		/**
 		Read configuration from \c configFileName.
@@ -58,11 +56,7 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		*/
 		virtual ConfigurationStatus doConfigure
 			( const File&                     configFileName
-#if LOG4CXX_ABI_VERSION <= 15
-			, spi::LoggerRepositoryPtr        repository
-#else
 			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
-#endif
 			) = 0;
 
 		/**

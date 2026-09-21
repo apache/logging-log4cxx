@@ -41,7 +41,7 @@ PatternConverterPtr ColorEndPatternConverter::newInstance(
 	return instance;
 }
 
-void ColorEndPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void ColorEndPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 
 	// Reset all colors on the output(code 0)

@@ -65,11 +65,7 @@ Linux ipchains.
 <p>Note that filtering is only supported by the DOMConfigurator.
 */
 class LOG4CXX_EXPORT Filter
-#if LOG4CXX_ABI_VERSION <= 15
-	: public virtual OptionHandler
-#else
 	: public OptionHandler
-#endif
 {
 	protected:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilterPrivate, m_priv)
@@ -113,7 +109,7 @@ class LOG4CXX_EXPORT Filter
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

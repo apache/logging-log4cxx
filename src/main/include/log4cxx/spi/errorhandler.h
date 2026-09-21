@@ -56,11 +56,7 @@ that errors are not properly handled. You are most welcome to
 suggest new error handling policies or criticize existing policies.
 */
 class LOG4CXX_EXPORT ErrorHandler
-#if LOG4CXX_ABI_VERSION <= 15
-	: public virtual OptionHandler
-#else
 	: public OptionHandler
-#endif
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ErrorHandler)
@@ -71,14 +67,12 @@ class LOG4CXX_EXPORT ErrorHandler
 
 		virtual ~ErrorHandler() {}
 
-#if 15 < LOG4CXX_ABI_VERSION
 		/**
 		Add \c clx to the list of collections to search for the failed appender.
 		@param name the collection name.
 		@param clx has a collection of appenders.
 		*/
 		virtual void addAppenderHolder(const LogString& name, const AppenderAttachablePtr& clx) {};
-#endif
 
 		/**
 		Add a reference to a logger to which the failing appender might
@@ -128,7 +122,6 @@ class LOG4CXX_EXPORT ErrorHandler
 		*/
 		virtual void setBackupAppender(const AppenderPtr& appender) = 0;
 
-#if 15 < LOG4CXX_ABI_VERSION
 		/**
 		Has an error been reported?
 		*/
@@ -140,8 +133,7 @@ class LOG4CXX_EXPORT ErrorHandler
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
-#endif
+		void activateOptions(  ) override;
 
 };
 

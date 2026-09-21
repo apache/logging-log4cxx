@@ -52,9 +52,6 @@ public: // Modifiers
 	inline size_t increment_position(size_t byteCount);
 	inline bool put(char byteValue);
 
-#if LOG4CXX_ABI_VERSION <= 15
-	friend class ByteBuffer;
-#endif
 };
 
 void ByteBufferPriv::clear()

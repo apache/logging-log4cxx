@@ -41,7 +41,7 @@ struct OutputStreamWriter::OutputStreamWriterPrivate
 	CharsetEncoderPtr enc;
 };
 
-OutputStreamWriter::OutputStreamWriter(LOG4CXX_16_CONST OutputStreamPtr& out)
+OutputStreamWriter::OutputStreamWriter(const OutputStreamPtr& out)
 	: m_priv(std::make_unique<OutputStreamWriterPrivate>(out))
 {
 	if (!out)
@@ -51,8 +51,8 @@ OutputStreamWriter::OutputStreamWriter(LOG4CXX_16_CONST OutputStreamPtr& out)
 }
 
 OutputStreamWriter::OutputStreamWriter
-	( LOG4CXX_16_CONST OutputStreamPtr& out
-	, LOG4CXX_16_CONST CharsetEncoderPtr& enc
+	( const OutputStreamPtr& out
+	, const CharsetEncoderPtr& enc
 	)
 	: m_priv(std::make_unique<OutputStreamWriterPrivate>(out, enc))
 {
@@ -71,17 +71,17 @@ OutputStreamWriter::~OutputStreamWriter()
 {
 }
 
-void OutputStreamWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
+void OutputStreamWriter::close(  )
 {
 	m_priv->out->close();
 }
 
-void OutputStreamWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
+void OutputStreamWriter::flush(  )
 {
 	m_priv->out->flush();
 }
 
-void OutputStreamWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
+void OutputStreamWriter::write( const LogString& str )
 {
 	if (str.empty())
 		return;

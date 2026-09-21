@@ -41,11 +41,6 @@ void OnlyOnceErrorHandler::setLogger(const LoggerPtr&)
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void OnlyOnceErrorHandler::activateOptions(Pool&)
-{
-}
-#endif
 
 void OnlyOnceErrorHandler::setOption(const LogString& option, const LogString& value)
 {

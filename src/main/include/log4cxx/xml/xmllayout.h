@@ -97,15 +97,6 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 		*/
 		bool getProperties();
 
-#if LOG4CXX_ABI_VERSION <= 15
-		using Layout::activateOptions;
-		/**
-		\copybrief spi::OptionHandler::activateOptions()
-
-		No action is performed in this implementation.
-		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override { }
-#endif
 		/**
 		\copybrief spi::OptionHandler::setOption()
 
@@ -122,7 +113,7 @@ class LOG4CXX_EXPORT XMLLayout : public Layout
 		* Formats a {@link spi::LoggingEvent LoggingEvent}
 		* in conformance with [this XML data definition file](https://logging.apache.org/log4j/1.x/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd).
 		**/
-		void format( LOG4CXX_FORMAT_LAYOUT_FORMAL_PARAMETERS ) const override;
+		void format( LogString& output, const spi::LoggingEventPtr& event ) const override;
 
 		/**
 		The XMLLayout prints and does not ignore exceptions. Hence the

@@ -41,11 +41,11 @@ class LOG4CXX_EXPORT SocketOutputStream : public OutputStream
 		~SocketOutputStream();
 
 		using OutputStream::close;
-		void close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS ) override;
+		void close(  ) override;
 		using OutputStream::flush;
-		void flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS ) override;
+		void flush(  ) override;
 		using OutputStream::write;
-		void write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS ) override;
+		void write( ByteBuffer& buf ) override;
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(SocketOutputStreamPrivate, m_priv)

@@ -34,24 +34,6 @@ Writer::~Writer()
 {
 }
 
-#if LOG4CXX_ABI_VERSION <= 15
-void Writer::close()
-{
-	Pool p;
-	close(p);
-}
-void Writer::flush()
-{
-	Pool p;
-	flush(p);
-}
-void Writer::write(const LogString& str)
-{
-	Pool p;
-	write(str, p);
-}
-#else
 void Writer::close(Pool&) { close(); }
 void Writer::flush(Pool&) { flush(); }
 void Writer::write(const LogString& str, Pool&) { write(str); }
-#endif

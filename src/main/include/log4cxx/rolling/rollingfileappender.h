@@ -153,7 +153,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		   Implements the configured roll over behaviour.
@@ -170,21 +170,15 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 		 */
 		bool rollover();
-#if LOG4CXX_ABI_VERSION <= 15
-		bool rollover(LOG4CXX_NS::helpers::Pool& p);
-#endif
 
 	protected:
 
 		/**
 		 Actual writing occurs here.
 		*/
-		void subAppend( LOG4CXX_APPEND_FORMAL_PARAMETERS ) override;
+		void subAppend( const spi::LoggingEventPtr& event ) override;
 
 		bool rolloverInternal();
-#if LOG4CXX_ABI_VERSION <= 15
-		bool rolloverInternal(LOG4CXX_NS::helpers::Pool& p);
-#endif
 
 	public:
 		/**
@@ -227,7 +221,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		 @param os output stream, may not be null.
 		 @return new writer.
 		 */
-		helpers::WriterPtr createWriter(LOG4CXX_16_CONST helpers::OutputStreamPtr& os) override;
+		helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
 
 	public:
 		/**

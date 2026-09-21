@@ -81,7 +81,7 @@ FileOutputStream::~FileOutputStream()
 	}
 }
 
-void FileOutputStream::close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS )
+void FileOutputStream::close(  )
 {
 	if (m_priv->fileptr)
 	{
@@ -96,11 +96,11 @@ void FileOutputStream::close( LOG4CXX_CLOSE_OUTPUT_STREAM_FORMAL_PARAMETERS )
 	}
 }
 
-void FileOutputStream::flush( LOG4CXX_FLUSH_OUTPUT_STREAM_FORMAL_PARAMETERS )
+void FileOutputStream::flush(  )
 {
 }
 
-void FileOutputStream::write( LOG4CXX_WRITE_OUTPUT_STREAM_FORMAL_PARAMETERS )
+void FileOutputStream::write( ByteBuffer& buf )
 {
 	if (m_priv->fileptr == NULL)
 	{

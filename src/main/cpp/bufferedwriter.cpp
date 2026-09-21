@@ -49,13 +49,13 @@ BufferedWriter::~BufferedWriter()
 {
 }
 
-void BufferedWriter::close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS )
+void BufferedWriter::close(  )
 {
 	flush();
 	m_priv->out->close();
 }
 
-void BufferedWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
+void BufferedWriter::flush(  )
 {
 	if (m_priv->buf.length() > 0)
 	{
@@ -64,7 +64,7 @@ void BufferedWriter::flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS )
 	}
 }
 
-void BufferedWriter::write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS )
+void BufferedWriter::write( const LogString& str )
 {
 	if (m_priv->buf.length() + str.length() > m_priv->sz)
 	{

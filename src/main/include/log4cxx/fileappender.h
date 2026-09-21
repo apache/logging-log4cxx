@@ -124,7 +124,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		If there was already an opened file, then the previous file
 		is closed first.
 		*/
-		void activateOptions( LOG4CXX_ACTIVATE_OPTIONS_FORMAL_PARAMETERS ) override;
+		void activateOptions(  ) override;
 
 		/**
 		\copybrief AppenderSkeleton::setOption()
@@ -245,12 +245,6 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 
 		void setFileInternal(const LogString& file);
 
-#if LOG4CXX_ABI_VERSION <= 15
-		void activateOptionsInternal(helpers::Pool& p);
-		void setFileInternal(const LogString& file, bool append,
-			bool bufferedIO, size_t bufferSize,
-			helpers::Pool& p);
-#endif
 	private:
 		FileAppender(const FileAppender&);
 		FileAppender& operator=(const FileAppender&);

@@ -40,7 +40,7 @@ PatternConverterPtr LoggerPatternConverter::newInstance(
 	return std::make_shared<LoggerPatternConverter>(options);
 }
 
-void LoggerPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void LoggerPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	auto initialLength = toAppendTo.length();
 	toAppendTo.append(event->getLoggerName());

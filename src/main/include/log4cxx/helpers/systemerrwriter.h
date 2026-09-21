@@ -41,16 +41,12 @@ class LOG4CXX_EXPORT SystemErrWriter : public Writer
 		virtual ~SystemErrWriter();
 
 		using Writer::close;
-		void close( LOG4CXX_CLOSE_WRITER_FORMAL_PARAMETERS ) override;
+		void close(  ) override;
 		using Writer::flush;
-		void flush( LOG4CXX_FLUSH_WRITER_FORMAL_PARAMETERS ) override;
+		void flush(  ) override;
 		using Writer::write;
-		void write( LOG4CXX_WRITE_WRITER_FORMAL_PARAMETERS ) override;
+		void write( const LogString& str ) override;
 
-#if LOG4CXX_ABI_VERSION <= 15
-		static void write(const LogString& str);
-		static void flush();
-#endif
 	private:
 		SystemErrWriter(const SystemErrWriter&);
 		SystemErrWriter& operator=(const SystemErrWriter&);

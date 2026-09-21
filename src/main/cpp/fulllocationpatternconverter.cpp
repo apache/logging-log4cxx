@@ -40,7 +40,7 @@ PatternConverterPtr FullLocationPatternConverter::newInstance(
 	return std::make_shared<FullLocationPatternConverter>();
 }
 
-void FullLocationPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void FullLocationPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	append(toAppendTo, event->getLocationInformation().getFileName());
 	toAppendTo.append(1, (logchar) 0x28 /* '(' */);

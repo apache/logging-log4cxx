@@ -60,30 +60,14 @@ class LOG4CXX_EXPORT LoggingEventPatternConverter : public PatternConverter
 		 * @param event holds the attributes, may not be null.
 		 * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
 		 */
-#if LOG4CXX_ABI_VERSION <= 15
-		void format(const spi::LoggingEventPtr& event, LogString& toAppendTo) const;
-		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
-		Implement this method for now, but plan to migrate to format() without a helpers::Pool parameter.
-		*/
-		virtual void format(
-			const spi::LoggingEventPtr& event,
-			LogString& toAppendTo,
-			helpers::Pool& p) const = 0;
-#define LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS const spi::LoggingEventPtr& event, LogString& toAppendTo, helpers::Pool& p
-#define LOG4CXX_FORMAT_EVENT_PARAMETERS event, toAppendTo, p
-#else
 		virtual void format(const spi::LoggingEventPtr& event, LogString& toAppendTo) const = 0;
-#define LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS const spi::LoggingEventPtr& event, LogString& toAppendTo
-#define LOG4CXX_FORMAT_EVENT_PARAMETERS event, toAppendTo
 		/**
 		@deprecated The \c pool parameter is not used and will be removed in a future version.
 		*/
 		[[deprecated("Use format() without a Pool parameter instead")]]
 		void format(const spi::LoggingEventPtr& event, LogString& toAppendTo, helpers::Pool& p) const;
-#endif
 
-		void format( LOG4CXX_FORMAT_OBJECT_FORMAL_PARAMETERS ) const override;
+		void format( const helpers::ObjectPtr& obj, LogString& toAppendTo ) const override;
 
 		/**
 		 * Normally pattern converters are not meant to handle Exceptions although

@@ -39,7 +39,7 @@ PatternConverterPtr MethodLocationPatternConverter::newInstance(
 	return std::make_shared<MethodLocationPatternConverter>();
 }
 
-void MethodLocationPatternConverter::format( LOG4CXX_FORMAT_EVENT_FORMAL_PARAMETERS ) const
+void MethodLocationPatternConverter::format( const spi::LoggingEventPtr& event, LogString& toAppendTo ) const
 {
 	append(toAppendTo, event->getLocationInformation().getMethodName());
 }

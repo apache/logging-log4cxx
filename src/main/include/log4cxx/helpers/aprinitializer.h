@@ -35,31 +35,14 @@ namespace LOG4CXX_NS
 {
 namespace helpers
 {
-#if LOG4CXX_ABI_VERSION <= 15
-class FileWatchdog;
-#endif
 
 class APRInitializer
 {
 	public:
-#if LOG4CXX_ABI_VERSION <= 15
-		static log4cxx_time_t initialize();
-		static bool isDestructed;
-#endif
 		static apr_pool_t* getRootPool();
 		static log4cxx_time_t getStartTime();
 		static apr_threadkey_t* getTlsKey();
 
-#if LOG4CXX_ABI_VERSION <= 15
-		/**
-		 *  Register a FileWatchdog for deletion prior to termination.
-		 *    FileWatchdog must be
-		 *    allocated on heap and not deleted elsewhere.
-		 */
-		static void registerCleanup(FileWatchdog* watchdog);
-		static void unregisterCleanup(FileWatchdog* watchdog);
-		static void unregisterAll();
-#endif
 		/**
 		 *  Store a single instance type ObjectPtr for deletion prior to termination
 		 */
