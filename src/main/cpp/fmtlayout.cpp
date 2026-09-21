@@ -97,7 +97,7 @@ void FMTLayout::format( LogString& output, const spi::LoggingEventPtr& event ) c
 										 event->getLocationInformation().getLineNumber());
 	LogString ndc;
 	event->getNDC(ndc);
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 	LOG4CXX_ENCODE_CHAR(sNDC, ndc);
 	LOG4CXX_ENCODE_CHAR(sPattern, m_priv->conversionPattern);
 	LOG4CXX_ENCODE_CHAR(sLogger, event->getLoggerName());

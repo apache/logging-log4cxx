@@ -114,10 +114,6 @@ class LOG4CXX_EXPORT ThreadSpecificData
 		static std::basic_ostringstream<wchar_t>& getStream(const wchar_t&);
 		static void releaseStream(std::basic_ostringstream<wchar_t>&);
 #endif
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-		static std::basic_ostringstream<UniChar>& getStream(const UniChar&);
-		static void releaseStream(std::basic_ostringstream<UniChar>&);
-#endif
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ThreadSpecificDataPrivate, m_priv)
 };
 

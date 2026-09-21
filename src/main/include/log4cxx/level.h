@@ -126,29 +126,6 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		 */
 		void toString(std::wstring& name) const;
 #endif
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-		/**
-		Convert the string passed as argument to a level. If the
-		conversion fails, then this method returns DEBUG.
-		* @param sArg level name.
-		*/
-		static LevelPtr toLevel(const std::basic_string<UniChar>& sArg);
-		/**
-		Convert the string passed as argument to a level. If the
-		conversion fails, then this method returns the value of
-		<code>defaultLevel</code>.
-		* @param sArg level name.
-		* @param defaultLevel level to return if no match.
-		* @return
-		*/
-		static LevelPtr toLevel(const std::basic_string<UniChar>& sArg,
-			const LevelPtr& defaultLevel);
-		/**
-		 *  Get the name of the level.
-		 *  @param name buffer to which name is appended.
-		 */
-		void toString(std::basic_string<UniChar>& name) const;
-#endif
 #if LOG4CXX_CFSTRING_API
 		/**
 		Convert the string passed as argument to a level. If the

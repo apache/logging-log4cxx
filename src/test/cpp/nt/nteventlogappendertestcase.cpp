@@ -17,7 +17,6 @@
 
 #if defined(_WIN32) && !defined(_WIN32_WCE)
 #include <log4cxx/nt/nteventlogappender.h>
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR
 #include "../appenderskeletontestcase.h"
 #include "windows.h"
 #include <log4cxx/logger.h>
@@ -110,5 +109,4 @@ class NTEventLogAppenderTestCase : public AppenderSkeletonTestCase
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(NTEventLogAppenderTestCase);
-#endif // !LOG4CXX_LOGCHAR_IS_UNICHAR
 #endif // defined(WIN32) && !defined(_WIN32_WCE)

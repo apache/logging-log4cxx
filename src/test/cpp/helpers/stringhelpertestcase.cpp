@@ -153,7 +153,7 @@ public:
 	}
 
 	// Regression: passing a non-ASCII byte (negative when char is signed, or > 0xFF
-	// for wchar_t/UniChar) to ::tolower(int) is undefined behaviour. The prior
+	// for wchar_t) to ::tolower(int) is undefined behaviour. The prior
 	// implementation also varied with the active C locale, producing different
 	// output on different machines for the same configuration file. Verify the
 	// non-ASCII bytes pass through unchanged regardless of locale.

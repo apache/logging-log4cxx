@@ -56,12 +56,17 @@ DLL" with release builds of Log4cxx and "Multithread DLL Debug" with debug build
 
 ## Does Apache Log4cxx support Unicode?{#unicode_supported}
 
-Yes. Apache Log4cxx exposes API methods in multiple string flavors supporting differently encoded
-textual content, like `char*`, `std::string`, `wchar_t*`, `std::wstring`, `CFStringRef` et al. All
-provided texts will be converted to the `LogString` type before further processing, which is one of
-several supported internal representations and is selected by the `LOG4CXX_CHAR` cmake option. If methods are
-used that take `LogString` as arguments, the macro `LOG4CXX_STR()` can be used to convert literals
-to the current `LogString` type. 
+Yes.
+API methods are provided for multiple string types including
+`char*`, `std::string`, `wchar_t*`, `std::wstring` and optionally `CFStringRef` and `QString`.
+Log4cxx expects `char*` and `std::string` arguments to contain valid UTF-8 byte sequences.
+Where required, the string will be converted to the Log4cxx internal type before further processing.
+
+The internally used string type, `LogString`, is chosen by the `LOG4CXX_CHAR` cmake option.
+It is either `std::basic_string<char>` or `std::basic_string<wchar_t>`.
+Use the `LOG4CXX_STR()` macro to convert a literal string
+to the current `LogString` type when calling a Log4cxx API method
+that expects a `LogString` argument.
 
 The default external representation is controlled by the `LOG4CXX_CHARSET` cmake option.
 This default is used to encode a multi-byte characters

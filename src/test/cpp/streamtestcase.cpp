@@ -16,10 +16,6 @@
  */
 
 #include <log4cxx/log4cxx.h>
- /* Prevent error C2491: 'std::numpunct<_Elem>::id': definition of dllimport static data member not allowed */
-#if defined(_MSC_VER) && LOG4CXX_UNICHAR_API
-#define __FORCE_INSTANCE
-#endif
 #include <ostream>
 #include <iomanip>
 
@@ -104,28 +100,9 @@ LOGUNIT_CLASS(StreamTestCase)
 	LOGUNIT_TEST(testWLogStreamFormattingPersists);
 	LOGUNIT_TEST(testWSetWidthInsert);
 #endif
-#if LOG4CXX_UNICHAR_API
-	LOGUNIT_TEST(testUniChar);
-	LOGUNIT_TEST(testUniCharAppend);
-	//                LOGUNIT_TEST(testUniCharWidth);
-	LOGUNIT_TEST(testULogStreamSimple);
-	LOGUNIT_TEST(testULogStreamMultiple);
-	LOGUNIT_TEST(testULogStreamShortCircuit);
-	LOGUNIT_TEST_EXCEPTION(testULogStreamInsertException, std::exception);
-	//                LOGUNIT_TEST(testULogStreamScientific);
-	//                LOGUNIT_TEST(testULogStreamPrecision);
-	//                LOGUNIT_TEST(testULogStreamWidth);
-	LOGUNIT_TEST(testULogStreamDelegate);
-	//                LOGUNIT_TEST(testULogStreamFormattingPersists);
-	//                LOGUNIT_TEST(testUSetWidthInsert);
-#endif
 #if LOG4CXX_CFSTRING_API
 	LOGUNIT_TEST(testCFString);
 	LOGUNIT_TEST(testCFStringAppend);
-#endif
-#if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
-	LOGUNIT_TEST(testULogStreamCFString);
-	LOGUNIT_TEST(testULogStreamCFString2);
 #endif
 	LOGUNIT_TEST_SUITE_END();
 
@@ -489,149 +466,6 @@ public:
 
 #endif
 
-#if LOG4CXX_UNICHAR_API
-	void testUniChar()
-	{
-		LoggerPtr root(Logger::getRootLogger());
-		const log4cxx::UniChar msg[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
-		LOG4CXX_INFO(root, msg);
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-	}
-
-	void testUniCharAppend()
-	{
-		LoggerPtr root(Logger::getRootLogger());
-		const log4cxx::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
-		const log4cxx::UniChar msg2[] = { ':', ' ', 'D', 'e', 't', 'a', 'i', 'l', 's', ' ', 't', 'o', ' ', 'f', 'o', 'l', 'l', 'o', 'w', 0 };
-		LOG4CXX_INFO(root, msg1 << msg2);
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-	}
-
-	void testUniCharWidth()
-	{
-		LoggerPtr root(Logger::getRootLogger());
-		const log4cxx::UniChar openBracket[] = { '[', 0 };
-		const log4cxx::UniChar closeBracket[] = { ']', 0 };
-		LOG4CXX_INFO(root, openBracket << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill((log4cxx::UniChar)'_') << 10.0 << closeBracket);
-		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-		LogString msg(event->getMessage());
-		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
-	}
-
-	void testULogStreamSimple()
-	{
-		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		const log4cxx::UniChar msg[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
-		root << msg << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-	}
-
-	void testULogStreamMultiple()
-	{
-		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		const log4cxx::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', 0 };
-		const log4cxx::UniChar msg2[] = { ':',  ' ', 'D', 'e', 't', 'a', 'i', 'l', 's', ' ', 't', 'o', ' ', 'f', 'o', 'l', 'l', 'o', 'w', 0 };
-		root << msg1 << msg2 << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-	}
-
-	void testULogStreamShortCircuit()
-	{
-		LoggerPtr logger(Logger::getLogger("StreamTestCase.shortCircuit"));
-		logger->setLevel(Level::getInfo());
-		ulogstream os(logger, Level::getDebug());
-		ExceptionOnInsert someObj;
-		os << someObj << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 0, vectorAppender->getVector().size());
-	}
-
-	void testULogStreamInsertException()
-	{
-		LoggerPtr logger(Logger::getLogger("StreamTestCase.insertException"));
-		ExceptionOnInsert someObj;
-		ulogstream os(logger, Level::getInfo());
-		os << someObj << LOG4CXX_ENDMSG;
-	}
-
-	void testULogStreamScientific()
-	{
-		LoggerPtr root(Logger::getRootLogger());
-		ulogstream os(root, Level::getInfo());
-		os << std::scientific << 0.000001115 << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-		LogString msg(event->getMessage());
-		LOGUNIT_ASSERT(msg.find(LOG4CXX_STR("e-")) != LogString::npos ||
-			msg.find(LOG4CXX_STR("E-")) != LogString::npos);
-	}
-
-	void testULogStreamPrecision()
-	{
-		LoggerPtr root(Logger::getRootLogger());
-		ulogstream os(root, Level::getInfo());
-		os << std::setprecision(4) << 1.000001 << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-		LogString msg(event->getMessage());
-		LOGUNIT_ASSERT(msg.find(LOG4CXX_STR("1.00000")) == LogString::npos);
-	}
-
-
-	void testULogStreamWidth()
-	{
-		LoggerPtr root(Logger::getRootLogger());
-		ulogstream os(root, Level::getInfo());
-		const log4cxx::UniChar openBracket[] = { '[', 0 };
-		const log4cxx::UniChar closeBracket[] = { ']', 0 };
-
-		os << openBracket << std::fixed << std::setprecision(2) << std::setw(7) << std::right
-			<< std::setfill((log4cxx::UniChar) '_') << 10.0 << closeBracket << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-		LogString msg(event->getMessage());
-		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
-	}
-
-	void ureport(std::basic_ostream<log4cxx::UniChar>& os)
-	{
-		const log4cxx::UniChar msg1[] = { 'T', 'h', 'i', 's', ' ', 'j', 'u', 's', 't', ' ', 'i', 'n', ':', ' ', '\n', 0 };
-		const log4cxx::UniChar msg2[] = { 'U', 's', 'e', ' ', 'l', 'o', 'g', 's', 't', 'r', 'e', 'a', 'm', '\n', 0 };
-		os << msg1;
-		os << msg2;
-	}
-
-	void testULogStreamDelegate()
-	{
-		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		ureport(root);
-		root << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-	}
-
-	void testULogStreamFormattingPersists()
-	{
-		LoggerPtr root(Logger::getRootLogger());
-		root->setLevel(Level::getInfo());
-		ulogstream os(root, Level::getDebug());
-		os << std::hex << 20 << LOG4CXX_ENDMSG;
-		os << Level::getInfo() << 16 << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-		spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-		LogString msg(event->getMessage());
-		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("10")), msg);
-	}
-
-	void testUSetWidthInsert()
-	{
-		LoggerPtr root(Logger::getRootLogger());
-		root->setLevel(Level::getInfo());
-		ulogstream os(root, Level::getInfo());
-		os << std::setw(5);
-		LOGUNIT_ASSERT_EQUAL(5, os.width());
-	}
-
-#endif
-
 #if LOG4CXX_CFSTRING_API
 	void testCFString()
 	{
@@ -644,22 +478,6 @@ public:
 	{
 		LoggerPtr root(Logger::getRootLogger());
 		LOG4CXX_INFO(root, CFSTR("This is a test") << CFSTR(": Details to follow"));
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-	}
-#endif
-
-#if LOG4CXX_UNICHAR_API && LOG4CXX_CFSTRING_API
-	void testULogStreamCFString()
-	{
-		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		root << CFSTR("This is a test") << LOG4CXX_ENDMSG;
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-	}
-
-	void testULogStreamCFString2()
-	{
-		ulogstream root(Logger::getRootLogger(), Level::getInfo());
-		root << CFSTR("This is a test") << CFSTR(": Details to follow") << LOG4CXX_ENDMSG;
 		LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
 	}
 #endif

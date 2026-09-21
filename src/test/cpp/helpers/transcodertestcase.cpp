@@ -77,15 +77,6 @@ LOGUNIT_CLASS(TranscoderTestCase)
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR || defined(WIN32) || defined(_WIN32)
 	LOGUNIT_TEST(testEncodeWString_FFFF_KeepsFollowingByte);
 #endif
-#if LOG4CXX_UNICHAR_API
-	LOGUNIT_TEST(udecode2);
-	LOGUNIT_TEST(udecode4);
-	LOGUNIT_TEST(uencode1);
-	LOGUNIT_TEST(uencode3);
-	LOGUNIT_TEST(uencode5);
-	LOGUNIT_TEST(testDecodeUniChar_Malformed_DoesNotHang);
-	LOGUNIT_TEST(testEncodeUniChar_Malformed_DoesNotHang);
-#endif
 #if LOG4CXX_LOGCHAR_IS_UTF8
 	LOGUNIT_TEST(encodeCharsetName1);
 	LOGUNIT_TEST(encodeCharsetName2);
@@ -256,7 +247,7 @@ public:
 
 	void encode6()
 	{
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 		//   arbitrary, hopefully meaningless, characters from
 		//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
 		const logchar greeting[] = { L'A', 0x0605, 0x0530, 0x984, 0x40E3, 0x400, 0 };
@@ -531,87 +522,6 @@ public:
 #endif
 
 
-#if LOG4CXX_UNICHAR_API
-	void udecode2()
-	{
-		const UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
-		LogString decoded(LOG4CXX_STR("foo\n"));
-		Transcoder::decode(greeting, decoded);
-		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
-	}
-
-	void udecode4()
-	{
-		const UniChar nothing[] = { 0 };
-		LogString decoded(LOG4CXX_STR("foo\n"));
-		Transcoder::decode(nothing, decoded);
-		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
-	}
-
-	void uencode1()
-	{
-		const LogString greeting(LOG4CXX_STR("Hello, World"));
-		std::basic_string<UniChar> encoded;
-		Transcoder::encode(greeting, encoded);
-		const UniChar expected[] = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
-		LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(expected), encoded);
-	}
-
-	void uencode3()
-	{
-		LogString greeting(BUFSIZE - 3, LOG4CXX_STR('A'));
-		greeting.append(LOG4CXX_STR("Hello"));
-		std::basic_string<UniChar> encoded;
-		Transcoder::encode(greeting, encoded);
-		std::basic_string<UniChar> manyAs(BUFSIZE - 3, 'A');
-		LOGUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
-		const UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
-		LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(hello), encoded.substr(BUFSIZE - 3));
-	}
-
-	void uencode5()
-	{
-		//   arbitrary, hopefully meaningless, characters from
-		//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
-		const UniChar greeting[] = { L'A', 0x0605, 0x0530, 0x984, 0x40E3, 0x400, 0 };
-		//
-		//  decode to LogString (UTF-16 or UTF-8)
-		//
-		LogString decoded;
-		Transcoder::decode(greeting, decoded);
-		//
-		//  decode to basic_string<UniChar>
-		//
-		std::basic_string<UniChar> encoded;
-		Transcoder::encode(decoded, encoded);
-		//
-		//   should be lossless
-		//
-		LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), encoded);
-	}
-
-	void testDecodeUniChar_Malformed_DoesNotHang()
-	{
-		const UniChar malformed[] = { 0xD800, 'A', 0 };
-		LogString decoded;
-		Transcoder::decode(malformed, decoded);
-		LOGUNIT_ASSERT(decoded.find(LOG4CXX_STR("A")) != LogString::npos);
-	}
-
-	void testEncodeUniChar_Malformed_DoesNotHang()
-	{
-		LogString src;
-#if LOG4CXX_LOGCHAR_IS_UTF8
-		src = "\xED\xA0\x80\x41"; // U+D800 then 'A'
-#else
-		src.append(1, 0xD800);
-		src.append(1, 0x41);
-#endif
-		std::basic_string<UniChar> out;
-		Transcoder::encode(src, out);
-		LOGUNIT_ASSERT(out.find('A') != std::basic_string<UniChar>::npos);
-	}
-#endif
 
 #if LOG4CXX_LOGCHAR_IS_UTF8
 	void encodeCharsetName1()

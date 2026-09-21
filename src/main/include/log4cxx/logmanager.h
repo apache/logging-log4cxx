@@ -130,35 +130,6 @@ class LOG4CXX_EXPORT LogManager
 		 */
 		static LoggerPtr exists(const std::wstring& name);
 #endif
-#if LOG4CXX_UNICHAR_API
-		/**
-		Retrieve the \c name Logger instance from the
-		{@link spi::LoggerRepository LoggerRepository}
-		using the default factory to create it if required.
-
-		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
-		passing {@link DefaultConfigurator::configure} to ensure
-		the repository is configured.
-		*/
-		static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
-		/**
-		Retrieve the \c name Logger instance from the
-		{@link spi::LoggerRepository LoggerRepository}
-		using \c factory to create it if required.
-
-		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
-		passing {@link DefaultConfigurator::configure} to ensure
-		the repository is configured.
-		*/
-		static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
-			const spi::LoggerFactoryPtr& factory);
-		/**
-		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
-
-		 @returns A null pointer unless the \c name Logger already exists.
-		 */
-		static LoggerPtr exists(const std::basic_string<UniChar>& name);
-#endif
 #if LOG4CXX_CFSTRING_API
 		/**
 		Retrieve the \c name Logger instance from the

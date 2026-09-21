@@ -19,14 +19,7 @@
 #define _LOG4CXX_QT_MESSAGE_BUFFER_H
 #include <log4cxx-qt/transcoder.h>
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-	inline LOG4CXX_NS::helpers::UniCharMessageBuffer&
-operator<<(LOG4CXX_NS::helpers::UniCharMessageBuffer& mb, const QString& msg)
-{
-	return mb << msg.utf16();
-}
-
-#if LOG4CXX_WCHAR_T_API
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 	inline LOG4CXX_NS::helpers::WideMessageBuffer&
 operator<<(LOG4CXX_NS::helpers::WideMessageBuffer& mb, const QString& msg)
 {
@@ -38,29 +31,7 @@ operator<<(LOG4CXX_NS::helpers::MessageBuffer& mb, const QString& msg)
 {
 	return mb << msg.toStdWString();
 }
-#else // !LOG4CXX_WCHAR_T_API
-	inline LOG4CXX_NS::helpers::UniCharMessageBuffer&
-operator<<(LOG4CXX_NS::helpers::MessageBuffer& mb, const QString& msg)
-{
-	return mb << msg.utf16();
-}
-#endif // !LOG4CXX_WCHAR_T_API
-
-#else // !(LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR)
-
-#if LOG4CXX_WCHAR_T_API
-	inline LOG4CXX_NS::helpers::WideMessageBuffer&
-operator<<(LOG4CXX_NS::helpers::WideMessageBuffer& mb, const QString& msg)
-{
-	return mb << msg.toStdWString();
-}
-
-	inline LOG4CXX_NS::helpers::WideMessageBuffer&
-operator<<(LOG4CXX_NS::helpers::MessageBuffer& mb, const QString& msg)
-{
-	return mb << msg.toStdWString();
-}
-#else // !LOG4CXX_WCHAR_T_API
+#else // !(LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR)
 	inline LOG4CXX_NS::helpers::CharMessageBuffer&
 operator<<(LOG4CXX_NS::helpers::CharMessageBuffer& mb, const QString& msg)
 {
@@ -68,7 +39,5 @@ operator<<(LOG4CXX_NS::helpers::CharMessageBuffer& mb, const QString& msg)
 	return mb << tmp;
 }
 #endif // !LOG4CXX_WCHAR_T_API
-
-#endif // !(LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR)
 
 #endif // _LOG4CXX_QT_MESSAGE_BUFFER_H

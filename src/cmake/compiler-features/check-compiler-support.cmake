@@ -31,8 +31,3 @@ else()
 endif()
 
 
-# Does the standard library support std::basic_string<UniChar> and std::basic_ostream<UniChar>?
-try_compile(STD_LIB_HAS_UNICODE_STRING "${CMAKE_BINARY_DIR}/Testing/unicode-test"
-    "${CMAKE_CURRENT_LIST_DIR}/test-unicode.cpp"
-    )
-

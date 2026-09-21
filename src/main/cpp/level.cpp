@@ -188,24 +188,6 @@ void Level::toString(std::wstring& dst) const
 
 #endif
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-LevelPtr Level::toLevel(const std::basic_string<UniChar>& sArg)
-{
-	return toLevel(sArg, Level::getDebug());
-}
-
-LevelPtr Level::toLevel(const std::basic_string<UniChar>& sArg, const LevelPtr& defaultLevel)
-{
-	LOG4CXX_DECODE_UNICHAR(s, sArg);
-	return toLevelLS(s, defaultLevel);
-}
-
-void Level::toString(std::basic_string<UniChar>& dst) const
-{
-	Transcoder::encode(name, dst);
-}
-
-#endif
 
 #if LOG4CXX_CFSTRING_API
 LevelPtr Level::toLevel(const CFStringRef& sArg)

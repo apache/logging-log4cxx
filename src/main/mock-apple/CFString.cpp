@@ -31,7 +31,6 @@ apr_pool_t* getStringPool()
 } // namespace
 
 extern "C" {
-
 CFRange CFRangeMake(CFIndex loc, CFIndex len) {
 	CFRange result;
 	result.location = loc;

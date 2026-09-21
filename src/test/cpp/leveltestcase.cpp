@@ -38,9 +38,6 @@ LOGUNIT_CLASS(LevelTestCase)
 #if LOG4CXX_WCHAR_T_API
 	LOGUNIT_TEST(testWideStringToTrace);
 #endif
-#if LOG4CXX_UNICHAR_API
-	LOGUNIT_TEST(testUniCharStringToTrace);
-#endif
 #if LOG4CXX_CFSTRING_API
 	LOGUNIT_TEST(testCFStringToTrace);
 #endif
@@ -106,18 +103,6 @@ public:
 	void testWideStringToTrace()
 	{
 		LevelPtr trace(Level::toLevel(L"TRACE"));
-		LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
-	}
-#endif
-
-#if LOG4CXX_UNICHAR_API
-	/**
-	 * Tests Level.toLevel("TRACE");
-	 */
-	void testUniCharStringToTrace()
-	{
-		const log4cxx::UniChar name[] = { 'T', 'R', 'A', 'C', 'E', 0 };
-		LevelPtr trace(Level::toLevel(name));
 		LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
 	}
 #endif
