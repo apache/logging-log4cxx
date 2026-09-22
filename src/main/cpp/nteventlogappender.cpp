@@ -19,7 +19,6 @@
 #include <windows.h>
 #include <Heapapi.h>
 #include <log4cxx/nt/nteventlogappender.h>
-#if !LOG4CXX_LOGCHAR_IS_UNICHAR
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
@@ -247,8 +246,6 @@ void NTEventLogAppender::append( const spi::LoggingEventPtr& event )
 			0,
 			(LPCSTR*)&msgs,
 			NULL);
-#else
-	#error NTEventLogAppender is not supported when logchar is unichar
 #endif
 	if (!bSuccess)
 	{
@@ -414,6 +411,5 @@ const LogString& NTEventLogAppender::getServer() const
 {
 	return priv->server;
 }
-#endif // !LOG4CXX_LOGCHAR_IS_UNICHAR
 
 #endif // WIN32

@@ -51,9 +51,6 @@ LOGUNIT_CLASS(FileTestCase)
 #if LOG4CXX_WCHAR_T_API
 	LOGUNIT_TEST(wcharConstructor);
 #endif
-#if LOG4CXX_UNICHAR_API
-	LOGUNIT_TEST(unicharConstructor);
-#endif
 #if LOG4CXX_CFSTRING_API
 	LOGUNIT_TEST(cfstringConstructor);
 #endif
@@ -114,19 +111,6 @@ public:
 	void wcharConstructor()
 	{
 		File propFile(L"input/patternLayout1.properties");
-		bool exists = propFile.exists();
-		LOGUNIT_ASSERT_EQUAL(true, exists);
-	}
-#endif
-
-#if LOG4CXX_UNICHAR_API
-	void unicharConstructor()
-	{
-		const log4cxx::UniChar filename[] = { 'i', 'n', 'p', 'u', 't', '/',
-				'p', 'a', 't', 't', 'e', 'r', 'n', 'L', 'a', 'y', 'o', 'u', 't', '1', '.',
-				'p', 'r', 'o', 'p', 'e', 'r', 't', 'i', 'e', 's', 0
-			};
-		File propFile(filename);
 		bool exists = propFile.exists();
 		LOGUNIT_ASSERT_EQUAL(true, exists);
 	}

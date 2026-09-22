@@ -27,7 +27,6 @@ Building with CMake {#build-cmake}
 | Option                 | Usage |
 |------------------------|-------|
 | LOG4CXX_WCHAR_T=no   | Enable wchar_t API methods, choice of yes (default), no.                                    |
-| LOG4CXX_UNICHAR=yes  | Enable UniChar API methods, choice of yes, no (default).                                    |
 | LOG4CXX_CFSTRING=yes | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
 | BUILD_TESTING=off    | Do not build tests.  Tests are built by default                                             |
 | BUILD_FUZZERS        | Enabled by default if `BUILD_TESTING=ON` and libFuzzer is found.                            |

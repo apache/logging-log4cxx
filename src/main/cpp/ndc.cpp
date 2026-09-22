@@ -300,61 +300,6 @@ bool NDC::peek(std::wstring& dst)
 #endif
 
 
-#if LOG4CXX_UNICHAR_API
-NDC::NDC(const std::basic_string<UniChar>& message)
-{
-	push(message);
-}
-
-void NDC::push(const std::basic_string<UniChar>& message)
-{
-	LOG4CXX_DECODE_UNICHAR(msg, message);
-	pushLS(msg);
-}
-
-bool NDC::pop(std::basic_string<UniChar>& dst)
-{
-	ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
-
-	if (data != 0)
-	{
-		Stack& stack = data->getStack();
-
-		if (!stack.empty())
-		{
-			Transcoder::encode(getMessage(stack.top()), dst);
-			stack.pop();
-			data->recycle();
-			return true;
-		}
-
-		data->recycle();
-	}
-
-	return false;
-}
-
-bool NDC::peek(std::basic_string<UniChar>& dst)
-{
-	ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
-
-	if (data != 0)
-	{
-		Stack& stack = data->getStack();
-
-		if (!stack.empty())
-		{
-			Transcoder::encode(getMessage(stack.top()), dst);
-			return true;
-		}
-
-		data->recycle();
-	}
-
-	return false;
-}
-
-#endif
 
 
 #if LOG4CXX_CFSTRING_API

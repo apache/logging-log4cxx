@@ -110,7 +110,7 @@ public:
 
 	void encode3()
 	{
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 		//   arbitrary, hopefully meaningless, characters from
 		//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
 		const logchar greet[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
@@ -153,7 +153,7 @@ public:
 				(char) 0xD0, (char) 0x80,
 				0
 			};
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 		//   arbitrary, hopefully meaningless, characters from
 		//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
 		const logchar greet[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
@@ -195,7 +195,7 @@ public:
 				(char) 0xD0, (char) 0x80,
 				0
 			};
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 		//   arbitrary, hopefully meaningless, characters from
 		//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
 		const logchar greet[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
@@ -342,7 +342,7 @@ public:
 						0
 					};
 #endif
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 				//   arbitrary, hopefully meaningless, characters from
 				//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
 				const logchar greet[] = { L'H', L'e', L'l', L'l', L'o', L' ',

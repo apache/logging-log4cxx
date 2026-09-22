@@ -105,17 +105,6 @@ File::File(const wchar_t* name1)
 }
 #endif
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-File::File(const std::basic_string<UniChar>& name1)
-	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
-{
-}
-
-File::File(const UniChar* name1)
-	: m_priv(std::make_unique<FilePrivate>(decodeLS(name1)))
-{
-}
-#endif
 
 #if LOG4CXX_CFSTRING_API
 File::File(const CFStringRef& name1)

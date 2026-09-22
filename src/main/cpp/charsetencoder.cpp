@@ -63,9 +63,6 @@ class APRCharsetEncoder : public CharsetEncoder
 #if LOG4CXX_LOGCHAR_IS_UTF8
 			const char* frompage = "UTF-8";
 #endif
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-			const char* frompage = "UTF-16";
-#endif
 			std::string tpage(Transcoder::encodeCharsetName(topage));
 			apr_status_t stat = apr_xlate_open(&convset,
 					tpage.c_str(),
@@ -737,7 +734,7 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
 
 	if (stat != APR_SUCCESS && iter != src.end())
 	{
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 		iter++;
 #elif LOG4CXX_LOGCHAR_IS_UTF8
 

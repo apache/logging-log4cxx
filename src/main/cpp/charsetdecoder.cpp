@@ -65,9 +65,6 @@ class APRCharsetDecoder : public CharsetDecoder
 #if LOG4CXX_LOGCHAR_IS_UTF8
 			const char* topage = "UTF-8";
 #endif
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-			const char* topage = "UTF-16";
-#endif
 			std::string fpage(Transcoder::encodeCharsetName(frompage));
 			apr_status_t stat = apr_xlate_open(&convset,
 					topage,

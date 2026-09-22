@@ -231,34 +231,6 @@ class LOG4CXX_EXPORT NDC
 		 */
 		static bool pop(std::wstring& dst);
 #endif
-#if LOG4CXX_UNICHAR_API
-		/**
-		 Add \c message onto the context stack.
-		 @see The #push method.
-
-		 @param message The text added to the diagnostic context information.
-		*/
-		NDC(const std::basic_string<UniChar>& message);
-		/**
-		Add \c message to the stack associated with the current thread.
-		<p>The contents of the <code>message</code> parameter is
-		determined solely by the client.
-		@param message The text added to the diagnostic context information.
-		*/
-		static void push(const std::basic_string<UniChar>& message);
-		/**
-		Append to \c dst the top value in the stack associated with the current thread without removing it.
-		@param dst to which top value is appended.
-		@return true if NDC contained at least one value.
-		 */
-		static bool peek(std::basic_string<UniChar>& dst);
-		/**
-		Append to \c dst the top value in the stack associated with the current thread and then remove it.
-		@param dst to which top value is appended.
-		@return true if NDC contained at least one value.
-		 */
-		static bool pop(std::basic_string<UniChar>& dst);
-#endif
 #if LOG4CXX_CFSTRING_API
 		/**
 		 Add \c message onto the context stack.

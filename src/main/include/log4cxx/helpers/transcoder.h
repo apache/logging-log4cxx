@@ -142,48 +142,6 @@ class LOG4CXX_EXPORT Transcoder
 		static bool hasReplacementCharacter(const std::wstring& str);
 #endif
 
-
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-		/**
-		 *    Append the LogString equivalent of \c src onto \c dst.
-		 */
-		static void decode(const std::basic_string<UniChar>& src, LogString& dst);
-		/**
-		 *    Append the equivalent of \c src onto \c dst.
-		 */
-		static void encode(const LogString& src, std::basic_string<UniChar>& dst);
-
-		/**
-		 *   Increment \c iter past the next code point in \c str.
-		 *   @pre \c iter is a valid, dereferenceable iterator.
-		 *   @pre \c iter and the end of \c str are in the same sequence.
-		 *   @param str contains the code point to which \c iter refers.
-		 *   @param iter the start of the current code point.
-		 *   @return if a valid sequence, the decoded value; otherwise, 0xFFFF and leave \c iter unchanged.
-		 */
-		static unsigned int decode(const std::basic_string<UniChar>& str,
-			std::basic_string<UniChar>::const_iterator& iter);
-
-		/**
-		 *   Increment \c pCodePoint past one \c str code point.
-		 *   @pre \c pCodePoint is a valid, dereferenceable iterator.
-		 *   @pre \c pCodePoint and the end of \c str are in the same sequence.
-		 *   @post \c <code>[old_pCodePoint = pCodePoint] (old_pCodePoint < pCodePoint)</code> // \c pCodePoint is always advanced
-		 *   @param str contains the code point to which \c pCodePoint refers.
-		 *   @param pCodePoint the start of the current code point.
-		 *   @return the code point value or 0xFFFD if not a valid sequence; \c pCodePoint is always advanced.
-		 */
-		static unsigned int getCodePoint(const std::basic_string<UniChar>& str, std::basic_string<UniChar>::const_iterator& pCodePoint);
-
-		/**
-		  *   Append the UniChar equivalent to \c ch onto \c dst.
-		  */
-		static void encode(unsigned int ch, std::basic_string<UniChar>& dst);
-
-		/// Does \c str contain the Unicode replacement character
-		static bool hasReplacementCharacter(const std::basic_string<UniChar>& str);
-#endif
-
 #if LOG4CXX_CFSTRING_API
 		/**
 		 *    Append the LogString equivalent of \c src onto \c dst.
@@ -344,62 +302,6 @@ class LOG4CXX_EXPORT Transcoder
 	@param src The std::wstring variable.
 */
 #define LOG4CXX_DECODE_WCHAR(var, src) \
-	LOG4CXX_NS::LogString var;                      \
-	LOG4CXX_NS::helpers::Transcoder::decode(src, var)
-
-#endif
-
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-
-/** Create a std::basic_string<UniChar> equivalent of \c src.
-
-	Defines a std::basic_string<UniChar> variable \c var
-	initialized with characters
-	equivalent to the log4cxx::LogString \c src contents.
-
-	@param var The name of the new std::basic_string<UniChar> variable.
-	@param src The log4cxx::LogString variable.
-*/
-#define LOG4CXX_ENCODE_UNICHAR(var, src) \
-	const std::basic_string<UniChar>& var = src
-
-/** Create a log4cxx::LogString equivalent of \c src.
-
-	Defines a log4cxx::LogString variable \c var
-	initialized with characters
-	equivalent to the std::basic_string<UniChar> \c src contents.
-
-	@param var The name of the new log4cxx::LogString variable.
-	@param src The std::basic_string<UniChar> variable.
-*/
-#define LOG4CXX_DECODE_UNICHAR(var, src) \
-	const LOG4CXX_NS::LogString& var = src
-
-#else
-
-/** Create a std::basic_string<UniChar> equivalent of \c src.
-
-	Defines a std::basic_string<UniChar> variable \c var
-	initialized with characters
-	equivalent to the log4cxx::LogString \c src contents.
-
-	@param var The name of the new std::basic_string<UniChar> variable.
-	@param src The log4cxx::LogString variable.
-*/
-#define LOG4CXX_ENCODE_UNICHAR(var, src) \
-	std::basic_string<UniChar> var;          \
-	LOG4CXX_NS::helpers::Transcoder::encode(src, var)
-
-/** Create a log4cxx::LogString equivalent of \c src.
-
-	Defines a log4cxx::LogString variable \c var
-	initialized with characters
-	equivalent to the std::basic_string<UniChar> \c src contents.
-
-	@param var The name of the new log4cxx::LogString variable.
-	@param src The std::basic_string<UniChar> variable.
-*/
-#define LOG4CXX_DECODE_UNICHAR(var, src) \
 	LOG4CXX_NS::LogString var;                      \
 	LOG4CXX_NS::helpers::Transcoder::decode(src, var)
 

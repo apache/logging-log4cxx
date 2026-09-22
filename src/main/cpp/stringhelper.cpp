@@ -120,24 +120,12 @@ bool StringHelper::endsWith(const LogString& s, const LogString& suffix)
 
 int StringHelper::toInt(const LogString& s)
 {
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::string as;
-	Transcoder::encode(s, as);
-	return std::stoi(as);
-#else
 	return std::stoi(s);
-#endif
 }
 
 int64_t StringHelper::toInt64(const LogString& s)
 {
-#if LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::string as;
-	Transcoder::encode(s, as);
-	return std::stoll(as);
-#else
 	return std::stoll(s);
-#endif
 }
 
 void StringHelper::toString(int n, LogString& dst)

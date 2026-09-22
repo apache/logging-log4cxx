@@ -97,9 +97,6 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR
 	std::list<CountedStringStream<wchar_t> > wchar_stringstream;
 #endif
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-	std::list<CountedStringStream<UniChar> > unichar_stringstream;
-#endif
 
 	void setThreadIdName();
 	void setThreadUserName();
@@ -231,19 +228,6 @@ void ThreadSpecificData::releaseStream(std::basic_ostringstream<wchar_t>& ss)
 }
 #endif
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_LOGCHAR_IS_UNICHAR
-std::basic_ostringstream<UniChar>& ThreadSpecificData::getStream(const UniChar&)
-{
-	auto p = getCurrentData();
-	return p->m_priv->getStream(p->m_priv->unichar_stringstream);
-}
-
-void ThreadSpecificData::releaseStream(std::basic_ostringstream<UniChar>& ss)
-{
-	auto p = getCurrentData();
-	p->m_priv->releaseStream(p->m_priv->unichar_stringstream, ss);
-}
-#endif
 
 ThreadSpecificData* ThreadSpecificData::getCurrentData()
 {
