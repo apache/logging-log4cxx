@@ -26,6 +26,8 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
+#include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/helpers/singletonholder.h>
 
 
 #include <log4cxx/asyncappender.h>
@@ -111,8 +113,12 @@ Object* Class::newInstance() const
 
 Class::ClassMap& Class::getRegistry()
 {
-	static WideLife<ClassMap> registry;
-	return registry;
+	using ClassMapHolder = SingletonHolder<ClassMap>;
+	auto pHolder = APRInitializer::getOrAddUnique<ClassMapHolder>
+		( []() -> ObjectPtr
+			{ return std::make_shared<ClassMapHolder>(); }
+		);
+	return pHolder->value();
 }
 
 const Class& Class::forName(const LogString& className)
