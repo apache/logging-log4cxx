@@ -20,11 +20,9 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/xml/domconfigurator.h>
 
-using namespace LOG4CXX_NS;
-
 namespace com::foo {
 
-class NullWriterAppender : public AppenderSkeleton {
+class NullWriterAppender : public log4cxx::AppenderSkeleton {
 public:
 	DECLARE_LOG4CXX_OBJECT(NullWriterAppender)
 	BEGIN_LOG4CXX_CAST_MAP()
@@ -40,7 +38,7 @@ public:
 		return false;
 	}
 
-	void append( const spi::LoggingEventPtr& event ) override {
+	void append( const log4cxx::spi::LoggingEventPtr& event ) override {
 		// This gets called whenever there is a valid event for our appender.
 	}
 
@@ -48,8 +46,8 @@ public:
 		// Given all of our options, do something useful(e.g. open a file)
 	}
 
-	void setOption(const LogString& option, const LogString& value) override {
-		if (helpers::StringHelper::equalsIgnoreCase
+	void setOption(const log4cxx::LogString& option, const log4cxx::LogString& value) override {
+		if (log4cxx::helpers::StringHelper::equalsIgnoreCase
 			( option
 			, LOG4CXX_STR("SOMEVALUE")
 			, LOG4CXX_STR("somevalue")
@@ -66,10 +64,10 @@ IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 
 int main( int argc, char** argv )
 {
-	xml::DOMConfigurator::configure( "custom-appender.xml" );
+	LOG4CXX_NS::xml::DOMConfigurator::configure( "custom-appender.xml" );
 
-	LoggerPtr rootLogger = Logger::getRootLogger();
-	LoggerPtr nullLogger = Logger::getLogger( "NullLogger" );
+	log4cxx::LoggerPtr rootLogger = log4cxx::Logger::getRootLogger();
+	log4cxx::LoggerPtr nullLogger = log4cxx::Logger::getLogger( "NullLogger" );
 
 	LOG4CXX_INFO( rootLogger, "This is some root message" );
 	LOG4CXX_INFO( nullLogger, "This message will be discarded" );
