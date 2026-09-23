@@ -146,7 +146,7 @@ const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<Objec
 	if (m_priv->objects.empty())
 	{
 		// Ensure the internal logger has a longer life than other Log4cxx static data
-		LogLog::debug(LOG4CXX_STR("Started"));
+		m_priv->objects.emplace_back(typeid(LogLog).hash_code(), LogLog::_createInstance());
 	}
 	auto pItem = std::find_if(m_priv->objects.begin(), m_priv->objects.end()
 		, [key](const IdentifiedObject& item) { return item.first == key; }
