@@ -109,8 +109,6 @@ Object* Class::newInstance() const
 #endif
 }
 
-
-
 Class::ClassMap& Class::getRegistry()
 {
 	using ClassMapHolder = SingletonHolder<ClassMap>;
@@ -124,49 +122,51 @@ Class::ClassMap& Class::getRegistry()
 const Class& Class::forName(const LogString& className)
 {
 	LogString lowerName(StringHelper::toLowerCase(className));
+	auto& classRegister = getRegistry();
 	//
 	//  check registry using full class name
 	//
-	const Class* clazz = getRegistry()[lowerName];
+	auto pEntry = classRegister.find(lowerName);
 
-	if (clazz == 0)
+	if (classRegister.end() == pEntry)
 	{
 		LogString::size_type pos = className.find_last_of(LOG4CXX_STR(".$"));
 
 		if (pos != LogString::npos)
 		{
 			LogString terminalName(lowerName, pos + 1, LogString::npos);
-			clazz = getRegistry()[terminalName];
+			pEntry = classRegister.find(terminalName);
 
-			if (clazz == 0)
+			if (classRegister.end() == pEntry)
 			{
 				registerClasses();
-				clazz = getRegistry()[lowerName];
+				pEntry = classRegister.find(lowerName);
 
-				if (clazz == 0)
+				if (classRegister.end() == pEntry)
 				{
-					clazz = getRegistry()[terminalName];
+					pEntry = classRegister.find(terminalName);
 				}
 			}
 		}
 		else
 		{
 			registerClasses();
-			clazz = getRegistry()[lowerName];
+			pEntry = classRegister.find(lowerName);
 		}
 	}
 
-	if (clazz == 0)
+	if (classRegister.end() == pEntry)
 	{
 		throw ClassNotFoundException(className);
 	}
 
-	return *clazz;
+	return *pEntry->second;
 }
 
 bool Class::registerClass(const Class& newClass)
 {
-	getRegistry()[StringHelper::toLowerCase(newClass.getName())] = &newClass;
+	auto& classRegister = getRegistry();
+	classRegister[StringHelper::toLowerCase(newClass.getName())] = &newClass;
 	return true;
 }
 
