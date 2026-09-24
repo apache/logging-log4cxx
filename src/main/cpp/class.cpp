@@ -155,7 +155,7 @@ const Class& Class::forName(const LogString& className)
 		}
 	}
 
-	if (classRegister.end() == pEntry)
+	if (classRegister.end() == pEntry || !pEntry->second)
 	{
 		throw ClassNotFoundException(className);
 	}
