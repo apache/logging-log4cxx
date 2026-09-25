@@ -145,7 +145,7 @@ const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<Objec
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
 	if (m_priv->objects.empty())
 	{
-		// Ensure the internal logger has a longer life than other Log4cxx static data
+		// Ensure the internal logger has a longer life than other Log4cxx data
 		m_priv->objects.emplace_back(typeid(LogLog).hash_code(), LogLog::_createInstance());
 	}
 	auto pItem = std::find_if(m_priv->objects.begin(), m_priv->objects.end()
