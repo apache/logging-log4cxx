@@ -20,14 +20,13 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/logger.h>
-#include <log4cxx/helpers/widelife.h>
-#include <exception>
-#include <mutex>
+#include <log4cxx/helpers/singletonholder.h>
 
 namespace LOG4CXX_NS
 {
 namespace helpers
 {
+
 /**
 This class used to output log statements from within the log4cxx package.
 
@@ -44,11 +43,10 @@ class LOG4CXX_EXPORT LogLog
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LogLogPrivate, m_priv)
 
-		friend WideLife<LogLog>;
+		friend class SingletonHolder<LogLog>;
 		LogLog();
 		LogLog(const LogLog&);
 		LogLog& operator=(const LogLog&);
-		static LogLog& getInstance();
 
 	public:
 		~LogLog();
@@ -137,6 +135,10 @@ class LOG4CXX_EXPORT LogLog
 		*/
 		static LoggerPtr getLogger(const LogString& name);
 
+		/**
+		Internal use only.
+		*/
+		static ObjectPtr _createInstance();
 	private:
 		static void emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix);
 		static void emit_log(const LogString& prefix, const std::exception& ex, const LogString& suffix);

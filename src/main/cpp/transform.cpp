@@ -18,7 +18,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/transform.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <log4cxx/helpers/widelife.h>
 #include <functional>
 
 using namespace LOG4CXX_NS;
