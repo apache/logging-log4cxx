@@ -90,6 +90,10 @@ The following issues have been addressed:
 * Using BufferedIO in multiple FileAppenders with the same name could cause a fault
    \[[#733](https://github.com/apache/logging-log4cxx/pull/733)\]
 
+* A seg-fault when a user-defined class inherited from a non-abstract base class
+   * [#629](https://github.com/apache/logging-log4cxx/pull/629)
+   , [#637](https://github.com/apache/logging-log4cxx/pull/637)
+
 ## Release 1.8.0 - 2026-07-29 {#rel_1_8_0}
 
 Release 1.8.0 includes the following new features:
