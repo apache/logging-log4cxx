@@ -76,7 +76,7 @@ Release 2.0.0 includes the following new features:
 * SMTP and Telnet appenders use secure-by-default configurations
    \[[#734](https://github.com/apache/logging-log4cxx/pull/734)\]
 
-* CharsetEncoder::getUTF8Encoder() replaces an invalid sequence with the Unicode replacement character to when Log4cxx is built using LOG4CXX_CHARSET=utf-8
+* The encoder returned by CharsetEncoder::getUTF8Encoder() inserts the Unicode replacement character (0xFFFD) to indicate an invalid codepoint
    \[[#730](https://github.com/apache/logging-log4cxx/pull/730)\]
 
 The following issues have been addressed:
