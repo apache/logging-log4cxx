@@ -867,7 +867,8 @@ bool SMTPAppender::checkEntryConditions()
 
 	if ((_priv->to.empty() && _priv->cc.empty() && _priv->bcc.empty()) || _priv->from.empty() || _priv->smtpHost.empty())
 	{
-		_priv->errorHandler->error(LOG4CXX_STR("Message not configured."));
+		_priv->errorHandler->error(LOG4CXX_STR("Required SMTP properties missing for appender [") +
+			_priv->name + LOG4CXX_STR("]."));
 		return false;
 	}
 
