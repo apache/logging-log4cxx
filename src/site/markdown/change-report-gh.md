@@ -62,6 +62,9 @@ This major release includes the following alterations to the application binary 
 * The helpers::Pool parameter is not longer required in virtual functions.
 User-defined subclasses of Appender, Filter or Layout may require modification.
 
+* The helpers::Pool parameter has been removed from log4cxx::File member function argument lists.
+Code that uses log4cxx::File may require modification.
+
 * The 'LOG4CXX_CHAR=unichar' CMake option is no longer supported.
 Support remains for 'LOG4CXX_CHAR=wchar_t' for applications using std::wstring.
 
