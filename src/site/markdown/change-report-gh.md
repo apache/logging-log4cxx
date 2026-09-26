@@ -25,6 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
+| [2.0.0](#rel_2_0_0) | 2026-XX-XX | ABI altering release |
 | [1.8.0](#rel_1_8_0) | 2026-07-29 | Maintenance release  |
 | [1.7.0](#rel_1_7_0) | 2026-04-04 | Maintenance release  |
 | [1.6.1](#rel_1_6_1) | 2026-01-09 | Bugfix release       |
@@ -53,6 +54,41 @@ Change Log {#changelog}
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
+
+## Release 2.0.0 - 2026-XX-XX {#rel_2_0_0}
+
+This major release includes the following alterations to the application binary interface (ABI).
+
+* The helpers::Pool parameter is not longer required in virtual functions.
+User-defined subclasses of Appender, Filter or Layout may require modification.
+
+* The 'LOG4CXX_CHAR=unichar' CMake option is no longer supported.
+Support remains for 'LOG4CXX_CHAR=wchar_t' for applications using std::wstring.
+
+Release 2.0.0 includes the following new features:
+
+* An incorrect configuration option name generates a warning in the Log4cxx internal debugging output
+   \[[#738](https://github.com/apache/logging-log4cxx/pull/738)\]
+
+* Improve SMTPAppender diagnosic logging
+   \[[#735](https://github.com/apache/logging-log4cxx/pull/735)\]
+
+* SMTP and Telnet appenders use secure-by-default configurations
+   \[[#734](https://github.com/apache/logging-log4cxx/pull/734)\]
+
+* CharsetEncoder::getUTF8Encoder() replaces an invalid sequence with the Unicode replacement character to when Log4cxx is built using LOG4CXX_CHARSET=utf-8
+   \[[#730](https://github.com/apache/logging-log4cxx/pull/730)\]
+
+The following issues have been addressed:
+
+* A performance regression with JSON & XML output
+   \[[#757](https://github.com/apache/logging-log4cxx/pull/757)\]
+
+* Using default configuration, BufferedIO and a watchdog caused recursive configuration
+   \[[#739](https://github.com/apache/logging-log4cxx/pull/739)\]
+
+* Using BufferedIO in multiple FileAppenders with the same name could cause a fault
+   \[[#733](https://github.com/apache/logging-log4cxx/pull/733)\]
 
 ## Release 1.8.0 - 2026-07-29 {#rel_1_8_0}
 
