@@ -70,7 +70,7 @@ Release 2.0.0 includes the following new features:
 * An incorrect configuration option name generates a warning in the Log4cxx internal debugging output
    \[[#738](https://github.com/apache/logging-log4cxx/pull/738)\]
 
-* Improve SMTPAppender diagnosic logging
+* Improved SMTPAppender diagnostic messages in the Log4cxx internal debugging output
    \[[#735](https://github.com/apache/logging-log4cxx/pull/735)\]
 
 * SMTP and Telnet appenders use secure-by-default configurations
