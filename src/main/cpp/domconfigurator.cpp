@@ -144,7 +144,7 @@ class XMLWatchdog  : public FileWatchdog
 		Call DOMConfigurator#doConfigure with the
 		<code>filename</code> to reconfigure log4cxx.
 		*/
-		void doOnChange()
+		void doOnChange() override
 		{
 			DOMConfigurator().doConfigure(file(),
 				LogManager::getLoggerRepository());

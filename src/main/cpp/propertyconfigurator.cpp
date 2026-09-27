@@ -60,7 +60,7 @@ class PropertyWatchdog  : public FileWatchdog
 		const spi::LoggerRepositoryPtr& hierarchy) with the
 		<code>filename</code> to reconfigure log4cxx.
 		*/
-		void doOnChange()
+		void doOnChange() override
 		{
 			PropertyConfigurator().doConfigure(file(),
 				LogManager::getLoggerRepository());

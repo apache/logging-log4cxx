@@ -53,6 +53,12 @@ struct FileWatchdog::FileWatchdogPrivate{
 	bool warnedAlready;
 	LogString taskName;
 	ThreadUtility::ManagerWeakPtr taskManager;
+
+	/**
+	Serialize access and modification to: file, lastModif and warnedAlready.
+	Recursive because doOnChange may re-enter watchdog methods.
+	*/
+	std::recursive_mutex mutex;
 };
 
 FileWatchdog::FileWatchdog(const File& file1)
@@ -95,6 +101,7 @@ const File& FileWatchdog::file()
 
 void FileWatchdog::checkAndConfigure()
 {
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	if (LogLog::isDebugEnabled())
 	{
 		LogString msg(LOG4CXX_STR("Checking ["));
@@ -164,6 +171,7 @@ void FileWatchdog::setDelay(long delay1){
 
 void FileWatchdog::setFile(const File& newValue)
 {
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	if (m_priv->file.getPath() != newValue.getPath())
 	{
 		m_priv->file = newValue;
