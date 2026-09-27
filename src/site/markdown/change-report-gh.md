@@ -25,6 +25,7 @@ Change Log {#changelog}
 
 | Version             | Date       | Description          |
 | ------------------- | ---------- | -------------------- |
+| [2.0.0](#rel_2_0_0) | 2026-XX-XX | ABI altering release |
 | [1.8.0](#rel_1_8_0) | 2026-07-29 | Maintenance release  |
 | [1.7.0](#rel_1_7_0) | 2026-04-04 | Maintenance release  |
 | [1.6.1](#rel_1_6_1) | 2026-01-09 | Bugfix release       |
@@ -53,6 +54,48 @@ Change Log {#changelog}
 | [0.1.0](#rel_1_0)   | 2003-07-08 |                      |
 | [0.0.1](#rel_0_1)   | 2003-05-31 |                      |
 
+
+## Release 2.0.0 - 2026-XX-XX {#rel_2_0_0}
+
+This major release includes the following alterations to the application binary interface (ABI).
+
+* The helpers::Pool parameter is not longer required in virtual functions.
+User-defined subclasses of Appender, Filter or Layout may require modification.
+
+* The helpers::Pool parameter has been removed from log4cxx::File member function argument lists.
+Code that uses log4cxx::File may require modification.
+
+* The 'LOG4CXX_CHAR=unichar' CMake option is no longer supported.
+Support remains for 'LOG4CXX_CHAR=wchar_t' for applications using std::wstring.
+
+Release 2.0.0 includes the following new features:
+
+* An incorrect configuration option name generates a warning in the Log4cxx internal debugging output
+   \[[#738](https://github.com/apache/logging-log4cxx/pull/738)\]
+
+* Improved SMTPAppender diagnostic messages in the Log4cxx internal debugging output
+   \[[#735](https://github.com/apache/logging-log4cxx/pull/735)\]
+
+* SMTP and Telnet appenders use secure-by-default configurations
+   \[[#734](https://github.com/apache/logging-log4cxx/pull/734)\]
+
+* The encoder returned by CharsetEncoder::getUTF8Encoder() inserts the Unicode replacement character (0xFFFD) to indicate an invalid codepoint
+   \[[#730](https://github.com/apache/logging-log4cxx/pull/730)\]
+
+The following issues have been addressed:
+
+* A performance regression with JSON & XML output
+   \[[#757](https://github.com/apache/logging-log4cxx/pull/757)\]
+
+* Using default configuration, BufferedIO and a watchdog caused recursive configuration
+   \[[#739](https://github.com/apache/logging-log4cxx/pull/739)\]
+
+* Using BufferedIO in multiple FileAppenders with the same name could cause a fault
+   \[[#733](https://github.com/apache/logging-log4cxx/pull/733)\]
+
+* A seg-fault when a user-defined class inherited from a non-abstract base class
+   * [#629](https://github.com/apache/logging-log4cxx/pull/629)
+   , [#637](https://github.com/apache/logging-log4cxx/pull/637)
 
 ## Release 1.8.0 - 2026-07-29 {#rel_1_8_0}
 

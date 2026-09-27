@@ -35,8 +35,6 @@
 	#include <stdlib.h>
 #endif
 
-#define LOG4CXX_16_VIRTUAL_SPECIFIER override
-
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
@@ -119,7 +117,7 @@ class APRCharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (codePoint <= 0x10FFFF && 4 <= out.remaining())
@@ -220,7 +218,7 @@ class WcstombsCharsetEncoder : public CharsetEncoder
 		/**
 		 * Add onto \c out an encoded equivalent of \c codePoint.
 		 */
-		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) LOG4CXX_16_VIRTUAL_SPECIFIER
+		log4cxx_status_t encode(unsigned int codePoint, ByteBuffer& out) override
 		{
 			apr_status_t result = APR_SUCCESS;
 			if (codePoint <= 0x10FFFF && MB_LEN_MAX <= out.remaining())
