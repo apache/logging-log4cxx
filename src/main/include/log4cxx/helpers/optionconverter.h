@@ -19,7 +19,7 @@
 #define _LOG4CXX_HELPER_OPTION_CONVERTER_H
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/object.h>
+#include <log4cxx/spi/configurator.h>
 
 namespace LOG4CXX_NS
 {
@@ -27,11 +27,6 @@ class Level;
 class File;
 typedef std::shared_ptr<Level> LevelPtr;
 
-namespace spi
-{
-class LoggerRepository;
-typedef std::shared_ptr<LoggerRepository> LoggerRepositoryPtr;
-}
 
 namespace helpers
 {
@@ -154,29 +149,25 @@ class LOG4CXX_EXPORT OptionConverter
 			const ObjectPtr& defaultValue);
 
 		/**
-		Configure log4cxx given a configFileName.
+		Use the information in \c configFileName to configure Log4cxx.
 
-		<p>The configFileName must point to a file which will be
-		interpreted by a new instance of a log4cxx configurator.
-
-		<p>All configurations steps are taken on the
-		<code>hierarchy</code> passed as a parameter.
-
-		<p>
-		@param configFileName The location of the configuration file.
-		@param clazz The classname, of the log4cxx configurator which
-		will parse the file <code>configFileName</code>. This must be
-		a subclass of Configurator, or null. If this value is null then
-		a default configurator of PropertyConfigurator is used, unless the
-		filename pointed to by <code>configFileName</code> ends in '.xml',
+		@param configFileName Holds the path of the configuration file.
+		@param className If provided, the name of the class used to process \c configFileName,
+		which must be a subclass of Configurator.
+		PropertyConfigurator is used if \c className is empty
+		or if \c configFileName does not end in '.xml',
 		in which case DOMConfigurator is used.
-		@param hierarchy The Hierarchy to act on.
-		@param delay If greater than zero, the milliseconds to sleep
+		@param target Holds the configuration result
+		@param millisecondDelay If greater than zero, the milliseconds to sleep
 		between checking if <code>configFileName</code> has been modified
 		and needs to be reloaded.
 		*/
-		static void selectAndConfigure(const File& configFileName,
-			const LogString& clazz, spi::LoggerRepositoryPtr hierarchy, int delay = 0);
+		static spi::ConfigurationStatus selectAndConfigure
+			( const File&                     configFileName
+			, const LogString&                className = {}
+			, const spi::LoggerRepositoryPtr& target = {}
+			, int                             millisecondDelay = 0
+			);
 };
 }  // namespace helpers
 } // namespace log4cxx

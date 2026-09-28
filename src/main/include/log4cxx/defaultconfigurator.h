@@ -66,20 +66,8 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		or the environment variables "LOG4CXX_CONFIGURATION_WATCH_SECONDS" contains a positive number
 		a background thread is started that will periodically check for a change to the configuration file
 		and apply any configuration changes found.
-
-		Call the spi::LoggerRepository::isConfigured \c repository member function
-		to determine whether a configuration file was found.
 		*/
-		static void configure(spi::LoggerRepositoryPtr repository);
-
-		/**
-		Attempt configuration by calling configure() passing the default repository.
-
-		See configure() for how the configuration file name is determined.
-
-		@return a success indicator.
-		*/
-		static spi::ConfigurationStatus tryConfigure();
+		static spi::ConfigurationStatus configure(const spi::LoggerRepositoryPtr& repository = {});
 
 		/**
 		Make \c path the configuration file used by configure().

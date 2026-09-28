@@ -18,11 +18,8 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
-#include <apr_general.h>
 #include <apr_time.h>
-#include <apr.h>
 #include <iostream>
-#include <log4cxx/stream.h>
 #include <exception>
 #include <stdlib.h>
 
@@ -46,6 +43,10 @@ public:
                 {
                         init(argv[1]);
                 }
+                else if (argc == 1)
+                {
+                        init("MyApp.properties");
+                }
                 else
                 {
                         usage(argv[0], "Wrong number of arguments.");
@@ -65,21 +66,24 @@ public:
 
         static void init(const std::string& configFile)
         {
+                spi::ConfigurationStatus state;
                 if(configFile.length() > 4 &&
                      configFile.substr(configFile.length() - 4) == ".xml")
                 {
-                        xml::DOMConfigurator::configureAndWatch(configFile, 3000);
+                        state = xml::DOMConfigurator::configureAndWatch(configFile, 3000);
                 }
                 else
                 {
-                        PropertyConfigurator::configureAndWatch(configFile, 3000);
+                        state = PropertyConfigurator::configureAndWatch(configFile, 3000);
                 }
+                if (spi::ConfigurationStatus::Configured != state)
+                        throw std::runtime_error(configFile + ": is not valid");
         }
 
         static void test()
         {
                 int i = 0;
-                while(true)
+                while (i < 20)
                 {
                    LOG4CXX_DEBUG(logger, "MSG " << i++);
                         try
@@ -97,17 +101,16 @@ LoggerPtr DelayedLoop::logger = Logger::getLogger("DelayedLoop");
 
 int main(int argc, const char * const argv[])
 {
-    apr_app_initialize(&argc, &argv, NULL);
     int result = EXIT_SUCCESS;
     try
     {
         DelayedLoop::main(argc, argv);
     }
-    catch(std::exception&)
+    catch (const std::exception& ex)
     {
+        std::cout << ex.what() << std::endl;
         result = EXIT_FAILURE;
     }
 
-    apr_terminate();
     return result;
 }
