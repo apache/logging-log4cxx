@@ -140,7 +140,7 @@ void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)
 		m_priv->objects.emplace_back(key, pObject);
 }
 
-const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<ObjectPtr()> creator)
+const ObjectPtr APRInitializer::findOrAddObject(size_t key, std::function<ObjectPtr()> creator)
 {
 	std::lock_guard<std::mutex> lock(m_priv->mutex);
 	if (m_priv->objects.empty())

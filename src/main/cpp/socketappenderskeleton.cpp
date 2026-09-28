@@ -235,6 +235,8 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::setOutputSink(const Soc
 {
 	OutputStreamPtr os = std::make_shared<SocketOutputStream>(socket);
 	auto charset = CharsetEncoder::getUTF8Encoder();
+	// Serialize with AppenderSkeleton::doAppend
+	std::lock_guard<std::recursive_mutex> lock(this->mutex);
 	this->outputSink = std::make_shared<OutputStreamWriter>(os, charset);
 }
 
@@ -244,6 +246,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::close()
 		;
 	else if (auto pManager = this->taskManager.lock())
 		pManager->value().removePeriodicTask(this->taskName);
+	std::lock_guard<std::recursive_mutex> lock(this->mutex);
 	if (this->outputSink)
 	{
 		try

@@ -66,7 +66,7 @@ class APRInitializer
 		APRInitializer& operator=(const APRInitializer&) = delete;
 	private: // Modifiers
 		void addObject(size_t key, const ObjectPtr& pObject);
-		const ObjectPtr& findOrAddObject(size_t key, std::function<ObjectPtr()> creator);
+		const ObjectPtr findOrAddObject(size_t key, std::function<ObjectPtr()> creator);
 	private: // Attributes
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(APRInitializerPrivate, m_priv)
 	private: // Class methods
