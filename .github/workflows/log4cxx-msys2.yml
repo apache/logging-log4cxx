@@ -35,16 +35,6 @@ jobs:
           env: ucrt-x86_64
           compiler-package: gcc
           cxx: g++
-        - name: mingw64-clang
-          sys: mingw64
-          env: x86_64
-          compiler-package: clang
-          cxx: clang++
-        - name: mingw64-gnu
-          sys: mingw64
-          env: x86_64
-          compiler-package: gcc
-          cxx: g++
 
     steps:
     - uses: msys2/setup-msys2@cafece8e6baf9247cf9b1bf95097b0b983cc558d # 2.31.0, Mar 23, 2026
