@@ -96,7 +96,7 @@ jobs:
           ..
         cmake --build .
 
-    - name: run unit tests
+    - name: run_tests
       timeout-minutes: 10
       run: |
         cd main
@@ -108,6 +108,7 @@ jobs:
             runNo=`expr $runNo + 1`
           done
           echo "$runNo failed"
+          exit 1
         fi
 
     - name: Upload Crash Logs on Failure
