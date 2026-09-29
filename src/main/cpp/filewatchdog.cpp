@@ -224,7 +224,8 @@ auto FileWatchdog::startWatching
 	) -> spi::ConfigurationStatus
 {
 	auto pDog = std::shared_ptr<FileWatchdog>(new FileWatchdog(filename, processor, target));
-	pDog->setDelay(millisecondDelay);
+	if (0 < millisecondDelay)
+		pDog->setDelay(millisecondDelay);
 	pDog->m_priv->start(pDog);
 	return pDog->getStatus();
 }
