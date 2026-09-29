@@ -96,7 +96,8 @@ jobs:
           ..
         cmake --build .
 
-    - name: run_tests
+    - name: run unit tests
+      id: run_tests
       timeout-minutes: 10
       run: |
         cd main
