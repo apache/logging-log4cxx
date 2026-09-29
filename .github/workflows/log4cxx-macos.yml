@@ -108,7 +108,9 @@ jobs:
           while ctest -C Debug --output-on-failure -R ${{ matrix.test_until_fail }} ; do
             runNo=`expr $runNo + 1`
           done
-          echo "$runNo failed"
+          echo "${{ matrix.test_until_fail }} run $runNo failed"
+          echo "Test crashed or failed, waiting for crash reporter..."
+          sleep 5
           exit 1
         fi
 
