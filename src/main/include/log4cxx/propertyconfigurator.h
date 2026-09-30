@@ -246,8 +246,12 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		PropertyConfigurator();
 		virtual ~PropertyConfigurator();
 		/**
-		Read configuration from \c configFileName.
-		If \c repository is not provided,
+		Read the configuration directives from \c configFileName.
+
+		See the \ref PropertyConfigurator_details "detailed description"
+		for the expected configuration file format.
+
+		If \c target is not provided,
 		the spi::LoggerRepository held by LogManager is used.
 		<b>The existing configuration is not cleared nor reset.</b>
 		If you require a different behavior,
@@ -255,7 +259,7 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		before calling <code>doConfigure</code>.
 
 		@param configFileName The file to parse.
-		@param repository Where the Logger instances reside.
+		@param target Where the Logger instances reside.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     configFileName
