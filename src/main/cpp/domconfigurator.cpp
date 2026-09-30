@@ -969,16 +969,20 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		}
 	}
 
-	if (!m_priv->appenderAdded)
+	auto result = spi::ConfigurationStatus::NotConfigured;
+	if (m_priv->appenderAdded)
+	{
+		result = spi::ConfigurationStatus::Configured;
+		m_priv->repository->setConfigured(true);
+	}
+	else
 	{
 		LogLog::warn(LOG4CXX_STR("[") + filename.getPath()
 			+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()
 			+ LOG4CXX_STR(" to a logger"));
-		return spi::ConfigurationStatus::NotConfigured;
 	}
-
-	m_priv->repository->setConfigured(true);
-	return spi::ConfigurationStatus::Configured;
+	m_priv.reset();
+	return result;
 }
 
 // Read configuration options from \c filename.
