@@ -81,6 +81,7 @@ struct LogLog::LogLogPrivate {
 			this->suffix.clear();
 		}
 	}
+
 	LogString elapsedMicroseconds()
 	{
 		LogString result;
@@ -88,6 +89,10 @@ struct LogLog::LogLogPrivate {
 		StringHelper::toString(microsecondInterval, result);
 		return result;
 	}
+
+	void emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix);
+
+	void emit_log(const LogString& prefix, const LogString& msg, const std::exception& ex, const LogString& suffix);
 };
 
 LogLog* LogLog::LogLogPrivate::parent{ nullptr };
@@ -162,7 +167,7 @@ void LogLog::debug(const LogString& msg)
 		}
 
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(p->debugPrefix, msg, p->suffix);
+		p->emit_log(p->debugPrefix, msg, p->suffix);
 	}
 }
 
@@ -175,8 +180,7 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 			return;
 
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(p->debugPrefix, msg, p->suffix);
-		emit_log(p->debugPrefix, e, p->suffix);
+		p->emit_log(p->debugPrefix, msg, e, p->suffix);
 	}
 }
 
@@ -188,7 +192,7 @@ void LogLog::error(const LogString& msg)
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
 
-		emit_log(p->errorPrefix, msg, p->suffix);
+		p->emit_log(p->errorPrefix, msg, p->suffix);
 	}
 }
 
@@ -198,8 +202,7 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(p->errorPrefix, msg, p->suffix);
-		emit_log(p->errorPrefix, e, p->suffix);
+		p->emit_log(p->errorPrefix, msg, e, p->suffix);
 	}
 }
 
@@ -227,7 +230,7 @@ void LogLog::trace(const LoggerPtr& category, const LogString& msg)
 		}
 
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(p->debugPrefix, p->elapsedMicroseconds() + LOG4CXX_STR(" ") + category->getName() + LOG4CXX_STR("::") + msg, p->suffix);
+		p->emit_log(p->debugPrefix, category->getName() + LOG4CXX_STR("::") + msg, p->suffix);
 	}
 }
 
@@ -245,7 +248,7 @@ void LogLog::warn(const LogString& msg)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(p->warnPrefix, msg, p->suffix);
+		p->emit_log(p->warnPrefix, msg, p->suffix);
 	}
 }
 
@@ -255,14 +258,13 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 	if (p && !p->quietMode) // Not deleted by onexit processing?
 	{
 		std::lock_guard<std::mutex> lock(p->mutex);
-		emit_log(p->warnPrefix, msg, p->suffix);
-		emit_log(p->warnPrefix, e, p->suffix);
+		p->emit_log(p->warnPrefix, msg, e, p->suffix);
 	}
 }
 
-void LogLog::emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix)
+void LogLog::LogLogPrivate::emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix)
 {
-	LogString out(LOG4CXX_STR("log4cxx: "));
+	LogString out(elapsedMicroseconds() + LOG4CXX_STR(" log4cxx: "));
 	out.append(prefix);
 	out.append(msg);
 	out.append(suffix);
@@ -271,23 +273,24 @@ void LogLog::emit_log(const LogString& prefix, const LogString& msg, const LogSt
 	SystemErrWriter().write(out);
 }
 
-void LogLog::emit_log(const LogString& prefix, const std::exception& ex, const LogString& suffix)
+void LogLog::LogLogPrivate::emit_log(const LogString& prefix, const LogString& msg, const std::exception& ex, const LogString& suffix)
 {
-	LogString out(LOG4CXX_STR("log4cxx: "));
+	LogString out(elapsedMicroseconds() + LOG4CXX_STR(" log4cxx: "));
 	out.append(prefix);
-	const char* raw = ex.what();
-
-	if (raw != 0)
+	LogString exOut;
+	if (auto raw = ex.what())
 	{
-		Transcoder::decode(raw, out);
+		exOut.append(out);
+		Transcoder::decode(raw, exOut);
 	}
-	else
-	{
-		out.append(LOG4CXX_STR("std::exception::what() == null"));
-	}
-
 	out.append(suffix);
 	out.append(1, (logchar) 0x0A);
 
 	SystemErrWriter().write(out);
+	if (!exOut.empty())
+	{
+		exOut.append(suffix);
+		exOut.append(1, (logchar) 0x0A);
+		SystemErrWriter().write(exOut);
+	}
 }
