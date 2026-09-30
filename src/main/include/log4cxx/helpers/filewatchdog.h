@@ -19,18 +19,19 @@
 #define _LOG4CXX_HELPERS_FILEWATCHDOG_H
 
 #include <log4cxx/logstring.h>
-#include <time.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
+#include <log4cxx/spi/configurator.h>
 
 namespace LOG4CXX_NS
 {
 namespace helpers
 {
+class FileWatchdog;
+LOG4CXX_PTR_DEF(FileWatchdog);
 
 /**
-Check every now and then that a certain file has not changed. If it
-has, then call the #doOnChange method.
+A monitor that will periodically check if a nominated file has changed
+and call the #doOnChange virtual method if it has.
 */
 class LOG4CXX_EXPORT FileWatchdog
 {
@@ -42,16 +43,39 @@ class LOG4CXX_EXPORT FileWatchdog
 		static long DEFAULT_DELAY /*= 60000 ms*/;
 
 	protected:
-		FileWatchdog(const File& filename);
-		virtual void doOnChange() = 0;
+		/** Monitors \c filename and optionally uses \c processor to configure \c target
+		*/
+		FileWatchdog
+			( const File&                     filename
+			, const spi::ConfiguratorPtr&     processor = {}
+			, const spi::LoggerRepositoryPtr& target = {}
+			);
+
+		/**	Call spi::Configurator::doConfigure if a processor has been provided.
+		*/
+		virtual void doOnChange();
+
+		/** Call doOnChange() if the watched file has changed.
+		*/
 		void checkAndConfigure();
+
+		/** The watched file.
+		*/
 		const File& file();
 
 	public:
-		/**
-		Use \c delay as the number of milliseconds to wait between each check for file changes.
+		/** A shareable pointer to this
 		*/
-		void setDelay(long delay);
+		FileWatchdogPtr getSharedPtr();
+
+		/** The result from the most recent call to spi::Configurator::doConfigure
+		*/
+		spi::ConfigurationStatus getStatus();
+
+		/**
+		Wait \c millisecondDelay between each check for file changes.
+		*/
+		void setDelay(long millisecondDelay);
 
 		/**
 		Change the watched file to \c filename.
@@ -59,7 +83,7 @@ class LOG4CXX_EXPORT FileWatchdog
 		void setFile(const File& filename);
 
 		/**
-		Create an asynchronous task that periodically checks for a file change after first calling doOnChange().
+		Call checkAndConfigure() and then add an asynchronous task that periodically checks for a modification to file().
 		*/
 		void start();
 
@@ -77,12 +101,23 @@ class LOG4CXX_EXPORT FileWatchdog
 		Stop all tasks that periodically check for a file change.
 		*/
 		static void stopAll();
+
+		/**
+		Call start() on a monitor of \c filename that uses \c processor to configure \c target
+		*/
+		static auto startWatching
+			( const File&                     filename
+			, const spi::ConfiguratorPtr&     processor
+			, const spi::LoggerRepositoryPtr& target
+			, long                            millisecondDelay
+			) -> spi::ConfigurationStatus;
 	private:
 
 		FileWatchdog(const FileWatchdog&);
 		FileWatchdog& operator=(const FileWatchdog&);
 
-		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FileWatchdogPrivate, m_priv)
+		struct FileWatchdogPrivate;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER(std::shared_ptr<FileWatchdogPrivate>, m_priv)
 };
 }  // namespace helpers
 } // namespace log4cxx

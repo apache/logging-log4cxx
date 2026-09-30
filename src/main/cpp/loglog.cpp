@@ -34,10 +34,11 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
-struct LogLog::LogLogPrivate {
-	LogLogPrivate() :
-		debugEnabled(false),
-		quietMode(false){}
+struct LogLog::LogLogPrivate
+{
+	LogLogPrivate()
+		: startTime{ APRInitializer::getStartTime() }
+	{}
 
 	~LogLogPrivate()
 	{
@@ -53,12 +54,14 @@ struct LogLog::LogLogPrivate {
 		return parent->m_priv.get();
 	}
 
-	bool debugEnabled;
+	log4cxx_time_t startTime;
+
+	bool debugEnabled{ false };
 
 	/**
 		   In quietMode not even errors generate any output.
 	 */
-	bool quietMode;
+	bool quietMode{ false };
 	std::mutex mutex;
 	LogString errorPrefix;
 	LogString warnPrefix;
@@ -85,7 +88,7 @@ struct LogLog::LogLogPrivate {
 	LogString elapsedMicroseconds()
 	{
 		LogString result;
-		auto microsecondInterval = Date::currentTime() - APRInitializer::getStartTime();
+		auto microsecondInterval = Date::currentTime() - this->startTime;
 		StringHelper::toString(microsecondInterval, result);
 		return result;
 	}
