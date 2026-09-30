@@ -47,8 +47,8 @@ The <code>PropertyConfigurator</code> does not handle the
 advanced configuration features supported by the
 {@link xml::DOMConfigurator DOMConfigurator} such as
 support for {@link spi::Filter Filters}, custom
-{@link spi::ErrorHandler ErrorHandlers}, nested
-appenders such as the {@link AsyncAppender AsyncAppender}, etc.
+{@link spi::ErrorHandler ErrorHandlers},
+{@link rolling::RollingFileAppender rolling policies}, etc.
 
 <h3>Configuring appenders</h3>
 
@@ -128,6 +128,23 @@ Similar to the root logger syntax, each <i>appenderName</i>
 See the <a href="concepts.html#appender-additivity">appender
 additivity rule</a> in the usage guide for the meaning of the
 <code>additivity</code> flag.
+
+<h4>Asynchronous logging</h4>
+To move log output processing overhead to a background thread,
+set the asynchronous property of the logger to <code>true</code>.
+For example:
+<pre>
+log4j.asynchronous.logger_name=true
+</pre>
+
+An asynchronous logger's appenders are attached to an {@link AsyncAppender AsyncAppender}
+and the {@link AsyncAppender AsyncAppender} is attached to the logger.
+The asynchronous property has no effect on a logger without attached appenders.
+
+The root logger can be configured to be asynchronous using:
+<pre>
+log4j.asynchronous.root=true
+</pre>
 
 <h3>Example</h3>
 
