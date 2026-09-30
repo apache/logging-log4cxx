@@ -100,19 +100,26 @@ public: // Methods
 	/**
 	Parse the additivity option for a non-root logger.
 	*/
-	bool parseAdditivityForLogger(helpers::Properties& props,
-		LoggerPtr& cat, const LogString& loggerName);
+	bool parseAdditivityForLogger
+		( helpers::Properties& props
+		, const LogString&     loggerName
+		);
 
 	/**
 	This method must work for the root logger as well.
 	*/
-	void parseLogger(
-		helpers::Properties& props, LoggerPtr& logger,
-		const LogString& optionKey, const LogString& loggerName,
-		const LogString& value, bool additivity);
+	void parseLogger
+		( helpers::Properties& props
+		, LoggerPtr&           logger
+		, const LogString&     loggerName
+		, const LogString&     value
+		, bool                 additivity
+		);
 
-	AppenderPtr parseAppender(
-		helpers::Properties& props, const LogString& appenderName);
+	AppenderPtr parseAppender
+		( helpers::Properties& props
+		, const LogString&     appenderName
+		);
 
 	void registryPut(const AppenderPtr& appender);
 	AppenderPtr registryGet(const LogString& name);
@@ -288,7 +295,7 @@ void PropertyConfigurator::PrivateData::configureRootLogger(helpers::Properties&
 	else
 	{
 		LoggerPtr root = this->pRepository->getRootLogger();
-		parseLogger(props, root, effectivePrefix, LOG4CXX_STR("root"), value, true);
+		parseLogger(props, root, LOG4CXX_STR("root"), value, true);
 	}
 }
 
@@ -307,15 +314,17 @@ void PropertyConfigurator::PrivateData::parseCatsAndRenderers(helpers::Propertie
 			auto loggerName = key.substr(prefixLength);
 			auto value = OptionConverter::findAndSubst(key, props);
 			auto logger = this->pRepository->getLogger(loggerName, this->loggerFactory);
-			auto additivity = parseAdditivityForLogger(props, logger, loggerName);
-			parseLogger(props, logger, key, loggerName, value, additivity);
+			auto additivity = parseAdditivityForLogger(props, loggerName);
+			parseLogger(props, logger, loggerName, value, additivity);
 
 		}
 	}
 }
 
-bool PropertyConfigurator::PrivateData::parseAdditivityForLogger(helpers::Properties& props,
-	LoggerPtr& cat, const LogString& loggerName)
+bool PropertyConfigurator::PrivateData::parseAdditivityForLogger
+	( helpers::Properties& props
+	, const LogString&     loggerName
+	)
 {
 	LogString value(OptionConverter::findAndSubst(LOG4CXX_STR("log4j.additivity.") + loggerName, props));
 	// touch additivity only if necessary
@@ -337,9 +346,13 @@ bool PropertyConfigurator::PrivateData::parseAdditivityForLogger(helpers::Proper
 /**
         This method must work for the root logger as well.
 */
-void PropertyConfigurator::PrivateData::parseLogger(
-	helpers::Properties& props, LoggerPtr& logger, const LogString& /* optionKey */,
-	const LogString& loggerName, const LogString& value, bool additivity)
+void PropertyConfigurator::PrivateData::parseLogger
+	( helpers::Properties& props
+	, LoggerPtr&           logger
+	, const LogString&     loggerName
+	, const LogString&     value
+	, bool                 additivity
+	)
 {
 	if (LogLog::isDebugEnabled())
 	{
@@ -438,8 +451,10 @@ void PropertyConfigurator::PrivateData::parseLogger(
 		logger->reconfigure( newappenders, additivity );
 }
 
-AppenderPtr PropertyConfigurator::PrivateData::parseAppender(
-	helpers::Properties& props, const LogString& appenderName)
+AppenderPtr PropertyConfigurator::PrivateData::parseAppender
+	( helpers::Properties& props
+	, const LogString&     appenderName
+	)
 {
 	AppenderPtr appender = registryGet(appenderName);
 
