@@ -70,6 +70,9 @@ Support remains for 'LOG4CXX_CHAR=wchar_t' for applications using std::wstring.
 
 Release 2.0.0 includes the following new features:
 
+* A new log4cxx::helpers::FileWatchdog::startWatching method to create a periodic task without a needing to sub-class.
+   \[[#769](https://github.com/apache/logging-log4cxx/pull/769)\]
+
 * An incorrect configuration option name generates a warning in the Log4cxx internal debugging output
    \[[#738](https://github.com/apache/logging-log4cxx/pull/738)\]
 

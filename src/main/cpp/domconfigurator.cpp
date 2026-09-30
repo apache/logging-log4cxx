@@ -29,7 +29,6 @@
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
 #include <log4cxx/spi/loggerfactory.h>
-#include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -128,43 +127,6 @@ public: // Methods
 
 	LogString subst(const LogString& value);
 };
-
-namespace LOG4CXX_NS
-{
-namespace xml
-{
-class XMLWatchdog  : public FileWatchdog
-{
-	public:
-		XMLWatchdog(const File& filename) : FileWatchdog(filename)
-		{
-		}
-
-		/**
-		Call DOMConfigurator#doConfigure with the
-		<code>filename</code> to reconfigure log4cxx.
-		*/
-		void doOnChange() override
-		{
-			DOMConfigurator().doConfigure(file(),
-				LogManager::getLoggerRepository());
-		}
-
-		static void startWatching(const File& filename, long delay)
-		{
-			using WatchdogHolder = SingletonHolder<XMLWatchdog>;
-			auto pHolder = APRInitializer::getOrAddUnique<WatchdogHolder>
-				( [&filename]() -> ObjectPtr
-					{ return std::make_shared<WatchdogHolder>(filename); }
-				);
-			auto& xdog = pHolder->value();
-			xdog.setFile(filename);
-			xdog.setDelay(0 < delay ? delay : FileWatchdog::DEFAULT_DELAY);
-			xdog.start();
-		}
-};
-}
-}
 
 IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 
@@ -1028,9 +990,7 @@ spi::ConfigurationStatus DOMConfigurator::configure(const File& filename)
 
 spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& file, long delay)
 {
-	spi::ConfigurationStatus status = DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-	XMLWatchdog::startWatching(file, delay);
-	return status;
+	return FileWatchdog::startWatching(file, std::make_shared<DOMConfigurator>(), LogManager::getLoggerRepository(), delay);
 }
 
 

@@ -46,16 +46,8 @@ void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
 	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"), strSeconds);
 }
 
-ConfigurationStatus DefaultConfigurator::tryConfigure()
+ConfigurationStatus DefaultConfigurator::configure(const LoggerRepositoryPtr& repository)
 {
-	auto r = LogManager::getLoggerRepository();
-	configure(r);
-	return r->isConfigured() ? ConfigurationStatus::Configured : ConfigurationStatus::NotConfigured;
-}
-
-void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
-{
-
 	LogString configurationFileName = getConfigurationFileName();
 	File configuration;
 
@@ -90,6 +82,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 		configuration.setPath(configurationFileName);
 	}
 
+	auto result = ConfigurationStatus::NotConfigured;
 	if (configuration.exists())
 	{
 		if (LogLog::isDebugEnabled())
@@ -100,14 +93,12 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 			LogLog::debug(msg);
 		}
 
-		LoggerRepositoryPtr repo(repository);
-		OptionConverter::selectAndConfigure(
-			configuration,
-			getConfiguratorClass(),
-			repo,
-			getConfigurationWatchDelay()
+		result = OptionConverter::selectAndConfigure
+			( configuration
+			, getConfiguratorClass()
+			, repository
+			, getConfigurationWatchDelay()
 			);
-		// TBD: Report a failure
 	}
 	else if (LogLog::isDebugEnabled())
 	{
@@ -123,7 +114,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 			LogLog::debug(msg);
 		}
 	}
-
+	return result;
 }
 
 const LogString DefaultConfigurator::getConfiguratorClass()

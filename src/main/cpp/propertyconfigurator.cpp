@@ -34,6 +34,7 @@
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/helpers/singletonholder.h>
+#include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 
 #define LOG4CXX 1
@@ -44,42 +45,6 @@ using namespace LOG4CXX_NS::spi;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::config;
 using namespace LOG4CXX_NS::rolling;
-
-#include <log4cxx/helpers/filewatchdog.h>
-namespace LOG4CXX_NS
-{
-class PropertyWatchdog  : public FileWatchdog
-{
-	public:
-		PropertyWatchdog(const File& filename) : FileWatchdog(filename)
-		{
-		}
-
-		/**
-		Call PropertyConfigurator#doConfigure(const String& configFileName,
-		const spi::LoggerRepositoryPtr& hierarchy) with the
-		<code>filename</code> to reconfigure log4cxx.
-		*/
-		void doOnChange() override
-		{
-			PropertyConfigurator().doConfigure(file(),
-				LogManager::getLoggerRepository());
-		}
-
-		static void startWatching(const File& filename, long delay)
-		{
-			using WatchdogHolder = SingletonHolder<PropertyWatchdog>;
-			auto pHolder = APRInitializer::getOrAddUnique<WatchdogHolder>
-				( [&filename]() -> ObjectPtr
-					{ return std::make_shared<WatchdogHolder>(filename); }
-				);
-			auto& pdog = pHolder->value();
-			pdog.setFile(filename);
-			pdog.setDelay(0 < delay ? delay : FileWatchdog::DEFAULT_DELAY);
-			pdog.start();
-		}
-};
-}
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
@@ -104,6 +69,7 @@ struct PropertyConfigurator::PrivateData
 	*/
 	bool appenderAdded{ false };
 };
+
 PropertyConfigurator::PropertyConfigurator()
 	: m_priv{ std::make_unique<PrivateData>() }
 {
@@ -170,9 +136,7 @@ spi::ConfigurationStatus PropertyConfigurator::configure(helpers::Properties& pr
 spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 	const File& configFilename, long delay)
 {
-	spi::ConfigurationStatus stat = PropertyConfigurator().doConfigure(configFilename, LogManager::getLoggerRepository());
-	PropertyWatchdog::startWatching(configFilename, delay);
-	return stat;
+	return FileWatchdog::startWatching(configFilename, std::make_shared<PropertyConfigurator>(), LogManager::getLoggerRepository(), delay);
 }
 
 spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& properties,
@@ -403,7 +367,7 @@ void PropertyConfigurator::parseLogger(
 		if (auto appender = parseAppender(props, appenderName))
 		{
 			newappenders.push_back(appender);
-			if (log4cxx::cast<AsyncAppender>(appender)) // An explicitly configured AsyncAppender?
+			if (LOG4CXX_NS::cast<AsyncAppender>(appender)) // An explicitly configured AsyncAppender?
 				async.reset(); // Not required
 			if (async)
 				async->addAppender(appender);

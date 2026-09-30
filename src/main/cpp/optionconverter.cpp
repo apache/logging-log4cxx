@@ -163,46 +163,6 @@ LogString substVarsSafely(const LogString& val, helpers::Properties& props, cons
 
 } // namespace
 
-namespace LOG4CXX_NS
-{
-
-class ConfiguratorWatchdog  : public helpers::FileWatchdog
-{
-	spi::ConfiguratorPtr m_config;
-	public:
-    ConfiguratorWatchdog(const spi::ConfiguratorPtr& config, const File& filename)
-        : helpers::FileWatchdog(filename)
-        , m_config(config)
-    {
-    }
-
-    /**
-    Call PropertyConfigurator#doConfigure(const String& configFileName,
-    const spi::LoggerRepositoryPtr& hierarchy) with the
-    <code>filename</code> to reconfigure log4cxx.
-    */
-    void doOnChange() override
-    {
-        m_config->doConfigure(file(), LogManager::getLoggerRepository());
-    }
-
-	static void startWatching(const spi::ConfiguratorPtr& config, const File& filename, long delay)
-	{
-		using WatchdogHolder = helpers::SingletonHolder<ConfiguratorWatchdog>;
-		auto pHolder = helpers::APRInitializer::getOrAddUnique<WatchdogHolder>
-			( [&config, &filename]() -> helpers::ObjectPtr
-				{ return std::make_shared<WatchdogHolder>(config, filename); }
-			);
-		auto& dog = pHolder->value();
-		dog.m_config = config;
-		dog.setFile(filename);
-		dog.setDelay(delay);
-		dog.start();
-	}
-};
-
-}
-
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 using namespace LOG4CXX_NS::spi;
@@ -518,12 +478,14 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 	return defaultValue;
 }
 
-void OptionConverter::selectAndConfigure(const File& configFileName,
-	const LogString& _clazz, spi::LoggerRepositoryPtr hierarchy, int delay)
+spi::ConfigurationStatus OptionConverter::selectAndConfigure
+	( const File&                     configFileName
+	, const LogString&                className
+	, const spi::LoggerRepositoryPtr& target
+	, int                             millisecondDelay
+	)
 {
-	ConfiguratorPtr configurator;
-	LogString clazz = _clazz;
-
+	LogString clazz = className;
 	LogString filename(configFileName.getPath());
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
@@ -537,6 +499,8 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	}
 #endif
 
+	auto result = spi::ConfigurationStatus::NotConfigured;
+	ConfiguratorPtr configurator;
 	if (!clazz.empty())
 	{
 		if (LogLog::isDebugEnabled())
@@ -549,7 +513,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 		{
 			LogLog::error(LOG4CXX_STR("Could not instantiate configurator [")
 				+ clazz + LOG4CXX_STR("]."));
-			return;
+			return result;
 		}
 	}
 	else
@@ -557,8 +521,9 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 		configurator = std::make_shared<PropertyConfigurator>();
 	}
 
-	if (0 < delay)
-		ConfiguratorWatchdog::startWatching(configurator, configFileName, delay);
+	if (0 < millisecondDelay)
+		result = FileWatchdog::startWatching(configFileName, configurator, target, millisecondDelay);
 	else
-		configurator->doConfigure(configFileName, hierarchy);
+		result = configurator->doConfigure(configFileName, target);
+	return result;
 }
