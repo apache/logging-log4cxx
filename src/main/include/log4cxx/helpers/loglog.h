@@ -139,9 +139,6 @@ class LOG4CXX_EXPORT LogLog
 		Internal use only.
 		*/
 		static ObjectPtr _createInstance();
-	private:
-		static void emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix);
-		static void emit_log(const LogString& prefix, const std::exception& ex, const LogString& suffix);
 };
 }  // namespace helpers
 } // namespace log4cxx
