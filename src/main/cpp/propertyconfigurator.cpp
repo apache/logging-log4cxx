@@ -51,7 +51,7 @@ IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 using RegistryType = std::map<LogString, AppenderPtr>;
 using RegistryPtr = std::unique_ptr<RegistryType>;
 
-struct PropertyConfigurator::PrivateData
+class ConfiguratorContext
 {
 public: // Attributes
 	/**
@@ -75,7 +75,7 @@ public: // Attributes
 	bool appenderAdded{ false };
 
 public: // ...structors
-	PrivateData(const LoggerRepositoryPtr& target)
+	ConfiguratorContext(const LoggerRepositoryPtr& target)
 		: pRepository(target)
 		{}
 
@@ -124,6 +124,11 @@ public: // Methods
 	void registryPut(const AppenderPtr& appender);
 	AppenderPtr registryGet(const LogString& name);
 
+};
+
+// Provision for PropertyConfigurator properties
+struct PropertyConfigurator::PrivateData
+{
 };
 
 PropertyConfigurator::PropertyConfigurator()
@@ -245,21 +250,20 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure
 	}
 
 	auto result = spi::ConfigurationStatus::NotConfigured;
-	m_priv = std::make_unique<PrivateData>(hierarchy);
-	m_priv->configureRootLogger(properties);
-	m_priv->configureLoggerFactory(properties);
-	m_priv->parseCatsAndRenderers(properties);
+	ConfiguratorContext ctx(hierarchy);
+	ctx.configureRootLogger(properties);
+	ctx.configureLoggerFactory(properties);
+	ctx.parseCatsAndRenderers(properties);
 	LogLog::debug(LOG4CXX_STR("Finished configuring."));
-	if (m_priv->appenderAdded)
+	if (ctx.appenderAdded)
 	{
 		hierarchy->setConfigured(true);
 		result = spi::ConfigurationStatus::Configured;
 	}
-	m_priv.reset();
 	return result;
 }
 
-void PropertyConfigurator::PrivateData::configureLoggerFactory(helpers::Properties& props)
+void ConfiguratorContext::configureLoggerFactory(helpers::Properties& props)
 {
 	LogString factoryClassName =
 		OptionConverter::findAndSubst(LOG4CXX_STR("log4j.loggerFactory"), props);
@@ -277,7 +281,7 @@ void PropertyConfigurator::PrivateData::configureLoggerFactory(helpers::Properti
 	}
 }
 
-void PropertyConfigurator::PrivateData::configureRootLogger(helpers::Properties& props)
+void ConfiguratorContext::configureRootLogger(helpers::Properties& props)
 {
 	LogString effectivePrefix(LOG4CXX_STR("log4j.rootLogger"));
 	LogString value = OptionConverter::findAndSubst(effectivePrefix, props);
@@ -299,7 +303,7 @@ void PropertyConfigurator::PrivateData::configureRootLogger(helpers::Properties&
 	}
 }
 
-void PropertyConfigurator::PrivateData::parseCatsAndRenderers(helpers::Properties& props)
+void ConfiguratorContext::parseCatsAndRenderers(helpers::Properties& props)
 {
 	for (auto key : props.propertyNames())
 	{
@@ -321,7 +325,7 @@ void PropertyConfigurator::PrivateData::parseCatsAndRenderers(helpers::Propertie
 	}
 }
 
-bool PropertyConfigurator::PrivateData::parseAdditivityForLogger
+bool ConfiguratorContext::parseAdditivityForLogger
 	( helpers::Properties& props
 	, const LogString&     loggerName
 	)
@@ -346,7 +350,7 @@ bool PropertyConfigurator::PrivateData::parseAdditivityForLogger
 /**
         This method must work for the root logger as well.
 */
-void PropertyConfigurator::PrivateData::parseLogger
+void ConfiguratorContext::parseLogger
 	( helpers::Properties& props
 	, LoggerPtr&           logger
 	, const LogString&     loggerName
@@ -451,7 +455,7 @@ void PropertyConfigurator::PrivateData::parseLogger
 		logger->reconfigure( newappenders, additivity );
 }
 
-AppenderPtr PropertyConfigurator::PrivateData::parseAppender
+AppenderPtr ConfiguratorContext::parseAppender
 	( helpers::Properties& props
 	, const LogString&     appenderName
 	)
@@ -584,12 +588,12 @@ AppenderPtr PropertyConfigurator::PrivateData::parseAppender
 	return appender;
 }
 
-void PropertyConfigurator::PrivateData::registryPut(const AppenderPtr& appender)
+void ConfiguratorContext::registryPut(const AppenderPtr& appender)
 {
 	(*this->registry)[appender->getName()] = appender;
 }
 
-AppenderPtr PropertyConfigurator::PrivateData::registryGet(const LogString& name)
+AppenderPtr ConfiguratorContext::registryGet(const LogString& name)
 {
 	auto it = this->registry->find(name);
 	return (it == this->registry->end()) ? AppenderPtr() : it->second;

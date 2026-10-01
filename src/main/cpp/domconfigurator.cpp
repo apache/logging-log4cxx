@@ -59,7 +59,7 @@ using namespace LOG4CXX_NS::rolling;
 
 using FilterStore = std::vector<FilterPtr>;
 
-struct DOMConfigurator::DOMConfiguratorPrivate
+class DOMConfiguratorContext
 {
 public: // Types
 	struct AppenderStatus
@@ -80,11 +80,11 @@ public: // Attributes
 	apr_xml_doc* doc{ nullptr };
 
 public: // ...structor
-	DOMConfiguratorPrivate()
+	DOMConfiguratorContext()
 		: repository(LogManager::getLoggerRepository())
 	{}
 	
-	DOMConfiguratorPrivate(const LoggerRepositoryPtr& r)
+	DOMConfiguratorContext(const LoggerRepositoryPtr& r)
 		: repository(r)
 	{}
 
@@ -128,6 +128,11 @@ public: // Methods
 	LogString subst(const LogString& value);
 };
 
+// Provision for DOMConfigurator properties
+struct DOMConfigurator::DOMConfiguratorPrivate
+{
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 
 #define CONFIGURATION_TAG "log4j:configuration"
@@ -169,7 +174,7 @@ DOMConfigurator::~DOMConfigurator() {}
 /**
 Used internally to parse appenders by IDREF name.
 */
-AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::findAppenderByName(apr_xml_elem* element, const LogString& appenderName)
+AppenderPtr DOMConfiguratorContext::findAppenderByName(apr_xml_elem* element, const LogString& appenderName)
 {
 	AppenderPtr appender;
 
@@ -198,7 +203,7 @@ AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::findAppenderByName(apr_xml_
 /**
  Used internally to parse appenders by IDREF element.
 */
-AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::findAppenderByReference(apr_xml_elem* appenderRef, const char* optionalAttributeName)
+AppenderPtr DOMConfiguratorContext::findAppenderByReference(apr_xml_elem* appenderRef, const char* optionalAttributeName)
 {
 	AppenderPtr appender;
 	LogString appenderName = subst(getAttribute(appenderRef, optionalAttributeName ? optionalAttributeName : REF_ATTR));
@@ -243,7 +248,7 @@ AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::findAppenderByReference(apr
 /**
 Used internally to parse an appender element.
 */
-AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::parseAppender(apr_xml_elem* appenderElement)
+AppenderPtr DOMConfiguratorContext::parseAppender(apr_xml_elem* appenderElement)
 {
 
 	LogString className(subst(getAttribute(appenderElement, CLASS_ATTR)));
@@ -377,7 +382,7 @@ AppenderPtr DOMConfigurator::DOMConfiguratorPrivate::parseAppender(apr_xml_elem*
 	}
 }
 
-void DOMConfigurator::DOMConfiguratorPrivate::parseFallbackAppender(apr_xml_elem* element, const LogString& holderName, const AppenderAttachablePtr& holder, const AppenderPtr& primary, const AppenderSkeletonPtr& aSkel)
+void DOMConfiguratorContext::parseFallbackAppender(apr_xml_elem* element, const LogString& holderName, const AppenderAttachablePtr& holder, const AppenderPtr& primary, const AppenderSkeletonPtr& aSkel)
 {
 	if (auto fallbackAppender = findAppenderByReference(element, FALLBACK_REF_ATTR))
 	{
@@ -389,7 +394,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseFallbackAppender(apr_xml_elem
 	}
 }
 
-void DOMConfigurator::DOMConfiguratorPrivate::parseFallbackAppender(apr_xml_elem* element, const LoggerPtr& l, const AppenderSkeletonPtr& primary)
+void DOMConfiguratorContext::parseFallbackAppender(apr_xml_elem* element, const LoggerPtr& l, const AppenderSkeletonPtr& primary)
 {
 	if (auto fallbackAppender = findAppenderByReference(element, FALLBACK_REF_ATTR))
 	{
@@ -404,7 +409,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseFallbackAppender(apr_xml_elem
 /**
 Used internally to parse an {@link ErrorHandler} element.
 */
-void DOMConfigurator::DOMConfiguratorPrivate::parseErrorHandler(apr_xml_elem* element, const AppenderPtr& appender)
+void DOMConfiguratorContext::parseErrorHandler(apr_xml_elem* element, const AppenderPtr& appender)
 {
 
 	ErrorHandlerPtr eh;
@@ -466,7 +471,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseErrorHandler(apr_xml_elem* el
 /**
  Used internally to parse a filter element.
 */
-FilterStore DOMConfigurator::DOMConfiguratorPrivate::parseFilters(apr_xml_elem* element)
+FilterStore DOMConfiguratorContext::parseFilters(apr_xml_elem* element)
 {
 	FilterStore result;
 	LogString clazz = subst(getAttribute(element, CLASS_ATTR));
@@ -509,7 +514,7 @@ FilterStore DOMConfigurator::DOMConfiguratorPrivate::parseFilters(apr_xml_elem* 
 /**
 Used internally to parse an category or logger element.
 */
-void DOMConfigurator::DOMConfiguratorPrivate::parseLogger(apr_xml_elem* loggerElement)
+void DOMConfiguratorContext::parseLogger(apr_xml_elem* loggerElement)
 {
 	// Create a new Logger object from the <category> element.
 	LogString loggerName = subst(getAttribute(loggerElement, NAME_ATTR));
@@ -539,7 +544,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseLogger(apr_xml_elem* loggerEl
 /**
  Used internally to parse the logger factory element.
 */
-void DOMConfigurator::DOMConfiguratorPrivate::parseLoggerFactory(apr_xml_elem* factoryElement)
+void DOMConfiguratorContext::parseLoggerFactory(apr_xml_elem* factoryElement)
 {
 	LogString className(subst(getAttribute(factoryElement, CLASS_ATTR)));
 
@@ -579,7 +584,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseLoggerFactory(apr_xml_elem* f
 /**
  Used internally to parse the root logger element.
 */
-void DOMConfigurator::DOMConfiguratorPrivate::parseRoot(apr_xml_elem* rootElement)
+void DOMConfiguratorContext::parseRoot(apr_xml_elem* rootElement)
 {
 	LoggerPtr root = this->repository->getRootLogger();
 	parseChildrenOfLoggerElement(rootElement, root, true);
@@ -588,7 +593,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseRoot(apr_xml_elem* rootElemen
 /**
  Used internally to parse the children of a logger element.
 */
-void DOMConfigurator::DOMConfiguratorPrivate::parseChildrenOfLoggerElement(apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot)
+void DOMConfiguratorContext::parseChildrenOfLoggerElement(apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot)
 {
 	PropertySetter propSetter(logger);
 	auto loggerName = this->repository->getRootLogger() == logger
@@ -676,7 +681,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseChildrenOfLoggerElement(apr_x
 /**
  Used internally to parse a layout element.
 */
-LayoutPtr DOMConfigurator::DOMConfiguratorPrivate::parseLayout(apr_xml_elem* layout_element)
+LayoutPtr DOMConfiguratorContext::parseLayout(apr_xml_elem* layout_element)
 {
 	LogString className(subst(getAttribute(layout_element, CLASS_ATTR)));
 	if (LogLog::isDebugEnabled())
@@ -725,7 +730,7 @@ LayoutPtr DOMConfigurator::DOMConfiguratorPrivate::parseLayout(apr_xml_elem* lay
 /**
  Used internally to parse a triggering policy
 */
-ObjectPtr DOMConfigurator::DOMConfiguratorPrivate::parseTriggeringPolicy(apr_xml_elem* policy_element)
+ObjectPtr DOMConfiguratorContext::parseTriggeringPolicy(apr_xml_elem* policy_element)
 {
 	LogString className = subst(getAttribute(policy_element, CLASS_ATTR));
 	if (LogLog::isDebugEnabled())
@@ -784,7 +789,7 @@ ObjectPtr DOMConfigurator::DOMConfiguratorPrivate::parseTriggeringPolicy(apr_xml
 /**
  Used internally to parse a triggering policy
 */
-RollingPolicyPtr DOMConfigurator::DOMConfiguratorPrivate::parseRollingPolicy(apr_xml_elem* policy_element)
+RollingPolicyPtr DOMConfiguratorContext::parseRollingPolicy(apr_xml_elem* policy_element)
 {
 	LogString className = subst(getAttribute(policy_element, CLASS_ATTR));
 	if (LogLog::isDebugEnabled())
@@ -834,7 +839,7 @@ RollingPolicyPtr DOMConfigurator::DOMConfiguratorPrivate::parseRollingPolicy(apr
 /**
  Used internally to parse a level  element.
 */
-void DOMConfigurator::DOMConfiguratorPrivate::parseLevel(apr_xml_elem* element, LoggerPtr logger, bool isRoot)
+void DOMConfiguratorContext::parseLevel(apr_xml_elem* element, LoggerPtr logger, bool isRoot)
 {
 	LogString loggerName = logger->getName();
 
@@ -903,7 +908,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parseLevel(apr_xml_elem* element, 
 	}
 }
 
-void DOMConfigurator::DOMConfiguratorPrivate::setParameter(apr_xml_elem* elem, PropertySetter& propSetter)
+void DOMConfiguratorContext::setParameter(apr_xml_elem* elem, PropertySetter& propSetter)
 {
 	LogString name(subst(getAttribute(elem, NAME_ATTR)));
 	LogString value(subst(getAttribute(elem, VALUE_ATTR)));
@@ -916,12 +921,10 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 	, const spi::LoggerRepositoryPtr& repository
 	)
 {
-	m_priv = std::make_unique<DOMConfiguratorPrivate>
-		( repository ? repository : LogManager::getLoggerRepository()
-		);
+	DOMConfiguratorContext ctx( repository ? repository : LogManager::getLoggerRepository() );
 
 	apr_file_t* fd;
-	log4cxx_status_t rv = apr_file_open(&fd, filename.getAPRPath(), APR_READ, APR_OS_DEFAULT, m_priv->p.getAPRPool());
+	log4cxx_status_t rv = apr_file_open(&fd, filename.getAPRPath(), APR_READ, APR_OS_DEFAULT, ctx.p.getAPRPool());
 
 	if (rv != APR_SUCCESS)
 	{
@@ -939,7 +942,7 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		}
 
 		apr_xml_parser* parser = NULL;
-		rv = apr_xml_parse_file(m_priv->p.getAPRPool(), &parser, &m_priv->doc, fd, 2000);
+		rv = apr_xml_parse_file(ctx.p.getAPRPool(), &parser, &ctx.doc, fd, 2000);
 
 		if (rv != APR_SUCCESS)
 		{
@@ -965,15 +968,15 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 		}
 		else
 		{
-			m_priv->parse(m_priv->doc->root);
+			ctx.parse(ctx.doc->root);
 		}
 	}
 
 	auto result = spi::ConfigurationStatus::NotConfigured;
-	if (m_priv->appenderAdded)
+	if (ctx.appenderAdded)
 	{
 		result = spi::ConfigurationStatus::Configured;
-		m_priv->repository->setConfigured(true);
+		ctx.repository->setConfigured(true);
 	}
 	else
 	{
@@ -981,7 +984,6 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 			+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()
 			+ LOG4CXX_STR(" to a logger"));
 	}
-	m_priv.reset();
 	return result;
 }
 
@@ -998,7 +1000,7 @@ spi::ConfigurationStatus DOMConfigurator::configureAndWatch(const File& file, lo
 }
 
 
-void DOMConfigurator::DOMConfiguratorPrivate::parse(apr_xml_elem* element)
+void DOMConfiguratorContext::parse(apr_xml_elem* element)
 {
 	std::string rootElementName(element->name);
 
@@ -1112,7 +1114,7 @@ void DOMConfigurator::DOMConfiguratorPrivate::parse(apr_xml_elem* element)
 	}
 }
 
-LogString DOMConfigurator::DOMConfiguratorPrivate::subst(const LogString& value)
+LogString DOMConfiguratorContext::subst(const LogString& value)
 {
 	try
 	{
@@ -1126,7 +1128,7 @@ LogString DOMConfigurator::DOMConfiguratorPrivate::subst(const LogString& value)
 }
 
 
-LogString DOMConfigurator::DOMConfiguratorPrivate::getAttribute(apr_xml_elem* element, const std::string& attrName)
+LogString DOMConfiguratorContext::getAttribute(apr_xml_elem* element, const std::string& attrName)
 {
 	LogString attrValue;
 
