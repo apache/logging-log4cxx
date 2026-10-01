@@ -32,3 +32,6 @@ call [LogLog::setQuietMode(true)](@ref log4cxx.helpers.LogLog.setQuietMode).
 
 All Log4cxx internal logging messages are sent to stderr,
 with each line prefixed by an elapsed microsecond count and <code>log4cxx:</code>.
+
+Set the environment variable <code>LOG4CXX_DEBUG_TIMESTAMPS</code> to the value <code>false</code>
+to <b>not</b> have each internal logging message line prefixed with an elapsed microsecond count.

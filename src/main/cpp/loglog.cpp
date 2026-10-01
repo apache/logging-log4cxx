@@ -58,6 +58,8 @@ struct LogLog::LogLogPrivate
 
 	bool debugEnabled{ false };
 
+	bool timeStampEnabled{ true };
+
 	/**
 		   In quietMode not even errors generate any output.
 	 */
@@ -88,8 +90,12 @@ struct LogLog::LogLogPrivate
 	LogString elapsedMicroseconds()
 	{
 		LogString result;
-		auto microsecondInterval = Date::currentTime() - this->startTime;
-		StringHelper::toString(microsecondInterval, result);
+		if (this->timeStampEnabled)
+		{
+			auto microsecondInterval = Date::currentTime() - this->startTime;
+			StringHelper::toString(microsecondInterval, result);
+			result += ' ';
+		}
 		return result;
 	}
 
@@ -105,6 +111,8 @@ LogLog::LogLog() :
 {
 	LogString log4cxxDebug = OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_DEBUG"), LOG4CXX_STR("false"));
 	m_priv->debugEnabled = OptionConverter::toBoolean(log4cxxDebug, false);
+	auto logLogTimestamps = OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_DEBUG_TIMESTAMPS"), LOG4CXX_STR("true"));
+	m_priv->timeStampEnabled = OptionConverter::toBoolean(logLogTimestamps, true);
 	auto color = OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_COLOR"), LOG4CXX_STR("true"));
 	m_priv->setColorEnabled(OptionConverter::toBoolean(color, true));
 }
@@ -267,7 +275,7 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 
 void LogLog::LogLogPrivate::emit_log(const LogString& prefix, const LogString& msg, const LogString& suffix)
 {
-	LogString out(elapsedMicroseconds() + LOG4CXX_STR(" log4cxx: "));
+	LogString out(elapsedMicroseconds() + LOG4CXX_STR("log4cxx: "));
 	out.append(prefix);
 	out.append(msg);
 	out.append(suffix);
@@ -278,7 +286,7 @@ void LogLog::LogLogPrivate::emit_log(const LogString& prefix, const LogString& m
 
 void LogLog::LogLogPrivate::emit_log(const LogString& prefix, const LogString& msg, const std::exception& ex, const LogString& suffix)
 {
-	LogString out(elapsedMicroseconds() + LOG4CXX_STR(" log4cxx: "));
+	LogString out(elapsedMicroseconds() + LOG4CXX_STR("log4cxx: "));
 	out.append(prefix);
 	LogString exOut;
 	if (auto raw = ex.what())
@@ -289,11 +297,12 @@ void LogLog::LogLogPrivate::emit_log(const LogString& prefix, const LogString& m
 	out.append(suffix);
 	out.append(1, (logchar) 0x0A);
 
-	SystemErrWriter().write(out);
+	SystemErrWriter errWriter;
+	errWriter.write(out);
 	if (!exOut.empty())
 	{
 		exOut.append(suffix);
 		exOut.append(1, (logchar) 0x0A);
-		SystemErrWriter().write(exOut);
+		errWriter.write(exOut);
 	}
 }
