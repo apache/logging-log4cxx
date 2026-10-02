@@ -51,8 +51,13 @@ IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 using RegistryType = std::map<LogString, AppenderPtr>;
 using RegistryPtr = std::unique_ptr<RegistryType>;
 
-struct PropertyConfigurator::PrivateData
+class ConfiguratorContext
 {
+public: // Attributes
+	/**
+	The target of configuration directives
+	*/
+	LoggerRepositoryPtr pRepository;
 
 	/**
 	Used internally to keep track of configured appenders.
@@ -68,10 +73,65 @@ struct PropertyConfigurator::PrivateData
 	True if an appender was added to a logger
 	*/
 	bool appenderAdded{ false };
+
+public: // ...structors
+	ConfiguratorContext(const LoggerRepositoryPtr& target)
+		: pRepository(target)
+		{}
+
+public: // Methods
+	/**
+	Check the provided <code>Properties</code> object for a LoggerFactory
+	entry specified by *log4j.loggerFactory*.  If such an entry
+	exists, an attempt is made to create an instance using the default
+	constructor.  This instance is used for subsequent Logger creations
+	within this configurator.
+	@see #parseCatsAndRenderers
+	*/
+	void configureLoggerFactory(helpers::Properties& props);
+
+	void configureRootLogger(helpers::Properties& props);
+
+	/**
+	Parse non-root elements, such non-root categories and renderers.
+	*/
+	void parseCatsAndRenderers(helpers::Properties& props);
+
+	/**
+	Parse the additivity option for a non-root logger.
+	*/
+	bool parseAdditivityForLogger
+		( helpers::Properties& props
+		, const LogString&     loggerName
+		);
+
+	/**
+	This method must work for the root logger as well.
+	*/
+	void parseLogger
+		( helpers::Properties& props
+		, LoggerPtr&           logger
+		, const LogString&     loggerName
+		, const LogString&     value
+		, bool                 additivity
+		);
+
+	AppenderPtr parseAppender
+		( helpers::Properties& props
+		, const LogString&     appenderName
+		);
+
+	void registryPut(const AppenderPtr& appender);
+	AppenderPtr registryGet(const LogString& name);
+
+};
+
+// Provision for PropertyConfigurator properties
+struct PropertyConfigurator::PrivateData
+{
 };
 
 PropertyConfigurator::PropertyConfigurator()
-	: m_priv{ std::make_unique<PrivateData>() }
 {
 }
 
@@ -106,7 +166,7 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure
 	try
 	{
 		result = doConfigure(props, repository ? repository : LogManager::getLoggerRepository());
-		if (!m_priv->appenderAdded)
+		if (spi::ConfigurationStatus::NotConfigured == result)
 		{
 			LogLog::warn(LOG4CXX_STR("[") + configFileName.getPath()
 				+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()
@@ -139,8 +199,10 @@ spi::ConfigurationStatus PropertyConfigurator::configureAndWatch(
 	return FileWatchdog::startWatching(configFilename, std::make_shared<PropertyConfigurator>(), LogManager::getLoggerRepository(), delay);
 }
 
-spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& properties,
-	spi::LoggerRepositoryPtr hierarchy)
+spi::ConfigurationStatus PropertyConfigurator::doConfigure
+	( helpers::Properties&            properties
+	, const spi::LoggerRepositoryPtr& hierarchy
+	)
 {
 	LogString debugValue(properties.getProperty(LOG4CXX_STR("log4j.debug")));
 	if (!debugValue.empty())
@@ -187,20 +249,21 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure(helpers::Properties& 
 		helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
 	}
 
-	configureRootLogger(properties, hierarchy);
-	configureLoggerFactory(properties);
-	parseCatsAndRenderers(properties, hierarchy);
+	auto result = spi::ConfigurationStatus::NotConfigured;
+	ConfiguratorContext ctx(hierarchy);
+	ctx.configureRootLogger(properties);
+	ctx.configureLoggerFactory(properties);
+	ctx.parseCatsAndRenderers(properties);
 	LogLog::debug(LOG4CXX_STR("Finished configuring."));
-	auto result = !m_priv->appenderAdded
-		? spi::ConfigurationStatus::NotConfigured
-		: spi::ConfigurationStatus::Configured;
-
-	if (spi::ConfigurationStatus::Configured == result)
+	if (ctx.appenderAdded)
+	{
 		hierarchy->setConfigured(true);
+		result = spi::ConfigurationStatus::Configured;
+	}
 	return result;
 }
 
-void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
+void ConfiguratorContext::configureLoggerFactory(helpers::Properties& props)
 {
 	LogString factoryClassName =
 		OptionConverter::findAndSubst(LOG4CXX_STR("log4j.loggerFactory"), props);
@@ -213,13 +276,12 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 			, std::make_shared<LoggerFactory>()
 			);
 
-		m_priv->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
-		PropertySetter::setProperties(m_priv->loggerFactory, props, LOG4CXX_STR("log4j.factory."));
+		this->loggerFactory = LOG4CXX_NS::cast<LoggerFactory>( instance );
+		PropertySetter::setProperties(this->loggerFactory, props, LOG4CXX_STR("log4j.factory."));
 	}
 }
 
-void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
-	spi::LoggerRepositoryPtr& hierarchy)
+void ConfiguratorContext::configureRootLogger(helpers::Properties& props)
 {
 	LogString effectivePrefix(LOG4CXX_STR("log4j.rootLogger"));
 	LogString value = OptionConverter::findAndSubst(effectivePrefix, props);
@@ -236,13 +298,12 @@ void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
 	}
 	else
 	{
-		LoggerPtr root = hierarchy->getRootLogger();
-		parseLogger(props, root, effectivePrefix, LOG4CXX_STR("root"), value, true);
+		LoggerPtr root = this->pRepository->getRootLogger();
+		parseLogger(props, root, LOG4CXX_STR("root"), value, true);
 	}
 }
 
-void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
-	spi::LoggerRepositoryPtr& hierarchy)
+void ConfiguratorContext::parseCatsAndRenderers(helpers::Properties& props)
 {
 	for (auto key : props.propertyNames())
 	{
@@ -256,16 +317,18 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 				).length();
 			auto loggerName = key.substr(prefixLength);
 			auto value = OptionConverter::findAndSubst(key, props);
-			auto logger = hierarchy->getLogger(loggerName, m_priv->loggerFactory);
-			auto additivity = parseAdditivityForLogger(props, logger, loggerName);
-			parseLogger(props, logger, key, loggerName, value, additivity);
+			auto logger = this->pRepository->getLogger(loggerName, this->loggerFactory);
+			auto additivity = parseAdditivityForLogger(props, loggerName);
+			parseLogger(props, logger, loggerName, value, additivity);
 
 		}
 	}
 }
 
-bool PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
-	LoggerPtr& cat, const LogString& loggerName)
+bool ConfiguratorContext::parseAdditivityForLogger
+	( helpers::Properties& props
+	, const LogString&     loggerName
+	)
 {
 	LogString value(OptionConverter::findAndSubst(LOG4CXX_STR("log4j.additivity.") + loggerName, props));
 	// touch additivity only if necessary
@@ -287,9 +350,13 @@ bool PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 /**
         This method must work for the root logger as well.
 */
-void PropertyConfigurator::parseLogger(
-	helpers::Properties& props, LoggerPtr& logger, const LogString& /* optionKey */,
-	const LogString& loggerName, const LogString& value, bool additivity)
+void ConfiguratorContext::parseLogger
+	( helpers::Properties& props
+	, LoggerPtr&           logger
+	, const LogString&     loggerName
+	, const LogString&     value
+	, bool                 additivity
+	)
 {
 	if (LogLog::isDebugEnabled())
 	{
@@ -374,7 +441,7 @@ void PropertyConfigurator::parseLogger(
 		}
 	}
 	if (!newappenders.empty())
-		m_priv->appenderAdded = true;
+		this->appenderAdded = true;
 	if (async && !newappenders.empty())
 	{
 		if (LogLog::isDebugEnabled())
@@ -388,8 +455,10 @@ void PropertyConfigurator::parseLogger(
 		logger->reconfigure( newappenders, additivity );
 }
 
-AppenderPtr PropertyConfigurator::parseAppender(
-	helpers::Properties& props, const LogString& appenderName)
+AppenderPtr ConfiguratorContext::parseAppender
+	( helpers::Properties& props
+	, const LogString&     appenderName
+	)
 {
 	AppenderPtr appender = registryGet(appenderName);
 
@@ -519,13 +588,13 @@ AppenderPtr PropertyConfigurator::parseAppender(
 	return appender;
 }
 
-void PropertyConfigurator::registryPut(const AppenderPtr& appender)
+void ConfiguratorContext::registryPut(const AppenderPtr& appender)
 {
-	(*m_priv->registry)[appender->getName()] = appender;
+	(*this->registry)[appender->getName()] = appender;
 }
 
-AppenderPtr PropertyConfigurator::registryGet(const LogString& name)
+AppenderPtr ConfiguratorContext::registryGet(const LogString& name)
 {
-	auto it = m_priv->registry->find(name);
-	return (it == m_priv->registry->end()) ? AppenderPtr() : it->second;
+	auto it = this->registry->find(name);
+	return (it == this->registry->end()) ? AppenderPtr() : it->second;
 }

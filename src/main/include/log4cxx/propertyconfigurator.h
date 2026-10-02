@@ -27,25 +27,11 @@
 
 namespace LOG4CXX_NS
 {
-class Logger;
-typedef std::shared_ptr<Logger> LoggerPtr;
-
-class Appender;
-typedef std::shared_ptr<Appender> AppenderPtr;
-
 namespace helpers
 {
 class Properties;
 }
 
-
-namespace spi
-{
-class LoggerFactory;
-typedef std::shared_ptr<LoggerFactory> LoggerFactoryPtr;
-}
-
-class PropertyWatchdog;
 /**
 Allows the configuration of log4cxx from an external file.
 
@@ -61,8 +47,8 @@ The <code>PropertyConfigurator</code> does not handle the
 advanced configuration features supported by the
 {@link xml::DOMConfigurator DOMConfigurator} such as
 support for {@link spi::Filter Filters}, custom
-{@link spi::ErrorHandler ErrorHandlers}, nested
-appenders such as the {@link AsyncAppender AsyncAppender}, etc.
+{@link spi::ErrorHandler ErrorHandlers},
+{@link rolling::RollingFileAppender rolling policies}, etc.
 
 <h3>Configuring appenders</h3>
 
@@ -142,6 +128,23 @@ Similar to the root logger syntax, each <i>appenderName</i>
 See the <a href="concepts.html#appender-additivity">appender
 additivity rule</a> in the usage guide for the meaning of the
 <code>additivity</code> flag.
+
+<h4>Asynchronous logging</h4>
+To move log output processing overhead to a background thread,
+set the asynchronous property of the logger to <code>true</code>.
+For example:
+<pre>
+log4j.asynchronous.logger_name=true
+</pre>
+
+An asynchronous logger's appenders are attached to an {@link AsyncAppender AsyncAppender}
+and the {@link AsyncAppender AsyncAppender} is attached to the logger.
+The asynchronous property has no effect on a logger without attached appenders.
+
+The root logger can be configured to be asynchronous using:
+<pre>
+log4j.asynchronous.root=true
+</pre>
 
 <h3>Example</h3>
 
@@ -260,8 +263,12 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		PropertyConfigurator();
 		virtual ~PropertyConfigurator();
 		/**
-		Read configuration from \c configFileName.
-		If \c repository is not provided,
+		Read the configuration directives from \c configFileName.
+
+		See the \ref PropertyConfigurator_details "detailed description"
+		for the expected configuration file format.
+
+		If \c target is not provided,
 		the spi::LoggerRepository held by LogManager is used.
 		<b>The existing configuration is not cleared nor reset.</b>
 		If you require a different behavior,
@@ -269,11 +276,11 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		before calling <code>doConfigure</code>.
 
 		@param configFileName The file to parse.
-		@param repository Where the Logger instances reside.
+		@param target Where the Logger instances reside.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     configFileName
-			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
+			, const spi::LoggerRepositoryPtr& target = {}
 			) override;
 
 		/**
@@ -288,17 +295,19 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		A thread will be created that periodically checks
 		whether \c configFilename has been created or modified.
 		A period of log4cxx::helpers::FileWatchdog#DEFAULT_DELAY
-		is used if \c delay is not a positive number.
+		is used if \c millisecondDelay is not a positive number.
 		If a change or file creation is detected,
 		then \c configFilename is read to configure Log4cxx.
 
 		The thread will be stopped by a LogManager::shutdown call.
 
 		@param configFilename A file in key=value format.
-		@param delay The delay in milliseconds to wait between each check.
+		@param millisecondDelay The duration to wait between each check.
 		*/
-		static spi::ConfigurationStatus configureAndWatch(const File& configFilename,
-			long delay = 0);
+		static spi::ConfigurationStatus configureAndWatch
+			( const File& configFilename
+			, long        millisecondDelay = 0
+			);
 
 		/**
 		Read configuration options from <code>properties</code>.
@@ -313,52 +322,10 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected format.
 		*/
-		spi::ConfigurationStatus doConfigure(helpers::Properties& properties,
-			spi::LoggerRepositoryPtr hierarchy);
-
-		// --------------------------------------------------------------------------
-		// Internal stuff
-		// --------------------------------------------------------------------------
-	protected:
-		/**
-		Check the provided <code>Properties</code> object for a LoggerFactory
-		entry specified by *log4j.loggerFactory*.  If such an entry
-		exists, an attempt is made to create an instance using the default
-		constructor.  This instance is used for subsequent Logger creations
-		within this configurator.
-		@see #parseCatsAndRenderers
-		*/
-		void configureLoggerFactory(helpers::Properties& props);
-
-		void configureRootLogger(helpers::Properties& props,
-			spi::LoggerRepositoryPtr& hierarchy);
-
-		/**
-		Parse non-root elements, such non-root categories and renderers.
-		*/
-		void parseCatsAndRenderers(helpers::Properties& props,
-			spi::LoggerRepositoryPtr& hierarchy);
-
-		/**
-		Parse the additivity option for a non-root logger.
-		*/
-		bool parseAdditivityForLogger(helpers::Properties& props,
-			LoggerPtr& cat, const LogString& loggerName);
-
-		/**
-		This method must work for the root logger as well.
-		*/
-		void parseLogger(
-			helpers::Properties& props, LoggerPtr& logger,
-			const LogString& optionKey, const LogString& loggerName,
-			const LogString& value, bool additivity);
-
-		AppenderPtr parseAppender(
-			helpers::Properties& props, const LogString& appenderName);
-
-		void registryPut(const AppenderPtr& appender);
-		AppenderPtr registryGet(const LogString& name);
-
+		spi::ConfigurationStatus doConfigure
+			( helpers::Properties&            properties
+			, const spi::LoggerRepositoryPtr& target
+			);
 	private:
 		PropertyConfigurator(const PropertyConfigurator&);
 		PropertyConfigurator& operator=(const PropertyConfigurator&);
