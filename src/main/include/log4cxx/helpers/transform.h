@@ -84,7 +84,7 @@ class LOG4CXX_EXPORT Transform
 		/**
 		* Append a transformation of \c input onto \c buf.
 		* Only the valid XML 1.0 specification characters
-		* (&#35;x9 | &#35;xA | &#35;xD | [&#35;x20-&#35;xD7FF] | [&#35;xE000-&#35;xFFFD] | [&#35;x10000-&#35;x10FFFF])
+		* (0x9 | 0xA | 0xD | [0x20-0xD7FF] | [0xE000-0xFFFD] | [0x10000-0x10FFFF])
 		* are copied to \c buf.
 		* Any special character (&lt;, &gt;, &amp; and &quot;)
 		* is replaced with an entity reference.
