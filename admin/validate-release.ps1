@@ -1,7 +1,7 @@
 
 # Allow the version to be provided as a parameter
 param ( [string]$VERSION )
-if (-not $VERSION) { $VERSION = "1.8.1" }
+if (-not $VERSION) { $VERSION = "2.0.0" }
 
 $STAGE="dev"
 #$STAGE="release"

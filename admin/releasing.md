@@ -2,7 +2,7 @@ Releasing a Log4cxx version
 ===================
 
 This document lists the steps that must be performed to release Log4cxx
-using 1.8.1 as the example.
+using 2.0.0 as the example.
 
 Prerequisites
 ----------
@@ -27,15 +27,15 @@ Steps
 1. Tag HEAD as the release candidate (with the 'logging-log4cxx' source code tree root as the working directory)
     - `git checkout master`
     - `git pull`
-    - `git tag v1.8.1-RC1`
-    - `git push origin tag v1.8.1-RC1`
+    - `git tag v2.0.0-RC1`
+    - `git push origin tag v2.0.0-RC1`
 1. Download the packaged release files from Github (with the 'logging-log4cxx' source code tree root as the working directory)
     - `sh admin/generate_and_download.sh master "$HOME/apache-dist-logging-dev"`
 1. Send the 8 new artifacts to svn
     - `cd $HOME/apache-dist-logging-dev/log4cxx`
-    - `mv release_files 1.8.1`
-    - `svn add 1.8.1`
-    - `svn commit -m 'log4cxx 1.8.1'`
+    - `mv release_files 2.0.0`
+    - `svn add 2.0.0`
+    - `svn commit -m 'log4cxx 2.0.0'`
     - check https://dist.apache.org/repos/dist/dev/logging/log4cxx
 1. Raise a vote on the mailing list (dev@logging.apache.org)
    - Using [this template](MailTemplate.txt)
@@ -45,11 +45,11 @@ Steps
    - Using [this template](MailTemplate.Result.txt)
    - Enter the name of each PMC member that voted
 1. Get artifacts up to https://downloads.apache.org/logging/log4cxx/
-    - `svn move -m "Release log4cxx 1.8.1" https://dist.apache.org/repos/dist/dev/logging/log4cxx/1.8.1   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
+    - `svn move -m "Release log4cxx 2.0.0" https://dist.apache.org/repos/dist/dev/logging/log4cxx/2.0.0   https://dist.apache.org/repos/dist/release/logging/log4cxx/`
 1. Tag the released version
-    - `git checkout v1.8.1-RC1`
-    - `git tag rel/v1.8.1`
-    - `git push origin tag rel/v1.8.1`
+    - `git checkout v2.0.0-RC1`
+    - `git tag rel/v2.0.0`
+    - `git push origin tag rel/v2.0.0`
 1. Enter the release date in `src/site/markdown/change-report-gh.md`
     - Commit the change
     - Update the staged web site using [the update procedure](staging.md)
