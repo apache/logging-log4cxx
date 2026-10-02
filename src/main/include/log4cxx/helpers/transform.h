@@ -1,4 +1,4 @@
-/*
+87/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -84,7 +84,7 @@ class LOG4CXX_EXPORT Transform
 		/**
 		* Append a transformation of \c input onto \c buf.
 		* Only the valid XML 1.0 specification characters
-		* (#x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF])
+		* (&#35;x9 | &#35;xA | &#35;xD | [&#35;x20-&#35;xD7FF] | [&#35;xE000-&#35;xFFFD] | [&#35;x10000-&#35;x10FFFF])
 		* are copied to \c buf.
 		* Any special character (&lt;, &gt;, &amp; and &quot;)
 		* is replaced with an entity reference.

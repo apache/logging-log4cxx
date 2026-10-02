@@ -38,7 +38,6 @@ LOG4CXX_PTR_DEF(LoggerFactory);
 }
 
 class Logger;
-/** smart pointer to a Logger class */
 LOG4CXX_PTR_DEF(Logger);
 LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 
@@ -405,7 +404,7 @@ class LOG4CXX_EXPORT Logger
 		@param location The source code location of the logging request.
 		*/
 		void addEvent(const LevelPtr& level, helpers::AsyncBuffer&& messageAppender
-			, const spi::LocationInfo& sourceLocation = spi::LocationInfo::getLocationUnavailable()) const;
+			, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
 		Add a new fatal level logging event containing \c message and \c location to attached appender(s)
