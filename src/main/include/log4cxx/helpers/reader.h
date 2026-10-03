@@ -57,12 +57,12 @@ class LOG4CXX_EXPORT Reader : public Object
 		 */
 		virtual LogString read() = 0;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use close() without a Pool parameter instead")]]
 		void close(Pool& p);
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use read() without a Pool parameter instead")]]
 		LogString read(Pool& p);

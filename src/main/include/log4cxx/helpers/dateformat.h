@@ -50,7 +50,7 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		*/
 		virtual void format(LogString& toAppendTo, log4cxx_time_t tm) const = 0;
 		/**
-		@deprecated The helpers::Pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use format() without a Pool parameter instead")]]
 		void format(LogString& toAppendTo, log4cxx_time_t tm, helpers::Pool& p) const;
@@ -70,7 +70,7 @@ class LOG4CXX_EXPORT DateFormat : public Object
 		*/
 		virtual void numberFormat(LogString& toAppendTo, int n) const;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use numberFormat() without a Pool parameter instead")]]
 		void numberFormat(LogString& toAppendTo, int n, helpers::Pool& p) const;

@@ -45,7 +45,7 @@ class LOG4CXX_EXPORT Layout
 		*/
 		virtual void format(LogString& output, const spi::LoggingEventPtr& event) const = 0;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use format() without a Pool parameter instead")]]
 		void format(LogString& output, const spi::LoggingEventPtr& event, helpers::Pool& p) const;
@@ -62,7 +62,7 @@ class LOG4CXX_EXPORT Layout
 		*/
 		virtual void appendHeader(LogString& output);
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use appendHeader() without a Pool parameter instead")]]
 		void appendHeader(LogString& output, helpers::Pool& p);
@@ -73,7 +73,7 @@ class LOG4CXX_EXPORT Layout
 		*/
 		virtual void appendFooter(LogString& output);
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use appendFooter() without a Pool parameter instead")]]
 		void appendFooter(LogString& output, helpers::Pool& p);

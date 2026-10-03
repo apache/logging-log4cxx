@@ -86,7 +86,7 @@ class LOG4CXX_EXPORT Appender
 		*/
 		virtual void doAppend(const spi::LoggingEventPtr& event) = 0;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use doAppend() without a Pool parameter instead")]]
 		void doAppend(const spi::LoggingEventPtr& event, helpers::Pool& pool);
