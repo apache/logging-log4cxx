@@ -47,17 +47,17 @@ class LOG4CXX_EXPORT OutputStream : public Object
 		virtual void flush() = 0;
 		virtual void write(ByteBuffer& buf) = 0;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use close() without a Pool parameter instead")]]
 		void close(Pool& p);
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use flush() without a Pool parameter instead")]]
 		void flush(Pool& p);
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use write() without a Pool parameter instead")]]
 		void write(ByteBuffer& buf, Pool& p);

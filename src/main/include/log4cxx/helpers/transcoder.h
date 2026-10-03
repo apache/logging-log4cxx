@@ -73,7 +73,7 @@ class LOG4CXX_EXPORT Transcoder
 		 *   Increment \c pCodePoint past one \c str code point.
 		 *   @pre \c pCodePoint is a valid, dereferenceable iterator.
 		 *   @pre \c pCodePoint and the end of \c str are in the same sequence.
-		 *   @post \c <code>[old_pCodePoint = pCodePoint] (old_pCodePoint < pCodePoint)</code> // \c pCodePoint is always advanced
+		 *   @post <code>[old_pCodePoint = pCodePoint] (old_pCodePoint < pCodePoint)</code> // \c pCodePoint is always advanced
 		 *   @param str contains the code point to which \c pCodePoint refers.
 		 *   @param pCodePoint the start of the current code point.
 		 *   @return the code point value or 0xFFFD if not a valid sequence; \c pCodePoint is always advanced.
@@ -126,7 +126,7 @@ class LOG4CXX_EXPORT Transcoder
 		 *   Increment \c pCodePoint past one \c str code point.
 		 *   @pre \c pCodePoint is a valid, dereferenceable iterator.
 		 *   @pre \c pCodePoint and the end of \c str are in the same sequence.
-		 *   @post \c <code>[old_pCodePoint = pCodePoint] (old_pCodePoint < pCodePoint)</code> // \c pCodePoint is always advanced
+		 *   @post <code>[old_pCodePoint = pCodePoint] (old_pCodePoint < pCodePoint)</code> // \c pCodePoint is always advanced
 		 *   @param str contains the code point to which \c pCodePoint refers.
 		 *   @param pCodePoint the start of the current code point.
 		 *   @return the code point value or 0xFFFD if not a valid sequence; \c pCodePoint is always advanced.

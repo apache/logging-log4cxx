@@ -55,7 +55,7 @@ class Action : public virtual LOG4CXX_NS::helpers::Object
 		 */
 		virtual bool execute() const = 0;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use execute() without a Pool parameter instead")]]
 		bool execute(helpers::Pool& pool) const;

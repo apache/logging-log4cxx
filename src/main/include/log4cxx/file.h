@@ -153,7 +153,7 @@ class LOG4CXX_EXPORT File
 
 		/**
 		 * Use \c newValue for whether the file is to be deleted when this object is destroyed.
-		 * @param autoDelete If true, delete file upon destruction.
+		 * @param newValue If true, delete file upon destruction.
 		 */
 		void setAutoDelete(bool newValue);
 

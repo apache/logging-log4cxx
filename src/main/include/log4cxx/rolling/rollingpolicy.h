@@ -56,7 +56,7 @@ class LOG4CXX_EXPORT RollingPolicy :
 		 */
 		virtual RolloverDescriptionPtr initialize(const LogString& currentActiveFile, bool append) = 0;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use initialize() without a Pool parameter instead")]]
 		RolloverDescriptionPtr initialize(const LogString& currentActiveFile, bool append, helpers::Pool& pool);
@@ -74,7 +74,7 @@ class LOG4CXX_EXPORT RollingPolicy :
 		 */
 		virtual RolloverDescriptionPtr rollover(const LogString& currentActiveFile, bool append) = 0;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use rollover() without a Pool parameter instead")]]
 		RolloverDescriptionPtr rollover(const LogString& currentActiveFile, bool append, helpers::Pool& pool);

@@ -73,7 +73,7 @@ class LOG4CXX_EXPORT PatternConverter : public virtual helpers::Object
 		 */
 		virtual void format(const helpers::ObjectPtr& obj, LogString& toAppendTo) const = 0;
 		/**
-		@deprecated The \c pool parameter is not used and will be removed in a future version.
+		@deprecated Backward compatability support will be removed in a future version.
 		*/
 		[[deprecated("Use format() without a Pool parameter instead")]]
 		virtual void format(const helpers::ObjectPtr& obj, LogString& toAppendTo, helpers::Pool& p) const;
