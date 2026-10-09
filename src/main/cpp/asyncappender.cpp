@@ -311,7 +311,7 @@ AsyncAppender::~AsyncAppender()
 {
 }
 
-void AsyncAppender::addAppender(const AppenderPtr newAppender)
+void AsyncAppender::addAppender(const AppenderPtr& newAppender)
 {
 	priv->appenders.addAppender(newAppender);
 }
@@ -461,7 +461,7 @@ AppenderPtr AsyncAppender::getAppender(const LogString& n) const
 	return priv->appenders.getAppender(n);
 }
 
-bool AsyncAppender::isAttached(const AppenderPtr appender) const
+bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 {
 	return priv->appenders.isAttached(appender);
 }
@@ -476,7 +476,7 @@ void AsyncAppender::removeAllAppenders()
 	priv->appenders.removeAllAppenders();
 }
 
-void AsyncAppender::removeAppender(const AppenderPtr appender)
+void AsyncAppender::removeAppender(const AppenderPtr& appender)
 {
 	priv->appenders.removeAppender(appender);
 }

@@ -36,7 +36,7 @@ const LevelPtr& RootLogger::getEffectiveLevel() const
 	return getLevel();
 }
 
-void RootLogger::setLevel(const LevelPtr level1)
+void RootLogger::setLevel(const LevelPtr& level1)
 {
 	if (level1 == 0)
 	{

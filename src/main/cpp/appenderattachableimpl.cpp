@@ -81,7 +81,7 @@ AppenderAttachableImpl::~AppenderAttachableImpl()
 }
 
 
-void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
+void AppenderAttachableImpl::addAppender(const AppenderPtr& newAppender)
 {
 	if (!newAppender)
 		return;
@@ -127,7 +127,7 @@ AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
 	return result;
 }
 
-bool AppenderAttachableImpl::isAttached(const AppenderPtr appender) const
+bool AppenderAttachableImpl::isAttached(const AppenderPtr& appender) const
 {
 	bool result = false;
 	if (appender)
@@ -147,7 +147,7 @@ void AppenderAttachableImpl::removeAllAppenders()
 	m_priv->setAppenders({});
 }
 
-void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
+void AppenderAttachableImpl::removeAppender(const AppenderPtr& appender)
 {
 	if (appender)
 	{

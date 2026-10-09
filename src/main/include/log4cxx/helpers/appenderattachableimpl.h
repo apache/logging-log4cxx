@@ -57,7 +57,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 * Add an appender.
 		 */
-		void addAppender(const AppenderPtr newAppender) override;
+		void addAppender(const AppenderPtr& newAppender) override;
 
 		/**
 		 Send \c event to all attached appenders.
@@ -78,7 +78,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 Returns <code>true</code> if the specified appender is in the
 		 list of attached appenders, <code>false</code> otherwise.
 		*/
-		bool isAttached(const AppenderPtr appender) const override;
+		bool isAttached(const AppenderPtr& appender) const override;
 
 		/**
 		 * Remove all previously added appenders.
@@ -88,7 +88,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 * Remove the appender passed as parameter from the list of appenders.
 		 */
-		void removeAppender(const AppenderPtr appender) override;
+		void removeAppender(const AppenderPtr& appender) override;
 
 		/**
 		 * Remove the appender with the name passed as parameter from the

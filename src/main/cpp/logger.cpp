@@ -98,7 +98,7 @@ Logger::~Logger()
 {
 }
 
-void Logger::addAppender(const AppenderPtr newAppender)
+void Logger::addAppender(const AppenderPtr& newAppender)
 {
 	m_priv->aai->addAppender(newAppender);
 	if (auto rep = getHierarchy())
@@ -388,7 +388,7 @@ const LevelPtr& Logger::getLevel() const
 	return m_priv->level;
 }
 
-bool Logger::isAttached(const AppenderPtr appender) const
+bool Logger::isAttached(const AppenderPtr& appender) const
 {
 	bool result{ false };
 	if (auto p = m_priv->aai.get_ptr())
@@ -617,7 +617,7 @@ void Logger::removeAllAppenders()
 	}
 }
 
-void Logger::removeAppender(const AppenderPtr appender)
+void Logger::removeAppender(const AppenderPtr& appender)
 {
 	if (auto p = m_priv->aai.get_ptr())
 	{
@@ -654,7 +654,7 @@ void Logger::setHierarchy(spi::LoggerRepository* repository1)
 	m_priv->repositoryRaw = repository1;
 }
 
-void Logger::setParent(LoggerPtr parentLogger)
+void Logger::setParent(const LoggerPtr& parentLogger)
 {
 	m_priv->parent = parentLogger;
 	updateThreshold();
@@ -662,7 +662,10 @@ void Logger::setParent(LoggerPtr parentLogger)
 		rep->updateChildren(this);
 }
 
-void Logger::setLevel(const LevelPtr level1)
+void Logger::changeParentTo(const LoggerPtr& otherLogger)
+{ setParent(otherLogger); }
+
+void Logger::setLevel(const LevelPtr& level1)
 {
 	if (m_priv->level != level1)
 	{
