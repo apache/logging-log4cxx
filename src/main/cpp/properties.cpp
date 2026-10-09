@@ -457,7 +457,7 @@ LogString Properties::get(const LogString& key) const
 	return (it != properties->end()) ? it->second : LogString();
 }
 
-void Properties::load(InputStreamPtr inStream)
+void Properties::load(const InputStreamPtr& inStream)
 {
 	auto contents = InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()).read();
 	PropertyParser().parse(contents, *this);

@@ -162,7 +162,7 @@ bool AppenderSkeleton::AppenderSkeletonPrivate::checkLayout()
 	return true;
 }
 
-void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
+void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1)
 {
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 

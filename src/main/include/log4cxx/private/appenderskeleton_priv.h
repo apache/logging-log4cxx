@@ -32,7 +32,7 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 		errorHandler(std::make_shared<LOG4CXX_NS::helpers::OnlyOnceErrorHandler>()),
 		closed(false) {}
 
-	AppenderSkeletonPrivate( LayoutPtr lay ) :
+	AppenderSkeletonPrivate( const LayoutPtr& lay ) :
 		layout( lay ),
 		threshold(Level::getAll()),
 		errorHandler(std::make_shared<LOG4CXX_NS::helpers::OnlyOnceErrorHandler>()),

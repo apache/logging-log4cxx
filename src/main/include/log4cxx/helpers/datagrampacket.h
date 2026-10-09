@@ -47,22 +47,21 @@ class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 
 		/** Constructs a DatagramPacket for receiving packets of length
 		<code>length</code>. */
-		DatagramPacket(void* buf, std::size_t length);
+		DatagramPacket(void* buf, size_t length);
 
 		/** Constructs a datagram packet for sending packets of length
 		<code>length</code> to the specified port number on the specified
 		host. */
-		DatagramPacket(void* buf, std::size_t length, InetAddressPtr address, int port);
+		DatagramPacket(void* buf, size_t length, const InetAddressPtr& address, int port);
 
 		/** Constructs a DatagramPacket for receiving packets of length
 		<code>length</code>, specifying an offset into the buffer. */
-		DatagramPacket(void* buf, std::size_t offset, std::size_t length);
+		DatagramPacket(void* buf, size_t offset, size_t length);
 
 		/** Constructs a datagram packet for sending packets of length
 		<code>length</code> with offset <code>offset</code> to the
 		specified port number on the specified host. */
-		DatagramPacket(void* buf, std::size_t offset, std::size_t length, InetAddressPtr address,
-			int port);
+		DatagramPacket(void* buf, size_t offset, size_t length, const InetAddressPtr& address, int port);
 
 		~DatagramPacket();
 
@@ -75,26 +74,26 @@ class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 
 		/** Returns the length of the data to be sent or the length of the
 		data received. */
-		std::size_t getLength() const;
+		size_t getLength() const;
 
 		/** Returns the offset of the data to be sent or the offset of the
 		data received. */
-		std::size_t getOffset() const;
+		size_t getOffset() const;
 
 		/** Returns the port number on the remote host to which this
 		 datagram is being sent or from which the datagram was received. */
 		int getPort() const;
 
-		void setAddress(InetAddressPtr address1);
+		void setAddress(const InetAddressPtr& address1);
 
 		/** Set the data buffer for this packet. */
 		void setData(void* buf1);
 
 		/** Set the data buffer for this packet. */
-		void setData(void* buf1, std::size_t offset1, std::size_t length1);
+		void setData(void* buf1, size_t offset1, size_t length1);
 
 		/** Set the length for this packet. */
-		void setLength(std::size_t length1);
+		void setLength(size_t length1);
 
 		void setPort(int port1);
 
