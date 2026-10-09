@@ -587,7 +587,7 @@ struct SMTPAppender::SMTPPriv : public AppenderSkeletonPrivate
 		cb(bufferSize),
 		evaluator(new DefaultEvaluator()) {}
 
-	SMTPPriv(spi::TriggeringEventEvaluatorPtr evaluator) :
+	SMTPPriv(const spi::TriggeringEventEvaluatorPtr& evaluator) :
 		AppenderSkeletonPrivate(),
 		smtpPort(25),
 		bufferSize(512),
