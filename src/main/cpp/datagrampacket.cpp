@@ -44,7 +44,7 @@ struct DatagramPacket::DatagramPacketPriv
 	}
 
 	DatagramPacketPriv(void* buf1, PacketSizeType offset1, PacketSizeType length1,
-		InetAddressPtr address1, int port1)
+		const InetAddressPtr& address1, int port1)
 		: buf(buf1), offset(offset1), length(length1), address(address1), port(port1)
 	{
 	}

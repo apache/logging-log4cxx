@@ -101,7 +101,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		Use <code>evaluator</code> passed as parameter as the
 		spi::TriggeringEventEvaluator for this net::SMTPAppender.
 		*/
-		SMTPAppender(spi::TriggeringEventEvaluatorPtr evaluator);
+		SMTPAppender(const spi::TriggeringEventEvaluatorPtr& evaluator);
 
 		~SMTPAppender();
 
@@ -295,7 +295,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		 *   Sets the triggering evaluator.
 		 *   @param trigger triggering evaluator.
 		 */
-		void setEvaluator(LOG4CXX_NS::spi::TriggeringEventEvaluatorPtr& trigger);
+		void setEvaluator(const spi::TriggeringEventEvaluatorPtr& trigger);
 
 		/**
 		The <b>EvaluatorClass</b> option takes a string value

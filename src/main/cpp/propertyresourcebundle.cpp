@@ -28,7 +28,7 @@ using namespace LOG4CXX_NS::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(PropertyResourceBundle)
 
 
-PropertyResourceBundle::PropertyResourceBundle(InputStreamPtr inStream)
+PropertyResourceBundle::PropertyResourceBundle(const InputStreamPtr& inStream)
 {
 	properties.load(inStream);
 }

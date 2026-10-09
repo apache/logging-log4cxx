@@ -90,7 +90,7 @@ struct LoggingEvent::LoggingEventPrivate
 	LoggingEventPrivate(
 		const LogString& logger1, const LevelPtr& level1,
 		const LogString& message1, const LocationInfo& locationInfo1,
-		const ThreadSpecificData::NamePairPtr& p = ThreadSpecificData::getNames()
+		const ThreadSpecificData::NamePairPtr p = ThreadSpecificData::getNames()
 		) :
 		logger(logger1),
 		level(level1),

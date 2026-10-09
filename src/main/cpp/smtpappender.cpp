@@ -631,7 +631,7 @@ SMTPAppender::SMTPAppender()
 /**
 Use <code>evaluator</code> passed as parameter as the
 TriggeringEventEvaluator for this SMTPAppender.  */
-SMTPAppender::SMTPAppender(spi::TriggeringEventEvaluatorPtr evaluator)
+SMTPAppender::SMTPAppender(const spi::TriggeringEventEvaluatorPtr& evaluator)
 	: AppenderSkeleton (std::make_unique<SMTPPriv>(evaluator))
 {
 }
@@ -981,7 +981,7 @@ LOG4CXX_NS::spi::TriggeringEventEvaluatorPtr SMTPAppender::getEvaluator() const
 	return _priv->evaluator;
 }
 
-void SMTPAppender::setEvaluator(LOG4CXX_NS::spi::TriggeringEventEvaluatorPtr& trigger)
+void SMTPAppender::setEvaluator(const spi::TriggeringEventEvaluatorPtr& trigger)
 {
 	_priv->evaluator = trigger;
 }
