@@ -380,6 +380,7 @@ bool RollingFileAppender::rolloverInternal()
 							OutputStreamPtr os = std::make_shared<FileOutputStream>
 									( rollover1->getActiveFileName()
 									, rollover1->getAppend()
+									, _priv->lazyFileCreation
 									);
 							_priv->setWriter(createWriter(os));
 

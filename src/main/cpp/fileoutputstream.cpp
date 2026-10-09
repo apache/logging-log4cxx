@@ -27,36 +27,55 @@ using namespace LOG4CXX_NS::helpers;
 
 struct FileOutputStream::FileOutputStreamPrivate
 {
-	FileOutputStreamPrivate(const LogString& filename)
-		: path(filename)
+	FileOutputStreamPrivate(const LogString& filename, bool append)
+		: path(filename), logAppend(append)
 		{}
 
 	File path;
 	Pool pool;
 	apr_file_t* fileptr{ nullptr };
-	void open(bool append);
+	bool logAppend;
+	void open();
+	void openUnlessLazy(bool lazyOpen);
+	void openAsTruncatedIfAlreadyExists();
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 
-FileOutputStream::FileOutputStream(const LogString& filename, bool append)
-	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename))
+FileOutputStream::FileOutputStream(const LogString& filename, bool append, bool lazyOpen)
+	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename, append))
 {
-	m_priv->open(append);
+	m_priv->path = filename;
+	m_priv->openUnlessLazy(lazyOpen);
 }
 
-FileOutputStream::FileOutputStream(const logchar* filename,	bool append)
-	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename))
+FileOutputStream::FileOutputStream(const logchar* filename,	bool append, bool lazyOpen)
+	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename, append))
 {
-	m_priv->open(append);
+	m_priv->path = filename;
+	m_priv->openUnlessLazy(lazyOpen);
 }
 
-void FileOutputStream::FileOutputStreamPrivate::open(bool append)
+void FileOutputStream::FileOutputStreamPrivate::openUnlessLazy(bool lazyOpen)
+{
+	if (!lazyOpen)
+	{
+		open();
+	}
+	else if (!this->logAppend)
+	{
+		// Tests expect that existing files are truncated even if
+		// nothing is logged.
+		openAsTruncatedIfAlreadyExists();
+	}
+}
+
+void FileOutputStream::FileOutputStreamPrivate::open()
 {
 	apr_fileperms_t perm = APR_OS_DEFAULT;
 	apr_int32_t flags = APR_WRITE | APR_CREATE;
 
-	if (append)
+	if (this->logAppend)
 	{
 		flags |= APR_APPEND;
 	}
@@ -73,11 +92,30 @@ void FileOutputStream::FileOutputStreamPrivate::open(bool append)
 	}
 }
 
+void FileOutputStream::FileOutputStreamPrivate::openAsTruncatedIfAlreadyExists()
+{
+	const char* path = this->path.getAPRPath();
+	if (path == nullptr)
+	{
+		throw IOException();
+	}
+	apr_finfo_t finfo;
+	if ( apr_stat(&finfo, path, 0, pool.getAPRPool()) != APR_SUCCESS )
+	{
+		return;
+	}
+
+	// We open the file, but truncate it (i.e. its content
+	// is set to empty); only called when logAppend is false
+	return FileOutputStream::FileOutputStreamPrivate::open();
+}
+
 FileOutputStream::~FileOutputStream()
 {
 	if (m_priv->fileptr)
 	{
 		apr_file_close(m_priv->fileptr);
+		m_priv->fileptr = nullptr;
 	}
 }
 
@@ -104,7 +142,12 @@ void FileOutputStream::write( ByteBuffer& buf )
 {
 	if (m_priv->fileptr == NULL)
 	{
-		throw NullPointerException(LOG4CXX_STR("FileOutputStream"));
+		m_priv->open();
+
+		if (m_priv->fileptr == nullptr)
+		{
+			throw NullPointerException(LOG4CXX_STR("FileOutputStream"));
+		}
 	}
 
 	size_t nbytes = buf.remaining();
@@ -123,6 +166,17 @@ void FileOutputStream::write( ByteBuffer& buf )
 }
 
 apr_file_t* FileOutputStream::getFilePtr() const{
+	if (!m_priv->fileptr)
+	{
+		try
+		{
+			m_priv->open();
+		}
+		catch (IOException&)
+		{
+			// write() will open (and report any failure) again
+		}
+	}
 	return m_priv->fileptr;
 }
 

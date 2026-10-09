@@ -153,6 +153,11 @@ void FileAppender::setOption(const LogString& option,
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 		_priv->bufferedSeconds = OptionConverter::toInt(value, 0);
 	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LAZYFILECREATION"), LOG4CXX_STR("lazyfilecreation")))
+	{
+		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+		_priv->lazyFileCreation = OptionConverter::toBoolean(value, false);
+	}
 	else
 	{
 		WriterAppender::setOption(option, value);
@@ -337,11 +342,7 @@ void FileAppender::setFileInternal(
 
 	OutputStreamPtr outStream;
 
-	try
-	{
-		outStream = std::make_shared<FileOutputStream>(filename, append1);
-	}
-	catch (IOException&)
+	if (_priv->lazyFileCreation)
 	{
 		LogString parentName = File().setPath(filename).getParent();
 
@@ -350,18 +351,47 @@ void FileAppender::setFileInternal(
 			File parentDir;
 			parentDir.setPath(parentName);
 
-			if (!parentDir.exists() && parentDir.mkdirs())
+			if (!parentDir.exists())
 			{
-				outStream = std::make_shared<FileOutputStream>(filename, append1);
+				LogLog::debug(LOG4CXX_STR("Creating dirs ") + parentDir.getPath());
+				// The file is not opened here, so a failure must be reported now.
+				if (!parentDir.mkdirs() && !parentDir.exists())
+				{
+					throw IOException(LOG4CXX_STR("Unable to create directory ") + parentDir.getPath());
+				}
+			}
+		}
+
+		outStream = std::make_shared<FileOutputStream>(filename, append1, true);
+	}
+	else
+	{
+		try
+		{
+			outStream = std::make_shared<FileOutputStream>(filename, append1);
+		}
+		catch (IOException&)
+		{
+			LogString parentName = File().setPath(filename).getParent();
+
+			if (!parentName.empty())
+			{
+				File parentDir;
+				parentDir.setPath(parentName);
+
+				if (!parentDir.exists() && parentDir.mkdirs())
+				{
+					outStream = std::make_shared<FileOutputStream>(filename, append1);
+				}
+				else
+				{
+					throw;
+				}
 			}
 			else
 			{
 				throw;
 			}
-		}
-		else
-		{
-			throw;
 		}
 	}
 
@@ -433,5 +463,16 @@ void FileAppender::setBufferedSeconds(int newValue)
 bool FileAppender::getAppend() const
 {
 	return _priv->fileAppend;
+}
+
+void FileAppender::setLazyFileCreation(bool newValue)
+{
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+	_priv->lazyFileCreation = newValue;
+}
+
+bool FileAppender::getLazyFileCreation() const
+{
+	return _priv->lazyFileCreation;
 }
 

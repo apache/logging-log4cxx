@@ -30,6 +30,10 @@ namespace helpers
 
 /**
 *   OutputStream implemented on top of APR file IO.
+*
+*   This class assumes a single active thread: the file is opened lazily
+*   without synchronization.  The guarantee is provided by the mutex
+*   held in AppenderSkeleton::doAppend.
 */
 class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 {
@@ -43,8 +47,14 @@ class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 		LOG4CXX_CAST_ENTRY_CHAIN(OutputStream)
 		END_LOG4CXX_CAST_MAP()
 
-		FileOutputStream(const LogString& filename, bool append = false);
-		FileOutputStream(const logchar* filename, bool append = false);
+		/**
+		Open \c filename unless \c lazyOpen is true,
+		in which case the file is opened on first write
+		(or when #getFilePtr is called)
+		and an existing file is truncated immediately if \c append is false.
+		*/
+		FileOutputStream(const LogString& filename, bool append = false, bool lazyOpen = false);
+		FileOutputStream(const logchar* filename, bool append = false, bool lazyOpen = false);
 		virtual ~FileOutputStream();
 
 		using OutputStream::close;

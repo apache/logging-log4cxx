@@ -135,6 +135,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		Append | True,False | True |
 		BufferedIO | True,False | False |
 		BufferedSeconds | {any} | 5 |
+		LazyFileCreation | True,False | False |
 		ImmediateFlush | True,False | False |
 		BufferSize | (\ref fileSz1 "1") | 8 KB |
 
@@ -209,6 +210,21 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		to activate the new frequency.
 		*/
 		void setBufferedSeconds(int newValue);
+
+		/**
+		Create the file when the first message is written (rather than in #activateOptions)
+		if \c newValue is true, so that no empty file is created when nothing is logged.
+		The default is false.
+
+		Note: Behavior change occurs when
+		#activateOptions is called, not when the options are set.
+		*/
+		void setLazyFileCreation(bool newValue);
+
+		/**
+		Get the value of the <b>LazyFileCreation</b> option.
+		*/
+		bool getLazyFileCreation() const;
 
 		/**
 		 *   Replaces double backslashes with single backslashes

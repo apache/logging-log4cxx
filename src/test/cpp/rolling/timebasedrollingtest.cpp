@@ -261,16 +261,18 @@ private:
 	 * @param[in]     prefix
 	 * @param[in]     fnames
 	 * @param[in]     srcLine
+	 * @param[in]	  startingAt
 	 */
 	template<size_t N>
 	void compareWitnesses
-		( Pool&            pool
+	    ( Pool&            pool
 		, const LogString& prefix
 		, const LogString (&fnames)[N]
 		, int              srcLine
-		)
+		, int		       startingAt = 0
+	)
 	{
-		for (size_t i = 0; i < N; ++i)
+		for (int i = startingAt; i < int(N); ++i)
 		{
 			this->compareWitness(pool, prefix, fnames[i], int(i), srcLine);
 		}
@@ -291,6 +293,7 @@ private:
 	 * @param[in]		fnames
 	 * @param[in]		witnessIdx
 	 * @param[in]		srcLine
+	 * @param[in]		startingAt
 	 */
 	template<size_t N>
 	void checkFilesExist
@@ -299,15 +302,19 @@ private:
 		, const LogString  (&fnames)[N]
 		, int              witnessIdx
 		, int              srcLine
+		, int		       startingAt = 0
 		)
 	{
-		for (size_t i = 0; i < N - 1; ++i)
+		for (int i = startingAt; i < int(N) - 1; ++i)
 		{
 			//std::wcerr << L"Check: " << fnames[i] << L"\n";
 			LOGUNIT_ASSERT_EQUAL_SRCL(true, File(fnames[i]).exists(), srcLine);
 		}
 
-		this->compareWitness(pool, prefix, fnames[witnessIdx], witnessIdx, srcLine);
+		if (witnessIdx >= startingAt)
+		{
+			this->compareWitness(pool, prefix, fnames[witnessIdx], witnessIdx, srcLine);
+		}
 	}
 
 	/**
@@ -420,7 +427,9 @@ public:
 		this->buildTsFnames<4>(pool, LOG4CXX_STR("test1-"), fnames);
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(	pool, nrOfFnames + 1, __LOG4CXX_FUNC__, __LINE__);
-		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test1."), fnames, __LINE__);
+		// Nothing was logged to fnames[0] and since file creation
+		// is lazy the file doesn't exist.
+		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test1."), fnames, __LINE__, 1);
 	}
 
 
@@ -465,7 +474,9 @@ public:
 		logger->addAppender(rfa2);
 
 		this->logMsgAndSleep(	pool, 2, __LOG4CXX_FUNC__, __LINE__, 3);
-		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test2."), fnames, __LINE__);
+		// Nothing was logged to fnames[0] and since file creation
+		// is lazy the file doesn't exist.
+		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test2."), fnames, __LINE__, 1);
 	}
 
 
@@ -494,7 +505,9 @@ public:
 		fnames[nrOfFnames - 1].resize(fnames[nrOfFnames - 1].size() - 3);
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(	pool, nrOfFnames + 1, __LOG4CXX_FUNC__, __LINE__);
-		this->checkFilesExist<4>(	pool, LOG4CXX_STR("test3."), fnames, nrOfFnames - 1, __LINE__);
+		// Nothing was logged to fnames[0] and since file creation
+		// is lazy the file doesn't exist.
+		this->checkFilesExist<4>(	pool, LOG4CXX_STR("test3."), fnames, nrOfFnames - 1, __LINE__, 1);
 	}
 
 	/**
@@ -583,7 +596,9 @@ public:
 
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(	pool, nrOfLogMsgs, __LOG4CXX_FUNC__, __LINE__);
-		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test5."), fnames, __LINE__);
+		// Nothing was logged to fnames[0] and since file creation
+		// is lazy the file doesn't exist.
+		this->compareWitnesses<4>(	pool, LOG4CXX_STR("test5."), fnames, __LINE__, 1);
 	}
 
 	/**

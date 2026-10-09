@@ -63,6 +63,7 @@ LOGUNIT_CLASS(FileAppenderTest)
 {
 	LOGUNIT_TEST_SUITE(FileAppenderTest);
 	LOGUNIT_TEST(testDirectoryCreation);
+	LOGUNIT_TEST(testLazyFileCreation);
 	LOGUNIT_TEST(testgetSetThreshold);
 	LOGUNIT_TEST(testIsAsSevereAsThreshold);
 	LOGUNIT_TEST(testFlushTaskRemovedAfterRename);
@@ -100,6 +101,31 @@ public:
 		wa->activateOptions();
 
 		LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists());
+	}
+
+	/**
+	 * Tests that the LazyFileCreation option defers file creation until the first write.
+	 */
+	void testLazyFileCreation()
+	{
+		LogString fileName(LOG4CXX_STR("output/lazydir/lazy.log"));
+		File(fileName).deleteFile();
+		File(LOG4CXX_STR("output/lazydir")).deleteFile();
+
+		FileAppenderPtr wa(new FileAppender());
+		wa->setFile(fileName);
+		wa->setLazyFileCreation(true);
+		wa->setLayout(PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m%n"))));
+		wa->activateOptions();
+		LOGUNIT_ASSERT(!File(fileName).exists());
+
+		auto logger = Logger::getLogger(LOG4CXX_STR("testLazyFileCreation"));
+		logger->addAppender(wa);
+		logger->setAdditivity(false);
+		LOG4CXX_INFO(logger, "trigger lazy file creation");
+		logger->removeAppender(wa);
+
+		LOGUNIT_ASSERT(File(fileName).exists());
 	}
 
 	/**

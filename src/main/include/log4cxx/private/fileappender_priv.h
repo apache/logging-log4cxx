@@ -71,6 +71,10 @@ struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPri
 	int bufferedSeconds{ 5 };
 
 	/**
+	Create the file when the first message is written? */
+	bool lazyFileCreation{ false };
+
+	/**
 	Control block shared with the periodic output buffer flush task.
 	The flush task only reaches this appender through the control block,
 	and the pointer in it is cleared (under the control block mutex)

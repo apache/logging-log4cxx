@@ -57,7 +57,7 @@ struct MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv
 			apr_file_close(lock_file);
 	}
 
-	apr_file_t* log_file = NULL;
+	FileOutputStreamPtr fileOutputStream;
 	apr_file_t* lock_file = NULL;
 
 public: // Support classes
@@ -157,12 +157,6 @@ void MultiprocessRollingFileAppender::activateOptions(  )
 {
 	if (_priv->activateOptions())
 	{
-		// FileAppender::activateOptionsInternal() closes any existing writer,
-		// destroying the FileOutputStream (and the pool) that owns the cached
-		// apr_file_t, before opening the new file (which may fail).  Clear the
-		// cache first so a failed open cannot leave it dangling;
-		// createWriter() re-caches the handle on success.
-		_priv->log_file = NULL;
 		FileAppender::activateOptionsInternal();
 	}
 
@@ -188,13 +182,13 @@ bool MultiprocessRollingFileAppender::isRolloverCheckNeeded()
  */
 bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName, size_t* pSize)
 {
-	if( !_priv->log_file )
+	if( !_priv->fileOutputStream || !_priv->fileOutputStream->getFilePtr() )
 		return false;
 	apr_int32_t wantedInfo = APR_FINFO_IDENT;
 	if (pSize)
 		wantedInfo |= APR_FINFO_SIZE;
 	apr_finfo_t finfo1;
-	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, _priv->log_file);
+	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, _priv->fileOutputStream->getFilePtr());
 
 	if (st1 != APR_SUCCESS)
 		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
@@ -227,11 +221,11 @@ bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName,
  */
 bool MultiprocessRollingFileAppender::getCurrentFileSize(size_t* pSize)
 {
-	if( !_priv->log_file )
+	if( !_priv->fileOutputStream || !_priv->fileOutputStream->getFilePtr() )
 		return false;
 	apr_int32_t wantedInfo = APR_FINFO_SIZE;
 	apr_finfo_t finfo;
-	if (apr_file_info_get(&finfo, wantedInfo, _priv->log_file) != APR_SUCCESS)
+	if (apr_file_info_get(&finfo, wantedInfo, _priv->fileOutputStream->getFilePtr()) != APR_SUCCESS)
 	{
 		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
 		return false;
@@ -287,13 +281,6 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend()))
 		{
 			_priv->close();
-			// The cached apr_file_t was allocated from the pool of the
-			// FileOutputStream that close() just destroyed.  Clear it now:
-			// any failure (e.g. ENOSPC/EACCES opening the new active file
-			// throws, and subAppend merely logs the exception) would leave a
-			// dangling handle that isAlreadyRolled()/getCurrentFileSize()
-			// pass to apr_file_info_get() on the next append.
-			_priv->log_file = NULL;
 			if (rollover1->getActiveFileName() == fileName)
 			{
 				bool success = true; // A synchronous action is not required
@@ -345,6 +332,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 				OutputStreamPtr os = std::make_shared<FileOutputStream>
 					( rollover1->getActiveFileName()
 					, rollover1->getAppend()
+					, _priv->lazyFileCreation
 					);
 				_priv->setWriter(createWriter(os));
 				bool success = true; // A synchronous action is not required
@@ -392,16 +380,11 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 {
 	_priv->close();
-	// Clear the cached apr_file_t: it was allocated from the pool of the
-	// FileOutputStream that close() just destroyed, and the FileOutputStream
-	// constructor below throws on open failure (leaving this appender without
-	// a writer until a later reopen succeeds).
-	_priv->log_file = NULL;
 #if USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
 		pTimeBased->loadLastFileName();
 #endif
-	OutputStreamPtr os = std::make_shared<FileOutputStream>(fileName, true);
+	OutputStreamPtr os = std::make_shared<FileOutputStream>(fileName, true, _priv->lazyFileCreation);
 	WriterPtr newWriter(createWriter(os));
 	setFile(fileName);
 	_priv->setWriter(newWriter);
@@ -456,7 +439,7 @@ WriterPtr MultiprocessRollingFileAppender::createWriter(const OutputStreamPtr& o
 {
 	auto fos = LOG4CXX_NS::cast<FileOutputStream>(os);
 	if( fos )
-		_priv->log_file = fos->getFilePtr();
+		_priv->fileOutputStream = fos;
 	else
 	{
 		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));
