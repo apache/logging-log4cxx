@@ -1,5 +1,13 @@
 # This module checks compiler and standard library support
 #
+# Attempt to compile and link a basic C++ standard library feature
+try_compile(CXX_FRONTEND_IS_VALID "${CMAKE_BINARY_DIR}/Testing/test_cxx_compiler"
+    "${CMAKE_CURRENT_LIST_DIR}/test_cxx_compiler.cpp"
+    )
+if(NOT CXX_FRONTEND_IS_VALID)
+    message(FATAL_ERROR "The CXX compiler cannot link C++ standard library features. Ensure CMAKE_CXX_COMPILER is pointing to a C++ frontend (e.g., clang++ instead of clang).")
+endif()
+
 include(CheckCXXCompilerFlag)
 
 # Does the compiler support the Safe Buffers diagnostic -Wunsafe-buffer-usage?
