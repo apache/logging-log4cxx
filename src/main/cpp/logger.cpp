@@ -58,8 +58,34 @@ struct Logger::LoggerPrivate
 
 	/**
 	The parent of this logger. All loggers have at least one
-	ancestor which is the root logger. */
-	LoggerPtr parent;
+	ancestor which is the root logger.
+	*/
+#ifdef __cpp_lib_atomic_shared_ptr
+	std::atomic<LoggerPtr> parent;
+#else // !defined(__cpp_lib_atomic_shared_ptr)
+	LoggerPtr    parent;
+	mutable std::mutex mutex;
+#endif // !defined(__cpp_lib_atomic_shared_ptr)
+
+	LoggerPtr getParent() const
+	{
+#ifdef __cpp_lib_atomic_shared_ptr
+		return this->parent.load(std::memory_order_acquire);
+#else // !defined(__cpp_lib_atomic_shared_ptr)
+		std::lock_guard<std::mutex> lock( this->mutex );
+		return this->parent;
+#endif // !defined(__cpp_lib_atomic_shared_ptr)
+	}
+
+	void setParent(const LoggerPtr& newValue)
+	{
+#ifdef __cpp_lib_atomic_shared_ptr
+		this->parent.store(newValue, std::memory_order_release);
+#else // !defined(__cpp_lib_atomic_shared_ptr)
+		std::lock_guard<std::mutex> lock( this->mutex );
+		this->parent = newValue;
+#endif // !defined(__cpp_lib_atomic_shared_ptr)
+	}
 
 	/** The resourceBundle for localized messages.
 
@@ -144,7 +170,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event) const
 
 	for (const Logger* logger = this;
 		logger != 0;
-		logger = logger->m_priv->parent.get())
+		logger = logger->m_priv->getParent().get())
 	{
 		if (auto p = logger->m_priv->aai.get_ptr())
 			writes += p->appendLoopOnAppenders(event);
@@ -312,7 +338,7 @@ AppenderPtr Logger::getAppender(const LogString& name1) const
 
 const LevelPtr& Logger::getEffectiveLevel() const
 {
-	for (const Logger* l = this; l != 0; l = l->m_priv->parent.get())
+	for (const Logger* l = this; l != 0; l = l->m_priv->getParent().get())
 	{
 		if (l->m_priv->level != 0)
 		{
@@ -338,7 +364,7 @@ LoggerRepository* Logger::getHierarchy() const
 
 ResourceBundlePtr Logger::getResourceBundle() const
 {
-	for (const Logger* l = this; l != 0; l = l->m_priv->parent.get())
+	for (const Logger* l = this; l != 0; l = l->m_priv->getParent().get())
 	{
 		if (l->m_priv->resourceBundle != 0)
 		{
@@ -380,7 +406,7 @@ LogString Logger::getResourceBundleString(const LogString& key) const
 
 LoggerPtr Logger::getParent() const
 {
-	return m_priv->parent;
+	return m_priv->getParent();
 }
 
 const LevelPtr& Logger::getLevel() const
@@ -656,7 +682,7 @@ void Logger::setHierarchy(spi::LoggerRepository* repository1)
 
 void Logger::setParent(LoggerPtr parentLogger)
 {
-	m_priv->parent = parentLogger;
+	m_priv->setParent(parentLogger);
 	updateThreshold();
 	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
 		rep->updateChildren(this);
