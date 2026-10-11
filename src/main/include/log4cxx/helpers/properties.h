@@ -132,7 +132,7 @@ class LOG4CXX_EXPORT Properties
 		@throw IOException if an error occurred when reading from the input
 		stream.
 		*/
-		void load(InputStreamPtr inStream);
+		void load(const InputStreamPtr& inStream);
 
 		/**
 		 *  Calls Properties::put.

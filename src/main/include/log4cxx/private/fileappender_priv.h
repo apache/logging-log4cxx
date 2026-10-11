@@ -30,8 +30,8 @@ namespace LOG4CXX_NS
 struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPriv
 {
 	FileAppenderPriv
-		( LayoutPtr _layout = LayoutPtr()
-		, const LogString& _fileName = LogString()
+		( const LayoutPtr& _layout = {}
+		, const LogString& _fileName = {}
 		, bool _fileAppend = true
 		, bool _bufferedIO = false
 		, int _bufferSize = 8 * 1024

@@ -63,9 +63,7 @@ class LOG4CXX_EXPORT LogManager
 		{@link spi::RepositorySelector RepositorySelector}
 		used by the LogManager.
 		*/
-
-		static void setRepositorySelector(spi::RepositorySelectorPtr selector,
-			void* guard);
+		static void setRepositorySelector(const spi::RepositorySelectorPtr& selector, void* guard);
 
 		static spi::LoggerRepositoryPtr getLoggerRepository();
 

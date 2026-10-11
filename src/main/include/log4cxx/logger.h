@@ -78,7 +78,7 @@ class LOG4CXX_EXPORT Logger
 		<p>If <code>newAppender</code> is already in the list of
 		appenders, then it won't be added again.
 		*/
-		void addAppender(const AppenderPtr newAppender) override;
+		void addAppender(const AppenderPtr& newAppender) override;
 
 
 		/**
@@ -940,7 +940,7 @@ class LOG4CXX_EXPORT Logger
 		/**
 		Is \c appender attached to this logger?
 		*/
-		bool isAttached(const AppenderPtr appender) const override;
+		bool isAttached(const AppenderPtr& appender) const override;
 
 		/**
 		 *  Is this logger is enabled for <code>DEBUG</code> level logging events?
@@ -1494,7 +1494,7 @@ class LOG4CXX_EXPORT Logger
 		/**
 		Remove the appender passed as parameter form the list of appenders.
 		*/
-		void removeAppender(const AppenderPtr appender) override;
+		void removeAppender(const AppenderPtr& appender) override;
 
 		/**
 		Remove the appender with the name passed as parameter form the
@@ -1532,14 +1532,14 @@ class LOG4CXX_EXPORT Logger
 		/**
 		Only the Hierarchy class can set the parent of a logger.
 		*/
-		void setParent(LoggerPtr parentLogger);
+		void setParent(const LoggerPtr& parentLogger);
 		/**
 		Only the Hierarchy class can change the threshold of a logger.
 		*/
 		void updateThreshold();
 
 	public: // Unit testing support methods
-		void changeParentTo(const LoggerPtr& otherLogger) { setParent(otherLogger); }
+		void changeParentTo(const LoggerPtr& otherLogger);
 
 		/** Is m_threshold the same as level->toInt()
 		 */
@@ -1563,7 +1563,7 @@ class LOG4CXX_EXPORT Logger
 		<p>As in <code>logger->setLevel(Level::getDebug());</code>
 
 		<p>Null values are admitted.  */
-		virtual void setLevel(const LevelPtr level);
+		virtual void setLevel(const LevelPtr& level);
 
 		/**
 		Set the resource bundle to be used with localized logging methods.

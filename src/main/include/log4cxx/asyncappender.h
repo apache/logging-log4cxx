@@ -118,7 +118,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 *
 		 * @param newAppender appender to add, may not be null.
 		*/
-		void addAppender(const AppenderPtr newAppender) override;
+		void addAppender(const AppenderPtr& newAppender) override;
 
 		/**
 		* Call AppenderSkeleton#doAppendImpl without acquiring a lock.
@@ -158,7 +158,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		* @param appender appender.
 		* @return true if attached.
 		*/
-		bool isAttached(const AppenderPtr appender) const override;
+		bool isAttached(const AppenderPtr& appender) const override;
 
 		/** Return false
 		*/
@@ -173,7 +173,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 * Removes an appender.
 		 * @param appender appender to remove.
 		*/
-		void removeAppender(const AppenderPtr appender) override;
+		void removeAppender(const AppenderPtr& appender) override;
 		/**
 		* Remove appender by name.
 		* @param name name.

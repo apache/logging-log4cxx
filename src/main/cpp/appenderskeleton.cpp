@@ -55,7 +55,7 @@ void AppenderSkeleton::activateOptions(  )
 }
 
 
-void AppenderSkeleton::addFilter(const spi::FilterPtr newFilter)
+void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 {
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
@@ -162,7 +162,7 @@ bool AppenderSkeleton::AppenderSkeletonPrivate::checkLayout()
 	return true;
 }
 
-void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
+void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1)
 {
 	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
@@ -238,7 +238,7 @@ const LevelPtr AppenderSkeleton::getThreshold() const
 	return m_priv->threshold;
 }
 
-void AppenderSkeleton::setLayout(const LayoutPtr layout1)
+void AppenderSkeleton::setLayout(const LayoutPtr& layout1)
 {
 	m_priv->layout = layout1;
 }

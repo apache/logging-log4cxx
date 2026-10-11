@@ -36,7 +36,7 @@ class LOG4CXX_EXPORT DefaultRepositorySelector
 		LOG4CXX_CAST_ENTRY(RepositorySelector)
 		END_LOG4CXX_CAST_MAP()
 
-		DefaultRepositorySelector(const LoggerRepositoryPtr repository1);
+		DefaultRepositorySelector(const LoggerRepositoryPtr& repository1);
 		~DefaultRepositorySelector();
 		LoggerRepositoryPtr getLoggerRepository() override;
 

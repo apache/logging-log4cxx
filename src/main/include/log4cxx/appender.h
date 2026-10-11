@@ -57,7 +57,7 @@ class LOG4CXX_EXPORT Appender
 		/**
 		 Add a filter to the end of the filter list.
 		*/
-		virtual void addFilter(const spi::FilterPtr newFilter) = 0;
+		virtual void addFilter(const spi::FilterPtr& newFilter) = 0;
 
 		/**
 		 Returns the head Filter. The Filters are organized in a linked list
@@ -101,7 +101,7 @@ class LOG4CXX_EXPORT Appender
 		/**
 		 Set the Layout for this appender.
 		*/
-		virtual void setLayout(const LayoutPtr layout) = 0;
+		virtual void setLayout(const LayoutPtr& layout) = 0;
 
 		/**
 		 Returns this appenders layout.

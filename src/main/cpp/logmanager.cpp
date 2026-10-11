@@ -56,7 +56,7 @@ RepositorySelectorPtr LogManager::getRepositorySelector()
 	return result;
 }
 
-void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector, void* guard1)
+void LogManager::setRepositorySelector(const spi::RepositorySelectorPtr& selector, void* guard1)
 {
 	if ((LogManager::guard != 0) && (LogManager::guard != guard1))
 	{

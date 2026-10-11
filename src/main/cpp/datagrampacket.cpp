@@ -32,7 +32,7 @@ struct DatagramPacket::DatagramPacketPriv
 	{
 	}
 
-	DatagramPacketPriv(void* buf1, PacketSizeType length1, InetAddressPtr address1,
+	DatagramPacketPriv(void* buf1, PacketSizeType length1, const InetAddressPtr& address1,
 		int port1)
 		: buf(buf1), offset(0), length(length1), address(address1), port(port1)
 	{
@@ -44,7 +44,7 @@ struct DatagramPacket::DatagramPacketPriv
 	}
 
 	DatagramPacketPriv(void* buf1, PacketSizeType offset1, PacketSizeType length1,
-		InetAddressPtr address1, int port1)
+		const InetAddressPtr& address1, int port1)
 		: buf(buf1), offset(offset1), length(length1), address(address1), port(port1)
 	{
 	}
@@ -77,7 +77,7 @@ DatagramPacket::DatagramPacket(void* buf1, PacketSizeType length1)
 /** Constructs a datagram packet for sending packets of length
 <code>length/<code> to the specified port number on the specified
 host. */
-DatagramPacket::DatagramPacket(void* buf1, PacketSizeType length1, InetAddressPtr address1,
+DatagramPacket::DatagramPacket(void* buf1, PacketSizeType length1, const InetAddressPtr& address1,
 	int port1)
 	: m_priv(std::make_unique<DatagramPacketPriv>(buf1, length1, address1, port1))
 {
@@ -93,7 +93,7 @@ DatagramPacket::DatagramPacket(void* buf1, PacketSizeType offset1, PacketSizeTyp
 <code>length</code> with offset <code>offset</code> to the
 specified port number on the specified host. */
 DatagramPacket::DatagramPacket(void* buf1, PacketSizeType offset1, PacketSizeType length1,
-	InetAddressPtr address1, int port1)
+	const InetAddressPtr& address1, int port1)
 	: m_priv(std::make_unique<DatagramPacketPriv>(buf1, offset1, length1, address1, port1))
 {
 }
@@ -127,7 +127,7 @@ int DatagramPacket::getPort() const
 	return m_priv->port;
 }
 
-void DatagramPacket::setAddress(InetAddressPtr address1)
+void DatagramPacket::setAddress(const InetAddressPtr& address1)
 {
 	m_priv->address = address1;
 }
