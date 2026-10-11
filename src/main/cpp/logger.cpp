@@ -148,6 +148,7 @@ void Logger::addAppender(const AppenderPtr& newAppender)
 	if (auto rep = getHierarchy())
 	{
 		rep->fireAddAppenderEvent(this, newAppender.get());
+		rep->updateChildren)this);
 	}
 }
 
@@ -162,7 +163,10 @@ bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& 
 	{
 		m_priv->appenderCache.reset();
 		if (auto rep = getHierarchy())
+		{
 			rep->fireAddAppenderEvent(this, newAppender.get());
+			rep->updateChildren)this);
+		}
 	}
 	return result;
 }
@@ -176,6 +180,7 @@ void Logger::replaceAppenders( const AppenderList& newList)
 	{
 		for (auto const& item : newList)
 			rep->fireAddAppenderEvent(this, item.get());
+		rep->updateChildren)this);
 	}
 }
 
@@ -640,15 +645,16 @@ void Logger::removeAllAppenders()
 	{
 		auto currentAppenders = p->getAllAppenders();
 		p->removeAllAppenders();
+		m_priv->appenderCache.reset();
 
-		auto rep = getHierarchy();
-		if(rep){
+		if (auto rep = getHierarchy())
+		{
 			for(AppenderPtr appender : currentAppenders){
 				rep->fireRemoveAppenderEvent(this, appender.get());
 			}
+			rep->updateChildren(this);
 		}
 	}
-	m_priv->appenderCache.reset();
 }
 
 bool Logger::removeAppender(const AppenderPtr& appender)
@@ -658,10 +664,13 @@ bool Logger::removeAppender(const AppenderPtr& appender)
 	{
 		result = p->removeAppender(appender);
 		if (result)
-			m_priv->appenderCache.reset();
-		if (auto rep = getHierarchy())
 		{
-			rep->fireRemoveAppenderEvent(this, appender.get());
+			m_priv->appenderCache.reset();
+			if (auto rep = getHierarchy())
+			{
+				rep->fireRemoveAppenderEvent(this, appender.get());
+				rep->updateChildren(this);
+			}
 		}
 	}
 	return result;
@@ -688,7 +697,7 @@ void Logger::setAdditivity(bool additive1)
 {
 	m_priv->appenderCache.reset();
 	m_priv->additive = additive1;
-	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
+	if (auto rep = getHierarchy())
 		rep->updateChildren(this);
 }
 
@@ -701,7 +710,7 @@ void Logger::setParent(const LoggerPtr& parentLogger)
 {
 	m_priv->setParent(parentLogger);
 	updateCachedConfiguration();
-	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
+	if (auto rep = getHierarchy())
 		rep->updateChildren(this);
 }
 
@@ -714,7 +723,7 @@ void Logger::setLevel(const LevelPtr& level1)
 	{
 		m_priv->level = level1;
 		updateCachedConfiguration();
-		if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
+		if (auto rep = getHierarchy())
 			rep->updateChildren(this);
 	}
 }

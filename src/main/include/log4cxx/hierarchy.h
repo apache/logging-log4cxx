@@ -219,9 +219,9 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		virtual void setConfigured(bool configured) override;
 
 		/**
-		Refresh the threshold in children of parent
+		Refresh the configuration in children of \c parent
 		*/
-		void updateChildren(const Logger* parent);
+		void updateChildren(const Logger* parent) override;
 
 		/**
 		Remove the \c name Logger from the hierarchy.
