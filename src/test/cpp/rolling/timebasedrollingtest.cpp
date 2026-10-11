@@ -449,7 +449,7 @@ public:
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(pool, 3, __LOG4CXX_FUNC__, __LINE__);
 
-		logger->removeAppender(rfa1);
+		LOGUNIT_ASSERT(logger->removeAppender(rfa1));
 		rfa1->close();
 
 		PatternLayoutPtr		layout2(new PatternLayout(PATTERN_LAYOUT));
@@ -529,7 +529,7 @@ public:
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(pool, nrOfLogMsgs, __LOG4CXX_FUNC__, __LINE__);
 
-		logger->removeAppender(rfa1);
+		LOGUNIT_ASSERT(logger->removeAppender(rfa1));
 		rfa1->close();
 
 		PatternLayoutPtr        layout2(new PatternLayout(PATTERN_LAYOUT));
@@ -737,7 +737,7 @@ public:
 		LOG4CXX_DEBUG(logger, "roll despite corrupt map");
 		LOGUNIT_ASSERT(File("output/rolling/tbr-map-corrupt.log").exists());
 
-		logger->removeAppender(rfa);
+		LOGUNIT_ASSERT(logger->removeAppender(rfa));
 		rfa->close();
 		File(mapFile).deleteFile();
 		File(lockFile).deleteFile();

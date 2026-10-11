@@ -62,15 +62,16 @@ class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
 		virtual void removeAllAppenders() = 0;
 
 		/**
-		 * Remove the appender passed as parameter from the list of appenders.
+		 * Remove \c appender from the list of appenders.
+		 * @returns true if successful.
 		 */
-		virtual void removeAppender(const AppenderPtr& appender) = 0;
+		virtual bool removeAppender(const AppenderPtr& appender) = 0;
 
 		/**
-		 * Remove the appender with the name passed as parameter from the
-		 * list of appenders.
+		 * Remove the \c name appender from the list of appenders.
+		 * @returns true if successful.
 		 */
-		virtual void removeAppender(const LogString& name) = 0;
+		virtual bool removeAppender(const LogString& name) = 0;
 
 		/**
 		 * Replace \c oldAppender  with \c newAppender.

@@ -40,9 +40,21 @@ struct Logger::LoggerPrivate
 {
 	LoggerPrivate(const LogString& name1)
 		: name(name1)
-		, repositoryRaw(0)
-		, additive(true)
-		, levelData(Level::getData())
+		, appenderCache([this](AppenderAttachableImpl* pCache)
+			{
+				auto pPriv = this;
+				do
+				{
+					if (auto p = pPriv->aai.get_ptr())
+						pCache->addAppendersOf(*p);
+					if (!pPriv->additive)
+						break;
+					auto pParent = pPriv->getParent();
+					if (!pParent)
+						break;
+					pPriv = pParent->m_priv.get();
+				} while (pPriv);
+			})
 		{}
 
 	/**
@@ -55,6 +67,12 @@ struct Logger::LoggerPrivate
 	<code>level</code> variable need not be assigned a value in
 	which case it is inherited form the hierarchy.  */
 	LevelPtr level;
+
+	/**
+	Holds all the appenders targeted by this logger.
+	The set of appenders is calculated when the first event is added.
+	*/
+	LazyPtr<AppenderAttachableImpl> appenderCache;
 
 	/**
 	The parent of this logger. All loggers have at least one
@@ -95,20 +113,19 @@ struct Logger::LoggerPrivate
 
 
 	// Loggers need to know what Hierarchy they are in
-	spi::LoggerRepository* repositoryRaw;
+	spi::LoggerRepository* repositoryRaw{ nullptr };
 
 	LazyPtr<AppenderAttachableImpl> aai;
 
-	/** Additivity is set to true by default, that is children inherit
-	        the appenders of their ancestors by default. If this variable is
-	        set to <code>false</code> then the appenders found in the
+	/** By default children inherit the appenders of their ancestors.
+	        If <code>false</code> then the appenders found in the
 	        ancestors of this logger are not used. However, the children
 	        of this logger will inherit its appenders, unless the children
 	        have their additivity flag set to <code>false</code> too. See
 	        the user manual for more details. */
-	bool additive;
+	bool additive{ true };
 
-	Level::DataPtr levelData;
+	Level::DataPtr levelData{ Level::getData() };
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
@@ -126,6 +143,7 @@ Logger::~Logger()
 
 void Logger::addAppender(const AppenderPtr& newAppender)
 {
+	m_priv->appenderCache.reset();
 	m_priv->aai->addAppender(newAppender);
 	if (auto rep = getHierarchy())
 	{
@@ -137,9 +155,12 @@ bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& 
 {
 	bool result = false;
 	if (auto p = m_priv->aai.get_ptr())
+	{
 		result = p->replaceAppender(oldAppender, newAppender);
+	}
 	if (result)
 	{
+		m_priv->appenderCache.reset();
 		if (auto rep = getHierarchy())
 			rep->fireAddAppenderEvent(this, newAppender.get());
 	}
@@ -148,6 +169,7 @@ bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& 
 
 void Logger::replaceAppenders( const AppenderList& newList)
 {
+	m_priv->appenderCache.reset();
 	m_priv->aai->replaceAppenders(newList);
 
 	if (auto rep = getHierarchy())
@@ -166,23 +188,8 @@ void Logger::reconfigure( const AppenderList& newList, bool newAdditivity )
 
 void Logger::callAppenders(const spi::LoggingEventPtr& event) const
 {
-	int writes = 0;
-
-	for (const Logger* logger = this;
-		logger != 0;
-		logger = logger->m_priv->getParent().get())
-	{
-		if (auto p = logger->m_priv->aai.get_ptr())
-			writes += p->appendLoopOnAppenders(event);
-
-		if (!logger->m_priv->additive)
-		{
-			break;
-		}
-	}
-
+	int writes = m_priv->appenderCache->appendLoopOnAppenders(event);
 	auto rep = getHierarchy();
-
 	if (writes == 0 && rep)
 	{
 		rep->emitNoAppenderWarning(this);
@@ -641,28 +648,35 @@ void Logger::removeAllAppenders()
 			}
 		}
 	}
+	m_priv->appenderCache.reset();
 }
 
-void Logger::removeAppender(const AppenderPtr& appender)
+bool Logger::removeAppender(const AppenderPtr& appender)
 {
+	bool result = false;
 	if (auto p = m_priv->aai.get_ptr())
 	{
-		p->removeAppender(appender);
+		result = p->removeAppender(appender);
+		if (result)
+			m_priv->appenderCache.reset();
 		if (auto rep = getHierarchy())
 		{
 			rep->fireRemoveAppenderEvent(this, appender.get());
 		}
 	}
+	return result;
 }
 
-void Logger::removeAppender(const LogString& name1)
+bool Logger::removeAppender(const LogString& name1)
 {
+	bool result = false;
 	if (auto p = m_priv->aai.get_ptr())
 	{
 		if (auto appender = p->getAppender(name1)) {
-			removeAppender(appender);
+			result = removeAppender(appender);
 		}
 	}
+	return result;
 }
 
 void Logger::removeHierarchy()
@@ -672,7 +686,10 @@ void Logger::removeHierarchy()
 
 void Logger::setAdditivity(bool additive1)
 {
+	m_priv->appenderCache.reset();
 	m_priv->additive = additive1;
+	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
+		rep->updateChildren(this);
 }
 
 void Logger::setHierarchy(spi::LoggerRepository* repository1)
@@ -683,7 +700,7 @@ void Logger::setHierarchy(spi::LoggerRepository* repository1)
 void Logger::setParent(const LoggerPtr& parentLogger)
 {
 	m_priv->setParent(parentLogger);
-	updateThreshold();
+	updateCachedConfiguration();
 	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
 		rep->updateChildren(this);
 }
@@ -696,14 +713,15 @@ void Logger::setLevel(const LevelPtr& level1)
 	if (m_priv->level != level1)
 	{
 		m_priv->level = level1;
-		updateThreshold();
+		updateCachedConfiguration();
 		if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
 			rep->updateChildren(this);
 	}
 }
 
-void Logger::updateThreshold()
+void Logger::updateCachedConfiguration()
 {
+	m_priv->appenderCache.reset();
 	m_threshold = getEffectiveLevel()->toInt();
 }
 

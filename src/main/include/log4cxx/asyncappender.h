@@ -170,15 +170,15 @@ class LOG4CXX_EXPORT AsyncAppender :
 		void removeAllAppenders() override;
 
 		/**
-		 * Removes an appender.
-		 * @param appender appender to remove.
+		 * Remove \c appender.
+		 * @returns true if successful.
 		*/
-		void removeAppender(const AppenderPtr& appender) override;
+		bool removeAppender(const AppenderPtr& appender) override;
 		/**
-		* Remove appender by name.
-		* @param name name.
+		* Remove the \c name appender.
+		* @returns true if successful.
 		*/
-		void removeAppender(const LogString& name) override;
+		bool removeAppender(const LogString& name) override;
 
 		/**
 		 * Replace \c oldAppender  with \c newAppender.

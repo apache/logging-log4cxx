@@ -424,7 +424,7 @@ void Hierarchy::updateChildren(const Logger* parent)
 		{
 			if (l->getParent().get() == parent)
 			{
-				item.second->updateThreshold();
+				item.second->updateCachedConfiguration();
 				break;
 			}
 		}

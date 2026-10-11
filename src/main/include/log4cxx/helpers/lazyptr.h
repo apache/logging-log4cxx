@@ -29,10 +29,13 @@ template <typename T>
 class LazyPtr
 {
 private:
+	std::function<void(T*)> m_initialiser;
 	std::atomic<T*> m_ptr{nullptr};
 
 public: // ...structors
-	LazyPtr() = default;
+	LazyPtr(std::function<void(T*)> initialiser = {})
+		: m_initialiser(initialiser)
+		{}
 
 	// Clean up allocated resource on destruction
 	~LazyPtr()
@@ -80,6 +83,13 @@ public: // Operators
 		return m_ptr.load(std::memory_order_relaxed);
 	}
 
+public: // Modifiers
+	// Safely release the raw pointer
+	void reset()
+	{
+		delete m_ptr.exchange(nullptr, std::memory_order_acq_rel);
+	}
+
 private: // Modifiers
 	// Lazily initialize if required
 	T* get_or_throw()
@@ -88,6 +98,8 @@ private: // Modifiers
 		if (!p)
 		{
 			auto* new_p = new T();
+			if (m_initialiser)
+				m_initialiser(new_p);
 			if (!m_ptr.compare_exchange_strong(p, new_p
 				, std::memory_order_relaxed
 				, std::memory_order_relaxed
