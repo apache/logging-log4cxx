@@ -641,11 +641,11 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
+	m_priv->appenderCache.reset();
 	if (auto p = m_priv->aai.get_ptr())
 	{
 		auto currentAppenders = p->getAllAppenders();
 		p->removeAllAppenders();
-		m_priv->appenderCache.reset();
 
 		if (auto rep = getHierarchy())
 		{
