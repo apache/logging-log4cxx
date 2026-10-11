@@ -47,7 +47,7 @@ class LOG4CXX_EXPORT PropertyResourceBundle : public ResourceBundle
 		@throw IOException if an error occurred when reading from the
 		input stream.
 		*/
-		PropertyResourceBundle(InputStreamPtr inStream);
+		PropertyResourceBundle(const InputStreamPtr& inStream);
 
 		LogString getString(const LogString& key) const override;
 

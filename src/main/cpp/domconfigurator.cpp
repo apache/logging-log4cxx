@@ -113,11 +113,11 @@ public: // Methods
 
 	void parseRoot(apr_xml_elem* rootElement);
 
-	void parseChildrenOfLoggerElement(apr_xml_elem* catElement, LoggerPtr logger, bool isRoot);
+	void parseChildrenOfLoggerElement(apr_xml_elem* catElement, const LoggerPtr& logger, bool isRoot);
 
 	LayoutPtr parseLayout(apr_xml_elem* layout_element);
 
-	void parseLevel(apr_xml_elem* element, LoggerPtr logger, bool isRoot);
+	void parseLevel(apr_xml_elem* element, const LoggerPtr& logger, bool isRoot);
 
 	void setParameter(apr_xml_elem* elem, config::PropertySetter& propSetter);
 
@@ -593,7 +593,7 @@ void DOMConfiguratorContext::parseRoot(apr_xml_elem* rootElement)
 /**
  Used internally to parse the children of a logger element.
 */
-void DOMConfiguratorContext::parseChildrenOfLoggerElement(apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot)
+void DOMConfiguratorContext::parseChildrenOfLoggerElement(apr_xml_elem* loggerElement, const LoggerPtr& logger, bool isRoot)
 {
 	PropertySetter propSetter(logger);
 	auto loggerName = this->repository->getRootLogger() == logger
@@ -839,7 +839,7 @@ RollingPolicyPtr DOMConfiguratorContext::parseRollingPolicy(apr_xml_elem* policy
 /**
  Used internally to parse a level  element.
 */
-void DOMConfiguratorContext::parseLevel(apr_xml_elem* element, LoggerPtr logger, bool isRoot)
+void DOMConfiguratorContext::parseLevel(apr_xml_elem* element, const LoggerPtr& logger, bool isRoot)
 {
 	LogString loggerName = logger->getName();
 

@@ -37,7 +37,7 @@ struct DatagramSocket::DatagramSocketPriv
 	{
 	}
 
-	DatagramSocketPriv(int localPort1, InetAddressPtr localAddress1)
+	DatagramSocketPriv(int localPort1, const InetAddressPtr& localAddress1)
 		: localAddress(localAddress1), port(0), localPort(localPort1)
 	{
 	}

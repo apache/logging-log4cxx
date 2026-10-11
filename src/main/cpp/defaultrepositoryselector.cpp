@@ -26,7 +26,7 @@ struct DefaultRepositorySelector::DefaultRepositorySelectorPrivate
 	LoggerRepositoryPtr repository;
 };
 
-DefaultRepositorySelector::DefaultRepositorySelector(const LoggerRepositoryPtr repository1)
+DefaultRepositorySelector::DefaultRepositorySelector(const LoggerRepositoryPtr& repository1)
 	: m_priv(std::make_unique<DefaultRepositorySelectorPrivate>())
 {
 	m_priv->repository = repository1;

@@ -50,13 +50,13 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		virtual ~DatagramSocket();
 
 		/**  Binds a datagram socket to a local port and address.*/
-		virtual void bind(int lport, InetAddressPtr laddress) = 0;
+		virtual void bind(int lport, const InetAddressPtr& laddress) = 0;
 
 		/** Closes this datagram socket */
 		virtual void close();
 
 		/** Connects the socket to a remote address for this socket. */
-		virtual void connect(InetAddressPtr address, int port) = 0;
+		virtual void connect(const InetAddressPtr& address, int port) = 0;
 
 		/** Returns the address to which this socket is connected. */
 		InetAddressPtr getInetAddress() const;
@@ -81,10 +81,10 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		bool isConnected() const;
 
 		/**  Receives a datagram packet from this socket. */
-		virtual void receive(DatagramPacketPtr& p) = 0;
+		virtual void receive(const DatagramPacketPtr& p) = 0;
 
 		/** Sends a datagram packet from this socket. */
-		virtual void  send(DatagramPacketPtr& p) = 0;
+		virtual void  send(const DatagramPacketPtr& p) = 0;
 
 		/** Constructs a datagram socket and binds it to any available port
 		on the local host machine.*/
@@ -96,7 +96,7 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 
 		/**  Creates a datagram socket, bound to the specified local
 		address. */
-		static DatagramSocketUniquePtr create(int port, InetAddressPtr laddr);
+		static DatagramSocketUniquePtr create(int port, const InetAddressPtr& laddr);
 
 	private:
 		DatagramSocket(const DatagramSocket&);

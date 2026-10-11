@@ -33,21 +33,21 @@ class APRDatagramSocket : public DatagramSocket {
 
 	APRDatagramSocket(int port);
 
-	APRDatagramSocket(int port, InetAddressPtr laddr);
+	APRDatagramSocket(int port, const InetAddressPtr& laddr);
 
-	void bind(int lport, InetAddressPtr laddress) override;
+	void bind(int lport, const InetAddressPtr& laddress) override;
 
 	void close() override;
 
 	bool isClosed() const override;
 
 	/**  Receives a datagram packet from this socket. */
-	virtual void receive(DatagramPacketPtr& p) override;
+	virtual void receive(const DatagramPacketPtr& p) override;
 
 	/** Sends a datagram packet from this socket. */
-	virtual void  send(DatagramPacketPtr& p) override;
+	virtual void send(const DatagramPacketPtr& p) override;
 
-	virtual void connect(InetAddressPtr address, int port) override;
+	virtual void connect(const InetAddressPtr& address, int port) override;
 
     private:
 	void init();
