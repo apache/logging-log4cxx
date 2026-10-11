@@ -148,7 +148,7 @@ void Logger::addAppender(const AppenderPtr& newAppender)
 	if (auto rep = getHierarchy())
 	{
 		rep->fireAddAppenderEvent(this, newAppender.get());
-		rep->updateChildren)this);
+		rep->updateChildren(this);
 	}
 }
 
@@ -165,7 +165,7 @@ bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& 
 		if (auto rep = getHierarchy())
 		{
 			rep->fireAddAppenderEvent(this, newAppender.get());
-			rep->updateChildren)this);
+			rep->updateChildren(this);
 		}
 	}
 	return result;
@@ -180,7 +180,7 @@ void Logger::replaceAppenders( const AppenderList& newList)
 	{
 		for (auto const& item : newList)
 			rep->fireAddAppenderEvent(this, item.get());
-		rep->updateChildren)this);
+		rep->updateChildren(this);
 	}
 }
 
