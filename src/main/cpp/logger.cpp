@@ -163,7 +163,7 @@ struct Logger::LoggerPrivate
 				aCache.addAppendersOf(*p);
 			if (!pPriv->additive)
 				break;
-			auto pParent = pPriv->getParent();
+			auto pParent = pPriv->parent;
 			if (!pParent)
 				break;
 			pPriv = pParent->m_priv.get();
