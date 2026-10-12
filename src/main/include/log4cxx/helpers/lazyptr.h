@@ -40,7 +40,7 @@ public: // ...structors
 	// Clean up allocated resource on destruction
 	~LazyPtr()
 	{
-		delete m_ptr.load(std::memory_order_relaxed);
+		delete m_ptr.load(std::memory_order_acquire);
 	}
 
 	// Prevent copying to avoid double-free errors
@@ -49,7 +49,7 @@ public: // ...structors
 
 	// Allow moving
 	LazyPtr(LazyPtr&& other) noexcept
-		: m_ptr(other.m_ptr.exchange(nullptr, std::memory_order_relaxed))
+		: m_ptr(other.m_ptr.exchange(nullptr, std::memory_order_acq_rel))
 	{}
 
 public: // Operators
@@ -58,9 +58,9 @@ public: // Operators
 	{
 		if (this != &other)
 		{
-			delete m_ptr.load(std::memory_order_relaxed);
-			m_ptr.store(other.m_ptr.exchange(nullptr, std::memory_order_relaxed),
-					   std::memory_order_relaxed);
+			delete m_ptr.load(std::memory_order_acquire);
+			m_ptr.store(other.m_ptr.exchange(nullptr, std::memory_order_acq_rel),
+					   std::memory_order_release);
 		}
 		return *this;
 	}
@@ -74,35 +74,28 @@ public: // Operators
 	// Explicit bool conversion
 	explicit operator bool() const noexcept
 	{
-		return m_ptr.load(std::memory_order_relaxed) != nullptr;
+		return m_ptr.load(std::memory_order_acquire) != nullptr;
 	}
 
 	// The raw pointer value
 	T* get_ptr() const noexcept
 	{
-		return m_ptr.load(std::memory_order_relaxed);
-	}
-
-public: // Modifiers
-	// Safely release the raw pointer
-	void reset()
-	{
-		delete m_ptr.exchange(nullptr, std::memory_order_acq_rel);
+		return m_ptr.load(std::memory_order_acquire);
 	}
 
 private: // Modifiers
 	// Lazily initialize if required
 	T* get_or_throw()
 	{
-		T* p = m_ptr.load(std::memory_order_relaxed);
+		T* p = m_ptr.load(std::memory_order_acquire);
 		if (!p)
 		{
 			auto* new_p = new T();
 			if (m_initialiser)
 				m_initialiser(new_p);
 			if (!m_ptr.compare_exchange_strong(p, new_p
-				, std::memory_order_relaxed
-				, std::memory_order_relaxed
+				, std::memory_order_release
+				, std::memory_order_acquire
 				)
 			   )
 			{
