@@ -276,22 +276,15 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		void updateParents(const LoggerPtr& logger, const LoggerPtr& root);
 
 		/**
-		Refresh the parent links for all provisional loggers
-		whose names include \c logger name as a prefix
-		We update the links for all the children that placed themselves
-		in the provision node 'pn'. The \c logger argument is a
-		newly created Logger, a potential parent of all the
-		children in 'pn'
+		Refresh the \c pn parent links for entries
+		whose name includes \c logger's name as a prefix.
+		The newly created \c logger is a potential parent of a provisional logger.
+		The parent of the matched provisional entry becomes the parent of \c logger
+		and \c logger becomes the parent of the matched provisional entry.
 
-		We loop on all the children 'c' in 'pn':
-
-		If the child 'c' has been already linked to a child of
-		'cat' then there is no need to update 'c'.
-
-		Otherwise, we set the \c logger parent to 'c's parent and set
-		'c's parent field to \c logger.
+		\sa updateParents()
 		*/
-		void updateChildren(ProvisionNode& pn, const LoggerPtr& logger);
+		void updateAncestory(ProvisionNode& pn, const LoggerPtr& logger);
 
 		Hierarchy(const Hierarchy&);
 		Hierarchy& operator=(const Hierarchy&);
