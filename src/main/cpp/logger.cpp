@@ -143,13 +143,13 @@ Logger::~Logger()
 
 void Logger::addAppender(const AppenderPtr& newAppender)
 {
-	m_priv->appenderCache.reset();
 	m_priv->aai->addAppender(newAppender);
 	if (auto rep = getHierarchy())
 	{
 		rep->fireAddAppenderEvent(this, newAppender.get());
 		rep->updateChildren(this);
 	}
+	m_priv->appenderCache.reset();
 }
 
 bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender)
@@ -161,19 +161,18 @@ bool Logger::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& 
 	}
 	if (result)
 	{
-		m_priv->appenderCache.reset();
 		if (auto rep = getHierarchy())
 		{
 			rep->fireAddAppenderEvent(this, newAppender.get());
 			rep->updateChildren(this);
 		}
+		m_priv->appenderCache.reset();
 	}
 	return result;
 }
 
 void Logger::replaceAppenders( const AppenderList& newList)
 {
-	m_priv->appenderCache.reset();
 	m_priv->aai->replaceAppenders(newList);
 
 	if (auto rep = getHierarchy())
@@ -182,6 +181,7 @@ void Logger::replaceAppenders( const AppenderList& newList)
 			rep->fireAddAppenderEvent(this, item.get());
 		rep->updateChildren(this);
 	}
+	m_priv->appenderCache.reset();
 }
 
 void Logger::reconfigure( const AppenderList& newList, bool newAdditivity )
@@ -641,7 +641,6 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
-	m_priv->appenderCache.reset();
 	if (auto p = m_priv->aai.get_ptr())
 	{
 		auto currentAppenders = p->getAllAppenders();
@@ -655,6 +654,7 @@ void Logger::removeAllAppenders()
 			rep->updateChildren(this);
 		}
 	}
+	m_priv->appenderCache.reset();
 }
 
 bool Logger::removeAppender(const AppenderPtr& appender)
@@ -665,12 +665,12 @@ bool Logger::removeAppender(const AppenderPtr& appender)
 		result = p->removeAppender(appender);
 		if (result)
 		{
-			m_priv->appenderCache.reset();
 			if (auto rep = getHierarchy())
 			{
 				rep->fireRemoveAppenderEvent(this, appender.get());
 				rep->updateChildren(this);
 			}
+			m_priv->appenderCache.reset();
 		}
 	}
 	return result;
@@ -695,10 +695,10 @@ void Logger::removeHierarchy()
 
 void Logger::setAdditivity(bool additive1)
 {
-	m_priv->appenderCache.reset();
 	m_priv->additive = additive1;
 	if (auto rep = getHierarchy())
 		rep->updateChildren(this);
+	m_priv->appenderCache.reset();
 }
 
 void Logger::setHierarchy(spi::LoggerRepository* repository1)
@@ -730,8 +730,8 @@ void Logger::setLevel(const LevelPtr& level1)
 
 void Logger::updateCachedConfiguration()
 {
-	m_priv->appenderCache.reset();
 	m_threshold = getEffectiveLevel()->toInt();
+	m_priv->appenderCache.reset();
 }
 
 const LogString& Logger::getName() const
