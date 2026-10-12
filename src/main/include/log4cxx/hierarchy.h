@@ -219,7 +219,9 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		virtual void setConfigured(bool configured) override;
 
 		/**
-		Refresh the configuration in children of \c parent
+		Refresh the configuration of all loggers where \c parent
+		is somewhere in their ancestor chain.
+		The ancestor chain ends at the root logger.
 		*/
 		void updateChildren(const Logger* parent) override;
 
@@ -274,6 +276,8 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		void updateParents(const LoggerPtr& logger, const LoggerPtr& root);
 
 		/**
+		Refresh the parent links for all provisional loggers
+		whose names include \c logger name as a prefix
 		We update the links for all the children that placed themselves
 		in the provision node 'pn'. The \c logger argument is a
 		newly created Logger, a potential parent of all the

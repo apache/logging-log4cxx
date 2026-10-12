@@ -142,7 +142,9 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		virtual void setConfigured(bool configured) = 0;
 
 		/**
-		Refresh the configuration in children of \c parent
+		Refresh the configuration of all loggers where \c parent
+		is somewhere in their ancestor chain.
+		The ancestor chain ends at the root logger.
 		*/
 		virtual void updateChildren(const Logger* parent) = 0;
 }; // class LoggerRepository
