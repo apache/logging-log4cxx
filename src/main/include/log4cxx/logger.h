@@ -1492,15 +1492,16 @@ class LOG4CXX_EXPORT Logger
 		void removeAllAppenders() override;
 
 		/**
-		Remove the appender passed as parameter form the list of appenders.
+		Remove \c appender from the list of appenders.
+		@returns true if successful.
 		*/
-		void removeAppender(const AppenderPtr& appender) override;
+		bool removeAppender(const AppenderPtr& appender) override;
 
 		/**
-		Remove the appender with the name passed as parameter form the
-		list of appenders.
+		Remove the \c name appender  from the list of appenders.
+		@returns true if successful.
 		 */
-		void removeAppender(const LogString& name) override;
+		bool removeAppender(const LogString& name) override;
 
 		/**
 		 * Replace \c oldAppender  with \c newAppender.
@@ -1534,9 +1535,9 @@ class LOG4CXX_EXPORT Logger
 		*/
 		void setParent(const LoggerPtr& parentLogger);
 		/**
-		Only the Hierarchy class can change the threshold of a logger.
+		Recalculate the effective configuration.
 		*/
-		void updateThreshold();
+		void updateCachedConfiguration();
 
 	public: // Unit testing support methods
 		void changeParentTo(const LoggerPtr& otherLogger);

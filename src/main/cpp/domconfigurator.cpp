@@ -184,14 +184,16 @@ AppenderPtr DOMConfiguratorContext::findAppenderByName(apr_xml_elem* element, co
 		{
 			if (appenderName == getAttribute(element, NAME_ATTR))
 			{
-				if (appender = parseAppender(element))
+				appender = parseAppender(element);
+				if (appender)
 					break;
 			}
 		}
 
 		if (element->first_child)
 		{
-			if (appender = findAppenderByName(element->first_child, appenderName))
+			appender = findAppenderByName(element->first_child, appenderName);
+			if (appender)
 				break;
 		}
 		element = element->next;
