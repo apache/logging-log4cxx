@@ -617,26 +617,30 @@ void Logger::removeAllAppenders()
 	}
 }
 
-void Logger::removeAppender(const AppenderPtr& appender)
+bool Logger::removeAppender(const AppenderPtr& appender)
 {
+	bool result = false;
 	if (auto p = m_priv->aai.get_ptr())
 	{
-		p->removeAppender(appender);
+		result = p->removeAppender(appender);
 		if (auto rep = getHierarchy())
 		{
 			rep->fireRemoveAppenderEvent(this, appender.get());
 		}
 	}
+	return result;
 }
 
-void Logger::removeAppender(const LogString& name1)
+bool Logger::removeAppender(const LogString& name1)
 {
+	bool result = false;
 	if (auto p = m_priv->aai.get_ptr())
 	{
 		if (auto appender = p->getAppender(name1)) {
-			removeAppender(appender);
+			result = removeAppender(appender);
 		}
 	}
+	return result;
 }
 
 void Logger::removeHierarchy()
@@ -657,7 +661,7 @@ void Logger::setHierarchy(spi::LoggerRepository* repository1)
 void Logger::setParent(const LoggerPtr& parentLogger)
 {
 	m_priv->parent = parentLogger;
-	updateThreshold();
+	updateCachedConfiguration();
 	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
 		rep->updateChildren(this);
 }
@@ -670,13 +674,13 @@ void Logger::setLevel(const LevelPtr& level1)
 	if (m_priv->level != level1)
 	{
 		m_priv->level = level1;
-		updateThreshold();
+		updateCachedConfiguration();
 		if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
 			rep->updateChildren(this);
 	}
 }
 
-void Logger::updateThreshold()
+void Logger::updateCachedConfiguration()
 {
 	m_threshold = getEffectiveLevel()->toInt();
 }

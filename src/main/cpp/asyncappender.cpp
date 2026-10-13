@@ -476,14 +476,14 @@ void AsyncAppender::removeAllAppenders()
 	priv->appenders.removeAllAppenders();
 }
 
-void AsyncAppender::removeAppender(const AppenderPtr& appender)
+bool AsyncAppender::removeAppender(const AppenderPtr& appender)
 {
-	priv->appenders.removeAppender(appender);
+	return priv->appenders.removeAppender(appender);
 }
 
-void AsyncAppender::removeAppender(const LogString& n)
+bool AsyncAppender::removeAppender(const LogString& n)
 {
-	priv->appenders.removeAppender(n);
+	return priv->appenders.removeAppender(n);
 }
 
 bool AsyncAppender::replaceAppender(const AppenderPtr& oldAppender, const AppenderPtr& newAppender)

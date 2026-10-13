@@ -51,7 +51,7 @@ class ConsoleAppenderTestCase : public WriterAppenderTestCase
 			LoggerPtr logger(Logger::getRootLogger());
 			logger->addAppender(appender);
 			LOG4CXX_INFO(logger, "No layout specified for ConsoleAppender");
-			logger->removeAppender(appender);
+			LOGUNIT_ASSERT(logger->removeAppender(appender));
 		}
 };
 

@@ -247,7 +247,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 
 		if (it2 != m_priv->provisionNodes.end())
 		{
-			updateChildren(it2->second, logger);
+			updateAncestory(it2->second, logger);
 			m_priv->provisionNodes.erase(it2);
 		}
 
@@ -401,7 +401,7 @@ void Hierarchy::updateParents(const LoggerPtr& logger, const LoggerPtr& root)
 	}
 }
 
-void Hierarchy::updateChildren(ProvisionNode& pn, const LoggerPtr& logger)
+void Hierarchy::updateAncestory(ProvisionNode& pn, const LoggerPtr& logger)
 {
 	for (auto& l : pn)
 	{
@@ -424,7 +424,7 @@ void Hierarchy::updateChildren(const Logger* parent)
 		{
 			if (l->getParent().get() == parent)
 			{
-				item.second->updateThreshold();
+				item.second->updateCachedConfiguration();
 				break;
 			}
 		}
