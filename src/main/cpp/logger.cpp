@@ -96,13 +96,13 @@ struct Logger::LoggerPrivate
 	AppenderAttachableImplPtr appenderCache;
 	AppenderAttachableImplPtr getAppenderCache()
 	{
-		auto result = std::atomic_load(&this->appenderCache);
+		std::lock_guard<std::mutex> lock( this->mutex );
+		auto result = this->appenderCache;
 		if (!result)
 		{
-			std::lock_guard<std::mutex> lock( this->mutex );
 			result = std::make_shared<AppenderAttachableImpl>();
 			setAppenderCache(*result);
-			std::atomic_store(&this->appenderCache, result);
+			this->appenderCache = result;
 		}
 		return result;
 	}
@@ -163,7 +163,7 @@ struct Logger::LoggerPrivate
 				aCache.addAppendersOf(*p);
 			if (!pPriv->additive)
 				break;
-			auto pParent = pPriv->parent;
+			LoggerPtr pParent = pPriv->parent;
 			if (!pParent)
 				break;
 			pPriv = pParent->m_priv.get();
