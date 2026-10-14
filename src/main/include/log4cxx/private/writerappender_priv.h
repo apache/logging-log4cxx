@@ -106,14 +106,16 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 		this->writer = newWriter;
 	}
 
+	/**
+		Invoke the ErrorHandler if the layout or writer is null.
+	*/
 	void checkConfiguration();
 
 	/**
-		Returns an OutputStreamWriter when passed an OutputStream.  The
-		encoding used will depend on the value of the
-		<code>encoding</code> property.  If the encoding value is
-		specified incorrectly the writer will be opened using the default
-		system encoding (an error message will be printed to the loglog.
+		Returns a WriterPtr when passed an OutputStream
+		using \c encoding to create the character encoder.
+		A warning is written to the internal logging output
+		if \c encoding string is not recognised.
 	*/
 	virtual helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os);
 };

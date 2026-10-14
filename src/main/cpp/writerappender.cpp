@@ -145,9 +145,9 @@ void WriterAppender::WriterAppenderPriv::close()
 /**
    Returns an OutputStreamWriter when passed an OutputStream.  The
    encoding used will depend on the value of the
-   <code>encoding</code> property.  If the encoding value is
-   specified incorrectly the writer will be opened using the default
-   system encoding (an error message will be printed to the loglog.  */
+   <code>encoding</code> property.
+   Throws IllegalArgumentException if the encoding value is now valid.
+*/
 WriterPtr WriterAppender::WriterAppenderPriv::createWriter(const OutputStreamPtr& os)
 {
 	CharsetEncoderPtr encoder;
@@ -156,7 +156,7 @@ WriterPtr WriterAppender::WriterAppenderPriv::createWriter(const OutputStreamPtr
 	{
 		encoder = CharsetEncoder::getDefaultEncoder();
 	}
-	else
+	else try
 	{
 		if (StringHelper::equalsIgnoreCase(this->encoding,
 				LOG4CXX_STR("utf-16"), LOG4CXX_STR("UTF-16")))
@@ -167,13 +167,11 @@ WriterPtr WriterAppender::WriterAppenderPriv::createWriter(const OutputStreamPtr
 		{
 			encoder = CharsetEncoder::getEncoder(this->encoding);
 		}
-
-		if (encoder == NULL)
-		{
-			encoder = CharsetEncoder::getDefaultEncoder();
-			LogLog::warn(LOG4CXX_STR("Error initializing output writer."));
-			LogLog::warn(LOG4CXX_STR("Unsupported encoding?"));
-		}
+	}
+	catch (const std::exception& )
+	{
+		encoder = CharsetEncoder::getDefaultEncoder();
+		LogLog::warn(this->encoding + LOG4CXX_STR(": unsupported encoding"));
 	}
 
 	return std::make_shared<OutputStreamWriter>(os, encoder);
