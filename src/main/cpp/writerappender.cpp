@@ -56,10 +56,10 @@ WriterAppender::~WriterAppender()
 
 void WriterAppender::activateOptions(  )
 {
-	_priv->activateOptions();
+	_priv->checkConfiguration();
 }
 
-void WriterAppender::WriterAppenderPriv::activateOptions()
+void WriterAppender::WriterAppenderPriv::checkConfiguration()
 {
 	if (this->layout == 0)
 	{
@@ -148,27 +148,24 @@ void WriterAppender::WriterAppenderPriv::close()
    <code>encoding</code> property.  If the encoding value is
    specified incorrectly the writer will be opened using the default
    system encoding (an error message will be printed to the loglog.  */
-WriterPtr WriterAppender::createWriter(const OutputStreamPtr& os)
+WriterPtr WriterAppender::WriterAppenderPriv::createWriter(const OutputStreamPtr& os)
 {
-
-	LogString enc(getEncoding());
-
 	CharsetEncoderPtr encoder;
 
-	if (enc.empty())
+	if (this->encoding.empty())
 	{
 		encoder = CharsetEncoder::getDefaultEncoder();
 	}
 	else
 	{
-		if (StringHelper::equalsIgnoreCase(enc,
+		if (StringHelper::equalsIgnoreCase(this->encoding,
 				LOG4CXX_STR("utf-16"), LOG4CXX_STR("UTF-16")))
 		{
 			encoder = CharsetEncoder::getEncoder(LOG4CXX_STR("UTF-16BE"));
 		}
 		else
 		{
-			encoder = CharsetEncoder::getEncoder(enc);
+			encoder = CharsetEncoder::getEncoder(this->encoding);
 		}
 
 		if (encoder == NULL)

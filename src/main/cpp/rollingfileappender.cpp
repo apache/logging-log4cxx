@@ -184,7 +184,7 @@ void RollingFileAppender::activateOptions(  )
 {
 	if (_priv->activateOptions())
 	{
-		FileAppender::activateOptionsInternal();
+		_priv->activate();
 	}
 }
 
@@ -196,14 +196,14 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 		LogLog::warn(LOG4CXX_STR("No rolling policy configured for the appender named [")
 			+ this->name + LOG4CXX_STR("]."));
 		auto fwrp = std::make_shared<FixedWindowRollingPolicy>();
-		fwrp->setFileNamePattern(this->fileName + LOG4CXX_STR(".%i"));
+		fwrp->setFileNamePattern(this->targetFile.getPath() + LOG4CXX_STR(".%i"));
 		this->rollingPolicy = fwrp;
 	}
 	else if (auto fwrp = LOG4CXX_NS::cast<FixedWindowRollingPolicy>(this->rollingPolicy))
 	{
 		// Was fwrp created to store the maximum index before the file name was set?
 		if (fwrp->getFileNamePattern() == LOG4CXX_STR(".%i"))
-			fwrp->setFileNamePattern(this->fileName + LOG4CXX_STR(".%i"));
+			fwrp->setFileNamePattern(this->targetFile.getPath() + LOG4CXX_STR(".%i"));
 	}
 
 	//
@@ -234,7 +234,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 		try
 		{
 			RolloverDescriptionPtr rollover1 =
-				this->rollingPolicy->initialize(this->fileName, this->fileAppend);
+				this->rollingPolicy->initialize(this->targetFile.getPath(), this->fileAppend);
 
 			if (rollover1 != NULL)
 			{
@@ -245,7 +245,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 					syncAction->execute();
 				}
 
-				this->fileName = rollover1->getActiveFileName();
+				this->targetFile.setPath(rollover1->getActiveFileName());
 				this->fileAppend = rollover1->getAppend();
 
 				//
@@ -259,12 +259,9 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 				}
 			}
 
-			File activeFile;
-			activeFile.setPath(this->fileName);
-
 			if (this->fileAppend)
 			{
-				this->fileLength = activeFile.length();
+				this->fileLength = this->targetFile.length();
 			}
 			else
 			{
@@ -275,7 +272,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 		}
 		catch (std::exception& ex)
 		{
-			LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + this->fileName, ex);
+			LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + this->targetFile.getPath(), ex);
 		}
 	}
 	return result;
@@ -369,19 +366,14 @@ bool RollingFileAppender::rolloverInternal()
 									}
 								}
 							}
-							setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize);
+							_priv->targetFile.setPath(rollover1->getActiveFileName());
+							_priv->fileAppend = appendToExisting;
+							_priv->activate();
 						}
 						else
 						{
-							_priv->close();
-							setFileInternal(rollover1->getActiveFileName());
-							// Call activateOptions to create any intermediate directories(if required)
-							FileAppender::activateOptionsInternal();
-							OutputStreamPtr os = std::make_shared<FileOutputStream>
-									( rollover1->getActiveFileName()
-									, rollover1->getAppend()
-									);
-							_priv->setWriter(createWriter(os));
+							_priv->targetFile.setPath(rollover1->getActiveFileName());
+							_priv->activate();
 
 							bool success = true;
 
@@ -524,7 +516,7 @@ namespace rolling
  * Wrapper for OutputStream that will report all write
  * operations back to this class for file length calculations.
  */
-class CountingOutputStream : public OutputStream
+class RollingFileAppender::RollingFileAppenderPriv::CountingOutputStream : public OutputStream
 {
 		/**
 		 * Wrapped output stream.
@@ -535,20 +527,20 @@ class CountingOutputStream : public OutputStream
 		/**
 		 * Rolling file appender to inform of stream writes.
 		 */
-		RollingFileAppender* rfa;
+		RollingFileAppenderPriv* parent;
 
 	public:
 		/**
 		 * Constructor.
 		 * @param os output stream to wrap.
-		 * @param rfa rolling file appender to inform.
+		 * @param parent rolling file appender to inform.
 		 */
 		CountingOutputStream
 			( const OutputStreamPtr& os1
-			, RollingFileAppender* rfa1
+			, RollingFileAppender::RollingFileAppenderPriv* parent1
 			)
 			: os(os1)
-			, rfa(rfa1)
+			, parent(parent1)
 		{
 		}
 
@@ -558,7 +550,7 @@ class CountingOutputStream : public OutputStream
 		void close(  ) override
 		{
 			os->close();
-			rfa = 0;
+			parent = 0;
 		}
 
 		/**
@@ -576,28 +568,19 @@ class CountingOutputStream : public OutputStream
 		{
 			os->write(buf);
 
-			if (rfa != 0)
+			if (parent != 0)
 			{
-				rfa->incrementFileLength(buf.limit());
+				parent->fileLength += buf.limit();
 			}
 		}
 };
 }
 }
 
-/**
-   Returns an OutputStreamWriter when passed an OutputStream.  The
-   encoding used will depend on the value of the
-   <code>encoding</code> property.  If the encoding value is
-   specified incorrectly the writer will be opened using the default
-   system encoding (an error message will be printed to the loglog.
- @param os output stream, may not be null.
- @return new writer.
- */
-WriterPtr RollingFileAppender::createWriter(const OutputStreamPtr& os)
+WriterPtr RollingFileAppender::RollingFileAppenderPriv::createWriter(const OutputStreamPtr& os)
 {
 	OutputStreamPtr cos = std::make_shared<CountingOutputStream>(os, this);
-	return FileAppender::createWriter(cos);
+	return FileAppenderPriv::createWriter(cos);
 }
 
 /**
@@ -609,11 +592,3 @@ size_t RollingFileAppender::getFileLength() const
 	return _priv->fileLength;
 }
 
-/**
- * Increments estimated byte length of current active log file.
- * @param increment additional bytes written to log file.
- */
-void RollingFileAppender::incrementFileLength(size_t increment)
-{
-	_priv->fileLength += increment;
-}

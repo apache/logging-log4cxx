@@ -104,7 +104,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 
 		<p>Note: Actual opening of the file is made when
 		#activateOptions is called, not when the options are set.  */
-		virtual void setFile(const LogString& file);
+		void setFile(const LogString& file);
 
 		/**
 		Returns the value of the <b>Append</b> option.
@@ -217,33 +217,6 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		 *   @return corrected file name
 		 */
 		static LogString stripDuplicateBackslashes(const LogString& name);
-
-	protected:
-		void activateOptionsInternal();
-
-		/**
-		Sets and <i>opens</i> the file where the log output will
-		go. The specified file must be writable.
-
-		<p>If there was already an opened file, then the previous file
-		is closed first.
-
-		<p><b>Do not use this method directly. To configure a FileAppender
-		or one of its subclasses, set its properties one by one and then
-		call activateOptions.</b>
-
-		The mutex must be locked before calling this function.
-
-		@param file The path to the log file.
-		@param append If true will append to fileName. Otherwise will
-		truncate fileName.
-		@param bufferedIO Do we do bufferedIO?
-		@param bufferSize How big should the IO buffer be?
-		*/
-		void setFileInternal(const LogString& file, bool append,
-			bool bufferedIO, size_t bufferSize);
-
-		void setFileInternal(const LogString& file);
 
 	private:
 		FileAppender(const FileAppender&);

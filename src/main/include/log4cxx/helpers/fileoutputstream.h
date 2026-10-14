@@ -44,7 +44,6 @@ class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 		END_LOG4CXX_CAST_MAP()
 
 		FileOutputStream(const LogString& filename, bool append = false);
-		FileOutputStream(const logchar* filename, bool append = false);
 		virtual ~FileOutputStream();
 
 		using OutputStream::close;

@@ -136,6 +136,8 @@ public: // Support classes
 	public: // Accessors
 		bool hasLock() const { return m_ok; }
 	};
+
+	helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
 };
 
 #define _priv static_cast<MultiprocessRollingFileAppenderPriv*>(m_priv.get())
@@ -157,13 +159,13 @@ void MultiprocessRollingFileAppender::activateOptions(  )
 {
 	if (_priv->activateOptions())
 	{
-		// FileAppender::activateOptionsInternal() closes any existing writer,
+		// FileAppenderPriv::activate() closes any existing writer,
 		// destroying the FileOutputStream (and the pool) that owns the cached
 		// apr_file_t, before opening the new file (which may fail).  Clear the
 		// cache first so a failed open cannot leave it dangling;
 		// createWriter() re-caches the handle on success.
 		_priv->log_file = NULL;
-		FileAppender::activateOptionsInternal();
+		_priv->activate();
 	}
 
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
@@ -335,18 +337,14 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 					msg.append(LOG4CXX_STR("] failed"));
 					_priv->errorHandler->error(msg);
 				}
-				setFileInternal(rollover1->getActiveFileName(), appendToExisting, _priv->bufferedIO, _priv->bufferSize);
+				_priv->targetFile.setPath(rollover1->getActiveFileName());
+				_priv->fileAppend = appendToExisting;
+				_priv->activate();
 			}
 			else
 			{
-				setFileInternal(rollover1->getActiveFileName());
-				// Call activateOptions to create any intermediate directories(if required)
-				FileAppender::activateOptionsInternal();
-				OutputStreamPtr os = std::make_shared<FileOutputStream>
-					( rollover1->getActiveFileName()
-					, rollover1->getAppend()
-					);
-				_priv->setWriter(createWriter(os));
+				_priv->targetFile.setPath(rollover1->getActiveFileName());
+				_priv->activate();
 				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
 					success = pAction->execute();
@@ -402,7 +400,7 @@ void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
 		pTimeBased->loadLastFileName();
 #endif
 	OutputStreamPtr os = std::make_shared<FileOutputStream>(fileName, true);
-	WriterPtr newWriter(createWriter(os));
+	WriterPtr newWriter(_priv->createWriter(os));
 	setFile(fileName);
 	_priv->setWriter(newWriter);
 }
@@ -443,27 +441,18 @@ void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& eve
 	FileAppender::subAppend( event );
 }
 
-/**
-   Returns an OutputStreamWriter when passed an OutputStream.  The
-   encoding used will depend on the value of the
-   <code>encoding</code> property.  If the encoding value is
-   specified incorrectly the writer will be opened using the default
-   system encoding (an error message will be printed to the loglog.
- @param os output stream, may not be null.
- @return new writer.
- */
-WriterPtr MultiprocessRollingFileAppender::createWriter(const OutputStreamPtr& os)
+WriterPtr MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::createWriter(const OutputStreamPtr& os)
 {
 	auto fos = LOG4CXX_NS::cast<FileOutputStream>(os);
 	if( fos )
-		_priv->log_file = fos->getFilePtr();
+		this->log_file = fos->getFilePtr();
 	else
 	{
 		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));
 		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
-		_priv->errorHandler->error(msg);
+		this->errorHandler->error(msg);
 	}
-	return RollingFileAppender::createWriter(os);
+	return RollingFileAppenderPriv::createWriter(os);
 }
 
 
