@@ -713,7 +713,7 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset)
 #if APR_HAS_XLATE
 	return std::make_shared<APRCharsetEncoder>(charset);
 #else
-	throw IllegalArgumentException(charset);
+	throw IllegalArgumentException(charset + LOG4CXX_STR(": unsupported encoding"));
 #endif
 }
 

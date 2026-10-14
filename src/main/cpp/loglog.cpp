@@ -294,6 +294,7 @@ void LogLog::LogLogPrivate::emit_log(const LogString& prefix, const LogString& m
 		exOut.append(out);
 		Transcoder::decode(raw, exOut);
 	}
+	out.append(msg);
 	out.append(suffix);
 	out.append(1, (logchar) 0x0A);
 

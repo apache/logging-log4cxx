@@ -168,10 +168,10 @@ WriterPtr WriterAppender::WriterAppenderPriv::createWriter(const OutputStreamPtr
 			encoder = CharsetEncoder::getEncoder(this->encoding);
 		}
 	}
-	catch (const std::exception& )
+	catch (const std::exception& ex)
 	{
+		LogLog::warn(LOG4CXX_STR("Reverting to default encoding"), ex);
 		encoder = CharsetEncoder::getDefaultEncoder();
-		LogLog::warn(this->encoding + LOG4CXX_STR(": unsupported encoding"));
 	}
 
 	return std::make_shared<OutputStreamWriter>(os, encoder);
