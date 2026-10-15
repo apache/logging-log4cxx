@@ -373,6 +373,7 @@ bool RollingFileAppender::rolloverInternal()
 						else
 						{
 							_priv->targetFile.setPath(rollover1->getActiveFileName());
+							_priv->fileAppend = rollover1->getAppend();
 							_priv->activate();
 
 							bool success = true;

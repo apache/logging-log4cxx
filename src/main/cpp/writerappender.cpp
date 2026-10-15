@@ -142,12 +142,6 @@ void WriterAppender::WriterAppenderPriv::close()
 
 }
 
-/**
-   Returns an OutputStreamWriter when passed an OutputStream.  The
-   encoding used will depend on the value of the
-   <code>encoding</code> property.
-   Throws IllegalArgumentException if the encoding value is now valid.
-*/
 WriterPtr WriterAppender::WriterAppenderPriv::createWriter(const OutputStreamPtr& os)
 {
 	CharsetEncoderPtr encoder;

@@ -344,6 +344,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 			else
 			{
 				_priv->targetFile.setPath(rollover1->getActiveFileName());
+				_priv->fileAppend = rollover1->getAppend();
 				_priv->activate();
 				bool success = true; // A synchronous action is not required
 				if (auto pAction = rollover1->getSynchronous())
