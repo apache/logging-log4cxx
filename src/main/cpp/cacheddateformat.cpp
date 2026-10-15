@@ -28,7 +28,7 @@ using namespace LOG4CXX_NS::pattern;
 
 struct CachedDateFormat::CachedDateFormatPriv
 {
-	CachedDateFormatPriv(DateFormatPtr dateFormat, int expiration1) :
+	CachedDateFormatPriv(const DateFormatPtr& dateFormat, int expiration1) :
 		formatter(dateFormat),
 		millisecondStart(0),
 		slotBegin(std::numeric_limits<log4cxx_time_t>::min()),

@@ -54,7 +54,6 @@ class LOG4CXX_EXPORT FileOutputStream : public OutputStream
 		and an existing file is truncated immediately if \c append is false.
 		*/
 		FileOutputStream(const LogString& filename, bool append = false, bool lazyOpen = false);
-		FileOutputStream(const logchar* filename, bool append = false, bool lazyOpen = false);
 		virtual ~FileOutputStream();
 
 		using OutputStream::close;

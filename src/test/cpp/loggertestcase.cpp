@@ -150,7 +150,7 @@ public:
 		logger = Logger::getLogger(LOG4CXX_TEST_STR("test"));
 		logger->addAppender(a1);
 		logger->addAppender(a2);
-		logger->removeAppender((LogString) LOG4CXX_STR("testAppender2.1"));
+		LOGUNIT_ASSERT(logger->removeAppender(LOG4CXX_STR("testAppender2.1")));
 
 		AppenderList list = logger->getAllAppenders();
 		AppenderPtr aHat = list.front();
@@ -587,7 +587,7 @@ public:
 		LOGUNIT_ASSERT_EQUAL(1, listener->numAdded);
 		LOGUNIT_ASSERT_EQUAL(0, listener->numRemoved);
 
-		root->removeAppender(appender);
+		LOGUNIT_ASSERT(root->removeAppender(appender));
 
 		LOGUNIT_ASSERT_EQUAL(1, listener->numAdded);
 		LOGUNIT_ASSERT_EQUAL(1, listener->numRemoved);

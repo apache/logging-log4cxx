@@ -36,7 +36,7 @@ using namespace LOG4CXX_NS::helpers;
 
 struct DatePatternConverter::DatePatternConverterPrivate : public PatternConverterPrivate
 {
-	DatePatternConverterPrivate( const LogString& name, const LogString& style, DateFormatPtr _df ):
+	DatePatternConverterPrivate( const LogString& name, const LogString& style, const DateFormatPtr& _df ):
 		PatternConverterPrivate(name, style),
 		df(_df) {}
 	/**

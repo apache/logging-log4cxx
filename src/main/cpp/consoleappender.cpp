@@ -50,7 +50,7 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
 {
 	setLayout(layout);
 	_priv->setWriter(std::make_shared<SystemOutWriter>());
-	_priv->activateOptions();
+	_priv->checkConfiguration();
 }
 
 ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& target)
@@ -122,7 +122,7 @@ void ConsoleAppender::activateOptions(  )
 		_priv->setWriter(std::make_shared<SystemErrWriter>());
 	}
 
-	_priv->activateOptions();
+	_priv->checkConfiguration();
 }
 
 void ConsoleAppender::setOption(const LogString& option, const LogString& value)

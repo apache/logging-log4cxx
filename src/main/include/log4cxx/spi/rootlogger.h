@@ -55,7 +55,7 @@ class LOG4CXX_EXPORT RootLogger : public Logger
 		            Setting a null value to the level of the root logger may have catastrophic
 		            results. We prevent this here.
 		            */
-		void setLevel(const LevelPtr level);
+		void setLevel(const LevelPtr& level);
 };
 }  // namespace spi
 } // namespace log4cxx

@@ -38,7 +38,7 @@ struct APRDatagramSocket::APRDatagramSocketPriv : public DatagramSocketPriv {
 		socket(nullptr)
 	{}
 
-	APRDatagramSocketPriv(int port, InetAddressPtr localAddress) :
+	APRDatagramSocketPriv(int port, const InetAddressPtr& localAddress) :
 		DatagramSocketPriv(port, localAddress),
 		socket(nullptr)
 	{}
@@ -60,7 +60,7 @@ APRDatagramSocket::APRDatagramSocket(int port) :
 	init();
 }
 
-APRDatagramSocket::APRDatagramSocket(int port, InetAddressPtr laddr) :
+APRDatagramSocket::APRDatagramSocket(int port, const InetAddressPtr& laddr) :
 	DatagramSocket(std::make_unique<APRDatagramSocketPriv>(port, laddr)){
 	init();
 }
@@ -79,7 +79,7 @@ void APRDatagramSocket::init()
 	}
 }
 
-void APRDatagramSocket::receive(DatagramPacketPtr& p)
+void APRDatagramSocket::receive(const DatagramPacketPtr& p)
 {
 	Pool addrPool;
 
@@ -106,7 +106,7 @@ void APRDatagramSocket::receive(DatagramPacketPtr& p)
 	}
 }
 
-void APRDatagramSocket::send(DatagramPacketPtr& p)
+void APRDatagramSocket::send(const DatagramPacketPtr& p)
 {
 	Pool addrPool;
 
@@ -148,7 +148,7 @@ void APRDatagramSocket::close(){
 	}
 }
 
-void APRDatagramSocket::bind(int localPort1, InetAddressPtr localAddress1)
+void APRDatagramSocket::bind(int localPort1, const InetAddressPtr& localAddress1)
 {
 	Pool addrPool;
 
@@ -177,7 +177,7 @@ void APRDatagramSocket::bind(int localPort1, InetAddressPtr localAddress1)
 }
 
 
-void APRDatagramSocket::connect(InetAddressPtr address1, int port1)
+void APRDatagramSocket::connect(const InetAddressPtr& address1, int port1)
 {
 	m_priv->address = address1;
 	m_priv->port = port1;

@@ -38,7 +38,7 @@ class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
 		/**
 		 * Add an appender.
 		 */
-		virtual void addAppender(const AppenderPtr newAppender) = 0;
+		virtual void addAppender(const AppenderPtr& newAppender) = 0;
 
 		/**
 		 * Get all previously added appenders as an AppenderList.
@@ -54,7 +54,7 @@ class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
 		 * Returns <code>true</code> if the specified appender is in list of
 		 * attached appenders, <code>false</code> otherwise.
 		 */
-		virtual bool isAttached(const AppenderPtr appender) const = 0;
+		virtual bool isAttached(const AppenderPtr& appender) const = 0;
 
 		/**
 		 * Remove all previously added appenders.
@@ -62,15 +62,16 @@ class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
 		virtual void removeAllAppenders() = 0;
 
 		/**
-		 * Remove the appender passed as parameter from the list of appenders.
+		 * Remove \c appender from the list of appenders.
+		 * @returns true if successful.
 		 */
-		virtual void removeAppender(const AppenderPtr appender) = 0;
+		virtual bool removeAppender(const AppenderPtr& appender) = 0;
 
 		/**
-		 * Remove the appender with the name passed as parameter from the
-		 * list of appenders.
+		 * Remove the \c name appender from the list of appenders.
+		 * @returns true if successful.
 		 */
-		virtual void removeAppender(const LogString& name) = 0;
+		virtual bool removeAppender(const LogString& name) = 0;
 
 		/**
 		 * Replace \c oldAppender  with \c newAppender.

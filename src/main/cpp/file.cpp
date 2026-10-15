@@ -139,6 +139,10 @@ File::~File()
 	}
 }
 
+bool File::hasPath() const
+{
+	return !m_priv->path.empty();
+}
 
 LogString File::getPath() const
 {

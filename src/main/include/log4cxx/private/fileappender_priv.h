@@ -30,15 +30,15 @@ namespace LOG4CXX_NS
 struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPriv
 {
 	FileAppenderPriv
-		( LayoutPtr _layout = LayoutPtr()
-		, const LogString& _fileName = LogString()
+		( const LayoutPtr& _layout = {}
+		, const LogString& _fileName = {}
 		, bool _fileAppend = true
 		, bool _bufferedIO = false
 		, int _bufferSize = 8 * 1024
 		)
 		: WriterAppenderPriv(_layout)
 		, fileAppend(_fileAppend)
-		, fileName(_fileName)
+		, targetFile(_fileName)
 		, bufferedIO(_bufferedIO)
 		, bufferSize(_bufferSize)
 		{}
@@ -53,8 +53,8 @@ struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPri
 	bool fileAppend;
 
 	/**
-	The name of the log file. */
-	LogString fileName;
+	The targeted file name. */
+	File targetFile;
 
 	/**
 	Do we do bufferedIO? */
@@ -117,6 +117,16 @@ struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPri
 	Only used when <code>bufferedIO == true</code>.
 	*/
 	helpers::ThreadUtility::ManagerWeakPtr taskManager;
+
+	/**
+	Call open() and, if successful, set up any required monitoring
+	*/
+	void activate();
+
+	/**
+	Close any existing writer and establish a new writer
+	*/
+	void open();
 };
 
 }

@@ -49,13 +49,6 @@ FileOutputStream::FileOutputStream(const LogString& filename, bool append, bool 
 	m_priv->openUnlessLazy(lazyOpen);
 }
 
-FileOutputStream::FileOutputStream(const logchar* filename,	bool append, bool lazyOpen)
-	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename, append))
-{
-	m_priv->path = filename;
-	m_priv->openUnlessLazy(lazyOpen);
-}
-
 void FileOutputStream::FileOutputStreamPrivate::openUnlessLazy(bool lazyOpen)
 {
 	if (!lazyOpen)

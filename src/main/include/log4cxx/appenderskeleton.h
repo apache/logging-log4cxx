@@ -94,7 +94,7 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		/**
 		Add a filter to end of the filter list.
 		*/
-		void addFilter(const spi::FilterPtr newFilter) override;
+		void addFilter(const spi::FilterPtr& newFilter) override;
 
 	public:
 		/**
@@ -156,13 +156,13 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.
 		*/
-		void setErrorHandler(const spi::ErrorHandlerPtr eh);
+		void setErrorHandler(const spi::ErrorHandlerPtr& eh);
 
 		/**
 		Set the layout for this appender. Note that some appenders have
 		their own (fixed) layouts or do not use one.
 		*/
-		void setLayout(const LayoutPtr layout1) override;
+		void setLayout(const LayoutPtr& layout1) override;
 
 		/**
 		Set the name of this Appender.

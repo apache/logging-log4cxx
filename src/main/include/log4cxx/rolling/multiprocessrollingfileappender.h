@@ -82,18 +82,6 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		*/
 		void subAppend( const spi::LoggingEventPtr& event ) override;
 
-	protected:
-		/**
-		   Returns an OutputStreamWriter when passed an OutputStream.  The
-		   encoding used will depend on the value of the
-		   <code>encoding</code> property.  If the encoding value is
-		   specified incorrectly the writer will be opened using the default
-		   system encoding (an error message will be printed to the loglog.
-		 @param os output stream, may not be null.
-		 @return new writer.
-		 */
-		helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
-
 	private:
 		/**
 		 * Coordinate a rollover with other processes

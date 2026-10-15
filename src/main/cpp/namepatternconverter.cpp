@@ -29,7 +29,7 @@ using namespace LOG4CXX_NS::spi;
 
 struct NamePatternConverter::NamePatternConverterPrivate : public PatternConverterPrivate
 {
-	NamePatternConverterPrivate( const LogString& name, const LogString& style, const NameAbbreviatorPtr abbrev ) :
+	NamePatternConverterPrivate( const LogString& name, const LogString& style, const NameAbbreviatorPtr& abbrev ) :
 		PatternConverterPrivate( name, style ),
 		abbreviator(abbrev) {}
 

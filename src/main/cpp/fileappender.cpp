@@ -53,7 +53,7 @@ FileAppender::FileAppender
 	)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, bufferedIO1, bufferSize1))
 {
-	activateOptionsInternal();
+	_priv->activate();
 }
 
 FileAppender::FileAppender
@@ -63,13 +63,13 @@ FileAppender::FileAppender
 	)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, false))
 {
-	activateOptionsInternal();
+	_priv->activate();
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
 	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1))
 {
-	activateOptionsInternal();
+	_priv->activate();
 }
 
 FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
@@ -94,23 +94,13 @@ void FileAppender::setAppend(bool fileAppend1)
 void FileAppender::setFile(const LogString& file)
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	setFileInternal(file);
-}
-
-void FileAppender::setFileInternal(const LogString& file)
-{
-	_priv->fileName = file;
+	_priv->targetFile.setPath(file);
 }
 
 void FileAppender::setBufferedIO(bool bufferedIO1)
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	_priv->bufferedIO = bufferedIO1;
-
-	if (bufferedIO1)
-	{
-		setImmediateFlush(false);
-	}
 }
 
 void FileAppender::setOption(const LogString& option,
@@ -120,7 +110,7 @@ void FileAppender::setOption(const LogString& option,
 		|| StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
 	{
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-		_priv->fileName = stripDuplicateBackslashes(value);
+		_priv->targetFile.setPath(stripDuplicateBackslashes(value));
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
 	{
@@ -167,66 +157,67 @@ void FileAppender::setOption(const LogString& option,
 void FileAppender::activateOptions(  )
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	activateOptionsInternal();
+	// It does not make sense to have immediate flush and bufferedIO.
+	if (_priv->bufferedIO)
+	   setImmediateFlush(false);
+	_priv->activate();
 }
 
-void FileAppender::activateOptionsInternal()
+void FileAppender::FileAppenderPriv::activate()
 {
 	int errors = 0;
 
-	if (!_priv->fileName.empty())
+	if (this->targetFile.hasPath())
 	{
 		try
 		{
-			setFileInternal(_priv->fileName, _priv->fileAppend, _priv->bufferedIO, _priv->bufferSize);
+			this->open();
 		}
 		catch (IOException& e)
 		{
 			errors++;
 			LogString msg(LOG4CXX_STR("setFile("));
-			msg.append(_priv->fileName);
+			msg.append(this->targetFile.getPath());
 			msg.append(1, (logchar) 0x2C /* ',' */);
-			StringHelper::toString(_priv->fileAppend, msg);
+			StringHelper::toString(this->fileAppend, msg);
 			msg.append(LOG4CXX_STR(") call failed."));
-			_priv->errorHandler->error(msg, e, ErrorCode::FILE_OPEN_FAILURE);
+			this->errorHandler->error(msg, e, ErrorCode::FILE_OPEN_FAILURE);
 		}
 	}
 	else
 	{
 		errors++;
 		LogLog::error(LogString(LOG4CXX_STR("File option not set for appender ["))
-			+  _priv->name + LOG4CXX_STR("]."));
+			+  this->name + LOG4CXX_STR("]."));
 		LogLog::warn(LOG4CXX_STR("Are you using FileAppender instead of ConsoleAppender?"));
 	}
 
 	if (errors == 0)
 	{
-		_priv->activateOptions();
-		if (auto p = _priv->taskManager.lock())
-			p->value().removePeriodicTask(_priv->flushTaskName);
+		this->checkConfiguration();
+		if (auto p = this->taskManager.lock())
+			p->value().removePeriodicTask(this->flushTaskName);
 
-		if (!_priv->bufferedIO)
+		if (!this->bufferedIO)
 			;
-		else if (0 < _priv->bufferedSeconds)
+		else if (0 < this->bufferedSeconds)
 		{
 			auto taskManager = ThreadUtility::instancePtr();
-			if (!_priv->flushTask)
+			if (!this->flushTask)
 			{
-				_priv->flushTask = std::make_shared<FileAppenderPriv::FlushTask>();
-				_priv->flushTask->priv = _priv;
+				this->flushTask = std::make_shared<FileAppenderPriv::FlushTask>();
+				this->flushTask->priv = this;
 			}
-			// Key the task by a unique name: the appender may be renamed after
-			// activation or share its name with another appender, and the
-			// destructor must deregister this task, not another appender's.
-			_priv->flushTaskName = getName();
-			_priv->flushTaskName.append(1, (logchar) 0x23 /* '#' */);
-			StringHelper::toString(reinterpret_cast<size_t>(m_priv.get()), _priv->flushTaskName);
-			auto flushTask = _priv->flushTask;
-			taskManager->value().addPeriodicTask(_priv->flushTaskName
+			// Key the task by a unique name
+			this->flushTaskName = this->targetFile.getName();
+			this->flushTaskName.append(1, (logchar) 0x23 /* '#' */);
+			StringHelper::toString(reinterpret_cast<size_t>(this), this->flushTaskName);
+			auto flushTask = this->flushTask;
+			taskManager->value().addPeriodicTask(this->flushTaskName
 				, [flushTask]() { flushTask->run(); }
-				, std::chrono::seconds(_priv->bufferedSeconds)
+				, std::chrono::seconds(this->bufferedSeconds)
 				);
-			_priv->taskManager = taskManager;
+			this->taskManager = taskManager;
 		}
 	}
 }
@@ -286,53 +277,21 @@ LogString FileAppender::stripDuplicateBackslashes(const LogString& src)
 	return src;
 }
 
-/**
-  <p>Sets and <i>opens</i> the file where the log output will
-  go. The specified file must be writable.
-
-  <p>If there was already an opened file, then the previous file
-  is closed first.
-
-  <p><b>Do not use this method directly. To configure a FileAppender
-  or one of its subclasses, set its properties one by one and then
-  call activateOptions.</b>
-
-  @param filename The path to the log file.
-  @param append   If true will append to fileName. Otherwise will
-      truncate fileName.
-  @param bufferedIO
-  @param bufferSize
-
-  @throws IOException
-
- */
-void FileAppender::setFileInternal(
-	const LogString& filename,
-	bool append1,
-	bool bufferedIO1,
-	size_t bufferSize1)
+void FileAppender::FileAppenderPriv::open()
 {
-	// It does not make sense to have immediate flush and bufferedIO.
-	if (bufferedIO1)
-	{
-		setImmediateFlush(false);
-	}
-
-	_priv->close();
+	this->close();
 
 	bool writeBOM = false;
 
-	if (StringHelper::equalsIgnoreCase(getEncoding(),
+	if (StringHelper::equalsIgnoreCase(this->encoding,
 			LOG4CXX_STR("utf-16"), LOG4CXX_STR("UTF-16")))
 	{
 		//
 		//    don't want to write a byte order mark if the file exists
 		//
-		if (append1)
+		if (this->fileAppend)
 		{
-			File outFile;
-			outFile.setPath(filename);
-			writeBOM = !outFile.exists();
+			writeBOM = !this->targetFile.exists();
 		}
 		else
 		{
@@ -344,12 +303,11 @@ void FileAppender::setFileInternal(
 
 	if (_priv->lazyFileCreation)
 	{
-		LogString parentName = File().setPath(filename).getParent();
+		LogString parentName = this->targetFile.getParent();
 
 		if (!parentName.empty())
 		{
-			File parentDir;
-			parentDir.setPath(parentName);
+			File parentDir(parentName);
 
 			if (!parentDir.exists())
 			{
@@ -362,13 +320,13 @@ void FileAppender::setFileInternal(
 			}
 		}
 
-		outStream = std::make_shared<FileOutputStream>(filename, append1, true);
+		outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend, true);
 	}
 	else
 	{
 		try
 		{
-			outStream = std::make_shared<FileOutputStream>(filename, append1);
+			outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend);
 		}
 		catch (IOException&)
 		{
@@ -381,7 +339,7 @@ void FileAppender::setFileInternal(
 
 				if (!parentDir.exists() && parentDir.mkdirs())
 				{
-					outStream = std::make_shared<FileOutputStream>(filename, append1);
+					outStream = std::make_shared<FileOutputStream>this->targetFile.getPath(), this->fileAppend);
 				}
 				else
 				{
@@ -407,27 +365,22 @@ void FileAppender::setFileInternal(
 		outStream->write(buf);
 	}
 
-	WriterPtr newWriter(createWriter(outStream));
+	WriterPtr newWriter(this->createWriter(outStream));
 
-	if (bufferedIO1)
+	if (this->bufferedIO)
 	{
-		newWriter = std::make_shared<BufferedWriter>(newWriter, bufferSize1);
+		newWriter = std::make_shared<BufferedWriter>(newWriter, this->bufferSize);
 	}
 
-	_priv->setWriter(newWriter);
+	this->setWriter(newWriter);
 
-	_priv->fileAppend = append1;
-	_priv->bufferedIO = bufferedIO1;
-	_priv->fileName = filename;
-	const size_t intMax = static_cast<size_t>((std::numeric_limits<int>::max)());
-	_priv->bufferSize = static_cast<int>(bufferSize1 > intMax ? intMax : bufferSize1);
-	_priv->writeHeader();
+	this->writeHeader();
 
 }
 
 LogString FileAppender::getFile() const
 {
-	return _priv->fileName;
+	return _priv->targetFile.getPath();
 }
 
 bool FileAppender::getBufferedIO() const
