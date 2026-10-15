@@ -428,7 +428,7 @@ WriterPtr MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::
 {
 	auto fos = LOG4CXX_NS::cast<FileOutputStream>(os);
 	if( fos )
-		_priv->fileOutputStream = fos;
+		this->fileOutputStream = fos;
 	else
 	{
 		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));

@@ -45,7 +45,6 @@ IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 FileOutputStream::FileOutputStream(const LogString& filename, bool append, bool lazyOpen)
 	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename, append))
 {
-	m_priv->path = filename;
 	m_priv->openUnlessLazy(lazyOpen);
 }
 

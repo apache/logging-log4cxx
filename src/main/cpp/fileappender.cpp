@@ -301,7 +301,7 @@ void FileAppender::FileAppenderPriv::open()
 
 	OutputStreamPtr outStream;
 
-	if (_priv->lazyFileCreation)
+	if (this->lazyFileCreation)
 	{
 		LogString parentName = this->targetFile.getParent();
 
@@ -330,16 +330,15 @@ void FileAppender::FileAppenderPriv::open()
 		}
 		catch (IOException&)
 		{
-			LogString parentName = File().setPath(filename).getParent();
+			LogString parentName = this->targetFile.getParent();
 
 			if (!parentName.empty())
 			{
-				File parentDir;
-				parentDir.setPath(parentName);
+				File parentDir(parentName);
 
 				if (!parentDir.exists() && parentDir.mkdirs())
 				{
-					outStream = std::make_shared<FileOutputStream>this->targetFile.getPath(), this->fileAppend);
+					outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend);
 				}
 				else
 				{
