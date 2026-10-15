@@ -92,14 +92,11 @@ void FileOutputStream::FileOutputStreamPrivate::openAsTruncatedIfAlreadyExists()
 		throw IOException();
 	}
 	apr_finfo_t finfo;
-	if ( apr_stat(&finfo, path, 0, pool.getAPRPool()) != APR_SUCCESS )
+	if ( apr_stat(&finfo, path, 0, pool.getAPRPool()) == APR_SUCCESS ) // path exists?
 	{
-		return;
+		// Truncate the file (i.e. its content is set to empty)
+		this->open();
 	}
-
-	// We open the file, but truncate it (i.e. its content
-	// is set to empty); only called when logAppend is false
-	return FileOutputStream::FileOutputStreamPrivate::open();
 }
 
 FileOutputStream::~FileOutputStream()
