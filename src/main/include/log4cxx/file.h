@@ -87,6 +87,11 @@ class LOG4CXX_EXPORT File
 		~File();
 
 		/**
+		 *  Has a path been set?
+		 *  @return true if the file name is not empty.
+		 */
+		bool hasPath() const;
+		/**
 		 *  Determines if file exists.
 		 *  @return true if file exists.
 		 */

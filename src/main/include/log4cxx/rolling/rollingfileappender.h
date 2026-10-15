@@ -211,31 +211,12 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		*/
 		void close() override;
 
-	protected:
-		/**
-		   Returns an OutputStreamWriter when passed an OutputStream.  The
-		   encoding used will depend on the value of the
-		   <code>encoding</code> property.  If the encoding value is
-		   specified incorrectly the writer will be opened using the default
-		   system encoding (an error message will be printed to the loglog.
-		 @param os output stream, may not be null.
-		 @return new writer.
-		 */
-		helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
-
 	public:
 		/**
 		 * Get byte length of current active log file.
 		 * @return byte length of current active log file.
 		 */
 		size_t getFileLength() const;
-
-		/**
-		 * Increments estimated byte length of current active log file.
-		 * @param increment additional bytes written to log file.
-		 */
-		void incrementFileLength(size_t increment);
-
 };
 
 LOG4CXX_PTR_DEF(RollingFileAppender);

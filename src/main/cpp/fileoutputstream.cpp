@@ -45,12 +45,6 @@ FileOutputStream::FileOutputStream(const LogString& filename, bool append)
 	m_priv->open(append);
 }
 
-FileOutputStream::FileOutputStream(const logchar* filename,	bool append)
-	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename))
-{
-	m_priv->open(append);
-}
-
 void FileOutputStream::FileOutputStreamPrivate::open(bool append)
 {
 	apr_fileperms_t perm = APR_OS_DEFAULT;

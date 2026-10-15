@@ -106,7 +106,18 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 		this->writer = newWriter;
 	}
 
-	void activateOptions();
+	/**
+		Invoke the ErrorHandler if the layout or writer is null.
+	*/
+	void checkConfiguration();
+
+	/**
+		Returns a WriterPtr when passed an OutputStream
+		using \c encoding to create the character encoder.
+		A warning is written to the internal logging output
+		if \c encoding string is not recognised.
+	*/
+	virtual helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os);
 };
 
 }

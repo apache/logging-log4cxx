@@ -53,6 +53,10 @@ struct RollingFileAppender::RollingFileAppenderPriv : public FileAppenderPriv
 	spi::LoggingEventPtr _event;
 
 	bool activateOptions();
+
+	helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
+
+	class CountingOutputStream;
 };
 
 } // namespace rolling
