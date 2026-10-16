@@ -34,6 +34,10 @@ class Pool;
 /**
 *  FileAppender appends log events to a file.
 *
+* The file is opened/created immediately by #activateOptions()
+* unless the <code>LazyFileCreation</code> option is set <code>true</code>,
+* in which case the file is opened/created when the first spi::LoggingEvent is added.
+*
 *  Uses a background thread to periodically flush the output buffer
 *  when <code>BufferedIO</code> option is set <code>true</code>.
 *  Use the <code>BufferedSeconds</code> option to control the frequency,
@@ -118,11 +122,13 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/**
 		\copybrief WriterAppender::activateOptions()
 
-		Sets and <i>opens</i> the file where the log output will
-		go. The specified file must be writable.
+		When <code>LazyFileCreation</code> and <code>Append</code> are both set to <code>true</code>,
+		the file is opened/created when the first spi::LoggingEvent is added,
+		otherwise #activateOptions will open/create the file.
 
-		If there was already an opened file, then the previous file
-		is closed first.
+		When <code>BufferedIO</code> is <code>true</code> and
+		<code>BufferedSeconds</code> is greater than zero,
+		a background task is started that will periodically flush the buffer.
 		*/
 		void activateOptions(  ) override;
 
@@ -135,6 +141,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		Append | True,False | True |
 		BufferedIO | True,False | False |
 		BufferedSeconds | {any} | 5 |
+		LazyFileCreation | True,False | False |
 		ImmediateFlush | True,False | False |
 		BufferSize | (\ref fileSz1 "1") | 8 KB |
 
@@ -209,6 +216,21 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		to activate the new frequency.
 		*/
 		void setBufferedSeconds(int newValue);
+
+		/**
+		Create the file when the first message is written (rather than in #activateOptions)
+		if \c newValue is true, so that no empty file is created when nothing is logged.
+		The default is false.
+
+		Note: Behavior change occurs when
+		#activateOptions is called, not when the options are set.
+		*/
+		void setLazyFileCreation(bool newValue);
+
+		/**
+		Get the value of the <b>LazyFileCreation</b> option.
+		*/
+		bool getLazyFileCreation() const;
 
 		/**
 		 *   Replaces double backslashes with single backslashes

@@ -27,30 +27,45 @@ using namespace LOG4CXX_NS::helpers;
 
 struct FileOutputStream::FileOutputStreamPrivate
 {
-	FileOutputStreamPrivate(const LogString& filename)
-		: path(filename)
+	FileOutputStreamPrivate(const LogString& filename, bool append)
+		: path(filename), logAppend(append)
 		{}
 
 	File path;
 	Pool pool;
 	apr_file_t* fileptr{ nullptr };
-	void open(bool append);
+	bool logAppend;
+	void open();
+	void openUnlessLazy(bool lazyOpen);
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 
-FileOutputStream::FileOutputStream(const LogString& filename, bool append)
-	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename))
+FileOutputStream::FileOutputStream(const LogString& filename, bool append, bool lazyOpen)
+	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename, append))
 {
-	m_priv->open(append);
+	m_priv->openUnlessLazy(lazyOpen);
 }
 
-void FileOutputStream::FileOutputStreamPrivate::open(bool append)
+void FileOutputStream::FileOutputStreamPrivate::openUnlessLazy(bool lazyOpen)
+{
+	if (!lazyOpen)
+	{
+		this->open();
+	}
+	else if (!this->logAppend && this->path.exists())
+	{
+		// Truncate the file (i.e. remove its contents)
+		this->open();
+	}
+}
+
+void FileOutputStream::FileOutputStreamPrivate::open()
 {
 	apr_fileperms_t perm = APR_OS_DEFAULT;
 	apr_int32_t flags = APR_WRITE | APR_CREATE;
 
-	if (append)
+	if (this->logAppend)
 	{
 		flags |= APR_APPEND;
 	}
@@ -72,6 +87,7 @@ FileOutputStream::~FileOutputStream()
 	if (m_priv->fileptr)
 	{
 		apr_file_close(m_priv->fileptr);
+		m_priv->fileptr = nullptr;
 	}
 }
 
@@ -98,7 +114,12 @@ void FileOutputStream::write( ByteBuffer& buf )
 {
 	if (m_priv->fileptr == NULL)
 	{
-		throw NullPointerException(LOG4CXX_STR("FileOutputStream"));
+		m_priv->open();
+
+		if (m_priv->fileptr == nullptr)
+		{
+			throw NullPointerException(LOG4CXX_STR("FileOutputStream"));
+		}
 	}
 
 	size_t nbytes = buf.remaining();
@@ -117,6 +138,17 @@ void FileOutputStream::write( ByteBuffer& buf )
 }
 
 apr_file_t* FileOutputStream::getFilePtr() const{
+	if (!m_priv->fileptr)
+	{
+		try
+		{
+			m_priv->open();
+		}
+		catch (IOException&)
+		{
+			// write() will open (and report any failure) again
+		}
+	}
 	return m_priv->fileptr;
 }
 

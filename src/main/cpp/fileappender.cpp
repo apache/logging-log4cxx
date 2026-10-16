@@ -143,6 +143,11 @@ void FileAppender::setOption(const LogString& option,
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 		_priv->bufferedSeconds = OptionConverter::toInt(value, 0);
 	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LAZYFILECREATION"), LOG4CXX_STR("lazyfilecreation")))
+	{
+		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+		_priv->lazyFileCreation = OptionConverter::toBoolean(value, false);
+	}
 	else
 	{
 		WriterAppender::setOption(option, value);
@@ -296,11 +301,7 @@ void FileAppender::FileAppenderPriv::open()
 
 	OutputStreamPtr outStream;
 
-	try
-	{
-		outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend);
-	}
-	catch (IOException&)
+	if (this->lazyFileCreation)
 	{
 		LogString parentName = this->targetFile.getParent();
 
@@ -308,18 +309,46 @@ void FileAppender::FileAppenderPriv::open()
 		{
 			File parentDir(parentName);
 
-			if (!parentDir.exists() && parentDir.mkdirs())
+			if (!parentDir.exists())
 			{
-				outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend);
+				LogLog::debug(LOG4CXX_STR("Creating dirs ") + parentDir.getPath());
+				// The file is not opened here, so a failure must be reported now.
+				if (!parentDir.mkdirs() && !parentDir.exists())
+				{
+					throw IOException(LOG4CXX_STR("Unable to create directory ") + parentDir.getPath());
+				}
+			}
+		}
+
+		outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend, true);
+	}
+	else
+	{
+		try
+		{
+			outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend);
+		}
+		catch (IOException&)
+		{
+			LogString parentName = this->targetFile.getParent();
+
+			if (!parentName.empty())
+			{
+				File parentDir(parentName);
+
+				if (!parentDir.exists() && parentDir.mkdirs())
+				{
+					outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend);
+				}
+				else
+				{
+					throw;
+				}
 			}
 			else
 			{
 				throw;
 			}
-		}
-		else
-		{
-			throw;
 		}
 	}
 
@@ -386,5 +415,16 @@ void FileAppender::setBufferedSeconds(int newValue)
 bool FileAppender::getAppend() const
 {
 	return _priv->fileAppend;
+}
+
+void FileAppender::setLazyFileCreation(bool newValue)
+{
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
+	_priv->lazyFileCreation = newValue;
+}
+
+bool FileAppender::getLazyFileCreation() const
+{
+	return _priv->lazyFileCreation;
 }
 
