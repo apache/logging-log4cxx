@@ -37,7 +37,6 @@ struct FileOutputStream::FileOutputStreamPrivate
 	bool logAppend;
 	void open();
 	void openUnlessLazy(bool lazyOpen);
-	void openAsTruncatedIfAlreadyExists();
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
@@ -52,13 +51,12 @@ void FileOutputStream::FileOutputStreamPrivate::openUnlessLazy(bool lazyOpen)
 {
 	if (!lazyOpen)
 	{
-		open();
+		this->open();
 	}
-	else if (!this->logAppend)
+	else if (!this->logAppend && this->path.exists())
 	{
-		// Tests expect that existing files are truncated even if
-		// nothing is logged.
-		openAsTruncatedIfAlreadyExists();
+		// Truncate the file (i.e. remove its contents)
+		this->open();
 	}
 }
 
@@ -81,21 +79,6 @@ void FileOutputStream::FileOutputStreamPrivate::open()
 	if (stat != APR_SUCCESS)
 	{
 		throw IOException(this->path.getAPRPath(), stat);
-	}
-}
-
-void FileOutputStream::FileOutputStreamPrivate::openAsTruncatedIfAlreadyExists()
-{
-	const char* path = this->path.getAPRPath();
-	if (path == nullptr)
-	{
-		throw IOException();
-	}
-	apr_finfo_t finfo;
-	if ( apr_stat(&finfo, path, 0, pool.getAPRPool()) == APR_SUCCESS ) // path exists?
-	{
-		// Truncate the file (i.e. its content is set to empty)
-		this->open();
 	}
 }
 
