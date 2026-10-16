@@ -62,64 +62,13 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		*/
 		void activateOptions(  ) override;
 
-		/**
-		   Implements the usual roll over behaviour.
-
-		   <p>If <code>MaxBackupIndex</code> is positive, then files
-		   {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-		   are renamed to {<code>File.2</code>, ...,
-		   <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-		   renamed <code>File.1</code> and closed. A new <code>File</code> is
-		   created to receive further log output.
-
-		   <p>If <code>MaxBackupIndex</code> is equal to zero, then the
-		   <code>File</code> is truncated with no backup files created.
-
-		 */
-		bool rollover();
-
 	protected:
 
 		/**
-		 Actual writing occurs here.
+		 Rollover the file if required before calling WriterAppender::subAppend.
 		*/
 		void subAppend( const spi::LoggingEventPtr& event ) override;
 
-	private:
-		/**
-		 * Coordinate a rollover with other processes
-
-		 * @return true if this process perfomed the rollover.
-		 */
-		bool synchronizedRollover(const TriggeringPolicyPtr& trigger = TriggeringPolicyPtr() );
-
-		/**
-		 * Set the length of current active log file to \c length bytes.
-		 */
-		void setFileLength(size_t length);
-
-		/**
-		 * Is it possible the current log file was renamed?
-		 */
-		bool isRolloverCheckNeeded();
-
-		/**
-		 *  Was \c fileName renamed?
-		 *  @param pSize if not NULL, receives the log file size
-		 * @return true if the log file must be reopened
-		 */
-		bool isAlreadyRolled(const LogString& fileName, size_t* pSize = 0);
-
-		/**
-		 * Put the current size of the log file into \c pSize.
-		 * @return true if the log file size was put into \c pSize
-		 */
-		bool getCurrentFileSize(size_t* pSize);
-
-		/**
-		 * re-open \c fileName (used after it has been renamed)
-		 */
-		void reopenFile(const LogString& fileName);
 };
 
 LOG4CXX_PTR_DEF(MultiprocessRollingFileAppender);

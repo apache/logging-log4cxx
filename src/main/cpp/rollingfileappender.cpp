@@ -398,9 +398,6 @@ bool RollingFileAppender::RollingFileAppenderPriv::nameEvolvingRollover
 	return result;
 }
 
-/**
- * {@inheritDoc}
-*/
 void RollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 {
 	// The rollover check must precede actual writing. This is the
@@ -416,7 +413,6 @@ void RollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 		//     condition and the append should still happen.
 		try
 		{
-			_priv->event = event;
 			_priv->rollover(getFile(), getAppend());
 		}
 		catch (std::exception& ex)
