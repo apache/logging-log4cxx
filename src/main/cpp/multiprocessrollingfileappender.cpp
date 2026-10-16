@@ -278,7 +278,7 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 			LogLog::warn(LOG4CXX_STR("Failed to lock ") + fileName);
 		else if (isAlreadyRolled(fileName, &_priv->fileLength))
 			reopenFile(fileName);
-		else if (trigger && !trigger->isTriggeringEvent(this, _priv->_event, fileName, _priv->fileLength))
+		else if (trigger && !trigger->isTriggeringEvent(this, _priv->event, fileName, _priv->fileLength))
 			;
 		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend()))
 		{
@@ -405,7 +405,7 @@ void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& eve
 		//     condition and the append should still happen.
 		try
 		{
-			_priv->_event = event;
+			_priv->event = event;
 			synchronizedRollover(_priv->triggeringPolicy);
 		}
 		catch (std::exception& ex)

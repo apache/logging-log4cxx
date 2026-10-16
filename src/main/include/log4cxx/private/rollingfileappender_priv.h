@@ -50,11 +50,17 @@ struct RollingFileAppender::RollingFileAppenderPriv : public FileAppenderPriv
 	/**
 	 *  save the loggingevent
 	 */
-	spi::LoggingEventPtr _event;
+	spi::LoggingEventPtr event;
 
 	bool activateOptions();
 
 	helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
+
+	bool rollover(const LogString& fileName, bool append);
+
+	bool namePreservingRollover(const RolloverDescriptionPtr& policy, const LogString& fileName);
+
+	bool nameEvolvingRollover(const RolloverDescriptionPtr& policy, const LogString& fileName);
 
 	class CountingOutputStream;
 };

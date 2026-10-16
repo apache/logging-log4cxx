@@ -226,210 +226,176 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 		this->triggeringPolicy = std::make_shared<SizeBasedTriggeringPolicy>();
 	}
 
+	std::lock_guard<std::recursive_mutex> lock(this->mutex);
+	this->triggeringPolicy->activateOptions();
+	this->rollingPolicy->activateOptions();
+
+	try
 	{
-		std::lock_guard<std::recursive_mutex> lock(this->mutex);
-		this->triggeringPolicy->activateOptions();
-		this->rollingPolicy->activateOptions();
-
-		try
+		if (auto policy = this->rollingPolicy->initialize(this->targetFile.getPath(), this->fileAppend))
 		{
-			RolloverDescriptionPtr rollover1 =
-				this->rollingPolicy->initialize(this->targetFile.getPath(), this->fileAppend);
-
-			if (rollover1 != NULL)
+			if (auto syncAction = policy->getSynchronous())
 			{
-				ActionPtr syncAction(rollover1->getSynchronous());
-
-				if (syncAction != NULL)
-				{
-					syncAction->execute();
-				}
-
-				this->targetFile.setPath(rollover1->getActiveFileName());
-				this->fileAppend = rollover1->getAppend();
-
-				//
-				//  async action not yet implemented
-				//
-				ActionPtr asyncAction(rollover1->getAsynchronous());
-
-				if (asyncAction != NULL)
-				{
-					asyncAction->execute();
-				}
+				syncAction->execute();
 			}
 
-			if (this->fileAppend)
-			{
-				this->fileLength = this->targetFile.length();
-			}
-			else
-			{
-				this->fileLength = 0;
-			}
+			this->targetFile.setPath(policy->getActiveFileName());
+			this->fileAppend = policy->getAppend();
 
-			result = true;
+			//
+			//  async action not yet implemented
+			//
+			if (auto asyncAction = policy->getAsynchronous())
+			{
+				asyncAction->execute();
+			}
 		}
-		catch (std::exception& ex)
+
+		if (this->fileAppend)
 		{
-			LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + this->targetFile.getPath(), ex);
+			this->fileLength = this->targetFile.length();
 		}
+		else
+		{
+			this->fileLength = 0;
+		}
+
+		result = true;
+	}
+	catch (std::exception& ex)
+	{
+		LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + this->targetFile.getPath(), ex);
 	}
 	return result;
 }
 
-/**
-   Implements the usual roll over behaviour.
-
-   <p>If <code>MaxBackupIndex</code> is positive, then files
-   {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-   are renamed to {<code>File.2</code>, ...,
-   <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-   renamed <code>File.1</code> and closed. A new <code>File</code> is
-   created to receive further log output.
-
-   <p>If <code>MaxBackupIndex</code> is equal to zero, then the
-   <code>File</code> is truncated with no backup files created.
-
- * @return true if rollover performed.
- */
 bool RollingFileAppender::rollover()
 {
+	bool result = false;
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	return rolloverInternal();
+	if (_priv->rollingPolicy)
+		result = _priv->rollover(getFile(), getAppend());
+	return result;
 }
 
-bool RollingFileAppender::rolloverInternal()
+bool RollingFileAppender::RollingFileAppenderPriv::rollover(const LogString& fileName, bool append)
 {
-	//
-	//   can't roll without a policy
-	//
-	if (_priv->rollingPolicy != NULL)
+	bool result = false;
+	auto policy = this->rollingPolicy->rollover(fileName, append);
+	if (policy)
 	{
+		if (policy->getActiveFileName() == fileName)
+			result = this->namePreservingRollover(policy, fileName);
+		else
+			result = this->nameEvolvingRollover(policy, fileName);
+	}
+	return result;
+}
+
+bool RollingFileAppender::RollingFileAppenderPriv::namePreservingRollover
+	( const RolloverDescriptionPtr& policy
+	, const LogString&              fileName
+	)
+{
+	this->close();
+
+	bool result = true;
+	if (auto action = policy->getSynchronous())
+	{
+		result = false;
+		try
 		{
-				try
-				{
-					RolloverDescriptionPtr rollover1(_priv->rollingPolicy->rollover(this->getFile(), this->getAppend()));
-
-					if (rollover1 != NULL)
-					{
-						if (rollover1->getActiveFileName() == getFile())
-						{
-							_priv->close();
-
-							bool success = true;
-
-							if (rollover1->getSynchronous() != NULL)
-							{
-								success = false;
-
-								try
-								{
-									success = rollover1->getSynchronous()->execute();
-								}
-								catch (std::exception& ex)
-								{
-									LogString msg(LOG4CXX_STR("Rollover of ["));
-									msg.append(getFile());
-									msg.append(LOG4CXX_STR("] failed"));
-									_priv->errorHandler->error(msg, ex, 0);
-								}
-							}
-
-							bool appendToExisting = true;
-							if (success)
-							{
-								appendToExisting = rollover1->getAppend();
-								if (appendToExisting)
-								{
-									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length();
-								}
-								else
-								{
-									_priv->fileLength = 0;
-								}
-
-								ActionPtr asyncAction(rollover1->getAsynchronous());
-
-								if (asyncAction != NULL)
-								{
-									try
-									{
-										asyncAction->execute();
-									}
-									catch (std::exception& ex)
-									{
-										LogString msg(LOG4CXX_STR("Rollover of ["));
-										msg.append(getFile());
-										msg.append(LOG4CXX_STR("] failed"));
-										_priv->errorHandler->error(msg, ex, 0);
-									}
-								}
-							}
-							_priv->targetFile.setPath(rollover1->getActiveFileName());
-							_priv->fileAppend = appendToExisting;
-							_priv->activate();
-						}
-						else
-						{
-							_priv->targetFile.setPath(rollover1->getActiveFileName());
-							_priv->fileAppend = rollover1->getAppend();
-							_priv->activate();
-
-							bool success = true;
-
-							if (rollover1->getSynchronous() != NULL)
-							{
-								success = false;
-
-								try
-								{
-									success = rollover1->getSynchronous()->execute();
-								}
-								catch (std::exception& ex)
-								{
-									LogString msg(LOG4CXX_STR("Rollover of ["));
-									msg.append(getFile());
-									msg.append(LOG4CXX_STR("] failed"));
-									_priv->errorHandler->error(msg, ex, 0);
-								}
-							}
-
-							if (success)
-							{
-								if (rollover1->getAppend())
-								{
-									_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length();
-								}
-								else
-								{
-									_priv->fileLength = 0;
-								}
-
-								ActionPtr asyncAction(rollover1->getAsynchronous());
-
-								if (asyncAction != NULL)
-								{
-									asyncAction->execute();
-								}
-							}
-
-							_priv->writeHeader();
-						}
-						return true;
-					}
-				}
-				catch (std::exception& ex)
-				{
-					LogString msg(LOG4CXX_STR("Rollover of ["));
-					msg.append(getFile());
-					msg.append(LOG4CXX_STR("] failed"));
-					_priv->errorHandler->error(msg, ex, 0);
-				}
+			result = action->execute();
+		}
+		catch (std::exception& ex)
+		{
+			LogString msg(LOG4CXX_STR("Rollover of ["));
+			msg.append(fileName);
+			msg.append(LOG4CXX_STR("] failed"));
+			this->errorHandler->error(msg, ex, 0);
 		}
 	}
 
-	return false;
+	bool appendToExisting = true;
+	if (result)
+	{
+		appendToExisting = policy->getAppend();
+		if (appendToExisting)
+		{
+			this->fileLength = File(policy->getActiveFileName()).length();
+		}
+		else
+		{
+			this->fileLength = 0;
+		}
+
+		if (auto asyncAction = policy->getAsynchronous())
+		{
+			try
+			{
+				asyncAction->execute();
+			}
+			catch (std::exception& ex)
+			{
+				LogString msg(LOG4CXX_STR("Rollover of ["));
+				msg.append(fileName);
+				msg.append(LOG4CXX_STR("] failed"));
+				this->errorHandler->error(msg, ex, 0);
+			}
+		}
+	}
+	this->targetFile.setPath(policy->getActiveFileName());
+	this->fileAppend = appendToExisting;
+	this->activate();
+	if (result)
+		this->writeHeader();
+	return result;
+}
+
+bool RollingFileAppender::RollingFileAppenderPriv::nameEvolvingRollover
+	( const RolloverDescriptionPtr& policy
+	, const LogString&              fileName
+	)
+{
+	this->targetFile.setPath(policy->getActiveFileName());
+	this->fileAppend = policy->getAppend();
+	this->activate();
+	this->writeHeader();
+
+	bool result = true;
+	if (auto action = policy->getSynchronous())
+	{
+		result = false;
+		try
+		{
+			result = action->execute();
+		}
+		catch (std::exception& ex)
+		{
+			LogString msg(LOG4CXX_STR("Rollover of ["));
+			msg.append(fileName);
+			msg.append(LOG4CXX_STR("] failed"));
+			this->errorHandler->error(msg, ex, 0);
+		}
+	}
+
+	if (result)
+	{
+		if (policy->getAppend())
+		{
+			this->fileLength = File().setPath(policy->getActiveFileName()).length();
+		}
+		else
+		{
+			this->fileLength = 0;
+		}
+
+		if (auto asyncAction = policy->getAsynchronous())
+		{
+			asyncAction->execute();
+		}
+	}
+	return result;
 }
 
 /**
@@ -450,8 +416,8 @@ void RollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 		//     condition and the append should still happen.
 		try
 		{
-			_priv->_event = event;
-			rolloverInternal();
+			_priv->event = event;
+			_priv->rollover(getFile(), getAppend());
 		}
 		catch (std::exception& ex)
 		{
