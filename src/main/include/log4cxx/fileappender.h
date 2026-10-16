@@ -58,44 +58,29 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		END_LOG4CXX_CAST_MAP()
 
 		/**
-		The default constructor does not do anything.
+		A unconfigured Appender.
 		*/
 		FileAppender();
 
 		/**
-		Instantiate a <code>FileAppender</code> and open the file
-		designated by <code>filename</code>. The opened filename will
-		become the output destination for this appender.
+		Open \c fileName and prepare to write spi::LoggingEvent
+		messages formatted by \c layout.
 
-		<p>If the <code>append</code> parameter is true, the file will be
-		appended to. Otherwise, the file designated by
-		<code>filename</code> will be truncated before being opened.
+		The preexisting content of \c fileName will be preserved
+		if \c appendToExistingFile is <code>true</code>,
+		otherwise, it will be removed when \c fileName is opened.
 
-		<p>If the <code>bufferedIO</code> parameter is <code>true</code>,
-		then buffered IO will be used to write to the output file.
-
+		If the \c useBufferedOutput parameter is <code>true</code>,
+		log messages will be accumulated in a \c bufferByteCount sized buffer
+		before being writen to \c fileName.
 		*/
-		FileAppender(const LayoutPtr& layout, const LogString& filename, bool append,
-			bool bufferedIO, int bufferSize);
-
-		/**
-		Instantiate a FileAppender and open the file designated by
-		<code>filename</code>. The opened filename will become the output
-		destination for this appender.
-
-		<p>If the <code>append</code> parameter is true, the file will be
-		appended to. Otherwise, the file designated by
-		<code>filename</code> will be truncated before being opened.
-		*/
-		FileAppender(const LayoutPtr& layout, const LogString& filename, bool append);
-
-		/**
-		Instantiate a FileAppender and open the file designated by
-		<code>filename</code>. The opened filename will become the output
-		destination for this appender.
-
-		<p>The file will be appended to.  */
-		FileAppender(const LayoutPtr& layout, const LogString& filename);
+		FileAppender
+			( const LayoutPtr& layout
+			, const LogString& fileName
+			, bool             appendToExistingFile = true
+			, bool             useBufferedOutput = false
+			, int              bufferByteCount = DefaultBufferedByteCount
+			);
 
 		~FileAppender();
 
@@ -240,6 +225,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		 */
 		static LogString stripDuplicateBackslashes(const LogString& name);
 
+		static const int DefaultBufferedByteCount = 8 * 1024;
 	private:
 		FileAppender(const FileAppender&);
 		FileAppender& operator=(const FileAppender&);

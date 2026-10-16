@@ -45,29 +45,13 @@ FileAppender::FileAppender() :
 }
 
 FileAppender::FileAppender
-	( const LayoutPtr& layout1
-	, const LogString& fileName1
-	, bool append1
-	, bool bufferedIO1
-	, int bufferSize1
+	( const LayoutPtr& layout
+	, const LogString& fileName
+	, bool             appendToFile
+	, bool             useBufferedOutput
+	, int              bufferByteCount
 	)
-	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, bufferedIO1, bufferSize1))
-{
-	_priv->activate();
-}
-
-FileAppender::FileAppender
-	( const LayoutPtr& layout1
-	, const LogString& fileName1
-	, bool append1
-	)
-	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, false))
-{
-	_priv->activate();
-}
-
-FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
-	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1))
+	: WriterAppender(std::make_unique<FileAppenderPriv>(layout, fileName, appendToFile, useBufferedOutput, bufferByteCount))
 {
 	_priv->activate();
 }

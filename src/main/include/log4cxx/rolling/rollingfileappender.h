@@ -84,8 +84,10 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		struct RollingFileAppenderPriv;
 
 	public:
+		/**
+		A unconfigured Appender.
+		*/
 		RollingFileAppender();
-		RollingFileAppender( std::unique_ptr<RollingFileAppenderPriv> priv );
 
 		/** Returns the value of the <b>MaxBackupIndex</b> option. */
 		int getMaxBackupIndex() const;
@@ -172,6 +174,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		bool rollover();
 
 	protected:
+		RollingFileAppender( std::unique_ptr<RollingFileAppenderPriv> priv );
 
 		/**
 		 Actual writing occurs here.

@@ -49,6 +49,9 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		struct MultiprocessRollingFileAppenderPriv;
 
 	public:
+		/**
+		A unconfigured Appender.
+		*/
 		MultiprocessRollingFileAppender();
 
 		using RollingFileAppender::activateOptions;
