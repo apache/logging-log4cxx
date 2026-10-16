@@ -58,6 +58,10 @@ struct RollingFileAppender::RollingFileAppenderPriv : public FileAppenderPriv
 
 	bool rollover(const LogString& fileName, bool append);
 
+	bool namePreservingRollover(const RolloverDescriptionPtr& policy, const LogString& fileName);
+
+	bool nameEvolvingRollover(const RolloverDescriptionPtr& policy, const LogString& fileName);
+
 	class CountingOutputStream;
 };
 
