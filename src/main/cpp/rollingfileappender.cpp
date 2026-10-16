@@ -269,21 +269,6 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 	return result;
 }
 
-/**
-   Implements the usual roll over behaviour.
-
-   <p>If <code>MaxBackupIndex</code> is positive, then files
-   {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-   are renamed to {<code>File.2</code>, ...,
-   <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-   renamed <code>File.1</code> and closed. A new <code>File</code> is
-   created to receive further log output.
-
-   <p>If <code>MaxBackupIndex</code> is equal to zero, then the
-   <code>File</code> is truncated with no backup files created.
-
- * @return true if rollover performed.
- */
 bool RollingFileAppender::rollover()
 {
 	bool result = false;
@@ -303,8 +288,6 @@ bool RollingFileAppender::RollingFileAppenderPriv::rollover(const LogString& fil
 			result = this->namePreservingRollover(policy, fileName);
 		else
 			result = this->nameEvolvingRollover(policy, fileName);
-		if (result)
-			this->writeHeader();
 	}
 	return result;
 }
@@ -364,6 +347,8 @@ bool RollingFileAppender::RollingFileAppenderPriv::namePreservingRollover
 	this->targetFile.setPath(policy->getActiveFileName());
 	this->fileAppend = appendToExisting;
 	this->activate();
+	if (result)
+		this->writeHeader();
 	return result;
 }
 
@@ -375,6 +360,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::nameEvolvingRollover
 	this->targetFile.setPath(policy->getActiveFileName());
 	this->fileAppend = policy->getAppend();
 	this->activate();
+	this->writeHeader();
 
 	bool result = true;
 	if (auto action = policy->getSynchronous())
