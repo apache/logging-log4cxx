@@ -174,14 +174,15 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		bool rollover();
 
 	protected:
+		/**
+		An appender that uses the sub-classed \c priv instance data.
+		*/
 		RollingFileAppender( std::unique_ptr<RollingFileAppenderPriv> priv );
 
 		/**
-		 Actual writing occurs here.
+		 Rollover the file if required before calling WriterAppender::subAppend.
 		*/
 		void subAppend( const spi::LoggingEventPtr& event ) override;
-
-		bool rolloverInternal();
 
 	public:
 		/**
