@@ -50,7 +50,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 	public:
 		/**
-		A unconfigured Appender.
+		An unconfigured Appender.
 		*/
 		MultiprocessRollingFileAppender();
 

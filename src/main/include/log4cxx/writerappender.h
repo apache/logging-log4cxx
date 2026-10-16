@@ -26,7 +26,7 @@ namespace LOG4CXX_NS
 {
 
 /**
-WriterAppender appends log events to a standard output stream
+An abstract base for an appender that writes to a character stream
 */
 class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 {
@@ -40,10 +40,18 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		END_LOG4CXX_CAST_MAP()
 
 		/**
-		This default constructor does nothing.*/
+		An uninitialised Appender.
+		*/
 		WriterAppender();
 	protected:
+		/**
+		An appender that writes spi::LoggingEvent messages
+		formatted by \c layout to the character stream attached to \c writer.
+		*/
 		WriterAppender(const LayoutPtr& layout, const helpers::WriterPtr& writer = helpers::WriterPtr());
+		/**
+		An appender that uses the sub-classed \c priv instance data.
+		*/
 		WriterAppender(std::unique_ptr<WriterAppenderPriv> priv);
 
 	public:
@@ -140,7 +148,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 
 	protected:
 		/**
-		 Actual writing occurs here.
+		 Format \c event as a message and write it to the character stream.
 		*/
 		virtual void subAppend( const spi::LoggingEventPtr& event );
 

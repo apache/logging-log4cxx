@@ -85,7 +85,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 	public:
 		/**
-		A unconfigured Appender.
+		An unconfigured Appender.
 		*/
 		RollingFileAppender();
 

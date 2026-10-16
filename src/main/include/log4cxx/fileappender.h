@@ -58,7 +58,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		END_LOG4CXX_CAST_MAP()
 
 		/**
-		A unconfigured Appender.
+		An unconfigured Appender.
 		*/
 		FileAppender();
 
