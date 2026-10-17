@@ -189,7 +189,6 @@ public:
 				filename.substr(0, expectedPrefix.size()) == expectedPrefix)
 				std::filesystem::remove(dir_entry);
 		}
-		helpers::FileOutputStream output(LOG4CXX_STR("output/rolling/multiprocess-test4-child.log"), false);
 		auto thisProgram = GetExecutableFileName();
 		bool thisProgramExists = std::filesystem::exists(thisProgram);
 		if (!thisProgramExists && helpers::LogLog::isDebugEnabled())
@@ -200,12 +199,18 @@ public:
 		LOGUNIT_ASSERT(thisProgramExists);
 		const char* args[] = {thisProgram.c_str(), "test3", 0};
 		helpers::Pool p;
-		apr_procattr_t* attr = NULL;
-		setTestAttributes(&attr, output.getFilePtr(), p);
 		apr_proc_t pid[5];
 		auto startTime = helpers::Date::currentTime();
 		for (auto i : {0, 1, 2, 3, 4})
+		{
+			LogString internalDebug = LOG4CXX_STR("output/rolling/multiprocess-test4-child-");
+			helpers::StringHelper::toString(i, internalDebug);
+			internalDebug += LOG4CXX_STR(".log");
+			helpers::FileOutputStream output(internalDebug, false);
+			apr_procattr_t* attr = NULL;
+			setTestAttributes(&attr, output.getFilePtr(), p);
 			startTestInstance(&pid[i], attr, args, p);
+		}
 		for (auto i : {0, 1, 2, 3, 4})
 		{
 			int exitCode;
