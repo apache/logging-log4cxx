@@ -115,11 +115,13 @@ public: // Support classes
 				Transcoder::encode(fileName, filePrefix);
 				if (auto basePolicy = LOG4CXX_NS::cast<RollingPolicyBase>(m_parent->rollingPolicy))
 				{
-					if (basePolicy->getPatternConverterList().size())
+					auto patternConverterList = basePolicy->getPatternConverterList();
+					if (!patternConverterList.empty())
 					{
+						auto pPatternConverter = patternConverterList.front();
 						ObjectPtr obj = std::make_shared<Date>(apr_time_now());
 						LogString fileNamePattern;
-						(*(basePolicy->getPatternConverterList().begin()))->format(obj, fileNamePattern);
+						pPatternConverter->format(obj, fileNamePattern);
 						filePrefix.clear();
 						Transcoder::encode(fileNamePattern, filePrefix);
 					}
@@ -129,7 +131,12 @@ public: // Support classes
 				// processes run under the same uid, and any other local user able to
 				// take a shared fcntl lock on a world-readable lock file could block
 				// rollover (and with it every logging thread) indefinitely.
-				auto stat = apr_file_open(&m_parent->lock_file, lockFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_FPROT_UREAD | APR_FPROT_UWRITE, m_parent->pool.getAPRPool());
+				auto stat = apr_file_open
+					( &m_parent->lock_file
+					, lockFileName.c_str()
+					, APR_CREATE | APR_READ | APR_WRITE, APR_FPROT_UREAD | APR_FPROT_UWRITE
+					, m_parent->pool.getAPRPool()
+					);
 				if (stat != APR_SUCCESS)
 				{
 					LogString err;
