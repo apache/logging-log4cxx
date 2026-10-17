@@ -181,7 +181,7 @@ public:
 		// remove any previously generated files
 		std::filesystem::path outputDir("output/rolling");
 		if (!exists(outputDir))
-			;
+			std::filesystem::create_directories(outputDir);
 		else for (auto const& dir_entry : std::filesystem::directory_iterator{outputDir})
 		{
 			std::string filename(dir_entry.path().filename().string());
