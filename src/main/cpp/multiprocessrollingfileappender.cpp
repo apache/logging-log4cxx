@@ -51,14 +51,49 @@ using namespace LOG4CXX_NS::spi;
 struct MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv
 	: public RollingFileAppenderPriv
 {
+	FileOutputStreamPtr fileOutputStream;
+	apr_file_t* lock_file = NULL;
+
 	~MultiprocessRollingFileAppenderPriv()
 	{
 		if (lock_file)
 			apr_file_close(lock_file);
 	}
+	/**
+	 * Coordinate a rollover with other processes
 
-	FileOutputStreamPtr fileOutputStream;
-	apr_file_t* lock_file = NULL;
+	 * @return true if this process perfomed the rollover.
+	 */
+	bool synchronizedRollover
+		( Appender*                   appender
+		, const spi::LoggingEventPtr& event
+		, const LogString&            fileName
+		, bool                        append
+		, const TriggeringPolicyPtr&  trigger
+		);
+
+	/**
+	 * Is it possible the current log file was renamed?
+	 */
+	bool isRolloverCheckNeeded();
+
+	/**
+	 *  Was \c fileName renamed?
+	 *  @param pSize if not NULL, receives the log file size
+	 * @return true if the log file must be reopened
+	 */
+	bool isAlreadyRolled(const LogString& fileName, size_t* pSize = 0);
+
+	/**
+	 * Put the current size of the log file into \c pSize.
+	 * @return true if the log file size was put into \c pSize
+	 */
+	bool getCurrentFileSize(size_t* pSize);
+
+	/**
+	 * re-open \c fileName (used after it has been renamed)
+	 */
+	void reopenFile(const LogString& fileName);
 
 public: // Support classes
 	class Lock
@@ -80,11 +115,13 @@ public: // Support classes
 				Transcoder::encode(fileName, filePrefix);
 				if (auto basePolicy = LOG4CXX_NS::cast<RollingPolicyBase>(m_parent->rollingPolicy))
 				{
-					if (basePolicy->getPatternConverterList().size())
+					auto patternConverterList = basePolicy->getPatternConverterList();
+					if (!patternConverterList.empty())
 					{
+						auto pPatternConverter = patternConverterList.front();
 						ObjectPtr obj = std::make_shared<Date>(apr_time_now());
 						LogString fileNamePattern;
-						(*(basePolicy->getPatternConverterList().begin()))->format(obj, fileNamePattern);
+						pPatternConverter->format(obj, fileNamePattern);
 						filePrefix.clear();
 						Transcoder::encode(fileNamePattern, filePrefix);
 					}
@@ -94,7 +131,12 @@ public: // Support classes
 				// processes run under the same uid, and any other local user able to
 				// take a shared fcntl lock on a world-readable lock file could block
 				// rollover (and with it every logging thread) indefinitely.
-				auto stat = apr_file_open(&m_parent->lock_file, lockFileName.c_str(), APR_CREATE | APR_READ | APR_WRITE, APR_FPROT_UREAD | APR_FPROT_UWRITE, m_parent->pool.getAPRPool());
+				auto stat = apr_file_open
+					( &m_parent->lock_file
+					, lockFileName.c_str()
+					, APR_CREATE | APR_READ | APR_WRITE, APR_FPROT_UREAD | APR_FPROT_UWRITE
+					, m_parent->pool.getAPRPool()
+					);
 				if (stat != APR_SUCCESS)
 				{
 					LogString err;
@@ -169,11 +211,11 @@ void MultiprocessRollingFileAppender::activateOptions(  )
 /**
  * Is it possible the current log file was renamed?
  */
-bool MultiprocessRollingFileAppender::isRolloverCheckNeeded()
+bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::isRolloverCheckNeeded()
 {
 	bool result = true;
 #if USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER
-	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
+	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(this->rollingPolicy))
 		result = !pTimeBased->isLastFileNameUnchanged();
 #endif
 	return result;
@@ -182,15 +224,15 @@ bool MultiprocessRollingFileAppender::isRolloverCheckNeeded()
 /**
  * Was \c fileName renamed?
  */
-bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName, size_t* pSize)
+bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::isAlreadyRolled(const LogString& fileName, size_t* pSize)
 {
-	if( !_priv->fileOutputStream || !_priv->fileOutputStream->getFilePtr() )
+	if( !this->fileOutputStream || !this->fileOutputStream->getFilePtr() )
 		return false;
 	apr_int32_t wantedInfo = APR_FINFO_IDENT;
 	if (pSize)
 		wantedInfo |= APR_FINFO_SIZE;
 	apr_finfo_t finfo1;
-	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, _priv->fileOutputStream->getFilePtr());
+	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, this->fileOutputStream->getFilePtr());
 
 	if (st1 != APR_SUCCESS)
 		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
@@ -201,7 +243,7 @@ bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName,
 	apr_status_t st2;
 	apr_finfo_t finfo2;
 	int retryCount = 0;
-	while (APR_SUCCESS != (st2 = apr_stat(&finfo2, fname.c_str(), wantedInfo, _priv->pool.getAPRPool())))
+	while (APR_SUCCESS != (st2 = apr_stat(&finfo2, fname.c_str(), wantedInfo, this->pool.getAPRPool())))
 	{
 		if (5 == ++retryCount)
 			break;
@@ -221,13 +263,13 @@ bool MultiprocessRollingFileAppender::isAlreadyRolled(const LogString& fileName,
 /**
  * Put the current size of the log file into \c pSize.
  */
-bool MultiprocessRollingFileAppender::getCurrentFileSize(size_t* pSize)
+bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::getCurrentFileSize(size_t* pSize)
 {
-	if( !_priv->fileOutputStream || !_priv->fileOutputStream->getFilePtr() )
+	if( !this->fileOutputStream || !this->fileOutputStream->getFilePtr() )
 		return false;
 	apr_int32_t wantedInfo = APR_FINFO_SIZE;
 	apr_finfo_t finfo;
-	if (apr_file_info_get(&finfo, wantedInfo, _priv->fileOutputStream->getFilePtr()) != APR_SUCCESS)
+	if (apr_file_info_get(&finfo, wantedInfo, this->fileOutputStream->getFilePtr()) != APR_SUCCESS)
 	{
 		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
 		return false;
@@ -237,136 +279,32 @@ bool MultiprocessRollingFileAppender::getCurrentFileSize(size_t* pSize)
 }
 
 /**
-   Implements the usual roll over behaviour.
-
-   <p>If <code>MaxBackupIndex</code> is positive, then files
-   {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-   are renamed to {<code>File.2</code>, ...,
-   <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-   renamed <code>File.1</code> and closed. A new <code>File</code> is
-   created to receive further log output.
-
-   <p>If <code>MaxBackupIndex</code> is equal to zero, then the
-   <code>File</code> is truncated with no backup files created.
-
- * @return true if rollover performed.
- */
-bool MultiprocessRollingFileAppender::rollover()
-{
-	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	return synchronizedRollover();
-}
-
-/**
  * Coordinate a rollover with other processes
 
  * @return true if this process perfomed the rollover.
  */
-bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolicyPtr& trigger)
+bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::synchronizedRollover
+	( Appender*                   appender
+	, const spi::LoggingEventPtr& event
+	, const LogString&            fileName
+	, bool                        append
+	, const TriggeringPolicyPtr&  trigger
+	)
 {
 	bool result = false;
-	LogString fileName = getFile();
-	if (!_priv->rollingPolicy)
+	if (!this->rollingPolicy)
 		; // can't roll without a policy
-	else if (isAlreadyRolled(fileName, &_priv->fileLength))
-		reopenFile(fileName);
+	else if (this->isAlreadyRolled(fileName, &this->fileLength))
+		this->reopenFile(fileName);
 	else
 	{
-		helpers::Pool tempPool;
-		MultiprocessRollingFileAppenderPriv::Lock lk(_priv, fileName);
+		MultiprocessRollingFileAppenderPriv::Lock lk(this, fileName);
 		if (!lk.hasLock())
 			LogLog::warn(LOG4CXX_STR("Failed to lock ") + fileName);
-		else if (isAlreadyRolled(fileName, &_priv->fileLength))
-			reopenFile(fileName);
-		else if (trigger && !trigger->isTriggeringEvent(this, _priv->event, fileName, _priv->fileLength))
-			;
-		else if (auto rollover1 = _priv->rollingPolicy->rollover(fileName, getAppend()))
-		{
-			_priv->close();
-			if (rollover1->getActiveFileName() == fileName)
-			{
-				bool success = true; // A synchronous action is not required
-				if (auto pAction = rollover1->getSynchronous())
-					success = pAction->execute();
-
-				bool appendToExisting = true;
-				if (success)
-				{
-					appendToExisting = rollover1->getAppend();
-					if (appendToExisting)
-					{
-						_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length();
-					}
-					else
-					{
-						_priv->fileLength = 0;
-					}
-
-					if (auto asyncAction = rollover1->getAsynchronous())
-					{
-						try
-						{
-							asyncAction->execute();
-						}
-						catch (std::exception& ex)
-						{
-							LogString msg(LOG4CXX_STR("Async action in rollover ["));
-							msg.append(fileName);
-							msg.append(LOG4CXX_STR("] failed"));
-							_priv->errorHandler->error(msg, ex, 0);
-						}
-					}
-				}
-				else
-				{
-					LogString msg(LOG4CXX_STR("Rollover of ["));
-					msg.append(fileName);
-					msg.append(LOG4CXX_STR("] failed"));
-					_priv->errorHandler->error(msg);
-				}
-				_priv->targetFile.setPath(rollover1->getActiveFileName());
-				_priv->fileAppend = appendToExisting;
-				_priv->activate();
-			}
-			else
-			{
-				_priv->targetFile.setPath(rollover1->getActiveFileName());
-				_priv->fileAppend = rollover1->getAppend();
-				_priv->activate();
-				bool success = true; // A synchronous action is not required
-				if (auto pAction = rollover1->getSynchronous())
-					success = pAction->execute();
-
-				if (success)
-				{
-					if (rollover1->getAppend())
-					{
-						_priv->fileLength = File().setPath(rollover1->getActiveFileName()).length();
-					}
-					else
-					{
-						_priv->fileLength = 0;
-					}
-
-					if (auto asyncAction = rollover1->getAsynchronous())
-					{
-						try
-						{
-							asyncAction->execute();
-						}
-						catch (std::exception& ex)
-						{
-							LogString msg(LOG4CXX_STR("Async action in rollover ["));
-							msg.append(fileName);
-							msg.append(LOG4CXX_STR("] failed"));
-							_priv->errorHandler->error(msg, ex, 0);
-						}
-					}
-				}
-			}
-
-			result = true;
-		}
+		else if (this->isAlreadyRolled(fileName, &this->fileLength))
+			this->reopenFile(fileName);
+		else if (!trigger || trigger->isTriggeringEvent(appender, event, fileName, this->fileLength))
+			result = this->rollover(fileName, append);
 	}
 
 	return result;
@@ -375,27 +313,23 @@ bool MultiprocessRollingFileAppender::synchronizedRollover(const TriggeringPolic
 /**
  * re-open \c fileName (used after it has been renamed)
  */
-void MultiprocessRollingFileAppender::reopenFile(const LogString& fileName)
+void MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::reopenFile(const LogString& fileName)
 {
-	_priv->close();
+	this->close();
 #if USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER
-	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
+	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(this->rollingPolicy))
 		pTimeBased->loadLastFileName();
 #endif
-	OutputStreamPtr os = std::make_shared<FileOutputStream>(fileName, true, _priv->lazyFileCreation);
-	WriterPtr newWriter(_priv->createWriter(os));
-	setFile(fileName);
-	_priv->setWriter(newWriter);
+	this->targetFile.setPath(fileName);
+	auto os = std::make_shared<FileOutputStream>(fileName, true, this->lazyFileCreation);
+	this->setWriter(this->createWriter(os));
 }
 
-/**
- * {@inheritDoc}
-*/
 void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 {
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
-	LogString fileName = getFile();
+	auto fileName = getFile();
 	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, _priv->fileLength))
 	{
 		//
@@ -405,8 +339,7 @@ void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& eve
 		//     condition and the append should still happen.
 		try
 		{
-			_priv->event = event;
-			synchronizedRollover(_priv->triggeringPolicy);
+			_priv->synchronizedRollover(this, event, fileName, getAppend(), _priv->triggeringPolicy);
 		}
 		catch (std::exception& ex)
 		{
@@ -416,10 +349,10 @@ void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& eve
 			_priv->errorHandler->error(msg, ex, 0);
 		}
 	}
-	else if (!isRolloverCheckNeeded())
-		getCurrentFileSize(&_priv->fileLength);
-	else if (isAlreadyRolled(fileName, &_priv->fileLength))
-		reopenFile(fileName);
+	else if (!_priv->isRolloverCheckNeeded())
+		_priv->getCurrentFileSize(&_priv->fileLength);
+	else if (_priv->isAlreadyRolled(fileName, &_priv->fileLength))
+		_priv->reopenFile(fileName);
 
 	FileAppender::subAppend( event );
 }
@@ -438,8 +371,3 @@ WriterPtr MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::
 	return RollingFileAppenderPriv::createWriter(os);
 }
 
-
-void MultiprocessRollingFileAppender::setFileLength(size_t length)
-{
-	_priv->fileLength = length;
-}

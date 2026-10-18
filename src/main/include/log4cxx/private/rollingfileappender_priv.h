@@ -47,11 +47,6 @@ struct RollingFileAppender::RollingFileAppenderPriv : public FileAppenderPriv
 	 */
 	size_t fileLength;
 
-	/**
-	 *  save the loggingevent
-	 */
-	spi::LoggingEventPtr event;
-
 	bool activateOptions();
 
 	helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
