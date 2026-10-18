@@ -119,12 +119,7 @@ ConfigurationStatus DefaultConfigurator::configure(const LoggerRepositoryPtr& re
 
 const LogString DefaultConfigurator::getConfiguratorClass()
 {
-	auto result = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"));
-#if LOG4CXX_VERSION_MAJOR <= 1
-	if (result.empty())
-		result = System::getProperty(LOG4CXX_STR("log4j.configuratorClass"));
-#endif
-	return result;
+	return System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"));
 }
 
 
@@ -138,13 +133,6 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 		configurationFileName = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
 		isEnvVar = true;
 	}
-#if LOG4CXX_VERSION_MAJOR <= 1
-	if (configurationFileName.empty())
-	{
-		configurationFileName = System::getProperty(LOG4CXX_STR("log4j.configuration"));
-		isEnvVar = true;
-	}
-#endif
 #if !LOG4CXX_EXPAND_CONFIG_ENV_VAR
 	if (isEnvVar)
 		return configurationFileName;

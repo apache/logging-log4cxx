@@ -39,7 +39,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		Configure \c repository.
 
 		If the configuration file name has not been provided by a call to setConfigurationFileName(),
-		the environment variable "LOG4CXX_CONFIGURATION" or "log4j.configuration" value is used,
+		the environment variable "LOG4CXX_CONFIGURATION" value is used,
 		with ${varname} instances using either a system environment variable value (if found)
 		otherwise using the helpers::Properties object
 		provided by spi::Configurator::properties.
@@ -50,8 +50,8 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		~~~
 
 		Unless a custom configurator is specified using the
-		"LOG4CXX_CONFIGURATOR_CLASS" or "log4j.configuratorClass"
-		environment variable, the PropertyConfigurator will be used to
+		"LOG4CXX_CONFIGURATOR_CLASS" environment variable,
+		the PropertyConfigurator will be used to
 		configure log4cxx unless the file name ends with the ".xml"
 		extension, in which case the DOMConfigurator will be used. If a
 		custom configurator is specified, the environment variable should

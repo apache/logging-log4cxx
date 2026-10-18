@@ -103,6 +103,14 @@ The following issues have been addressed:
    * [#629](https://github.com/apache/logging-log4cxx/pull/629)
    , [#637](https://github.com/apache/logging-log4cxx/pull/637)
 
+The other Log4cxx behaviour changes are:
+
+* Use 'find_package(log4cxx COMPONENTS qt)' instead of 'find_package(log4cxx-qt)' to access Log4cxx Qt support
+  \[[#600](https://github.com/apache/logging-log4cxx/pull/600)\]
+
+* The environment variables 'log4j.configuration' and 'log4j.configuratorClass' are no longer checked during default configuration
+  \[[#784](https://github.com/apache/logging-log4cxx/pull/784)\]
+
 ## Release 1.8.0 - 2026-07-29 {#rel_1_8_0}
 
 Release 1.8.0 includes the following new features:
