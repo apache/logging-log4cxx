@@ -241,7 +241,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 		if(FAILED(win32Func.SetThreadDescription(win_handle, wthreadName.c_str())))
 			LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
-#elif LOG4CXX_HAS_PTHREAD_SETNAME && defined(_LIBCPP_VERSION)
+#elif LOG4CXX_HAS_PTHREAD_SETNAME
 	LOG4CXX_ENCODE_CHAR(sthreadName, threadName);
 	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
 		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
