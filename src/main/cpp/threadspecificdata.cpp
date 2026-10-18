@@ -110,7 +110,7 @@ void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadIdName()
 	char result[20];
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
 	this->pNamePair->idString = Transcoder::decode(result);
-#elif LOG4CXX_HAS_PTHREAD_SELF && defined(_LIBCPP_VERSION)
+#elif LOG4CXX_HAS_PTHREAD_SELF
 	// pthread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	auto threadId = pthread_self();
@@ -159,7 +159,7 @@ void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadUserName()
 	}
 	if (this->pNamePair->threadName.empty())
 		this->pNamePair->threadName = this->pNamePair->idString;
-#elif LOG4CXX_HAS_PTHREAD_GETNAME && defined(_LIBCPP_VERSION)
+#elif LOG4CXX_HAS_PTHREAD_GETNAME
 	char result[16];
 	pthread_t current_thread = pthread_self();
 	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
