@@ -136,12 +136,6 @@ if(NOT MSVC)
     # Since this is really not a core feature and the end-user can configure
     # it anyway, we're only going to worry about linux.
     include(${LOG4CXX_SOURCE_DIR}/src/cmake/pthread/log4cxx-pthread.cmake)
-    if(${PTHREAD_SETNAME_NP_FOUND})
-        set(HAS_PTHREAD_SETNAME 1)
-    endif()
-    if(${PTHREAD_GETNAME_NP_FOUND})
-        set(HAS_PTHREAD_GETNAME 1)
-    endif()
 endif()
 
 foreach(varName
@@ -157,6 +151,7 @@ foreach(varName
   HAS_PTHREAD_SIGMASK
   HAS_PTHREAD_SETNAME
   HAS_PTHREAD_GETNAME
+  HAS_PTHREAD_GETHANDLE
   ENABLE_FMT_ASYNC
   )
   if(${varName} EQUAL 0)

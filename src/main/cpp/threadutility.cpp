@@ -216,12 +216,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 	std::thread::id /*threadId*/,
 	std::thread::native_handle_type nativeHandle)
 {
-#if LOG4CXX_HAS_PTHREAD_SETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-	LOG4CXX_ENCODE_CHAR(sthreadName, threadName);
-	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
-		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
-	}
-#elif defined(_WIN32)
+#if defined(_WIN32)
 	typedef HRESULT (WINAPI *TSetThreadDescription)(HANDLE, PCWSTR);
 	static struct initialiser
 	{
@@ -238,8 +233,18 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 	if (win32Func.SetThreadDescription)
 	{
 		LOG4CXX_ENCODE_WCHAR(wthreadName, threadName);
-		if(FAILED(win32Func.SetThreadDescription(static_cast<HANDLE>(nativeHandle), wthreadName.c_str())))
+#if LOG4CXX_HAS_PTHREAD_GETHANDLE
+		auto win_handle = static_cast<HANDLE>(pthread_gethandle(nativeHandle));
+#else
+		auto win_handle = static_cast<HANDLE>(nativeHandle);
+#endif
+		if(FAILED(win32Func.SetThreadDescription(win_handle, wthreadName.c_str())))
 			LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
+	}
+#elif LOG4CXX_HAS_PTHREAD_SETNAME && defined(_LIBCPP_VERSION)
+	LOG4CXX_ENCODE_CHAR(sthreadName, threadName);
+	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
+		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
 	}
 #endif
 }
