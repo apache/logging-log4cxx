@@ -60,9 +60,22 @@ struct ThreadUtility::priv_data
 	~priv_data()
 	{ stopThread(); }
 
-	ThreadStartPre  start_pre{nullptr};
-	ThreadStarted   started{nullptr};
-	ThreadStartPost start_post{nullptr};
+	/**
+	 * Configured behaviour, if user-provided functions have not been provided.
+	 */
+	ThreadConfigurationType config_type{ ThreadConfigurationType::BlockSignalsAndNameThread };
+	/**
+	 * A user-provided pre-start thread function.
+	 */
+	ThreadStartPre          start_pre{nullptr};
+	/**
+	 * A user-provided thread naming function.
+	 */
+	ThreadStarted           set_name{nullptr};
+	/**
+	 * A user-provided post-start thread function.
+	 */
+	ThreadStartPost         start_post{nullptr};
 
 	using TimePoint = std::chrono::time_point<std::chrono::system_clock>;
 	struct NamedPeriodicFunction
@@ -120,18 +133,79 @@ struct ThreadUtility::priv_data
 #endif
 };
 
+struct ThreadUtility::ThreadStartContext::Impl
+{
+	ThreadUtility::priv_data* parent;
+	bool                      sigmask_valid{ false };
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
-	static thread_local sigset_t old_mask;
-	static thread_local bool sigmask_valid;
+	sigset_t                  old_mask;
 #endif
+
+	Impl(ThreadUtility::priv_data* pPriv) : parent(pPriv) {}
+
+	/**
+	 * A pre-start thread function that blocks signals to the new thread
+	 * (if the system has pthreads).  If the system does not have pthreads,
+	 * does nothing.
+	 */
+	void preThreadBlockSignals();
+
+	/**
+	 * A thread_started function that names the thread using the appropriate
+	 * system call.
+	 */
+	void threadStartedNameThread
+		( LogString                threadName
+		, std::thread::id          thread_id
+		, std::thread::native_handle_type native_handle
+		);
+
+	/**
+	 * A post-start thread function that unblocks signals that preThreadBlockSignals
+	 * blocked before starting the thread.  If the system does not have pthreads,
+	 * does nothing.
+	 */
+	void postThreadUnblockSignals();
+};
+
+ThreadUtility::ThreadStartContext::ThreadStartContext(ThreadUtility* parent)
+	: m_priv( std::make_unique<Impl>(parent->m_priv.get()) )
+{
+	if (auto user_provided_pre_start = m_priv->parent->start_pre)
+		user_provided_pre_start();
+	else if (m_priv->parent->config_type == ThreadConfigurationType::BlockSignalsOnly)
+		m_priv->preThreadBlockSignals();
+	else if (m_priv->parent->config_type == ThreadConfigurationType::BlockSignalsAndNameThread)
+		m_priv->preThreadBlockSignals();
+}
+
+ThreadUtility::ThreadStartContext::~ThreadStartContext()
+{
+	if (auto user_provided_post_start = m_priv->parent->start_post)
+		user_provided_post_start();
+	else if (m_priv->parent->config_type == ThreadConfigurationType::BlockSignalsOnly)
+		m_priv->postThreadUnblockSignals();
+	else if (m_priv->parent->config_type == ThreadConfigurationType::BlockSignalsAndNameThread)
+		m_priv->postThreadUnblockSignals();
+}
+
+void ThreadUtility::ThreadStartContext::setThreadName
+	( LogString                       threadName
+	, std::thread::id                 threadId
+	, std::thread::native_handle_type nativeHandle
+	) const
+{
+	if (auto user_provided_set_name = m_priv->parent->set_name)
+		user_provided_set_name(threadName, threadId, nativeHandle);
+	else if (m_priv->parent->config_type == ThreadConfigurationType::NameThreadOnly)
+		m_priv->threadStartedNameThread(threadName, threadId, nativeHandle);
+	else if (m_priv->parent->config_type == ThreadConfigurationType::BlockSignalsAndNameThread)
+		m_priv->threadStartedNameThread(threadName, threadId, nativeHandle);
+}
 
 ThreadUtility::ThreadUtility()
 	: m_priv( std::make_unique<priv_data>() )
 {
-	// Block signals by default.
-	configureFuncs( std::bind( &ThreadUtility::preThreadBlockSignals, this ),
-		nullptr,
-		std::bind( &ThreadUtility::postThreadUnblockSignals, this ) );
 }
 
 ThreadUtility::~ThreadUtility() {}
@@ -152,48 +226,26 @@ ThreadUtility* ThreadUtility::instance()
 
 void ThreadUtility::configure( ThreadConfigurationType type )
 {
-	auto utility = instance();
-
-	if ( type == ThreadConfigurationType::NoConfiguration )
-	{
-		utility->configureFuncs( nullptr, nullptr, nullptr );
-	}
-	else if ( type == ThreadConfigurationType::NameThreadOnly )
-	{
-		utility->configureFuncs( nullptr,
-			std::bind( &ThreadUtility::threadStartedNameThread, utility,
-				std::placeholders::_1,
-				std::placeholders::_2,
-				std::placeholders::_3 ),
-			nullptr );
-	}
-	else if ( type == ThreadConfigurationType::BlockSignalsOnly )
-	{
-		utility->configureFuncs( std::bind( &ThreadUtility::preThreadBlockSignals, utility ),
-			nullptr,
-			std::bind( &ThreadUtility::postThreadUnblockSignals, utility ) );
-	}
-	else if ( type == ThreadConfigurationType::BlockSignalsAndNameThread )
-	{
-		utility->configureFuncs( std::bind( &ThreadUtility::preThreadBlockSignals, utility ),
-			std::bind( &ThreadUtility::threadStartedNameThread, utility,
-				std::placeholders::_1,
-				std::placeholders::_2,
-				std::placeholders::_3 ),
-			std::bind( &ThreadUtility::postThreadUnblockSignals, utility ) );
-	}
+	auto p = instance();
+	p->m_priv->start_pre = nullptr;
+	p->m_priv->set_name = nullptr;
+	p->m_priv->start_post = nullptr;
+	p->m_priv->config_type = type;
 }
 
-void ThreadUtility::configureFuncs( ThreadStartPre pre_start,
-	ThreadStarted started,
-	ThreadStartPost post_start )
+ThreadConfigurationType ThreadUtility::configureFuncs
+	( ThreadStartPre  pre_start
+	, ThreadStarted   set_name
+	, ThreadStartPost post_start
+	)
 {
 	m_priv->start_pre = pre_start;
-	m_priv->started = started;
+	m_priv->set_name = set_name;
 	m_priv->start_post = post_start;
+	return m_priv->config_type;
 }
 
-void ThreadUtility::preThreadBlockSignals()
+void ThreadUtility::ThreadStartContext::Impl::preThreadBlockSignals()
 {
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
 	sigset_t set;
@@ -212,9 +264,11 @@ void ThreadUtility::preThreadBlockSignals()
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
 }
 
-void ThreadUtility::threadStartedNameThread(LogString threadName,
-	std::thread::id /*threadId*/,
-	std::thread::native_handle_type nativeHandle)
+void ThreadUtility::ThreadStartContext::Impl::threadStartedNameThread
+	( LogString                       threadName
+	, std::thread::id                 threadId
+	, std::thread::native_handle_type nativeHandle
+	)
 {
 #if defined(_WIN32)
 	typedef HRESULT (WINAPI *TSetThreadDescription)(HANDLE, PCWSTR);
@@ -249,7 +303,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 #endif
 }
 
-void ThreadUtility::postThreadUnblockSignals()
+void ThreadUtility::ThreadStartContext::Impl::postThreadUnblockSignals()
 {
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
 
@@ -263,22 +317,6 @@ void ThreadUtility::postThreadUnblockSignals()
 	}
 
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
-}
-
-
-ThreadStartPre ThreadUtility::preStartFunction()
-{
-	return m_priv->start_pre;
-}
-
-ThreadStarted ThreadUtility::threadStartedFunction()
-{
-	return m_priv->started;
-}
-
-ThreadStartPost ThreadUtility::postStartFunction()
-{
-	return m_priv->start_post;
 }
 
 /**

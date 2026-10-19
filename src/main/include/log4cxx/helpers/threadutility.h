@@ -23,8 +23,8 @@
 #include <memory>
 #include <chrono>
 
-#include "log4cxx/logstring.h"
-#include "singletonholder.h"
+#include <log4cxx/logstring.h>
+#include <log4cxx/helpers/singletonholder.h>
 
 namespace LOG4CXX_NS
 {
@@ -35,8 +35,8 @@ namespace helpers
  * A function that will be called before a thread is started.  This can
  * be used to (for example) block all of the signals in the thread, so
  * that when the thread is created it will have a correct signal mask.
- */
-typedef std::function<void()> ThreadStartPre;
+*/
+using ThreadStartPre = std::function<void()>;
 
 /**
  * Called when a new thread has started.  This can be used to set
@@ -47,15 +47,19 @@ typedef std::function<void()> ThreadStartPre;
  * @param nativeHandle The native handle of the thread, as reported by
  * std::thread::native_handle
  */
-typedef std::function<void( LogString threadName,
-	std::thread::id threadId,
-	std::thread::native_handle_type nativeHandle )> ThreadStarted;
+using ThreadStarted = std::function
+	< void
+		( LogString                       threadName
+		, std::thread::id                 threadId
+		, std::thread::native_handle_type nativeHandle
+		)
+	>;
 
 /**
  * Called after a thread has started. This can be used to (for example)
  * unblock the signals in the thread.
  */
-typedef std::function<void()> ThreadStartPost;
+using ThreadStartPost = std::function<void()>;
 
 enum class ThreadConfigurationType
 {
@@ -71,10 +75,6 @@ class LOG4CXX_EXPORT ThreadUtility
 		friend class SingletonHolder<ThreadUtility>;
 		ThreadUtility();
 
-		LOG4CXX_NS::helpers::ThreadStartPre preStartFunction();
-		LOG4CXX_NS::helpers::ThreadStarted threadStartedFunction();
-		LOG4CXX_NS::helpers::ThreadStartPost postStartFunction();
-
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)
 	public:
 		~ThreadUtility();
@@ -82,73 +82,36 @@ class LOG4CXX_EXPORT ThreadUtility
 		static ThreadUtility* instance();
 
 		/**
-		 * Utility method for configuring the ThreadUtility in a standard
-		 * configuration.
+		 * Use \c new_value as the behviour when starting a thread.
+		 * Call-back function pointers are reset to nullptr.
 		 */
-		static void configure( ThreadConfigurationType type );
+		static void configure( ThreadConfigurationType new_value );
 
 		/**
-		 * Configure the thread functions that log4cxx will use.
+		 * Set call-back functions to use when starting a thread.
 		 * Note that setting any of these parameters to nullptr is valid,
 		 * and simply results in the callback not being called.
+		 * @returns The previous configuration
 		 */
-		void configureFuncs( ThreadStartPre pre_start,
-			ThreadStarted started,
-			ThreadStartPost post_start );
-
-		/**
-		 * A pre-start thread function that blocks signals to the new thread
-		 * (if the system has pthreads).  If the system does not have pthreads,
-		 * does nothing.
-		 */
-		void preThreadBlockSignals();
-
-		/**
-		 * A thread_started function that names the thread using the appropriate
-		 * system call.
-		 */
-		void threadStartedNameThread(LogString threadName,
-			std::thread::id thread_id,
-			std::thread::native_handle_type native_handle);
-
-		/**
-		 * A post-start thread function that unblocks signals that preThreadBlockSignals
-		 * blocked before starting the thread.  If the system does not have pthreads,
-		 * does nothing.
-		 */
-		void postThreadUnblockSignals();
+		ThreadConfigurationType configureFuncs
+			( ThreadStartPre  pre_start
+			, ThreadStarted   set_name
+			, ThreadStartPost post_start
+			);
 
 		/**
 		 * Start a thread
 		 */
 		template<class Function, class... Args>
-		std::thread createThread(LogString name,
-			Function&& f,
-			Args&& ... args)
+		std::thread createThread
+			( LogString name
+			, Function&& f
+			, Args&& ... args
+			)
 		{
-			LOG4CXX_NS::helpers::ThreadStartPre pre_start = preStartFunction();
-			LOG4CXX_NS::helpers::ThreadStarted thread_start = threadStartedFunction();
-			LOG4CXX_NS::helpers::ThreadStartPost post_start = postStartFunction();
-
-			if ( pre_start )
-			{
-				pre_start();
-			}
-
+			ThreadStartContext ctx(this);
 			std::thread t( f, args... );
-
-			if ( thread_start )
-			{
-				thread_start( name,
-					t.get_id(),
-					t.native_handle() );
-			}
-
-			if ( post_start )
-			{
-				post_start();
-			}
-
+			ctx.setThreadName(name, t.get_id(), t.native_handle());
 			return t;
 		}
 
@@ -188,6 +151,19 @@ class LOG4CXX_EXPORT ThreadUtility
 		LOG4CXX_PTR_DEF(Manager);
 
 		static ManagerPtr instancePtr();
+
+private:
+		struct LOG4CXX_EXPORT ThreadStartContext
+		{
+			LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(Impl, m_priv)
+			ThreadStartContext(ThreadUtility* parent);
+			~ThreadStartContext();
+			void setThreadName
+				( LogString                       threadName
+				, std::thread::id                 threadId
+				, std::thread::native_handle_type nativeHandle
+				) const;
+		};
 };
 
 } /* namespace helpers */

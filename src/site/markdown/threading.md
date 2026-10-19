@@ -36,7 +36,7 @@ However there are certain circumstances that can cause threading issues with Log
 In multithreaded applications, it is possible to call `exit()` from any
 thread in the application.  When this happens, other threads in the
 application may continue to run and attempt to log information.  As of
-version 12 of Log4cxx, this should not cause the library to crash.
+version 0.12.0 of Log4cxx, this should not cause the library to crash.
 
 We recommend that a graceful exit be performed whenever possible, and that
 all threads be terminated properly before returning from `main()`.
