@@ -224,13 +224,15 @@ ThreadUtility* ThreadUtility::instance()
 	return &instancePtr()->value();
 }
 
-void ThreadUtility::configure( ThreadConfigurationType type )
+ThreadConfigurationType ThreadUtility::configure( ThreadConfigurationType type )
 {
 	auto p = instance();
+	auto result = p->m_priv->config_type;
 	p->m_priv->start_pre = nullptr;
 	p->m_priv->set_name = nullptr;
 	p->m_priv->start_post = nullptr;
 	p->m_priv->config_type = type;
+	return result;
 }
 
 ThreadConfigurationType ThreadUtility::configureFuncs

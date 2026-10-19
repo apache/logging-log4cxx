@@ -84,8 +84,9 @@ class LOG4CXX_EXPORT ThreadUtility
 		/**
 		 * Use \c new_value as the behviour when starting a thread.
 		 * Call-back function pointers are reset to nullptr.
+		 * @returns The previous configuration
 		 */
-		static void configure( ThreadConfigurationType new_value );
+		static ThreadConfigurationType configure( ThreadConfigurationType new_value );
 
 		/**
 		 * Set call-back functions to use when starting a thread.
