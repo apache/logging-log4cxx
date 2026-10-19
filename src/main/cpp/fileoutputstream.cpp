@@ -36,7 +36,6 @@ struct FileOutputStream::FileOutputStreamPrivate
 	apr_file_t* fileptr{ nullptr };
 	bool logAppend;
 	void open();
-	void openUnlessLazy(bool lazyOpen);
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
@@ -44,19 +43,9 @@ IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 FileOutputStream::FileOutputStream(const LogString& filename, bool append, bool lazyOpen)
 	: m_priv(std::make_unique<FileOutputStreamPrivate>(filename, append))
 {
-	m_priv->openUnlessLazy(lazyOpen);
-}
-
-void FileOutputStream::FileOutputStreamPrivate::openUnlessLazy(bool lazyOpen)
-{
 	if (!lazyOpen)
 	{
-		this->open();
-	}
-	else if (!this->logAppend && this->path.exists())
-	{
-		// Truncate the file (i.e. remove its contents)
-		this->open();
+		m_priv->open();
 	}
 }
 
