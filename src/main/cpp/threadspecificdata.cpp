@@ -106,16 +106,16 @@ struct ThreadSpecificData::ThreadSpecificDataPrivate{
 */
 void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadIdName()
 {
-#if LOG4CXX_HAS_PTHREAD_SELF && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
+#if defined(_WIN32)
+	char result[20];
+	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
+	this->pNamePair->idString = Transcoder::decode(result);
+#elif LOG4CXX_HAS_PTHREAD_SELF
 	// pthread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	auto threadId = pthread_self();
 	char result[sizeof(pthread_t) * 3 + 10];
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
-	this->pNamePair->idString = Transcoder::decode(result);
-#elif defined(_WIN32)
-	char result[20];
-	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, GetCurrentThreadId());
 	this->pNamePair->idString = Transcoder::decode(result);
 #else
 	std::stringstream ss;
@@ -131,14 +131,7 @@ void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadIdName()
  */
 void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadUserName()
 {
-#if LOG4CXX_HAS_PTHREAD_GETNAME && !(defined(_WIN32) && defined(_LIBCPP_VERSION))
-	char result[16];
-	pthread_t current_thread = pthread_self();
-	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
-		this->pNamePair->threadName = this->pNamePair->idString;
-	else
-		this->pNamePair->threadName = Transcoder::decode(result);
-#elif defined(_WIN32)
+#if defined(_WIN32)
 	typedef HRESULT (WINAPI *TGetThreadDescription)(HANDLE, PWSTR*);
 	static struct initialiser
 	{
@@ -166,6 +159,13 @@ void ThreadSpecificData::ThreadSpecificDataPrivate::setThreadUserName()
 	}
 	if (this->pNamePair->threadName.empty())
 		this->pNamePair->threadName = this->pNamePair->idString;
+#elif LOG4CXX_HAS_PTHREAD_GETNAME
+	char result[16];
+	pthread_t current_thread = pthread_self();
+	if (pthread_getname_np(current_thread, result, sizeof(result)) < 0 || 0 == result[0])
+		this->pNamePair->threadName = this->pNamePair->idString;
+	else
+		this->pNamePair->threadName = Transcoder::decode(result);
 #else
 	this->pNamePair->threadName = this->pNamePair->idString;
 #endif
