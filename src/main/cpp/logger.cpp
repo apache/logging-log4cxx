@@ -460,7 +460,7 @@ LoggerPtr Logger::getParent() const
 	return m_priv->getParent();
 }
 
-const LevelPtr Logger::getLevel() const
+LevelPtr Logger::getLevel() const
 {
 	return m_priv->level;
 }

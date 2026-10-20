@@ -547,7 +547,7 @@ class LOG4CXX_EXPORT Logger
 
 		@return Level - the assigned Level, can be null.
 		*/
-		const LevelPtr getLevel() const;
+		LevelPtr getLevel() const;
 
 		/**
 		The object that holds all Logger instances.
