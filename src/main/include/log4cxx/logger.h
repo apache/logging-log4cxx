@@ -969,7 +969,7 @@ class LOG4CXX_EXPORT Logger
 		See also #LOG4CXX_L7DLOG3.
 		*/
 		void l7dlog(const LevelPtr& level, const CFStringRef& key,
-			const spi::LocationInfo& locationInfo = spi::LocationInfo::getLocationUnavailable()
+			const spi::LocationInfo& locationInfo = spi::LocationInfo::getLocationUnavailable(),
 			const CFStringRef& val1  = {}, const CFStringRef& val2  = {}, const CFStringRef& val3  = {}) const;
 #endif
 
