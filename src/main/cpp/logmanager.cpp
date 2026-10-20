@@ -72,8 +72,6 @@ void LogManager::setRepositorySelector(const spi::RepositorySelectorPtr& selecto
 	APRInitializer::setUnique<spi::RepositorySelector>(selector);
 }
 
-
-
 LoggerRepositoryPtr LogManager::getLoggerRepository()
 {
 	return getRepositorySelector()->getLoggerRepository();
@@ -90,16 +88,6 @@ LoggerPtr LogManager::getRootLogger()
 /**
 Retrieve the appropriate Logger instance.
 */
-LoggerPtr LogManager::getLoggerLS(const LogString& name)
-{
-	auto r = getLoggerRepository();
-	r->ensureIsConfigured(std::bind(DefaultConfigurator::configure, r));
-	return r->getLogger(name);
-}
-
-/**
-Retrieve the appropriate Logger instance.
-*/
 LoggerPtr LogManager::getLoggerLS(const LogString& name,
 	const spi::LoggerFactoryPtr& factory)
 {
@@ -107,12 +95,6 @@ LoggerPtr LogManager::getLoggerLS(const LogString& name,
 	auto r = getLoggerRepository();
 	r->ensureIsConfigured(std::bind(DefaultConfigurator::configure, r));
 	return r->getLogger(name, factory);
-}
-
-LoggerPtr LogManager::getLogger(const std::string& name)
-{
-	LOG4CXX_DECODE_CHAR(n, name);
-	return getLoggerLS(n);
 }
 
 LoggerPtr LogManager::getLogger(const std::string& name,
@@ -129,12 +111,6 @@ LoggerPtr LogManager::exists(const std::string& name)
 }
 
 #if LOG4CXX_WCHAR_T_API
-LoggerPtr LogManager::getLogger(const std::wstring& name)
-{
-	LOG4CXX_DECODE_WCHAR(n, name);
-	return getLoggerLS(n);
-}
-
 LoggerPtr LogManager::getLogger(const std::wstring& name,
 	const spi::LoggerFactoryPtr& factory)
 {
@@ -151,12 +127,6 @@ LoggerPtr LogManager::exists(const std::wstring& name)
 
 
 #if LOG4CXX_CFSTRING_API
-LoggerPtr LogManager::getLogger(const CFStringRef& name)
-{
-	LOG4CXX_DECODE_CFSTRING(n, name);
-	return getLoggerLS(n);
-}
-
 LoggerPtr LogManager::getLogger(const CFStringRef& name,
 	const spi::LoggerFactoryPtr& factory)
 {

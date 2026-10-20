@@ -216,13 +216,6 @@ logstream::logstream(const LOG4CXX_NS::LoggerPtr& logger,
 {
 }
 
-logstream::logstream(const Ch* loggerName,
-	const LOG4CXX_NS::LevelPtr& level)
-	: logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
-{
-}
-
-
 logstream::logstream(const std::basic_string<Ch>& loggerName,
 	const LOG4CXX_NS::LevelPtr& level) : logstream_base(LOG4CXX_NS::Logger::getLogger(loggerName), level), stream(0)
 {

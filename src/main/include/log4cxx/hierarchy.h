@@ -62,29 +62,28 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 
 	private:
 		/**
-		Create a new logger hierarchy.
+		An empty logger hierarchy.
 		*/
 		Hierarchy();
 
 	public:
+		/**
+		Create a new logger hierarchy.
+		*/
 		static HierarchyPtr create();
 
 		~Hierarchy();
 
+		/** {@inheritDoc}
+		*/
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
-		/**
-		 * Remove a previously added HierarchyEventListener.
-		 *
-		 */
+		/** {@inheritDoc}
+		*/
 		void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
-		/**
-		 * Call \c configurator if not yet configured and \c configurator has not already been tried.
-		 * If \c configurator succeeds, it must call LoggerRepository::setConfigured
-		 * to ensure subsequent calls to LoggerRepository::ensureIsConfigured
-		 * from overwriting the configuration.
-		 */
+		/** {@inheritDoc}
+		*/
 		void ensureIsConfigured(std::function<void()> configurator) override;
 
 		/**
@@ -99,113 +98,54 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 
 		void emitNoAppenderWarning(const Logger* logger) override;
 
-		/**
-		Check if the named logger exists in the hierarchy. If so return
-		its reference, otherwise returns <code>null</code>.
-
-		  @param name The name of the logger to search for.
-
+		/** {@inheritDoc}
 		*/
 		LoggerPtr exists(const LogString& name) override;
 
-		/**
-		The string form of {@link #setThreshold(const LevelPtr&) setThreshold}.
+		/** {@inheritDoc}
 		*/
 		void setThreshold(const LogString& levelStr) override;
 
-		/**
-		Enable logging for logging requests with level <code>newLevel</code> or
-		higher. By default all levels are enabled.
-
-		@param newLevel The minimum level of logging requests that are sent to appenders.
+		/** {@inheritDoc}
 		*/
 		void setThreshold(const LevelPtr& newLevel) override;
 
+		/** {@inheritDoc}
+		*/
 		void fireAddAppenderEvent(const Logger* logger, const Appender* appender) override;
 
+		/** {@inheritDoc}
+		*/
 		void fireRemoveAppenderEvent(const Logger* logger, const Appender* appender) override;
 
-		/**
-		Returns a Level representation of the <code>enable</code>
-		state.
+		/** {@inheritDoc}
 		*/
 		LevelPtr getThreshold() const override;
 
-		/**
-		Retrieve the \c name Logger instance using
-		the default factory to create it if required.
-
-		If a logger of that name already exists, then it will be
-		returned.  Otherwise, a new logger will be instantiated and
-		then linked with its existing ancestors as well as children.
-
-		@param name The name of the logger to retrieve.
-
-		*/
-		LoggerPtr getLogger(const LogString& name) override;
-
-		/**
-		Retrieve the \c name Logger instance using
-		<code>factory</code> to create it if required.
-
-		If a logger of that name already exists, then it will be
-		returned.  Otherwise, a new logger will be instantiated by the
-		<code>factory</code> parameter and linked with its existing
-		ancestors as well as children.
-
-		@param name The name of the logger to retrieve.
-		@param factory The factory that will make the new logger instance.
-
+		/** {@inheritDoc}
 		*/
 		LoggerPtr getLogger(const LogString& name,
-			const spi::LoggerFactoryPtr& factory) override;
+			const spi::LoggerFactoryPtr& factory = {}) override;
 
-		/**
-		Returns all the currently defined loggers in this hierarchy as
-		a LoggerList.
-
-		<p>The root logger is <em>not</em> included in the returned
-		LoggerList.  */
+		/** {@inheritDoc}
+		*/
 		LoggerList getCurrentLoggers() const override;
 
-		/**
-		Get the root of this hierarchy.
+		/** {@inheritDoc}
 		*/
 		LoggerPtr getRootLogger() const override;
 
-		/**
-		This method will return <code>true</code> if this repository is
-		disabled for <code>level</code> object passed as parameter and
-		<code>false</code> otherwise. See also the
-		{@link #setThreshold(const LevelPtr&) setThreshold} method.  */
+		/** {@inheritDoc}
+		*/
 		bool isDisabled(int level) const override;
 
-		/**
-		Reset all values contained in this hierarchy instance to their
-		default.  This removes all appenders from all categories, sets
-		the level of all non-root categories to <code>null</code>,
-		sets their additivity flag to <code>true</code> and sets the level
-		of the root logger to DEBUG.  Moreover,
-		message disabling is set its default "off" value.
-
-		<p>Existing categories are not removed. They are just reset.
-
-		<p>This method should be used sparingly and with care as it will
-		block all logging until it is completed.</p>
+		/** {@inheritDoc}
 		*/
 		void resetConfiguration() override;
 
 		/**
-		Used by subclasses to add a renderer to the hierarchy passed as parameter.
-		*/
-		/**
 		Shutting down a hierarchy will <em>safely</em> close and remove
 		all appenders in all categories including the root logger.
-
-		<p>Some appenders such as {@link net::XMLSocketAppender XMLSocketAppender}
-		and AsyncAppender need to be closed before the
-		application exists. Otherwise, pending logging events might be
-		lost.
 
 		<p>The <code>shutdown</code> method is careful to close nested
 		appenders before closing regular appenders. This is allows
@@ -214,27 +154,19 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		*/
 		void shutdown() override;
 
-
+		/** {@inheritDoc}
+		*/
 		virtual bool isConfigured() override;
+
+		/** {@inheritDoc}
+		*/
 		virtual void setConfigured(bool configured) override;
 
-		/**
-		Refresh the configuration of all loggers where \c parent
-		is somewhere in their ancestor chain.
-		The ancestor chain ends at the root logger.
+		/** {@inheritDoc}
 		*/
 		void updateChildren(const Logger* parent) override;
 
-		/**
-		Remove the \c name Logger from the hierarchy.
-
-		Note: The \c name Logger must be retrieved from the hierarchy
-		\b after any subsequent configuration file change
-		for the newly loaded settings to be used.
-
-		@param name The logger to remove.
-		@param ifNotUsed If true and use_count() indicates there are other references, do not remove the Logger and return false.
-		@returns true if \c name Logger was removed from the hierarchy.
+		/** {@inheritDoc}
 		*/
 		bool removeLogger(const LogString& name, bool ifNotUsed = true) override;
 

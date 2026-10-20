@@ -107,22 +107,7 @@ class LOG4CXX_EXPORT Logger
 		@param msg the message string to log.
 		@param location The source code location of the logging request.
 		*/
-		void debug(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>DEBUG</code> events.
-
-		<p>This method first checks if this logger is <code>DEBUG</code>
-		enabled by comparing the level of this logger with the
-		DEBUG level. If this logger is
-		<code>DEBUG</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_DEBUG.
-		*/
-		void debug(const std::string& msg) const;
+		void debug(const std::string& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
 		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>DEBUG</code> events.
@@ -139,22 +124,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_DEBUG.
 		*/
-		void debug(const std::wstring& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>DEBUG</code> events.
-
-		<p>This method first checks if this logger is <code>DEBUG</code>
-		enabled by comparing the level of this logger with the
-		DEBUG level. If this logger is
-		<code>DEBUG</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_DEBUG.
-		*/
-		void debug(const std::wstring& msg) const;
+		void debug(const std::wstring& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -172,22 +142,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_DEBUG.
 		*/
-		void debug(const CFStringRef& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>DEBUG</code> events.
-
-		<p>This method first checks if this logger is <code>DEBUG</code>
-		enabled by comparing the level of this logger with the
-		DEBUG level. If this logger is
-		<code>DEBUG</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_DEBUG.
-		*/
-		void debug(const CFStringRef& msg) const;
+		void debug(const CFStringRef& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 
 		/**
@@ -205,38 +160,8 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_ERROR.
 		*/
-		void error(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
-
-		<p>This method first checks if this logger is <code>ERROR</code>
-		enabled by comparing the level of this logger with the
-		ERROR level. If this logger is
-		<code>ERROR</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_ERROR.
-		*/
-		void error(const std::string& msg) const;
+		void error(const std::string& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #if LOG4CXX_WCHAR_T_API
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
-
-		<p>This method first checks if this logger is <code>ERROR</code>
-		enabled by comparing the level of this logger with the
-		ERROR level. If this logger is
-		<code>ERROR</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_ERROR.
-		*/
-		void error(const std::wstring& msg) const;
 		/**
 		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
 
@@ -252,7 +177,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_ERROR.
 		*/
-		void error(const std::wstring& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
+		void error(const std::wstring& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -270,22 +195,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_ERROR.
 		*/
-		void error(const CFStringRef& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>ERROR</code> events.
-
-		<p>This method first checks if this logger is <code>ERROR</code>
-		enabled by comparing the level of this logger with the
-		ERROR level. If this logger is
-		<code>ERROR</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_ERROR.
-		*/
-		void error(const CFStringRef& msg) const;
+		void error(const CFStringRef& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 
 		/**
@@ -303,22 +213,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_FATAL.
 		*/
-		void fatal(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
-
-		<p>This method first checks if this logger is <code>ERROR</code>
-		enabled by comparing the level of this logger with the
-		ERROR level. If this logger is
-		<code>ERROR</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_FATAL.
-		*/
-		void fatal(const std::string& msg) const;
+		void fatal(const std::string& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
 		Add a new logging event containing \c msg and \c location to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
@@ -335,22 +230,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_FATAL.
 		*/
-		void fatal(const std::wstring& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
-
-		<p>This method first checks if this logger is <code>ERROR</code>
-		enabled by comparing the level of this logger with the
-		ERROR level. If this logger is
-		<code>ERROR</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_FATAL.
-		*/
-		void fatal(const std::wstring& msg) const;
+		void fatal(const std::wstring& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -368,22 +248,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_FATAL.
 		*/
-		void fatal(const CFStringRef& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>FATAL</code> events.
-
-		<p>This method first checks if this logger is <code>ERROR</code>
-		enabled by comparing the level of this logger with the
-		ERROR level. If this logger is
-		<code>ERROR</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_FATAL.
-		*/
-		void fatal(const CFStringRef& msg) const;
+		void fatal(const CFStringRef& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 
 		/**
@@ -510,14 +375,7 @@ class LOG4CXX_EXPORT Logger
 		@param location The source code location of the logging request.
 		*/
 		void forcedLog(const LevelPtr& level, const std::string& message,
-			const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c message to attached appender(s)
-		without further checks.
-		@param level The logging event level.
-		@param message The text to add to the logging event.
-		*/
-		void forcedLog(const LevelPtr& level, const std::string& message) const;
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 #if LOG4CXX_WCHAR_T_API
 		/**
@@ -586,14 +444,7 @@ class LOG4CXX_EXPORT Logger
 		@param location The source code location of the logging request.
 		*/
 		void forcedLog(const LevelPtr& level, const std::wstring& message,
-			const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c message to attached appender(s)
-		without further checks.
-		@param level The logging event level.
-		@param message The text to add to the logging event.
-		*/
-		void forcedLog(const LevelPtr& level, const std::wstring& message) const;
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -604,14 +455,7 @@ class LOG4CXX_EXPORT Logger
 		@param location The source code location of the logging request.
 		*/
 		void forcedLog(const LevelPtr& level, const CFStringRef& message,
-			const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c message to attached appender(s)
-		without further checks.
-		@param level The logging event level.
-		@param message The text to add to the logging event.
-		*/
-		void forcedLog(const LevelPtr& level, const CFStringRef& message) const;
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 		/**
 		Add a new logging event containing \c message and \c location to attached appender(s)
@@ -631,7 +475,7 @@ class LOG4CXX_EXPORT Logger
 		@param location location of the logging statement.
 		*/
 		void forcedLogLS(const LevelPtr& level, const LogString& message,
-			const LOG4CXX_NS::spi::LocationInfo& location) const;
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
 		Get the additivity flag for this logger.
@@ -660,7 +504,7 @@ class LOG4CXX_EXPORT Logger
 
 		@throws RuntimeException if all levels are null in the hierarchy
 		*/
-		virtual const LevelPtr& getEffectiveLevel() const;
+		virtual LevelPtr getEffectiveLevel() const;
 
 
 		/**
@@ -703,7 +547,7 @@ class LOG4CXX_EXPORT Logger
 
 		@return Level - the assigned Level, can be null.
 		*/
-		const LevelPtr& getLevel() const;
+		const LevelPtr getLevel() const;
 
 		/**
 		The object that holds all Logger instances.
@@ -715,22 +559,12 @@ class LOG4CXX_EXPORT Logger
 		* @param name logger name.
 		*/
 		static LoggerPtr getLogger(const std::string& name);
-		/**
-		* Retrieve a logger by name in current encoding.
-		* @param name logger name.
-		*/
-		static LoggerPtr getLogger(const char* const name);
 #if LOG4CXX_WCHAR_T_API
 		/**
 		* Retrieve a logger by name.
 		* @param name logger name.
 		*/
 		static LoggerPtr getLogger(const std::wstring& name);
-		/**
-		* Retrieve a logger by name.
-		* @param name logger name.
-		*/
-		static LoggerPtr getLogger(const wchar_t* const name);
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -739,12 +573,6 @@ class LOG4CXX_EXPORT Logger
 		*/
 		static LoggerPtr getLogger(const CFStringRef& name);
 #endif
-		/**
-		* Retrieve a logger by name in Unicode.
-		* @param name logger name.
-		*/
-		static LoggerPtr getLoggerLS(const LogString& name);
-
 		/**
 		Retrieve the root logger.
 		*/
@@ -764,56 +592,7 @@ class LOG4CXX_EXPORT Logger
 		actually create a new Instance.
 		*/
 		static LoggerPtr getLoggerLS(const LogString& name,
-			const LOG4CXX_NS::spi::LoggerFactoryPtr& factory);
-		/**
-		Like #getLogger except that the type of logger
-		instantiated depends on the type returned by the
-		LoggerFactory#makeNewLoggerInstance method of the
-		<code>factory</code> parameter.
-
-		<p>This method is intended to be used by sub-classes.
-
-		@param name The name of the logger to retrieve.
-
-		@param factory A LoggerFactory implementation that will
-		actually create a new Instance.
-		*/
-		static LoggerPtr getLogger(const std::string& name,
-			const LOG4CXX_NS::spi::LoggerFactoryPtr& factory);
-#if LOG4CXX_WCHAR_T_API
-		/**
-		Like #getLogger except that the type of logger
-		instantiated depends on the type returned by the
-		LoggerFactory#makeNewLoggerInstance method of the
-		<code>factory</code> parameter.
-
-		<p>This method is intended to be used by sub-classes.
-
-		@param name The name of the logger to retrieve.
-
-		@param factory A LoggerFactory implementation that will
-		actually create a new Instance.
-		*/
-		static LoggerPtr getLogger(const std::wstring& name,
-			const LOG4CXX_NS::spi::LoggerFactoryPtr& factory);
-#endif
-#if LOG4CXX_CFSTRING_API
-		/**
-		Like #getLogger except that the type of logger
-		instantiated depends on the type returned by the
-		LoggerFactory#makeNewLoggerInstance method of the
-		<code>factory</code> parameter.
-
-		<p>This method is intended to be used by sub-classes.
-
-		@param name The name of the logger to retrieve.
-
-		@param factory A LoggerFactory implementation that will
-		actually create a new Instance.
-		*/
-		static LoggerPtr getLogger(const CFStringRef& name,
-			const LOG4CXX_NS::spi::LoggerFactoryPtr& factory);
-#endif
+			const spi::LoggerFactoryPtr& factory = {});
 
 		/**
 		Return the <em>inherited</em> ResourceBundle for this logger.
@@ -854,22 +633,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_INFO.
 		*/
-		void info(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>INFO</code> events.
-
-		<p>This method first checks if this logger is <code>INFO</code>
-		enabled by comparing the level of this logger with the
-		INFO level. If this logger is
-		<code>INFO</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_INFO.
-		*/
-		void info(const std::string& msg) const;
+		void info(const std::string& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
 		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>INFO</code> events.
@@ -886,22 +650,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_INFO.
 		*/
-		void info(const std::wstring& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>INFO</code> events.
-
-		<p>This method first checks if this logger is <code>INFO</code>
-		enabled by comparing the level of this logger with the
-		INFO level. If this logger is
-		<code>INFO</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_INFO.
-		*/
-		void info(const std::wstring& msg) const;
+		void info(const std::wstring& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -919,22 +668,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_INFO.
 		*/
-		void info(const CFStringRef& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>INFO</code> events.
-
-		<p>This method first checks if this logger is <code>INFO</code>
-		enabled by comparing the level of this logger with the
-		INFO level. If this logger is
-		<code>INFO</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_INFO.
-		*/
-		void info(const CFStringRef& msg) const;
+		void info(const CFStringRef& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 
 		/**
@@ -1143,86 +877,32 @@ class LOG4CXX_EXPORT Logger
 		}
 
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using \c values for parameter substitution
+		Add a new logging event containing \c locationInfo and the localized message \c key
+		using \c values for parameter substitution
 		to attached appender(s) if this logger is enabled for \c level events.
-
+-
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
 		pattern is formatted using helpers::StringHelper::format method.
-
+-
 		@param level The level of the logging request.
 		@param key The key to be searched in the ResourceBundle.
 		@param locationInfo The location info of the logging request.
 		@param values The values for the placeholders <code>{0}</code>,
 		              <code>{1}</code> etc. within the pattern.
-
+-
 		@see #setResourceBundle
-
+-
 		See also #LOG4CXX_L7DLOG1.
 		*/
 		void l7dlog(const LevelPtr& level, const LogString& key,
 			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
 			const std::vector<LogString>& values) const;
+
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method.
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG.
-		*/
-		void l7dlog(const LevelPtr& level, const std::string& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo) const;
-		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameter \c val to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the
-		supplied parameters in a string array.
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-		@param val The first value for the placeholders within the pattern.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG1.
-		*/
-		void l7dlog(const LevelPtr& level, const std::string& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const std::string& val) const;
-		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1 and \c val2 to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the
-		supplied parameters in a string array.
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-		@param val1 The first value for the placeholders within the pattern.
-		@param val2 The second value for the placeholders within the pattern.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG2.
-		*/
-		void l7dlog(const LevelPtr& level, const std::string& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const std::string& val1, const std::string& val2) const;
-		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and \c val3 to attached appender(s) if this logger is enabled for \c level events.
+		Add a new logging event containing \c locationInfo and the localized message \c key
+		using parameters \c val1, \c val2 and \c val3 to attached appender(s)
+		if this logger is enabled for \c level events.
 
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
@@ -1241,69 +921,11 @@ class LOG4CXX_EXPORT Logger
 		See also #LOG4CXX_L7DLOG3.
 		*/
 		void l7dlog(const LevelPtr& level, const std::string& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const std::string& val1, const std::string& val2, const std::string& val3) const;
+			const spi::LocationInfo& locationInfo = spi::LocationInfo::getLocationUnavailable(),
+			const std::string& val1 = {}, const std::string& val2 = {}, const std::string& val3 = {}) const;
 
 #if LOG4CXX_WCHAR_T_API
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method .
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG.
-		*/
-		void l7dlog(const LevelPtr& level, const std::wstring& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo) const;
-		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameter \c val to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the
-		supplied parameter in a string array.
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-		@param val The value for the first placeholder within the pattern.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG1.
-		*/
-		void l7dlog(const LevelPtr& level, const std::wstring& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const std::wstring& val) const;
-		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1 and \c val2 to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the
-		supplied parameters in a string array.
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-		@param val1 The value for the first placeholder within the pattern.
-		@param val2 The value for the second placeholder within the pattern.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG2.
-		*/
-		void l7dlog(const LevelPtr& level, const std::wstring& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const std::wstring& val1, const std::wstring& val2) const;
-		/**
 		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and \c val3 to attached appender(s) if this logger is enabled for \c level events.
 
 		First, the user supplied
@@ -1323,69 +945,11 @@ class LOG4CXX_EXPORT Logger
 		See also #LOG4CXX_L7DLOG3.
 		*/
 		void l7dlog(const LevelPtr& level, const std::wstring& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const std::wstring& val1, const std::wstring& val2, const std::wstring& val3) const;
+			const spi::LocationInfo& locationInfo = spi::LocationInfo::getLocationUnavailable(),
+			const std::wstring& val1 = {}, const std::wstring& val2 = {}, const std::wstring& val3 = {}) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method.
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG.
-		*/
-		void l7dlog(const LevelPtr& level, const CFStringRef& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo) const;
-		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameter \c val to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the
-		supplied parameter in a string array.
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-		@param val1 The value for the first placeholder within the pattern.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG1.
-		*/
-		void l7dlog(const LevelPtr& level, const CFStringRef& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const CFStringRef& val1) const;
-		/**
-		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1 and \c val2 to attached appender(s) if this logger is enabled for \c level events.
-
-		First, the user supplied
-		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using helpers::StringHelper::format method with the
-		supplied parameters in a string array.
-
-		@param level The level of the logging request.
-		@param key The key to be searched in the ResourceBundle.
-		@param locationInfo The location info of the logging request.
-		@param val1 The value for the first placeholder within the pattern.
-		@param val2 The value for the second placeholder within the pattern.
-
-		@see #setResourceBundle
-
-		See also #LOG4CXX_L7DLOG2.
-		*/
-		void l7dlog(const LevelPtr& level, const CFStringRef& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const CFStringRef& val1, const CFStringRef& val2) const;
-		/**
 		Add a new logging event containing \c locationInfo and the localized message \c key using parameters \c val1, \c val2 and \c val3 to attached appender(s) if this logger is enabled for \c level events.
 
 		First, the user supplied
@@ -1405,9 +969,8 @@ class LOG4CXX_EXPORT Logger
 		See also #LOG4CXX_L7DLOG3.
 		*/
 		void l7dlog(const LevelPtr& level, const CFStringRef& key,
-			const LOG4CXX_NS::spi::LocationInfo& locationInfo,
-			const CFStringRef& val1, const CFStringRef& val2,
-			const CFStringRef& val3) const;
+			const spi::LocationInfo& locationInfo = spi::LocationInfo::getLocationUnavailable()
+			const CFStringRef& val1  = {}, const CFStringRef& val2  = {}, const CFStringRef& val3  = {}) const;
 #endif
 
 		/**
@@ -1419,16 +982,7 @@ class LOG4CXX_EXPORT Logger
 		@param message The message of the logging request.
 		@param location The source file of the logging request, may be null. */
 		void log(const LevelPtr& level, const std::string& message,
-			const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c message to the appenders attached to this logger if this logger is enabled for \c level events.
-		This is the most generic printing method. It is intended to be
-		invoked by <b>wrapper</b> classes.
-
-		@param level The level of the logging request.
-		@param message The message of the logging request.
-		*/
-		void log(const LevelPtr& level, const std::string& message) const;
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #if LOG4CXX_WCHAR_T_API
 		/**
 		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
@@ -1439,16 +993,7 @@ class LOG4CXX_EXPORT Logger
 		@param message The message of the logging request.
 		@param location The source file of the logging request, may be null. */
 		void log(const LevelPtr& level, const std::wstring& message,
-			const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c message to the appenders attached to this logger if this logger is enabled for \c level events.
-		This is the most generic printing method. It is intended to be
-		invoked by <b>wrapper</b> classes.
-
-		@param level The level of the logging request.
-		@param message The message of the logging request.
-		*/
-		void log(const LevelPtr& level, const std::wstring& message) const;
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -1460,16 +1005,7 @@ class LOG4CXX_EXPORT Logger
 		@param message The message of the logging request.
 		@param location The source file of the logging request, may be null. */
 		void log(const LevelPtr& level, const CFStringRef& message,
-			const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c message to the appenders attached to this logger if this logger is enabled for \c level events.
-		This is the most generic printing method. It is intended to be
-		invoked by <b>wrapper</b> classes.
-
-		@param level The level of the logging request.
-		@param message The message of the logging request.
-		*/
-		void log(const LevelPtr& level, const CFStringRef& message) const;
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 		/**
 		Add a new logging event containing \c message and \c location to the appenders attached to this logger if this logger is enabled for \c level events.
@@ -1480,9 +1016,7 @@ class LOG4CXX_EXPORT Logger
 		@param message The message of the logging request.
 		@param location The source file of the logging request, may be null. */
 		void logLS(const LevelPtr& level, const LogString& message,
-			const LOG4CXX_NS::spi::LocationInfo& location) const;
-
-
+			const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
 		Remove all previously added appenders from this logger
@@ -1587,22 +1121,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_WARN.
 		*/
-		void warn(const std::wstring& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>WARN</code> events.
-
-		<p>This method first checks if this logger is <code>WARN</code>
-		enabled by comparing the level of this logger with the
-		WARN level. If this logger is
-		<code>WARN</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_WARN.
-		*/
-		void warn(const std::wstring& msg) const;
+		void warn(const std::wstring& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -1620,22 +1139,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_WARN.
 		*/
-		void warn(const CFStringRef& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>WARN</code> events.
-
-		<p>This method first checks if this logger is <code>WARN</code>
-		enabled by comparing the level of this logger with the
-		WARN level. If this logger is
-		<code>WARN</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_WARN.
-		*/
-		void warn(const CFStringRef& msg) const;
+		void warn(const CFStringRef& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 		/**
 		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>WARN</code> events.
@@ -1652,22 +1156,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_WARN.
 		*/
-		void warn(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>WARN</code> events.
-
-		<p>This method first checks if this logger is <code>WARN</code>
-		enabled by comparing the level of this logger with the
-		WARN level. If this logger is
-		<code>WARN</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_WARN.
-		*/
-		void warn(const std::string& msg) const;
+		void warn(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 #if LOG4CXX_WCHAR_T_API
 		/**
@@ -1685,22 +1174,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_TRACE.
 		*/
-		void trace(const std::wstring& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>TRACE</code> events.
-
-		<p>This method first checks if this logger is <code>TRACE</code>
-		enabled by comparing the level of this logger with the
-		TRACE level. If this logger is
-		<code>TRACE</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_TRACE.
-		*/
-		void trace(const std::wstring& msg) const;
+		void trace(const std::wstring& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
@@ -1718,22 +1192,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_TRACE.
 		*/
-		void trace(const CFStringRef& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>TRACE</code> events.
-
-		<p>This method first checks if this logger is <code>TRACE</code>
-		enabled by comparing the level of this logger with the
-		TRACE level. If this logger is
-		<code>TRACE</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_TRACE.
-		*/
-		void trace(const CFStringRef& msg) const;
+		void trace(const CFStringRef& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 #endif
 		/**
 		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>TRACE</code> events.
@@ -1750,22 +1209,7 @@ class LOG4CXX_EXPORT Logger
 
 		See also #LOG4CXX_TRACE.
 		*/
-		void trace(const std::string& msg, const LOG4CXX_NS::spi::LocationInfo& location) const;
-		/**
-		Add a new logging event containing \c msg to attached appender(s) if this logger is enabled for <code>TRACE</code> events.
-
-		<p>This method first checks if this logger is <code>TRACE</code>
-		enabled by comparing the level of this logger with the
-		TRACE level. If this logger is
-		<code>TRACE</code> enabled, it proceeds to call all the
-		registered appenders in this logger and also higher in the
-		hierarchy depending on the value of the additivity flag.
-
-		@param msg the message string to log.
-
-		See also #LOG4CXX_TRACE.
-		*/
-		void trace(const std::string& msg) const;
+		void trace(const std::string& msg, const spi::LocationInfo& location = spi::LocationInfo::getLocationUnavailable()) const;
 
 		/**
 		 * Replace all current appenders with \c newList and

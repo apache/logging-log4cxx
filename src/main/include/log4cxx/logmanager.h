@@ -78,23 +78,13 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using the default factory to create it if required.
-
-		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
-		the repository is configured.
-		*/
-		static LoggerPtr getLogger(const std::string& name);
-
-		/**
-		Retrieve the \c name Logger instance from the
-		{@link spi::LoggerRepository LoggerRepository}
 		using \c factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
 		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const std::string& name,
-			const spi::LoggerFactoryPtr& factory);
+			const spi::LoggerFactoryPtr& factory = {});
 		/**
 		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
 
@@ -105,22 +95,13 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using the default factory to create it if required.
-
-		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
-		the repository is configured.
-		*/
-		static LoggerPtr getLogger(const std::wstring& name);
-		/**
-		Retrieve the \c name Logger instance from the
-		{@link spi::LoggerRepository LoggerRepository}
 		using \c factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured} passing {@link DefaultConfigurator::configure} to ensure
 		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const std::wstring& name,
-			const spi::LoggerFactoryPtr& factory);
+			const spi::LoggerFactoryPtr& factory = {});
 		/**
 		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
 
@@ -132,16 +113,6 @@ class LOG4CXX_EXPORT LogManager
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
-		using the default factory to create it if required.
-
-		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
-		passing {@link DefaultConfigurator::configure} to ensure
-		the repository is configured.
-		*/
-		static LoggerPtr getLogger(const CFStringRef& name);
-		/**
-		Retrieve the \c name Logger instance from the
-		{@link spi::LoggerRepository LoggerRepository}
 		using \c factory to create it if required.
 
 		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
@@ -149,7 +120,7 @@ class LOG4CXX_EXPORT LogManager
 		the repository is configured.
 		*/
 		static LoggerPtr getLogger(const CFStringRef& name,
-			const spi::LoggerFactoryPtr& factory);
+			const spi::LoggerFactoryPtr& factory = {});
 		/**
 		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.
 
@@ -158,17 +129,6 @@ class LOG4CXX_EXPORT LogManager
 		static LoggerPtr exists(const CFStringRef& name);
 #endif
 
-
-		/**
-		Retrieve the \c name Logger instance from the
-		{@link spi::LoggerRepository LoggerRepository}
-		using the default factory to create it if required.
-
-		Calls {@link spi::LoggerRepository::ensureIsConfigured ensureIsConfigured}
-		passing {@link DefaultConfigurator::configure} to ensure
-		the repository is configured.
-		*/
-		static LoggerPtr getLoggerLS(const LogString& name);
 		/**
 		Retrieve the \c name Logger instance from the
 		{@link spi::LoggerRepository LoggerRepository}
@@ -179,7 +139,7 @@ class LOG4CXX_EXPORT LogManager
 		the repository is configured.
 		*/
 		static LoggerPtr getLoggerLS(const LogString& name,
-			const spi::LoggerFactoryPtr& factory);
+			const spi::LoggerFactoryPtr& factory = {});
 
 		/**
 		 A pointer to the Logger \c name instance if it exists in the {@link spi::LoggerRepository LoggerRepository}.

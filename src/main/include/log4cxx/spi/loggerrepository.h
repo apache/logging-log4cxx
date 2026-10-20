@@ -49,67 +49,71 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		virtual ~LoggerRepository() {}
 
 		/**
-		Add a {@link spi::HierarchyEventListener HierarchyEventListener}
-		        event to the repository.
+		Add \c listener to the repository.
 		*/
-		virtual void addHierarchyEventListener(const HierarchyEventListenerPtr&
-			listener) = 0;
+		virtual void addHierarchyEventListener(const HierarchyEventListenerPtr& listener) = 0;
 
 		/**
-		 * Remove a previously added HierarchyEventListener from the repository.
+		 * Remove \c listener from the repository.
 		 *
 		 */
 		virtual void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) = 0;
 
 		/**
-		 * Call \c configurator if not yet configured.
+		 * Call \c configurator if not yet configured and \c configurator has not already been tried.
+		 * If \c configurator succeeds, it must call LoggerRepository::setConfigured
+		 * to ensure subsequent calls to LoggerRepository::ensureIsConfigured
+		 * from overwriting the configuration.
 		 */
 		virtual void ensureIsConfigured(std::function<void()> configurator) = 0;
 
 		/**
-		Is the repository disabled for a given level? The answer depends
+		Is the repository disabled for \c level? The answer depends
 		on the repository threshold and the <code>level</code>
-		parameter. See also #setThreshold method.  */
+		parameter. See also the #setThreshold method.
+		*/
 		virtual bool isDisabled(int level) const = 0;
 
 		/**
-		Set the repository-wide threshold. All logging requests below the
-		threshold are immediately dropped. By default, the threshold is
-		set to <code>Level::getAll()</code> which has the lowest possible rank.  */
-		virtual void setThreshold(const LevelPtr& level) = 0;
+		Enable logging for logging requests with level <code>newLevel</code> or higher.
+		All logging requests below the threshold are immediately dropped.
+		By default, the threshold is set to <code>Level::getAll()</code> which has the lowest possible rank.
+		*/
+		virtual void setThreshold(const LevelPtr& newLevel) = 0;
 
 		/**
-		Another form of {@link #setThreshold(const LevelPtr&)
-		            setThreshold} accepting a string
-		parameter instead of a <code>Level</code>. */
-		virtual void setThreshold(const LogString& val) = 0;
+		Enable logging for logging requests with level <code>newLevel</code> or higher.
+		The threshold is set the <code>DEBUG</code> if \c newLevel is not recognised by Level::getLevel.
+		All logging requests below the threshold are immediately dropped.
+		By default, the threshold is set to <code>Level::getAll()</code> which has the lowest possible rank.
+		*/
+		virtual void setThreshold(const LogString& newLevel) = 0;
 
+		/**
+		Add a warning to internal debug output that \c logger does not have any Appender attached.
+		To avoid overloading the output stream, the warning is emitted only once.
+		*/
 		virtual void emitNoAppenderWarning(const Logger* logger) = 0;
 
 		/**
-		Get the repository-wide threshold.
+		The current repository-wide threshold.
 
-		See setThreshold for an explanation.
+		See #setThreshold for an explanation.
 		*/
 		virtual LevelPtr getThreshold() const = 0;
 
 		/**
-		Retrieve the \c name Logger instance
-		*/
-		virtual LoggerPtr getLogger(const LogString& name) = 0;
+		Retrieve the \c name Logger instance.
 
-		/**
-		Retrieve the \c name Logger instance
+		If a logger of that name already exists, it will be returned.
+		Otherwise, a new logger will be instantiated,
+		optionally by calling <code>factory->makeNewLoggerInstance()</code>.
 
-		If a logger of that name already exists, then it will be
-		returned.  Otherwise, a new logger will be instantiated by the
-		provided <code>factory</code>.
-
-		@param name The name of the logger to retrieve.
-		@param factory The factory that will make the new logger instance.
+		@param name The logger to retrieve.
+		@param factory If provided, used to instantiate a new logger.
 		*/
 		virtual LoggerPtr getLogger(const LogString& name,
-			const spi::LoggerFactoryPtr& factory) = 0;
+			const spi::LoggerFactoryPtr& factory = {}) = 0;
 
 		/**
 		Remove the \c name Logger from the repository.
@@ -124,21 +128,64 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		*/
 		virtual bool removeLogger(const LogString& name, bool ifNotUsed = true) = 0;
 
+		/**
+		The logger that cannot be retrieved by name.
+		*/
 		virtual LoggerPtr getRootLogger() const = 0;
 
+		/**
+		Does \c name exist in the repository?
+		@returns The Logger instance if \c name exists in the repository.
+		*/
 		virtual LoggerPtr exists(const LogString& name) = 0;
 
+		/**
+		Close and remove all appenders in all categories including the root logger.
+		The configured status becomes <code>false</code>.
+		*/
 		virtual void shutdown() = 0;
 
+		/**
+		All the loggers currently defined in this repository.
+
+		The root logger is <em>not</em> included in the returned
+		LoggerList.
+		*/
 		virtual LoggerList getCurrentLoggers() const = 0;
 
+		/**
+		Call addAppenderEvent on all registered listeners.
+		*/
 		virtual void fireAddAppenderEvent(const Logger* logger,	const Appender* appender) {};
 
+		/**
+		Call removeAppenderEvent on all registered listeners.
+		*/
 		virtual void fireRemoveAppenderEvent(const Logger* logger, const Appender* appender) {};
 
+		/**
+		Reset all values contained in this repository instance to their default.
+		This removes all appenders from all categories, sets
+		the level of all non-root categories to <code>null</code>,
+		sets their additivity flag to <code>true</code> and sets the level
+		of the root logger to DEBUG.
+		Also the repository wide threshold is set its default "ALL" value.
+
+		Existing categories are not removed.
+
+		This method should be used sparingly and with care as it will
+		block all logging until this is configured again.
+		*/
 		virtual void resetConfiguration() = 0;
 
+		/**
+		The value of the configured status.
+		*/
 		virtual bool isConfigured() = 0;
+
+		/**
+		Set the configured status to <code>true</code>.
+		*/
 		virtual void setConfigured(bool configured) = 0;
 
 		/**
