@@ -74,7 +74,7 @@ public:
 		int num_run = 0;
 		int num_post = 0;
 
-		thrUtil->configureFuncs(
+		auto oldConfig = thrUtil->configureFuncs(
 			[&num_pre]()
 		{
 			num_pre++;
@@ -102,6 +102,7 @@ public:
 		LOGUNIT_ASSERT_EQUAL( num_started, 1 );
 		LOGUNIT_ASSERT_EQUAL( num_run, 1 );
 		LOGUNIT_ASSERT_EQUAL( num_post, 1 );
+		thrUtil->configure(oldConfig);
 	}
 
 	void testDefaultFunctions()

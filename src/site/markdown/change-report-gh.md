@@ -115,6 +115,9 @@ The other Log4cxx behaviour changes are:
 Instead, use 'LOG4CXX_CONFIGURATION' and 'LOG4CXX_CONFIGURATOR_CLASS'.
   \[[#784](https://github.com/apache/logging-log4cxx/pull/784)\]
 
+* Threads created by Log4cxx are assigned a name. Call log4cxx::helpers::ThreadUtility::configure to alter this behaviour.
+  \[[#785](https://github.com/apache/logging-log4cxx/pull/785)\]
+
 ## Release 1.8.0 - 2026-07-29 {#rel_1_8_0}
 
 Release 1.8.0 includes the following new features:
