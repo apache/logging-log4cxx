@@ -38,7 +38,7 @@ public:
 		return false;
 	}
 
-	void append( const log4cxx::spi::LoggingEventPtr& event ) override {
+	void append( const log4cxx::spi::LoggingEventPtr& ) override {
 		// This gets called whenever there is a valid event for our appender.
 	}
 
@@ -54,6 +54,7 @@ public:
 			))
 		{
 			// Do something with the 'value' here.
+			(void)value;
 		}
 	}
 };
@@ -62,7 +63,7 @@ IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 
 }
 
-int main( int argc, char** argv )
+int main()
 {
 	LOG4CXX_NS::xml::DOMConfigurator::configure( "custom-appender.xml" );
 

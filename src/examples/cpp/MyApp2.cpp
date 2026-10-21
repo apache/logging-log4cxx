@@ -1,7 +1,7 @@
 #include "com/foo/config.h"
 #include "com/foo/bar.h"
 
-int main(int argc, char **argv) {
+int main() {
 	int result = EXIT_SUCCESS;
 	try {
 		auto logger = com::foo::getLogger("MyApp");
