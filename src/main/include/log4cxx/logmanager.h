@@ -25,7 +25,7 @@ namespace LOG4CXX_NS
 {
 class Logger;
 LOG4CXX_PTR_DEF(Logger);
-typedef std::vector<LoggerPtr> LoggerList;
+LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 
 namespace spi
 {
