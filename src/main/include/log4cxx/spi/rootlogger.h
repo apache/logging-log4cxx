@@ -49,7 +49,7 @@ class LOG4CXX_EXPORT RootLogger : public Logger
 		Return the assigned level value without walking the logger
 		hierarchy.
 		*/
-		virtual const LevelPtr& getEffectiveLevel() const;
+		virtual LevelPtr getEffectiveLevel() const;
 
 		/**
 		            Setting a null value to the level of the root logger may have catastrophic

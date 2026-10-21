@@ -31,7 +31,7 @@ RootLogger::RootLogger(const LevelPtr& level1)
 }
 
 
-const LevelPtr& RootLogger::getEffectiveLevel() const
+LevelPtr RootLogger::getEffectiveLevel() const
 {
 	return getLevel();
 }

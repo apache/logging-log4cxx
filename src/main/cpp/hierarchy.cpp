@@ -218,12 +218,6 @@ LevelPtr Hierarchy::getThreshold() const
 	return m_priv->threshold ? m_priv->threshold : Level::getAll();
 }
 
-LoggerPtr Hierarchy::getLogger(const LogString& name)
-{
-	static WideLife<spi::LoggerFactoryPtr> defaultFactory = std::make_shared<LoggerFactory>();
-	return getLogger(name, defaultFactory);
-}
-
 LoggerPtr Hierarchy::getLogger(const LogString& name,
 	const spi::LoggerFactoryPtr& factory)
 {
@@ -237,9 +231,11 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	{
 		result = it->second;
 	}
-	if (!result && factory)
+	if (!result)
 	{
-		LoggerPtr logger(factory->makeNewLoggerInstance(name));
+		LoggerPtr logger = factory
+			? factory->makeNewLoggerInstance(name)
+			: std::make_shared<Logger>(name);
 		logger->setHierarchy(this);
 		m_priv->loggers.insert(LoggerMap::value_type(name, logger));
 
