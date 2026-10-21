@@ -26,6 +26,7 @@
 #include <functional>
 #include <chrono>
 #include <thread>
+#include <mutex>
 #include <condition_variable>
 
 using namespace LOG4CXX_NS;
