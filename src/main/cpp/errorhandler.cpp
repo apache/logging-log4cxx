@@ -19,6 +19,10 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
+void spi::ErrorHandler::addAppenderHolder(const LogString&, const AppenderAttachablePtr&)
+{
+}
+
 void spi::ErrorHandler::activateOptions(  )
 {
 }

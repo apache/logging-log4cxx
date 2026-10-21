@@ -154,6 +154,7 @@ target_sources(log4cxx
   locationinfo.cpp
   locationinfofilter.cpp
   logger.cpp
+  loggerrepository.cpp
   loggermatchfilter.cpp
   loggerpatternconverter.cpp
   loggingevent.cpp
