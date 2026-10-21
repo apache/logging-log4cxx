@@ -42,12 +42,12 @@ class APRDatagramSocket : public DatagramSocket {
 	bool isClosed() const override;
 
 	/**  Receives a datagram packet from this socket. */
-	virtual void receive(const DatagramPacketPtr& p) override;
+	void receive(const DatagramPacketPtr& p) override;
 
 	/** Sends a datagram packet from this socket. */
-	virtual void send(const DatagramPacketPtr& p) override;
+	void send(const DatagramPacketPtr& p) override;
 
-	virtual void connect(const InetAddressPtr& address, int port) override;
+	void connect(const InetAddressPtr& address, int port) override;
 
     private:
 	void init();
