@@ -31,6 +31,7 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/aprinitializer.h>
+#include <mutex>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
