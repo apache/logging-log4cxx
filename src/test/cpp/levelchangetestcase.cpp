@@ -18,6 +18,7 @@
 
 #include <log4cxx/levelchange.h>
 #include <log4cxx/appenderskeleton.h>
+#include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/loglog.h>
 #include "logunit.h"
 

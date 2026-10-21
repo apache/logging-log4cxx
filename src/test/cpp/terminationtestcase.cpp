@@ -18,6 +18,7 @@
 
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
+#include <log4cxx/spi/loggerrepository.h>
 #include "vectorappender.h"
 #include <log4cxx/asyncappender.h>
 #include <thread>

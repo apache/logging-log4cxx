@@ -44,7 +44,6 @@ struct Hierarchy::HierarchyPrivate
 	{
 	}
 
-	helpers::Pool pool;
 	mutable std::recursive_mutex mutex;
 	mutable std::recursive_mutex configuredMutex;
 	bool configured;

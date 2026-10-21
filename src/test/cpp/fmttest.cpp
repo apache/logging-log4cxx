@@ -30,7 +30,9 @@
 #include <log4cxx/fmtlayout.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/date.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/spi/loggerrepository.h>
 #include <iostream>
 #include <iomanip>
 

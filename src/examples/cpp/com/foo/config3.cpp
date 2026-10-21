@@ -19,7 +19,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/defaultconfigurator.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/transcoder.h>
@@ -126,20 +125,19 @@ void SelectConfigurationFile() {
 #endif
 	const char* extension[] = { ".xml", ".properties", 0 };
 	std::string altPrefix;
-	helpers::Pool pool;
 
 	for (auto baseName : DefaultConfigurationFileNames(altPrefix)) {
 		int i = 0;
 		for (; extension[i]; ++i) {
 			File current_working_dir_candidate(baseName + extension[i]);
-			if (current_working_dir_candidate.exists(pool)) {
+			if (current_working_dir_candidate.exists()) {
 				DefaultConfigurator::setConfigurationFileName(current_working_dir_candidate.getPath());
 				DefaultConfigurator::setConfigurationWatchSeconds(5);
 				break;
 			}
 			if (!altPrefix.empty()) {
 				File alt_dir_candidate(altPrefix + baseName + extension[i]);
-				if (alt_dir_candidate.exists(pool)) {
+				if (alt_dir_candidate.exists()) {
 					DefaultConfigurator::setConfigurationFileName(alt_dir_candidate.getPath());
 					DefaultConfigurator::setConfigurationWatchSeconds(5);
 					break;

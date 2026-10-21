@@ -20,7 +20,6 @@
 
 #include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/level.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/asyncbuffer.h>
@@ -31,6 +30,8 @@ namespace LOG4CXX_NS
 
 namespace spi
 {
+class LoggingEvent;
+LOG4CXX_PTR_DEF(LoggingEvent);
 class LoggerRepository;
 LOG4CXX_PTR_DEF(LoggerRepository);
 class LoggerFactory;
@@ -1652,7 +1653,5 @@ Add a new logging event containing the localized message \c key to attached appe
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }} while (0)
 
 /**@}*/
-
-#include <log4cxx/spi/loggerrepository.h>
 
 #endif //_LOG4CXX_LOGGER_H

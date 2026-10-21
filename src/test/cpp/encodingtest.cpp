@@ -17,6 +17,7 @@
 
 
 #include <log4cxx/logger.h>
+#include <log4cxx/spi/loggerrepository.h>
 #include "logunit.h"
 //
 //  If there is no support for wchar_t logging then

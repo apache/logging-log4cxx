@@ -18,7 +18,6 @@
 #include <log4cxx/helpers/cyclicbuffer.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
 
 using namespace LOG4CXX_NS;

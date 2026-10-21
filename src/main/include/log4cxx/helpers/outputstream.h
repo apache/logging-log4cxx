@@ -26,6 +26,7 @@ namespace LOG4CXX_NS
 namespace helpers
 {
 class ByteBuffer;
+class Pool;
 
 /**
 *   Abstract class for writing to character streams.

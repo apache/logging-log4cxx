@@ -18,7 +18,6 @@
 #include <log4cxx/fmtlayout.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/layout_priv.h>

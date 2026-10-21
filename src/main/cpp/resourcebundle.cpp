@@ -18,7 +18,6 @@
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
 #include <log4cxx/helpers/loader.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/locale.h>
 

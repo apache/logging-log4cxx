@@ -17,6 +17,7 @@
 
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/appender.h>
 #include <log4cxx/helpers/pool.h>
 #include <apr_file_io.h>
 #include "../insertwide.h"

@@ -20,7 +20,6 @@
 
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/inetaddress.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/datagrampacket.h>
 
 namespace LOG4CXX_NS

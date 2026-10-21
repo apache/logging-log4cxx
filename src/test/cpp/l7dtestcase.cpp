@@ -80,8 +80,6 @@ public:
 		auto status = PropertyConfigurator::configure(LOG4CXX_FILE("input/l7d1.properties"));
 		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 
-		log4cxx::helpers::Pool pool;
-
 		for (int i = 0; i < 3; i++)
 		{
 			root->setResourceBundle(bundles[i]);

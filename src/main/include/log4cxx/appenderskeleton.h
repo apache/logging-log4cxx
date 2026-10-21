@@ -23,7 +23,6 @@
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/level.h>
 
 namespace LOG4CXX_NS
