@@ -20,6 +20,7 @@
 
 
 #include <log4cxx/logstring.h>
+#include <limits.h>
 #include <log4cxx/helpers/object.h>
 
 namespace LOG4CXX_NS
