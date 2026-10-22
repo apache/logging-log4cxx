@@ -31,7 +31,7 @@ IMPLEMENT_LOG4CXX_OBJECT(ColorStartPatternConverter)
 
 #define priv static_cast<ColorPatternConverterPrivate*>(m_priv.get())
 
-static LogString colorToANSISequence(const LogString& color, bool isForeground, Pool& pool){
+static LogString colorToANSISequence(const LogString& color, bool isForeground){
 	int numberToConvert = 0;
 
 	if(StringHelper::equalsIgnoreCase(color, LOG4CXX_STR("BLACK"), LOG4CXX_STR("black"))){
@@ -63,7 +63,7 @@ static LogString colorToANSISequence(const LogString& color, bool isForeground, 
 	return ret;
 }
 
-static LogString graphicsModeToANSISequence(const LogString& graphicsMode, Pool& pool){
+static LogString graphicsModeToANSISequence(const LogString& graphicsMode){
 	int numberToConvert = 0;
 
 	if(StringHelper::equalsIgnoreCase(graphicsMode, LOG4CXX_STR("BOLD"), LOG4CXX_STR("bold"))){
@@ -90,7 +90,7 @@ static LogString graphicsModeToANSISequence(const LogString& graphicsMode, Pool&
 	return ret;
 }
 
-static LogString convertSingleSequence(const LogString& sequence, Pool& pool){
+static LogString convertSingleSequence(const LogString& sequence){
 	LogString strInParens;
 	bool inParens = false;
 	bool hasParens = false;
@@ -124,11 +124,11 @@ static LogString convertSingleSequence(const LogString& sequence, Pool& pool){
 
 	if(StringHelper::startsWith(sequence, LOG4CXX_STR("fg("))){
 		// Parse foreground
-		return colorToANSISequence(strInParens, true, pool);
+		return colorToANSISequence(strInParens, true);
 	}else if(StringHelper::startsWith(sequence, LOG4CXX_STR("bg("))){
-		return colorToANSISequence(strInParens, false, pool);
+		return colorToANSISequence(strInParens, false);
 	}else{
-		return graphicsModeToANSISequence(sequence, pool);
+		return graphicsModeToANSISequence(sequence);
 	}
 }
 
@@ -220,7 +220,6 @@ void ColorStartPatternConverter::setTraceColor(const LogString& color){
 
 void ColorStartPatternConverter::parseColor(const LogString& color, LogString* result){
 	LogString lower = StringHelper::toLowerCase(color);
-	Pool pool;
 
 	// If the color we are trying to parse is blank, clear our result
 	if(StringHelper::trim(color).empty() ||
@@ -253,7 +252,7 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 		LogString tmp;
 		for( size_t x = 0; x < color.size(); x++ ){
 			if(color[x] == '|' ){
-				LogString toAppend = convertSingleSequence(tmp, pool);
+				LogString toAppend = convertSingleSequence(tmp);
 				tmp.clear();
 				if(!toAppend.empty()){
 					result->push_back(';');
@@ -263,7 +262,7 @@ void ColorStartPatternConverter::parseColor(const LogString& color, LogString* r
 				tmp.push_back(color[x]);
 			}
 		}
-		LogString toAppend = convertSingleSequence(tmp, pool);
+		LogString toAppend = convertSingleSequence(tmp);
 		tmp.clear();
 		if(!toAppend.empty()){
 			result->push_back(';');

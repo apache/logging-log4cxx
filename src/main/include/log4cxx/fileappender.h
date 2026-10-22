@@ -22,14 +22,9 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/writerappender.h>
 #include <log4cxx/file.h>
-#include <log4cxx/helpers/pool.h>
 
 namespace LOG4CXX_NS
 {
-namespace helpers
-{
-class Pool;
-}
 
 /**
 *  FileAppender appends log events to a file.

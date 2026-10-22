@@ -22,7 +22,6 @@
 #include <log4cxx/logstring.h>
 #include <limits.h>
 #include <log4cxx/helpers/object.h>
-#include <mutex>
 
 namespace LOG4CXX_NS
 {

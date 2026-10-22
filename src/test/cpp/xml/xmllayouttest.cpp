@@ -37,6 +37,7 @@
 #include <log4cxx/mdc.h>
 #include "../xml/xlevel.h"
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/loglog.h>
 

@@ -27,6 +27,7 @@
 #include <log4cxx/rolling/zipcompressaction.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/fileappender.h>
 #include <algorithm>

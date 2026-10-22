@@ -17,6 +17,7 @@
 
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/helpers/pool.h>
 
 #include "testchar.h"
 #include "logunit.h"

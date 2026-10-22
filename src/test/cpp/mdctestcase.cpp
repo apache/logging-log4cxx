@@ -19,6 +19,7 @@
 #include <log4cxx/mdc.h>
 #include <log4cxx/file.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/pattern/formattinginfo.h>
 #include <log4cxx/pattern/mdcpatternconverter.h>
 #include <log4cxx/patternlayout.h>

@@ -26,7 +26,6 @@ namespace LOG4CXX_NS
 namespace helpers
 {
 class ByteBuffer;
-class Pool;
 /**
 *    Methods for converting between external and internal strings.
 */

@@ -20,7 +20,11 @@
 
 #include <log4cxx/helpers/socket.h>
 
-struct apr_socket_t;
+
+extern "C" {
+	struct apr_socket_t;
+	struct apr_pool_t;
+}
 
 namespace LOG4CXX_NS
 {

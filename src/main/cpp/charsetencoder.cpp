@@ -18,6 +18,7 @@
 #include <log4cxx/helpers/charsetencoder.h>
 #include <log4cxx/private/bytebuffer_priv.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_xlate.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>

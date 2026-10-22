@@ -19,9 +19,6 @@
 #define _LOG4CXX_HELPERS_SOCKET_H
 
 #include <log4cxx/helpers/inetaddress.h>
-#include <log4cxx/helpers/pool.h>
-
-
 
 namespace LOG4CXX_NS
 {

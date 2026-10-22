@@ -26,7 +26,6 @@ namespace LOG4CXX_NS
 
 namespace helpers
 {
-class Pool;
 
 LOG4CXX_LIST_DEF(ByteList, unsigned char);
 

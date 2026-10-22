@@ -95,7 +95,6 @@ class Logger;
 
 namespace helpers
 {
-class Pool;
 
 /** base class for java-like objects.*/
 class LOG4CXX_EXPORT Object

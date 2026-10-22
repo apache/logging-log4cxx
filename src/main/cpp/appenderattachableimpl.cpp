@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #include <log4cxx/helpers/appenderattachableimpl.h>
+#include <log4cxx/appender.h>
 #include <algorithm>
 #include <mutex>
 

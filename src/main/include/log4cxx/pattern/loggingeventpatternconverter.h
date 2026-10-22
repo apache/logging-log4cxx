@@ -23,6 +23,7 @@
 
 namespace LOG4CXX_NS
 {
+namespace helpers { class Pool; }
 
 namespace pattern
 {

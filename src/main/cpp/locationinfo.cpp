@@ -16,7 +16,6 @@
  */
 
 #include <log4cxx/spi/location/locationinfo.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/widelife.h>
 
 using namespace ::LOG4CXX_NS::spi;

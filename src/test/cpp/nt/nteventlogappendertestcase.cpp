@@ -78,7 +78,6 @@ class NTEventLogAppenderTestCase : public AppenderSkeletonTestCase
 			Date now;
 			DWORD expectedTime = now.getTime() / Date::getMicrosecondsPerSecond();
 			{
-				Pool p;
 				NTEventLogAppenderPtr appender(new NTEventLogAppender());
 				appender->setSource(LOG4CXX_STR("log4cxx_test"));
 				LayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c - %m%n")));

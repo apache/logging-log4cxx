@@ -20,10 +20,14 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
-#include <log4cxx/appender.h>
+#include <vector>
 
 namespace LOG4CXX_NS
 {
+class Appender;
+LOG4CXX_PTR_DEF(Appender);
+LOG4CXX_LIST_DEF(AppenderList, AppenderPtr);
+
 namespace spi
 {
 /**

@@ -20,18 +20,21 @@
 
 #include <log4cxx/logstring.h>
 #include <vector>
-#include <log4cxx/spi/repositoryselector.h>
 
 namespace LOG4CXX_NS
 {
 class Logger;
-typedef std::shared_ptr<Logger> LoggerPtr;
-typedef std::vector<LoggerPtr> LoggerList;
+LOG4CXX_PTR_DEF(Logger);
+LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 
 namespace spi
 {
 class LoggerFactory;
-typedef std::shared_ptr<LoggerFactory> LoggerFactoryPtr;
+LOG4CXX_PTR_DEF(LoggerFactory);
+class RepositorySelector;
+LOG4CXX_PTR_DEF(RepositorySelector);
+class LoggerRepository;
+LOG4CXX_PTR_DEF(LoggerRepository);
 }
 
 /**

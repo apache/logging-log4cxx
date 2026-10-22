@@ -39,6 +39,7 @@
 #include <ostream>
 #include <thread>
 #include <atomic>
+#include <mutex>
 #include <fstream>
 
 #if LOG4CXX_ASYNC_BUFFER_SUPPORTS_FMT

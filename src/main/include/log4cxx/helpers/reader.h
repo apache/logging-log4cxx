@@ -25,6 +25,7 @@ namespace LOG4CXX_NS
 
 namespace helpers
 {
+class Pool;
 
 /**
  * Abstract class for reading from character streams.

@@ -19,6 +19,11 @@ project(MyApp LANGUAGES CXX)
 
 # Ensure Log4cxx does not throw any warnings when used
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+if(MSVC)
+  add_compile_options(/W4)
+else()
+  add_compile_options(-Wall -Wextra)
+endif()
 
 # Find the required library
 find_package(log4cxx REQUIRED)

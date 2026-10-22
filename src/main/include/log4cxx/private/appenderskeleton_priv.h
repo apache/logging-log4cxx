@@ -20,6 +20,8 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
+#include <log4cxx/helpers/pool.h>
+#include <mutex>
 #include <memory>
 
 namespace LOG4CXX_NS
@@ -68,7 +70,7 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	*/
 	bool closed;
 
-	LOG4CXX_NS::helpers::Pool pool;
+	helpers::Pool pool;
 	mutable std::recursive_mutex mutex;
 
 	bool warnedClosed = false;

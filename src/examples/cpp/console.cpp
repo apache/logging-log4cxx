@@ -19,6 +19,7 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/logmanager.h>
+#include <log4cxx/spi/loggerrepository.h>
 #include <locale>
 #include <cstdio>
 #include <cstring>

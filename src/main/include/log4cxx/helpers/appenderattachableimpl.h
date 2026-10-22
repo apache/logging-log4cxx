@@ -20,7 +20,6 @@
 
 
 #include <log4cxx/spi/appenderattachable.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/log4cxx.h>
 
 namespace LOG4CXX_NS

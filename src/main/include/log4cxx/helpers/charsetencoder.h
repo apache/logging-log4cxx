@@ -19,7 +19,6 @@
 #define _LOG4CXX_HELPERS_CHARSETENCODER_H
 
 #include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/pool.h>
 
 namespace LOG4CXX_NS
 {
