@@ -17,6 +17,9 @@
 cmake_minimum_required(VERSION 3.13)
 project(MyApp LANGUAGES CXX)
 
+# Ensure Log4cxx does not throw any warnings when used
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+
 # Find the required library
 find_package(log4cxx REQUIRED)
 # Optionally locate fmt::fmt

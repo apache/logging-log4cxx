@@ -46,7 +46,7 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(LoggerRepository)
 		END_LOG4CXX_CAST_MAP()
-		virtual ~LoggerRepository() {}
+		virtual ~LoggerRepository();
 
 		/**
 		Add \c listener to the repository.
@@ -156,12 +156,12 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		/**
 		Call addAppenderEvent on all registered listeners.
 		*/
-		virtual void fireAddAppenderEvent(const Logger* logger,	const Appender* appender) {};
+		virtual void fireAddAppenderEvent(const Logger* logger,	const Appender* appender);
 
 		/**
 		Call removeAppenderEvent on all registered listeners.
 		*/
-		virtual void fireRemoveAppenderEvent(const Logger* logger, const Appender* appender) {};
+		virtual void fireRemoveAppenderEvent(const Logger* logger, const Appender* appender);
 
 		/**
 		Reset all values contained in this repository instance to their default.

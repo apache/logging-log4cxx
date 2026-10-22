@@ -72,7 +72,7 @@ class LOG4CXX_EXPORT ErrorHandler
 		@param name the collection name.
 		@param clx has a collection of appenders.
 		*/
-		virtual void addAppenderHolder(const LogString& name, const AppenderAttachablePtr& clx) {};
+		virtual void addAppenderHolder(const LogString& name, const AppenderAttachablePtr& clx);
 
 		/**
 		Add a reference to a logger to which the failing appender might

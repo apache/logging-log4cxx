@@ -14,7 +14,7 @@ void foo() {
 	LOG4CXX_FATAL(fooLogger, "Doing foo at fatal level");
 }
 
-int main(int argc, char **argv) {
+int main() {
 	// Log to standard output.
 	log4cxx::BasicConfigurator::configure();
 	LOG4CXX_INFO(logger, "Entering application.");
