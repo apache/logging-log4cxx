@@ -612,6 +612,8 @@ struct SMTPAppender::SMTPPriv : public AppenderSkeletonPrivate
 	spi::TriggeringEventEvaluatorPtr evaluator;
 	// Whether AUTH credentials may be sent without STARTTLS (see setOption)
 	bool allowPlainTextAuth{false};
+
+	void sendBuffer();
 };
 
 #define _priv static_cast<SMTPPriv*>(m_priv.get())
@@ -853,7 +855,7 @@ void SMTPAppender::append( const spi::LoggingEventPtr& event )
 
 	if (_priv->evaluator->isTriggeringEvent(event))
 	{
-		sendBuffer();
+		_priv->sendBuffer();
 	}
 }
 
@@ -933,7 +935,7 @@ void SMTPAppender::setBcc(const LogString& addressStr)
 /**
 Send the contents of the cyclic buffer as an e-mail message.
 */
-void SMTPAppender::sendBuffer()
+void SMTPAppender::SMTPPriv::sendBuffer()
 {
 #if LOG4CXX_HAVE_LIBESMTP
 
@@ -941,29 +943,29 @@ void SMTPAppender::sendBuffer()
 	try
 	{
 		LogString sbuf;
-		_priv->layout->appendHeader(sbuf);
+		this->layout->appendHeader(sbuf);
 
-		int len = _priv->cb.length();
+		int len = this->cb.length();
 
 		for (int i = 0; i < len; i++)
 		{
-			LoggingEventPtr event = _priv->cb.get();
-			_priv->layout->format(sbuf, event);
+			LoggingEventPtr event = this->cb.get();
+			this->layout->format(sbuf, event);
 		}
 
-		_priv->layout->appendFooter(sbuf);
+		this->layout->appendFooter(sbuf);
 
-		SMTPSession session(_priv->smtpHost, _priv->smtpPort, _priv->smtpUsername, _priv->smtpPassword, _priv->allowPlainTextAuth);
+		SMTPSession session(this->smtpHost, this->smtpPort, this->smtpUsername, this->smtpPassword, this->allowPlainTextAuth);
 
-		SMTPSession::Message message(session, _priv->from, _priv->to, _priv->cc,
-			_priv->bcc, _priv->subject, sbuf);
+		SMTPSession::Message message(session, this->from, this->to, this->cc,
+			this->bcc, this->subject, sbuf);
 
 		session.send();
 
 	}
 	catch (std::exception& e)
 	{
-		_priv->errorHandler->error(LOG4CXX_STR("Error occured while sending e-mail to [") + _priv->smtpHost + LOG4CXX_STR("]."), e, 0);
+		this->errorHandler->error(LOG4CXX_STR("Error occured while sending e-mail to [") + this->smtpHost + LOG4CXX_STR("]."), e, 0);
 	}
 
 #endif

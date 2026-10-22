@@ -173,12 +173,6 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		bool requiresLayout() const override;
 
 		/**
-		Send the contents of the cyclic buffer as an e-mail message.
-		*/
-		void sendBuffer();
-
-
-		/**
 		Returns value of the <b>EvaluatorClass</b> option.
 		*/
 		LogString getEvaluatorClass();
