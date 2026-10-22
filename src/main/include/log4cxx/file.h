@@ -31,7 +31,6 @@ namespace LOG4CXX_NS
 namespace helpers
 {
 class Transcoder;
-class Pool;
 }
 
 /**

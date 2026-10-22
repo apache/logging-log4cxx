@@ -25,6 +25,7 @@ namespace LOG4CXX_NS
 {
 namespace helpers
 {
+class Pool;
 
 /**
 *  DateFormat is an abstract class for date/time formatting

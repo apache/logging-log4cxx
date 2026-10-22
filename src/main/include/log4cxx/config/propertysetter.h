@@ -38,7 +38,6 @@ namespace LOG4CXX_NS
 namespace helpers
 {
 class Properties;
-class Pool;
 }
 
 namespace config
