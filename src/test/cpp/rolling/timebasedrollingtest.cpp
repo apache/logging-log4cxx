@@ -27,6 +27,7 @@
 #include <log4cxx/helpers/simpledateformat.h>
 #include <log4cxx/helpers/date.h>
 #include <iostream>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../util/compare.h"
 #include "../logunit.h"

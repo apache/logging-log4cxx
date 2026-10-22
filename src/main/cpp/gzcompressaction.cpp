@@ -19,6 +19,7 @@
 #include <apr_thread_proc.h>
 #include <apr_strings.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/action_priv.h>
 #include <log4cxx/helpers/loglog.h>

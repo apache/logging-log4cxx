@@ -23,6 +23,7 @@
 #include <log4cxx/rolling/multiprocessrollingfileappender.h>
 #include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/helpers/strftimedateformat.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/fileoutputstream.h>

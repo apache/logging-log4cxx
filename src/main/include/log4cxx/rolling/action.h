@@ -19,10 +19,11 @@
 #define _LOG4CXX_ROLLING_ACTION_H
 
 #include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/pool.h>
 
 namespace LOG4CXX_NS
 {
+namespace helpers { class Pool; }
+
 namespace rolling
 {
 
