@@ -202,6 +202,7 @@ class SMTPSession
 	private:
 		SMTPSession(SMTPSession&);
 		SMTPSession& operator=(SMTPSession&);
+		Pool p;
 		smtp_session_t session{0};
 		auth_context_t authctx{0};
 		char* user;
@@ -212,7 +213,6 @@ class SMTPSession
 		bool incorrectAuthentication{false};
 		bool relayDenied{false};
 		std::string certificateProblem;
-		Pool p;
 
 		/**
 		 *   This method is called if the SMTP server requests authentication.
