@@ -26,9 +26,8 @@
   </layout>
 </appender>
 <appender name="PreparedAppender" class="ODBCAppender">
- <param name="DSN" value="Log4cxxTest"/>
- <!--param name="sql" value="INSERT INTO UnitTestLog (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES (?,?,?,?,?,?,?)" /-->
- <param name="sql" value="INSERT INTO ApplicationLogs.dbo.UnitTestLog (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES (?,?,?,?,?,?,?)" />
+ <param name="DSN" value="${LOG4CXX_TEST_ODBC_DSN}"/>
+  <param name="sql" value="INSERT INTO ${LOG4CXX_TEST_ODBC_TABLE_NAME} (Thread,LogName,LogTime,LogLevel,FileName,FileLine,Message) VALUES (?,?,?,?,?,?,?)" />
  <param name="ColumnMapping" value="thread"/>
  <param name="ColumnMapping" value="logger"/>
  <param name="ColumnMapping" value="time"/>
