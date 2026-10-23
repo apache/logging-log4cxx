@@ -117,17 +117,8 @@ ODBCAppender::ODBCAppender()
 #if LOG4CXX_EVENTS_AT_EXIT
 		[this] {
 			std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-			if(_priv->buffer.empty() || _priv->closed)
-				;
-			else try
-			{
-				flushBuffer(_priv->pool);
-			}
-			catch (const SQLException& e)
-			{
-				_priv->errorHandler->error(LOG4CXX_STR("Error flushing connection"),
-					e, ErrorCode::GENERIC_FAILURE);
-			}
+			if(!_priv->buffer.empty() && !_priv->closed)
+				flushBuffer();
 		}
 #endif
 								))
@@ -338,7 +329,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection()
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_DBC, _priv->connection, LOG4CXX_STR("from SQLConect using ") + _priv->databaseURL);
+			SQLException ex(SQL_HANDLE_DBC, _priv->connection, LOG4CXX_STR("SQLConect failed using ") + _priv->databaseURL);
 			SQLFreeHandle(SQL_HANDLE_DBC, _priv->connection);
 			_priv->connection = SQL_NULL_HDBC;
 			throw ex;
@@ -354,32 +345,18 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection()
 void ODBCAppender::close()
 {
 	if (_priv->setClosed())
-	{
-		try
-		{
-#if LOG4CXX_HAVE_ODBC
-			if (!_priv->buffer.empty() && 0 == _priv->preparedStatement)
-				_priv->setPreparedStatement(getConnection());
-#endif
-			_priv->close();
-		}
-		catch (const SQLException& e)
-		{
-			_priv->errorHandler->error(LOG4CXX_STR("Error closing connection"),
-				e, ErrorCode::GENERIC_FAILURE);
-		}
-	}
+		_priv->close();
 }
 
 void ODBCAppender::ODBCAppenderPriv::close()
 {
 	try
 	{
-		flushBuffer();
+		this->flushBuffer();
 	}
 	catch (const SQLException& e)
 	{
-		this->errorHandler->error(LOG4CXX_STR("Error closing connection"),
+		this->errorHandler->error(LOG4CXX_STR("Failed to flush buffer"),
 			e, ErrorCode::GENERIC_FAILURE);
 	}
 
@@ -599,9 +576,19 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 void ODBCAppender::flushBuffer()
 {
 #if LOG4CXX_HAVE_ODBC
-	if (0 == _priv->preparedStatement)
-		_priv->setPreparedStatement(getConnection());
-	_priv->flushBuffer();
+	if (_priv->buffer.empty())
+		;
+	else try
+	{
+		if (0 == _priv->preparedStatement)
+			_priv->setPreparedStatement(getConnection());
+		_priv->flushBuffer();
+	}
+	catch (const SQLException& e)
+	{
+		_priv->errorHandler->error(LOG4CXX_STR("Failed to flush buffer"),
+			e, ErrorCode::GENERIC_FAILURE);
+	}
 #endif
 }
 
@@ -614,7 +601,7 @@ void ODBCAppender::ODBCAppenderPriv::flushBuffer()
 		if (this->parameterValue.empty())
 			this->errorHandler->error(LOG4CXX_STR("ODBCAppender column mappings not defined"));
 #if LOG4CXX_HAVE_ODBC
-		else try
+		else
 		{
 			this->setParameterValues(logEvent);
 			auto ret = SQLExecute(this->preparedStatement);
@@ -622,11 +609,6 @@ void ODBCAppender::ODBCAppenderPriv::flushBuffer()
 			{
 				throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, LOG4CXX_STR("Failed to execute prepared statement"));
 			}
-		}
-		catch (const SQLException& e)
-		{
-			this->errorHandler->error(LOG4CXX_STR("Failed to execute sql"), e,
-				ErrorCode::FLUSH_FAILURE);
 		}
 #endif
 	}
