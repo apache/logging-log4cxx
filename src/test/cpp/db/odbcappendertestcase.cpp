@@ -24,6 +24,7 @@
 #include <log4cxx/helpers/system.h>
 #include "../appenderskeletontestcase.h"
 #include <apr_time.h>
+#include <fstream>
 
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
