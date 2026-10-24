@@ -128,15 +128,15 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 	std::vector<LogString>   mappedName;
 	std::vector<DataBinding> parameterValue;
 #if LOG4CXX_HAVE_ODBC
-	void setPreparedStatement(SQLHDBC con, helpers::Pool& p);
-	void setParameterValues(const spi::LoggingEventPtr& event, helpers::Pool& p);
+	void setPreparedStatement(SQLHDBC con);
+	void setParameterValues(const spi::LoggingEventPtr& event);
 #endif
 
 #if LOG4CXX_EVENTS_AT_EXIT
 	helpers::AtExitRegistry::Raii atExitRegistryRaii;
 #endif
 
-	void flushBuffer(helpers::Pool& p);
+	void flushBuffer();
 	void close();
 };
 

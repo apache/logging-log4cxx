@@ -37,16 +37,18 @@ namespace db
 {
 class LOG4CXX_EXPORT SQLException : public LOG4CXX_NS::helpers::Exception
 {
-	public:
-		SQLException(short fHandleType,
-			void* hInput, const char* prolog,
-			LOG4CXX_NS::helpers::Pool& p);
-		SQLException(const char* msg);
-		SQLException(const SQLException& src);
-	private:
-		const char* formatMessage(short fHandleType,
-			void* hInput, const char* prolog,
-			LOG4CXX_NS::helpers::Pool& p);
+public:
+	SQLException
+		( short            fHandleType
+		, void*            hInput
+		, const LogString& context
+		);
+private:
+	const LogString formatMessage
+		( short            fHandleType
+		, void*            hInput
+		, const LogString& context
+		);
 };
 
 /**
@@ -202,14 +204,7 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		* By default this creates a single connection which is held open
 		* until the object is garbage collected.
 		*/
-		virtual SQLHDBC getConnection(LOG4CXX_NS::helpers::Pool& p) /*throw(SQLException)*/;
-
-		/**
-		* Closes the appender, flushing the buffer first then closing the default
-		* connection if it is open.
-		*/
-	public:
-		void close() override;
+		virtual SQLHDBC getConnection() /*throw(SQLException)*/;
 
 		/**
 		* loops through the buffer of LoggingEvents, gets a
@@ -218,7 +213,14 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		*
 		* If a statement fails the LoggingEvent stays in the buffer!
 		*/
-		virtual void flushBuffer(LOG4CXX_NS::helpers::Pool& p);
+		virtual void flushBuffer();
+
+	public:
+		/**
+		* Closes the appender, flushing the buffer first then closing the default
+		* connection if it is open.
+		*/
+		void close() override;
 
 		/**
 		* Does this appender require a layout?

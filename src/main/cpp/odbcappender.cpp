@@ -65,29 +65,22 @@ using namespace LOG4CXX_NS::db;
 using namespace LOG4CXX_NS::spi;
 using namespace LOG4CXX_NS::pattern;
 
-SQLException::SQLException(short fHandleType,
-	void* hInput, const char* prolog,
-	LOG4CXX_NS::helpers::Pool& p)
-	: Exception(formatMessage(fHandleType, hInput, prolog, p))
+SQLException::SQLException
+	( short            fHandleType
+	, void*            hInput
+	, const LogString& context
+	)
+	: Exception(formatMessage(fHandleType, hInput, context))
 {
 }
 
-
-SQLException::SQLException(const char* msg)
-	: Exception(msg)
+const LogString SQLException::formatMessage
+	( short            fHandleType
+	, void*            hInput
+	, const LogString& context
+	)
 {
-}
-
-SQLException::SQLException(const SQLException& src)
-	: Exception(src)
-{
-}
-
-const char* SQLException::formatMessage(short fHandleType,
-	void* hInput, const char* prolog, LOG4CXX_NS::helpers::Pool& p)
-{
-	std::string strReturn(prolog);
-	strReturn.append(" - ");
+	LogString result;
 #if LOG4CXX_HAVE_ODBC
 	SQLCHAR       SqlState[6];
 	SQLCHAR       Msg[SQL_MAX_MESSAGE_LENGTH];
@@ -102,15 +95,16 @@ const char* SQLException::formatMessage(short fHandleType,
 	while ((rc2 = SQLGetDiagRecA(fHandleType, hInput, i, SqlState, &NativeError,
 					Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA)
 	{
-		strReturn.append((char*) Msg);
+		helpers::Transcoder::decode((char*)Msg, result);
 		i++;
 	}
-
+	if (1 < i)
+		result.append(LOG4CXX_STR(" - "));
+	result.append(context);
 #else
-	strReturn.append("log4cxx built without ODBC support");
+	result.append(LOG4CXX_STR("log4cxx built without ODBC support"));
 #endif
-
-	return apr_pstrdup((apr_pool_t*) p.getAPRPool(), strReturn.c_str());
+	return result;
 }
 
 
@@ -123,17 +117,8 @@ ODBCAppender::ODBCAppender()
 #if LOG4CXX_EVENTS_AT_EXIT
 		[this] {
 			std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-			if(_priv->buffer.empty() || _priv->closed)
-				;
-			else try
-			{
-				flushBuffer(_priv->pool);
-			}
-			catch (SQLException& e)
-			{
-				_priv->errorHandler->error(LOG4CXX_STR("Error flushing connection"),
-					e, ErrorCode::GENERIC_FAILURE);
-			}
+			if(!_priv->buffer.empty() && !_priv->closed)
+				flushBuffer();
 		}
 #endif
 								))
@@ -267,7 +252,7 @@ void ODBCAppender::append( const spi::LoggingEventPtr& event )
 
 	if (_priv->buffer.size() >= _priv->bufferSize)
 	{
-		flushBuffer(_priv->pool);
+		flushBuffer();
 	}
 
 #endif
@@ -280,7 +265,7 @@ void ODBCAppender::closeConnection(ODBCAppender::SQLHDBC /* con */)
 {
 }
 
-ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
+ODBCAppender::SQLHDBC ODBCAppender::getConnection()
 {
 #if LOG4CXX_HAVE_ODBC
 	SQLRETURN ret = -1;
@@ -291,7 +276,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to allocate SQL handle", p);
+			SQLException ex(SQL_HANDLE_ENV, _priv->env, LOG4CXX_STR("Failed to allocate SQL handle"));
 			_priv->env = SQL_NULL_HENV;
 			throw ex;
 		}
@@ -300,7 +285,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to set odbc version", p);
+			SQLException ex(SQL_HANDLE_ENV, _priv->env, LOG4CXX_STR("Failed to set odbc version"));
 			SQLFreeHandle(SQL_HANDLE_ENV, _priv->env);
 			_priv->env = SQL_NULL_HENV;
 			throw ex;
@@ -313,7 +298,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_DBC, _priv->connection, "Failed to allocate sql handle", p);
+			SQLException ex(SQL_HANDLE_DBC, _priv->connection, LOG4CXX_STR("Failed to allocate sql handle"));
 			_priv->connection = SQL_NULL_HDBC;
 			throw ex;
 		}
@@ -344,7 +329,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_DBC, _priv->connection, "Failed to connect to database", p);
+			SQLException ex(SQL_HANDLE_DBC, _priv->connection, LOG4CXX_STR("SQLConect failed using ") + _priv->databaseURL);
 			SQLFreeHandle(SQL_HANDLE_DBC, _priv->connection);
 			_priv->connection = SQL_NULL_HDBC;
 			throw ex;
@@ -360,28 +345,18 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(LOG4CXX_NS::helpers::Pool& p)
 void ODBCAppender::close()
 {
 	if (_priv->setClosed())
-	{
-#if LOG4CXX_HAVE_ODBC
-		if (!_priv->buffer.empty() && 0 == _priv->preparedStatement)
-		{
-			Pool p;
-			_priv->setPreparedStatement(getConnection(p), p);
-		}
-#endif
 		_priv->close();
-	}
 }
 
 void ODBCAppender::ODBCAppenderPriv::close()
 {
 	try
 	{
-		Pool p;
-		flushBuffer(p);
+		this->flushBuffer();
 	}
-	catch (SQLException& e)
+	catch (const SQLException& e)
 	{
-		this->errorHandler->error(LOG4CXX_STR("Error closing connection"),
+		this->errorHandler->error(LOG4CXX_STR("Failed to flush buffer"),
 			e, ErrorCode::GENERIC_FAILURE);
 	}
 
@@ -402,12 +377,12 @@ void ODBCAppender::ODBCAppenderPriv::close()
 }
 
 #if LOG4CXX_HAVE_ODBC
-void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
+void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con)
 {
 	auto ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &this->preparedStatement);
 	if (ret < 0)
 	{
-		throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate statement handle.", p);
+		throw SQLException( SQL_HANDLE_DBC, con, LOG4CXX_STR("Failed to allocate statement handle."));
 	}
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
@@ -417,7 +392,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 #endif
 	if (ret < 0)
 	{
-		throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to prepare sql statement.", p);
+		throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, LOG4CXX_STR("Failed to prepare sql statement."));
 	}
 
 	int parameterNumber = 0;
@@ -438,7 +413,7 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			);
 		if (ret < 0)
 		{
-			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to describe parameter", p);
+			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, LOG4CXX_STR("Failed to describe parameter"));
 		}
 		if (SQL_CHAR == targetType || SQL_VARCHAR == targetType || SQL_LONGVARCHAR == targetType)
 		{
@@ -527,12 +502,12 @@ void ODBCAppender::ODBCAppenderPriv::setPreparedStatement(SQLHDBC con, Pool& p)
 			);
 		if (ret < 0)
 		{
-			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to bind parameter", p);
+			throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, LOG4CXX_STR("Failed to bind parameter"));
 		}
 	}
 }
 
-void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventPtr& event, Pool& p)
+void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventPtr& event)
 {
 	for (auto& item : this->parameterValue)
 	{
@@ -598,16 +573,26 @@ void ODBCAppender::ODBCAppenderPriv::setParameterValues(const spi::LoggingEventP
 }
 #endif
 
-void ODBCAppender::flushBuffer(Pool& p)
+void ODBCAppender::flushBuffer()
 {
 #if LOG4CXX_HAVE_ODBC
-	if (0 == _priv->preparedStatement)
-		_priv->setPreparedStatement(getConnection(p), p);
-	_priv->flushBuffer(p);
+	if (_priv->buffer.empty())
+		;
+	else try
+	{
+		if (0 == _priv->preparedStatement)
+			_priv->setPreparedStatement(getConnection());
+		_priv->flushBuffer();
+	}
+	catch (const SQLException& e)
+	{
+		_priv->errorHandler->error(LOG4CXX_STR("Failed to flush buffer"),
+			e, ErrorCode::GENERIC_FAILURE);
+	}
 #endif
 }
 
-void ODBCAppender::ODBCAppenderPriv::flushBuffer(Pool& p)
+void ODBCAppender::ODBCAppenderPriv::flushBuffer()
 {
 	if (0 == this->preparedStatement)
 		;
@@ -616,19 +601,14 @@ void ODBCAppender::ODBCAppenderPriv::flushBuffer(Pool& p)
 		if (this->parameterValue.empty())
 			this->errorHandler->error(LOG4CXX_STR("ODBCAppender column mappings not defined"));
 #if LOG4CXX_HAVE_ODBC
-		else try
+		else
 		{
-			this->setParameterValues(logEvent, p);
+			this->setParameterValues(logEvent);
 			auto ret = SQLExecute(this->preparedStatement);
 			if (ret < 0)
 			{
-				throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, "Failed to execute prepared statement", p);
+				throw SQLException(SQL_HANDLE_STMT, this->preparedStatement, LOG4CXX_STR("Failed to execute prepared statement"));
 			}
-		}
-		catch (SQLException& e)
-		{
-			this->errorHandler->error(LOG4CXX_STR("Failed to execute sql"), e,
-				ErrorCode::FLUSH_FAILURE);
 		}
 #endif
 	}
