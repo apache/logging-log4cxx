@@ -38,19 +38,7 @@ Exception::Exception(const char* m)
 	msg = (m ? std::string(m) : std::string());
 }
 
-
-Exception::Exception(const Exception& src) : std::exception()
-{
-	msg = src.msg;
-}
-
-Exception& Exception::operator=(const Exception& src)
-{
-	msg = src.msg;
-	return *this;
-}
-
-const char* Exception::what() const throw()
+const char* Exception::what() const noexcept
 {
 	return msg.c_str();
 }
@@ -65,17 +53,6 @@ RuntimeException::RuntimeException(const LogString& msg1)
 {
 }
 
-RuntimeException::RuntimeException(const RuntimeException& src)
-	: Exception(src)
-{
-}
-
-RuntimeException& RuntimeException::operator=(const RuntimeException& src)
-{
-	Exception::operator=(src);
-	return *this;
-}
-
 LogString RuntimeException::formatMessage(log4cxx_status_t stat)
 {
 	LogString s(LOG4CXX_STR("RuntimeException: return code = "));
@@ -88,31 +65,9 @@ NullPointerException::NullPointerException(const LogString& msg1)
 {
 }
 
-NullPointerException::NullPointerException(const NullPointerException& src)
-	: RuntimeException(src)
-{
-}
-
-NullPointerException& NullPointerException::operator=(const NullPointerException& src)
-{
-	RuntimeException::operator=(src);
-	return *this;
-}
-
 IllegalArgumentException::IllegalArgumentException(const LogString& msg1)
 	: RuntimeException(msg1)
 {
-}
-
-IllegalArgumentException::IllegalArgumentException(const IllegalArgumentException& src)
-	: RuntimeException(src)
-{
-}
-
-IllegalArgumentException& IllegalArgumentException::operator=(const IllegalArgumentException& src)
-{
-	RuntimeException::operator=(src);
-	return *this;
 }
 
 IOException::IOException()
@@ -147,17 +102,6 @@ IOException::IOException(const LogString& msg1)
 {
 }
 
-IOException::IOException(const IOException& src)
-	: Exception(src)
-{
-}
-
-IOException& IOException::operator=(const IOException& src)
-{
-	Exception::operator=(src);
-	return *this;
-}
-
 LogString IOException::formatMessage(log4cxx_status_t stat)
 {
 	return makeMessage(LOG4CXX_STR("IO Exception"), stat);
@@ -174,17 +118,6 @@ SubProcessFailure::SubProcessFailure(const char* processName, int exitCode, int 
 {
 }
 #endif
-
-SubProcessFailure::SubProcessFailure(const SubProcessFailure& src)
-	: Exception(src)
-{
-}
-
-SubProcessFailure& SubProcessFailure::operator=(const SubProcessFailure& src)
-{
-	Exception::operator=(src);
-	return *this;
-}
 
 LogString SubProcessFailure::makeMessage(const LogString& processName, int exitCode, int exitWhy)
 {
@@ -245,18 +178,6 @@ MissingResourceException::MissingResourceException(const LogString& key)
 {
 }
 
-
-MissingResourceException::MissingResourceException(const MissingResourceException& src)
-	: Exception(src)
-{
-}
-
-MissingResourceException& MissingResourceException::operator=(const MissingResourceException& src)
-{
-	Exception::operator=(src);
-	return *this;
-}
-
 LogString MissingResourceException::formatMessage(const LogString& key)
 {
 	LogString s(LOG4CXX_STR("MissingResourceException: resource key = \""));
@@ -270,17 +191,6 @@ PoolException::PoolException(log4cxx_status_t stat)
 {
 }
 
-PoolException::PoolException(const PoolException& src)
-	: Exception(src)
-{
-}
-
-PoolException& PoolException::operator=(const PoolException& src)
-{
-	Exception::operator=(src);
-	return *this;
-}
-
 LogString PoolException::formatMessage(log4cxx_status_t stat)
 {
 	return makeMessage(LOG4CXX_STR("Pool exception"), stat);
@@ -291,32 +201,9 @@ InstantiationException::InstantiationException(const LogString& msg1)
 {
 }
 
-InstantiationException::InstantiationException(const InstantiationException& src)
-	: Exception(src)
-{
-}
-
-InstantiationException& InstantiationException::operator=(const InstantiationException& src)
-{
-	Exception::operator=(src);
-	return *this;
-}
-
 ClassNotFoundException::ClassNotFoundException(const LogString& className)
 	: Exception(formatMessage(className))
 {
-}
-
-ClassNotFoundException::ClassNotFoundException(const ClassNotFoundException& src)
-	: Exception(src)
-{
-}
-
-
-ClassNotFoundException& ClassNotFoundException::operator=(const ClassNotFoundException& src)
-{
-	Exception::operator=(src);
-	return *this;
 }
 
 LogString ClassNotFoundException::formatMessage(const LogString& className)
@@ -332,32 +219,9 @@ NoSuchElementException::NoSuchElementException()
 {
 }
 
-NoSuchElementException::NoSuchElementException(const NoSuchElementException& src)
-	: Exception(src)
-{
-}
-
-NoSuchElementException& NoSuchElementException::operator=(const NoSuchElementException& src)
-{
-	Exception::operator=(src);
-	return *this;
-}
-
-
 IllegalStateException::IllegalStateException()
 	: Exception(LOG4CXX_STR("Illegal state"))
 {
-}
-
-IllegalStateException::IllegalStateException(const IllegalStateException& src)
-	: Exception(src)
-{
-}
-
-IllegalStateException& IllegalStateException::operator=(const IllegalStateException& src)
-{
-	Exception::operator=(src);
-	return *this;
 }
 
 SocketException::SocketException(const LogString& msg) : IOException(msg)
@@ -368,17 +232,6 @@ SocketException::SocketException(log4cxx_status_t status) : IOException(status)
 {
 }
 
-SocketException::SocketException(const SocketException& src)
-	: IOException(src)
-{
-}
-
-SocketException& SocketException::operator=(const SocketException& src)
-{
-	IOException::operator=(src);
-	return *this;
-}
-
 ConnectException::ConnectException(const LogString& msg) : SocketException(msg)
 {
 }
@@ -387,74 +240,19 @@ ConnectException::ConnectException(log4cxx_status_t status) : SocketException(st
 {
 }
 
-ConnectException::ConnectException(const ConnectException& src)
-	: SocketException(src)
-{
-}
-
-ConnectException& ConnectException::operator=(const ConnectException& src)
-{
-	SocketException::operator=(src);
-	return *this;
-}
-
 ClosedChannelException::ClosedChannelException() : SocketException(LOG4CXX_STR("Attempt to write to closed socket"))
 {
-}
-
-ClosedChannelException::ClosedChannelException(const ClosedChannelException& src)
-	: SocketException(src)
-{
-}
-
-ClosedChannelException& ClosedChannelException::operator=(const ClosedChannelException& src)
-{
-	SocketException::operator=(src);
-	return *this;
 }
 
 BindException::BindException(log4cxx_status_t status) : SocketException(status)
 {
 }
 
-BindException::BindException(const BindException& src)
-	: SocketException(src)
-{
-}
-
-BindException& BindException::operator=(const BindException& src)
-{
-	SocketException::operator=(src);
-	return *this;
-}
-
 InterruptedIOException::InterruptedIOException(const LogString& msg) : IOException(msg)
 {
-}
-
-InterruptedIOException::InterruptedIOException(const InterruptedIOException& src)
-	: IOException(src)
-{
-}
-
-InterruptedIOException& InterruptedIOException::operator=(const InterruptedIOException& src)
-{
-	IOException::operator=(src);
-	return *this;
 }
 
 SocketTimeoutException::SocketTimeoutException()
 	: InterruptedIOException(LOG4CXX_STR("SocketTimeoutException"))
 {
-}
-
-SocketTimeoutException::SocketTimeoutException(const SocketTimeoutException& src)
-	: InterruptedIOException(src)
-{
-}
-
-SocketTimeoutException& SocketTimeoutException::operator=(const SocketTimeoutException& src)
-{
-	InterruptedIOException::operator=(src);
-	return *this;
 }
