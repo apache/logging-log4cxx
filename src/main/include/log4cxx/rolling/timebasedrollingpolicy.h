@@ -225,38 +225,6 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy
 		 */
 		LOG4CXX_NS::pattern::PatternMap getFormatSpecifiers() const override;
 
-	private:
-
-		/**
-		 * Generate mmap file
-		 */
-		int createMMapFile(const std::string& lastfilename, LOG4CXX_NS::helpers::Pool& pool);
-
-		/**
-		 *  Detect if the mmap file is empty
-		 */
-		bool isMapFileEmpty(LOG4CXX_NS::helpers::Pool& pool);
-
-		/**
-		 *   init MMapFile
-		 */
-		void initMMapFile(const LogString& lastFileName, LOG4CXX_NS::helpers::Pool& pool);
-
-		/**
-		 *   lock MMapFile
-		 */
-		int lockMMapFile(int type);
-
-		/**
-		 *   unlock MMapFile
-		 */
-		int unLockMMapFile();
-
-		/**
-		 *   create MMapFile/lockFile
-		 */
-		const std::string createFile(const std::string& filename, const std::string& suffix, LOG4CXX_NS::helpers::Pool& pool);
-
 };
 
 LOG4CXX_PTR_DEF(TimeBasedRollingPolicy);
