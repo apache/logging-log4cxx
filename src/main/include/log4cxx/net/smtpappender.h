@@ -90,12 +90,11 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
 		END_LOG4CXX_CAST_MAP()
 
-		SMTPAppender();
 		/**
 		The default constructor will instantiate the appender with a
 		spi::TriggeringEventEvaluator that will trigger on events with
 		level ERROR or higher.*/
-		SMTPAppender(LOG4CXX_NS::helpers::Pool& p);
+		SMTPAppender();
 
 		/**
 		Use <code>evaluator</code> passed as parameter as the
@@ -172,12 +171,6 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		The <code>SMTPAppender</code> requires a <code>Layout</code>.
 		*/
 		bool requiresLayout() const override;
-
-		/**
-		Send the contents of the cyclic buffer as an e-mail message.
-		*/
-		void sendBuffer(LOG4CXX_NS::helpers::Pool& p);
-
 
 		/**
 		Returns value of the <b>EvaluatorClass</b> option.

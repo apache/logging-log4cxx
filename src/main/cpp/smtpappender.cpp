@@ -22,6 +22,7 @@
 #include <log4cxx/private/string_c11.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/stringtokenizer.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/loader.h>
 #if !defined(LOG4CXX)
@@ -95,6 +96,7 @@ namespace net
 class SMTPSession
 {
 	public:
+		class Message;
 		/**
 		*   Create new instance.
 		*/
@@ -102,8 +104,7 @@ class SMTPSession
 			int smtpPort,
 			const LogString& smtpUsername,
 			const LogString& smtpPassword,
-			bool allowPlainTextAuth,
-			Pool& p
+			bool allowPlainTextAuth
 			)
 			: user{toAscii(smtpUsername, p)}
 			, pwd{toAscii(smtpPassword, p)}
@@ -201,6 +202,7 @@ class SMTPSession
 	private:
 		SMTPSession(SMTPSession&);
 		SMTPSession& operator=(SMTPSession&);
+		Pool p;
 		smtp_session_t session{0};
 		auth_context_t authctx{0};
 		char* user;
@@ -376,39 +378,39 @@ class SMTPSession
 /**
  *  A message in an SMTP session.
  */
-class SMTPMessage
+class SMTPSession::Message
 {
 	public:
-		SMTPMessage(SMTPSession& session,
+		Message(SMTPSession& session,
 			const LogString& from,
 			const LogString& to,
 			const LogString& cc,
 			const LogString& bcc,
 			const LogString& subject,
-			const LogString msg, Pool& p)
+			const LogString& msg)
 		{
 			message = smtp_add_message(session);
-			body = current = toMessage(msg, p, current_len);
+			body = current = toMessage(msg, session.p, current_len);
 			messagecbState = 0;
-			smtp_set_reverse_path(message, toAscii(from, p));
-			addRecipients(to, "To", p);
-			addRecipients(cc, "Cc", p);
-			addRecipients(bcc, "Bcc", p);
+			smtp_set_reverse_path(message, toAscii(from, session.p));
+			addRecipients(to, "To", session.p);
+			addRecipients(cc, "Cc", session.p);
+			addRecipients(bcc, "Bcc", session.p);
 
 			if (!subject.empty())
 			{
-				smtp_set_header(message, "Subject", toAscii(subject, p));
+				smtp_set_header(message, "Subject", toAscii(subject, session.p));
 			}
 
 			smtp_set_messagecb(message, messagecb, this);
 		}
-		~SMTPMessage()
+		~Message()
 		{
 		}
 
 	private:
-		SMTPMessage(const SMTPMessage&);
-		SMTPMessage& operator=(const SMTPMessage&);
+		Message(const Message&);
+		Message& operator=(const Message&);
 		smtp_message_t message;
 		const char* body;
 		const char* current;
@@ -513,7 +515,7 @@ class SMTPMessage
 		{
 			*ctx = 0;
 			const char* retval = 0;
-			SMTPMessage* pThis = (SMTPMessage*) arg;
+			auto pThis = static_cast<SMTPSession::Message*>(arg);
 
 			//   rewind message
 			if (len == NULL)
@@ -610,6 +612,8 @@ struct SMTPAppender::SMTPPriv : public AppenderSkeletonPrivate
 	spi::TriggeringEventEvaluatorPtr evaluator;
 	// Whether AUTH credentials may be sent without STARTTLS (see setOption)
 	bool allowPlainTextAuth{false};
+
+	void sendBuffer();
 };
 
 #define _priv static_cast<SMTPPriv*>(m_priv.get())
@@ -851,8 +855,7 @@ void SMTPAppender::append( const spi::LoggingEventPtr& event )
 
 	if (_priv->evaluator->isTriggeringEvent(event))
 	{
-		Pool p;
-		sendBuffer(p);
+		_priv->sendBuffer();
 	}
 }
 
@@ -932,7 +935,7 @@ void SMTPAppender::setBcc(const LogString& addressStr)
 /**
 Send the contents of the cyclic buffer as an e-mail message.
 */
-void SMTPAppender::sendBuffer(Pool& p)
+void SMTPAppender::SMTPPriv::sendBuffer()
 {
 #if LOG4CXX_HAVE_LIBESMTP
 
@@ -940,29 +943,29 @@ void SMTPAppender::sendBuffer(Pool& p)
 	try
 	{
 		LogString sbuf;
-		_priv->layout->appendHeader(sbuf);
+		this->layout->appendHeader(sbuf);
 
-		int len = _priv->cb.length();
+		int len = this->cb.length();
 
 		for (int i = 0; i < len; i++)
 		{
-			LoggingEventPtr event = _priv->cb.get();
-			_priv->layout->format(sbuf, event);
+			LoggingEventPtr event = this->cb.get();
+			this->layout->format(sbuf, event);
 		}
 
-		_priv->layout->appendFooter(sbuf);
+		this->layout->appendFooter(sbuf);
 
-		SMTPSession session(_priv->smtpHost, _priv->smtpPort, _priv->smtpUsername, _priv->smtpPassword, _priv->allowPlainTextAuth, p);
+		SMTPSession session(this->smtpHost, this->smtpPort, this->smtpUsername, this->smtpPassword, this->allowPlainTextAuth);
 
-		SMTPMessage message(session, _priv->from, _priv->to, _priv->cc,
-			_priv->bcc, _priv->subject, sbuf, p);
+		SMTPSession::Message message(session, this->from, this->to, this->cc,
+			this->bcc, this->subject, sbuf);
 
 		session.send();
 
 	}
 	catch (std::exception& e)
 	{
-		_priv->errorHandler->error(LOG4CXX_STR("Error occured while sending e-mail to [") + _priv->smtpHost + LOG4CXX_STR("]."), e, 0);
+		this->errorHandler->error(LOG4CXX_STR("Error occured while sending e-mail to [") + this->smtpHost + LOG4CXX_STR("]."), e, 0);
 	}
 
 #endif
