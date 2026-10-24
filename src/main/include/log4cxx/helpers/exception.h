@@ -141,49 +141,6 @@ class LOG4CXX_EXPORT PoolException : public Exception
 		static LogString formatMessage(log4cxx_status_t stat);
 };
 
-
-class LOG4CXX_EXPORT InterruptedException : public Exception
-{
-	public:
-		InterruptedException();
-		InterruptedException(log4cxx_status_t stat);
-		InterruptedException(const InterruptedException& src);
-		InterruptedException& operator=(const InterruptedException&);
-	private:
-		static LogString formatMessage(log4cxx_status_t stat);
-};
-
-class LOG4CXX_EXPORT ThreadException
-	: public Exception
-{
-	public:
-		ThreadException(log4cxx_status_t stat);
-		ThreadException(const LogString& msg);
-		ThreadException(const ThreadException& src);
-		ThreadException& operator=(const ThreadException&);
-	private:
-		static LogString formatMessage(log4cxx_status_t stat);
-};
-
-class LOG4CXX_EXPORT TranscoderException : public Exception
-{
-	public:
-		TranscoderException(log4cxx_status_t stat);
-		TranscoderException(const TranscoderException& src);
-		TranscoderException& operator=(const TranscoderException&);
-	private:
-		static LogString formatMessage(log4cxx_status_t stat);
-};
-
-class LOG4CXX_EXPORT IllegalMonitorStateException
-	: public Exception
-{
-	public:
-		IllegalMonitorStateException(const LogString& msg);
-		IllegalMonitorStateException(const IllegalMonitorStateException& msg);
-		IllegalMonitorStateException& operator=(const IllegalMonitorStateException& msg);
-};
-
 /**
 Thrown when an application tries to create an instance of a class using
 the newInstance method in class Class, but the specified class object
