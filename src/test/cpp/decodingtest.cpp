@@ -184,7 +184,7 @@ public:
 			std::locale::global(std::locale("en_US.UTF-16LE"));
 			testImpl(LOG4CXX_STR("UTF-16LE.txt"), witness);
 		}
-		catch (const const std::exception& ex)
+		catch (const std::exception& ex)
 		{
 			LogString msg;
 			Transcoder::decode(ex.what(), msg);
