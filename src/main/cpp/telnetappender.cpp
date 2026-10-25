@@ -130,7 +130,11 @@ void TelnetAppender::activateOptions(  )
 	}
 
 	if (!_priv->sh.joinable())
-		_priv->sh = ThreadUtility::instance()->createThread( LOG4CXX_STR("TelnetAppender"), &TelnetAppender::acceptConnections, this );
+		_priv->sh = ThreadUtility::instance()->createThread
+		( LOG4CXX_STR("Log4cxx.") + getName() + LOG4CXX_STR(".acceptor")
+		, &TelnetAppender::acceptConnections
+		, this
+		);
 }
 
 void TelnetAppender::setOption(const LogString& option,
