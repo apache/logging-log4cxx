@@ -224,7 +224,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 			++this->dispatcherStartCount;
 			this->dispatcherActive = true;
 			this->dispatcher = ThreadUtility::instance()->createThread
-				( LOG4CXX_STR("AsyncAppender")
+				( LOG4CXX_STR("Log4cxx.") + appenderName + LOG4CXX_STR(".dispatcher")
 				, &AsyncAppender::AsyncAppenderPriv::dispatch
 				, this
 				, appenderName
