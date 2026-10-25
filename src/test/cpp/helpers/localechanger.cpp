@@ -39,7 +39,7 @@ LocaleChanger::LocaleChanger(const char* locale)
 		initial = std::locale::global(newLocale);
 		effective = true;
 	}
-	catch (std::exception& ex)
+	catch (const std::exception& ex)
 	{
 		LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 		LogString errorMsg;

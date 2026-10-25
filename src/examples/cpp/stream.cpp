@@ -47,7 +47,7 @@ int main()
 
                 NDC::pop();
         }
-        catch(std::exception&)
+        catch(const std::exception&)
         {
                 result = EXIT_FAILURE;
         }

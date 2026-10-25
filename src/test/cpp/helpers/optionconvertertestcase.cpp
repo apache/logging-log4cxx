@@ -138,7 +138,7 @@ public:
 		{
 			res = OptionConverter::substVars(val, nullProperties);
 		}
-		catch (IllegalArgumentException& e)
+		catch (const IllegalArgumentException& e)
 		{
 			std::string witness("\"Test4 ${incomplete \" has no closing brace. Opening brace at position 6.");
 			LOGUNIT_ASSERT_EQUAL(witness, (std::string) e.what());
@@ -165,7 +165,7 @@ public:
 			OptionConverter::substVars(LOG4CXX_STR("${p1}"), props);
 			LOGUNIT_ASSERT(false);
 		}
-		catch (IllegalArgumentException& ex)
+		catch (const IllegalArgumentException& ex)
 		{
 			LOG4CXX_DECODE_CHAR(lsMsg, ex.what());
 			LogLog::debug(lsMsg);

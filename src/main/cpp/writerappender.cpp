@@ -134,7 +134,7 @@ void WriterAppender::WriterAppenderPriv::close()
 			this->writer->close();
 			this->writer = 0;
 		}
-		catch (IOException& e)
+		catch (const IOException& e)
 		{
 			LogLog::warn(LOG4CXX_STR("Could not close writer for WriterAppender named ") + this->name, e);
 		}

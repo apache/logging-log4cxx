@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 		bar.doIt();
 		LOG4CXX_INFO(logger, QString("Message %1").arg(2));
 	}
-	catch(std::exception&) {
+	catch(const std::exception&) {
 		result = EXIT_FAILURE;
 	}
 	return result;

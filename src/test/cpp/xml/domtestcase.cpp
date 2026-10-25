@@ -129,7 +129,7 @@ public:
 			Transformer::transform(TEMP_A1, FILTERED_A1, filters1);
 			Transformer::transform(TEMP_A2, FILTERED_A2, filters2);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -168,7 +168,7 @@ public:
 			Transformer::transform(TEMP_A1_2, FILTERED_A1_2, filters1);
 			Transformer::transform(TEMP_A2_2, FILTERED_A2_2, filters2);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;

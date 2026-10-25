@@ -338,7 +338,7 @@ LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
 	{
 		return substVars(value, props);
 	}
-	catch (IllegalArgumentException& e)
+	catch (const IllegalArgumentException& e)
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Bad option value ["))
 			+ value + LOG4CXX_STR("]."), e);
@@ -409,7 +409,7 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 			dynamic_cast<const Level::LevelClass&>(Loader::loadClass(clazz));
 		return levelClass.toLevel(levelName);
 	}
-	catch (Exception& oops)
+	catch (const Exception& oops)
 	{
 		LogLog::error(LOG4CXX_STR("Could not create ") + Level::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 	}
@@ -469,7 +469,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 
 		return newObject;
 	}
-	catch (Exception& e)
+	catch (const Exception& e)
 	{
 		LogLog::error(LOG4CXX_STR("Could not create ") + superClass.getName() + LOG4CXX_STR(" sub-class"), e);
 	}

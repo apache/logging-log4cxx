@@ -48,7 +48,7 @@ void Action::run()
 		{
 			execute();
 		}
-		catch (std::exception& ex)
+		catch (const std::exception& ex)
 		{
 			helpers::LogLog::error(getName() + LOG4CXX_STR(" raised the following exception"), ex);
 		}

@@ -341,7 +341,7 @@ void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& eve
 		{
 			_priv->synchronizedRollover(this, event, fileName, getAppend(), _priv->triggeringPolicy);
 		}
-		catch (std::exception& ex)
+		catch (const std::exception& ex)
 		{
 			LogString msg(LOG4CXX_STR("Rollover of ["));
 			msg.append(fileName);

@@ -115,7 +115,7 @@ public:
 		{
 			Transformer::transform("output/fallback1", "output/fallbackfiltered1", filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -160,7 +160,7 @@ public:
 		{
 			Transformer::transform("output/fallback2", "output/fallbackfiltered2", filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;

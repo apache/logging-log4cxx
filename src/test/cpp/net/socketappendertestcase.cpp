@@ -90,7 +90,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			{
 				serverSocket = helpers::ServerSocket::create(tcpPort, true, {});
 			}
-			catch (std::exception& ex)
+			catch (const std::exception& ex)
 			{
 				helpers::LogLog::error(LOG4CXX_STR("ServerSocket::create failed"), ex);
 				LOGUNIT_FAIL("ServerSocket::create");
@@ -116,7 +116,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			{
 				incomingSocket = serverSocket->accept();
 			}
-			catch (std::exception& ex)
+			catch (const std::exception& ex)
 			{
 				helpers::LogLog::error(LOG4CXX_STR("ServerSocket::accept failed"), ex);
 				for (auto& t : loggingThread)
@@ -152,7 +152,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 									messageCount.resize(msgNumber + 1);
 								++messageCount[msgNumber];
 							}
-							catch (std::exception const& ex)
+							catch (const std::exception const& ex)
 							{
 								LogString msg;
 								helpers::Transcoder::decode(ex.what(), msg);

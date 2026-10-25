@@ -177,7 +177,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -206,7 +206,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -237,7 +237,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -266,7 +266,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -295,7 +295,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -324,7 +324,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -356,7 +356,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -383,7 +383,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -416,7 +416,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -443,7 +443,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
@@ -474,7 +474,7 @@ public:
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
 		}
-		catch (UnexpectedFormatException& e)
+		catch (const UnexpectedFormatException& e)
 		{
 			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;

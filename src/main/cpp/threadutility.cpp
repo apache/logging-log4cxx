@@ -449,7 +449,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				task.f();
 				success = true;
 			}
-			catch (std::exception& ex)
+			catch (const std::exception& ex)
 			{
 				LogLog::warn(task.name, ex);
 			}

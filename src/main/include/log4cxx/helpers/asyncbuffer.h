@@ -471,7 +471,7 @@ Add a new logging event containing \c message to attached appender(s) if \c logg
 
 \usage
 ~~~{.cpp}
-catch (std::exception& ex)
+catch (const std::exception& ex)
 {
 	LOG4CXX_ERROR_ASYNC(m_log, ex.what() << " in AddScanData");
 }
@@ -491,7 +491,7 @@ Add a new logging event containing a message defined by \c fmt and <code>...</co
 
 \usage
 ~~~{.cpp}
-catch (std::exception& ex)
+catch (const std::exception& ex)
 {
 	LOG4CXX_ERROR_FMT_ASYNC(m_log, "{} in AddScanData", ex.what());
 }

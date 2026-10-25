@@ -83,7 +83,7 @@ void XMLSocketAppender::append( const spi::LoggingEventPtr& event )
 			_priv->outputSink->write(output);
 			_priv->outputSink->flush();
 		}
-		catch (std::exception& e)
+		catch (const std::exception& e)
 		{
 			_priv->outputSink.reset();
 			helpers::LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);

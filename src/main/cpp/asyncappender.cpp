@@ -622,7 +622,7 @@ void AsyncAppender::AsyncAppenderPriv::dispatch(const LogString& appenderName)
 			{
 				this->appenders.appendLoopOnAppenders(item);
 			}
-			catch (std::exception& ex)
+			catch (const std::exception& ex)
 			{
 				if (1 < ++failureCount)
 					break;

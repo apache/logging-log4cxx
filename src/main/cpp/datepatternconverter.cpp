@@ -97,7 +97,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 					maximumCacheValidity =
 						CachedDateFormat::getMaximumCacheValidity(dateFormatStr);
 				}
-				catch (std::exception& e)
+				catch (const std::exception& e)
 				{
 					df = std::make_shared<ISO8601DateFormat>();
 					LogLog::warn(((LogString)
@@ -118,7 +118,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 			{
 				tz = TimeZone::getTimeZone(options[1]);
 			}
-			catch (std::exception& e)
+			catch (const std::exception& e)
 			{
 				LogLog::warn(LOG4CXX_STR("Invalid time zone: ") + options[1], e);
 			}

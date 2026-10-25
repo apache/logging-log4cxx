@@ -445,7 +445,7 @@ LogString Logger::getResourceBundleString(const LogString& key) const
 		{
 			return rb->getString(key);
 		}
-		catch (MissingResourceException&)
+		catch (const MissingResourceException&)
 		{
 			logLS(Level::getError(), LOG4CXX_STR("No resource is associated with key \"") +
 				key + LOG4CXX_STR("\"."), LocationInfo::getLocationUnavailable());
