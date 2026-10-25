@@ -152,7 +152,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 									messageCount.resize(msgNumber + 1);
 								++messageCount[msgNumber];
 							}
-							catch (const std::exception const& ex)
+							catch (const std::exception& ex)
 							{
 								LogString msg;
 								helpers::Transcoder::decode(ex.what(), msg);
