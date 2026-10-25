@@ -144,9 +144,7 @@ PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const
 			return *converterIter;
 		}
 	}
-
-	PatternConverterPtr noMatch;
-	return noMatch;
+	return {};
 }
 
 PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const
@@ -165,9 +163,7 @@ PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const
 			return *converterIter;
 		}
 	}
-
-	PatternConverterPtr noMatch;
-	return noMatch;
+	return {};
 }
 
 bool RollingPolicyBase::getCreateIntermediateDirectories() const{
