@@ -133,7 +133,7 @@ apr_file_t* FileOutputStream::getFilePtr() const{
 		{
 			m_priv->open();
 		}
-		catch (IOException&)
+		catch (const IOException&)
 		{
 			// write() will open (and report any failure) again
 		}

@@ -96,7 +96,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 			}
 			this->setOutputSink(Socket::create(this->address, this->port, this->socketSubclass));
 		}
-		catch (SocketException& e)
+		catch (const SocketException& e)
 		{
 			LogString msg = LOG4CXX_STR("Could not connect to [")
 				+ this->address->toString() + LOG4CXX_STR(":");
@@ -200,13 +200,13 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::retryConnect()
 				pManager->value().removePeriodicTask(this->taskName);
 			return;
 		}
-		catch (ConnectException& e)
+		catch (const ConnectException& e)
 		{
 			LogLog::warn(LOG4CXX_STR("Remote host ")
 				+ this->address->toString()
 				+ LOG4CXX_STR(" refused connection."), e);
 		}
-		catch (IOException& e)
+		catch (const IOException& e)
 		{
 			LogString msg(LOG4CXX_STR("Could not connect to [")
 				+ this->address->toString() + LOG4CXX_STR(":"));
@@ -254,7 +254,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::close()
 			this->outputSink->close();
 			this->outputSink.reset();
 		}
-		catch (std::exception&)
+		catch (const std::exception&)
 		{
 		}
 	}

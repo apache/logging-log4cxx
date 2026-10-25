@@ -99,7 +99,7 @@ public:
 			LogString contents(inputReader->read());
 			LOGUNIT_ASSERT(false);
 		}
-		catch (IOException& ex)
+		catch (const IOException& ex)
 		{
 			LOG4CXX_DECODE_CHAR(msg, ex.what());
 			LogLog::debug(msg);

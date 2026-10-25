@@ -143,7 +143,7 @@ public:
 			LOGUNIT_ASSERT_EQUAL(false, CharsetDecoder::isError(stat));
 			LOGUNIT_ASSERT(out == greet);
 		}
-		catch (std::runtime_error& ex)
+		catch (const std::runtime_error& ex)
 		{
 			LogString msg;
 			Transcoder::decode(ex.what(), msg);

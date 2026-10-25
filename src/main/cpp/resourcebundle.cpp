@@ -66,7 +66,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 			ObjectPtr obj = ObjectPtr(classObj.newInstance());
 			current = LOG4CXX_NS::cast<PropertyResourceBundle>(obj);
 		}
-		catch (ClassNotFoundException&)
+		catch (const ClassNotFoundException&)
 		{
 			current.reset();
 		}
@@ -87,7 +87,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 			{
 				current = std::make_shared<PropertyResourceBundle>(bundleStream);
 			}
-			catch (Exception&)
+			catch (const Exception&)
 			{
 				throw;
 			}

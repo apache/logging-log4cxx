@@ -108,14 +108,14 @@ void runTest(abts_case* tc, void (T::*func)())
 	{
 		(ti.*func)();
 	}
-	catch (TestException&)
+	catch (const TestException&)
 	{
 	}
-	catch (AssertException& fx)
+	catch (const AssertException& fx)
 	{
 		abts_fail(tc, fx.getMessage().c_str(), fx.getLine());
 	}
-	catch (std::exception& e)
+	catch (const std::exception& e)
 	{
 		const char* what = e.what();
 		std::ostringstream oss;
@@ -141,10 +141,10 @@ void runTestWithException(abts_case* tc, void (T::*func)())
 	{
 		(ti.*func)();
 	}
-	catch (TestException&)
+	catch (const TestException&)
 	{
 	}
-	catch (AssertException& fx)
+	catch (const AssertException& fx)
 	{
 		abts_fail(tc, fx.getMessage().c_str(), fx.getLine());
 	}

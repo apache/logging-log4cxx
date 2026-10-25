@@ -231,7 +231,7 @@ public:
 
 			LOGUNIT_ASSERT(iter == greeting.end());
 		}
-		catch (std::runtime_error& ex)
+		catch (const std::runtime_error& ex)
 		{
 			LogString msg;
 			Transcoder::decode(ex.what(), msg);

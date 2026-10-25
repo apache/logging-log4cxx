@@ -36,7 +36,7 @@ DatagramSocket::~DatagramSocket()
 	{
 		close();
 	}
-	catch (SocketException&)
+	catch (const SocketException&)
 	{
 	}
 }

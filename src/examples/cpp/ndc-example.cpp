@@ -39,7 +39,7 @@ int main()
         }
         LOG4CXX_WARN(rootLogger, "warn message"); // log entry contains "[outer]"
     }
-    catch(std::exception&)
+    catch(const std::exception&)
     {
         result = EXIT_FAILURE;
     }

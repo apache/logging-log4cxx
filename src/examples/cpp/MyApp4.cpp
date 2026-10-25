@@ -26,7 +26,7 @@ int main() {
 		bar.doIt();
 		LOG4CXX_INFO(logger, "Exiting application.");
 	}
-	catch(std::exception&) {
+	catch(const std::exception&) {
 		result = EXIT_FAILURE;
 	}
 	return result;

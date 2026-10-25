@@ -157,7 +157,7 @@ void FileAppender::FileAppenderPriv::activate()
 		{
 			this->open();
 		}
-		catch (IOException& e)
+		catch (const IOException& e)
 		{
 			errors++;
 			LogString msg(LOG4CXX_STR("setFile("));
@@ -312,7 +312,7 @@ void FileAppender::FileAppenderPriv::open()
 		{
 			outStream = std::make_shared<FileOutputStream>(this->targetFile.getPath(), this->fileAppend);
 		}
-		catch (IOException&)
+		catch (const IOException&)
 		{
 			LogString parentName = this->targetFile.getParent();
 

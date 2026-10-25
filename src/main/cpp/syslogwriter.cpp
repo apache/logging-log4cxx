@@ -43,7 +43,7 @@ SyslogWriter::SyslogWriter(const LogString& syslogHost1, int syslogHostPort1)
 	{
 		m_priv->address = InetAddress::getByName(syslogHost1);
 	}
-	catch (UnknownHostException& e)
+	catch (const UnknownHostException& e)
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Could not find ")) + syslogHost1 +
 			LOG4CXX_STR(". All logging will FAIL."), e);
@@ -53,7 +53,7 @@ SyslogWriter::SyslogWriter(const LogString& syslogHost1, int syslogHostPort1)
 	{
 		m_priv->ds = DatagramSocket::create();
 	}
-	catch (SocketException& e)
+	catch (const SocketException& e)
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate DatagramSocket to ")) + syslogHost1 +
 			LOG4CXX_STR(". All logging will FAIL."), e);

@@ -963,7 +963,7 @@ void SMTPAppender::SMTPPriv::sendBuffer()
 		session.send();
 
 	}
-	catch (std::exception& e)
+	catch (const std::exception& e)
 	{
 		this->errorHandler->error(LOG4CXX_STR("Error occured while sending e-mail to [") + this->smtpHost + LOG4CXX_STR("]."), e, 0);
 	}

@@ -92,7 +92,7 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 		{
 			this->serverSocket->close();
 		}
-		catch (Exception&)
+		catch (const Exception&)
 		{
 		}
 		if (this->sh.joinable())
@@ -363,14 +363,14 @@ void TelnetAppender::acceptConnections()
 				writeStatus(newClient, oss, p);
 			}
 		}
-		catch (InterruptedIOException&)
+		catch (const InterruptedIOException&)
 		{
 			if (_priv->closed)
 			{
 				break;
 			}
 		}
-		catch (Exception& e)
+		catch (const Exception& e)
 		{
 			if (!_priv->closed)
 			{

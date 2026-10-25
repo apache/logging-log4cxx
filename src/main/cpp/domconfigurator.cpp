@@ -377,7 +377,7 @@ AppenderPtr DOMConfiguratorContext::parseAppender(apr_xml_elem* appenderElement)
 	}
 	/* Yes, it's ugly.  But all of these exceptions point to the same
 	    problem: we can't create an Appender */
-	catch (Exception& oops)
+	catch (const Exception& oops)
 	{
 		LogLog::error(LOG4CXX_STR("Could not create ") + Appender::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
@@ -722,7 +722,7 @@ LayoutPtr DOMConfiguratorContext::parseLayout(apr_xml_elem* layout_element)
 		propSetter.activate();
 		return layout;
 	}
-	catch (Exception& oops)
+	catch (const Exception& oops)
 	{
 		LogLog::error(LOG4CXX_STR("Could not create ") + Layout::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
@@ -781,7 +781,7 @@ ObjectPtr DOMConfiguratorContext::parseTriggeringPolicy(apr_xml_elem* policy_ele
 		propSetter.activate();
 		return instance;
 	}
-	catch (Exception& oops)
+	catch (const Exception& oops)
 	{
 		LogLog::error(LOG4CXX_STR("Could not create ") + TriggeringPolicy::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
@@ -829,7 +829,7 @@ RollingPolicyPtr DOMConfiguratorContext::parseRollingPolicy(apr_xml_elem* policy
 		propSetter.activate();
 		return LOG4CXX_NS::cast<RollingPolicy>(instance);
 	}
-	catch (Exception& oops)
+	catch (const Exception& oops)
 	{
 		LogLog::error(LOG4CXX_STR("Could not create ") + RollingPolicy::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 		return 0;
@@ -888,7 +888,7 @@ void DOMConfiguratorContext::parseLevel(apr_xml_elem* element, const LoggerPtr& 
 			{
 				logger->setLevel(dynamic_cast<const Level::LevelClass&>(Loader::loadClass(className)).toLevel(levelStr));
 			}
-			catch (Exception& oops)
+			catch (const Exception& oops)
 			{
 				LogLog::error(LOG4CXX_STR("Could not create ") + Level::getStaticClass().getName() + LOG4CXX_STR(" sub-class"), oops);
 				return;
@@ -1122,7 +1122,7 @@ LogString DOMConfiguratorContext::subst(const LogString& value)
 	{
 		return OptionConverter::substVars(value, this->props);
 	}
-	catch (IllegalArgumentException& e)
+	catch (const IllegalArgumentException& e)
 	{
 		LogLog::warn(LOG4CXX_STR("Could not substitute variables using [") + value + LOG4CXX_STR("]"), e);
 		return value;

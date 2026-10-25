@@ -141,7 +141,7 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 	{
 		return OptionConverter::substVars(configurationFileName, props);
 	}
-	catch (IllegalArgumentException& e)
+	catch (const IllegalArgumentException& e)
 	{
 		LogLog::warn(LOG4CXX_STR("Could not perform variable substitution."), e);
 		return configurationFileName;

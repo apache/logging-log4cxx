@@ -262,7 +262,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 
 		result = true;
 	}
-	catch (std::exception& ex)
+	catch (const std::exception& ex)
 	{
 		LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + this->targetFile.getPath(), ex);
 	}
@@ -307,7 +307,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::namePreservingRollover
 		{
 			result = action->execute();
 		}
-		catch (std::exception& ex)
+		catch (const std::exception& ex)
 		{
 			LogString msg(LOG4CXX_STR("Rollover of ["));
 			msg.append(fileName);
@@ -335,7 +335,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::namePreservingRollover
 			{
 				asyncAction->execute();
 			}
-			catch (std::exception& ex)
+			catch (const std::exception& ex)
 			{
 				LogString msg(LOG4CXX_STR("Rollover of ["));
 				msg.append(fileName);
@@ -370,7 +370,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::nameEvolvingRollover
 		{
 			result = action->execute();
 		}
-		catch (std::exception& ex)
+		catch (const std::exception& ex)
 		{
 			LogString msg(LOG4CXX_STR("Rollover of ["));
 			msg.append(fileName);
@@ -415,7 +415,7 @@ void RollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 		{
 			_priv->rollover(getFile(), getAppend());
 		}
-		catch (std::exception& ex)
+		catch (const std::exception& ex)
 		{
 			LogString msg(LOG4CXX_STR("Rollover of ["));
 			msg.append(getFile());
