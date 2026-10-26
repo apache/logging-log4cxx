@@ -16,7 +16,7 @@ Steps to update the Log4cxx web site
 
 1. Use Doxygen to generate the HTML, PNG, JS and CSS files
     - `git clone --depth=1 https://github.com/apache/logging-log4cxx /tmp/log4cxx`
-    - `cmake -B /tmp/log4cxx/build -S /tmp/log4cxx -DBUILD_SITE=on`
+    - `cmake -B /tmp/log4cxx/build -S /tmp/log4cxx -DBUILD_SITE=on -DBUILD_TESTING=off`
     - `cmake --build /tmp/log4cxx/build -t doc_doxygen`
 1. Check out the `asf-staging` branch of `logging-log4cxx-site`
     - `git clone https://github.com/apache/logging-log4cxx-site /tmp/log4cxx-site`
