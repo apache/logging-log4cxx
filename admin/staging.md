@@ -10,21 +10,22 @@ Prerequisites
 * The documentation changes have been committed to the log4cxx source code repository
 * Doxygen 1.18.0 in available on your system
 * APR and APR-Util are available on your system
+* The TMP_DIR shell variable contains a valid path
 
 Steps to update the Log4cxx web site
 -----
 
 1. Use Doxygen to generate the HTML, PNG, JS and CSS files
-    - `git clone --depth=1 https://github.com/apache/logging-log4cxx /tmp/log4cxx`
-    - `cmake -B /tmp/log4cxx/build -S /tmp/log4cxx -DBUILD_SITE=on`
-    - `cmake --build /tmp/log4cxx/build -t doc_doxygen`
+    - `git clone --depth=1 https://github.com/apache/logging-log4cxx ${TMP_DIR}/log4cxx`
+    - `cmake -B ${TMP_DIR}/log4cxx/build -S ${TMP_DIR}/log4cxx -DBUILD_SITE=on -DBUILD_TESTING=off`
+    - `cmake --build ${TMP_DIR}/log4cxx/build -t doc_doxygen`
 1. Check out the `asf-staging` branch of `logging-log4cxx-site`
-    - `git clone https://github.com/apache/logging-log4cxx-site /tmp/log4cxx-site`
-    - `cd /tmp/log4cxx-site`
+    - `git clone https://github.com/apache/logging-log4cxx-site ${TMP_DIR}/log4cxx-site`
+    - `cd ${TMP_DIR}/log4cxx-site`
     - `git checkout asf-staging`
 1. Use the newly generated files for the web site documentation
     - `git rm -r 2.0.0`
-    - `mv /tmp/log4cxx/build/src/site/html 2.0.0`
+    - `mv ${TMP_DIR}/log4cxx/build/src/site/html 2.0.0`
     - `git add 2.0.0`
 1. Push the `asf-staging` branch to Github and wait a bit
     - `git commit -m "Improved the ... documentation"`
@@ -37,18 +38,18 @@ Steps to add a new version to the Log4cxx web site
 -----
 
 1. Use Doxygen to generate the HTML, PNG, JS and CSS files
-    - `git clone --depth=1 https://github.com/apache/logging-log4cxx /tmp/log4cxx`
-    - `cmake -B /tmp/log4cxx/build -S /tmp/log4cxx -DBUILD_SITE=on`
-    - `cmake --build /tmp/log4cxx/build -t doc_doxygen`
+    - `git clone --depth=1 https://github.com/apache/logging-log4cxx ${TMP_DIR}/log4cxx`
+    - `cmake -B ${TMP_DIR}/log4cxx/build -S ${TMP_DIR}/log4cxx -DBUILD_SITE=on -DBUILD_TESTING=off``
+    - `cmake --build ${TMP_DIR}/log4cxx/build -t doc_doxygen`
 1. Check out the `asf-staging` branch of `logging-log4cxx-site`
-    - `git clone https://github.com/apache/logging-log4cxx-site /tmp/log4cxx-site`
-    - `cd /tmp/log4cxx-site`
+    - `git clone https://github.com/apache/logging-log4cxx-site ${TMP_DIR}/log4cxx-site`
+    - `cd ${TMP_DIR}/log4cxx-site`
     - `git checkout asf-staging`
 1. Use the newly generated files for the web site documentation
-    - `mv /tmp/log4cxx/build/src/site/html /tmp/log4cxx-site/2.0.0`
+    - `mv ${TMP_DIR}/log4cxx/build/src/site/html ${TMP_DIR}/log4cxx-site/2.0.0`
     - `git add 2.0.0`
 1. Update the symbolic links in the base of the web site working directory
-    - `cd /tmp/log4cxx-site`
+    - `cd ${TMP_DIR}/log4cxx-site`
     - `rm old_stable`
     - `ln -s 1.6.0 old_stable`
     - `git add old_stable`

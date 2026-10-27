@@ -34,54 +34,49 @@ class Transcoder;
 }
 
 /**
-* An abstract representation of file and directory path names.
+* Holds the path to a file or directory.
 */
 class LOG4CXX_EXPORT File
 {
 	public:
 		/**
-		*   Construct a new instance.
+		*   An empty path.
 		*/
 		File();
 		/**
-		*   Construct a new instance.  Use setPath to specify path using a LogString.
-		* @param path file path in local encoding.
+		*   The file or directory at \c path.
 		*/
 		File(const char* path);
 		/**
-		*   Construct a new instance.  Use setPath to specify path using a LogString.
-		* @param path file path in current encoding.
+		*   The file or directory at \c path.
 		*/
 		File(const std::string& path);
 #if LOG4CXX_WCHAR_T_API
 		/**
-		*   Construct a new instance.  Use setPath to specify path using a LogString.
-		* @param path file path.
+		*   The file or directory at \c path.
 		*/
 		File(const wchar_t* path);
 		/**
-		*   Construct a new instance.  Use setPath to specify path using a LogString.
-		* @param path file path.
+		*   The file or directory at \c path.
 		*/
 		File(const std::wstring& path);
 #endif
 #if LOG4CXX_CFSTRING_API
 		/**
-		*   Construct a new instance.  Use setPath to specify path using a LogString.
-		* @param path file path.
+		*   The file or directory at \c path.
 		*/
 		File(const CFStringRef& path);
 #endif
 		/**
-		 *  Copy constructor.
+		 *  A copy of \c other.
 		 */
-		File(const File& src);
+		File(const File& other);
 		/**
-		 *  Assignment operator.
+		 *  Replace this with \c other
 		 */
-		File& operator=(const File& src);
+		File& operator=(const File& other);
 		/**
-		 *  Destructor.
+		 *  Release resouces used by this.
 		 */
 		~File();
 
@@ -91,61 +86,54 @@ class LOG4CXX_EXPORT File
 		 */
 		bool hasPath() const;
 		/**
-		 *  Determines if file exists.
-		 *  @return true if file exists.
+		 *  Is this a path to an existing file or directory?
 		 */
 		bool exists() const;
 		/**
-		 *  Provides the length of the file.  May not be accurate if file is current open.
-		 *  @return length of file.
+		 *  The size in bytes of the file indicated by this.
+		 *  May not be accurate if file is current open.
 		 */
 		size_t length() const;
 		/**
-		 *  Provides the last modification date.
-		 *  @return the filesystem time of last modification.
+		 *  The microseconds since 1970-01-01 when the file indicated by this was last modified.
 		 */
 		log4cxx_time_t lastModified() const;
 		/**
-		 *  Provides the final portion of file path.
-		 *  @return file name.
+		 *  The final portion of the file or directory path.
 		 */
 		LogString getName() const;
 		/**
-		 *  Provides the file path.
-		 *  @return file path.
+		 *  The full file or directory path.
 		 */
 		LogString getPath() const;
 		/**
-		 *  Provides the file path.
-		 *  @return file path.
+		 *  The full file or directory path encoded for APR use.
 		 */
 		const char* getAPRPath() const;
 		/**
 		 *  Use \c newValue as the file path
 		 */
-		File& setPath(const LogString& newVAlue);
+		File& setPath(const LogString& newValue);
 
 
 		/**
-		 *   List files if current file is a directory.
-		 *   @return list of files in this directory, operation of non-directory returns empty list.
+		 *   A list of files if this is a directory, otherwise an empty list.
 		 */
 		std::vector<LogString> list() const;
 
 		/**
-		 *   Delete this file.
+		 *   Attempt to remove this file or directory from persistent storage.
 		 *   @return true if file successfully deleted.
 		 */
 		bool deleteFile() const;
 		/**
-		 *   Rename this file.
-		 *   @param dest new path for file.
+		 *   Move this file or directory to the path in \c newValue.
 		 *   @return true if file successfully renamed.
 		 */
-		bool renameTo(const File& dest) const;
+		bool renameTo(const File& newValue) const;
 
 		/**
-		 *   Provides the path of parent directory.
+		 *   The path without the final portion.
 		 *   @return path of parent directory.
 		 */
 		LogString getParent() const;
@@ -162,7 +150,7 @@ class LOG4CXX_EXPORT File
 		void setAutoDelete(bool newValue);
 
 		/**
-		 * Provides the value of the autodelete setting.  If true, this file will be deleted when the
+		 * The value of the autodelete setting.  If true, this file will be deleted when the
 		 * destructor is called.
 		 *
 		 * @return True if the file is deleted upon destruction.

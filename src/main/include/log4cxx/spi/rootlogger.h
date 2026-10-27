@@ -49,13 +49,13 @@ class LOG4CXX_EXPORT RootLogger : public Logger
 		Return the assigned level value without walking the logger
 		hierarchy.
 		*/
-		virtual LevelPtr getEffectiveLevel() const;
+		LevelPtr getEffectiveLevel() const override;
 
 		/**
-		            Setting a null value to the level of the root logger may have catastrophic
-		            results. We prevent this here.
-		            */
-		void setLevel(const LevelPtr& level);
+		Setting a null value to the level of the root logger may have catastrophic
+		results. We prevent this here.
+		*/
+		void setLevel(const LevelPtr& level) override;
 };
 }  // namespace spi
 } // namespace log4cxx

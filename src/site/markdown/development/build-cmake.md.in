@@ -43,7 +43,7 @@ Building with CMake {#build-cmake}
 
 ## Unix type systems {#Linux}
 
-Make sure cmake (3.13+), g++, gzip, zip and make are available.
+Make sure cmake (3.15+), g++, gzip, zip and make are available.
 On a Debian system these may be installed by:
 ~~~
 $ sudo apt-get install build-essential cmake gzip zip
