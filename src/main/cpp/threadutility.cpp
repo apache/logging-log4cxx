@@ -111,7 +111,7 @@ struct ThreadUtility::priv_data
 		std::lock_guard<std::recursive_mutex> lock(job_mutex);
 		terminated.store(true);
 	}
-	
+
 	void wakeThread()
 	{
 		std::unique_lock<std::mutex> lock(this->interrupt_mutex);
@@ -295,12 +295,12 @@ void ThreadUtility::ThreadStartContext::Impl::threadStartedNameThread
 		auto win_handle = static_cast<HANDLE>(nativeHandle);
 #endif
 		if(FAILED(win32Func.SetThreadDescription(win_handle, wthreadName.c_str())))
-			LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
+			LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name to ") + threadName );
 	}
 #elif LOG4CXX_HAS_PTHREAD_SETNAME
 	LOG4CXX_ENCODE_CHAR(sthreadName, threadName);
-	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.c_str()) < 0) {
-		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name"));
+	if (pthread_setname_np(static_cast<pthread_t>(nativeHandle), sthreadName.substr(0, 15).c_str()) != 0) {
+		LOGLOG_ERROR(LOG4CXX_STR("unable to set thread name to ") + threadName);
 	}
 #endif
 }
