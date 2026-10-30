@@ -45,18 +45,23 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		END_LOG4CXX_CAST_MAP()
 
 		/**
-		Read configuration from \c configFileName.
-		If \c repository is not provided,
+		Apply the directives in \c configFileName to \c target.
+		If \c target is not provided,
 		the spi::LoggerRepository held by LogManager is used.
 
-		@warning Concurrent calls from multiple thread is *undefined behavior*.
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
+
+		@warning Concurrent calls from multiple threads is *undefined behavior*.
 
 		@param configFileName The file to parse
-		@param repository Holds the Logger instances.
+		@param target Holds the Logger instances.
 		*/
 		virtual ConfigurationStatus doConfigure
 			( const File&                     configFileName
-			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
+			, const spi::LoggerRepositoryPtr& target = {}
 			) = 0;
 
 		/**

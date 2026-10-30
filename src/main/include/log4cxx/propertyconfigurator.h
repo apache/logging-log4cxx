@@ -33,7 +33,7 @@ class Properties;
 }
 
 /**
-Allows the configuration of log4cxx from an external file.
+Allows Loggers, Appenders and Layouts to be set up using directives in a properties file.
 
 \anchor PropertyConfigurator_details
 The configuration file consists of statements in the format
@@ -262,21 +262,9 @@ class LOG4CXX_EXPORT PropertyConfigurator
 
 		PropertyConfigurator();
 		virtual ~PropertyConfigurator();
-		/**
-		Read the configuration directives from \c configFileName.
-
+		/** {@inheritDoc}
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected configuration file format.
-
-		If \c target is not provided,
-		the spi::LoggerRepository held by LogManager is used.
-		<b>The existing configuration is not cleared nor reset.</b>
-		If you require a different behavior,
-		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
-		before calling <code>doConfigure</code>.
-
-		@param configFileName The file to parse.
-		@param target Where the Logger instances reside.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     configFileName
@@ -284,14 +272,31 @@ class LOG4CXX_EXPORT PropertyConfigurator
 			) override;
 
 		/**
-		Read configuration options from file <code>configFilename</code>.
-		Stores Logger instances in the spi::LoggerRepository held by LogManager.
+		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
+		See the \ref PropertyConfigurator_details "detailed description"
+		for the expected configuration file format.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
+
+		@warning Concurrent calls from multiple threads is *undefined behavior*.
 		*/
 		static spi::ConfigurationStatus configure(const File& configFilename);
 
 		/**
-		Read configuration options from \c configFilename (if it exists).
-		Stores Logger instances in the spi::LoggerRepository held by LogManager.
+		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
+		See the \ref PropertyConfigurator_details "detailed description"
+		for the expected configuration file format.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
+
+		@warning Concurrent calls from multiple threads is *undefined behavior*.
+
 		A thread will be created that periodically checks
 		whether \c configFilename has been created or modified.
 		A period of log4cxx::helpers::FileWatchdog#DEFAULT_DELAY
@@ -310,17 +315,30 @@ class LOG4CXX_EXPORT PropertyConfigurator
 			);
 
 		/**
-		Read configuration options from <code>properties</code>.
-		Stores Logger instances in the spi::LoggerRepository held by LogManager.
+		Apply the directives in \c properties to the spi::LoggerRepository held by LogManager.
 		See the \ref PropertyConfigurator_details "detailed description"
-		for the expected format.
+		for the expected keys and values.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
+
+		@warning Concurrent calls from multiple threads is *undefined behavior*.
 		*/
 		static spi::ConfigurationStatus configure(helpers::Properties& properties);
 
 		/**
-		Read configuration options from <code>properties</code>.
+		Apply the directives in \c properties to \c target.
 		See the \ref PropertyConfigurator_details "detailed description"
-		for the expected format.
+		for the expected keys and values.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
+
+		@warning Concurrent calls from multiple threads is *undefined behavior*.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( helpers::Properties&            properties
