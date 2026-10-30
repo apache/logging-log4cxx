@@ -46,6 +46,7 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 
 		/**
 		Apply the directives in \c configFileName to \c target.
+
 		If \c target is not provided,
 		the spi::LoggerRepository held by LogManager is used.
 

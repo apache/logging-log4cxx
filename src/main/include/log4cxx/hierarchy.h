@@ -74,15 +74,15 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 
 		~Hierarchy();
 
-		/** {@inheritDoc}
+		/** @copydoc spi::Configurator::addHierarchyEventListener()
 		*/
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::removeHierarchyEventListener()
 		*/
 		void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::ensureIsConfigured()
 		*/
 		void ensureIsConfigured(std::function<void()> configurator) override;
 
@@ -98,48 +98,48 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 
 		void emitNoAppenderWarning(const Logger* logger) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::exists()
 		*/
 		LoggerPtr exists(const LogString& name) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::setThreshold(const LogString&)
 		*/
-		void setThreshold(const LogString& levelStr) override;
+		void setThreshold(const LogString& newLevel) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::setThreshold(const LevelPtr&)
 		*/
 		void setThreshold(const LevelPtr& newLevel) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::fireAddAppenderEvent()
 		*/
 		void fireAddAppenderEvent(const Logger* logger, const Appender* appender) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::fireRemoveAppenderEvent()
 		*/
 		void fireRemoveAppenderEvent(const Logger* logger, const Appender* appender) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::getThreshold()
 		*/
 		LevelPtr getThreshold() const override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::getThreshold()
 		*/
 		LoggerPtr getLogger(const LogString& name,
 			const spi::LoggerFactoryPtr& factory = {}) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::getCurrentLoggers()
 		*/
 		LoggerList getCurrentLoggers() const override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::getRootLogger()
 		*/
 		LoggerPtr getRootLogger() const override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::isDisabled()
 		*/
 		bool isDisabled(int level) const override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::resetConfiguration()
 		*/
 		void resetConfiguration() override;
 
@@ -154,19 +154,19 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 		*/
 		void shutdown() override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::isConfigured()
 		*/
 		virtual bool isConfigured() override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::setConfigured()
 		*/
 		virtual void setConfigured(bool configured) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::updateChildren()
 		*/
 		void updateChildren(const Logger* parent) override;
 
-		/** {@inheritDoc}
+		/** @copydoc spi::LoggerRepository::removeLogger()
 		*/
 		bool removeLogger(const LogString& name, bool ifNotUsed = true) override;
 

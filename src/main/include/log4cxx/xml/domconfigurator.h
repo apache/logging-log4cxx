@@ -57,7 +57,7 @@ class LOG4CXX_EXPORT DOMConfigurator
 		LOG4CXX_CAST_ENTRY(spi::Configurator)
 		END_LOG4CXX_CAST_MAP()
 
-		/** {@inheritDoc}
+		/** @copydoc spi::Configurator::doConfigure()
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     configFileName
@@ -86,14 +86,14 @@ class LOG4CXX_EXPORT DOMConfigurator
 
 		@warning Concurrent calls from multiple threads is *undefined behavior*.
 
-		A thread will be created that periodically checks
+		A task will be created that periodically checks
 		whether \c configFilename has been created or modified.
 		A period of log4cxx::helpers::FileWatchdog#DEFAULT_DELAY
 		is used if \c delay is not a positive number.
 		If a change or file creation is detected,
 		then \c configFilename is read to configure Log4cxx.
 
-		The thread will be stopped by a LogManager::shutdown call.
+		The task will be stopped by a LogManager::shutdown call.
 
 		@param configFilename A XML format file.
 		@param millisecondDelay The duration to wait between each check.

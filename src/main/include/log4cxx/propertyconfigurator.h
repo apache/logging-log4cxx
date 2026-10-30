@@ -262,7 +262,7 @@ class LOG4CXX_EXPORT PropertyConfigurator
 
 		PropertyConfigurator();
 		virtual ~PropertyConfigurator();
-		/** {@inheritDoc}
+		/** @copydoc spi::Configurator::doConfigure()
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected configuration file format.
 		*/
@@ -297,14 +297,14 @@ class LOG4CXX_EXPORT PropertyConfigurator
 
 		@warning Concurrent calls from multiple threads is *undefined behavior*.
 
-		A thread will be created that periodically checks
+		A task will be created that periodically checks
 		whether \c configFilename has been created or modified.
 		A period of log4cxx::helpers::FileWatchdog#DEFAULT_DELAY
 		is used if \c millisecondDelay is not a positive number.
 		If a change or file creation is detected,
 		then \c configFilename is read to configure Log4cxx.
 
-		The thread will be stopped by a LogManager::shutdown call.
+		The task will be stopped by a LogManager::shutdown call.
 
 		@param configFilename A file in key=value format.
 		@param millisecondDelay The duration to wait between each check.
