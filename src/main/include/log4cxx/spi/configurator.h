@@ -55,8 +55,6 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
 		before calling <code>doConfigure</code>.
 
-		@warning Concurrent calls from multiple threads is *undefined behavior*.
-
 		@param configFileName The file to parse
 		@param target Holds the Logger instances.
 		*/
@@ -81,7 +79,8 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		- PROGRAM_FILE_PATH.STEM
 		- PROGRAM_FILE_PATH.EXTENSION
 
-		@warning This method is not thread-safe.
+		@warning This method is not thread-safe. Only add entries during initialization.
+
 		@return a mutable map - modification and use must be confined to a single thread.
 		*/
 		static helpers::Properties& properties();

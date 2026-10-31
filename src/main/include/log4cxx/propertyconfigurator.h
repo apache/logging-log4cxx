@@ -265,6 +265,9 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		/** @copydoc spi::Configurator::doConfigure()
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected configuration file format.
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     configFileName
@@ -273,6 +276,10 @@ class LOG4CXX_EXPORT PropertyConfigurator
 
 		/**
 		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
+
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected configuration file format.
 
@@ -280,22 +287,19 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		If you require a different behavior,
 		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
 		before calling <code>doConfigure</code>.
-
-		@warning Concurrent calls from multiple threads is *undefined behavior*.
 		*/
 		static spi::ConfigurationStatus configure(const File& configFilename);
 
 		/**
 		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
-		See the \ref PropertyConfigurator_details "detailed description"
-		for the expected configuration file format.
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
 
 		<b>The existing configuration is not cleared nor reset.</b>
 		If you require a different behavior,
 		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
 		before calling <code>doConfigure</code>.
-
-		@warning Concurrent calls from multiple threads is *undefined behavior*.
 
 		A task will be created that periodically checks
 		whether \c configFilename has been created or modified.
@@ -316,6 +320,7 @@ class LOG4CXX_EXPORT PropertyConfigurator
 
 		/**
 		Apply the directives in \c properties to the spi::LoggerRepository held by LogManager.
+
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected keys and values.
 
@@ -323,13 +328,12 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		If you require a different behavior,
 		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
 		before calling <code>doConfigure</code>.
-
-		@warning Concurrent calls from multiple threads is *undefined behavior*.
 		*/
 		static spi::ConfigurationStatus configure(helpers::Properties& properties);
 
 		/**
 		Apply the directives in \c properties to \c target.
+
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected keys and values.
 
@@ -337,8 +341,6 @@ class LOG4CXX_EXPORT PropertyConfigurator
 		If you require a different behavior,
 		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
 		before calling <code>doConfigure</code>.
-
-		@warning Concurrent calls from multiple threads is *undefined behavior*.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( helpers::Properties&            properties

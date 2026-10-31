@@ -58,6 +58,9 @@ class LOG4CXX_EXPORT DOMConfigurator
 		END_LOG4CXX_CAST_MAP()
 
 		/** @copydoc spi::Configurator::doConfigure()
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     configFileName
@@ -67,24 +70,26 @@ class LOG4CXX_EXPORT DOMConfigurator
 		/**
 		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
 
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
+
 		<b>The existing configuration is not cleared nor reset.</b>
 		If you require a different behavior,
 		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
 		before calling <code>doConfigure</code>.
-
-		@warning Concurrent calls from multiple threads is *undefined behavior*.
 		*/
 		static spi::ConfigurationStatus configure(const File& configFilename);
 
 		/**
 		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
 
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
+
 		<b>The existing configuration is not cleared nor reset.</b>
 		If you require a different behavior,
 		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
 		before calling <code>doConfigure</code>.
-
-		@warning Concurrent calls from multiple threads is *undefined behavior*.
 
 		A task will be created that periodically checks
 		whether \c configFilename has been created or modified.
