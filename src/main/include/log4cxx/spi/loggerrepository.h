@@ -51,7 +51,7 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		/**
 		Add \c listener to the repository.
 		*/
-		virtual void addHierarchyEventListener(const HierarchyEventListenerPtr& listener) = 0;
+		virtual void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) = 0;
 
 		/**
 		 * Remove \c listener from the repository.

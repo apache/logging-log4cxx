@@ -33,7 +33,7 @@ class Properties;
 }
 
 /**
-Allows the configuration of log4cxx from an external file.
+Allows Loggers, Appenders and Layouts to be set up using directives in a properties file.
 
 \anchor PropertyConfigurator_details
 The configuration file consists of statements in the format
@@ -262,21 +262,12 @@ class LOG4CXX_EXPORT PropertyConfigurator
 
 		PropertyConfigurator();
 		virtual ~PropertyConfigurator();
-		/**
-		Read the configuration directives from \c configFileName.
-
+		/** @copydoc spi::Configurator::doConfigure()
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected configuration file format.
 
-		If \c target is not provided,
-		the spi::LoggerRepository held by LogManager is used.
-		<b>The existing configuration is not cleared nor reset.</b>
-		If you require a different behavior,
-		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
-		before calling <code>doConfigure</code>.
-
-		@param configFileName The file to parse.
-		@param target Where the Logger instances reside.
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( const File&                     configFileName
@@ -284,22 +275,40 @@ class LOG4CXX_EXPORT PropertyConfigurator
 			) override;
 
 		/**
-		Read configuration options from file <code>configFilename</code>.
-		Stores Logger instances in the spi::LoggerRepository held by LogManager.
+		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
+
+		See the \ref PropertyConfigurator_details "detailed description"
+		for the expected configuration file format.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
 		*/
 		static spi::ConfigurationStatus configure(const File& configFilename);
 
 		/**
-		Read configuration options from \c configFilename (if it exists).
-		Stores Logger instances in the spi::LoggerRepository held by LogManager.
-		A thread will be created that periodically checks
+		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
+
+		A task will be created that periodically checks
 		whether \c configFilename has been created or modified.
 		A period of log4cxx::helpers::FileWatchdog#DEFAULT_DELAY
 		is used if \c millisecondDelay is not a positive number.
 		If a change or file creation is detected,
 		then \c configFilename is read to configure Log4cxx.
 
-		The thread will be stopped by a LogManager::shutdown call.
+		The task will be stopped by a LogManager::shutdown call.
 
 		@param configFilename A file in key=value format.
 		@param millisecondDelay The duration to wait between each check.
@@ -310,17 +319,28 @@ class LOG4CXX_EXPORT PropertyConfigurator
 			);
 
 		/**
-		Read configuration options from <code>properties</code>.
-		Stores Logger instances in the spi::LoggerRepository held by LogManager.
+		Apply the directives in \c properties to the spi::LoggerRepository held by LogManager.
+
 		See the \ref PropertyConfigurator_details "detailed description"
-		for the expected format.
+		for the expected keys and values.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
 		*/
 		static spi::ConfigurationStatus configure(helpers::Properties& properties);
 
 		/**
-		Read configuration options from <code>properties</code>.
+		Apply the directives in \c properties to \c target.
+
 		See the \ref PropertyConfigurator_details "detailed description"
-		for the expected format.
+		for the expected keys and values.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
 		*/
 		spi::ConfigurationStatus doConfigure
 			( helpers::Properties&            properties

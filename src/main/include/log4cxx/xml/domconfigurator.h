@@ -18,93 +18,95 @@
 #ifndef _LOG4CXX_XML_DOM_CONFIGURATOR_H
 #define _LOG4CXX_XML_DOM_CONFIGURATOR_H
 
-#include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
 #include <log4cxx/file.h>
 
 #if LOG4CXX_HAS_DOMCONFIGURATOR
-
-extern "C" {
-	struct apr_xml_doc;
-	struct apr_xml_elem;
-}
 
 namespace LOG4CXX_NS
 {
 
 namespace xml
 {
-class XMLWatchdog;
 
 /**
-Use this class to initialize the log4cxx environment using a DOM tree.
+Allows Loggers, Appenders, Layouts and Filters to be set up using directives in a XML format file.
 
-<p>Sometimes it is useful to see how log4cxx is reading configuration
-files. You can enable log4cxx internal logging by setting the
+Use Log4cxx internal logging to see values read by Log4cxx.
+You can enable Log4cxx internal logging by setting the
 <code>debug</code> attribute in the
-<code>log4cxx</code> element. As in
+<code>log4j:configuration</code> element. As in
 <pre>
-        &lt;log4j:configuration <b>debug="true"</b> xmlns:log4j="http://jakarta.apache.org/log4j/">
+        &lt;log4j:configuration <b>debug="true"</b> xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
         ...
-        &lt;/log4j:configuration>
+        &lt;/log4j:configuration&gt;
 </pre>
 
-<p>There are sample XML files included in the package.
+There are sample XML files included in the [Configuration Files](configuration-files.html)
+and in the [Log4cxx Examples](examples.html).
 */
 class LOG4CXX_EXPORT DOMConfigurator
 	: public spi::Configurator
 {
 	public:
-		~DOMConfigurator();
-
-
-	public:
 		DOMConfigurator();
+		~DOMConfigurator();
 
 		DECLARE_LOG4CXX_OBJECT(DOMConfigurator)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(spi::Configurator)
 		END_LOG4CXX_CAST_MAP()
 
+		/** @copydoc spi::Configurator::doConfigure()
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
+		*/
+		spi::ConfigurationStatus doConfigure
+			( const File&                     configFileName
+			, const spi::LoggerRepositoryPtr& target = {}
+			) override;
 
 		/**
-		Interpret \c filename as an XML file and set up Log4cxx accordingly.
-		If \c repository is not provided,
-		the spi::LoggerRepository held by LogManager is used.
+		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
+
+		<b>The existing configuration is not cleared nor reset.</b>
+		If you require a different behavior,
+		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
+		before calling <code>doConfigure</code>.
+		*/
+		static spi::ConfigurationStatus configure(const File& configFilename);
+
+		/**
+		Apply the directives in \c configFileName to the spi::LoggerRepository held by LogManager.
+
+		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()
+		are used when expanding ${varname} instances in \c configFileName.
+
 		<b>The existing configuration is not cleared nor reset.</b>
 		If you require a different behavior,
 		call {@link spi::LoggerRepository::resetConfiguration resetConfiguration}
 		before calling <code>doConfigure</code>.
 
-		@param filename The file to parse.
-		@param repository Where the Logger instances reside.
-		*/
-		spi::ConfigurationStatus doConfigure
-			( const File&                     filename
-			, const spi::LoggerRepositoryPtr& repository = spi::LoggerRepositoryPtr()
-			) override;
-
-		/**
-		Read configuration options from \c configFilename.
-		Stores Logger instances in the spi::LoggerRepository held by LogManager.
-		*/
-		static spi::ConfigurationStatus configure(const File& configFilename);
-
-		/**
-		Read configuration options from \c configFilename (if it exists).
-		A thread will be created that periodically checks
+		A task will be created that periodically checks
 		whether \c configFilename has been created or modified.
 		A period of log4cxx::helpers::FileWatchdog#DEFAULT_DELAY
 		is used if \c delay is not a positive number.
 		If a change or file creation is detected,
 		then \c configFilename is read to configure Log4cxx.
 
-		The thread will be stopped by a LogManager::shutdown call.
+		The task will be stopped by a LogManager::shutdown call.
 
 		@param configFilename A XML format file.
-		@param delay The delay in milliseconds to wait between each check.
+		@param millisecondDelay The duration to wait between each check.
 		*/
-		static spi::ConfigurationStatus configureAndWatch(const File& configFilename, long delay = 0);
+		static spi::ConfigurationStatus configureAndWatch
+			( const File& configFilename
+			, long        millisecondDelay = 0
+			);
 
 
 	private:
