@@ -49,13 +49,12 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		virtual ~LoggerRepository();
 
 		/**
-		Add \c listener to the repository.
-		*/
+		 Implement this to be able to notify \c listener when an Appender is added or removed from a logger in the repository.
+		 */
 		virtual void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) = 0;
 
 		/**
-		 * Remove \c listener from the repository.
-		 *
+		 Implement this to be able to stop notifying \c listener when an Appender is added or removed from a logger in the repository.
 		 */
 		virtual void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) = 0;
 

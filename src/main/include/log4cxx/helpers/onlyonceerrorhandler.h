@@ -52,9 +52,7 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler
 
 		~OnlyOnceErrorHandler();
 
-		/** \copybrief spi::ErrorHandler::error(const LogString&,const std::exception&,spi::ErrorCode)
-
-		On the first call to this, writes \c context and \c e to stderr .
+		/** On the first call to this, writes \c context and \c e to stderr .
 		*/
 		void error
 			( const LogString&      context
@@ -62,9 +60,7 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler
 			, spi::ErrorCode        category = spi::ErrorCode::GENERIC_FAILURE
 			) const override;
 
-		/** \copybrief spi::ErrorHandler::error(const LogString&,spi::ErrorCode)
-
-		On the first call to this, writes \c message to stderr .
+		/** On the first call to this, writes \c message to stderr .
 		*/
 		void error(const LogString& message, spi::ErrorCode category = spi::ErrorCode::INVALID_CONFIGURATION) const override;
 

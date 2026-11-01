@@ -66,11 +66,9 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 		*/
 		void setLogger(const LoggerPtr& logger) override;
 
-		/** \copybrief spi::ErrorHandler::error(const LogString&,const std::exception&,ErrorCode,const spi::LoggingEventPtr&)
+		/** Write \c context and \c e to stderr and attempt switch to the fallback appender.
 
-		This implementation writes \c context and \c e to stderr.
-
-		Also, on the first call to this method,
+		On the first call to this method,
 		the primary appender is replaced by the backup appender
 		and \c event is sent to the backup appender.
 		*/
@@ -81,11 +79,9 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 			, const spi::LoggingEventPtr& event
 			) const override;
 
-		/** \copybrief spi::ErrorHandler::error(const LogString&,const std::exception&,spi::ErrorCode)
+		/** Write \c context and \c e to stderr and attempt switch to the fallback appender.
 
-		This implementation writes \c context and \c e to stderr.
-
-		Also, on the first call to this method,
+		On the first call to this method,
 		the primary appender is replaced by the backup appender.
 		*/
 		void error
@@ -94,9 +90,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 			, spi::ErrorCode        category
 			) const override;
 
-		/** \copybrief spi::ErrorHandler::error(const LogString&,spi::ErrorCode)
-
-		This implementation writes \c message to stderr.
+		/** Write \c message to stderr.
 		*/
 		void error(const LogString& message, spi::ErrorCode category) const override;
 

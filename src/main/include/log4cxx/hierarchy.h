@@ -74,11 +74,11 @@ class LOG4CXX_EXPORT Hierarchy : public spi::LoggerRepository
 
 		~Hierarchy();
 
-		/** @copydoc spi::Configurator::addHierarchyEventListener()
+		/** Notify \c listener when an Appender is added or removed from a logger in the repository.
 		*/
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 
-		/** @copydoc spi::LoggerRepository::removeHierarchyEventListener()
+		/** Stop notifying \c listener when an Appender is added or removed from a logger in the repository.
 		*/
 		void removeHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
 

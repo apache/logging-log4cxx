@@ -54,13 +54,14 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		virtual void activateOptions() = 0;
 		/**
 		@deprecated This function is deprecated and will be removed in a future version.
-		Call activateOptions() without parameters instead.
 		*/
 		[[deprecated("Use activateOptions() without parameters instead")]]
 		void activateOptions(helpers::Pool&);
 
 		/**
-		Set <code>option</code> to <code>value</code>.
+		Override this method to set <code>option</code> to <code>value</code>.
+
+		This implementation writes a warning that \c option is unrecognised.
 
 		<p>The handling of each option depends on the OptionHandler
 		instance. Some options may become active immediately whereas

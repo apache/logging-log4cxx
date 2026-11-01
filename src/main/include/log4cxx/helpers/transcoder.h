@@ -37,7 +37,7 @@ class LOG4CXX_EXPORT Transcoder
 		 */
 		static void decodeUTF8(const std::string& src, LogString& dst);
 		/**
-		 *    Append \src onto \c dst as a UTF-8 string.
+		 *    Append \c src onto \c dst as a UTF-8 string.
 		 */
 		static void encodeUTF8(const LogString& src, std::string& dst);
 		/**
