@@ -24,7 +24,7 @@ void spi::ErrorHandler::error
 	, const std::exception&       e
 	, ErrorCode                   errorCode
 	, const spi::LoggingEventPtr&
-	) const
+	)
 {
 	error(context, e, errorCode);
 }

@@ -68,6 +68,9 @@ Code that uses log4cxx::File may require modification.
 * The 'LOG4CXX_CHAR=unichar' CMake option is no longer supported.
 Support remains for 'LOG4CXX_CHAR=wchar_t' for applications using std::wstring.
 
+* The ErrorHandler::error() method signatures have changed.
+User-defined subclasses of ErrorHandler will require modification.
+
 Release 2.0.0 includes the following new features:
 
 * A new log4cxx::FileAppender option to delay log file creation until an event is added.

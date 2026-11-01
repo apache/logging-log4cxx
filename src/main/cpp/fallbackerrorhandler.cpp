@@ -63,7 +63,7 @@ void FallbackErrorHandler::setLogger(const LoggerPtr& logger)
 	m_priv->appenderHolders.emplace(logger->getName(), logger);
 }
 
-void FallbackErrorHandler::error(const LogString& message, spi::ErrorCode category) const
+void FallbackErrorHandler::error(const LogString& message, spi::ErrorCode category)
 {
 	if (LogLog::isDebugEnabled() && spi::ErrorCode::GENERIC_FAILURE != category)
 	{
@@ -79,7 +79,7 @@ void FallbackErrorHandler::error
 	( const LogString&      message
 	, const std::exception& ex
 	, spi::ErrorCode        category
-	) const
+	)
 {
 	error(message, ex, category, {});
 }
@@ -89,7 +89,7 @@ void FallbackErrorHandler::error
 	, const std::exception&       ex
 	, spi::ErrorCode              category
 	, const spi::LoggingEventPtr& event
-	) const
+	)
 {
 	if (LogLog::isDebugEnabled() && spi::ErrorCode::GENERIC_FAILURE != category)
 	{

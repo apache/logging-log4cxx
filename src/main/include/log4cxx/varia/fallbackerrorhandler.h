@@ -77,7 +77,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 			, const std::exception&       e
 			, spi::ErrorCode              category
 			, const spi::LoggingEventPtr& event
-			) const override;
+			) override;
 
 		/** Write \c context and \c e to stderr and attempt switch to the fallback appender.
 
@@ -88,11 +88,11 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 			( const LogString&      context
 			, const std::exception& e
 			, spi::ErrorCode        category
-			) const override;
+			) override;
 
 		/** Write \c message to stderr.
 		*/
-		void error(const LogString& message, spi::ErrorCode category) const override;
+		void error(const LogString& message, spi::ErrorCode category) override;
 
 		/**
 		The appender to which this error handler is attached.

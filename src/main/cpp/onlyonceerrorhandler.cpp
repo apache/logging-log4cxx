@@ -38,7 +38,7 @@ OnlyOnceErrorHandler::OnlyOnceErrorHandler() :
 OnlyOnceErrorHandler::~OnlyOnceErrorHandler(){}
 
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
-	spi::ErrorCode) const
+	spi::ErrorCode)
 {
 	if (m_priv->firstTime)
 	{
@@ -47,7 +47,7 @@ void OnlyOnceErrorHandler::error(const LogString& message, const std::exception&
 	}
 }
 
-void OnlyOnceErrorHandler::error(const LogString& message, spi::ErrorCode) const
+void OnlyOnceErrorHandler::error(const LogString& message, spi::ErrorCode)
 {
 	if (m_priv->firstTime)
 	{

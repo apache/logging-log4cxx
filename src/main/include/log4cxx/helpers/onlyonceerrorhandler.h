@@ -58,11 +58,11 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler
 			( const LogString&      context
 			, const std::exception& e
 			, spi::ErrorCode        category = spi::ErrorCode::GENERIC_FAILURE
-			) const override;
+			) override;
 
 		/** On the first call to this, writes \c message to stderr .
 		*/
-		void error(const LogString& message, spi::ErrorCode category = spi::ErrorCode::INVALID_CONFIGURATION) const override;
+		void error(const LogString& message, spi::ErrorCode category = spi::ErrorCode::INVALID_CONFIGURATION) override;
 
 		/**
 		Has an error been reported?

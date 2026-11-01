@@ -89,14 +89,14 @@ class LOG4CXX_EXPORT ErrorHandler
 			( const LogString&       context
 			, const std::exception&  e
 			, ErrorCode              category = ErrorCode::GENERIC_FAILURE
-			) const = 0;
+			) = 0;
 
 		/**
 		This method is invoked when an error is detected
 		but an exception is not available
 		(e.g. Log4cxx is incorrectly configured).
 		*/
-		virtual void error(const LogString& message, ErrorCode category = ErrorCode::INVALID_CONFIGURATION) const = 0;
+		virtual void error(const LogString& message, ErrorCode category = ErrorCode::INVALID_CONFIGURATION) = 0;
 
 		/**
 		This method is invoked when an exception is thown while processing a spi::LoggingEvent.
@@ -113,7 +113,7 @@ class LOG4CXX_EXPORT ErrorHandler
 			, const std::exception&  e
 			, ErrorCode              category
 			, const LoggingEventPtr& event
-			) const;
+			);
 
 		/**
 		Override this to set the appender holding this error handler.
