@@ -66,31 +66,39 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 		*/
 		void setLogger(const LoggerPtr& logger) override;
 
+		/** \copybrief spi::ErrorHandler::error(const LogString&,const std::exception&,ErrorCode,const spi::LoggingEventPtr&)
 
-		/**
-		\copybrief spi::OptionHandler::setOption()
-		 */
-		void setOption(const LogString& option, const LogString& value) override;
-		/**
-		Prints the message and the stack trace of the exception on
-		<code>System.err</code>.
+		This implementation writes \c context and \c e to stderr.
+
+		Also, on the first call to this method,
+		the primary appender is replaced by the backup appender
+		and \c event is sent to the backup appender.
 		*/
-		void error(const LogString& message, const std::exception& e,
-			int errorCode) const override;
+		void error
+			( const LogString&            context
+			, const std::exception&       e
+			, spi::ErrorCode              category
+			, const spi::LoggingEventPtr& event
+			) const override;
 
-		/**
-		Prints the message and the stack trace of the exception on
-		<code>System.err</code>.
+		/** \copybrief spi::ErrorHandler::error(const LogString&,const std::exception&,spi::ErrorCode)
+
+		This implementation writes \c context and \c e to stderr.
+
+		Also, on the first call to this method,
+		the primary appender is replaced by the backup appender.
 		*/
-		void error(const LogString& message, const std::exception& e,
-			int errorCode, const spi::LoggingEventPtr& event) const override;
+		void error
+			( const LogString&      context
+			, const std::exception& e
+			, spi::ErrorCode        category
+			) const override;
 
+		/** \copybrief spi::ErrorHandler::error(const LogString&,spi::ErrorCode)
 
-		/**
-		Print a the error message passed as parameter on
-		<code>System.err</code>.
+		This implementation writes \c message to stderr.
 		*/
-		void error(const LogString& message) const override;
+		void error(const LogString& message, spi::ErrorCode category) const override;
 
 		/**
 		The appender to which this error handler is attached.

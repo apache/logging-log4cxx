@@ -19,10 +19,38 @@
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
 
-void spi::ErrorHandler::addAppenderHolder(const LogString&, const AppenderAttachablePtr&)
+void spi::ErrorHandler::error
+	( const LogString&            context
+	, const std::exception&       e
+	, ErrorCode                   errorCode
+	, const spi::LoggingEventPtr&
+	) const
 {
+	error(context, e, errorCode);
+}
+
+bool spi::ErrorHandler::errorReported() const
+{
+	return false;
 }
 
 void spi::ErrorHandler::activateOptions(  )
 {
 }
+
+void spi::ErrorHandler::addAppenderHolder(const LogString&, const AppenderAttachablePtr&)
+{
+}
+
+void spi::ErrorHandler::setLogger(const LoggerPtr&)
+{
+}
+
+void spi::ErrorHandler::setAppender(const AppenderPtr&)
+{
+}
+
+void spi::ErrorHandler::setBackupAppender(const AppenderPtr&)
+{
+}
+

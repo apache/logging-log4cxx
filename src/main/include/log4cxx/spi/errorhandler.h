@@ -27,19 +27,14 @@ namespace LOG4CXX_NS
 {
 namespace spi
 {
-class ErrorCode
-{
-	public:
-		enum
-		{
-			GENERIC_FAILURE = 0,
-			WRITE_FAILURE = 1,
-			FLUSH_FAILURE = 2,
-			CLOSE_FAILURE = 3,
-			FILE_OPEN_FAILURE = 4,
-			MISSING_LAYOUT = 5,
-			ADDRESS_PARSE_FAILURE = 6
-		};
+enum ErrorCode
+{ GENERIC_FAILURE = 0
+, WRITE_FAILURE = 1
+, FLUSH_FAILURE = 2
+, CLOSE_FAILURE = 3
+, FILE_OPEN_FAILURE = 4
+, ROLLOVER_FAILURE = 7
+, INVALID_CONFIGURATION = 8
 };
 
 
@@ -68,64 +63,78 @@ class LOG4CXX_EXPORT ErrorHandler
 		virtual ~ErrorHandler() {}
 
 		/**
-		Add \c clx to the list of collections to search for the failed appender.
+		Override this to add \c clx to the list of collections to search for the failed appender.
 		@param name the collection name.
 		@param clx has a collection of appenders.
 		*/
 		virtual void addAppenderHolder(const LogString& name, const AppenderAttachablePtr& clx);
 
 		/**
-		Add a reference to a logger to which the failing appender might
-		be attached to. The failing appender will be searched and
-		replaced only in the loggers you add through this method.
+		Override this to add a reference to a logger to which the failing appender might be attached.
+		The failing appender can be searched and replaced
+		only in the loggers you add through this method.
 
-		@param logger One of the loggers that will be searched for the failing
-		appender in view of replacement.
+		@param logger One of the loggers that will be searched.
 		*/
-		virtual void setLogger(const LoggerPtr& logger) = 0;
-
+		virtual void setLogger(const LoggerPtr& logger);
 
 		/**
-		Equivalent to the error(const String&, helpers::Exception&, int,
-		spi::LoggingEvent&) with the the event parameteter set to
-		null.
+		This method is invoked when an exception is thown.
+
+		@param context  Contextual information from where the exception is caught
+		@param e        The execption that was caught.
+		@param category The category of error.
 		*/
-		virtual void error(const LogString& message, const std::exception& e,
-			int errorCode) const = 0;
+		virtual void error
+			( const LogString&       context
+			, const std::exception&  e
+			, ErrorCode              category = ErrorCode::GENERIC_FAILURE
+			) const = 0;
 
 		/**
-		This method is normally used to just print the error message
-		passed as a parameter.
+		This method is invoked when an error is detected
+		but an exception is not available
+		(e.g. Log4cxx is incorrectly configured).
 		*/
-		virtual void error(const LogString& message) const = 0;
+		virtual void error(const LogString& message, ErrorCode category = ErrorCode::INVALID_CONFIGURATION) const = 0;
 
 		/**
-		This method is invoked to handle the error.
+		This method is invoked when an exception is thown while processing a spi::LoggingEvent.
 
-		@param message The message assoicated with the error.
-		@param e The Exption that was thrown when the error occured.
-		@param errorCode The error code associated with the error.
-		@param event The logging event that the failing appender is asked
-		to log.
-		*/
-		virtual void error(const LogString& message, const std::exception& e,
-			int errorCode, const LoggingEventPtr& event) const = 0;
+		The default implementation discards \c event and calls the other error() overload.
 
-		/**
-		Set the appender for which errors are handled. This method is
-		usually called when the error handler is configured.
+		@param context  Contextual information from where the exception is caught
+		@param e        The execption that was caught.
+		@param category The category of error.
+		@param event    The logging event that was not output
 		*/
-		virtual void setAppender(const AppenderPtr& appender) = 0;
-
-		/**
-		Set the appender to fallback upon in case of failure.
-		*/
-		virtual void setBackupAppender(const AppenderPtr& appender) = 0;
+		virtual void error
+			( const LogString&       context
+			, const std::exception&  e
+			, ErrorCode              category
+			, const LoggingEventPtr& event
+			) const;
 
 		/**
-		Has an error been reported?
+		Override this to set the appender holding this error handler.
+		This method is called by a xml::DOMConfigurator file processor
+		when the error handler is associated with an appender.
 		*/
-		virtual bool errorReported() const = 0;
+		virtual void setAppender(const AppenderPtr& appender);
+
+		/**
+		Override this to set the appender to fallback upon in case of failure.
+		This method is called by the xml::DOMConfigurator file processor
+		when the error handler is associated with an appender.
+		*/
+		virtual void setBackupAppender(const AppenderPtr& appender);
+
+		/**
+		Override this to report whether an error been raised to this reporter.
+
+		This implementation returns false always.
+		*/
+		virtual bool errorReported() const;
 
 		using OptionHandler::activateOptions;
 		/**
@@ -134,7 +143,6 @@ class LOG4CXX_EXPORT ErrorHandler
 		No action is performed in this implementation.
 		*/
 		void activateOptions(  ) override;
-
 };
 
 LOG4CXX_PTR_DEF(ErrorHandler);

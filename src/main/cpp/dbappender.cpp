@@ -174,7 +174,6 @@ void DBAppender::activateOptions(  )
                         _priv->driverParams.c_str(),
                         &_priv->m_databaseHandle);
     if(stat != APR_SUCCESS){
-        LogLog::error(LOG4CXX_STR("Unable to open database"));
         _priv->errorHandler->error(LOG4CXX_STR("Unable to open database"));
         return;
     }

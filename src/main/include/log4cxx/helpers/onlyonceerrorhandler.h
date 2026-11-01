@@ -52,49 +52,21 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler
 
 		~OnlyOnceErrorHandler();
 
-		/**
-		 Does not do anything.
-		 */
-		void setLogger(const LoggerPtr& logger) override;
+		/** \copybrief spi::ErrorHandler::error(const LogString&,const std::exception&,spi::ErrorCode)
 
-
-		/**
-		\copybrief spi::OptionHandler::setOption()
-
-		Supported options | Supported values | Default value |
-		-------------- | ---------------- | --------------- |
-		- | - | - |
+		On the first call to this, writes \c context and \c e to stderr .
 		*/
-		void setOption(const LogString& option, const LogString& value) override;
+		void error
+			( const LogString&      context
+			, const std::exception& e
+			, spi::ErrorCode        category = spi::ErrorCode::GENERIC_FAILURE
+			) const override;
 
+		/** \copybrief spi::ErrorHandler::error(const LogString&,spi::ErrorCode)
 
-		/**
-		Prints the message and the stack trace of the exception on
-		<code>System.err</code>.  */
-		void error(const LogString& message, const std::exception& e,
-			int errorCode) const override;
-		/**
-		Prints the message and the stack trace of the exception on
-		<code>System.err</code>.
+		On the first call to this, writes \c message to stderr .
 		*/
-		void error(const LogString& message, const std::exception& e,
-			int errorCode, const spi::LoggingEventPtr& event) const override;
-
-		/**
-		Print a the error message passed as parameter on
-		<code>System.err</code>.
-		*/
-		void error(const LogString& message) const override;
-
-		/**
-		Does not do anything.
-		*/
-		void setAppender(const AppenderPtr& appender) override;
-
-		/**
-		Does not do anything.
-		*/
-		void setBackupAppender(const AppenderPtr& appender) override;
+		void error(const LogString& message, spi::ErrorCode category = spi::ErrorCode::INVALID_CONFIGURATION) const override;
 
 		/**
 		Has an error been reported?
