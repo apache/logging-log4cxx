@@ -165,7 +165,7 @@ void FileAppender::FileAppenderPriv::activate()
 			msg.append(1, (logchar) 0x2C /* ',' */);
 			StringHelper::toString(this->fileAppend, msg);
 			msg.append(LOG4CXX_STR(") call failed."));
-			this->errorHandler->error(msg, e, ErrorCode::FILE_OPEN_FAILURE);
+			this->errorHandler->error(msg, e, ErrorCode::OPEN_FAILURE);
 		}
 	}
 	else

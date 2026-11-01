@@ -53,4 +53,3 @@ void spi::ErrorHandler::setAppender(const AppenderPtr&)
 void spi::ErrorHandler::setBackupAppender(const AppenderPtr&)
 {
 }
-

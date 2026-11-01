@@ -165,7 +165,7 @@ void DBAppender::activateOptions(  )
         LOG4CXX_DECODE_CHAR(driverName, _priv->driverName);
         errMsg.append(driverName);
         LogLog::error(errMsg);
-        _priv->errorHandler->error(errMsg);
+        _priv->errorHandler->error(errMsg, spi::ErrorCode::OPEN_FAILURE);
         return;
     }
 
@@ -174,7 +174,7 @@ void DBAppender::activateOptions(  )
                         _priv->driverParams.c_str(),
                         &_priv->m_databaseHandle);
     if(stat != APR_SUCCESS){
-        _priv->errorHandler->error(LOG4CXX_STR("Unable to open database"));
+        _priv->errorHandler->error(LOG4CXX_STR("Unable to open database"), spi::ErrorCode::OPEN_FAILURE);
         return;
     }
 
