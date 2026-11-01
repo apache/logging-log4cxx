@@ -29,6 +29,8 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
+#include <algorithm>
+#include <limits>
 
 using namespace LOG4CXX_NS;
 using namespace spi;
@@ -154,13 +156,12 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 	LogString optionStr = Configurator::properties().getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
 	if (optionStr.empty())
 		optionStr = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
-	int milliseconds = 0;
-	if (!optionStr.empty())
-	{
-		static const int MillisecondsPerSecond = 1000;
-		milliseconds = StringHelper::toInt(optionStr) * MillisecondsPerSecond;
-	}
-	return milliseconds;
+	static const int MillisecondsPerSecond = 1000;
+	static const int MaximumSeconds = (std::numeric_limits<int>::max)() / MillisecondsPerSecond;
+	int seconds = OptionConverter::toInt(optionStr, 0);
+	if (seconds <= 0)
+		return 0;
+	return (std::min)(seconds, MaximumSeconds) * MillisecondsPerSecond;
 }
 
 std::tuple<ConfigurationStatus,LogString>
