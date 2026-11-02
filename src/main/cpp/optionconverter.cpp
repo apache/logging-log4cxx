@@ -502,10 +502,7 @@ spi::ConfigurationStatus OptionConverter::selectAndConfigure
 	ConfiguratorPtr configurator;
 	if (!clazz.empty())
 	{
-		if (LogLog::isDebugEnabled())
-			LogLog::debug(LOG4CXX_STR("Preferred configurator class: ") + clazz);
-		const Class& clazzObj = Loader::loadClass(clazz);
-		ObjectPtr obj = ObjectPtr(clazzObj.newInstance());
+		auto obj = instantiateByClassName(clazz, Configurator::getStaticClass(), ObjectPtr());
 		configurator = LOG4CXX_NS::cast<Configurator>(obj);
 
 		if (configurator == 0)

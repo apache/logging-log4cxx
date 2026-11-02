@@ -21,6 +21,8 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/file.h>
+#include <log4cxx/hierarchy.h>
 #include "../testchar.h"
 #include "../insertwide.h"
 #include "../logunit.h"
@@ -55,6 +57,7 @@ LOGUNIT_CLASS(OptionConverterTestCase)
 	LOGUNIT_TEST(toFileSizeReturnsDefaultOnMalformedInput);
 	LOGUNIT_TEST(toFileSizeReturnsDefaultOnOverflow);
 	LOGUNIT_TEST(toFileSizeBoundaryValues);
+	LOGUNIT_TEST(selectAndConfigureWithUnknownConfiguratorClass);
 	LOGUNIT_TEST(testTmpDir);
 #if APR_HAS_USER
 	LOGUNIT_TEST(testUserHome);
@@ -252,6 +255,23 @@ public:
 		auto overflowSizeString = std::to_string(overflowBase) + "GB";
 		LOG4CXX_DECODE_CHAR(lsOverflowAfterMultiply, overflowSizeString);
 		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(lsOverflowAfterMultiply, 7));
+	}
+
+	/**
+	 * An unknown configurator class name must not throw
+	 * and must leave the repository unconfigured.
+	 */
+	void selectAndConfigureWithUnknownConfiguratorClass()
+	{
+		auto repository = Hierarchy::create();
+		auto status = OptionConverter::selectAndConfigure
+			( File(LOG4CXX_STR("input/hierarchyThreshold1.properties"))
+			, LOG4CXX_STR("org.example.NoSuchConfigurator")
+			, repository
+			, 0
+			);
+		LOGUNIT_ASSERT_EQUAL(status, ConfigurationStatus::NotConfigured);
+		LOGUNIT_ASSERT(repository->getRootLogger()->getAllAppenders().empty());
 	}
 
 	void testTmpDir()
