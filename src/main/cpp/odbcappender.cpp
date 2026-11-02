@@ -357,7 +357,7 @@ void ODBCAppender::ODBCAppenderPriv::close()
 	catch (const SQLException& e)
 	{
 		this->errorHandler->error(LOG4CXX_STR("Failed to flush buffer"),
-			e, ErrorCode::GENERIC_FAILURE);
+			e, ErrorCode::FLUSH_FAILURE);
 	}
 
 #if LOG4CXX_HAVE_ODBC
@@ -587,7 +587,7 @@ void ODBCAppender::flushBuffer()
 	catch (const SQLException& e)
 	{
 		_priv->errorHandler->error(LOG4CXX_STR("Failed to flush buffer"),
-			e, ErrorCode::GENERIC_FAILURE);
+			e, ErrorCode::FLUSH_FAILURE);
 	}
 #endif
 }

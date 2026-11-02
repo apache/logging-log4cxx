@@ -346,7 +346,7 @@ void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& eve
 			LogString msg(LOG4CXX_STR("Rollover of ["));
 			msg.append(fileName);
 			msg.append(LOG4CXX_STR("] failed"));
-			_priv->errorHandler->error(msg, ex, 0);
+			_priv->errorHandler->error(msg, ex, ErrorCode::ROLLOVER_FAILURE);
 		}
 	}
 	else if (!_priv->isRolloverCheckNeeded())
@@ -366,7 +366,7 @@ WriterPtr MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::
 	{
 		LogString msg(LOG4CXX_STR("Can't cast stream to FileOutputStream"));
 		msg += LOG4CXX_STR(" - Rollover synchronization will be degraded.");
-		this->errorHandler->error(msg);
+		this->errorHandler->error(msg, ErrorCode::INVALID_CONFIGURATION);
 	}
 	return RollingFileAppenderPriv::createWriter(os);
 }

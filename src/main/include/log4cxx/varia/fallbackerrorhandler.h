@@ -66,31 +66,33 @@ class LOG4CXX_EXPORT FallbackErrorHandler
 		*/
 		void setLogger(const LoggerPtr& logger) override;
 
+		/** Write \c context and \c e to stderr and attempt switch to the fallback appender.
 
-		/**
-		\copybrief spi::OptionHandler::setOption()
-		 */
-		void setOption(const LogString& option, const LogString& value) override;
-		/**
-		Prints the message and the stack trace of the exception on
-		<code>System.err</code>.
+		On the first call to this method,
+		the primary appender is replaced by the backup appender
+		and \c event is sent to the backup appender.
 		*/
-		void error(const LogString& message, const std::exception& e,
-			int errorCode) const override;
+		void error
+			( const LogString&            context
+			, const std::exception&       e
+			, spi::ErrorCode              category
+			, const spi::LoggingEventPtr& event
+			) override;
 
-		/**
-		Prints the message and the stack trace of the exception on
-		<code>System.err</code>.
+		/** Write \c context and \c e to stderr and attempt switch to the fallback appender.
+
+		On the first call to this method,
+		the primary appender is replaced by the backup appender.
 		*/
-		void error(const LogString& message, const std::exception& e,
-			int errorCode, const spi::LoggingEventPtr& event) const override;
+		void error
+			( const LogString&      context
+			, const std::exception& e
+			, spi::ErrorCode        category
+			) override;
 
-
-		/**
-		Print a the error message passed as parameter on
-		<code>System.err</code>.
+		/** Write \c message to stderr.
 		*/
-		void error(const LogString& message) const override;
+		void error(const LogString& message, spi::ErrorCode category) override;
 
 		/**
 		The appender to which this error handler is attached.

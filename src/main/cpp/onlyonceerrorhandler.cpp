@@ -37,18 +37,8 @@ OnlyOnceErrorHandler::OnlyOnceErrorHandler() :
 
 OnlyOnceErrorHandler::~OnlyOnceErrorHandler(){}
 
-void OnlyOnceErrorHandler::setLogger(const LoggerPtr&)
-{
-}
-
-
-void OnlyOnceErrorHandler::setOption(const LogString& option, const LogString& value)
-{
-	ErrorHandler::setOption(option, value);
-}
-
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
-	int) const
+	spi::ErrorCode)
 {
 	if (m_priv->firstTime)
 	{
@@ -57,14 +47,7 @@ void OnlyOnceErrorHandler::error(const LogString& message, const std::exception&
 	}
 }
 
-void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
-	int errorCode, const LOG4CXX_NS::spi::LoggingEventPtr&) const
-{
-	error(message, e, errorCode);
-}
-
-
-void OnlyOnceErrorHandler::error(const LogString& message) const
+void OnlyOnceErrorHandler::error(const LogString& message, spi::ErrorCode)
 {
 	if (m_priv->firstTime)
 	{
@@ -73,15 +56,6 @@ void OnlyOnceErrorHandler::error(const LogString& message) const
 	}
 }
 
-
-void OnlyOnceErrorHandler::setAppender(const AppenderPtr&)
-{
-}
-
-
-void OnlyOnceErrorHandler::setBackupAppender(const AppenderPtr&)
-{
-}
 
 bool OnlyOnceErrorHandler::errorReported() const
 {

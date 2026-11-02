@@ -312,7 +312,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::namePreservingRollover
 			LogString msg(LOG4CXX_STR("Rollover of ["));
 			msg.append(fileName);
 			msg.append(LOG4CXX_STR("] failed"));
-			this->errorHandler->error(msg, ex, 0);
+			this->errorHandler->error(msg, ex, ErrorCode::ROLLOVER_FAILURE);
 		}
 	}
 
@@ -340,7 +340,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::namePreservingRollover
 				LogString msg(LOG4CXX_STR("Rollover of ["));
 				msg.append(fileName);
 				msg.append(LOG4CXX_STR("] failed"));
-				this->errorHandler->error(msg, ex, 0);
+				this->errorHandler->error(msg, ex, ErrorCode::ROLLOVER_FAILURE);
 			}
 		}
 	}
@@ -375,7 +375,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::nameEvolvingRollover
 			LogString msg(LOG4CXX_STR("Rollover of ["));
 			msg.append(fileName);
 			msg.append(LOG4CXX_STR("] failed"));
-			this->errorHandler->error(msg, ex, 0);
+			this->errorHandler->error(msg, ex, ErrorCode::ROLLOVER_FAILURE);
 		}
 	}
 
@@ -420,7 +420,7 @@ void RollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 			LogString msg(LOG4CXX_STR("Rollover of ["));
 			msg.append(getFile());
 			msg.append(LOG4CXX_STR("] failed"));
-			_priv->errorHandler->error(msg, ex, 0);
+			_priv->errorHandler->error(msg, ex, ErrorCode::ROLLOVER_FAILURE);
 		}
 	}
 

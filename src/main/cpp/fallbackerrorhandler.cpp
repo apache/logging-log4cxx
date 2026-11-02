@@ -24,7 +24,6 @@
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::spi;
 using namespace LOG4CXX_NS::varia;
 
 IMPLEMENT_LOG4CXX_OBJECT(FallbackErrorHandler)
@@ -64,32 +63,38 @@ void FallbackErrorHandler::setLogger(const LoggerPtr& logger)
 	m_priv->appenderHolders.emplace(logger->getName(), logger);
 }
 
-void FallbackErrorHandler::error(const LogString& message) const
+void FallbackErrorHandler::error(const LogString& message, spi::ErrorCode category)
 {
+	if (LogLog::isDebugEnabled() && spi::ErrorCode::GENERIC_FAILURE != category)
+	{
+		LogString msg{ LOG4CXX_STR("FB: error category ") };
+		StringHelper::toString(category, msg);
+		LogLog::debug(msg);
+	}
 	LogLog::warn(message);
 	m_priv->errorReported = true;
 }
 
 void FallbackErrorHandler::error
-	( const LogString& message
+	( const LogString&      message
 	, const std::exception& ex
-	, int errorCode
-	) const
+	, spi::ErrorCode        category
+	)
 {
-	error(message, ex, errorCode, 0);
+	error(message, ex, category, {});
 }
 
 void FallbackErrorHandler::error
-	( const LogString& message
-	, const std::exception& ex
-	, int errorCode
+	( const LogString&            message
+	, const std::exception&       ex
+	, spi::ErrorCode              category
 	, const spi::LoggingEventPtr& event
-	) const
+	)
 {
-	if (LogLog::isDebugEnabled())
+	if (LogLog::isDebugEnabled() && spi::ErrorCode::GENERIC_FAILURE != category)
 	{
-		LogString msg{ LOG4CXX_STR("FB: error code ") };
-		StringHelper::toString(errorCode, msg);
+		LogString msg{ LOG4CXX_STR("FB: error category ") };
+		StringHelper::toString(category, msg);
 		LogLog::debug(msg);
 	}
 	LogLog::warn(message, ex);
@@ -153,12 +158,6 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 			+ backup1->getName() + LOG4CXX_STR("]."));
 	}
 	m_priv->backup.push_back(backup1);
-}
-
-
-void FallbackErrorHandler::setOption(const LogString& option, const LogString& value)
-{
-	ErrorHandler::setOption(option, value);
 }
 
 bool FallbackErrorHandler::errorReported() const
