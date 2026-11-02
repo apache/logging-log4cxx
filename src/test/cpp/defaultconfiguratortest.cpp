@@ -19,6 +19,7 @@
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/fileappender.h>
+#include <log4cxx/hierarchy.h>
 #include <log4cxx/helpers/filesystempath.h>
 
 using namespace LOG4CXX_NS;
@@ -73,6 +74,9 @@ LOGUNIT_CLASS(DefaultConfiguratorTest)
 {
 	LOGUNIT_TEST_SUITE(DefaultConfiguratorTest);
 	LOGUNIT_TEST(test1);
+#if LOG4CXX_HAS_DOMCONFIGURATOR
+	LOGUNIT_TEST(testMalformedWatchSeconds);
+#endif
 	LOGUNIT_TEST_SUITE_END();
 public:
 
@@ -92,6 +96,32 @@ public:
 		LOGUNIT_ASSERT(fileAppender);
 		LOGUNIT_ASSERT(fileAppender->getBufferedIO());
 	}
+
+#if LOG4CXX_HAS_DOMCONFIGURATOR
+	/**
+	 * A LOG4CXX_CONFIGURATION_WATCH_SECONDS value that is not an integer
+	 * must not prevent configuration.
+	 */
+	void testMalformedWatchSeconds()
+	{
+		auto& props = spi::Configurator::properties();
+		const LogString fileNameKey(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
+		const LogString watchSecondsKey(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
+		auto savedFileName = props.getProperty(fileNameKey);
+		auto savedWatchSeconds = props.getProperty(watchSecondsKey);
+		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("input/xml/defaultInit.xml"));
+		props.setProperty(watchSecondsKey, LOG4CXX_STR("five"));
+
+		auto repository = Hierarchy::create();
+		auto status = DefaultConfigurator::configure(repository);
+
+		props.setProperty(fileNameKey, savedFileName);
+		props.setProperty(watchSecondsKey, savedWatchSeconds);
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+		LOGUNIT_ASSERT(repository->getRootLogger()->getAppender(LOG4CXX_STR("D1")));
+		repository->shutdown();
+	}
+#endif
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(DefaultConfiguratorTest);

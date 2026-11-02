@@ -66,7 +66,7 @@ void RollingFileAppender::setOption(const LogString& option, const LogString& va
 		|| StringHelper::equalsIgnoreCase(option,
 			LOG4CXX_STR("MAXIMUMBACKUPINDEX"), LOG4CXX_STR("maximumbackupindex")))
 	{
-		setMaxBackupIndex(StringHelper::toInt(value));
+		setMaxBackupIndex(OptionConverter::toInt(value, getMaxBackupIndex()));
 	}
 	else if (StringHelper::equalsIgnoreCase(option,
 			LOG4CXX_STR("FILEDATEPATTERN"), LOG4CXX_STR("filedatepattern")))

@@ -495,7 +495,7 @@ void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
 
 	if (colonPos != LogString::npos)
 	{
-		slHostPort = StringHelper::toInt(slHost.substr(colonPos + 1));
+		slHostPort = OptionConverter::toInt(slHost.substr(colonPos + 1), -1);
 		// Erase the :port part of the host name
 		slHost.erase( colonPos );
 	}

@@ -42,6 +42,7 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testSplitMessageOneByteRemainderBoundary);
 		LOGUNIT_TEST(testImpossibleSuffixFitHandling);
 		LOGUNIT_TEST(testDigitGrowthBoundaryCase);
+		LOGUNIT_TEST(testSyslogHostWithMalformedPort);
 
 		LOGUNIT_TEST_SUITE_END();
 
@@ -142,6 +143,21 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 				LOGUNIT_ASSERT(packet.size() <= maxMessageLength);
 				LOGUNIT_ASSERT(packet.find(LOG4CXX_STR("(")) == LogString::npos);
 			}
+		}
+
+		/**
+		 * A SyslogHost value with a port that is not an integer must not throw
+		 * and must use the host name without the port.
+		 */
+		void testSyslogHostWithMalformedPort()
+		{
+			log4cxx::net::SyslogAppender appender;
+			appender.setOption(LOG4CXX_STR("SyslogHost"), LOG4CXX_STR("127.0.0.1:"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("127.0.0.1"), appender.getSyslogHost());
+			appender.setOption(LOG4CXX_STR("SyslogHost"), LOG4CXX_STR("127.0.0.1:udp"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("127.0.0.1"), appender.getSyslogHost());
+			appender.setOption(LOG4CXX_STR("SyslogHost"), LOG4CXX_STR("127.0.0.1:99999999999"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("127.0.0.1"), appender.getSyslogHost());
 		}
 
 };

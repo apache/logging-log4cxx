@@ -51,6 +51,7 @@ LOGUNIT_CLASS(RollingFileAppenderPropertiesTest)
 	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(testRollingFromProperties);
+	LOGUNIT_TEST(testMalformedMaxBackupIndex);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -234,6 +235,23 @@ public:
 
 		LOGUNIT_ASSERT_EQUAL(3, fixedWindowRolling->getMaxIndex());
 		LOGUNIT_ASSERT_EQUAL(100, static_cast<int>(sizeBasedPolicy->getMaxFileSize()));
+	}
+
+	/**
+	 *  A MaxBackupIndex value that is not an integer must not throw
+	 *  and must leave the current value unchanged.
+	 */
+	void testMalformedMaxBackupIndex()
+	{
+		auto rfa = std::make_shared<RollingFileAppender>();
+		rfa->setOption(LOG4CXX_STR("MaxBackupIndex"), LOG4CXX_STR("3"));
+		LOGUNIT_ASSERT_EQUAL(3, rfa->getMaxBackupIndex());
+		rfa->setOption(LOG4CXX_STR("MaxBackupIndex"), LOG4CXX_STR("three"));
+		LOGUNIT_ASSERT_EQUAL(3, rfa->getMaxBackupIndex());
+		rfa->setOption(LOG4CXX_STR("MaxBackupIndex"), LOG4CXX_STR(""));
+		LOGUNIT_ASSERT_EQUAL(3, rfa->getMaxBackupIndex());
+		rfa->setOption(LOG4CXX_STR("MaxBackupIndex"), LOG4CXX_STR("99999999999"));
+		LOGUNIT_ASSERT_EQUAL(3, rfa->getMaxBackupIndex());
 	}
 
 private:
