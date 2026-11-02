@@ -45,6 +45,7 @@ void VectorAppender::close()
 
 auto VectorAppender::getVector() const -> std::vector<spi::LoggingEventPtr>
 {
+	std::lock_guard<std::mutex> lock(this->vectorMutex);
 	return this->vector;
 }
 
