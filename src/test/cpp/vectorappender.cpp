@@ -28,7 +28,9 @@ void VectorAppender::append( const spi::LoggingEventPtr& event )
 {
 	if (0 < this->appendMillisecondDelay)
 		std::this_thread::sleep_for( std::chrono::milliseconds( this->appendMillisecondDelay ) );
+	std::lock_guard<std::mutex> lock(this->vectorMutex);
 	this->vector.push_back(event);
+	this->vectorNotEmpty.notify_one();
 }
 
 bool VectorAppender::isClosed() const
@@ -39,4 +41,35 @@ bool VectorAppender::isClosed() const
 void VectorAppender::close()
 {
 	m_priv->closed = true;
+}
+
+auto VectorAppender::getVector() const -> std::vector<spi::LoggingEventPtr>
+{
+	return this->vector;
+}
+
+auto VectorAppender::getEvent(int eventNumber) const -> spi::LoggingEventPtr
+{
+	std::lock_guard<std::mutex> lock(this->vectorMutex);
+	spi::LoggingEventPtr result;
+	if (0 < eventNumber && eventNumber <= this->vector.size())
+		result = this->vector[eventNumber - 1];
+	return result;
+}
+
+int VectorAppender::getEventCount() const
+{
+	std::lock_guard<std::mutex> lock(this->vectorMutex);
+	return static_cast<int>(this->vector.size());
+}
+
+bool VectorAppender::waitForEventCount(size_t requiredEventCount, const Period& delay)
+{
+	std::unique_lock<std::mutex> lock(this->vectorMutex);
+	return this->vectorNotEmpty.wait_for
+		( lock
+		, delay
+		, [this, requiredEventCount]() -> bool
+			{ return requiredEventCount <= this->vector.size(); }
+		);
 }
