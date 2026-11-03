@@ -41,9 +41,6 @@ class CountingAppender : public AppenderSkeleton
 			count++;
 		}
 
-		void close() override
-		{}
-
 		bool requiresLayout() const override
 		{
 			return false;

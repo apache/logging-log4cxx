@@ -38,11 +38,6 @@ bool VectorAppender::isClosed() const
 	return m_priv->closed;
 }
 
-void VectorAppender::close()
-{
-	m_priv->closed = true;
-}
-
 auto VectorAppender::getVector() const -> std::vector<spi::LoggingEventPtr>
 {
 	std::lock_guard<std::mutex> lock(this->vectorMutex);
