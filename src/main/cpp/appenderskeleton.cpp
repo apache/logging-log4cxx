@@ -90,12 +90,7 @@ void AppenderSkeleton::doAppend( const spi::LoggingEventPtr& event )
 
 void AppenderSkeleton::doAppendImpl( const spi::LoggingEventPtr& event )
 {
-	if (m_priv->closed)
-	{
-		LogLog::warn(LOG4CXX_STR("Attempted to append to closed appender named [")
-			+ m_priv->name + LOG4CXX_STR("]."));
-	}
-	else if (isAsSevereAsThreshold(event->getLevel()) && isAccepted(event))
+	if (m_priv->checkNotClosed() && isAsSevereAsThreshold(event->getLevel()) && isAccepted(event))
 	{
 		append( event );
 	}
@@ -123,13 +118,20 @@ bool AppenderSkeleton::isAccepted(const spi::LoggingEventPtr& event) const
 	return true;
 }
 
+void AppenderSkeleton::close()
+{
+	if (m_priv->setClosed())
+		m_priv->shutdown();
+}
+
 bool AppenderSkeleton::AppenderSkeletonPrivate::checkNotClosed()
 {
 	if (this->closed)
 	{
 		if (!this->warnedClosed)
 		{
-			LogLog::warn(LOG4CXX_STR("Not allowed to write to a closed appender."));
+			LogLog::warn(LOG4CXX_STR("Append attempted to closed appender named [")
+				+ this->name + LOG4CXX_STR("]."));
 			this->warnedClosed = true;
 		}
 		return false;

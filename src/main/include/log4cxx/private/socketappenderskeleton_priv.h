@@ -60,7 +60,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	~SocketAppenderSkeletonPriv()
 	{
 		if (this->setClosed())
-			this->close();
+			this->shutdown();
 	}
 
 	/**
@@ -77,7 +77,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	int reconnectionDelay;
 	bool locationInfo;
 
-	void close();
+	void shutdown() override;
 
 	/**
 	Manages asynchronous reconnection attempts.

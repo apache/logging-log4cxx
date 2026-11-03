@@ -75,7 +75,6 @@ class LOG4CXX_EXPORT Appender
 		/**
 		 Release any resources allocated within the appender such as file
 		 handles, network connections, etc.
-		 <p>It is a programming error to append to a closed appender.
 		*/
 		virtual void close() = 0;
 

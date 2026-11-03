@@ -211,12 +211,6 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 	public:
 		/**
-		  * Close appender.  Waits for any asynchronous file compression actions to be completed.
-		*/
-		void close() override;
-
-	public:
-		/**
 		 * Get byte length of current active log file.
 		 * @return byte length of current active log file.
 		 */

@@ -99,7 +99,7 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 			this->sh.join();
 	}
 
-	void close();
+	void shutdown() override;
 };
 
 #define _priv static_cast<TelnetAppenderPriv*>(m_priv.get())
@@ -118,7 +118,7 @@ TelnetAppender::TelnetAppender()
 TelnetAppender::~TelnetAppender()
 {
 	if (_priv->setClosed())
-		_priv->close();
+		_priv->shutdown();
 }
 
 void TelnetAppender::activateOptions(  )
@@ -183,14 +183,7 @@ void TelnetAppender::setEncoding(const LogString& value)
 	_priv->encoding = value;
 }
 
-
-void TelnetAppender::close()
-{
-	if (_priv->setClosed())
-		_priv->close();
-}
-
-void TelnetAppender::TelnetAppenderPriv::close()
+void TelnetAppender::TelnetAppenderPriv::shutdown()
 {
 	this->stopAcceptingConnections();
 	std::lock_guard<std::recursive_mutex> lock(this->mutex);

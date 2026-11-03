@@ -263,7 +263,7 @@ LogString FileAppender::stripDuplicateBackslashes(const LogString& src)
 
 void FileAppender::FileAppenderPriv::open()
 {
-	this->close();
+	this->shutdown();
 
 	bool writeBOM = false;
 

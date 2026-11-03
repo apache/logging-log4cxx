@@ -51,7 +51,7 @@ struct NTEventLogAppender::NTEventLogAppenderPrivate : public AppenderSkeleton::
 	HANDLE hEventLog;
 	SID* pCurrentUserSID;
 
-	void close();
+	void shutdown() override;
 };
 
 class CCtUserSIDHelper
@@ -129,17 +129,10 @@ NTEventLogAppender::NTEventLogAppender(const LogString& server, const LogString&
 NTEventLogAppender::~NTEventLogAppender()
 {
 	if (priv->setClosed())
-		priv->close();
+		priv->shutdown();
 }
 
-
-void NTEventLogAppender::close()
-{
-	if (priv->setClosed())
-		priv->close();
-}
-
-void NTEventLogAppender::NTEventLogAppenderPrivate::close()
+void NTEventLogAppender::NTEventLogAppenderPrivate::shutdown()
 {
 	if (this->hEventLog != NULL)
 	{
@@ -189,7 +182,7 @@ void NTEventLogAppender::activateOptions( )
 		priv->log = LOG4CXX_STR("Application");
 	}
 
-	priv->close();
+	priv->shutdown();
 
 	// current user security identifier
 	CCtUserSIDHelper::GetCurrentUserSID((::SID**) &priv->pCurrentUserSID);
