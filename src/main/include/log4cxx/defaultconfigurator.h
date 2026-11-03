@@ -70,6 +70,13 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		static spi::ConfigurationStatus configure(const spi::LoggerRepositoryPtr& repository = {});
 
 		/**
+		Instantiate an instance of \c className to process the configuration file used by configure().
+
+		@returns The previous value of LOG4CXX_CONFIGURATOR_CLASS in spi::Configurator::properties or environment variable
+		*/
+		static LogString setConfiguratorClass(const LogString& className);
+
+		/**
 		Make \c path the configuration file used by configure().
 
 		Any ${varname} instances in the \c path value are expanded
@@ -80,9 +87,9 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		~~~{.cpp}
 		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"))
 		~~~
-
+		@returns The previous value of LOG4CXX_CONFIGURATION in spi::Configurator::properties or environment variable
 		*/
-		static void setConfigurationFileName(const LogString& path);
+		static LogString setConfigurationFileName(const LogString& path);
 
 		/**
 		Make \c seconds the time a background thread will delay before checking
@@ -92,8 +99,9 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		~~~{.cpp}
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
 		~~~
+		@returns The previous value of LOG4CXX_CONFIGURATION_WATCH_SECONDS in spi::Configurator::properties or environment variable
 		*/
-		static void setConfigurationWatchSeconds(int seconds);
+		static int setConfigurationWatchSeconds(int seconds);
 
 		/**
 		 * Call configure() passing the default repository
@@ -138,12 +146,6 @@ class LOG4CXX_EXPORT DefaultConfigurator
 			( const std::vector<LogString>& directories
 			, const std::vector<LogString>& filenames
 			);
-
-	private:
-		static const LogString getConfigurationFileName();
-		static const LogString getConfiguratorClass();
-		static int getConfigurationWatchDelay();
-
 };	 // class DefaultConfigurator
 }  // namespace log4cxx
 

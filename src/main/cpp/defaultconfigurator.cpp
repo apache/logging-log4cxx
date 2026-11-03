@@ -36,16 +36,79 @@ using namespace LOG4CXX_NS;
 using namespace spi;
 using namespace helpers;
 
-void DefaultConfigurator::setConfigurationFileName(const LogString& path)
+namespace
 {
-	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"), path);
+const int MillisecondsPerSecond = 1000;
+
+LogString getConfiguratorClass()
+{
+	auto& props = Configurator::properties();
+	LogString result = props.getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"));
+	if (result.empty())
+		result = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"));
+	return result;
 }
 
-void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
+
+LogString getConfigurationFileName()
 {
+	auto& props = Configurator::properties();
+	LogString configurationFileName = props.getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
+	bool isEnvVar = false;
+	if (configurationFileName.empty())
+	{
+		configurationFileName = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
+		isEnvVar = true;
+	}
+#if !LOG4CXX_EXPAND_CONFIG_ENV_VAR
+	if (isEnvVar)
+		return configurationFileName;
+#endif
+	try
+	{
+		return OptionConverter::substVars(configurationFileName, props);
+	}
+	catch (const IllegalArgumentException& e)
+	{
+		LogLog::warn(LOG4CXX_STR("Could not perform variable substitution."), e);
+		return configurationFileName;
+	}
+}
+
+int getConfigurationWatchSeconds()
+{
+	LogString optionStr = Configurator::properties().getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
+	if (optionStr.empty())
+		optionStr = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
+	int seconds = OptionConverter::toInt(optionStr, 0);
+	if (seconds <= 0)
+		return 0;
+	return seconds;
+}
+
+} // namespace
+
+LogString DefaultConfigurator::setConfiguratorClass(const LogString& className)
+{
+	LogString oldValue = getConfiguratorClass();
+	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"), className);
+	return oldValue;
+}
+
+LogString DefaultConfigurator::setConfigurationFileName(const LogString& path)
+{
+	LogString oldValue = getConfigurationFileName();
+	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"), path);
+	return oldValue;
+}
+
+int DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
+{
+	int oldValue = getConfigurationWatchSeconds();
 	LogString strSeconds;
 	StringHelper::toString(seconds, strSeconds);
 	Configurator::properties().setProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"), strSeconds);
+	return oldValue;
 }
 
 ConfigurationStatus DefaultConfigurator::configure(const LoggerRepositoryPtr& repository)
@@ -99,7 +162,7 @@ ConfigurationStatus DefaultConfigurator::configure(const LoggerRepositoryPtr& re
 			( configuration
 			, getConfiguratorClass()
 			, repository
-			, getConfigurationWatchDelay()
+			, getConfigurationWatchSeconds() * MillisecondsPerSecond
 			);
 	}
 	else if (LogLog::isDebugEnabled())
@@ -117,51 +180,6 @@ ConfigurationStatus DefaultConfigurator::configure(const LoggerRepositoryPtr& re
 		}
 	}
 	return result;
-}
-
-const LogString DefaultConfigurator::getConfiguratorClass()
-{
-	return System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"));
-}
-
-
-const LogString DefaultConfigurator::getConfigurationFileName()
-{
-	auto& props = Configurator::properties();
-	LogString configurationFileName = props.getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
-	bool isEnvVar = false;
-	if (configurationFileName.empty())
-	{
-		configurationFileName = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
-		isEnvVar = true;
-	}
-#if !LOG4CXX_EXPAND_CONFIG_ENV_VAR
-	if (isEnvVar)
-		return configurationFileName;
-#endif
-	try
-	{
-		return OptionConverter::substVars(configurationFileName, props);
-	}
-	catch (const IllegalArgumentException& e)
-	{
-		LogLog::warn(LOG4CXX_STR("Could not perform variable substitution."), e);
-		return configurationFileName;
-	}
-}
-
-
-int DefaultConfigurator::getConfigurationWatchDelay()
-{
-	LogString optionStr = Configurator::properties().getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
-	if (optionStr.empty())
-		optionStr = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
-	static const int MillisecondsPerSecond = 1000;
-	static const int MaximumSeconds = (std::numeric_limits<int>::max)() / MillisecondsPerSecond;
-	int seconds = OptionConverter::toInt(optionStr, 0);
-	if (seconds <= 0)
-		return 0;
-	return (std::min)(seconds, MaximumSeconds) * MillisecondsPerSecond;
 }
 
 std::tuple<ConfigurationStatus,LogString>
