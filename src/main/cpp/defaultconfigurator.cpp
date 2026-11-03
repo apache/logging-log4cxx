@@ -81,7 +81,7 @@ int getConfigurationWatchSeconds()
 	if (optionStr.empty())
 		optionStr = System::getProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
 	int seconds = OptionConverter::toInt(optionStr, 0);
-	if (seconds <= 0)
+	if (seconds <= 0 || (std::numeric_limits<int>::max)() / MillisecondsPerSecond < seconds)
 		return 0;
 	return seconds;
 }
