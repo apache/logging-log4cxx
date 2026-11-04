@@ -21,6 +21,7 @@
 #include <log4cxx/fileappender.h>
 #include <log4cxx/hierarchy.h>
 #include <log4cxx/helpers/filesystempath.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace LOG4CXX_NS;
 
@@ -68,7 +69,42 @@ namespace
 	}
 
 	auto logger = GetLogger("com.test");
+
+	class MockConfigurator : public spi::Configurator
+	{
+	public:
+		DECLARE_LOG4CXX_OBJECT(MockConfigurator)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(spi::Configurator)
+		END_LOG4CXX_CAST_MAP()
+
+		bool isValid(const File& configFileName) override
+		{
+			auto filename = configFileName.getName();
+			if (filename.length() > 5 &&
+				helpers::StringHelper::equalsIgnoreCase
+					( filename.substr(filename.length() - 5)
+					, LOG4CXX_STR(".MOCK"), LOG4CXX_STR(".mock")
+					)
+				)
+		   {
+				return true;
+		   }
+		   return false;
+		}
+
+		spi::ConfigurationStatus doConfigure
+			( const File&                     configFileName
+			, const spi::LoggerRepositoryPtr& target
+			) override
+		{
+			LOGUNIT_ASSERT(target);
+			target->getLogger(LOG4CXX_STR("Mock"))->setAdditivity(false);
+			return spi::ConfigurationStatus::Configured;
+		}
+	};
 }
+IMPLEMENT_LOG4CXX_OBJECT(MockConfigurator)
 
 LOGUNIT_CLASS(DefaultConfiguratorTest)
 {
@@ -77,6 +113,7 @@ LOGUNIT_CLASS(DefaultConfiguratorTest)
 #if LOG4CXX_HAS_DOMCONFIGURATOR
 	LOGUNIT_TEST(testMalformedWatchSeconds);
 #endif
+	LOGUNIT_TEST(testUserDefinedConfigurator);
 	LOGUNIT_TEST_SUITE_END();
 public:
 
@@ -120,6 +157,26 @@ public:
 		repository->shutdown();
 	}
 #endif
+
+	void testUserDefinedConfigurator()
+	{
+		// Look for a configuration file in the input directory
+		// and the same directory as the program
+		std::vector<LogString> paths
+			{ LOG4CXX_STR("input")
+			, LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}")
+			};
+		std::vector<LogString> names
+			{ LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.mock")
+			, LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.xml")
+			, LOG4CXX_STR("${PROGRAM_FILE_PATH.STEM}.properties")
+			};
+		auto status       = spi::ConfigurationStatus::NotConfigured;
+		auto selectedPath = LogString();
+		std::tie(status, selectedPath) = DefaultConfigurator::configureFromFile(paths, names);
+		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+		LOGUNIT_ASSERT(!LogManager::getLogger(LOG4CXX_STR("Mock"))->getAdditivity());
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(DefaultConfiguratorTest);

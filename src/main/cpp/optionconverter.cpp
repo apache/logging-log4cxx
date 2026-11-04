@@ -487,17 +487,6 @@ spi::ConfigurationStatus OptionConverter::selectAndConfigure
 	LogString clazz = className;
 	LogString filename(configFileName.getPath());
 
-#if LOG4CXX_HAS_DOMCONFIGURATOR
-	if (clazz.empty()
-		&& filename.length() > 4
-		&& StringHelper::equalsIgnoreCase(
-			filename.substr(filename.length() - 4),
-			LOG4CXX_STR(".XML"), LOG4CXX_STR(".xml")))
-	{
-		clazz = LOG4CXX_NS::xml::DOMConfigurator::getStaticClass().getName();
-	}
-#endif
-
 	auto result = spi::ConfigurationStatus::NotConfigured;
 	ConfiguratorPtr configurator;
 	if (!clazz.empty())
@@ -505,7 +494,7 @@ spi::ConfigurationStatus OptionConverter::selectAndConfigure
 		auto obj = instantiateByClassName(clazz, Configurator::getStaticClass(), ObjectPtr());
 		configurator = LOG4CXX_NS::cast<Configurator>(obj);
 
-		if (configurator == 0)
+		if (!configurator)
 		{
 			LogLog::error(LOG4CXX_STR("Could not instantiate configurator [")
 				+ clazz + LOG4CXX_STR("]."));
@@ -514,7 +503,27 @@ spi::ConfigurationStatus OptionConverter::selectAndConfigure
 	}
 	else
 	{
-		configurator = std::make_shared<PropertyConfigurator>();
+		for (auto pClass : helpers::Class::withNameSuffix(LOG4CXX_STR("Configurator")))
+		{
+			auto obj = pClass->newInstance();
+			if (!obj->instanceof(Configurator::getStaticClass()))
+				;
+			else if (auto pConfigurator = dynamic_cast<Configurator*>(obj))
+			{
+				if (pConfigurator->isValid(configFileName))
+				{
+					configurator = std::shared_ptr<Configurator>(pConfigurator);
+					break;
+				}
+			}
+			delete obj;
+		}
+		if (!configurator)
+		{
+			LogLog::error(LOG4CXX_STR("Could find a configurator for [")
+				+ configFileName.getPath() + LOG4CXX_STR("]."));
+			return result;
+		}
 	}
 
 	if (0 < millisecondDelay)

@@ -163,6 +163,21 @@ const Class& Class::forName(const LogString& className)
 	return *pEntry->second;
 }
 
+auto Class::withNameSuffix(const LogString& nameSuffix) -> std::vector<const Class*>
+{
+	LogString lowerSuffix(StringHelper::toLowerCase(nameSuffix));
+	std::vector<const Class*> result;
+	for (auto& entry : getRegistry())
+	{
+		if (lowerSuffix.size() < entry.first.size() &&
+			entry.first.substr(entry.first.size() - lowerSuffix.size()) == lowerSuffix)
+		{
+			result.push_back(entry.second);
+		}
+	}
+	return result;
+}
+
 bool Class::registerClass(const Class& newClass)
 {
 	auto& classRegister = getRegistry();

@@ -262,6 +262,13 @@ class LOG4CXX_EXPORT PropertyConfigurator
 
 		PropertyConfigurator();
 		virtual ~PropertyConfigurator();
+
+		/** @copydoc spi::Configurator::isValid
+
+		This implementation checks \c configFileName contains at least one line begining with "log4j.".
+		*/
+		bool isValid(const File& configFileName) override;
+
 		/** @copydoc spi::Configurator::doConfigure()
 		See the \ref PropertyConfigurator_details "detailed description"
 		for the expected configuration file format.
