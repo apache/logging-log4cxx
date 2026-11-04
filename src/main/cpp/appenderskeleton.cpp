@@ -120,6 +120,7 @@ bool AppenderSkeleton::isAccepted(const spi::LoggingEventPtr& event) const
 
 void AppenderSkeleton::close()
 {
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	if (m_priv->setClosed())
 		m_priv->shutdown();
 }
@@ -141,7 +142,6 @@ bool AppenderSkeleton::AppenderSkeletonPrivate::checkNotClosed()
 
 bool AppenderSkeleton::AppenderSkeletonPrivate::setClosed()
 {
-	std::lock_guard<std::recursive_mutex> lock(this->mutex);
 	bool wasOpen = !this->closed;
 	this->closed = true;
 	return wasOpen;
