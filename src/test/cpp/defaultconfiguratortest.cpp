@@ -105,18 +105,16 @@ public:
 	void testMalformedWatchSeconds()
 	{
 		auto& props = spi::Configurator::properties();
-		const LogString fileNameKey(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
 		const LogString watchSecondsKey(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
-		auto savedFileName = props.getProperty(fileNameKey);
 		auto savedWatchSeconds = props.getProperty(watchSecondsKey);
-		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("input/xml/defaultInit.xml"));
-		props.setProperty(watchSecondsKey, LOG4CXX_STR("five"));
+		props.setProperty(watchSecondsKey, LOG4CXX_STR("seven"));
+		auto savedFileName = DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("input/xml/defaultInit.xml"));
 
 		auto repository = Hierarchy::create();
 		auto status = DefaultConfigurator::configure(repository);
 
-		props.setProperty(fileNameKey, savedFileName);
 		props.setProperty(watchSecondsKey, savedWatchSeconds);
+		DefaultConfigurator::setConfigurationFileName(savedFileName);
 		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
 		LOGUNIT_ASSERT(repository->getRootLogger()->getAppender(LOG4CXX_STR("D1")));
 		repository->shutdown();
