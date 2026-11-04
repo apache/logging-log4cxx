@@ -54,8 +54,6 @@ class VectorAppender : public AppenderSkeleton
 
 		int getEventCount() const;
 
-		void close() override;
-
 		bool isClosed() const;
 
 		bool requiresLayout() const override

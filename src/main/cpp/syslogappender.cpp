@@ -199,18 +199,8 @@ SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 
 SyslogAppender::~SyslogAppender()
 {
-	_priv->setClosed();
-}
-
-/** Release any resources held by this SyslogAppender.*/
-void SyslogAppender::close()
-{
-	_priv->setClosed();
-
-	if (_priv->sw)
-	{
-		_priv->sw = nullptr;
-	}
+	if (_priv->setClosed())
+		_priv->shutdown();
 }
 
 void SyslogAppender::initSyslogFacilityStr()

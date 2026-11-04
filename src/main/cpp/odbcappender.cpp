@@ -128,7 +128,7 @@ ODBCAppender::ODBCAppender()
 ODBCAppender::~ODBCAppender()
 {
 	if (_priv->setClosed())
-		_priv->close();
+		_priv->shutdown();
 }
 
 #define RULES_PUT(spec, cls) \
@@ -342,13 +342,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection()
 #endif
 }
 
-void ODBCAppender::close()
-{
-	if (_priv->setClosed())
-		_priv->close();
-}
-
-void ODBCAppender::ODBCAppenderPriv::close()
+void ODBCAppender::ODBCAppenderPriv::shutdown()
 {
 	try
 	{

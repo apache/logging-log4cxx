@@ -51,7 +51,7 @@ WriterAppender::WriterAppender(std::unique_ptr<WriterAppenderPriv> priv)
 WriterAppender::~WriterAppender()
 {
 	if (_priv->setClosed())
-		_priv->close();
+		_priv->shutdown();
 }
 
 void WriterAppender::activateOptions(  )
@@ -112,14 +112,7 @@ bool WriterAppender::WriterAppenderPriv::checkWriter()
 	return true;
 }
 
-void WriterAppender::close()
-{
-	if (_priv->setClosed())
-		_priv->close();
-}
-
-
-void WriterAppender::WriterAppenderPriv::close()
+void WriterAppender::WriterAppenderPriv::shutdown()
 {
 	if (this->writer != NULL)
 	{

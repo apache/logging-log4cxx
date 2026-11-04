@@ -103,8 +103,6 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		*/
 		void activateOptions(  ) override;
 
-		void close() override;
-
 		/**
 		* The <b>RemoteHost</b> option takes a string value which should be
 		* the host name of the server where a

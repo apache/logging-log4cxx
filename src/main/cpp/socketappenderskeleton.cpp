@@ -67,12 +67,6 @@ void SocketAppenderSkeleton::activateOptions(  )
 	_priv->connect();
 }
 
-void SocketAppenderSkeleton::close()
-{
-	if (_priv->setClosed())
-		_priv->close();
-}
-
 void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 {
 	if (this->address == 0)
@@ -82,7 +76,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 	}
 	else
 	{
-		this->close();
+		this->shutdown();
 
 		try
 		{
@@ -240,7 +234,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::setOutputSink(const Soc
 	this->outputSink = std::make_shared<OutputStreamWriter>(os, charset);
 }
 
-void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::close()
+void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::shutdown()
 {
 	if (this->taskName.empty())
 		;

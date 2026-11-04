@@ -137,7 +137,7 @@ struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeleto
 #endif
 
 	void flushBuffer();
-	void close();
+	void shutdown() override;
 };
 
 }

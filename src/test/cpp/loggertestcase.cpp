@@ -47,9 +47,6 @@ class CountingAppender : public AppenderSkeleton
 		CountingAppender() : counter(0)
 		{}
 
-		void close() override
-		{}
-
 		void append( const spi::LoggingEventPtr& event ) override
 		{
 			counter++;

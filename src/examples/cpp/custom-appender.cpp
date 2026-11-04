@@ -32,8 +32,6 @@ public:
 
 	NullWriterAppender(){}
 
-	void close() override{}
-
 	bool requiresLayout() const override {
 		return false;
 	}

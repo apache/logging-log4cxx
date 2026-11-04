@@ -101,6 +101,11 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		*/
 		void clearFilters() override;
 
+		/** \copydoc Appender::close
+		 Calling doAppend() on a closed appender generates one warning on stderr.
+		*/
+		void close() override;
+
 		/**
 		Return the currently set spi::ErrorHandler for this
 		Appender.

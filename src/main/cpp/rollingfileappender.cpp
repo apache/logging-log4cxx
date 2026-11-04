@@ -297,7 +297,7 @@ bool RollingFileAppender::RollingFileAppenderPriv::namePreservingRollover
 	, const LogString&              fileName
 	)
 {
-	this->close();
+	this->shutdown();
 
 	bool result = true;
 	if (auto action = policy->getSynchronous())
@@ -461,14 +461,6 @@ void RollingFileAppender::setTriggeringPolicy(const TriggeringPolicyPtr& policy)
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	_priv->triggeringPolicy = policy;
-}
-
-/**
- * Close appender.  Waits for any asynchronous file compression actions to be completed.
- */
-void RollingFileAppender::close()
-{
-	FileAppender::close();
 }
 
 namespace LOG4CXX_NS

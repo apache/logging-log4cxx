@@ -108,16 +108,6 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		value <code>false</code> is returned. */
 		virtual bool checkEntryConditions() const;
 
-
-	public:
-		/**
-		Close this appender instance. The underlying stream or writer is
-		also closed.
-
-		<p>Closed appenders cannot be reused.
-		*/
-		void close() override;
-
 	public:
 		/**
 		The current encoding value.

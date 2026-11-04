@@ -148,9 +148,6 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		an e-mail to be sent. */
 		void append( const spi::LoggingEventPtr& event ) override;
 
-
-		void close() override;
-
 		/**
 		Returns value of the <b>To</b> option.
 		*/
