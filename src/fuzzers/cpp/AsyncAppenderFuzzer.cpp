@@ -66,8 +66,6 @@ public:
 
 	FormattingSinkAppender(const LayoutPtr& layout) : AppenderSkeleton(layout) {}
 
-	void close() override {}
-
 	bool requiresLayout() const override {
 		return true;
 	}
