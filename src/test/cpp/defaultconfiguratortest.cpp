@@ -175,6 +175,7 @@ public:
 		auto selectedPath = LogString();
 		std::tie(status, selectedPath) = DefaultConfigurator::configureFromFile(paths, names);
 		LOGUNIT_ASSERT_EQUAL(status, spi::ConfigurationStatus::Configured);
+		// Ensure MockConfigurator was used
 		LOGUNIT_ASSERT(!LogManager::getLogger(LOG4CXX_STR("Mock"))->getAdditivity());
 	}
 };
