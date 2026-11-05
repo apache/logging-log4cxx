@@ -88,7 +88,7 @@ Release 2.0.0 includes the following new features:
 * Improved [SMTPAppender](@ref log4cxx::net::SMTPAppender] diagnostic messages in the [Log4cxx internal debugging](internal-debugging.html) output
    \[[#735](https://github.com/apache/logging-log4cxx/pull/735)\]
 
-* [SMTP](@ref log4cxx::net::SMTPAppender] and [Telnet](@ref log4cxx::net::TelnetAppender] appenders use secure-by-default configurations
+* [SMTP](@ref log4cxx::net::SMTPAppender::setOption) and [Telnet](@ref log4cxx::net::TelnetAppender::setOption) appenders use secure-by-default configurations
    \[[#734](https://github.com/apache/logging-log4cxx/pull/734)\]
 
 * The encoder returned by [CharsetEncoder::getUTF8Encoder](@ref log4cxx::helpers::CharsetEncoder::getUTF8Encoder)
