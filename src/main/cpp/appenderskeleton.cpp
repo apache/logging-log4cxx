@@ -120,7 +120,6 @@ bool AppenderSkeleton::isAccepted(const spi::LoggingEventPtr& event) const
 
 void AppenderSkeleton::close()
 {
-	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	if (m_priv->setClosed())
 		m_priv->shutdown();
 }
@@ -142,9 +141,9 @@ bool AppenderSkeleton::AppenderSkeletonPrivate::checkNotClosed()
 
 bool AppenderSkeleton::AppenderSkeletonPrivate::setClosed()
 {
-	bool wasOpen = !this->closed;
-	this->closed = true;
-	return wasOpen;
+	std::lock_guard<std::recursive_mutex> lock(this->mutex); // Wait for doAppend() to complete
+	bool expected = false;
+	return this->closed.compare_exchange_strong(expected, true);
 }
 
 bool AppenderSkeleton::AppenderSkeletonPrivate::checkLayout()
