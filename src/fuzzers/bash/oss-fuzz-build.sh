@@ -59,3 +59,15 @@ do
   cp ../src/fuzzers/resources/* "$outputDir/"
   cd .. && rm -r build-"${encoding}"
 done
+
+#
+# Package the seed corpora and dictionaries for the fuzz targets.
+#
+
+# PropertyConfiguratorFuzzer: seed property configurations from
+# src/fuzzers/corpus/propertyconfigurator, packaged for both target
+# encodings, together with a configuration dictionary.
+zip -j "$outputDir/PropertyConfiguratorFuzzer-utf-8_seed_corpus.zip" src/fuzzers/corpus/propertyconfigurator/*
+cp -f "$outputDir/PropertyConfiguratorFuzzer-utf-8_seed_corpus.zip" "$outputDir/PropertyConfiguratorFuzzer-wchar_t_seed_corpus.zip"
+cp -f src/fuzzers/corpus/propertyconfigurator.dict "$outputDir/PropertyConfiguratorFuzzer-utf-8.dict"
+cp -f src/fuzzers/corpus/propertyconfigurator.dict "$outputDir/PropertyConfiguratorFuzzer-wchar_t.dict"

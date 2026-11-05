@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <mutex>
 #include <memory>
+#include <atomic>
 
 namespace LOG4CXX_NS
 {
@@ -62,7 +63,7 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	/**
 	Is this appender closed?
 	*/
-	bool closed = false;
+	std::atomic<bool> closed{ false };
 
 	helpers::Pool pool;
 	mutable std::recursive_mutex mutex;

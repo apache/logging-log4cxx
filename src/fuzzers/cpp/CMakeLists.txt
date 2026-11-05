@@ -25,6 +25,8 @@ set(ALL_LOG4CXX_FUZZERS
     PatternConverterFuzzer
     DOMConfiguratorFuzzer
     TranscoderFuzzer
+    PropertyConfiguratorFuzzer
+    AsyncAppenderFuzzer
 )
 
 # Get the most recent Git commit ID
