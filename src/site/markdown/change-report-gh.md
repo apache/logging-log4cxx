@@ -76,10 +76,10 @@ User-defined subclasses of [spi::Configurator](@ref log4cxx::spi::Configurator) 
 
 Release 2.0.0 includes the following new features:
 
-* A new log4cxx::FileAppender option to delay log file creation until an event is added.
+* A new [FileAppender](@ref log4cxx::FileAppender::setOption) option to delay log file creation until an event is added.
    \[[#775](https://github.com/apache/logging-log4cxx/pull/775)\]
 
-* A new log4cxx::helpers::FileWatchdog::startWatching method to create a periodic task without a needing to sub-class.
+* A new [FileWatchdog::startWatching](@ref log4cxx::helpers::FileWatchdog::startWatching) method to create a periodic task without a needing to sub-class.
    \[[#769](https://github.com/apache/logging-log4cxx/pull/769)\]
 
 * An incorrect configuration option name generates a warning in the [Log4cxx internal debugging](internal-debugging.html) output
@@ -97,13 +97,16 @@ inserts the Unicode replacement character (0xFFFD) to indicate an invalid codepo
 
 The following issues have been addressed:
 
-* A performance regression with JSON & XML output
+* A performance regression with [JSON](@ref log4cxx::JSONLayout) & [XML](@ref log4cxx::xml::XMLLayout) output
    \[[#757](https://github.com/apache/logging-log4cxx/pull/757)\]
 
-* Using default configuration, BufferedIO and a watchdog caused recursive configuration
+* Using [default configuration](@ref log4cxx::DefaultConfigurator::configure),
+[BufferedIO](@ref log4cxx::FileAppender::setBufferedIO) and
+[a watchdog](@ref log4cxx::helpers::FileWatchdog) caused recursive configuration
    \[[#739](https://github.com/apache/logging-log4cxx/pull/739)\]
 
-* Using BufferedIO in multiple FileAppenders with the same name could cause a fault
+* Using [BufferedIO](@ref log4cxx::FileAppender::setBufferedIO)
+in multiple [FileAppenders](@ref log4cxx::FileAppender) with the same name could cause a fault
    \[[#733](https://github.com/apache/logging-log4cxx/pull/733)\]
 
 * A seg-fault when a user-defined class inherited from a non-abstract base class
