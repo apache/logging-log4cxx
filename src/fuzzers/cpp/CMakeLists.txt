@@ -25,6 +25,7 @@ set(ALL_LOG4CXX_FUZZERS
     PatternConverterFuzzer
     DOMConfiguratorFuzzer
     TranscoderFuzzer
+    PatternLayoutApiFuzzer
     PropertyConfiguratorFuzzer
     AsyncAppenderFuzzer
 )
