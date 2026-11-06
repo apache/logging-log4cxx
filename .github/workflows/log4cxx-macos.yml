@@ -23,23 +23,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [osx-14-clang, osx-15-clang, osx-26-clang, osx-g++]
+        name: [osx-15-clang, osx-26-clang, osx-g++]
         include:
-          - name: osx-14-clang
-            os: macos-14
-            cxx: clang++
-            odbc: ON
-            qt: OFF
-            multiprocess: ON
-            cfstring: OFF
-            next_abi: OFF
-            exitevents: OFF
           - name: osx-15-clang
             os: macos-15
             cxx: clang++
             odbc: ON
             qt: ON
-            multiprocess: OFF
+            multiprocess: ON
             cfstring: ON
             next_abi: OFF
             exitevents: OFF
