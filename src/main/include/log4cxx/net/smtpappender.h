@@ -120,6 +120,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		subject | {any} | - |
 		buffersize | {int} | 512 |
 		evaluatorClass | (\ref AppenderSkeleton "2") | - |
+		allowPlainTextAuthentication | True,False | False |
 
 		\anchor asciiCheck (1) Only ASCII charaters
 
@@ -147,9 +148,6 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		the event to a cyclic buffer and checking if the event triggers
 		an e-mail to be sent. */
 		void append( const spi::LoggingEventPtr& event ) override;
-
-
-		void close() override;
 
 		/**
 		Returns value of the <b>To</b> option.

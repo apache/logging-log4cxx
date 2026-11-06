@@ -31,9 +31,6 @@ using namespace log4cxx;
 class ABI_15_Appender : public AppenderSkeleton
 {
 public:
-	void close() override
-	{}
-
 	void append( const spi::LoggingEventPtr& event ) override
 	{
 		helpers::LogLog::debug(LOG4CXX_STR("ABI_15_Appender::append"));
@@ -63,9 +60,6 @@ private:
 class BaseAppender : public AppenderSkeleton
 {
 public:
-	void close() override
-	{}
-
 	void append( const spi::LoggingEventPtr& event ) override
 	{
 		helpers::LogLog::debug(LOG4CXX_STR("BaseAppender::append"));

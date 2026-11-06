@@ -217,12 +217,6 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 
 	public:
 		/**
-		* Closes the appender, flushing the buffer first then closing the default
-		* connection if it is open.
-		*/
-		void close() override;
-
-		/**
 		* Does this appender require a layout?
 		* */
 		bool requiresLayout() const override;

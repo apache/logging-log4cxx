@@ -315,7 +315,7 @@ bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::synch
  */
 void MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::reopenFile(const LogString& fileName)
 {
-	this->close();
+	this->shutdown();
 #if USING_ROLLOVER_REQUIRED_CHECK_IS_FASTER
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(this->rollingPolicy))
 		pTimeBased->loadLastFileName();

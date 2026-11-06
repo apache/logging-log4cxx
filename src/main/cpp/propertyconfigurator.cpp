@@ -36,6 +36,7 @@
 #include <log4cxx/helpers/singletonholder.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/rolling/rollingfileappender.h>
+#include <fstream>
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>
@@ -137,6 +138,26 @@ PropertyConfigurator::PropertyConfigurator()
 
 PropertyConfigurator::~PropertyConfigurator()
 {
+}
+
+bool PropertyConfigurator::isValid(const File& configFileName)
+{
+	bool result = false;
+	std::string expectedPrefix("log4j.");
+	std::string spaceOrTab(" \t");
+	std::ifstream in(configFileName.getAPRPath());
+	for (std::string line; std::getline(in, line);)
+	{
+		auto pos = line.find_first_not_of(spaceOrTab);
+		if (line.npos != pos &&
+			pos + expectedPrefix.size() < line.size() &&
+			line.substr(pos, expectedPrefix.size()) == expectedPrefix)
+		{
+			result = true;
+			break;
+		}
+	}
+	return result;
 }
 
 spi::ConfigurationStatus PropertyConfigurator::doConfigure

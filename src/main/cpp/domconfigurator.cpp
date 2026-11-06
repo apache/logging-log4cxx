@@ -918,6 +918,25 @@ void DOMConfiguratorContext::setParameter(apr_xml_elem* elem, PropertySetter& pr
 	propSetter.setProperty(name, value);
 }
 
+bool DOMConfigurator::isValid(const File& filename)
+{
+	Pool p;
+	apr_file_t* fd;
+	auto rv = apr_file_open(&fd, filename.getAPRPath(), APR_READ, APR_OS_DEFAULT, p.getAPRPool());
+	if (rv != APR_SUCCESS)
+		return false;
+
+	apr_xml_doc* doc = nullptr;
+	apr_xml_parser* parser = nullptr;
+	rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
+	if (rv != APR_SUCCESS || !doc || !doc->root || !doc->root->name)
+		return false;
+	std::string elementName(doc->root->name);
+	if (elementName != CONFIGURATION_TAG && elementName != OLD_CONFIGURATION_TAG)
+		return false;
+	return true;
+}
+
 spi::ConfigurationStatus DOMConfigurator::doConfigure
 	( const File&                     filename
 	, const spi::LoggerRepositoryPtr& repository

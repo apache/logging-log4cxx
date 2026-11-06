@@ -57,6 +57,13 @@ class LOG4CXX_EXPORT DOMConfigurator
 		LOG4CXX_CAST_ENTRY(spi::Configurator)
 		END_LOG4CXX_CAST_MAP()
 
+		/** @copydoc spi::Configurator::isValid
+
+		This implementation checks \c configFileName is a valid XML file
+		and that the root element name is either "log4j:configuration" or "configuration".
+		*/
+		bool isValid(const File& configFileName) override;
+
 		/** @copydoc spi::Configurator::doConfigure()
 
 		Pre-existing key-value pairs in the property map provided by spi::Configurator::properties()

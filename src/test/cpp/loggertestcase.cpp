@@ -47,9 +47,6 @@ class CountingAppender : public AppenderSkeleton
 		CountingAppender() : counter(0)
 		{}
 
-		void close() override
-		{}
-
 		void append( const spi::LoggingEventPtr& event ) override
 		{
 			counter++;
@@ -525,9 +522,8 @@ public:
 		LOG4CXX_TRACE(root, "Discarded Message");
 		LOG4CXX_TRACE(root, "Discarded Message");
 
-		std::vector<LoggingEventPtr> msgs(appender->vector);
-		LOGUNIT_ASSERT_EQUAL((size_t) 1, msgs.size());
-		LoggingEventPtr event = msgs[0];
+		LOGUNIT_ASSERT_EQUAL(1, appender->getEventCount());
+		LoggingEventPtr event = appender->getEvent(1);
 		LOGUNIT_ASSERT_EQUAL((int) Level::TRACE_INT, event->getLevel()->toInt());
 		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Message 1")), event->getMessage());
 	}

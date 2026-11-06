@@ -642,7 +642,8 @@ SMTPAppender::SMTPAppender(const spi::TriggeringEventEvaluatorPtr& evaluator)
 
 SMTPAppender::~SMTPAppender()
 {
-	_priv->setClosed();
+	if (_priv->setClosed())
+		_priv->shutdown();
 }
 
 bool SMTPAppender::requiresLayout() const
@@ -893,13 +894,6 @@ bool SMTPAppender::checkEntryConditions()
 #else
 	return false;
 #endif
-}
-
-
-
-void SMTPAppender::close()
-{
-	_priv->setClosed();
 }
 
 LogString SMTPAppender::getTo() const

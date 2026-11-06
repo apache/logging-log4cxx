@@ -84,10 +84,6 @@ class NullPointerAppender : public AppenderSkeleton
 			throw RuntimeException(LOG4CXX_STR("Intentional Exception"));
 		}
 
-		void close() override
-		{
-		}
-
 		bool requiresLayout() const override
 		{
 			return false;
@@ -259,8 +255,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			root->debug(LOG4CXX_TEST_STR("m2"));
 
 			// Check one message was received
-			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(1, int(v.size()));
+			LOGUNIT_ASSERT_EQUAL(vectorAppender->getEventCount(), 1);
 			// Check appender embedded within an AsyncAppender is also closed
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
@@ -299,13 +294,18 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 #endif // !LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_WCHAR_T_API
 
 			// Check all messages were received
-			auto& v = vectorAppender->getVector();
-			for (auto& pEvent : v)
+			auto allEventsReceived = vectorAppender->waitForEventCount(expectedEventCount, std::chrono::milliseconds( 100 ) );
+			LOGUNIT_ASSERT(allEventsReceived);
+			auto lastEvent = vectorAppender->getEvent(1);
+			int eventNumber = 0;
+			for (auto& pEvent : vectorAppender->getVector())
+			{
+				++eventNumber;
 				LogLog::debug(pEvent->getRenderedMessage());
-			LOGUNIT_ASSERT_EQUAL(expectedEventCount, int(v.size()));
-			LOGUNIT_ASSERT_EQUAL(v[0]->getRenderedMessage(), v[1]->getRenderedMessage());
-			if (4 <= expectedEventCount)
-				LOGUNIT_ASSERT_EQUAL(v[2]->getRenderedMessage(), v[3]->getRenderedMessage());
+				if (2 == eventNumber || 4 == eventNumber)
+					LOGUNIT_ASSERT_EQUAL(lastEvent->getRenderedMessage(), pEvent->getRenderedMessage());
+				lastEvent = pEvent;
+			}
 #ifdef GENERATE_THE_STATIC_ASSERT_COMPILATION_ERROR
 			struct AStruct
 			{
@@ -343,10 +343,10 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->close();
 			root->debug(LOG4CXX_STR("m2"));
 
-			const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			auto allEventsReceived = vectorAppender->waitForEventCount(LEN, std::chrono::milliseconds( 100 ) );
+			LOGUNIT_ASSERT(allEventsReceived);
 			int i{ 0 };
-			for (auto e : v)
+			for (auto e : vectorAppender->getVector())
 			{
 				LogString m(LOG4CXX_STR("message"));
 				StringHelper::toString(i, m);
@@ -400,11 +400,10 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->close();
 
 			// Check all message were received
-			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(LEN*threadCount, (int)v.size());
+			LOGUNIT_ASSERT_EQUAL(LEN*threadCount, vectorAppender->getEventCount());
 			std::map<LogString, int> perThreadCount;
 			std::vector<int> msgCount(LEN, 0);
-			for (auto m : v)
+			for (auto m : vectorAppender->getVector())
 			{
 				auto i = StringHelper::toInt(m->getRenderedMessage().substr(7));
 				LOGUNIT_ASSERT(0 <= i);
@@ -455,8 +454,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOG4CXX_INFO(root, "Message");
 
 			// Check a message was received
-			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT(0 < v.size());
+			auto eventReceived = vectorAppender->waitForEventCount(1, std::chrono::milliseconds( 30 ) );
+			LOGUNIT_ASSERT(eventReceived);
 		}
 
 		/**
@@ -497,9 +496,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->close();
 
 			// Check dispatching recovered once the transient fault cleared
-			auto& v = failingAppender->getVector();
-			LOGUNIT_ASSERT(!v.empty());
-			LOGUNIT_ASSERT(v.back()->getRenderedMessage() == LOG4CXX_STR("final message"));
+			auto eventsReceived = failingAppender->getEventCount();
+			LOGUNIT_ASSERT(0 < eventsReceived);
+			LOGUNIT_ASSERT(failingAppender->getEvent(eventsReceived)->getRenderedMessage() == LOG4CXX_STR("final message"));
 		}
 
 		/**
@@ -542,7 +541,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->close();
 
 			// Check which messages were output
-			auto& events = blockableAppender->getVector();
+			auto events = blockableAppender->getVector();
 			LOGUNIT_ASSERT(!events.empty());
 			LOGUNIT_ASSERT(events.size() <= 142);
 			LoggingEventPtr initialEvent = events.front();
@@ -622,7 +621,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->close();
 
 			// Check which messages were received
-			auto& events = loggingAppender->getVector();
+			auto events = loggingAppender->getVector();
 			std::map<LevelPtr, int> levelCount;
 			int discardMessageCount{ 0 };
 			int eventCount[] = { 0, 0 };
@@ -671,8 +670,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT_EQUAL(1, int(nestedAppenders.size()));
 
 			// Log some messages
-			size_t LEN = 20;
-			for (size_t i = 0; i < LEN; i++)
+			int LEN = 20;
+			for (int i = 0; i < LEN; i++)
 			{
 				LOG4CXX_DEBUG_ASYNC(root, "message" << i);
 			}
@@ -681,8 +680,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			// Check all message were received
 			auto vectorAppender = LOG4CXX_NS::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
 			LOGUNIT_ASSERT(vectorAppender);
-			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			LOGUNIT_ASSERT_EQUAL(LEN, vectorAppender->getEventCount());
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
 
@@ -700,8 +698,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(asyncAppender);
 
 			// Log some messages
-			size_t LEN = 20;
-			for (size_t i = 0; i < LEN; i++)
+			int LEN = 20;
+			for (int i = 0; i < LEN; i++)
 			{
 				LOG4CXX_INFO_ASYNC(root, "message" << i);
 			}
@@ -710,8 +708,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			// Check all message were received
 			auto vectorAppender = LOG4CXX_NS::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
 			LOGUNIT_ASSERT(vectorAppender);
-			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			LOGUNIT_ASSERT_EQUAL(LEN, vectorAppender->getEventCount());
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
 
@@ -743,17 +740,16 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(vectorAppender);
 
 			// Log some messages
-			size_t LEN = 20;
-			for (size_t i = 0; i < LEN; i++)
+			int LEN = 20;
+			for (int i = 0; i < LEN; i++)
 			{
 				LOG4CXX_INFO_ASYNC(root, "message" << i);
 			}
-			std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+			auto allEventsReceived = vectorAppender->waitForEventCount(LEN, std::chrono::milliseconds( 100 ) );
 			asyncAppender->close();
 
 			// Check all message were received
-			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			LOGUNIT_ASSERT_EQUAL(LEN, vectorAppender->getEventCount());
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
 #endif
@@ -842,8 +838,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(asyncAppender);
 
 			// Log some messages
-			size_t LEN = 20;
-			for (size_t i = 0; i < LEN; i++)
+			int LEN = 20;
+			for (int i = 0; i < LEN; i++)
 			{
 				LOG4CXX_INFO_ASYNC(root, "message" << i);
 			}
@@ -852,8 +848,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			// Check all message were received
 			auto vectorAppender = LOG4CXX_NS::cast<VectorAppender>(asyncAppender->getAppender(LOG4CXX_STR("VECTOR")));
 			LOGUNIT_ASSERT(vectorAppender);
-			auto& v = vectorAppender->getVector();
-			LOGUNIT_ASSERT_EQUAL(LEN, v.size());
+			LOGUNIT_ASSERT_EQUAL(LEN, vectorAppender->getEventCount());
 			LOGUNIT_ASSERT(vectorAppender->isClosed());
 		}
 
@@ -889,10 +884,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			async->close();
 
 			// Check all parts of all messages were received
-			auto& events = eventStore->getVector();
 			std::vector<int> messageCount;
 			int eventCount[] = { 0, 0 };
-			for (auto& e : events)
+			for (auto& e : eventStore->getVector())
 			{
 				auto message = e->getRenderedMessage();
 				//LogLog::debug(message);

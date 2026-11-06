@@ -20,6 +20,7 @@
 
 #include <log4cxx/logstring.h>
 #include <map>
+#include <vector>
 
 namespace LOG4CXX_NS
 {
@@ -35,6 +36,7 @@ class LOG4CXX_EXPORT Class
 		virtual Object* newInstance() const;
 		virtual LogString getName() const = 0;
 		static const Class& forName(const LogString& className);
+		static auto withNameSuffix(const LogString& nameSuffix) -> std::vector<const Class*>;
 		static bool registerClass(const Class& newClass);
 
 	protected:

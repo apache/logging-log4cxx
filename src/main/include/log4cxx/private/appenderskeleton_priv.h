@@ -23,24 +23,19 @@
 #include <log4cxx/helpers/pool.h>
 #include <mutex>
 #include <memory>
+#include <atomic>
 
 namespace LOG4CXX_NS
 {
 
 struct AppenderSkeleton::AppenderSkeletonPrivate
 {
-	AppenderSkeletonPrivate() :
-		threshold(Level::getAll()),
-		errorHandler(std::make_shared<LOG4CXX_NS::helpers::OnlyOnceErrorHandler>()),
-		closed(false) {}
+	AppenderSkeletonPrivate( const LayoutPtr& lay  = {} )
+		: layout( lay )
+	{}
 
-	AppenderSkeletonPrivate( const LayoutPtr& lay ) :
-		layout( lay ),
-		threshold(Level::getAll()),
-		errorHandler(std::make_shared<LOG4CXX_NS::helpers::OnlyOnceErrorHandler>()),
-		closed(false) {}
-
-	virtual ~AppenderSkeletonPrivate(){}
+	virtual ~AppenderSkeletonPrivate()
+	{}
 
 	/** The layout variable does not need to be set if the appender
 	implementation has its own layout. */
@@ -51,12 +46,12 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 
 	/**
 	There is no level threshold filtering by default.  */
-	LevelPtr threshold;
+	LevelPtr threshold = Level::getAll();
 
 	/**
 	It is assumed and enforced that errorHandler is never null.
 	*/
-	spi::ErrorHandlerPtr errorHandler;
+	spi::ErrorHandlerPtr errorHandler = std::make_shared<helpers::OnlyOnceErrorHandler>();
 
 	/** The first filter in the filter chain. Set to <code>null</code>
 	initially. */
@@ -68,7 +63,7 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	/**
 	Is this appender closed?
 	*/
-	bool closed;
+	std::atomic<bool> closed{ false };
 
 	helpers::Pool pool;
 	mutable std::recursive_mutex mutex;
@@ -83,6 +78,11 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	@returns true if the appender was not already closed
 	*/
 	bool setClosed();
+
+	/**
+	Concrete appenders may override and implement this to release resources
+	*/
+	virtual void shutdown() {};
 
 #if ENABLE_FAILING_APPENDER_SIMULATION_TESTING
 	LogString exceptionTriggeringMessage;

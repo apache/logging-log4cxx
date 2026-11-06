@@ -90,7 +90,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	bool warnedNoWriter = false;
 	bool checkWriter();
 
-	void close();
+	void shutdown() override;
 	void writeHeader();
 	void writeFooter();
 

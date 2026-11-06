@@ -85,7 +85,7 @@ public:
 		LOG4CXX_INFO(root, "Info message");
 		LOG4CXX_WARN(root, "Warn message");
 		LOG4CXX_WARN(root, "Error message");
-		LOGUNIT_ASSERT_EQUAL((size_t) 2, appender->vector.size());
+		LOGUNIT_ASSERT_EQUAL(2, appender->getEventCount());
 		LogManager::resetConfiguration();
 	}
 

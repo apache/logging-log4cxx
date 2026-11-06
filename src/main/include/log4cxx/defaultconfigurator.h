@@ -49,25 +49,32 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		setenv LOG4CXX_CONFIGURATION="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"
 		~~~
 
-		Unless a custom configurator is specified using the
-		"LOG4CXX_CONFIGURATOR_CLASS" environment variable,
-		the PropertyConfigurator will be used to
-		configure log4cxx unless the file name ends with the ".xml"
-		extension, in which case the DOMConfigurator will be used. If a
-		custom configurator is specified, the environment variable should
-		contain a fully qualified class name of a class that implements the
-		Configurator interface.
-
-		If the configuration file name is not found using any of the previous approaches,
+		If the configuration file name is not specified,
 		the current directory is examined for a file with extension ".xml" or ".properties"
 		with a base name "log4cxx" or "log4j".
 
+		Unless a configurator is specified using the
+		"LOG4CXX_CONFIGURATOR_CLASS" environment variable,
+		or by a call to setConfiguratorClass(),
+		Log4cxx will call the spi::Configurator::isValid method
+		on an instance of each class registered with Log4cxx
+		whose name ends with "Configurator".
+		The first configurator instance whose spi::Configurator::isValid method
+		returns <code>true</code> is used to process the configuration file.
+
 		If a positive number has been provided by a call to setConfigurationWatchSeconds()
 		or the environment variables "LOG4CXX_CONFIGURATION_WATCH_SECONDS" contains a positive number
-		a background thread is started that will periodically check for a change to the configuration file
+		a background task is started that will periodically check for a change to the configuration file
 		and apply any configuration changes found.
 		*/
 		static spi::ConfigurationStatus configure(const spi::LoggerRepositoryPtr& repository = {});
+
+		/**
+		Instantiate an instance of \c className to process the configuration file used by configure().
+
+		@returns The previous value of LOG4CXX_CONFIGURATOR_CLASS in spi::Configurator::properties or environment variable
+		*/
+		static LogString setConfiguratorClass(const LogString& className);
 
 		/**
 		Make \c path the configuration file used by configure().
@@ -80,20 +87,21 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		~~~{.cpp}
 		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"))
 		~~~
-
+		@returns The previous value of LOG4CXX_CONFIGURATION in spi::Configurator::properties or environment variable
 		*/
-		static void setConfigurationFileName(const LogString& path);
+		static LogString setConfigurationFileName(const LogString& path);
 
 		/**
-		Make \c seconds the time a background thread will delay before checking
+		Make \c seconds the time a background task will delay before checking
 		for a change to the configuration file used by configure().
 
 		\usage
 		~~~{.cpp}
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
 		~~~
+		@returns The previous value of LOG4CXX_CONFIGURATION_WATCH_SECONDS in spi::Configurator::properties or environment variable
 		*/
-		static void setConfigurationWatchSeconds(int seconds);
+		static int setConfigurationWatchSeconds(int seconds);
 
 		/**
 		 * Call configure() passing the default repository
@@ -138,12 +146,6 @@ class LOG4CXX_EXPORT DefaultConfigurator
 			( const std::vector<LogString>& directories
 			, const std::vector<LogString>& filenames
 			);
-
-	private:
-		static const LogString getConfigurationFileName();
-		static const LogString getConfiguratorClass();
-		static int getConfigurationWatchDelay();
-
 };	 // class DefaultConfigurator
 }  // namespace log4cxx
 

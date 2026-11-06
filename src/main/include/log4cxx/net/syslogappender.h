@@ -54,8 +54,6 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		SyslogAppender(const LayoutPtr& layout,
 			const LogString& syslogHost, int syslogFacility);
 		~SyslogAppender();
-		/** Release any resources held by this SyslogAppender.*/
-		void close() override;
 
 		/**
 		Returns the specified syslog facility as a lower-case String,

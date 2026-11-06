@@ -59,47 +59,54 @@ Change Log {#changelog}
 
 This major release includes the following alterations to the application binary interface (ABI).
 
-* The helpers::Pool parameter is not longer required in virtual functions.
-User-defined subclasses of Appender, Filter or Layout may require modification.
+* The <code>helpers::Pool</code> parameter is not longer required in virtual functions.
+User-defined subclasses of [Appender](@ref log4cxx::Appender), [Filter](@ref log4cxx::spi::Filter) or [Layout](@ref log4cxx::Layout) may require modification.
 
-* The helpers::Pool parameter has been removed from log4cxx::File member function argument lists.
+* The <code>helpers::Pool</code> parameter has been removed from [File](@ref log4cxx::File) member function argument lists.
 Code that uses log4cxx::File may require modification.
 
-* The 'LOG4CXX_CHAR=unichar' CMake option is no longer supported.
-Support remains for 'LOG4CXX_CHAR=wchar_t' for applications using std::wstring.
+* The <code>LOG4CXX_CHAR=unichar</code> CMake option is no longer supported.
+Support remains for <code>LOG4CXX_CHAR=wchar_t</code> for applications using std::wstring.
 
-* The ErrorHandler::error() method signatures have changed.
-User-defined subclasses of ErrorHandler will require modification.
+* The [ErrorHandler::error](@ref log4cxx::spi::ErrorHandler::error) method signatures have changed.
+User-defined subclasses of [spi::ErrorHandler](@ref log4cxx::spi::ErrorHandler) will require modification.
+
+* The [spi::Configurator::isValid](@ref log4cxx::spi::Configurator::isValid) method must be implemented in subclasses.
+User-defined subclasses of [spi::Configurator](@ref log4cxx::spi::Configurator) will need to implement this new method.
 
 Release 2.0.0 includes the following new features:
 
-* A new log4cxx::FileAppender option to delay log file creation until an event is added.
+* A new [FileAppender](@ref log4cxx::FileAppender::setOption) option to delay log file creation until an event is added.
    \[[#775](https://github.com/apache/logging-log4cxx/pull/775)\]
 
-* A new log4cxx::helpers::FileWatchdog::startWatching method to create a periodic task without a needing to sub-class.
+* A new [FileWatchdog::startWatching](@ref log4cxx::helpers::FileWatchdog::startWatching) method to create a periodic task without a needing to sub-class.
    \[[#769](https://github.com/apache/logging-log4cxx/pull/769)\]
 
-* An incorrect configuration option name generates a warning in the Log4cxx internal debugging output
+* An incorrect configuration option name generates a warning in the [Log4cxx internal debugging](internal-debugging.html) output
    \[[#738](https://github.com/apache/logging-log4cxx/pull/738)\]
 
-* Improved SMTPAppender diagnostic messages in the Log4cxx internal debugging output
+* Improved [SMTPAppender](@ref log4cxx::net::SMTPAppender] diagnostic messages in the [Log4cxx internal debugging](internal-debugging.html) output
    \[[#735](https://github.com/apache/logging-log4cxx/pull/735)\]
 
-* SMTP and Telnet appenders use secure-by-default configurations
+* [SMTP](@ref log4cxx::net::SMTPAppender::setOption) and [Telnet](@ref log4cxx::net::TelnetAppender::setOption) appenders use secure-by-default configurations
    \[[#734](https://github.com/apache/logging-log4cxx/pull/734)\]
 
-* The encoder returned by CharsetEncoder::getUTF8Encoder() inserts the Unicode replacement character (0xFFFD) to indicate an invalid codepoint
+* The encoder returned by [CharsetEncoder::getUTF8Encoder](@ref log4cxx::helpers::CharsetEncoder::getUTF8Encoder)
+inserts the Unicode replacement character (0xFFFD) to indicate an invalid codepoint
    \[[#730](https://github.com/apache/logging-log4cxx/pull/730)\]
 
 The following issues have been addressed:
 
-* A performance regression with JSON & XML output
+* A performance regression with [JSON](@ref log4cxx::JSONLayout) & [XML](@ref log4cxx::xml::XMLLayout) output
    \[[#757](https://github.com/apache/logging-log4cxx/pull/757)\]
 
-* Using default configuration, BufferedIO and a watchdog caused recursive configuration
+* Using [default configuration](@ref log4cxx::DefaultConfigurator::configure),
+[BufferedIO](@ref log4cxx::FileAppender::setBufferedIO) and
+[a watchdog](@ref log4cxx::helpers::FileWatchdog) caused recursive configuration
    \[[#739](https://github.com/apache/logging-log4cxx/pull/739)\]
 
-* Using BufferedIO in multiple FileAppenders with the same name could cause a fault
+* Using [BufferedIO](@ref log4cxx::FileAppender::setBufferedIO)
+in multiple [FileAppenders](@ref log4cxx::FileAppender) with the same name could cause a fault
    \[[#733](https://github.com/apache/logging-log4cxx/pull/733)\]
 
 * A seg-fault when a user-defined class inherited from a non-abstract base class
@@ -108,17 +115,18 @@ The following issues have been addressed:
 
 The other Log4cxx behaviour changes are:
 
-* Use 'find_package(log4cxx COMPONENTS qt)' instead of 'find_package(log4cxx-qt)' to access Log4cxx Qt support
+* Use <code>find_package(log4cxx COMPONENTS qt)</code> instead of <code>find_package(log4cxx-qt)</code> to access Log4cxx Qt support
   \[[#600](https://github.com/apache/logging-log4cxx/pull/600)\]
 
-* In Msys2, the Windows native thread number is displayed instead of the pthread_self() value.
+* In Msys2, the Windows native thread number is displayed instead of the [pthread_self](https://man7.org/linux/man-pages/man3/pthread_self.3.html) value.
   \[[#783](https://github.com/apache/logging-log4cxx/pull/783)\]
 
-* Default configuration does not check the 'log4j.configuration' and 'log4j.configuratorClass' environment variables.
-Instead, use 'LOG4CXX_CONFIGURATION' and 'LOG4CXX_CONFIGURATOR_CLASS'.
+* Default configuration does not check the <code>log4j.configuration</code> and <code>log4j.configuratorClass</code> environment variables.
+Instead, use <code>LOG4CXX_CONFIGURATION</code> and <code>LOG4CXX_CONFIGURATOR_CLASS</code>.
   \[[#784](https://github.com/apache/logging-log4cxx/pull/784)\]
 
-* Threads created by Log4cxx are assigned a name. Call log4cxx::helpers::ThreadUtility::configure to alter this behaviour.
+* Threads created by Log4cxx are assigned a name.
+Call [ThreadUtility::configure](@ref log4cxx::helpers::ThreadUtility::configure) to alter this behaviour.
   \[[#785](https://github.com/apache/logging-log4cxx/pull/785)\]
 
 ## Release 1.8.0 - 2026-07-29 {#rel_1_8_0}

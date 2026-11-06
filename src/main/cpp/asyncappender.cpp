@@ -128,8 +128,8 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 	~AsyncAppenderPriv()
 	{
-		if (setClosed())
-			close();
+		if (this->setClosed())
+			this->shutdown();
 	}
 
 	/**
@@ -253,7 +253,7 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 		}
 	}
 
-	void close();
+	void shutdown() override;
 
 	/**
 	 * Does appender block when buffer is full.
@@ -436,13 +436,7 @@ void AsyncAppender::append( const spi::LoggingEventPtr& event )
 	}
 }
 
-void AsyncAppender::close()
-{
-	if (priv->setClosed())
-		priv->close();
-}
-
-void AsyncAppender::AsyncAppenderPriv::close()
+void AsyncAppender::AsyncAppenderPriv::shutdown()
 {
 	this->stopDispatcher();
 	for (auto item : this->appenders.getAllAppenders())

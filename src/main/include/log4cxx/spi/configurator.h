@@ -45,6 +45,13 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		END_LOG4CXX_CAST_MAP()
 
 		/**
+		Does \c configFileName contain directives that this class uses?
+
+		@param configFileName The file to examine
+		*/
+		virtual bool isValid(const File& configFileName) = 0;
+
+		/**
 		Apply the directives in \c configFileName to \c target.
 
 		If \c target is not provided,

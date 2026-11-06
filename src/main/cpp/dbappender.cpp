@@ -73,7 +73,7 @@ struct DBAppender::DBAppenderPriv : public AppenderSkeleton::AppenderSkeletonPri
     Pool m_pool;
     std::vector<pattern::LoggingEventPatternConverterPtr> converters;
 
-    void close();
+    void shutdown() override;
 };
 
 #define RULES_PUT(spec, cls) \
@@ -109,16 +109,10 @@ DBAppender::DBAppender()
 DBAppender::~DBAppender()
 {
     if (_priv->setClosed())
-        _priv->close();
+        _priv->shutdown();
 }
 
-void DBAppender::close()
-{
-    if (_priv->setClosed())
-        _priv->close();
-}
-
-void DBAppender::DBAppenderPriv::close()
+void DBAppender::DBAppenderPriv::shutdown()
 {
     if(this->m_driver && this->m_databaseHandle){
         apr_dbd_close(this->m_driver, this->m_databaseHandle);

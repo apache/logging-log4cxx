@@ -133,13 +133,6 @@ class LOG4CXX_EXPORT AsyncAppender :
 		void append( const spi::LoggingEventPtr& event ) override;
 
 		/**
-		Close this <code>AsyncAppender</code> by interrupting the
-		dispatcher thread which will process all pending events before
-		exiting.
-		*/
-		void close() override;
-
-		/**
 		 * Get iterator over attached appenders.
 		 * @return list of all attached appenders.
 		*/

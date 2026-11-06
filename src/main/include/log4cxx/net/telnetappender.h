@@ -167,9 +167,6 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		*/
 		void setNonBlocking(bool newValue);
 
-		/** Shutdown this appender. */
-		void close() override;
-
 	protected:
 		/** Send \c event to each connected client.
 		*/
