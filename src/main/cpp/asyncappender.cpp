@@ -235,6 +235,11 @@ struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkele
 
 	void stopDispatcher()
 	{
+		{
+			// Ensure the dispatcher is not stuck in the gap between
+			// evaluating the predicate and going to sleep
+			std::lock_guard<std::mutex> lock(bufferMutex);
+		}
 		bufferNotEmpty.notify_all();
 		bufferNotFull.notify_all();
 
