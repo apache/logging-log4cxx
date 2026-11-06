@@ -120,6 +120,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		subject | {any} | - |
 		buffersize | {int} | 512 |
 		evaluatorClass | (\ref AppenderSkeleton "2") | - |
+		allowPlainTextAuthentication | True,False | False |
 
 		\anchor asciiCheck (1) Only ASCII charaters
 
