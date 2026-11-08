@@ -260,7 +260,7 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 	return static_cast<int>(parsed);
 }
 
-long OptionConverter::toFileSize(const LogString& s, long dEfault)
+size_t OptionConverter::toFileSize(const LogString& s, size_t dEfault)
 {
 	LogString trimmed(StringHelper::trim(s));
 	if (trimmed.empty())
@@ -311,18 +311,12 @@ long OptionConverter::toFileSize(const LogString& s, long dEfault)
 		}
 	}
 
-	if (multiplier != 0 && parsed > std::numeric_limits<long long>::max() / multiplier)
+	if (multiplier != 0 && (std::numeric_limits<size_t>::max() / multiplier) < size_t(parsed))
 	{
 		return dEfault;
 	}
 
-	long long scaled = parsed * multiplier;
-	if (scaled > std::numeric_limits<long>::max())
-	{
-		return dEfault;
-	}
-
-	return static_cast<long>(scaled);
+	return parsed * multiplier;
 }
 
 LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)

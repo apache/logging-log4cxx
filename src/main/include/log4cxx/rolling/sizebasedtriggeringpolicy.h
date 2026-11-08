@@ -89,7 +89,7 @@ class LOG4CXX_EXPORT SizeBasedTriggeringPolicy : public TriggeringPolicy
 		-------------- | ---------------- | --------------- |
 		MaxFileSize | (\ref fileSize "1") | 10 MB |
 
-		\anchor fileSize (1) An integer in the range 0 - 2^63.
+		\anchor fileSize (1) An integer in the range 0 - 2^64.
 		 You can specify the value with the suffixes "KB", "MB", "GB" or "TB" so that the integer is
 		 interpreted being expressed respectively in kilobytes, megabytes, gigabytes
 		 or terabytes. For example, the value "10KB" will be interpreted as 10240.
