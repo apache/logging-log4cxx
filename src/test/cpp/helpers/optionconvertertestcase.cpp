@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/file.h>
 #include <log4cxx/hierarchy.h>
 #include "../testchar.h"
@@ -256,9 +257,9 @@ public:
 		const size_t expectedValue = (std::numeric_limits<long>::max)();
 		LOGUNIT_ASSERT_EQUAL(expectedValue, OptionConverter::toFileSize(lsMaxLong, defaultValue));
 
-		const size_t onePastMaxLong = static_cast<size_t>((std::numeric_limits<long>::max)() + 1);
-		auto onePastMaxLongString = std::to_string(onePastMaxLong);
-		LOG4CXX_DECODE_CHAR(lsOnePastMaxLong, onePastMaxLongString);
+		const size_t onePastMaxLong = static_cast<size_t>((std::numeric_limits<long>::max)()) + 1;
+		LogString lsOnePastMaxLong;
+		StringHelper::toString(onePastMaxLong, lsOnePastMaxLong);
 		LOGUNIT_ASSERT_EQUAL(onePastMaxLong, OptionConverter::toFileSize(lsOnePastMaxLong, defaultValue));
 
 		const size_t overflowBase = static_cast<size_t>((std::numeric_limits<size_t>::max)() / (1024LL * 1024LL * 1024LL)) + 1ULL;
