@@ -365,7 +365,7 @@ bool FileAppender::getBufferedIO() const
 	return _priv->bufferedIO;
 }
 
-int FileAppender::getBufferSize() const
+size_t FileAppender::getBufferSize() const
 {
 	return _priv->bufferSize;
 }

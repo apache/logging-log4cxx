@@ -166,12 +166,13 @@ void StringHelper::toString(int64_t n, LogString& dst)
 
 void StringHelper::toString(size_t n, LogString& dst)
 {
+	auto ull = static_cast<unsigned long long>(n);
 #if LOG4CXX_LOGCHAR_IS_WCHAR
-	dst.append(std::to_wstring(n));
+	dst.append(std::to_wstring(ull));
 #elif LOG4CXX_LOGCHAR_IS_UTF8
-	dst.append(std::to_string(n));
+	dst.append(std::to_string(ull));
 #else
-	Transcoder::decode(std::to_string(n), dst);
+	Transcoder::decode(std::to_string(ull), dst);
 #endif
 }
 
