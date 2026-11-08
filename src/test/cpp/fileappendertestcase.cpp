@@ -45,12 +45,7 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 		LOGUNIT_TEST(testStripDuplicateBackslashes);
 		LOGUNIT_TEST(testNegativeBufferSizeOptionFallsBack);
 		LOGUNIT_TEST(testOversizedBufferSizeOptionFallsBack);
-		LOGUNIT_TEST(testSetBufferSizeNormalizesNegativeValue);
-
 		LOGUNIT_TEST_SUITE_END();
-
-
-
 
 	public:
 
@@ -126,14 +121,6 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("2G"));
 			LOGUNIT_ASSERT(appender.getBufferSize() >= 0);
 		}
-
-		void testSetBufferSizeNormalizesNegativeValue()
-		{
-			FileAppender appender;
-			appender.setBufferSize(-100);
-			LOGUNIT_ASSERT(appender.getBufferSize() >= 0);
-		}
-
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(FileAppenderTestCase);

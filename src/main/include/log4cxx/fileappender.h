@@ -186,7 +186,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/**
 		Use \c newValue as the size of the output buffer.
 		*/
-		void setBufferSize(int newValue);
+		void setBufferSize(size_t newValue);
 
 		/**
 		Flush the output buffer every \c newValue seconds.

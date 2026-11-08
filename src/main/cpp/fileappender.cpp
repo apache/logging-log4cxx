@@ -375,13 +375,8 @@ int FileAppender::getBufferedSeconds() const
 	return _priv->bufferedSeconds;
 }
 
-void FileAppender::setBufferSize(int newValue)
+void FileAppender::setBufferSize(size_t newValue)
 {
-	if (newValue < 0)
-	{
-		LogLog::warn(LOG4CXX_STR("FileAppender BufferSize must be non-negative. Using zero."));
-		newValue = 0;
-	}
 	_priv->bufferSize = newValue;
 }
 
