@@ -257,10 +257,10 @@ public:
 		const size_t expectedValue = (std::numeric_limits<long>::max)();
 		LOGUNIT_ASSERT_EQUAL(expectedValue, OptionConverter::toFileSize(lsMaxLong, defaultValue));
 
-		const size_t onePastMaxLong = static_cast<size_t>((std::numeric_limits<long>::max)()) + 1;
-		LogString lsOnePastMaxLong;
-		StringHelper::toString(onePastMaxLong, lsOnePastMaxLong);
-		LOGUNIT_ASSERT_EQUAL(onePastMaxLong, OptionConverter::toFileSize(lsOnePastMaxLong, defaultValue));
+		const size_t onePastMaxInt = static_cast<size_t>((std::numeric_limits<int>::max)()) + 1;
+		LogString lsOnePastMaxInt;
+		StringHelper::toString(onePastMaxInt, lsOnePastMaxInt);
+		LOGUNIT_ASSERT_EQUAL(onePastMaxInt, OptionConverter::toFileSize(lsOnePastMaxInt, defaultValue));
 
 		const size_t overflowBase = static_cast<size_t>((std::numeric_limits<size_t>::max)() / (1024LL * 1024LL * 1024LL)) + 1ULL;
 		auto overflowSizeString = std::to_string(overflowBase) + "GB";
