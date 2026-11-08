@@ -256,7 +256,7 @@ public:
 		const size_t expectedValue = (std::numeric_limits<long>::max)();
 		LOGUNIT_ASSERT_EQUAL(expectedValue, OptionConverter::toFileSize(lsMaxLong, defaultValue));
 
-		const size_t onePastMaxLong = static_cast<unsigned long long>((std::numeric_limits<long>::max)()) + 1ULL;
+		const size_t onePastMaxLong = static_cast<size_t>((std::numeric_limits<long>::max)() + 1);
 		auto onePastMaxLongString = std::to_string(onePastMaxLong);
 		LOG4CXX_DECODE_CHAR(lsOnePastMaxLong, onePastMaxLongString);
 		LOGUNIT_ASSERT_EQUAL(onePastMaxLong, OptionConverter::toFileSize(lsOnePastMaxLong, defaultValue));
