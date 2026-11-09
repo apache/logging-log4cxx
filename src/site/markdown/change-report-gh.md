@@ -85,7 +85,7 @@ Release 2.0.0 includes the following new features:
 * An incorrect configuration option name generates a warning in the [Log4cxx internal debugging](internal-debugging.html) output
    \[[#738](https://github.com/apache/logging-log4cxx/pull/738)\]
 
-* Improved [SMTPAppender](@ref log4cxx::net::SMTPAppender] diagnostic messages in the [Log4cxx internal debugging](internal-debugging.html) output
+* Improved [SMTPAppender](@ref log4cxx::net::SMTPAppender) diagnostic messages in the [Log4cxx internal debugging](internal-debugging.html) output
    \[[#735](https://github.com/apache/logging-log4cxx/pull/735)\]
 
 * [SMTP](@ref log4cxx::net::SMTPAppender::setOption) and [Telnet](@ref log4cxx::net::TelnetAppender::setOption) appenders use secure-by-default configurations

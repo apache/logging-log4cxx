@@ -84,7 +84,7 @@ class LOG4CXX_EXPORT OptionConverter
 		<code>props</code>. Then perform variable substitution on the
 		found value.
 		*/
-		static LogString findAndSubst(const LogString& key, Properties& props);
+		static LogString findAndSubst(const LogString& key, const Properties& props);
 
 		/**
 		Perform variable substitution in string <code>val</code> from the
@@ -120,7 +120,7 @@ class LOG4CXX_EXPORT OptionConverter
 		@param props The properties from which variable substitution is performed.
 		@throws IllegalArgumentException if <code>val</code> is malformed.
 		*/
-		static LogString substVars(const LogString& val, Properties& props);
+		static LogString substVars(const LogString& val, const Properties& props);
 
 		/**
 		 *  Gets the specified system property.
@@ -132,31 +132,44 @@ class LOG4CXX_EXPORT OptionConverter
 		static LogString getSystemProperty(const LogString& key, const LogString& def);
 
 		/**
-		Instantiate an object given a class name. Check that the
-		<code>className</code> is a subclass of
-		<code>superClass</code>. If that test fails or the object could
-		not be instantiated, then <code>defaultValue</code> is returned.
+		Instantiate an object given a class name.
+		Returns \c defaultValue if the named class is not a registered class
+		or the class does not inherit from \c superClass.
 
-		@param className The fully qualified class name of the object to instantiate.
-		@param superClass The class to which the new object should belong.
-		@param defaultValue The object to return in case of non-fulfillment
+		@param className The registered name of the class to construct.
+		@param superClass The class from which the new object must inherit.
+		@param defaultValue The value to return in case of failure
 		*/
-		static ObjectPtr instantiateByClassName(const LogString& className,
-			const Class& superClass, const ObjectPtr& defaultValue);
+		static ObjectPtr instantiateByClassName
+			( const LogString& className
+			, const Class&     superClass
+			, const ObjectPtr& defaultValue
+			);
 
-		static ObjectPtr instantiateByKey(Properties& props,
-			const LogString& key, const Class& superClass,
-			const ObjectPtr& defaultValue);
+		/**
+		Instantiate an object using the value in \c props associated with \c key as a registered class name.
+		Returns \c defaultValue if the named class is not a registered class
+		or the class does not inherit from \c superClass.
+
+		@param key The \c props entry whose value is the registered name of the class to construct.
+		@param superClass The class from which the new object must inherit.
+		@param defaultValue The value to return in case of failure
+		*/
+		static ObjectPtr instantiateByKey
+			( const Properties& props
+			, const LogString&  key
+			, const Class&      superClass
+			, const ObjectPtr&  defaultValue
+			);
 
 		/**
 		Use the information in \c configFileName to configure Log4cxx.
 
 		@param configFileName Holds the path of the configuration file.
-		@param className If provided, the name of the class used to process \c configFileName,
-		which must be a subclass of Configurator.
-		PropertyConfigurator is used if \c className is empty
-		or if \c configFileName does not end in '.xml',
-		in which case DOMConfigurator is used.
+		@param className The spi::Configurator subclass used to process \c configFileName.
+		If empty, a registered class whose name ends with "Configurator" and
+		whose spi::Configurator::isValid instance method
+		returns <code>true</code> is used to process the configuration file.
 		@param target Holds the configuration result
 		@param millisecondDelay If greater than zero, the milliseconds to sleep
 		between checking if <code>configFileName</code> has been modified
