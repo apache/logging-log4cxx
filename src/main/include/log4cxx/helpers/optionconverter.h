@@ -132,10 +132,9 @@ class LOG4CXX_EXPORT OptionConverter
 		static LogString getSystemProperty(const LogString& key, const LogString& def);
 
 		/**
-		Instantiate an object given a class name. Check that the
-		<code>className</code> is a subclass of
-		<code>superClass</code>. If that test fails or the object could
-		not be instantiated, then <code>defaultValue</code> is returned.
+		Instantiate an object given a class name.
+		Returns \c defaultValue if the named class is not a registered class
+		or the class does not inherit from \c superClass.
 
 		@param className The registered name of the class to construct.
 		@param superClass The class from which the new object must inherit.
@@ -144,6 +143,15 @@ class LOG4CXX_EXPORT OptionConverter
 		static ObjectPtr instantiateByClassName(const LogString& className,
 			const Class& superClass, const ObjectPtr& defaultValue);
 
+		/**
+		Instantiate an object using the value in \c props associated with \c key as a registered class name.
+		Returns \c defaultValue if the named class is not a registered class
+		or the class does not inherit from \c superClass.
+
+		@param key The \c props entry whose value is the registered name of the class to construct.
+		@param superClass The class from which the new object must inherit.
+		@param defaultValue The value to return in case of failure
+		*/
 		static ObjectPtr instantiateByKey(Properties& props,
 			const LogString& key, const Class& superClass,
 			const ObjectPtr& defaultValue);
