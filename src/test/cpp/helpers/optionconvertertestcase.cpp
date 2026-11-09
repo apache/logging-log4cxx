@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/file.h>
 #include <log4cxx/hierarchy.h>
 #include "../testchar.h"
@@ -177,84 +178,94 @@ public:
 
 	void toIntReturnsDefaultOnOverflow()
 	{
-		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("9999999999999999999999"), 7));
-		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("-9999999999999999999999"), 7));
-		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("2147483648"), 7));
-		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("-2147483649"), 7));
+		const int defaultValue = 7;
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toInt(LOG4CXX_STR("9999999999999999999999"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toInt(LOG4CXX_STR("-9999999999999999999999"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toInt(LOG4CXX_STR("2147483648"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toInt(LOG4CXX_STR("-2147483649"), defaultValue));
 	}
 
 	void toIntReturnsDefaultOnMalformedInput()
 	{
-		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("not-a-number"), 7));
-		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("123abc"), 7));
-		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR("42xyz"), 7));
-		LOGUNIT_ASSERT_EQUAL(7, OptionConverter::toInt(LOG4CXX_STR(""), 7));
-		LOGUNIT_ASSERT_EQUAL((std::numeric_limits<int>::max)(), OptionConverter::toInt(LOG4CXX_STR("2147483647"), 7));
-		LOGUNIT_ASSERT_EQUAL((std::numeric_limits<int>::min)(), OptionConverter::toInt(LOG4CXX_STR("-2147483648"), 7));
+		const int defaultValue = 7;
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toInt(LOG4CXX_STR("not-a-number"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toInt(LOG4CXX_STR("123abc"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toInt(LOG4CXX_STR("42xyz"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toInt(LOG4CXX_STR(""), defaultValue));
+		LOGUNIT_ASSERT_EQUAL((std::numeric_limits<int>::max)(), OptionConverter::toInt(LOG4CXX_STR("2147483647"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL((std::numeric_limits<int>::min)(), OptionConverter::toInt(LOG4CXX_STR("-2147483648"), defaultValue));
 	}
 
 	void toFileSizeAcceptsValidValues()
 	{
-		LOGUNIT_ASSERT_EQUAL(10L, OptionConverter::toFileSize(LOG4CXX_STR("10"), 7));
-		LOGUNIT_ASSERT_EQUAL(10L, OptionConverter::toFileSize(LOG4CXX_STR("10B"), 7));
-		LOGUNIT_ASSERT_EQUAL(10L * 1024L, OptionConverter::toFileSize(LOG4CXX_STR("10 KB"), 7));
-		LOGUNIT_ASSERT_EQUAL(10L * 1024L * 1024L, OptionConverter::toFileSize(LOG4CXX_STR("10MB"), 7));
+		const size_t tenBytesExpected = 10LL;
+		const size_t tenKBExpected = 10LL * 1024LL;
+		const size_t tenMBExpected = 10LL * 1024LL * 1024LL;
+		LOGUNIT_ASSERT_EQUAL(tenBytesExpected, OptionConverter::toFileSize(LOG4CXX_STR("10"), 7));
+		LOGUNIT_ASSERT_EQUAL(tenBytesExpected, OptionConverter::toFileSize(LOG4CXX_STR("10B"), 7));
+		LOGUNIT_ASSERT_EQUAL(tenKBExpected, OptionConverter::toFileSize(LOG4CXX_STR("10 KB"), 7));
+		LOGUNIT_ASSERT_EQUAL(tenMBExpected, OptionConverter::toFileSize(LOG4CXX_STR("10MB"), 7));
 	}
 
 	void toFileSizeAcceptsWhitespaceSeparatedValues()
 	{
-		LOGUNIT_ASSERT_EQUAL(10L, OptionConverter::toFileSize(LOG4CXX_STR("10 B"), 7));
-		LOGUNIT_ASSERT_EQUAL(10L * 1024L, OptionConverter::toFileSize(LOG4CXX_STR("10 KB"), 7));
-		LOGUNIT_ASSERT_EQUAL(10L * 1024L * 1024L, OptionConverter::toFileSize(LOG4CXX_STR("10   MB"), 7));
-		const long tenGBExpected = ((std::numeric_limits<long>::max)() >= (10LL * 1024LL * 1024LL * 1024LL))
-			? static_cast<long>(10LL * 1024LL * 1024LL * 1024LL)
-			: 7L;
+		const size_t tenBytesExpected = 10LL;
+		LOGUNIT_ASSERT_EQUAL(tenBytesExpected, OptionConverter::toFileSize(LOG4CXX_STR("10 B"), 7));
+		const size_t tenKBExpected = 10LL * 1024LL;
+		LOGUNIT_ASSERT_EQUAL(tenKBExpected, OptionConverter::toFileSize(LOG4CXX_STR("10 KB"), 7));
+		const size_t tenMBExpected = 10LL * 1024LL * 1024LL;
+		LOGUNIT_ASSERT_EQUAL(tenMBExpected, OptionConverter::toFileSize(LOG4CXX_STR("10   MB"), 7));
+		const size_t tenGBExpected = 10LL * 1024LL * 1024LL * 1024LL;
 		LOGUNIT_ASSERT_EQUAL(tenGBExpected, OptionConverter::toFileSize(LOG4CXX_STR("10GB   "), 7));
 	}
 
 	void toFileSizeAcceptsLowercaseSuffixes()
 	{
-		LOGUNIT_ASSERT_EQUAL(10L * 1024L, OptionConverter::toFileSize(LOG4CXX_STR("10kb"), 7));
-		LOGUNIT_ASSERT_EQUAL(10L * 1024L * 1024L, OptionConverter::toFileSize(LOG4CXX_STR("10mb"), 7));
-		const long tenGbLowerExpected = ((std::numeric_limits<long>::max)() >= (10LL * 1024LL * 1024LL * 1024LL))
-			? static_cast<long>(10LL * 1024LL * 1024LL * 1024LL)
-			: 7L;
-		LOGUNIT_ASSERT_EQUAL(tenGbLowerExpected, OptionConverter::toFileSize(LOG4CXX_STR("10gb"), 7));
+		const size_t tenKBExpected = 10LL * 1024LL;
+		LOGUNIT_ASSERT_EQUAL(tenKBExpected, OptionConverter::toFileSize(LOG4CXX_STR("10kb"), 7));
+		const size_t tenMBExpected = 10LL * 1024LL * 1024LL;
+		LOGUNIT_ASSERT_EQUAL(tenMBExpected, OptionConverter::toFileSize(LOG4CXX_STR("10mb"), 7));
+		const size_t tenGBExpected = 10LL * 1024LL * 1024LL * 1024LL;
+		LOGUNIT_ASSERT_EQUAL(tenGBExpected, OptionConverter::toFileSize(LOG4CXX_STR("10gb"), 7));
 	}
 
 	void toFileSizeReturnsDefaultOnMalformedInput()
 	{
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("not-a-size"), 7));
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("123abc"), 7));
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("10XB"), 7));
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("10QB"), 7));
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("10K"), 7));
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("10MBjunk"), 7));
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("10 B junk"), 7));
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("-1MB"), 7));
+		const size_t defaultValue = 7;
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("not-a-size"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("123abc"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("10XB"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("10QB"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("10K"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("10MBjunk"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("10 B junk"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("-1MB"), defaultValue));
 	}
 
 	void toFileSizeReturnsDefaultOnOverflow()
 	{
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("9999999999999999999999"), 7));
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(LOG4CXX_STR("9999999999999999999999GB"), 7));
+		const size_t defaultValue = 7;
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("9999999999999999999999"), defaultValue));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(LOG4CXX_STR("9999999999999999999999GB"), defaultValue));
 	}
 
 	void toFileSizeBoundaryValues()
 	{
+		const size_t defaultValue = 7;
 		auto maxLongString = std::to_string((std::numeric_limits<long>::max)());
 		LOG4CXX_DECODE_CHAR(lsMaxLong, maxLongString);
-		LOGUNIT_ASSERT_EQUAL((std::numeric_limits<long>::max)(), OptionConverter::toFileSize(lsMaxLong, 7));
+		const size_t expectedValue = (std::numeric_limits<long>::max)();
+		LOGUNIT_ASSERT_EQUAL(expectedValue, OptionConverter::toFileSize(lsMaxLong, defaultValue));
 
-		const unsigned long long onePastMaxLong = static_cast<unsigned long long>((std::numeric_limits<long>::max)()) + 1ULL;
-		auto onePastMaxLongString = std::to_string(onePastMaxLong);
-		LOG4CXX_DECODE_CHAR(lsOnePastMaxLong, onePastMaxLongString);
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(lsOnePastMaxLong, 7));
+		const size_t onePastMaxInt = static_cast<size_t>((std::numeric_limits<int>::max)()) + 1;
+		LogString lsOnePastMaxInt;
+		StringHelper::toString(onePastMaxInt, lsOnePastMaxInt);
+		LOGUNIT_ASSERT_EQUAL(onePastMaxInt, OptionConverter::toFileSize(lsOnePastMaxInt, defaultValue));
 
-		const unsigned long long overflowBase = static_cast<unsigned long long>((std::numeric_limits<long>::max)() / (1024LL * 1024LL * 1024LL)) + 1ULL;
+		const size_t overflowBase = static_cast<size_t>((std::numeric_limits<size_t>::max)() / (1024LL * 1024LL * 1024LL)) + 1ULL;
 		auto overflowSizeString = std::to_string(overflowBase) + "GB";
 		LOG4CXX_DECODE_CHAR(lsOverflowAfterMultiply, overflowSizeString);
-		LOGUNIT_ASSERT_EQUAL(7L, OptionConverter::toFileSize(lsOverflowAfterMultiply, 7));
+		LOGUNIT_ASSERT_EQUAL(defaultValue, OptionConverter::toFileSize(lsOverflowAfterMultiply, defaultValue));
 	}
 
 	/**

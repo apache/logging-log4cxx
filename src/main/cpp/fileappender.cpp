@@ -114,13 +114,7 @@ void FileAppender::setOption(const LogString& option,
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-		long parsed = OptionConverter::toFileSize(value, 8 * 1024);
-		if (parsed < 0 || parsed > static_cast<long>((std::numeric_limits<int>::max)()))
-		{
-			LogLog::warn(LOG4CXX_STR("FileAppender BufferSize is out of range. Using the default value."));
-			parsed = 8 * 1024;
-		}
-		_priv->bufferSize = static_cast<int>(parsed);
+		_priv->bufferSize = OptionConverter::toFileSize(value, 8 * 1024);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDSECONDS"), LOG4CXX_STR("bufferedseconds")))
 	{
@@ -371,7 +365,7 @@ bool FileAppender::getBufferedIO() const
 	return _priv->bufferedIO;
 }
 
-int FileAppender::getBufferSize() const
+size_t FileAppender::getBufferSize() const
 {
 	return _priv->bufferSize;
 }
@@ -381,13 +375,8 @@ int FileAppender::getBufferedSeconds() const
 	return _priv->bufferedSeconds;
 }
 
-void FileAppender::setBufferSize(int newValue)
+void FileAppender::setBufferSize(size_t newValue)
 {
-	if (newValue < 0)
-	{
-		LogLog::warn(LOG4CXX_STR("FileAppender BufferSize must be non-negative. Using zero."));
-		newValue = 0;
-	}
 	_priv->bufferSize = newValue;
 }
 

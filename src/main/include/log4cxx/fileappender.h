@@ -125,7 +125,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		ImmediateFlush | True,False | False |
 		BufferSize | (\ref fileSz1 "1") | 8 KB |
 
-		\anchor fileSz1 (1) An integer in the range 0 - 2^32.
+		\anchor fileSz1 (1) An integer in the range 0 - 2^63.
 		 You can specify the value with the suffixes "KB" or "MB" so that the integer is
 		 interpreted being expressed respectively in kilobytes or megabytes.
 		 For example, the value "10KB" will be interpreted as 10240.
@@ -145,7 +145,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/**
 		Get the size of the IO buffer.
 		*/
-		int getBufferSize() const;
+		size_t getBufferSize() const;
 
 		/**
 		Get the number of seconds between file writes
@@ -186,7 +186,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/**
 		Use \c newValue as the size of the output buffer.
 		*/
-		void setBufferSize(int newValue);
+		void setBufferSize(size_t newValue);
 
 		/**
 		Flush the output buffer every \c newValue seconds.

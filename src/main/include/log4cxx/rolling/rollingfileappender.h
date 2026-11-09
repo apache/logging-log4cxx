@@ -110,7 +110,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		Set the maximum size that the output file is allowed to reach before being rolled over to backup files.
 
 		<p>In configuration files, the <b>MaxFileSize</b> option takes an
-		 long integer in the range 0 - 2^63. You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is
+		 integer in the range 0 - 2^63. You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is
 		 interpreted being expressed respectively in kilobytes, megabytes
 		 or gigabytes. For example, the value "10KB" will be interpreted as 10240.
 		*/

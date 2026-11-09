@@ -61,13 +61,13 @@ class LOG4CXX_EXPORT OptionConverter
 		*/
 		static int toInt(const LogString& value, int defaultValue);
 		/**
-		 The numeric equivalent of \c value if it is not empty, otherwise \c defaultValue.
+		 The numeric equivalent of \c value if it is an integer in the range 0 - 2^63, otherwise \c defaultValue.
 
 		 A suffix "KB", "MB" or "GB" after an integer value
 		 converts the provided number respectively to kilobytes, megabytes
 		 and gigabytes. For example, the value "10KB" will be interpreted as 10240.
 		*/
-		static long toFileSize(const LogString& value, long defaultValue);
+		static size_t toFileSize(const LogString& value, size_t defaultValue);
 		/**
 		The Level indicated by \c value if recognised otherwise \c defaultValue.
 
