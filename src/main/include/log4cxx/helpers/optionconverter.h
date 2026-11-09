@@ -137,9 +137,9 @@ class LOG4CXX_EXPORT OptionConverter
 		<code>superClass</code>. If that test fails or the object could
 		not be instantiated, then <code>defaultValue</code> is returned.
 
-		@param className The fully qualified class name of the object to instantiate.
-		@param superClass The class to which the new object should belong.
-		@param defaultValue The object to return in case of non-fulfillment
+		@param className The registered name of the class to construct.
+		@param superClass The class from which the new object must inherit.
+		@param defaultValue The value to return in case of failure
 		*/
 		static ObjectPtr instantiateByClassName(const LogString& className,
 			const Class& superClass, const ObjectPtr& defaultValue);
@@ -152,11 +152,10 @@ class LOG4CXX_EXPORT OptionConverter
 		Use the information in \c configFileName to configure Log4cxx.
 
 		@param configFileName Holds the path of the configuration file.
-		@param className If provided, the name of the class used to process \c configFileName,
-		which must be a subclass of Configurator.
-		PropertyConfigurator is used if \c className is empty
-		or if \c configFileName does not end in '.xml',
-		in which case DOMConfigurator is used.
+		@param className The spi::Configurator subclass used to process \c configFileName.
+		If empty, a registered class whose name ends with "Configurator" and
+		whose spi::Configurator::isValid instance method
+		returns <code>true</code> is used to process the configuration file.
 		@param target Holds the configuration result
 		@param millisecondDelay If greater than zero, the milliseconds to sleep
 		between checking if <code>configFileName</code> has been modified
