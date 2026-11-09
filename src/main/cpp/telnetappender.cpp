@@ -441,7 +441,3 @@ void TelnetAppender::setReuseAddress(bool reuseAddress)
 	_priv->reuseAddress = reuseAddress;
 }
 
-bool TelnetAppender::requiresLayout() const
-{
-	return false;
-}

@@ -39,20 +39,9 @@ class NullWriterAppender : public log4cxx::AppenderSkeleton
 
 		NullWriterAppender() {}
 
-		void close() override {}
-
-		bool requiresLayout() const override
-		{
-			return true;
-		}
-
 		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) override
 		{
 			// This gets called whenever there is a valid event for our appender.
-		}
-
-		void setOption(const LogString& option, const LogString& value) override
-		{
 		}
 };
 

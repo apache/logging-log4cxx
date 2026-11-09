@@ -66,11 +66,6 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		~TelnetAppender();
 
 		/**
-		If no layout is provided, sends only the log message to attached client(s).
-		*/
-		bool requiresLayout() const override;
-
-		/**
 		The current encoding value.
 
 		\sa setOption

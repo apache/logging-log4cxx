@@ -196,13 +196,6 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 	}
 }
 
-// Does ODBCAppender require a layout?
-
-bool ODBCAppender::requiresLayout() const
-{
-	return false;
-}
-
 void ODBCAppender::activateOptions(  )
 {
 #if !LOG4CXX_HAVE_ODBC

@@ -67,8 +67,7 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
 		END_LOG4CXX_CAST_MAP()
 
-		AppenderSkeleton();
-		AppenderSkeleton(const LayoutPtr& layout);
+		AppenderSkeleton(const LayoutPtr& layout = {});
 		virtual ~AppenderSkeleton();
 
 

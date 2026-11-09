@@ -524,29 +524,26 @@ AppenderPtr ConfiguratorContext::parseAppender
 
 	if (appender->instanceof(OptionHandler::getStaticClass()))
 	{
-		if (appender->requiresLayout())
+		auto obj = OptionConverter::instantiateByKey
+			( props
+			, layoutPrefix
+			, Layout::getStaticClass()
+			, {} // defaultValue
+			);
+		if (auto layout = LOG4CXX_NS::cast<Layout>( obj ))
 		{
-			LayoutPtr layout;
-			std::shared_ptr<Object> obj =
-				OptionConverter::instantiateByKey(
-					props, layoutPrefix, Layout::getStaticClass(), 0);
-			layout = LOG4CXX_NS::cast<Layout>( obj );
-
-			if (layout != 0)
+			appender->setLayout(layout);
+			if (LogLog::isDebugEnabled())
 			{
-				appender->setLayout(layout);
-				if (LogLog::isDebugEnabled())
-				{
-					LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Layout::getStaticClass().getName()
-						+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
-				}
+				LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Layout::getStaticClass().getName()
+					+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
+			}
 
-				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."));
-				if (LogLog::isDebugEnabled())
-				{
-					LogLog::debug((LogString) LOG4CXX_STR("End of parsing for [")
-						+ appenderName +  LOG4CXX_STR("]"));
-				}
+			PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."));
+			if (LogLog::isDebugEnabled())
+			{
+				LogLog::debug((LogString) LOG4CXX_STR("End of parsing for [")
+					+ appenderName +  LOG4CXX_STR("]"));
 			}
 		}
 

@@ -217,11 +217,6 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 
 	public:
 		/**
-		* Does this appender require a layout?
-		* */
-		bool requiresLayout() const override;
-
-		/**
 		* Set pre-formated statement eg: insert into LogTable (msg) values ("%m")
 		*/
 		void setSql(const LogString& s);

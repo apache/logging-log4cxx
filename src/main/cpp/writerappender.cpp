@@ -216,13 +216,6 @@ void WriterAppender::WriterAppenderPriv::writeHeader()
 	}
 }
 
-
-
-bool WriterAppender::requiresLayout() const
-{
-	return true;
-}
-
 void WriterAppender::setOption(const LogString& option, const LogString& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ENCODING"), LOG4CXX_STR("encoding")))

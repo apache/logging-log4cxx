@@ -25,3 +25,8 @@ void Appender::doAppend(const spi::LoggingEventPtr& event, helpers::Pool&)
 {
 	doAppend(event);
 }
+
+bool Appender::requiresLayout() const
+{
+	return true;
+}

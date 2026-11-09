@@ -115,20 +115,10 @@ class LOG4CXX_EXPORT Appender
 		virtual void setName(const LogString& name) = 0;
 
 		/**
-		 Configurators call this method to determine if the appender
-		 requires a layout. If this method returns <code>true</code>,
-		 meaning that layout is required, then the configurator will
-		 configure an layout using the configuration information at its
-		 disposal.  If this method returns <code>false</code>, meaning that
-		 a layout is not required, then layout configuration will be
-		 skipped even if there is available layout configuration
-		 information at the disposal of the configurator..
-
-		 <p>In the rather exceptional case, where the appender
-		 implementation admits a layout but can also work without it, then
-		 the appender should return <code>true</code>.
+		@deprecated This method will be removed in a future version.
 		*/
-		virtual bool requiresLayout() const = 0;
+		[[deprecated("This method is no longer used by Log4cxx configurators")]]
+		virtual bool requiresLayout() const;
 };
 
 LOG4CXX_PTR_DEF(Appender);

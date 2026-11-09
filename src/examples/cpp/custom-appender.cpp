@@ -32,10 +32,6 @@ public:
 
 	NullWriterAppender(){}
 
-	bool requiresLayout() const override {
-		return false;
-	}
-
 	void append( const log4cxx::spi::LoggingEventPtr& ) override {
 		// This gets called whenever there is a valid event for our appender.
 	}

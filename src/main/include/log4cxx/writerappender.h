@@ -133,9 +133,6 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		 */
 		void setOption(const LogString& option, const LogString& value) override;
 
-
-		bool requiresLayout() const override;
-
 	protected:
 		/**
 		 Format \c event as a message and write it to the character stream.

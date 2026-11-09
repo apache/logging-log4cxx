@@ -153,10 +153,6 @@ class LOG4CXX_EXPORT AsyncAppender :
 		*/
 		bool isAttached(const AppenderPtr& appender) const override;
 
-		/** Return false
-		*/
-		bool requiresLayout() const override;
-
 		/**
 		 * Removes and closes all attached appenders.
 		*/

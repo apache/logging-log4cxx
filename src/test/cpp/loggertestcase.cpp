@@ -51,11 +51,6 @@ class CountingAppender : public AppenderSkeleton
 		{
 			counter++;
 		}
-
-		bool requiresLayout() const override
-		{
-			return true;
-		}
 };
 
 class CountingListener : public HierarchyEventListener{
