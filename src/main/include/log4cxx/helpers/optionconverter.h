@@ -140,8 +140,11 @@ class LOG4CXX_EXPORT OptionConverter
 		@param superClass The class from which the new object must inherit.
 		@param defaultValue The value to return in case of failure
 		*/
-		static ObjectPtr instantiateByClassName(const LogString& className,
-			const Class& superClass, const ObjectPtr& defaultValue);
+		static ObjectPtr instantiateByClassName
+			( const LogString& className
+			, const Class&     superClass
+			, const ObjectPtr& defaultValue
+			);
 
 		/**
 		Instantiate an object using the value in \c props associated with \c key as a registered class name.
