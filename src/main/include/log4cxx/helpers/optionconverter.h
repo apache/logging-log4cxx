@@ -84,7 +84,7 @@ class LOG4CXX_EXPORT OptionConverter
 		<code>props</code>. Then perform variable substitution on the
 		found value.
 		*/
-		static LogString findAndSubst(const LogString& key, Properties& props);
+		static LogString findAndSubst(const LogString& key, const Properties& props);
 
 		/**
 		Perform variable substitution in string <code>val</code> from the
@@ -120,7 +120,7 @@ class LOG4CXX_EXPORT OptionConverter
 		@param props The properties from which variable substitution is performed.
 		@throws IllegalArgumentException if <code>val</code> is malformed.
 		*/
-		static LogString substVars(const LogString& val, Properties& props);
+		static LogString substVars(const LogString& val, const Properties& props);
 
 		/**
 		 *  Gets the specified system property.
@@ -152,9 +152,12 @@ class LOG4CXX_EXPORT OptionConverter
 		@param superClass The class from which the new object must inherit.
 		@param defaultValue The value to return in case of failure
 		*/
-		static ObjectPtr instantiateByKey(Properties& props,
-			const LogString& key, const Class& superClass,
-			const ObjectPtr& defaultValue);
+		static ObjectPtr instantiateByKey
+			( const Properties& props
+			, const LogString&  key
+			, const Class&      superClass
+			, const ObjectPtr&  defaultValue
+			);
 
 		/**
 		Use the information in \c configFileName to configure Log4cxx.

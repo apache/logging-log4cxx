@@ -77,7 +77,7 @@ bool isRecursiveReference(const LogString& newkey, const LogStringChain* path)
 	return result;
 }
 
-LogString substVarsSafely(const LogString& val, helpers::Properties& props, const LogStringChain* path = 0)
+LogString substVarsSafely(const LogString& val, const helpers::Properties& props, const LogStringChain* path = 0)
 {
 	LogString sbuf;
 	const logchar delimStartArray[] = { 0x24, 0x7B, 0 }; // '$', '{'
@@ -319,7 +319,7 @@ size_t OptionConverter::toFileSize(const LogString& s, size_t dEfault)
 	return parsed * multiplier;
 }
 
-LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
+LogString OptionConverter::findAndSubst(const LogString& key, const Properties& props)
 {
 	LogString value(props.getProperty(key));
 
@@ -340,7 +340,7 @@ LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
 	}
 }
 
-LogString OptionConverter::substVars(const LogString& val, Properties& props)
+LogString OptionConverter::substVars(const LogString& val, const Properties& props)
 {
 	return substVarsSafely(val, props);
 }
@@ -424,8 +424,12 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
 }
 
 
-ObjectPtr OptionConverter::instantiateByKey(Properties& props, const LogString& key,
-	const Class& superClass, const ObjectPtr& defaultValue)
+ObjectPtr OptionConverter::instantiateByKey
+	( const Properties& props
+	, const LogString&  key
+	, const Class&      superClass
+	, const ObjectPtr&  defaultValue
+	)
 {
 	// Get the value of the property in string form
 	LogString className(findAndSubst(key, props));
