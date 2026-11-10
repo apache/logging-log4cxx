@@ -59,6 +59,8 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 
 	~SocketAppenderSkeletonPriv()
 	{
+		if (auto pManager = this->taskManager.lock())
+			pManager->value().removePeriodicTask(this->taskName);
 		if (this->setClosed())
 			this->shutdown();
 	}
