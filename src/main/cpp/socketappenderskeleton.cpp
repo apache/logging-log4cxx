@@ -140,6 +140,11 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::fireConnector()
 			+ this->address->toString() + LOG4CXX_STR(":");
 		StringHelper::toString(this->port, this->taskName);
 	}
+	if (!this->retryTask)
+	{
+		this->retryTask = std::make_shared<RetryTask>();
+		this->retryTask->priv = this;
+	}
 	auto taskManager = ThreadUtility::instancePtr();
 	if (!taskManager->value().hasPeriodicTask(this->taskName))
 	{
@@ -153,8 +158,9 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::fireConnector()
 			msg += LOG4CXX_STR("].");
 			LogLog::debug(msg);
 		}
+		auto retryTask = this->retryTask;
 		taskManager->value().addPeriodicTask(this->taskName
-			, std::bind(&SocketAppenderSkeleton::SocketAppenderSkeletonPriv::retryConnect, this)
+			, [retryTask]() { retryTask->run(); }
 			, std::chrono::milliseconds(this->reconnectionDelay)
 			);
 	}
@@ -240,6 +246,8 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::shutdown()
 		;
 	else if (auto pManager = this->taskManager.lock())
 		pManager->value().removePeriodicTask(this->taskName);
+	if (this->retryTask)
+		this->retryTask->detach(); // Blocks until any in-flight retryConnect completes
 	std::lock_guard<std::recursive_mutex> lock(this->mutex);
 	if (this->outputSink)
 	{
@@ -294,8 +302,9 @@ void SocketAppenderSkeleton::setReconnectionDelay(int reconnectionDelay1)
 	if (pManager && pManager->value().hasPeriodicTask(_priv->taskName))
 	{
 		pManager->value().removePeriodicTask(_priv->taskName);
+		auto retryTask = _priv->retryTask;
 		pManager->value().addPeriodicTask(_priv->taskName
-			, std::bind(&SocketAppenderSkeleton::SocketAppenderSkeletonPriv::retryConnect, _priv)
+			, [retryTask]() { retryTask->run(); }
 			, std::chrono::milliseconds(_priv->reconnectionDelay)
 			);
 	}
