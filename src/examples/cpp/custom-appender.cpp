@@ -56,14 +56,14 @@ public:
 // Register our appender with Log4cxx at startup
 IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 
-}
+} // namespace com::foo
 
 int main()
 {
-	LOG4CXX_NS::xml::DOMConfigurator::configure( "custom-appender.xml" );
+	log4cxx::xml::DOMConfigurator::configure( "custom-appender.xml" );
 
-	auto rootLogger = LOG4CXX_NS::Logger::getRootLogger();
-	auto nullLogger = LOG4CXX_NS::Logger::getLogger( "NullLogger" );
+	auto rootLogger = log4cxx::Logger::getRootLogger();
+	auto nullLogger = log4cxx::Logger::getLogger( "NullLogger" );
 
 	LOG4CXX_INFO( rootLogger, "This is some root message" );
 	LOG4CXX_INFO( nullLogger, "This message will be discarded" );
