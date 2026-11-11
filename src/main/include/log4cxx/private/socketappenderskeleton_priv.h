@@ -103,6 +103,30 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	void retryConnect();
 
 	LogString socketSubclass;
+
+	/**
+	Control block shared with the periodic retry connect task.
+	*/
+	struct RetryTask
+	{
+		std::mutex mtx;
+		SocketAppenderSkeletonPriv* priv{ nullptr };
+
+		void run()
+		{
+			std::lock_guard<std::mutex> lock(mtx);
+			if (priv)
+				priv->retryConnect();
+		}
+
+		/** Detach from the appender, blocking until any in-flight retryConnect completes. */
+		void detach()
+		{
+			std::lock_guard<std::mutex> lock(mtx);
+			priv = nullptr;
+		}
+	};
+	std::shared_ptr<RetryTask> retryTask;
 };
 
 } // namespace net
