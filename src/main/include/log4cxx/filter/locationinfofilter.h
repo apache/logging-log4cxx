@@ -57,12 +57,16 @@ class LOG4CXX_EXPORT LocationInfoFilter: public LOG4CXX_NS::spi::Filter
 
 		Supported options | Supported values | Default value |
 		-------------- | ---------------- | --------------- |
-		Method | {any} | - |
+		Method | (\ref locationMethodName "1") | - |
 		LineNumber | {int} | - |
-		Operator | (\ref andOrAny "1") | Or |
+		Operator | (\ref andOrAny "2") | Or |
 		AcceptOnMatch | True,False | True |
 
-		\anchor andOrAny (1) If "And", both method name and line number must match,
+		\anchor locationMethodName (1) The method name without any class or namespace
+		(e.g. "methodName"), or qualified by its class and/or namespace names
+		(e.g. "Class::methodName" or "ns::Class::methodName").
+
+		\anchor andOrAny (2) If "And", both method name and line number must match,
 		otherwise either method name or line number match. 
 		*/
 		void setOption(const LogString& option, const LogString& value) override;
