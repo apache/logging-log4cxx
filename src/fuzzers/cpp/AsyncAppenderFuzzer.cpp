@@ -66,10 +66,6 @@ public:
 
 	FormattingSinkAppender(const LayoutPtr& layout) : AppenderSkeleton(layout) {}
 
-	bool requiresLayout() const override {
-		return true;
-	}
-
 	void append( const spi::LoggingEventPtr& event ) override {
 		LogString formatted;
 		getLayout()->format(formatted, event);

@@ -164,12 +164,6 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		*/
 		LogString getBcc() const;
 
-
-		/**
-		The <code>SMTPAppender</code> requires a <code>Layout</code>.
-		*/
-		bool requiresLayout() const override;
-
 		/**
 		Returns value of the <b>EvaluatorClass</b> option.
 		*/

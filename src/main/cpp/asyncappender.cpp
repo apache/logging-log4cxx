@@ -465,11 +465,6 @@ bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 	return priv->appenders.isAttached(appender);
 }
 
-bool AsyncAppender::requiresLayout() const
-{
-	return false;
-}
-
 void AsyncAppender::removeAllAppenders()
 {
 	priv->appenders.removeAllAppenders();

@@ -40,11 +40,6 @@ class CountingAppender : public AppenderSkeleton
 		{
 			count++;
 		}
-
-		bool requiresLayout() const override
-		{
-			return false;
-		}
 };
 using CountingAppenderPtr = std::shared_ptr<CountingAppender>;
 

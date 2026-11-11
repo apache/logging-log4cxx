@@ -646,11 +646,6 @@ SMTPAppender::~SMTPAppender()
 		_priv->shutdown();
 }
 
-bool SMTPAppender::requiresLayout() const
-{
-	return true;
-}
-
 LogString SMTPAppender::getFrom() const
 {
 	return _priv->from;

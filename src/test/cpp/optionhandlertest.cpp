@@ -65,11 +65,6 @@ public:
 		helpers::LogLog::debug(LOG4CXX_STR("BaseAppender::append"));
 	}
 
-	bool requiresLayout() const override
-	{
-		return false;
-	}
-
 	using AppenderSkeleton::activateOptions;
 	void activateOptions(  ) override
 	{

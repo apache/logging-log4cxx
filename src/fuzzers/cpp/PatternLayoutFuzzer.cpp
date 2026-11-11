@@ -39,20 +39,12 @@ public:
 	LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
 	END_LOG4CXX_CAST_MAP()
 
-	EncodingAppender() : AppenderSkeleton() {}
-
-	EncodingAppender(const LayoutPtr& layout) : AppenderSkeleton(layout) {}
-
-	bool requiresLayout() const override {
-		return true;
-	}
+	EncodingAppender(const LayoutPtr& layout = {}) : AppenderSkeleton(layout) {}
 
 	void append( const spi::LoggingEventPtr& event ) override {
 		LogString msg;
 		getLayout()->format(msg, event);
 	}
-
-	void setOption(const LogString& option, const LogString& value) override {}
 
 }; // class
 

@@ -35,11 +35,6 @@ class LOG4CXX_EXPORT OutputDebugStringAppender : public AppenderSkeleton
 
 		OutputDebugStringAppender();
 
-		bool requiresLayout() const override
-		{
-			return true;
-		}
-
 		void append( const spi::LoggingEventPtr& event ) override;
 };
 }

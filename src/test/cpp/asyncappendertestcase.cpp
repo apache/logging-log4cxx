@@ -83,11 +83,6 @@ class NullPointerAppender : public AppenderSkeleton
 		{
 			throw RuntimeException(LOG4CXX_STR("Intentional Exception"));
 		}
-
-		bool requiresLayout() const override
-		{
-			return false;
-		}
 };
 
 /**

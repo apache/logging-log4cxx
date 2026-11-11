@@ -91,15 +91,6 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
-		The SyslogAppender requires a layout. Hence, this method returns
-		<code>true</code>.
-		*/
-		bool requiresLayout() const override
-		{
-			return true;
-		}
-
-		/**
 		The <b>SyslogHost</b> option is the name of the the syslog host
 		where log output should go.
 		<b>WARNING</b> If the SyslogHost is not set, then this appender

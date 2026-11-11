@@ -149,14 +149,6 @@ class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
                 void append( const spi::LoggingEventPtr& event ) override;
 
                 /**
-                * DBAppender does not require a layout.
-                * */
-                bool requiresLayout() const override
-                {
-                        return false;
-                }
-
-                /**
                 * Set pre-formated statement eg: insert into LogTable (msg) values (?)
                 */
                 void setSql(const LogString& s);

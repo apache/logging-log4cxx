@@ -36,21 +36,10 @@ public:
 		setLayout(layout);
 	}
 
-	void close() override {}
-
-	bool requiresLayout() const override
-	{
-		return true;
-	}
-
 	void append( const spi::LoggingEventPtr& event ) override
 	{
 		LogString buf;
 		m_priv->layout->format(buf, event);
-	}
-
-	void setOption(const LogString& option, const LogString& value) override
-	{
 	}
 };
 

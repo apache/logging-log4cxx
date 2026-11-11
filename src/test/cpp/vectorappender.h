@@ -56,11 +56,6 @@ class VectorAppender : public AppenderSkeleton
 
 		bool isClosed() const;
 
-		bool requiresLayout() const override
-		{
-			return false;
-		}
-
 		void setMillisecondDelay(int milliseconds)
 		{
 			this->appendMillisecondDelay = milliseconds;

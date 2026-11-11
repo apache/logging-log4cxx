@@ -84,15 +84,6 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 
 		using SocketAppenderSkeleton::activateOptions;
 
-		/**
-		* This appender has a default layout.
-		* @returns false
-		*/
-		bool requiresLayout() const override
-		{
-			return false;
-		}
-
 	protected:
 		int getDefaultDelay() const override;
 
