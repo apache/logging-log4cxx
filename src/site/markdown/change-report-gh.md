@@ -76,6 +76,9 @@ User-defined subclasses of [spi::Configurator](@ref log4cxx::spi::Configurator) 
 
 Release 2.0.0 includes the following new features:
 
+* A [SocketAppender](@ref log4cxx::net::JSONSocketAppender) that sends JSON format messages.
+   \[[#883](https://github.com/apache/logging-log4cxx/pull/883)\]
+
 * A new [FileAppender](@ref log4cxx::FileAppender::setOption) option to delay log file creation until an event is added.
    \[[#775](https://github.com/apache/logging-log4cxx/pull/775)\]
 
