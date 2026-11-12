@@ -49,10 +49,10 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		virtual void append( const spi::LoggingEventPtr& event ) = 0;
 
 		/**
-		* Compare \c event level against the appender threshold and check that \c event is accepted.
-		* If \c event is accepted, delegate log output to the subclass implementation of
-		* the AppenderSkeleton#append method.
-		* */
+		* Call the AppenderSkeleton#append method if
+		* the level of \c event is not lower than this appender's threshold and
+		* no attached spi::Filter indicates \c event is rejected.
+		*/
 		void doAppendImpl( const spi::LoggingEventPtr& event );
 		/**
 		* Does no attached filter deny \c event or does an attached filter accept \c event?
@@ -90,13 +90,13 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		void setOption(const LogString& option, const LogString& value) override;
 
 		/**
-		Add a filter to end of the filter list.
+		Add \c newFilter to end of the spi::Filter chain.
 		*/
 		void addFilter(const spi::FilterPtr& newFilter) override;
 
 	public:
 		/**
-		Clear the filters chain.
+		Clear the spi::Filter chain.
 		*/
 		void clearFilters() override;
 
@@ -106,82 +106,80 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		void close() override;
 
 		/**
-		Return the currently set spi::ErrorHandler for this
-		Appender.
+		The currently set spi::ErrorHandler for this Appender.
 		*/
 		const spi::ErrorHandlerPtr getErrorHandler() const;
 
 		/**
-		Returns the head Filter.
+		The first spi::Filter in the filter chain for this Appender.
 		*/
 		spi::FilterPtr getFilter() const override;
 
 		/**
-		Return the first filter in the filter chain for this
-		Appender. The return value may be <code>nullptr</code> if no is
-		filter is set.
+		The first spi::Filter in the filter chain for this Appender.
 		*/
 		const spi::FilterPtr getFirstFilter() const;
 
 		/**
-		Returns the layout of this appender. The value may be nullptr.
+		The currently set Layout for this appender.
 		*/
 		LayoutPtr getLayout() const override;
 
-
 		/**
-		Returns the name of this Appender.
+		The name of this Appender.
 		*/
 		LogString getName() const override;
 
 		/**
-		Returns this appenders threshold level. See the #setThreshold
-		method for the meaning of this option.
+		This appender's current threshold level.
+		See the #setThreshold method for the meaning of this option.
 		*/
 		const LevelPtr getThreshold() const;
 
 		/**
-		Check whether the message level is below the appender's
-		threshold. If there is no threshold set, then the return value is
-		always <code>true</code>.
+		Is \c level greater than or equal to this appender's threshold?
 		*/
 		bool isAsSevereAsThreshold(const LevelPtr& level) const;
 
-
 		/**
-		* Call AppenderSkeleton#doAppendImpl after acquiring a lock
-		* that prevents other threads from concurrently executing AppenderSkeleton#doAppendImpl.
+		* Call #doAppendImpl after acquiring a lock
+		* that prevents other threads from concurrently executing #doAppendImpl.
 		*
 		* Reimplement this method in your appender if you use a different concurrency control technique.
 		* */
 		void doAppend( const spi::LoggingEventPtr& event ) override;
 
 		/**
-		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.
+		Use \c newValue as the spi::ErrorHandler for this Appender.
 		*/
-		void setErrorHandler(const spi::ErrorHandlerPtr& eh);
+		void setErrorHandler(const spi::ErrorHandlerPtr& newValue);
 
 		/**
-		Set the layout for this appender. Note that some appenders have
-		their own (fixed) layouts or do not use one.
+		Use \c newValue as the layout for this appender.
+		Note that some appenders have
+		their own (fixed) layouts sor do not need one.
 		*/
-		void setLayout(const LayoutPtr& layout1) override;
+		void setLayout(const LayoutPtr& newValue) override;
 
 		/**
-		Set the name of this Appender.
+		Use \c newValue for the name of this Appender.
 		*/
-		void setName(const LogString& name1) override;
+		void setName(const LogString& newValue) override;
 
 
 		/**
-		Set the threshold level. All log events with lower level
-		than the threshold level are ignored by the appender.
+		Use \c newValue as this appender's threshold level.
+		All log events with lower level
+		than the appender's threshold level are ignored by the appender.
 
-		<p>In configuration files this option is specified by setting the
+		In configuration files this option is specified by setting the
 		value of the <b>Threshold</b> option to a level
 		string, such as "DEBUG", "INFO" and so on.
+
+		The default level is "ALL", the lowest possible level,
+		meaning no event is blocked by this threshold.
 		*/
-		void setThreshold(const LevelPtr& threshold);
+		void setThreshold(const LevelPtr& newValue);
 
 }; // class AppenderSkeleton
 
