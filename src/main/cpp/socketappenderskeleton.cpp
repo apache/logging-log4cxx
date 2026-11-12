@@ -67,6 +67,33 @@ void SocketAppenderSkeleton::activateOptions(  )
 	_priv->connect();
 }
 
+void SocketAppenderSkeleton::append( const spi::LoggingEventPtr& event )
+{
+	if (_priv->outputSink && _priv->layout)
+	{
+		LogString output;
+		_priv->layout->format(output, event);
+
+		try
+		{
+			_priv->outputSink->write(output);
+			_priv->outputSink->flush();
+		}
+		catch (const std::exception& e)
+		{
+			_priv->outputSink.reset();
+			helpers::LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
+
+			if (getReconnectionDelay() > 0)
+			{
+				_priv->fireConnector();
+			}
+		}
+	}
+}
+
+
+
 void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 {
 	if (this->address == 0)

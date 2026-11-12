@@ -53,6 +53,7 @@ if(LOG4CXX_NETWORKING_SUPPORT)
         aprserversocket.cpp
         socket.cpp
         aprsocket.cpp
+        jsonsocketappender.cpp
         telnetappender.cpp
         socketappenderskeleton.cpp
         socketoutputstream.cpp

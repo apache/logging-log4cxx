@@ -104,6 +104,11 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		void activateOptions(  ) override;
 
 		/**
+		Send the message that Layout produces from \c event to the output sink.
+		*/
+		void append( const spi::LoggingEventPtr& event ) override;
+
+		/**
 		* The <b>RemoteHost</b> option takes a string value which should be
 		* the host name of the server where a
 		* Apache Chainsaw or compatible is running.

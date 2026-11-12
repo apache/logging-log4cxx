@@ -29,23 +29,6 @@ namespace net
 Sends spi::LoggingEvent elements
 to a remote a log server, usually in XML format.
 
-Here is an example configuration that writes JSON to the
-<a href="https://docs.fluentbit.io/manual/pipeline/inputs/tcp">TCP input plugin of a fluent-bit log server</a>
-running on the same system as the application:
-~~~{.xml}
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
-<appender name="A1" class="XMLSocketAppender">
-  <param name="RemoteHost" value="localhost" />
-  <param name="Port"       value="5170" />
-  <layout class="JSONLayout"/>
-</appender>
-<root>
-  <priority value ="INFO" />
-  <appender-ref ref="A1" />
-</root>
-</log4j:configuration>
-~~~
-
 See \ref socket_appender_properties "SocketAppenderSkeleton" for more information on the behaviour this appender.
 */
 
@@ -82,14 +65,10 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		*/
 		XMLSocketAppender(const LogString& host, int port);
 
-		using SocketAppenderSkeleton::activateOptions;
-
 	protected:
 		int getDefaultDelay() const override;
 
 		int getDefaultPort() const override;
-
-		void append( const spi::LoggingEventPtr& event ) override;
 
 	private:
 		//  prevent copy and assignment statements

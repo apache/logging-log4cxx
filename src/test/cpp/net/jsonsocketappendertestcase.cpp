@@ -15,26 +15,25 @@
  * limitations under the License.
  */
 
-#include <log4cxx/net/xmlsocketappender.h>
+#include <log4cxx/net/jsonsocketappender.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include "../appenderskeletontestcase.h"
-#include "apr.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 /**
-   Unit tests of log4cxx::net::XMLSocketAppender
+   Unit tests of log4cxx::net::JSONSocketAppender
  */
-class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
+class JSONSocketAppenderTestCase : public AppenderSkeletonTestCase
 {
-		LOGUNIT_TEST_SUITE(XMLSocketAppenderTestCase);
+		LOGUNIT_TEST_SUITE(JSONSocketAppenderTestCase);
 		//
 		//    tests inherited from AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
-		//LOGUNIT_TEST(test_fluent_bit);
+		LOGUNIT_TEST(test_fluent_bit);
 
 		LOGUNIT_TEST_SUITE_END();
 
@@ -43,7 +42,7 @@ class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
-			return new log4cxx::net::XMLSocketAppender();
+			return new log4cxx::net::JSONSocketAppender();
 		}
 
 		void test_fluent_bit()
@@ -59,5 +58,5 @@ class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
 		}
 };
 
-LOGUNIT_TEST_SUITE_REGISTRATION(XMLSocketAppenderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(JSONSocketAppenderTestCase);
 
