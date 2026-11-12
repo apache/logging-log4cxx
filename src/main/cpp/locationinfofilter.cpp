@@ -21,7 +21,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/private/filter_priv.h>
-#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/transcoder.h>
 
 using namespace LOG4CXX_NS;
@@ -30,6 +29,34 @@ using namespace LOG4CXX_NS::spi;
 using namespace LOG4CXX_NS::helpers;
 
 #define priv static_cast<LocationInfoFilterPrivate*>(m_priv.get())
+
+namespace
+{
+
+/**
+ * Is \c name the method at \c location?
+ *
+ * \c name is either an unqualified method name (e.g. "method")
+ * or a name qualified by any number of trailing class and namespace names
+ * (e.g. "Class::method" or "ns::Class::method").
+ */
+bool isMethodMatch(const std::string& name, const LocationInfo& location)
+{
+	auto methodName = location.getMethodName();
+	auto colonPos = name.rfind("::");
+	if (std::string::npos == colonPos)
+		return name == methodName;
+	if (name.compare(colonPos + 2, std::string::npos, methodName) != 0)
+		return false;
+	auto qualifiedName = location.getClassName() + "::" + methodName;
+	if (qualifiedName.size() < name.size())
+		return false;
+	auto startPos = qualifiedName.size() - name.size();
+	return qualifiedName.compare(startPos, std::string::npos, name) == 0
+		&& (startPos == 0 || qualifiedName.compare(startPos - 2, 2, "::") == 0);
+}
+
+} // namespace
 
 struct LocationInfoFilter::LocationInfoFilterPrivate : public FilterPrivate
 {
@@ -57,7 +84,6 @@ LocationInfoFilter::~LocationInfoFilter() {}
 void LocationInfoFilter::setOption(  const LogString& option,
 	const LogString& value)
 {
-	LogLog::warn(option + LOG4CXX_STR(":") + value);
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
 	{
 		priv->acceptOnMatch = OptionConverter::toBoolean(value, priv->acceptOnMatch);
@@ -95,7 +121,7 @@ Filter::FilterDecision LocationInfoFilter::decide(
 
 	bool matched = false;
 	bool matchLineNumber = priv->lineNumber == event->getLocationInformation().getLineNumber();
-	bool matchMethodName = priv->methodName.compare(event->getLocationInformation().getMethodName()) == 0;
+	bool matchMethodName = isMethodMatch(priv->methodName, event->getLocationInformation());
 
 	if(priv->mustMatchAll){
 		matched = matchLineNumber && matchMethodName;

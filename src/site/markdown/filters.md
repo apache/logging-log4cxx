@@ -231,7 +231,7 @@ for this filter to be effective.  Location information is disabled with the
 | Operator           | LogString | If the operator is `AND` then all the parts of the location(line number and method name) must match.  If set to `OR` then only one needs to match.  The default value is `OR`. |
 | AcceptOnMatch      | bool | If `true`, accept the message when it matches the parameters.  If `false`, deny the message when it matches the parameters. |
 | LineNumber         | int | The line number to match on.  The default line number is -1. |
-| Method             | LogString | The method to match on.  The method name may be compiler-specific.  On GCC, the method name will look like `Class::methodName` |
+| Method             | LogString | The method to match on.  Either the method name without any class or namespace (e.g. `methodName`), or the method name qualified by its class and/or namespace names (e.g. `Class::methodName` or `ns::Class::methodName`). |
 
 Assume that our code looks something like the following:
 
