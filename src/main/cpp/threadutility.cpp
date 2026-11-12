@@ -98,7 +98,7 @@ struct ThreadUtility::priv_data
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
 	std::atomic<bool>         threadIsActive{ false };
-	LoggerPtr                 log;
+	LoggerPtr                 logLabel;
 
 	void doPeriodicTasks();
 
@@ -326,9 +326,9 @@ void ThreadUtility::ThreadStartContext::Impl::postThreadUnblockSignals()
  */
 void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()> f, const Period& delay)
 {
-	if (!m_priv->log)
-		m_priv->log = LogLog::getLogger(LOG4CXX_STR("ThreadUtility"));
-	LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("addPeriodicTask: ") << name);
+	if (!m_priv->logLabel)
+		m_priv->logLabel = LogLog::getCategory(LOG4CXX_STR("ThreadUtility"));
+	LOGLOG_DEBUG(m_priv->logLabel, LOG4CXX_STR("addPeriodicTask: ") << name);
 	std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 	if (m_priv->maxDelay < delay)
 		m_priv->maxDelay = delay;
@@ -347,9 +347,9 @@ void ThreadUtility::addPeriodicTask(const LogString& name, std::function<void()>
 			( LOG4CXX_STR("Log4cxx.task.dispatcher")
 			, [this]()
 			{
-				LOGLOG_DEBUG(m_priv->log, "doPeriodicTasks: " << "started");
+				LOGLOG_DEBUG(m_priv->logLabel, "doPeriodicTasks: " << "started");
 				m_priv->doPeriodicTasks();
-				LOGLOG_DEBUG(m_priv->log, "doPeriodicTasks: " << "stopped");
+				LOGLOG_DEBUG(m_priv->logLabel, "doPeriodicTasks: " << "stopped");
 				m_priv->threadIsActive.store(false);
 			});
 	}
@@ -383,7 +383,7 @@ bool ThreadUtility::hasPeriodicTask(const LogString& name)
  */
 void ThreadUtility::removeAllPeriodicTasks()
 {
-	LOGLOG_DEBUG(m_priv->log, "removeAllPeriodicTasks");
+	LOGLOG_DEBUG(m_priv->logLabel, "removeAllPeriodicTasks");
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_priv->job_mutex);
 		while (!m_priv->jobs.empty())
@@ -404,7 +404,7 @@ void ThreadUtility::removePeriodicTask(const LogString& name)
 		);
 	if (m_priv->jobs.end() != pItem)
 	{
-		LOGLOG_DEBUG(m_priv->log, LOG4CXX_STR("removePeriodicTask: ") << name);
+		LOGLOG_DEBUG(m_priv->logLabel, LOG4CXX_STR("removePeriodicTask: ") << name);
 		pItem->removed = true;
 		m_priv->wakeThread();
 	}
@@ -485,7 +485,7 @@ void ThreadUtility::priv_data::doPeriodicTasks()
 				);
 			if (this->jobs.end() == pItem)
 				break;
-			LOGLOG_DEBUG(this->log, LOG4CXX_STR("doPeriodicTasks: erase ") << pItem->name);
+			LOGLOG_DEBUG(this->logLabel, LOG4CXX_STR("doPeriodicTasks: erase ") << pItem->name);
 			this->jobs.erase(pItem);
 			if (this->jobs.empty())
 				return;

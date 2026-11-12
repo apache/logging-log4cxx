@@ -217,7 +217,7 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 	}
 }
 
-LoggerPtr LogLog::getLogger(const LogString& name)
+LoggerPtr LogLog::getCategory(const LogString& name)
 {
 	return LogManager::getLoggerRepository()->getLogger(name);
 }

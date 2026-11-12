@@ -133,7 +133,7 @@ class LOG4CXX_EXPORT LogLog
 		/**
 		A \c name category for internal logging.
 		*/
-		static LoggerPtr getLogger(const LogString& name);
+		static LoggerPtr getCategory(const LogString& name);
 
 		/**
 		Internal use only.
@@ -145,11 +145,11 @@ class LOG4CXX_EXPORT LogLog
 
 #if defined(LOGLOG_THRESHOLD) && LOGLOG_THRESHOLD <= 10000
 /**
-Send \c message to helpers::SystemErrWriter if \c logger is enabled for <code>DEBUG</code> events.
+Send \c message to helpers::SystemErrWriter if \c category is enabled for <code>DEBUG</code> events.
 
 \usage
 ~~~{.cpp}
-LOGLOG_DEBUG(m_log, "setRemote:"
+LOGLOG_DEBUG(m_logLabel, "setRemote:"
 	<< " hostAddress " << address->getHostAddress()
 	<< " port " << port
 	<< " inetType " << m_inetType
@@ -157,39 +157,39 @@ LOGLOG_DEBUG(m_log, "setRemote:"
 	);
 ~~~
 
-@param logger the logger that has the enabled status.
+@param category has a name and a level.
 @param message a valid parameter to an <code>operator<<(std::ostream&. ...)</code> overload.
 */
-#define LOGLOG_DEBUG(logger, message) { \
-		if (LOG4CXX_NS::helpers::LogLog::isDebugEnabledFor(logger)) { \
+#define LOGLOG_DEBUG(category, message) { \
+		if (LOG4CXX_NS::helpers::LogLog::isDebugEnabledFor(category)) { \
 			LOG4CXX_NS::helpers::MessageBuffer buf; \
-			LOG4CXX_NS::helpers::LogLog::trace(logger, buf.str(buf << message)); } }
+			LOG4CXX_NS::helpers::LogLog::trace(category, buf.str(buf << message)); } }
 #else // !defined(LOGLOG_THRESHOLD) || 10000 < LOGLOG_THRESHOLD
-#define LOGLOG_DEBUG(logger, message)
+#define LOGLOG_DEBUG(category, message)
 #endif
 
 #if defined(LOGLOG_THRESHOLD) && LOGLOG_THRESHOLD <= 5000
 /**
-Send \c message to helpers::SystemErrWriter if \c logger is enabled for <code>TRACE</code> events.
+Send \c message to helpers::SystemErrWriter if \c category is enabled for <code>TRACE</code> events.
 
 \usage
 ~~~{.cpp}
-LOGLOG_TRACE(m_log, "write:"
+LOGLOG_TRACE(m_logLabel, "write:"
 	<< " byteCount " << byteCount
 	<< " to " << *m_remoteAddress
 	<< "\n" << MessageData(pMessage, byteCount)
 	);
 ~~~
 
-@param logger the logger that has the enabled status.
+@param category has a name and a level.
 @param message a valid parameter to an <code>operator<<(std::ostream&. ...)</code> overload.
 */
-#define LOGLOG_TRACE(logger, message) { \
-		if (LOG4CXX_NS::helpers::LogLog::isTraceEnabledFor(logger)) { \
+#define LOGLOG_TRACE(category, message) { \
+		if (LOG4CXX_NS::helpers::LogLog::isTraceEnabledFor(category)) { \
 			LOG4CXX_NS::helpers::MessageBuffer buf; \
-			LOG4CXX_NS::helpers::LogLog::trace(logger, buf.str(buf << message)); } }
+			LOG4CXX_NS::helpers::LogLog::trace(category, buf.str(buf << message)); } }
 #else // !defined(LOGLOG_THRESHOLD) || 5000 < LOGLOG_THRESHOLD
-#define LOGLOG_TRACE(logger, message)
+#define LOGLOG_TRACE(category, message)
 #endif
 
 /**
