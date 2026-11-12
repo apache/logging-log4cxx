@@ -37,6 +37,7 @@ running on the same system as the application:
 <appender name="A1" class="JSONSocketAppender">
   <param name="RemoteHost" value="localhost" />
   <param name="Port"       value="5170" />
+  <param name="Threshold"  value="INFO" />
 </appender>
 <root>
   <priority value ="INFO" />
