@@ -121,7 +121,7 @@ struct ThreadUtility::priv_data
 
 	void stopThread()
 	{
-		LOGLOG_DEBUG(log, "stopThread");
+		LOGLOG_DEBUG(logLabel, "stopThread");
 		setTerminated();
 		wakeThread();
 		if (thread.joinable())
