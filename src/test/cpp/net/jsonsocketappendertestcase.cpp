@@ -17,6 +17,7 @@
 
 #include <log4cxx/net/jsonsocketappender.h>
 #include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/logmanager.h>
 #include "../appenderskeletontestcase.h"
 
 using namespace log4cxx;
@@ -39,6 +40,10 @@ class JSONSocketAppenderTestCase : public AppenderSkeletonTestCase
 
 
 	public:
+		void tearDown() override
+		{
+			LogManager::shutdown();
+		}
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
