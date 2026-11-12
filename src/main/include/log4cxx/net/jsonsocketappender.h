@@ -57,7 +57,13 @@ class LOG4CXX_EXPORT JSONSocketAppender : public SocketAppenderSkeleton
 		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
 		END_LOG4CXX_CAST_MAP()
 
+		/**
+		An unconnected appender using the default port.
+		*/
 		JSONSocketAppender();
+		/**
+		Close and shutdown the connection if not already done.
+		*/
 		~JSONSocketAppender();
 
 		/**

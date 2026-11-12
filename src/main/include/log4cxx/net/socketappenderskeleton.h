@@ -71,7 +71,7 @@ before exiting the application.
 
 A periodic task will connect when the server becomes available.
 It does this by attempting to open a new connection every
-<code>reconnectionDelay</code> milliseconds.
+<code>millisecondDelay</code> milliseconds.
 
 The periodic task stops trying whenever a connection is established.
 It will restart attempting to open a new connection to the server
@@ -83,37 +83,44 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		struct SocketAppenderSkeletonPriv;
 
 	public:
-		SocketAppenderSkeleton(int defaultPort, int reconnectionDelay);
+		/**
+		A unconnected appender sending to \c defaultPort,
+		with a retry after \c millisecondDelay when unable to establish a connection.
+		*/
+		SocketAppenderSkeleton(int defaultPort, int millisecondDelay);
+
+		/**
+		Close and shutdown the connection if not already done.
+		*/
 		~SocketAppenderSkeleton();
 
 		/**
-		Connects to remote server at <code>address</code> and <code>port</code>.
+		A remote server at <code>address</code> and <code>port</code>,
+		with a retry after \c millisecondDelay when unable to establish a connection.
 		*/
-		SocketAppenderSkeleton(const helpers::InetAddressPtr& address, int port, int reconnectionDelay);
+		SocketAppenderSkeleton(const helpers::InetAddressPtr& address, int port, int millisecondDelay);
+
 		/**
-		Connects to remote server at <code>host</code> and <code>port</code>.
+		A remote server at <code>host</code> and <code>port</code>,
+		with a retry after \c millisecondDelay when unable to establish a connection.
 		*/
-		SocketAppenderSkeleton(const LogString& host, int port, int reconnectionDelay);
+		SocketAppenderSkeleton(const LogString& host, int port, int millisecondDelay);
 
 		using spi::OptionHandler::activateOptions;
 		/**
-		\copybrief AppenderSkeleton::activateOptions()
-
-		Connects to the specified <b>RemoteHost</b> and <b>Port</b>.
+		Connects to the configured <b>RemoteHost</b> and <b>Port</b>.
 		*/
 		void activateOptions(  ) override;
 
 		/**
-		Send the message that Layout produces from \c event to the output sink.
+		Sends the message that the configured Layout produces from \c event to the output sink.
 		*/
 		void append( const spi::LoggingEventPtr& event ) override;
 
 		/**
-		* The <b>RemoteHost</b> option takes a string value which should be
-		* the host name of the server where a
-		* Apache Chainsaw or compatible is running.
+		* Use \c newValue as the name of the server.
 		* */
-		void setRemoteHost(const LogString& host);
+		void setRemoteHost(const LogString& newValue);
 
 		/**
 		Returns value of the <b>RemoteHost</b> option.
@@ -132,18 +139,6 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		int getPort() const;
 
 		/**
-		The <b>LocationInfo</b> option takes a boolean value. If true,
-		the information sent to the remote host will include location
-		information. By default no location information is sent to the server.
-		*/
-		void setLocationInfo(bool locationInfo1);
-
-		/**
-		Returns value of the <b>LocationInfo</b> option.
-		*/
-		bool getLocationInfo() const;
-
-		/**
 		The <b>ReconnectionDelay</b> option takes a positive integer
 		representing the number of milliseconds to wait between each
 		failed connection attempt to the server. The default value of
@@ -152,7 +147,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		<p>Setting this option to zero turns off reconnection
 		capability.
 		*/
-		void setReconnectionDelay(int reconnectionDelay1);
+		void setReconnectionDelay(int millisecondDelay1);
 
 		/**
 		Returns value of the <b>ReconnectionDelay</b> option.
@@ -176,7 +171,6 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		-------------- | ---------------- | --------------- |
 		RemoteHost |  (\ref inetAddress "1") | - |
 		Port | {int} | (\ref defaultPort "2") |
-		LocationInfo | True,False | False |
 		SocketSubclass |  (\ref socketSubclass "3") | APRSocket |
 
 		\anchor inetAddress (1) A valid internet address.

@@ -140,10 +140,6 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 	{
 		setPort(OptionConverter::toInt(value, getDefaultPort()));
 	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
-	{
-		setLocationInfo(OptionConverter::toBoolean(value, false));
-	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("RECONNECTIONDELAY"), LOG4CXX_STR("reconnectiondelay")))
 	{
 		setReconnectionDelay(OptionConverter::toInt(value, getDefaultDelay()));
@@ -308,16 +304,6 @@ void SocketAppenderSkeleton::setPort(int port1)
 int SocketAppenderSkeleton::getPort() const
 {
 	return _priv->port;
-}
-
-void SocketAppenderSkeleton::setLocationInfo(bool locationInfo1)
-{
-	_priv->locationInfo = locationInfo1;
-}
-
-bool SocketAppenderSkeleton::getLocationInfo() const
-{
-	return _priv->locationInfo;
 }
 
 void SocketAppenderSkeleton::setReconnectionDelay(int reconnectionDelay1)
