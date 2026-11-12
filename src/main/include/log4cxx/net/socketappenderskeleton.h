@@ -128,10 +128,10 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		const LogString& getRemoteHost() const;
 
 		/**
-		The <b>Port</b> option takes a positive integer representing
-		the port where the server is waiting for connections.
+		Use \c newValue, which must be a positive integer,
+		as the port on which the server is waiting for connections.
 		*/
-		void setPort(int port1);
+		void setPort(int newValue);
 
 		/**
 		Returns value of the <b>Port</b> option.
@@ -139,18 +139,17 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		int getPort() const;
 
 		/**
-		The <b>ReconnectionDelay</b> option takes a positive integer
-		representing the number of milliseconds to wait between each
-		failed connection attempt to the server. The default value of
-		this option is 30000 which corresponds to 30 seconds.
+		Use \c millisecondDelay as the number of milliseconds to wait between each
+		failed connection attempt to the server.
 
-		<p>Setting this option to zero turns off reconnection
-		capability.
+		Setting this option to zero turns off reconnection capability.
 		*/
-		void setReconnectionDelay(int millisecondDelay1);
+		void setReconnectionDelay(int millisecondDelay);
 
 		/**
-		Returns value of the <b>ReconnectionDelay</b> option.
+		The value of the <b>ReconnectionDelay</b> option,
+		the number of milliseconds to wait between each
+		failed connection attempt to the server.
 		*/
 		int getReconnectionDelay() const;
 

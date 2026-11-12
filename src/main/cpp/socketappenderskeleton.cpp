@@ -124,7 +124,8 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 			StringHelper::toString(this->port, msg);
 			msg += LOG4CXX_STR("].");
 
-			this->fireConnector(); // fire the connector thread
+			if (0 < this->reconnectionDelay)
+				this->fireConnector(); // start the connector task
 			LogLog::warn(msg, e);
 		}
 	}
@@ -238,7 +239,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::retryConnect()
 			LogLog::warn(msg, e);
 		}
 
-		if (this->reconnectionDelay > 0)
+		if (0 < this->reconnectionDelay)
 		{
 			if (LogLog::isDebugEnabled())
 			{
@@ -296,9 +297,9 @@ const LogString& SocketAppenderSkeleton::getRemoteHost() const
 	return _priv->remoteHost;
 }
 
-void SocketAppenderSkeleton::setPort(int port1)
+void SocketAppenderSkeleton::setPort(int newValue)
 {
-	_priv->port = port1;
+	_priv->port = newValue;
 }
 
 int SocketAppenderSkeleton::getPort() const
@@ -306,20 +307,23 @@ int SocketAppenderSkeleton::getPort() const
 	return _priv->port;
 }
 
-void SocketAppenderSkeleton::setReconnectionDelay(int reconnectionDelay1)
+void SocketAppenderSkeleton::setReconnectionDelay(int millisecondDelay)
 {
-	_priv->reconnectionDelay = reconnectionDelay1;
+	_priv->reconnectionDelay = millisecondDelay;
 	if (_priv->taskName.empty())
 		return;
 	auto pManager = _priv->taskManager.lock();
 	if (pManager && pManager->value().hasPeriodicTask(_priv->taskName))
 	{
 		pManager->value().removePeriodicTask(_priv->taskName);
-		auto retryTask = _priv->retryTask;
-		pManager->value().addPeriodicTask(_priv->taskName
-			, [retryTask]() { retryTask->run(); }
-			, std::chrono::milliseconds(_priv->reconnectionDelay)
-			);
+		if (0 < _priv->reconnectionDelay)
+		{
+			auto retryTask = _priv->retryTask;
+			pManager->value().addPeriodicTask(_priv->taskName
+				, [retryTask]() { retryTask->run(); }
+				, std::chrono::milliseconds(_priv->reconnectionDelay)
+				);
+		}
 	}
 }
 
