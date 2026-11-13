@@ -138,12 +138,12 @@ bool LogLog::isDebugEnabled()
 			 && p->debugEnabled;
 }
 
-bool LogLog::isDebugEnabledFor(const LoggerPtr& category)
+bool LogLog::isDebugEnabledFor(const LabelPtr& category)
 {
 	return isDebugEnabled() && category && category->isDebugEnabled();
 }
 
-bool LogLog::isTraceEnabledFor(const LoggerPtr& category)
+bool LogLog::isTraceEnabledFor(const LabelPtr& category)
 {
 	return isDebugEnabled() && category && category->isTraceEnabled();
 }
@@ -217,20 +217,20 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 	}
 }
 
-LoggerPtr LogLog::getCategory(const LogString& name)
+auto LogLog::getCategory(const LogString& name) -> LabelPtr
 {
 	return LogManager::getLoggerRepository()->getLogger(name);
 }
 
 #if !LOG4CXX_LOGCHAR_IS_UTF8
-void LogLog::trace(const LoggerPtr& category, const std::string& msg)
+void LogLog::trace(const LabelPtr& category, const std::string& msg)
 {
 	LOG4CXX_DECODE_CHAR(lsMsg, msg);
 	trace(category, lsMsg);
 }
 #endif
 
-void LogLog::trace(const LoggerPtr& category, const LogString& msg)
+void LogLog::trace(const LabelPtr& category, const LogString& msg)
 {
 	auto p = LogLogPrivate::getInstance();
 	if (p && !p->quietMode) // Not deleted by onexit processing?

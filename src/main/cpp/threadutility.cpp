@@ -98,7 +98,7 @@ struct ThreadUtility::priv_data
 	int                       retryCount{ 2 };
 	Period                    maxDelay{ 0 };
 	std::atomic<bool>         threadIsActive{ false };
-	LoggerPtr                 logLabel;
+	LogLog::LabelPtr          logLabel;
 
 	void doPeriodicTasks();
 

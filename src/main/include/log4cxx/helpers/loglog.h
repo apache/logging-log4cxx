@@ -49,6 +49,8 @@ class LOG4CXX_EXPORT LogLog
 		LogLog& operator=(const LogLog&);
 
 	public:
+		using LabelPtr = LoggerPtr;
+
 		~LogLog();
 
 		/**
@@ -59,12 +61,12 @@ class LOG4CXX_EXPORT LogLog
 		/**
 		 *  Are \c category debug messages sent to SystemErrWriter?
 		 **/
-		static bool isDebugEnabledFor(const LoggerPtr& category);
+		static bool isDebugEnabledFor(const LabelPtr& category);
 
 		/**
 		 *  Are \c category trace messages sent to SystemErrWriter?
 		 **/
-		static bool isTraceEnabledFor(const LoggerPtr& category);
+		static bool isTraceEnabledFor(const LabelPtr& category);
 
 		/**
 		Start/stop outputing debug messages if \c newValue is true/false respectively.
@@ -103,13 +105,13 @@ class LOG4CXX_EXPORT LogLog
 		/**
 		Output \c msg to SystemErrWriter if internal debug logging is enabled.
 		*/
-		static void trace(const LoggerPtr& category, const LogString& msg);
+		static void trace(const LabelPtr& category, const LogString& msg);
 
 #if !LOG4CXX_LOGCHAR_IS_UTF8
 		/**
 		Output \c msg to SystemErrWriter if internal debug logging is enabled.
 		*/
-		static void trace(const LoggerPtr& category, const std::string& msg);
+		static void trace(const LabelPtr& category, const std::string& msg);
 #endif
 		/**
 		Change quiet mode to \c newValue.
@@ -133,7 +135,7 @@ class LOG4CXX_EXPORT LogLog
 		/**
 		A \c name category for internal logging.
 		*/
-		static LoggerPtr getCategory(const LogString& name);
+		static LabelPtr getCategory(const LogString& name);
 
 		/**
 		Internal use only.
