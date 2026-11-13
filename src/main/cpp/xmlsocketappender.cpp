@@ -71,31 +71,3 @@ int XMLSocketAppender::getDefaultPort() const
 }
 
 
-void XMLSocketAppender::append( const spi::LoggingEventPtr& event )
-{
-	if (_priv->outputSink)
-	{
-		LogString output;
-		_priv->layout->format(output, event);
-
-		try
-		{
-			_priv->outputSink->write(output);
-			_priv->outputSink->flush();
-		}
-		catch (const std::exception& e)
-		{
-			_priv->outputSink.reset();
-			helpers::LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
-
-			if (getReconnectionDelay() > 0)
-			{
-				_priv->fireConnector();
-			}
-		}
-	}
-}
-
-
-
-

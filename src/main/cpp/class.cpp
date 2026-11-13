@@ -40,15 +40,18 @@
 	#endif
 	#include <log4cxx/nt/outputdebugstringappender.h>
 #endif
-#include <log4cxx/net/smtpappender.h>
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 #include <log4cxx/rolling/multiprocessrollingfileappender.h>
 #endif
 #include <log4cxx/helpers/datagramsocket.h>
+#include <log4cxx/writerappender.h>
+#if LOG4CXX_HAS_NETWORKING
+#include <log4cxx/net/jsonsocketappender.h>
+#include <log4cxx/net/smtpappender.h>
 #include <log4cxx/net/syslogappender.h>
 #include <log4cxx/net/telnetappender.h>
-#include <log4cxx/writerappender.h>
 #include <log4cxx/net/xmlsocketappender.h>
+#endif
 #include <log4cxx/layout.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/jsonlayout.h>
@@ -77,7 +80,6 @@
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
-using namespace LOG4CXX_NS::net;
 using namespace LOG4CXX_NS::filter;
 using namespace LOG4CXX_NS::xml;
 using namespace LOG4CXX_NS::rolling;
@@ -201,7 +203,6 @@ void Class::registerClasses()
 #endif
 	LOG4CXX_NS::nt::OutputDebugStringAppender::registerClass();
 #endif
-	SMTPAppender::registerClass();
 	JSONLayout::registerClass();
 	HTMLLayout::registerClass();
 #if LOG4CXX_HAS_FMT_LAYOUT
@@ -229,9 +230,11 @@ void Class::registerClasses()
 	LOG4CXX_NS::PropertyConfigurator::registerClass();
 	LOG4CXX_NS::varia::FallbackErrorHandler::registerClass();
 #if LOG4CXX_HAS_NETWORKING
-	TelnetAppender::registerClass();
-	XMLSocketAppender::registerClass();
-	SyslogAppender::registerClass();
+	net::TelnetAppender::registerClass();
+	net::JSONSocketAppender::registerClass();
+	net::SMTPAppender::registerClass();
+	net::XMLSocketAppender::registerClass();
+	net::SyslogAppender::registerClass();
 #endif
 }
 
