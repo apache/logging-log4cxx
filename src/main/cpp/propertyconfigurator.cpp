@@ -27,6 +27,7 @@
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/layout.h>
+#include <log4cxx/spi/filter.h>
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/transcoder.h>
@@ -120,6 +121,15 @@ public: // Methods
 	AppenderPtr parseAppender
 		( helpers::Properties& props
 		, const LogString&     appenderName
+		);
+
+	/**
+	Add the filters configured for \c appenderName to \c appender.
+	*/
+	void parseAppenderFilters
+		( helpers::Properties& props
+		, const LogString&     appenderName
+		, const AppenderPtr&   appender
 		);
 
 	void registryPut(const AppenderPtr& appender);
@@ -601,9 +611,64 @@ AppenderPtr ConfiguratorContext::parseAppender
 		}
 	}
 
+	parseAppenderFilters(props, appenderName, appender);
 	registryPut(appender);
 
 	return appender;
+}
+
+void ConfiguratorContext::parseAppenderFilters
+	( helpers::Properties& props
+	, const LogString&     appenderName
+	, const AppenderPtr&   appender
+	)
+{
+	// Collect the options of each filter, keyed by the property that holds its class name.
+	// The part of a key following the filter identifier is the option name (which can contain dots).
+	LogString filterPrefix = LOG4CXX_STR("log4j.appender.") + appenderName + LOG4CXX_STR(".filter.");
+	using FilterOptions = std::vector<std::pair<LogString, LogString>>;
+	std::map<LogString, FilterOptions> filters;
+	for (auto& key : props.propertyNames())
+	{
+		if (0 != key.find(filterPrefix))
+		{
+			continue;
+		}
+		auto dotIndex = key.find(0x2E /* '.' */, filterPrefix.length());
+		auto& options = filters[key.substr(0, dotIndex)];
+		if (LogString::npos != dotIndex)
+		{
+			options.emplace_back(key.substr(dotIndex + 1), OptionConverter::findAndSubst(key, props));
+		}
+	}
+
+	// Add the filters in the order of their identifiers
+	for (auto& item : filters)
+	{
+		auto& filterKey = item.first;
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Filter::getStaticClass().getName()
+				+ LOG4CXX_STR(" [") + filterKey.substr(filterPrefix.length())
+				+ LOG4CXX_STR("] for [") + appenderName + LOG4CXX_STR("]"));
+		}
+		auto obj = OptionConverter::instantiateByKey
+			( props
+			, filterKey
+			, Filter::getStaticClass()
+			, {} // defaultValue
+			);
+		if (auto filter = LOG4CXX_NS::cast<Filter>(obj))
+		{
+			PropertySetter propSetter(filter);
+			for (auto& option : item.second)
+			{
+				propSetter.setProperty(option.first, option.second);
+			}
+			propSetter.activate();
+			appender->addFilter(filter);
+		}
+	}
 }
 
 void ConfiguratorContext::registryPut(const AppenderPtr& appender)
