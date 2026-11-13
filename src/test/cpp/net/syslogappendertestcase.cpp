@@ -43,6 +43,10 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testImpossibleSuffixFitHandling);
 		LOGUNIT_TEST(testDigitGrowthBoundaryCase);
 		LOGUNIT_TEST(testSyslogHostWithMalformedPort);
+		LOGUNIT_TEST(testFormatOption);
+		LOGUNIT_TEST(testRfc5424FieldOptions);
+		LOGUNIT_TEST(testRfc5424Header);
+		LOGUNIT_TEST(testRfc5424HeaderNilValues);
 
 		LOGUNIT_TEST_SUITE_END();
 
@@ -158,6 +162,77 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("127.0.0.1"), appender.getSyslogHost());
 			appender.setOption(LOG4CXX_STR("SyslogHost"), LOG4CXX_STR("127.0.0.1:99999999999"));
 			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("127.0.0.1"), appender.getSyslogHost());
+		}
+
+		/**
+		 * The Format option accepts BSD and RFC5424 in any case
+		 * and ignores an unknown value.
+		 */
+		void testFormatOption()
+		{
+			log4cxx::net::SyslogAppender appender;
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("BSD"), appender.getFormat());
+			appender.setOption(LOG4CXX_STR("Format"), LOG4CXX_STR("rfc5424"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("RFC5424"), appender.getFormat());
+			appender.setOption(LOG4CXX_STR("FORMAT"), LOG4CXX_STR("RFC3164"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("RFC5424"), appender.getFormat());
+			appender.setOption(LOG4CXX_STR("format"), LOG4CXX_STR("Bsd"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("BSD"), appender.getFormat());
+		}
+
+		/**
+		 * The AppName and MessageId options are made valid RFC 5424 header fields.
+		 */
+		void testRfc5424FieldOptions()
+		{
+			log4cxx::net::SyslogAppender appender;
+			LOGUNIT_ASSERT(appender.getAppName().empty());
+			LOGUNIT_ASSERT(appender.getMessageId().empty());
+
+			appender.setOption(LOG4CXX_STR("AppName"), LOG4CXX_STR("myapp"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("myapp"), appender.getAppName());
+			appender.setOption(LOG4CXX_STR("AppName"), LOG4CXX_STR("my app\t1"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("my_app_1"), appender.getAppName());
+			appender.setOption(LOG4CXX_STR("AppName"), LogString(60, static_cast<logchar>('a')));
+			LOGUNIT_ASSERT_EQUAL(LogString(48, static_cast<logchar>('a')), appender.getAppName());
+			appender.setOption(LOG4CXX_STR("AppName"), LogString());
+			LOGUNIT_ASSERT(appender.getAppName().empty());
+
+			appender.setOption(LOG4CXX_STR("MessageId"), LOG4CXX_STR("ID47"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("ID47"), appender.getMessageId());
+			appender.setOption(LOG4CXX_STR("MessageId"), LOG4CXX_STR("ID 47"));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("ID_47"), appender.getMessageId());
+			appender.setOption(LOG4CXX_STR("MessageId"), LogString(40, static_cast<logchar>('m')));
+			LOGUNIT_ASSERT_EQUAL(LogString(32, static_cast<logchar>('m')), appender.getMessageId());
+		}
+
+		/**
+		 * The RFC 5424 header has a UTC timestamp with microsecond precision.
+		 */
+		void testRfc5424Header()
+		{
+			// 2003-10-11T22:14:15.003210Z
+			const log4cxx_time_t timestamp = 1065910455003210LL;
+			LogString header(LOG4CXX_STR("<34>"));
+			log4cxx::net::detail::appendRfc5424Header(header, timestamp,
+				LOG4CXX_STR("mymachine.example.com"), LOG4CXX_STR("su"),
+				LOG4CXX_STR("4321"), LOG4CXX_STR("ID47"));
+			LOGUNIT_ASSERT_EQUAL((LogString)
+				LOG4CXX_STR("<34>1 2003-10-11T22:14:15.003210Z mymachine.example.com su 4321 ID47 - "),
+				header);
+		}
+
+		/**
+		 * An empty RFC 5424 header field is sent as the nil value.
+		 */
+		void testRfc5424HeaderNilValues()
+		{
+			LogString header;
+			log4cxx::net::detail::appendRfc5424Header(header, 0,
+				LogString(), LogString(), LogString(), LogString());
+			LOGUNIT_ASSERT_EQUAL((LogString)
+				LOG4CXX_STR("1 1970-01-01T00:00:00.000000Z - - - - - "),
+				header);
 		}
 
 };

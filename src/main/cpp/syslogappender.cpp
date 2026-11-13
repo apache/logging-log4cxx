@@ -23,11 +23,21 @@
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/pool.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/syslogappender_priv.h>
+#include <apr_network_io.h>
+#include <apr_time.h>
 #include <algorithm>
+#include <cstdio>
+
+#if defined(_WIN32)
+	#include <process.h> // _getpid
+#elif defined(__unix__) || defined(__unix) || defined(__APPLE__)
+	#include <unistd.h> // getpid
+#endif
 
 #define LOG_UNDEF -1
 
@@ -46,6 +56,68 @@ namespace
 		item.append(LOG4CXX_STR("/"));
 		StringHelper::toString(total, item);
 		item.append(LOG4CXX_STR(")"));
+	}
+
+	// RFC 5424 section 6 limits on the length of header fields
+	constexpr size_t RFC5424_HOSTNAME_MAX_CHARS = 255;
+	constexpr size_t RFC5424_APP_NAME_MAX_CHARS = 48;
+	constexpr size_t RFC5424_MSGID_MAX_CHARS = 32;
+
+	// Returns \c value truncated to \c maxLength characters with each character
+	// that is not printable US-ASCII (as required in an RFC 5424 header field) replaced by '_'
+	LogString toRfc5424Field(const LogString& value, size_t maxLength, const LogString& fieldName)
+	{
+		LogString result(value.substr(0, maxLength));
+		for (auto& ch : result)
+		{
+			if (ch < 0x21 || 0x7E < ch)
+			{
+				ch = 0x5F; // '_'
+			}
+		}
+		if (result != value)
+		{
+			LogLog::warn(LOG4CXX_STR("SyslogAppender ") + fieldName + LOG4CXX_STR(" [") + value +
+				LOG4CXX_STR("] is not valid in an RFC5424 header. Using [") + result + LOG4CXX_STR("]."));
+		}
+		return result;
+	}
+
+	LogString getLocalHostName()
+	{
+		Pool p;
+		char hostName[APRMAXHOSTLEN + 1] = {0};
+		if (apr_gethostname(hostName, sizeof(hostName), p.getAPRPool()) != APR_SUCCESS)
+		{
+			LogLog::warn(LOG4CXX_STR("SyslogAppender could not get the local host name."));
+			return LogString();
+		}
+		LOG4CXX_DECODE_CHAR(lsHostName, std::string(hostName));
+		return toRfc5424Field(lsHostName, RFC5424_HOSTNAME_MAX_CHARS, LOG4CXX_STR("host name"));
+	}
+
+	LogString getProcessId()
+	{
+		LogString result;
+#if defined(_WIN32)
+		StringHelper::toString(static_cast<int>(_getpid()), result);
+#elif defined(__unix__) || defined(__unix) || defined(__APPLE__)
+		StringHelper::toString(static_cast<int64_t>(getpid()), result);
+#endif
+		return result;
+	}
+
+	void appendRfc5424Field(LogString& buf, const LogString& value)
+	{
+		if (value.empty())
+		{
+			buf.append(1, 0x2D /* '-' */);
+		}
+		else
+		{
+			buf.append(value);
+		}
+		buf.append(1, 0x20 /* ' ' */);
 	}
 }
 
@@ -97,7 +169,7 @@ LOG4CXX_EXPORT std::vector<LogString> splitSyslogPackets(const LogString& msg, s
 		for (size_t start = 0u; start < msg.size();)
 		{
 			const size_t remaining = msg.size() - start;
-			const size_t count = std::min(chunkSize, remaining);
+			const size_t count = (std::min)(chunkSize, remaining);
 			packets.push_back(msg.substr(start, count));
 			start += count;
 		}
@@ -166,6 +238,34 @@ LOG4CXX_EXPORT std::vector<LogString> splitSyslogPackets(const LogString& msg, s
 
 	splitByChunkSize(chunkSize, true);
 	return packets;
+}
+
+LOG4CXX_EXPORT void appendRfc5424Header(LogString& buf, log4cxx_time_t timestamp,
+	const LogString& hostName, const LogString& appName,
+	const LogString& procId, const LogString& messageId)
+{
+	buf.append(LOG4CXX_STR("1 "));
+
+	apr_time_exp_t tm;
+	char timestampStr[32] = {0};
+	if (apr_time_exp_gmt(&tm, timestamp) == APR_SUCCESS
+		&& 0 < std::snprintf(timestampStr, sizeof(timestampStr), "%04d-%02d-%02dT%02d:%02d:%02d.%06dZ",
+			tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+			tm.tm_hour, tm.tm_min, tm.tm_sec, tm.tm_usec))
+	{
+		LOG4CXX_DECODE_CHAR(lsTimestamp, std::string(timestampStr));
+		appendRfc5424Field(buf, lsTimestamp);
+	}
+	else
+	{
+		appendRfc5424Field(buf, LogString());
+	}
+
+	appendRfc5424Field(buf, hostName);
+	appendRfc5424Field(buf, appName);
+	appendRfc5424Field(buf, procId);
+	appendRfc5424Field(buf, messageId);
+	appendRfc5424Field(buf, LogString()); // No STRUCTURED-DATA
 }
 }
 }
@@ -433,19 +533,24 @@ void SyslogAppender::append( const spi::LoggingEventPtr& event )
 		return;
 	}
 
+	LogString prefix(1, 0x3C /* '<' */);
+	StringHelper::toString((_priv->syslogFacility | event->getLevel()->getSyslogEquivalent()), prefix);
+	prefix.append(1, (logchar) 0x3E /* '>' */);
+
+	if (_priv->rfc5424Format)
+	{
+		detail::appendRfc5424Header(prefix, event->getTimeStamp(),
+			_priv->hostName, _priv->appName, _priv->procId, _priv->messageId);
+	}
+
+	if (_priv->facilityPrinting)
+	{
+		prefix.append(_priv->facilityStr);
+	}
+
 	for (auto const& item : packets)
 	{
-		LogString sbuf(1, 0x3C /* '<' */);
-		StringHelper::toString((_priv->syslogFacility | event->getLevel()->getSyslogEquivalent()), sbuf);
-		sbuf.append(1, (logchar) 0x3E /* '>' */);
-
-		if (_priv->facilityPrinting)
-		{
-			sbuf.append(_priv->facilityStr);
-		}
-
-		sbuf.append(item);
-		_priv->sw->write(sbuf);
+		_priv->sw->write(prefix + item);
 	}
 }
 
@@ -463,6 +568,18 @@ void SyslogAppender::setOption(const LogString& option, const LogString& value)
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("MAXMESSAGELENGTH"), LOG4CXX_STR("maxmessagelength")))
 	{
 		setMaxMessageLength(OptionConverter::toInt(value, 1024));
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FORMAT"), LOG4CXX_STR("format")))
+	{
+		setFormat(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPNAME"), LOG4CXX_STR("appname")))
+	{
+		setAppName(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("MESSAGEID"), LOG4CXX_STR("messageid")))
+	{
+		setMessageId(value);
 	}
 	else
 	{
@@ -569,4 +686,51 @@ void SyslogAppender::setMaxMessageLength(int maxMessageLength1)
 int SyslogAppender::getMaxMessageLength() const
 {
 	return _priv->maxMessageLength;
+}
+
+void SyslogAppender::setFormat(const LogString& format)
+{
+	if (StringHelper::equalsIgnoreCase(format, LOG4CXX_STR("RFC5424"), LOG4CXX_STR("rfc5424")))
+	{
+		if (!_priv->rfc5424Format)
+		{
+			_priv->hostName = getLocalHostName();
+			_priv->procId = getProcessId();
+			_priv->rfc5424Format = true;
+		}
+	}
+	else if (StringHelper::equalsIgnoreCase(format, LOG4CXX_STR("BSD"), LOG4CXX_STR("bsd")))
+	{
+		_priv->rfc5424Format = false;
+	}
+	else
+	{
+		LogLog::warn(LOG4CXX_STR("[") + format +
+			LOG4CXX_STR("] is an unknown syslog format. Format is unchanged."));
+	}
+}
+
+LogString SyslogAppender::getFormat() const
+{
+	return _priv->rfc5424Format ? LOG4CXX_STR("RFC5424") : LOG4CXX_STR("BSD");
+}
+
+void SyslogAppender::setAppName(const LogString& appName)
+{
+	_priv->appName = toRfc5424Field(appName, RFC5424_APP_NAME_MAX_CHARS, LOG4CXX_STR("AppName"));
+}
+
+const LogString& SyslogAppender::getAppName() const
+{
+	return _priv->appName;
+}
+
+void SyslogAppender::setMessageId(const LogString& messageId)
+{
+	_priv->messageId = toRfc5424Field(messageId, RFC5424_MSGID_MAX_CHARS, LOG4CXX_STR("MessageId"));
+}
+
+const LogString& SyslogAppender::getMessageId() const
+{
+	return _priv->messageId;
 }

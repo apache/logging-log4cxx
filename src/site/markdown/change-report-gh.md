@@ -76,6 +76,9 @@ User-defined subclasses of [spi::Configurator](@ref log4cxx::spi::Configurator) 
 
 Release 2.0.0 includes the following new features:
 
+* A new [SyslogAppender](@ref log4cxx::net::SyslogAppender::setOption) option to send messages in the RFC 5424 syslog protocol format
+   \[[#820](https://github.com/apache/logging-log4cxx/pull/820)\]
+
 * A [SocketAppender](@ref log4cxx::net::JSONSocketAppender) that sends JSON format messages.
    \[[#823](https://github.com/apache/logging-log4cxx/pull/823)\]
 
