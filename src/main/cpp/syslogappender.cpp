@@ -169,7 +169,7 @@ LOG4CXX_EXPORT std::vector<LogString> splitSyslogPackets(const LogString& msg, s
 		for (size_t start = 0u; start < msg.size();)
 		{
 			const size_t remaining = msg.size() - start;
-			const size_t count = std::min(chunkSize, remaining);
+			const size_t count = (std::min)(chunkSize, remaining);
 			packets.push_back(msg.substr(start, count));
 			start += count;
 		}
