@@ -35,6 +35,8 @@ LOGUNIT_CLASS(LocationInfoFilterTest)
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST(test4);
+	LOGUNIT_TEST(test5);
+	LOGUNIT_TEST(test6);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -124,6 +126,66 @@ public:
 		filter->setMustMatchAll(true);
 		filter->activateOptions();
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
+	}
+
+	/**
+	 * Check that LocationInfoFilter.decide() returns Filter.DENY
+	 * when an unqualified or qualified method name matches
+	 */
+	void test5()
+	{
+		LocationInfo li("/path/to/foo.cpp",
+						"foo.cpp",
+						"void ns::Example::exampleFun(int)",
+						50);
+		LoggingEventPtr event(new LoggingEvent(
+				LOG4CXX_STR("LocationInfoFilter"),
+				Level::getInfo(),
+				LOG4CXX_STR("Hello, World"),
+				li));
+		for (auto methodName :
+			{ LOG4CXX_STR("exampleFun")
+			, LOG4CXX_STR("Example::exampleFun")
+			, LOG4CXX_STR("ns::Example::exampleFun")
+			})
+		{
+			LocationInfoFilterPtr filter(new LocationInfoFilter());
+			filter->setOption(LOG4CXX_STR("Method"), methodName);
+			filter->setOption(LOG4CXX_STR("AcceptOnMatch"), LOG4CXX_STR("false"));
+			filter->activateOptions();
+			LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
+		}
+	}
+
+	/**
+	 * Check that LocationInfoFilter.decide() returns Filter.NEUTRAL
+	 * when a qualified method name does not match
+	 */
+	void test6()
+	{
+		LocationInfo li("/path/to/foo.cpp",
+						"foo.cpp",
+						"void ns::Example::exampleFun(int)",
+						50);
+		LoggingEventPtr event(new LoggingEvent(
+				LOG4CXX_STR("LocationInfoFilter"),
+				Level::getInfo(),
+				LOG4CXX_STR("Hello, World"),
+				li));
+		for (auto methodName :
+			{ LOG4CXX_STR("otherFun")
+			, LOG4CXX_STR("Other::exampleFun")
+			, LOG4CXX_STR("ample::exampleFun")
+			, LOG4CXX_STR("Example::otherFun")
+			, LOG4CXX_STR("other::ns::Example::exampleFun")
+			})
+		{
+			LocationInfoFilterPtr filter(new LocationInfoFilter());
+			filter->setOption(LOG4CXX_STR("Method"), methodName);
+			filter->setOption(LOG4CXX_STR("AcceptOnMatch"), LOG4CXX_STR("false"));
+			filter->activateOptions();
+			LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
+		}
 	}
 
 };

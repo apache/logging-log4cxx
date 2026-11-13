@@ -21,7 +21,7 @@ if(LOG4CXX_NETWORKING_SUPPORT)
 	syslogappendertestcase
 	telnetappendertestcase
 	socketappendertestcase
-	xmlsocketappendertestcase
+	jsonsocketappendertestcase
     )
 else()
     set(NET_TESTS "")

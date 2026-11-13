@@ -30,31 +30,22 @@ namespace net
 
 struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkeletonPrivate
 {
-	SocketAppenderSkeletonPriv(int defaultPort, int reconnectionDelay) :
-		AppenderSkeletonPrivate(),
-		remoteHost(),
-		address(),
-		port(defaultPort),
-		reconnectionDelay(reconnectionDelay),
-		locationInfo(false)
+	SocketAppenderSkeletonPriv
+		( const helpers::InetAddressPtr& address
+		, int                            defaultPort
+		, int                            millisecondDelay
+		)
+		: address(address)
+		, port(defaultPort)
+		, reconnectionDelay(millisecondDelay)
         { }
 
-	SocketAppenderSkeletonPriv(const helpers::InetAddressPtr& address, int defaultPort, int reconnectionDelay) :
-		AppenderSkeletonPrivate(),
-		remoteHost(),
-		address(address),
-		port(defaultPort),
-		reconnectionDelay(reconnectionDelay),
-		locationInfo(false)
+	SocketAppenderSkeletonPriv(int defaultPort, int millisecondDelay)
+		: SocketAppenderSkeletonPriv(helpers::InetAddressPtr{}, defaultPort, millisecondDelay)
         { }
 
-	SocketAppenderSkeletonPriv(const LogString& host, int port, int delay) :
-		AppenderSkeletonPrivate(),
-		remoteHost(host),
-		address(helpers::InetAddress::getByName(host)),
-		port(port),
-		reconnectionDelay(delay),
-		locationInfo(false)
+	SocketAppenderSkeletonPriv(const LogString& host, int port, int delay)
+		: SocketAppenderSkeletonPriv(helpers::InetAddress::getByName(host), port, delay)
 	{ }
 
 	~SocketAppenderSkeletonPriv()
@@ -75,7 +66,6 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 
 	int port;
 	int reconnectionDelay;
-	bool locationInfo;
 
 	void shutdown() override;
 

@@ -79,9 +79,9 @@ class LOG4CXX_EXPORT Appender
 		virtual void close() = 0;
 
 		/**
-		 Log in <code>Appender</code> specific way. When appropriate,
-		 Loggers will call the <code>doAppend</code> method of appender
-		 implementations in order to log.
+		 Add a formatted equivalent of \c event to the output.
+		 A Logger uses this entry point (via AppenderAttachable::appendLoopOnAppenders)
+		 when a logging request is enabled.
 		*/
 		virtual void doAppend(const spi::LoggingEventPtr& event) = 0;
 		/**
