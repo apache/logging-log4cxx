@@ -506,7 +506,6 @@ AppenderPtr ConfiguratorContext::parseAppender
 
 	// Appender was not previously initialized.
 	LogString prefix = LOG4CXX_STR("log4j.appender.") + appenderName;
-	LogString layoutPrefix = prefix + LOG4CXX_STR(".layout");
 
 	std::shared_ptr<Object> obj =
 		OptionConverter::instantiateByKey(
@@ -534,41 +533,45 @@ AppenderPtr ConfiguratorContext::parseAppender
 
 	if (appender->instanceof(OptionHandler::getStaticClass()))
 	{
-		auto obj = OptionConverter::instantiateByKey
-			( props
-			, layoutPrefix
-			, Layout::getStaticClass()
-			, {} // defaultValue
-			);
-		if (auto layout = LOG4CXX_NS::cast<Layout>( obj ))
+		auto layoutPrefix = prefix + LOG4CXX_STR(".layout");
+		auto layoutClassName = OptionConverter::findAndSubst(layoutPrefix, props);
+		if (!layoutClassName.empty())
 		{
-			appender->setLayout(layout);
-			if (LogLog::isDebugEnabled())
+			auto obj = OptionConverter::instantiateByClassName
+				( StringHelper::trim(layoutClassName)
+				, Layout::getStaticClass()
+				, {} // defaultValue
+				);
+			if (auto layout = LOG4CXX_NS::cast<Layout>( obj ))
 			{
-				LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Layout::getStaticClass().getName()
-					+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
-			}
+				appender->setLayout(layout);
+				if (LogLog::isDebugEnabled())
+				{
+					LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Layout::getStaticClass().getName()
+						+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
+				}
 
-			PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."));
-			if (LogLog::isDebugEnabled())
-			{
-				LogLog::debug((LogString) LOG4CXX_STR("End of parsing for [")
-					+ appenderName +  LOG4CXX_STR("]"));
+				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."));
+				if (LogLog::isDebugEnabled())
+				{
+					LogLog::debug((LogString) LOG4CXX_STR("End of parsing for [")
+						+ appenderName +  LOG4CXX_STR("]"));
+				}
 			}
 		}
 
-		RollingFileAppenderPtr rolling = LOG4CXX_NS::cast<rolling::RollingFileAppender>(appender);
-		if (rolling)
+		if (auto rolling = LOG4CXX_NS::cast<rolling::RollingFileAppender>(appender))
 		{
-			LogString rollingPolicyKey = prefix + LOG4CXX_STR(".rollingPolicy");
-			if (!OptionConverter::findAndSubst(rollingPolicyKey, props).empty())
+			auto rollingPolicyKey = prefix + LOG4CXX_STR(".rollingPolicy");
+			auto rollingPolicyClassName = OptionConverter::findAndSubst(rollingPolicyKey, props);
+			if (!rollingPolicyClassName.empty())
 			{
-				RollingPolicyPtr rollingPolicy;
-				std::shared_ptr<Object> rolling_obj =
-					OptionConverter::instantiateByKey(
-						props, rollingPolicyKey, RollingPolicy::getStaticClass(), 0);
-				rollingPolicy = LOG4CXX_NS::cast<RollingPolicy>( rolling_obj );
-				if(rollingPolicy)
+				auto obj = OptionConverter::instantiateByClassName
+					( rollingPolicyClassName
+					, RollingPolicy::getStaticClass()
+					, {} // defaultValue
+					);
+				if (auto rollingPolicy = LOG4CXX_NS::cast<RollingPolicy>(obj))
 				{
 					rolling->setRollingPolicy(rollingPolicy);
 
@@ -582,14 +585,15 @@ AppenderPtr ConfiguratorContext::parseAppender
 			}
 
 			LogString triggeringPolicyKey = prefix + LOG4CXX_STR(".triggeringPolicy");
-			if (!OptionConverter::findAndSubst(triggeringPolicyKey, props).empty())
+			auto triggeringPolicyClassName = OptionConverter::findAndSubst(triggeringPolicyKey, props);
+			if (!triggeringPolicyClassName.empty())
 			{
-				TriggeringPolicyPtr triggeringPolicy;
-				std::shared_ptr<Object> triggering_obj =
-					OptionConverter::instantiateByKey(
-						props, triggeringPolicyKey, TriggeringPolicy::getStaticClass(), 0);
-				triggeringPolicy = LOG4CXX_NS::cast<TriggeringPolicy>( triggering_obj );
-				if(triggeringPolicy)
+				auto obj = OptionConverter::instantiateByClassName
+					( triggeringPolicyClassName
+					, TriggeringPolicy::getStaticClass()
+					, {} // defaultValue
+					);
+				if (auto triggeringPolicy = LOG4CXX_NS::cast<TriggeringPolicy>(obj))
 				{
 					rolling->setTriggeringPolicy(triggeringPolicy);
 
