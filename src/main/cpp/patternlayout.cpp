@@ -41,6 +41,7 @@
 #include <log4cxx/pattern/lineseparatorpatternconverter.h>
 #include <log4cxx/pattern/methodlocationpatternconverter.h>
 #include <log4cxx/pattern/levelpatternconverter.h>
+#include <log4cxx/pattern/processidpatternconverter.h>
 #include <log4cxx/pattern/relativetimepatternconverter.h>
 #include <log4cxx/pattern/threadpatternconverter.h>
 #include <log4cxx/pattern/mdcpatternconverter.h>
@@ -233,6 +234,9 @@ LOG4CXX_NS::pattern::PatternMap PatternLayout::getFormatSpecifiers()
 
 	RULES_PUT("p", LevelPatternConverter);
 	RULES_PUT("level", LevelPatternConverter);
+
+	RULES_PUT("pid", ProcessIdPatternConverter);
+	RULES_PUT("processId", ProcessIdPatternConverter);
 
 	RULES_PUT("r", RelativeTimePatternConverter);
 	RULES_PUT("relative", RelativeTimePatternConverter);

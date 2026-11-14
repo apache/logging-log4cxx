@@ -76,6 +76,9 @@ User-defined subclasses of [spi::Configurator](@ref log4cxx::spi::Configurator) 
 
 Release 2.0.0 includes the following new features:
 
+* A [PatternLayout](@ref log4cxx::PatternLayout) conversion word to output the process identifier
+   \[[#828](https://github.com/apache/logging-log4cxx/issues/828)\]
+
 * [Filters](@ref log4cxx::spi::Filter) can be added to an appender in a [properties file](@ref log4cxx::PropertyConfigurator)
    \[[#195](https://github.com/apache/logging-log4cxx/issues/195)\]
 

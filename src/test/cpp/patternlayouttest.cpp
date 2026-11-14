@@ -42,6 +42,12 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/stringhelper.h>
 
+#if defined(_WIN32)
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 
 #define REGEX_STR(x) x
 #define PAT0 REGEX_STR("\\[[0-9A-FXx]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]\\{1,2\\}")
@@ -83,6 +89,7 @@ LOGUNIT_CLASS(PatternLayoutTest)
 	LOGUNIT_TEST(test14);
 	LOGUNIT_TEST(testMDC1);
 	LOGUNIT_TEST(testMDC2);
+	LOGUNIT_TEST(testProcessId);
 	LOGUNIT_TEST(testAbbreviateNoDots);
 	LOGUNIT_TEST(testAbbreviatePrecisionExceedsSegments);
 	LOGUNIT_TEST(testAbbreviateKeepLastTwoSegments);
@@ -584,6 +591,38 @@ public:
 		root->debug(LOG4CXX_TEST_STR("finished mdc pattern test"));
 
 		LOGUNIT_ASSERT(Compare::compare(OUTPUT_FILE, WITNESS_FILE));
+	}
+
+	/**
+	 * The %pid and %processId conversion words output the identifier of the current process.
+	 */
+	void testProcessId()
+	{
+		LogString pid;
+#if defined(_WIN32)
+		StringHelper::toString(static_cast<int64_t>(GetCurrentProcessId()), pid);
+#else
+		StringHelper::toString(static_cast<int64_t>(getpid()), pid);
+#endif
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getInfo()
+			, LOG4CXX_STR("msg")
+			, LOG4CXX_LOCATION
+			);
+
+		PatternLayout layout(LOG4CXX_STR("[%pid] [%processId] %p %m"));
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("[") + pid + LOG4CXX_STR("] [") + pid + LOG4CXX_STR("] INFO msg"), result);
+
+		PatternLayout padded(LOG4CXX_STR("[%-12pid]"));
+		result.clear();
+		padded.format(result, event);
+		LogString expected = LOG4CXX_STR("[") + pid;
+		expected.append(12 - pid.size(), LOG4CXX_STR(' '));
+		expected.append(LOG4CXX_STR("]"));
+		LOGUNIT_ASSERT_EQUAL(expected, result);
 	}
 
 	/*
