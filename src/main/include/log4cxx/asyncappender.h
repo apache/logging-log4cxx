@@ -180,8 +180,9 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 */
 		void replaceAppenders(const AppenderList& newList) override;
 
+		static const int MaxBufferedEventCount = 10000000;
 		/**
-		* Use \c newSize (a non-negative integer value) for
+		* Use \c newSize (an integer value in the range 1 to 10 million) for
 		* the number of [logging events](@ref spi::LoggingEvent) the ring buffer can hold.
 		* The ring buffer size cannot be changed once the appender has received an event.
 		* */
@@ -216,7 +217,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 
 		Supported options | Supported values | Default value |
 		-------------- | ---------------- | --------------- |
-		BufferSize | int  | 128 |
+		BufferSize | 1..10000000  | 128 |
 		Blocking | True,False | True |
 
 		\sa AppenderSkeleton::setOption()

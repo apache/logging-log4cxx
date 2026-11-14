@@ -983,22 +983,15 @@ void SMTPAppender::setEvaluator(const spi::TriggeringEventEvaluatorPtr& trigger)
 	_priv->evaluator = trigger;
 }
 
-/**
-The <b>BufferSize</b> option takes a positive integer
-representing the maximum number of logging events to collect in a
-cyclic buffer. When the <code>BufferSize</code> is reached,
-oldest events are deleted as new events are added to the
-buffer. By default the size of the cyclic buffer is 512 events.
-*/
-void SMTPAppender::setBufferSize(int sz)
+void SMTPAppender::setBufferSize(int newValue)
 {
-	if (sz < 1)
+	if (newValue < 0 || MaxBufferedEventCount < newValue)
 	{
-		sz = 1;
+		throw IllegalArgumentException(LOG4CXX_STR("Buffer size must in the range 1 to 10 million"));
 	}
 
-	_priv->bufferSize = sz;
-	_priv->cb.resize(sz);
+	_priv->bufferSize = newValue;
+	_priv->cb.resize(newValue);
 }
 
 /**

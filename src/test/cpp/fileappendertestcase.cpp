@@ -17,6 +17,7 @@
 
 #include "fileappendertestcase.h"
 #include <log4cxx/fileappender.h>
+#include <log4cxx/helpers/exception.h>
 #include "insertwide.h"
 
 using namespace log4cxx;
@@ -44,7 +45,7 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 		LOGUNIT_TEST(testSetDoubleBackslashes);
 		LOGUNIT_TEST(testStripDuplicateBackslashes);
 		LOGUNIT_TEST(testNegativeBufferSizeOptionFallsBack);
-		LOGUNIT_TEST(testOversizedBufferSizeOptionFallsBack);
+		LOGUNIT_TEST_EXCEPTION(testOversizedBufferSizeOptionThrows, IllegalArgumentException);
 		LOGUNIT_TEST_SUITE_END();
 
 	public:
@@ -115,11 +116,10 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 			LOGUNIT_ASSERT(appender.getBufferSize() >= 0);
 		}
 
-		void testOversizedBufferSizeOptionFallsBack()
+		void testOversizedBufferSizeOptionThrows()
 		{
 			FileAppender appender;
-			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("2G"));
-			LOGUNIT_ASSERT(appender.getBufferSize() >= 0);
+			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("2GB"));
 		}
 };
 
