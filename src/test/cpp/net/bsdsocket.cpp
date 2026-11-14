@@ -221,7 +221,7 @@ struct BSDSocket::Data : public Socket::SocketPrivate
 	HandleType m_handle{ -1 };      //!< The handle for send and receive
 	SockAddrPtr m_remoteAddress{ std::make_unique<SockAddrType>() };
 	SockSizeType m_remoteAddressSize{ 0 };
-	LoggerPtr m_log{ Logger::getLogger("BSDSocket") };
+	LogLog::LabelPtr m_logLabel{ LogLog::getCategory(LOG4CXX_STR("BSDSocket")) };
 
 	Data(bool isDatagramType = false, bool ipV6 = false)
 		: m_inetType{ isDatagramType ? SOCK_DGRAM : SOCK_STREAM }
@@ -265,7 +265,7 @@ struct BSDSocket::Data : public Socket::SocketPrivate
 	void
 BSDSocket::Data::open()
 {
-	LOGLOG_DEBUG(m_log, "open:");
+	LOGLOG_DEBUG(m_logLabel, "open:");
 	setRemote(this->address, this->port);
 	m_handle = (HandleType)socket(m_inetFamily, m_inetType, SOCK_DGRAM == m_inetType ? IPPROTO_UDP : IPPROTO_TCP);
 	if (m_handle < 0)
@@ -289,21 +289,21 @@ BSDSocket::Data::open()
 		, NULL // lpCompletionRoutine
 		);
 #endif
-	LOGLOG_DEBUG(m_log, "open:"
+	LOGLOG_DEBUG(m_logLabel, "open:"
 		<< " connect " << m_handle
 		<< " to address " << *m_remoteAddress
 		);
 	auto rs = connect(m_handle, (const struct sockaddr *)m_remoteAddress.get(), m_remoteAddressSize);
 	if (rs < 0)
 		throw ConnectException(UnexpectedSystemError::MakeConnectMessage());
-	LOGLOG_DEBUG(m_log, "open:" << " handle " << m_handle);
+	LOGLOG_DEBUG(m_logLabel, "open:" << " handle " << m_handle);
 }
 
 // Release resources required by an open channel.
 	void
 BSDSocket::Data::close()
 {
-	LOGLOG_DEBUG(m_log, "close:" << " handle " << m_handle);
+	LOGLOG_DEBUG(m_logLabel, "close:" << " handle " << m_handle);
 #ifdef WIN32
 	closesocket(m_handle);
 #else
@@ -318,7 +318,7 @@ BSDSocket::Data::write(ByteBuffer& data)
 {
 	auto pMessage = data.current();
 	auto byteCount = static_cast<int>(data.remaining());
-	LOGLOG_TRACE(m_log, "write:"
+	LOGLOG_TRACE(m_logLabel, "write:"
 		<< " byteCount " << byteCount
 		<< " to " << *m_remoteAddress
 		<< "\n" << MessageData(pMessage, byteCount)
@@ -342,7 +342,7 @@ BSDSocket::Data::write(ByteBuffer& data)
 BSDSocket::Data::setRemote(const InetAddressPtr& address, int port)
 {
 	LOG4CXX_ENCODE_CHAR(hostAddress, address->getHostAddress());
-	LOGLOG_DEBUG(m_log, "setRemote:"
+	LOGLOG_DEBUG(m_logLabel, "setRemote:"
 		<< " hostAddress " << hostAddress
 		<< " port " << port
 		<< " inetType " << m_inetType
@@ -373,7 +373,7 @@ BSDSocket::Data::setRemote(const InetAddressPtr& address, int port)
 	void
 BSDSocket::Data::setRemoteAddress(const struct sockaddr* data, size_t dataSize)
 {
-	LOGLOG_DEBUG(m_log, "setRemoteAddress:" << " size " << dataSize << " address " << *data);
+	LOGLOG_DEBUG(m_logLabel, "setRemoteAddress:" << " size " << dataSize << " address " << *data);
 	m_remoteAddressSize = SockSizeType(std::min(dataSize, sizeof (SockAddrType)));
 	memcpy(m_remoteAddress.get(), data, m_remoteAddressSize);
 }
@@ -382,7 +382,7 @@ BSDSocket::Data::setRemoteAddress(const struct sockaddr* data, size_t dataSize)
 	void
 BSDSocket::Data::setInternetPort(struct sockaddr* addr, int port)
 {
-	LOGLOG_DEBUG(m_log, "setInternetPort: " << port);
+	LOGLOG_DEBUG(m_logLabel, "setInternetPort: " << port);
 	if (AF_INET == addr->sa_family)
 	{
 		struct sockaddr_in* ipv4Data = reinterpret_cast<struct sockaddr_in*>(addr);

@@ -213,9 +213,10 @@ public:
 	// Used to check the buffer is flushed at exit
 	void writeFinalBufferOutput()
 	{
+		auto logLabel = LogLog::getCategory(LOG4CXX_STR("writeFinalBufferOutput"));
+		LOGLOG_DEBUG(logLabel, "configuing");
 		int requiredMsgCount = 100;
 		auto logger = getLogger(LOG4CXX_STR("100message"));
-		LOGLOG_DEBUG(logger, "writeFinalBufferOutput: " << "configuing");
 
 		// Set up a new file
 		LogString dir{ LOG4CXX_STR("output/newdir") };
@@ -231,12 +232,12 @@ public:
 		logger->setAdditivity(false);
 		logger->addAppender(writer);
 
-		LOGLOG_DEBUG(logger, "writeFinalBufferOutput: " << "started");
+		LOGLOG_DEBUG(logLabel, "started");
 		for ( int x = 0; x < requiredMsgCount; x++ )
 		{
 			LOG4CXX_INFO( logger, "This is test message " << x );
 		}
-		LOGLOG_DEBUG(logger, "writeFinalBufferOutput: " << "stopped");
+		LOGLOG_DEBUG(logLabel, "stopped");
 	}
 
 	void checkFinalBufferOutput()
