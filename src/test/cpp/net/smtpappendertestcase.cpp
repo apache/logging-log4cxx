@@ -82,7 +82,7 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(testSetOptionThreshold);
 		LOGUNIT_TEST(testTrigger);
 		LOGUNIT_TEST(testInvalid);
-		LOGUNIT_TEST(testNegativeBufferSizeOption);
+		LOGUNIT_TEST_EXCEPTION(testNegativeBufferSizeThrows, IllegalArgumentException);
 		LOGUNIT_TEST(testSubjectStripsCRLF);
 		LOGUNIT_TEST(testAddressFieldsStripCRLF);
 		LOGUNIT_TEST(testCleanFieldsArePreserved);
@@ -137,11 +137,10 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 			LOGUNIT_ASSERT(eh->errorReported());
 		}
 
-		void testNegativeBufferSizeOption()
+		void testNegativeBufferSizeThrows()
 		{
 			SMTPAppender appender;
 			appender.setOption(LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("-10"));
-			LOGUNIT_ASSERT_EQUAL(1, appender.getBufferSize());
 		}
 
 		/**

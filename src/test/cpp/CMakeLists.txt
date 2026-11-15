@@ -53,6 +53,7 @@ set(ALL_LOG4CXX_TESTS
     decodingtest
     encodingtest
     fileappendertest
+    fileappendertestcase
     filetestcase
     hexdumptestcase
     hierarchytest

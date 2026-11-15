@@ -123,9 +123,9 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		BufferedSeconds | {any} | 5 |
 		LazyFileCreation | True,False | False |
 		ImmediateFlush | True,False | False |
-		BufferSize | (\ref fileSz1 "1") | 8 KB |
+		BufferSize | (\ref bufferSz1 "1") | 8 KB |
 
-		\anchor fileSz1 (1) An integer in the range 0 - 2^63.
+		\anchor bufferSz1 (1) An integer in the range 0 - 2^31.
 		 You can specify the value with the suffixes "KB" or "MB" so that the integer is
 		 interpreted being expressed respectively in kilobytes or megabytes.
 		 For example, the value "10KB" will be interpreted as 10240.
@@ -183,8 +183,9 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		*/
 		void setBufferedIO(bool newValue);
 
+		static const size_t MaxBufferedByteCount = 2LL * 1024 * 1024 * 1024;
 		/**
-		Use \c newValue as the size of the output buffer.
+		Use \c newValue, a value up to 2^31, as the size of the output buffer.
 		*/
 		void setBufferSize(size_t newValue);
 

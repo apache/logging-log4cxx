@@ -118,7 +118,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		cc | (\ref asciiCheck "1") | - |
 		bcc | (\ref asciiCheck "1") | - |
 		subject | {any} | - |
-		buffersize | {int} | 512 |
+		buffersize | 1..10000000 | 512 |
 		evaluatorClass | (\ref AppenderSkeleton "2") | - |
 		allowPlainTextAuthentication | True,False | False |
 
@@ -192,14 +192,15 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		*/
 		void setSubject(const LogString& subject);
 
+		static const int MaxBufferedEventCount = 10000000;
 		/**
-		The <b>BufferSize</b> option takes a positive integer
-		representing the maximum number of logging events to collect in a
-		cyclic buffer. When the <code>BufferSize</code> is reached,
+		use \c newValue, an integer in the range 1 to 10 million,
+		as the maximum number of logging events to collect in a cyclic buffer.
+		When the \c newValue is reached,
 		oldest events are deleted as new events are added to the
 		buffer. By default the size of the cyclic buffer is 512 events.
 		*/
-		void setBufferSize(int bufferSize);
+		void setBufferSize(int newValue);
 
 		/**
 		The <b>SMTPHost</b> option takes a string value which should be a

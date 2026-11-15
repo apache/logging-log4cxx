@@ -491,15 +491,15 @@ void AsyncAppender::replaceAppenders( const AppenderList& newList)
 }
 
 
-void AsyncAppender::setBufferSize(int size)
+void AsyncAppender::setBufferSize(int newValue)
 {
-	if (size < 0)
+	if (newValue < 0 || MaxBufferedEventCount < newValue)
 	{
-		throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
+		throw IllegalArgumentException(LOG4CXX_STR("Buffer size must in the range 1 to 10 million"));
 	}
 
 	std::lock_guard<std::mutex> lock(priv->dispatcherMutex);
-	priv->bufferSize = (size < 1) ? 1 : size;
+	priv->bufferSize = newValue;
 }
 
 int AsyncAppender::getBufferSize() const

@@ -114,7 +114,7 @@ void FileAppender::setOption(const LogString& option,
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
 		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-		_priv->bufferSize = OptionConverter::toFileSize(value, 8 * 1024);
+		setBufferSize(OptionConverter::toFileSize(value, 8 * 1024));
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDSECONDS"), LOG4CXX_STR("bufferedseconds")))
 	{
@@ -377,6 +377,10 @@ int FileAppender::getBufferedSeconds() const
 
 void FileAppender::setBufferSize(size_t newValue)
 {
+	if (MaxBufferedByteCount <= newValue)
+	{
+		throw IllegalArgumentException(LOG4CXX_STR("Buffer size must less the 2^31"));
+	}
 	_priv->bufferSize = newValue;
 }
 
