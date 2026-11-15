@@ -17,9 +17,7 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/properties.h>
-#include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <cctype>
 #include <algorithm>
@@ -55,8 +53,8 @@ public: // ...structors
 		: m_in(in)
 		, m_buffer(m_storage, BUFSIZE)
 	{
-		if (m_in->read(m_buffer) < 0)
-			m_buffer.flip(); // Set empty
+		m_in->read(m_buffer);
+		m_buffer.flip(); // Change m_buffer to a collection of bytes to be processed
 	}
 
 public: // Accessors
@@ -82,8 +80,8 @@ public: // Modifiers
 		if (0 == m_buffer.remaining())
 		{
 			m_buffer.clear();
-			if (m_in->read(m_buffer) < 0)
-				m_buffer.flip(); // Set empty
+			m_in->read(m_buffer);
+			m_buffer.flip(); // Change m_buffer to a collection of bytes to be processed
 		}
 	}
 };
