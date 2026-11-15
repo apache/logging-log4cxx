@@ -61,7 +61,8 @@ struct SyslogAppender::SyslogAppenderPriv : public AppenderSkeleton::AppenderSke
 		AppenderSkeletonPrivate(),
 		syslogFacility(LOG_USER),
 		facilityPrinting(false),
-		maxMessageLength(1024)
+		maxMessageLength(1024),
+		rfc5424Format(false)
 	{
 
 	}
@@ -70,7 +71,8 @@ struct SyslogAppender::SyslogAppenderPriv : public AppenderSkeleton::AppenderSke
 		AppenderSkeletonPrivate (layout),
 		syslogFacility(syslogFacility),
 		facilityPrinting(false),
-		maxMessageLength(1024)
+		maxMessageLength(1024),
+		rfc5424Format(false)
 	{
 
 	}
@@ -80,7 +82,8 @@ struct SyslogAppender::SyslogAppenderPriv : public AppenderSkeleton::AppenderSke
 		AppenderSkeletonPrivate(layout),
 		syslogFacility(syslogFacility),
 		facilityPrinting(false),
-		maxMessageLength(1024)
+		maxMessageLength(1024),
+		rfc5424Format(false)
 	{
 
 	}
@@ -92,11 +95,19 @@ struct SyslogAppender::SyslogAppenderPriv : public AppenderSkeleton::AppenderSke
 	LogString syslogHost;
 	int syslogHostPort;
 	int maxMessageLength;
+	bool rfc5424Format;
+	LogString appName;
+	LogString messageId;
+	LogString hostName;
+	LogString procId;
 };
 
 namespace detail
 {
 LOG4CXX_EXPORT std::vector<LogString> splitSyslogPackets(const LogString& msg, size_t maxMessageLength);
+LOG4CXX_EXPORT void appendRfc5424Header(LogString& buf, log4cxx_time_t timestamp,
+	const LogString& hostName, const LogString& appName,
+	const LogString& procId, const LogString& messageId);
 }
 
 }
