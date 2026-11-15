@@ -46,9 +46,8 @@ elements are discussed below.
 The <code>PropertyConfigurator</code> does not handle the
 advanced configuration features supported by the
 {@link xml::DOMConfigurator DOMConfigurator} such as
-support for {@link spi::Filter Filters}, custom
-{@link spi::ErrorHandler ErrorHandlers},
-{@link rolling::RollingFileAppender rolling policies}, etc.
+custom {@link spi::ErrorHandler ErrorHandlers},
+filters attached to a {@link rolling::FilterBasedTriggeringPolicy FilterBasedTriggeringPolicy}, etc.
 
 <h3>Configuring appenders</h3>
 
@@ -73,8 +72,32 @@ log4j.appender.appenderName.layout.option1=value1
 log4j.appender.appenderName.layout.optionN=valueN
 </pre>
 
-Refer to the Appender::setOption override of each implemented appender and
-Layout::setOption override of each implemented layout
+For each named appender you can configure a chain of {@link spi::Filter Filters}.
+The syntax for configuring an appender's filters is:
+<pre>
+log4j.appender.appenderName.filter.ID=fully.qualified.name.of.filter.class
+log4j.appender.appenderName.filter.ID.option1=value1
+....
+log4j.appender.appenderName.filter.ID.optionN=valueN
+</pre>
+
+where <i>ID</i> is a name (without dots) that identifies the filter.
+The filters are added to the appender in ascending (string) order of <i>ID</i>,
+for example a filter with ID <code>2</code> is consulted before a filter with ID <code>3</code>,
+but after a filter with ID <code>10</code>.
+The option name is the remainder of the key after <i>ID</i> and may contain dots.
+
+For example, the following sends only the warning level logging requests to the appender "A1":
+<pre>
+log4j.appender.A1.filter.1=LevelMatchFilter
+log4j.appender.A1.filter.1.LevelToMatch=WARN
+log4j.appender.A1.filter.1.AcceptOnMatch=true
+log4j.appender.A1.filter.2=DenyAllFilter
+</pre>
+
+Refer to the Appender::setOption override of each implemented appender,
+Layout::setOption override of each implemented layout and
+spi::Filter::setOption override of each implemented filter
 for class specific options.
 
 <h3>Configuring loggers</h3>

@@ -27,6 +27,7 @@
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/layout.h>
+#include <log4cxx/spi/filter.h>
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/transcoder.h>
@@ -120,6 +121,15 @@ public: // Methods
 	AppenderPtr parseAppender
 		( helpers::Properties& props
 		, const LogString&     appenderName
+		);
+
+	/**
+	Add the filters configured for \c appenderName to \c appender.
+	*/
+	void parseAppenderFilters
+		( helpers::Properties& props
+		, const LogString&     appenderName
+		, const AppenderPtr&   appender
 		);
 
 	void registryPut(const AppenderPtr& appender);
@@ -496,7 +506,6 @@ AppenderPtr ConfiguratorContext::parseAppender
 
 	// Appender was not previously initialized.
 	LogString prefix = LOG4CXX_STR("log4j.appender.") + appenderName;
-	LogString layoutPrefix = prefix + LOG4CXX_STR(".layout");
 
 	std::shared_ptr<Object> obj =
 		OptionConverter::instantiateByKey(
@@ -524,41 +533,45 @@ AppenderPtr ConfiguratorContext::parseAppender
 
 	if (appender->instanceof(OptionHandler::getStaticClass()))
 	{
-		auto obj = OptionConverter::instantiateByKey
-			( props
-			, layoutPrefix
-			, Layout::getStaticClass()
-			, {} // defaultValue
-			);
-		if (auto layout = LOG4CXX_NS::cast<Layout>( obj ))
+		auto layoutPrefix = prefix + LOG4CXX_STR(".layout");
+		auto layoutClassName = OptionConverter::findAndSubst(layoutPrefix, props);
+		if (!layoutClassName.empty())
 		{
-			appender->setLayout(layout);
-			if (LogLog::isDebugEnabled())
+			auto obj = OptionConverter::instantiateByClassName
+				( StringHelper::trim(layoutClassName)
+				, Layout::getStaticClass()
+				, {} // defaultValue
+				);
+			if (auto layout = LOG4CXX_NS::cast<Layout>( obj ))
 			{
-				LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Layout::getStaticClass().getName()
-					+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
-			}
+				appender->setLayout(layout);
+				if (LogLog::isDebugEnabled())
+				{
+					LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Layout::getStaticClass().getName()
+						+ LOG4CXX_STR(" options for [") + appenderName + LOG4CXX_STR("]"));
+				}
 
-			PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."));
-			if (LogLog::isDebugEnabled())
-			{
-				LogLog::debug((LogString) LOG4CXX_STR("End of parsing for [")
-					+ appenderName +  LOG4CXX_STR("]"));
+				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."));
+				if (LogLog::isDebugEnabled())
+				{
+					LogLog::debug((LogString) LOG4CXX_STR("End of parsing for [")
+						+ appenderName +  LOG4CXX_STR("]"));
+				}
 			}
 		}
 
-		RollingFileAppenderPtr rolling = LOG4CXX_NS::cast<rolling::RollingFileAppender>(appender);
-		if (rolling)
+		if (auto rolling = LOG4CXX_NS::cast<rolling::RollingFileAppender>(appender))
 		{
-			LogString rollingPolicyKey = prefix + LOG4CXX_STR(".rollingPolicy");
-			if (!OptionConverter::findAndSubst(rollingPolicyKey, props).empty())
+			auto rollingPolicyKey = prefix + LOG4CXX_STR(".rollingPolicy");
+			auto rollingPolicyClassName = OptionConverter::findAndSubst(rollingPolicyKey, props);
+			if (!rollingPolicyClassName.empty())
 			{
-				RollingPolicyPtr rollingPolicy;
-				std::shared_ptr<Object> rolling_obj =
-					OptionConverter::instantiateByKey(
-						props, rollingPolicyKey, RollingPolicy::getStaticClass(), 0);
-				rollingPolicy = LOG4CXX_NS::cast<RollingPolicy>( rolling_obj );
-				if(rollingPolicy)
+				auto obj = OptionConverter::instantiateByClassName
+					( rollingPolicyClassName
+					, RollingPolicy::getStaticClass()
+					, {} // defaultValue
+					);
+				if (auto rollingPolicy = LOG4CXX_NS::cast<RollingPolicy>(obj))
 				{
 					rolling->setRollingPolicy(rollingPolicy);
 
@@ -572,14 +585,15 @@ AppenderPtr ConfiguratorContext::parseAppender
 			}
 
 			LogString triggeringPolicyKey = prefix + LOG4CXX_STR(".triggeringPolicy");
-			if (!OptionConverter::findAndSubst(triggeringPolicyKey, props).empty())
+			auto triggeringPolicyClassName = OptionConverter::findAndSubst(triggeringPolicyKey, props);
+			if (!triggeringPolicyClassName.empty())
 			{
-				TriggeringPolicyPtr triggeringPolicy;
-				std::shared_ptr<Object> triggering_obj =
-					OptionConverter::instantiateByKey(
-						props, triggeringPolicyKey, TriggeringPolicy::getStaticClass(), 0);
-				triggeringPolicy = LOG4CXX_NS::cast<TriggeringPolicy>( triggering_obj );
-				if(triggeringPolicy)
+				auto obj = OptionConverter::instantiateByClassName
+					( triggeringPolicyClassName
+					, TriggeringPolicy::getStaticClass()
+					, {} // defaultValue
+					);
+				if (auto triggeringPolicy = LOG4CXX_NS::cast<TriggeringPolicy>(obj))
 				{
 					rolling->setTriggeringPolicy(triggeringPolicy);
 
@@ -601,9 +615,64 @@ AppenderPtr ConfiguratorContext::parseAppender
 		}
 	}
 
+	parseAppenderFilters(props, appenderName, appender);
 	registryPut(appender);
 
 	return appender;
+}
+
+void ConfiguratorContext::parseAppenderFilters
+	( helpers::Properties& props
+	, const LogString&     appenderName
+	, const AppenderPtr&   appender
+	)
+{
+	// Collect the options of each filter, keyed by the property that holds its class name.
+	// The part of a key following the filter identifier is the option name (which can contain dots).
+	LogString filterPrefix = LOG4CXX_STR("log4j.appender.") + appenderName + LOG4CXX_STR(".filter.");
+	using FilterOptions = std::vector<std::pair<LogString, LogString>>;
+	std::map<LogString, FilterOptions> filters;
+	for (auto& key : props.propertyNames())
+	{
+		if (0 != key.find(filterPrefix))
+		{
+			continue;
+		}
+		auto dotIndex = key.find(0x2E /* '.' */, filterPrefix.length());
+		auto& options = filters[key.substr(0, dotIndex)];
+		if (LogString::npos != dotIndex)
+		{
+			options.emplace_back(key.substr(dotIndex + 1), OptionConverter::findAndSubst(key, props));
+		}
+	}
+
+	// Add the filters in the order of their identifiers
+	for (auto& item : filters)
+	{
+		auto& filterKey = item.first;
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug((LogString) LOG4CXX_STR("Parsing ") + Filter::getStaticClass().getName()
+				+ LOG4CXX_STR(" [") + filterKey.substr(filterPrefix.length())
+				+ LOG4CXX_STR("] for [") + appenderName + LOG4CXX_STR("]"));
+		}
+		auto obj = OptionConverter::instantiateByKey
+			( props
+			, filterKey
+			, Filter::getStaticClass()
+			, {} // defaultValue
+			);
+		if (auto filter = LOG4CXX_NS::cast<Filter>(obj))
+		{
+			PropertySetter propSetter(filter);
+			for (auto& option : item.second)
+			{
+				propSetter.setProperty(option.first, option.second);
+			}
+			propSetter.activate();
+			appender->addFilter(filter);
+		}
+	}
 }
 
 void ConfiguratorContext::registryPut(const AppenderPtr& appender)

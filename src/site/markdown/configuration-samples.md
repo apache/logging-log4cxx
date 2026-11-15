@@ -185,6 +185,30 @@ log4j.appender.csvData.layout.ConversionPattern=%m,%d{yyyy-MM-dd,HH:mm,ss.SSS}%n
 #log4j.debug=true
 ~~~
 
+### Properties Example 3 {#properties-example-3}
+
+This example adds a chain of filters to an appender,
+so that it only writes messages that contain the string "specific"
+(the same as [XML Example 4](@ref xml-example-4)).
+The filters are consulted in the order of their identifiers (`1` then `2`).
+
+~~~{.properties}
+log4j.rootLogger=TRACE, ConsoleAppender
+
+log4j.appender.ConsoleAppender=org.apache.log4j.ConsoleAppender
+log4j.appender.ConsoleAppender.Target=System.out
+log4j.appender.ConsoleAppender.layout=org.apache.log4j.PatternLayout
+log4j.appender.ConsoleAppender.layout.ConversionPattern=%.30c - %Y%m%y%n
+
+# Accept messages that contain "specific"
+log4j.appender.ConsoleAppender.filter.1=org.apache.log4j.varia.StringMatchFilter
+log4j.appender.ConsoleAppender.filter.1.StringToMatch=specific
+log4j.appender.ConsoleAppender.filter.1.AcceptOnMatch=true
+
+# Deny all other messages
+log4j.appender.ConsoleAppender.filter.2=org.apache.log4j.varia.DenyAllFilter
+~~~
+
 ## XML Files {#xmlfiles}
 
 Another way of configuring Log4cxx is with an XML file.

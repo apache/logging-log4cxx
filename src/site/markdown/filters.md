@@ -139,6 +139,23 @@ In this configuration, the [MapFilter](@ref log4cxx.filter.MapFilter) can be use
 </log4j:configuration>
 ```
 
+The equivalent [properties file](@ref log4cxx.PropertyConfigurator) configuration is:
+
+```properties
+log4j.rootLogger=ALL, SIMPLE
+
+log4j.appender.SIMPLE=org.apache.log4j.FileAppender
+log4j.appender.SIMPLE.File=logs/app.log
+log4j.appender.SIMPLE.Append=true
+log4j.appender.SIMPLE.layout=org.apache.log4j.SimpleLayout
+
+log4j.appender.SIMPLE.filter.1=org.apache.log4j.filter.MapFilter
+log4j.appender.SIMPLE.filter.1.user.ip=127.0.0.1
+log4j.appender.SIMPLE.filter.1.user.name=test
+log4j.appender.SIMPLE.filter.1.Operator=AND
+log4j.appender.SIMPLE.filter.1.AcceptOnMatch=false
+```
+
 If we wanted to exclude multiple IP addresses from the log, we need to define a separate filter for each one as we don’t support wildcards. Since the default `AcceptOnMatch` value is `false`, we can simplify to a single line per filter. In the configuration below we would skip logs for IP addresses matching 192.168.0.5 - 7.
 
 ```xml
