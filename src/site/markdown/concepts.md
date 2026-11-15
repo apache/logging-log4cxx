@@ -627,6 +627,7 @@ The other layouts provided in Log4cxx are:
 - [libfmt patterns](@ref log4cxx.FMTLayout)
 - [a HTML table](@ref log4cxx.HTMLLayout)
 - [a JSON dictionary](@ref log4cxx.JSONLayout)
+- [Elastic Common Schema (ECS) JSON lines](@ref log4cxx.ECSLayout)
 - [level - message](@ref log4cxx.SimpleLayout)
 - [log4j event elements](@ref log4cxx.xml.XMLLayout)
 

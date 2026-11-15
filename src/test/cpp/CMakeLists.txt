@@ -51,6 +51,7 @@ set(ALL_LOG4CXX_TESTS
     consoleappendertestcase
     defaultconfiguratortest
     decodingtest
+    ecslayouttest
     encodingtest
     fileappendertest
     fileappendertestcase
