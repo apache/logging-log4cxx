@@ -40,9 +40,14 @@ LOGUNIT_CLASS(PropertyConfiguratorTest)
 	LOGUNIT_TEST(testAppenderFilterOptionWithDots);
 	LOGUNIT_TEST(testAppenderFilterWithoutClass);
 	LOGUNIT_TEST(testSharedAppenderFilters);
+	LOGUNIT_TEST(testBadProperties);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
+	void tearDown() override
+	{
+		LogManager::resetConfiguration();
+	}
 	void testInherited()
 	{
 		Properties props;
@@ -58,7 +63,6 @@ public:
 		Logger::getRootLogger()->setLevel(Level::getError());
 		LOGUNIT_ASSERT_EQUAL((int) Level::ERROR_INT,
 			logger->getEffectiveLevel()->toInt());
-		LogManager::resetConfiguration();
 	}
 
 	void testNull()
@@ -76,7 +80,6 @@ public:
 		Logger::getRootLogger()->setLevel(Level::getError());
 		LOGUNIT_ASSERT_EQUAL((int) Level::ERROR_INT,
 			logger->getEffectiveLevel()->toInt());
-		LogManager::resetConfiguration();
 	}
 
 	void testAppenderThreshold()
@@ -94,7 +97,6 @@ public:
 		LOG4CXX_WARN(root, "Warn message");
 		LOG4CXX_WARN(root, "Error message");
 		LOGUNIT_ASSERT_EQUAL(2, appender->getEventCount());
-		LogManager::resetConfiguration();
 	}
 
 	void testInvalidAppenderBehavesNotConfigured()
@@ -114,8 +116,6 @@ public:
 		// Root logger should have no appenders
 		LoggerPtr root(Logger::getRootLogger());
 		LOGUNIT_ASSERT_EQUAL((size_t)0, root->getAllAppenders().size());
-
-		LogManager::resetConfiguration();
 	}
 
 	void testAppenderFilters()
@@ -144,7 +144,6 @@ public:
 		LOG4CXX_ERROR(root, "Error message");
 		LOGUNIT_ASSERT_EQUAL(1, appender->getEventCount());
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Warn message"), appender->getEvent(1)->getRenderedMessage());
-		LogManager::resetConfiguration();
 	}
 
 	void testAppenderFilterOrder()
@@ -169,7 +168,6 @@ public:
 		LOG4CXX_ERROR(root, "Error message");
 		LOGUNIT_ASSERT_EQUAL(1, appender->getEventCount());
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Error message"), appender->getEvent(1)->getRenderedMessage());
-		LogManager::resetConfiguration();
 	}
 
 	void testAppenderFilterOptionWithDots()
@@ -195,7 +193,6 @@ public:
 		}
 		LOGUNIT_ASSERT_EQUAL(1, appender->getEventCount());
 		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Message from another user"), appender->getEvent(1)->getRenderedMessage());
-		LogManager::resetConfiguration();
 	}
 
 	void testAppenderFilterWithoutClass()
@@ -213,7 +210,6 @@ public:
 		LOGUNIT_ASSERT(!appender->getFilter());
 		LOG4CXX_INFO(root, "Info message");
 		LOGUNIT_ASSERT_EQUAL(1, appender->getEventCount());
-		LogManager::resetConfiguration();
 	}
 
 	void testSharedAppenderFilters()
@@ -233,7 +229,11 @@ public:
 		// The filter is added once only
 		LOGUNIT_ASSERT(log4cxx::cast<filter::DenyAllFilter>(appender->getFilter()));
 		LOGUNIT_ASSERT(!appender->getFilter()->getNext());
-		LogManager::resetConfiguration();
+	}
+
+	void testBadProperties()
+	{
+		LOGUNIT_ASSERT_EQUAL(spi::ConfigurationStatus::NotConfigured, PropertyConfigurator::configure(LOG4CXX_STR("input/lineTooLong.properties")));
 	}
 
 };

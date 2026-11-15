@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/bytebuffer.h>
 #include <cctype>
 #include <algorithm>
 
@@ -42,23 +43,77 @@ struct Properties::Less
 	}
 };
 
+class ISO_8859_1_CharIterator
+{
+	enum { BUFSIZE = 4096 };
+	InputStreamPtr m_in;
+	char           m_storage[BUFSIZE];
+	ByteBuffer     m_buffer;
+
+public: // ...structors
+	ISO_8859_1_CharIterator(const InputStreamPtr& in)
+		: m_in(in)
+		, m_buffer(m_storage, BUFSIZE)
+	{
+		if (m_in->read(m_buffer) < 0)
+			m_buffer.flip(); // Set empty
+	}
+
+public: // Accessors
+	/// The current item.
+	/// @pre !off()
+	uint32_t item() const
+	{
+		return static_cast<uint32_t>(*m_buffer.current());
+	}
+
+	/// Is this before the first item or after the last item?
+	bool off() const
+	{
+		return 0 == m_buffer.remaining();
+	}
+
+public: // Modifiers
+	/// Advance the iterator
+	/// @pre !off()
+	void forth()
+	{
+		m_buffer.increment_position(1);
+		if (0 == m_buffer.remaining())
+		{
+			m_buffer.clear();
+			if (m_in->read(m_buffer) < 0)
+				m_buffer.flip(); // Set empty
+		}
+	}
+};
+
 class PropertyParser
 {
+		ISO_8859_1_CharIterator m_in;
 	public:
-		void parse(LogString& in, Properties& properties)
+		PropertyParser(const InputStreamPtr& in)
+			: m_in(in)
+		{}
+
+		void loadInto(Properties& properties)
 		{
 			LogString key, element;
 			LexemType lexemType = BEGIN;
 			logchar c;
 			bool finished = false;
 
-			if (!get(in, c))
+			if (!get(c))
 			{
 				return;
 			}
 
 			while (!finished)
 			{
+				if (1000 < key.size())
+					throw IOException("property key exceeds 1000 characters");
+				if (10000 < element.size())
+					throw IOException("property value exceeds 10000 characters");
 				switch (lexemType)
 				{
 					case BEGIN:
@@ -68,7 +123,7 @@ class PropertyParser
 							case 0x09: // '\t'
 							case 0x0A: // '\n'
 							case 0x0D: // '\r'
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -79,7 +134,7 @@ class PropertyParser
 							case 0x21: // '!'
 								lexemType = COMMENT;
 
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -99,7 +154,7 @@ class PropertyParser
 							case 0x5C: // '\\'
 								lexemType = KEY_ESCAPE;
 
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -112,7 +167,7 @@ class PropertyParser
 							case 0x3D: // '='
 								lexemType = DELIMITER;
 
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -126,7 +181,7 @@ class PropertyParser
 								key.erase(key.begin(), key.end());
 								lexemType = BEGIN;
 
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -136,7 +191,7 @@ class PropertyParser
 							default:
 								key.append(1, c);
 
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -177,7 +232,7 @@ class PropertyParser
 								lexemType = KEY;
 						}
 
-						if (!get(in, c))
+						if (!get(c))
 						{
 							finished = true;
 						}
@@ -189,7 +244,7 @@ class PropertyParser
 						{
 							case 0x20:  // ' '
 							case 0x09: //  '\t'
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -207,7 +262,7 @@ class PropertyParser
 						switch (c)
 						{
 							case 0x0A: // '\n'
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -229,7 +284,7 @@ class PropertyParser
 							case 0x20: // ' '
 							case 0x3A: // ':'
 							case 0x3D: // '='
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -249,7 +304,7 @@ class PropertyParser
 							case 0x5C: // '\\'
 								lexemType = ELEMENT_ESCAPE;
 
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -264,7 +319,7 @@ class PropertyParser
 								element.erase(element.begin(), element.end());
 								lexemType = BEGIN;
 
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -274,7 +329,7 @@ class PropertyParser
 							default:
 								element.append(1, c);
 
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -316,7 +371,7 @@ class PropertyParser
 								break;
 						}
 
-						if (!get(in, c))
+						if (!get(c))
 						{
 							finished = true;
 						}
@@ -328,7 +383,7 @@ class PropertyParser
 						{
 							case 0x20: // ' '
 							case 0x09: // '\t'
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -346,7 +401,7 @@ class PropertyParser
 						switch (c)
 						{
 							case 0x0A: // '\n'
-								if (!get(in, c))
+								if (!get(c))
 								{
 									finished = true;
 								}
@@ -367,7 +422,7 @@ class PropertyParser
 							lexemType = BEGIN;
 						}
 
-						if (!get(in, c))
+						if (!get(c))
 						{
 							finished = true;
 						}
@@ -383,16 +438,16 @@ class PropertyParser
 		}
 
 	protected:
-		static bool get(LogString& in, logchar& c)
+		bool get(logchar& c)
 		{
-			if (in.empty())
+			if (m_in.off())
 			{
 				c = 0;
 				return false;
 			}
 
-			c = in[0];
-			in.erase(in.begin());
+			c = static_cast<logchar>(m_in.item());
+			m_in.forth();
 			return true;
 		}
 
@@ -459,8 +514,7 @@ LogString Properties::get(const LogString& key) const
 
 void Properties::load(const InputStreamPtr& inStream)
 {
-	auto contents = InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()).read();
-	PropertyParser().parse(contents, *this);
+	PropertyParser(inStream).loadInto(*this);
 }
 
 std::vector<LogString> Properties::propertyNames() const
