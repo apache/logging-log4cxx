@@ -37,6 +37,21 @@ namespace net
  * When the message is too large for the current MaxMessageLength,
  * the packet number and total # will be appended to the end of the
  * message like this: (5/10)
+ *
+ * By default, a message sent to a remote syslog daemon contains only
+ * the priority and the formatted message, as in BSD syslog (RFC 3164).
+ * Set the Format option to RFC5424 to send messages
+ * using the syslog protocol (see RFC 5424), which adds
+ * the protocol version, a UTC timestamp, the local host name,
+ * the AppName option value, the process identifier
+ * and the MessageId option value to each message, for example:
+ *
+ * <pre>
+ * &lt;14&gt;1 2026-11-11T09:30:15.003210Z myhost myapp 4321 - - Hello world
+ * </pre>
+ *
+ * The Format option has no effect when messages are sent
+ * using the system function 'syslog' on the local host.
  */
 class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 {
@@ -81,10 +96,15 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		SysLogHost |  (\ref sysLogAddress "1") | - |
 		Facility | (\ref facility "2") | - |
 		MaxMessageLength | {int} | 1024 |
+		Format | BSD,RFC5424 | BSD |
+		AppName | (\ref rfc5424Field "3") | - |
+		MessageId | (\ref rfc5424Field "3") | - |
 
 		\anchor sysLogAddress (1) A valid internet address, optionally with the port number as a suffix after a ':'.
 
 		\anchor facility (2) One of kern,user,mail,daemon,auth,syslog,lpr,news,uucp,cron,ftp,local0,local1,local2,local3,local4,local5,local6,local7
+
+		\anchor rfc5424Field (3) A string of printable US-ASCII characters without spaces, used only by the RFC5424 format
 
 		\sa AppenderSkeleton::setOption()
 		*/
@@ -133,6 +153,54 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		void setMaxMessageLength(int maxMessageLength1);
 
 		int getMaxMessageLength() const;
+
+		/**
+		Set the format of messages sent to a remote syslog daemon.
+		This is the <b>Format</b> option.
+
+		<p>The <code>format</code> parameter must be either BSD
+		(see RFC 3164) or RFC5424. Case is unimportant.
+		An unknown value is ignored.
+		*/
+		void setFormat(const LogString& format);
+
+		/**
+		Returns the value of the <b>Format</b> option,
+		either "BSD" or "RFC5424".
+		*/
+		LogString getFormat() const;
+
+		/**
+		Set the APP-NAME field of messages in the RFC5424 format.
+		This is the <b>AppName</b> option.
+
+		<p>An empty value sends the nil value ("-").
+		Characters that are not printable US-ASCII,
+		including spaces, are replaced with '_'
+		and the value is truncated to 48 characters.
+		*/
+		void setAppName(const LogString& appName);
+
+		/**
+		Returns the value of the <b>AppName</b> option.
+		*/
+		const LogString& getAppName() const;
+
+		/**
+		Set the MSGID field of messages in the RFC5424 format.
+		This is the <b>MessageId</b> option.
+
+		<p>An empty value sends the nil value ("-").
+		Characters that are not printable US-ASCII,
+		including spaces, are replaced with '_'
+		and the value is truncated to 32 characters.
+		*/
+		void setMessageId(const LogString& messageId);
+
+		/**
+		Returns the value of the <b>MessageId</b> option.
+		*/
+		const LogString& getMessageId() const;
 
 	protected:
 		void initSyslogFacilityStr();
