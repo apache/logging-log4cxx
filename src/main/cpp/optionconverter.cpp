@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
-#include <log4cxx/spi/loggerfactory.h>
-#include <log4cxx/spi/loggerrepository.h>
-#include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <algorithm>
 #include <cctype>
@@ -31,21 +27,12 @@
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
-#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/system.h>
-#include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/file.h>
-#include <log4cxx/xml/domconfigurator.h>
-#include <log4cxx/logmanager.h>
-#if !defined(LOG4CXX)
-	#define LOG4CXX 1
-#endif
-#include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/filewatchdog.h>
-#include <log4cxx/helpers/singletonholder.h>
 
 namespace
 {
@@ -232,6 +219,7 @@ bool OptionConverter::toBoolean(const LogString& value, bool dEfault)
 		}
 	}
 
+	LogLog::warn(value + LOG4CXX_STR(" is not a valid boolean value"));
 	return dEfault;
 }
 
@@ -254,6 +242,7 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 		parsed < (std::numeric_limits<int>::min)() ||
 		parsed > (std::numeric_limits<int>::max)())
 	{
+		LogLog::warn(value + LOG4CXX_STR(" is not a valid integer value"));
 		return dEfault;
 	}
 
@@ -276,6 +265,7 @@ size_t OptionConverter::toFileSize(const LogString& s, size_t dEfault)
 
 	if (endptr == cvalue.c_str() || errno == ERANGE || parsed < 0)
 	{
+		LogLog::warn(s + LOG4CXX_STR(" is not a valid file size"));
 		return dEfault;
 	}
 
@@ -301,18 +291,21 @@ size_t OptionConverter::toFileSize(const LogString& s, size_t dEfault)
 
 		if (static_cast<char>(std::toupper(static_cast<unsigned char>(*endptr))) != 'B')
 		{
+			LogLog::warn(s + LOG4CXX_STR(" is not a valid file size"));
 			return dEfault;
 		}
 		++endptr;
 		skipWhitespace(endptr);
 		if (*endptr != '\0')
 		{
+			LogLog::warn(s + LOG4CXX_STR(" is not a valid file size"));
 			return dEfault;
 		}
 	}
 
 	if (multiplier != 0 && (std::numeric_limits<size_t>::max() / multiplier) < size_t(parsed))
 	{
+		LogLog::warn(s + LOG4CXX_STR(" is not a valid file size"));
 		return dEfault;
 	}
 
