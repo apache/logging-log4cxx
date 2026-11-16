@@ -79,6 +79,9 @@ Release 2.0.0 includes the following new features:
 * A [layout](@ref log4cxx::ECSLayout) that outputs JSON using the Elastic Common Schema (ECS) field names
    \[[#428](https://github.com/apache/logging-log4cxx/issues/428)\]
 
+* A [PatternLayout](@ref log4cxx::PatternLayout) conversion word to output the process identifier
+   \[[#828](https://github.com/apache/logging-log4cxx/issues/828)\]
+
 * A new [SyslogAppender](@ref log4cxx::net::SyslogAppender::setOption) option to send messages in the RFC 5424 syslog protocol format
    \[[#820](https://github.com/apache/logging-log4cxx/pull/820)\]
 

@@ -32,6 +32,10 @@ This is achieved by using "apr_file_write" which
 implements an OS dependent lock/write/unlock sequence
 during which the file pointer is moved the end of the file.
 
+To identify the process that wrote each logging event,
+include the <code>%%pid</code> conversion word in the log4cxx::PatternLayout,
+for example <code>%%d [%%pid:%%t] %%-5p %%c - %%m%%n</code>.
+
 To coordinate rollover across multiple applications
 Log4cxx provides the log4cxx::rolling::MultiprocessRollingFileAppender.
 This appender ensures that only one of the Log4cxx-using processes

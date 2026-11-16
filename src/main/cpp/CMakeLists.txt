@@ -187,6 +187,7 @@ target_sources(log4cxx
   patternlayout.cpp
   patternparser.cpp
   pool.cpp
+  processidpatternconverter.cpp
   properties.cpp
   propertiespatternconverter.cpp
   propertyconfigurator.cpp

@@ -199,6 +199,15 @@ LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
  *      <td>Used to output the level of the logging event.</td>
  *  </tr>
  *  <tr>
+ *      <td align="center"><strong>pid</strong><p><strong>processId</strong></p></td>
+ *      <td>
+ *          Used to output the identifier of the operating system process
+ *          in which the logging event is formatted.
+ *          This is useful to distinguish the output of each process
+ *          when multiple processes write to the same log file.
+ *      </td>
+ *  </tr>
+ *  <tr>
  *      <td align="center"><strong>r</strong></td>
  *      <td>
  *          Used to output the number of milliseconds elapsed since the start of the
