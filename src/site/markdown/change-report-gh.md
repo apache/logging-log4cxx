@@ -76,6 +76,9 @@ User-defined subclasses of [spi::Configurator](@ref log4cxx::spi::Configurator) 
 
 Release 2.0.0 includes the following new features:
 
+* A [layout](@ref log4cxx::ECSLayout) that outputs JSON using the Elastic Common Schema (ECS) field names
+   \[[#428](https://github.com/apache/logging-log4cxx/issues/428)\]
+
 * A [PatternLayout](@ref log4cxx::PatternLayout) conversion word to output the process identifier
    \[[#828](https://github.com/apache/logging-log4cxx/issues/828)\]
 

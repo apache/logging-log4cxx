@@ -55,6 +55,7 @@
 #include <log4cxx/layout.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/jsonlayout.h>
+#include <log4cxx/ecslayout.h>
 #include <log4cxx/htmllayout.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/xml/xmllayout.h>
@@ -205,6 +206,7 @@ void Class::registerClasses()
 	LOG4CXX_NS::nt::OutputDebugStringAppender::registerClass();
 #endif
 	JSONLayout::registerClass();
+	ECSLayout::registerClass();
 	HTMLLayout::registerClass();
 #if LOG4CXX_HAS_FMT_LAYOUT
 	FMTLayout::registerClass();

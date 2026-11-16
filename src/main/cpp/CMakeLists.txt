@@ -116,6 +116,7 @@ target_sources(log4cxx
   defaultconfigurator.cpp
   defaultloggerfactory.cpp
   defaultrepositoryselector.cpp
+  ecslayout.cpp
   errorhandler.cpp
   exception.cpp
   fallbackerrorhandler.cpp
