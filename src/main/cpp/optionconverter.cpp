@@ -219,6 +219,7 @@ bool OptionConverter::toBoolean(const LogString& value, bool dEfault)
 		}
 	}
 
+	LogLog::warn(value + LOG4CXX_STR(" is not a valid boolean value"));
 	return dEfault;
 }
 
@@ -241,6 +242,7 @@ int OptionConverter::toInt(const LogString& value, int dEfault)
 		parsed < (std::numeric_limits<int>::min)() ||
 		parsed > (std::numeric_limits<int>::max)())
 	{
+		LogLog::warn(value + LOG4CXX_STR(" is not a valid integer value"));
 		return dEfault;
 	}
 
