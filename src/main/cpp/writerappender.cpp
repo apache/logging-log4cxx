@@ -198,7 +198,7 @@ void WriterAppender::subAppend( const spi::LoggingEventPtr& event )
 
 void WriterAppender::WriterAppenderPriv::writeFooter()
 {
-	if (this->layout != NULL)
+	if (this->layout && this->writer)
 	{
 		LogString foot;
 		this->layout->appendFooter(foot);
@@ -208,7 +208,7 @@ void WriterAppender::WriterAppenderPriv::writeFooter()
 
 void WriterAppender::WriterAppenderPriv::writeHeader()
 {
-	if (this->layout != NULL)
+	if (this->layout && this->writer)
 	{
 		LogString header;
 		this->layout->appendHeader(header);
