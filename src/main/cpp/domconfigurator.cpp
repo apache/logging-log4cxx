@@ -65,8 +65,8 @@ public: // Types
 	struct AppenderStatus
 	{
 		AppenderPtr pAppender;
-		bool parsed { false };
-		bool activated { false };
+		bool parsed;
+		bool activated;
 	};
 	using AppenderMap = std::map<LogString, AppenderStatus>;
 
@@ -272,7 +272,7 @@ AppenderPtr DOMConfiguratorContext::parseAppender(apr_xml_elem* appenderElement)
 		PropertySetter propSetter(appender);
 
 		appender->setName(subst(getAttribute(appenderElement, NAME_ATTR)));
-		appenders.emplace(appender->getName(), AppenderStatus{appender});
+		appenders.emplace(appender->getName(), AppenderStatus{appender, false, false});
 
 		for (apr_xml_elem* currentElement = appenderElement->first_child;
 			currentElement;
