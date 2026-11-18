@@ -324,14 +324,13 @@ bool TimeBasedRollingPolicy::activateOptions()
 	}
 	else
 	{
-		LogLog::warn(
-			LOG4CXX_STR("The FileNamePattern option must be set before using TimeBasedRollingPolicy. "));
+		LogLog::warn(LOG4CXX_STR("The FileNamePattern option must be provided"));
 		return false;;
 	}
 
 	if (!getDatePatternConverter())
 	{
-		LogLog::warn(LOG4CXX_STR("The FileNamePattern option contain a date"));
+		LogLog::warn(LOG4CXX_STR("The FileNamePattern option must contain a date conversion specifier"));
 		return false;;
 	}
 

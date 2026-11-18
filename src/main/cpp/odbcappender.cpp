@@ -200,10 +200,12 @@ bool ODBCAppender::activateOptions()
 {
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
+	return false;
 #else
 	if (_priv->mappedName.empty())
 	{
 		LogLog::error(LOG4CXX_STR("ODBCAppender column mappings not defined, logging events will not be inserted"));
+		return false;
 	}
 	auto specs = getFormatSpecifiers();
 	for (auto& name : _priv->mappedName)
@@ -235,6 +237,7 @@ bool ODBCAppender::activateOptions()
 		}
 	}
 #endif
+	return true;
 }
 
 
