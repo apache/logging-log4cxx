@@ -272,7 +272,7 @@ AppenderPtr DOMConfiguratorContext::parseAppender(apr_xml_elem* appenderElement)
 		PropertySetter propSetter(appender);
 
 		appender->setName(subst(getAttribute(appenderElement, NAME_ATTR)));
-		appenders.emplace(appender->getName(), AppenderStatus{appender, {}});
+		appenders.emplace(appender->getName(), AppenderStatus{appender, false, false});
 
 		for (apr_xml_elem* currentElement = appenderElement->first_child;
 			currentElement;
