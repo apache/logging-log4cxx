@@ -80,7 +80,7 @@ class LOG4CXX_EXPORT SizeBasedTriggeringPolicy : public TriggeringPolicy
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

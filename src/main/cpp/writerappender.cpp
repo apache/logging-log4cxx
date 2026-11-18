@@ -54,17 +54,14 @@ WriterAppender::~WriterAppender()
 		_priv->shutdown();
 }
 
-void WriterAppender::activateOptions(  )
+bool WriterAppender::WriterAppenderPriv::checkConfiguration()
 {
-	_priv->checkConfiguration();
-}
-
-void WriterAppender::WriterAppenderPriv::checkConfiguration()
-{
+	bool result = true;
 	if (this->layout == 0)
 	{
 		this->errorHandler->error(LOG4CXX_STR("No layout set for the appender named [")
 			+ this->name + LOG4CXX_STR("]."));
+		result = false;
 	}
 
 	if (this->writer == 0)
@@ -72,6 +69,7 @@ void WriterAppender::WriterAppenderPriv::checkConfiguration()
 		this->errorHandler->error(LOG4CXX_STR("No writer set for the appender named [")
 			+ this->name + LOG4CXX_STR("]."));
 	}
+	return result;
 }
 
 void WriterAppender::append( const spi::LoggingEventPtr& event )
@@ -198,7 +196,7 @@ void WriterAppender::subAppend( const spi::LoggingEventPtr& event )
 
 void WriterAppender::WriterAppenderPriv::writeFooter()
 {
-	if (this->layout != NULL)
+	if (this->layout && this->writer)
 	{
 		LogString foot;
 		this->layout->appendFooter(foot);
@@ -208,7 +206,7 @@ void WriterAppender::WriterAppenderPriv::writeFooter()
 
 void WriterAppender::WriterAppenderPriv::writeHeader()
 {
-	if (this->layout != NULL)
+	if (this->layout && this->writer)
 	{
 		LogString header;
 		this->layout->appendHeader(header);

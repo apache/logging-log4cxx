@@ -75,9 +75,9 @@ class LOG4CXX_EXPORT AppenderSkeleton
 		/**
 		\copybrief spi::OptionHandler::activateOptions()
 
-		No action is performed in this implementation.
+		This implementation calls subclass implementations of checkConfiguration().
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

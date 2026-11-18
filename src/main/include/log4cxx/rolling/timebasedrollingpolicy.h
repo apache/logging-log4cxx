@@ -163,7 +163,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy
 
 		\sa RollingPolicyBase::activateOptions()
 		*/
-		void activateOptions( ) override;
+		bool activateOptions() override;
 
 		void setMultiprocess(bool multiprocess);
 

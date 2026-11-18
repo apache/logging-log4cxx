@@ -62,9 +62,9 @@ SocketAppenderSkeleton::~SocketAppenderSkeleton()
 {
 }
 
-void SocketAppenderSkeleton::activateOptions(  )
+bool SocketAppenderSkeleton::activateOptions()
 {
-	_priv->connect();
+	return _priv->connect() || 0 < getReconnectionDelay();
 }
 
 void SocketAppenderSkeleton::append( const spi::LoggingEventPtr& event )
@@ -94,8 +94,9 @@ void SocketAppenderSkeleton::append( const spi::LoggingEventPtr& event )
 
 
 
-void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
+bool SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 {
+	bool result = false;
 	if (this->address == 0)
 	{
 		LogLog::error(LogString(LOG4CXX_STR("No remote host is set for Appender named \"")) +
@@ -116,6 +117,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 				LogLog::debug(msg);
 			}
 			this->setOutputSink(Socket::create(this->address, this->port, this->socketSubclass));
+			result = true;
 		}
 		catch (const SocketException& e)
 		{
@@ -129,6 +131,7 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 			LogLog::warn(msg, e);
 		}
 	}
+	return result;
 }
 
 void SocketAppenderSkeleton::setOption(const LogString& option, const LogString& value)

@@ -196,7 +196,7 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
 	}
 }
 
-void ODBCAppender::activateOptions(  )
+bool ODBCAppender::activateOptions()
 {
 #if !LOG4CXX_HAVE_ODBC
 	LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));

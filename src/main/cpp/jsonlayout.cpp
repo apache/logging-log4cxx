@@ -105,9 +105,10 @@ LogString JSONLayout::getContentType() const
 	return LOG4CXX_STR("application/json");
 }
 
-void JSONLayout::activateOptions(  )
+bool JSONLayout::activateOptions(  )
 {
 	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
+	return true;
 }
 
 void JSONLayout::setOption(const LogString& option, const LogString& value)

@@ -95,7 +95,7 @@ class LOG4CXX_EXPORT Layout
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 	protected:
 		/**
 		 * The expected length of a formatted event excluding the message text

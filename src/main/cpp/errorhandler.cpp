@@ -34,8 +34,9 @@ bool spi::ErrorHandler::errorReported() const
 	return false;
 }
 
-void spi::ErrorHandler::activateOptions(  )
+bool spi::ErrorHandler::activateOptions()
 {
+	return true;
 }
 
 void spi::ErrorHandler::addAppenderHolder(const LogString&, const AppenderAttachablePtr&)

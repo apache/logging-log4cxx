@@ -78,7 +78,7 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		*/
 		LogString getContentType() const override;
 
-		using Layout::activateOptions;
+		using Layout::setOption;
 		/**
 		\copybrief spi::OptionHandler::setOption()
 

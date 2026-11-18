@@ -121,7 +121,7 @@ TelnetAppender::~TelnetAppender()
 		_priv->shutdown();
 }
 
-void TelnetAppender::activateOptions(  )
+bool TelnetAppender::activateOptions()
 {
 	if (_priv->serverSocket == NULL)
 	{
@@ -135,6 +135,7 @@ void TelnetAppender::activateOptions(  )
 		, &TelnetAppender::acceptConnections
 		, this
 		);
+	return true;
 }
 
 void TelnetAppender::setOption(const LogString& option,

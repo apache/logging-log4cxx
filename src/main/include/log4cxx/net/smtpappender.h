@@ -141,7 +141,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		<li>a non-ascii character is detected where not permitted</li>
 		</ul>.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		Perform SMTPAppender specific appending actions, mainly adding

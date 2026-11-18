@@ -73,12 +73,6 @@ class XLogger : public Logger
 		XLogger(const LogString& name) : Logger(name) {}
 
 		/**
-		        Nothing to activate.
-		*/
-		void activateOptions() {}
-
-
-		/**
 		        We introduce a new printing method in order to support {@link
 		        XLevel#LETHAL}.  */
 		void lethal(const LogString& message, const log4cxx::spi::LocationInfo& location);

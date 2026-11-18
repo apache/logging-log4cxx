@@ -85,7 +85,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 		Create the socket handler and wait for connections.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 
 		/**

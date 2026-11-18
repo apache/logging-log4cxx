@@ -48,7 +48,7 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 
 		Calls <a href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-registereventsourcew">RegisterEventSource</a>.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief AppenderSkeleton::setOption()

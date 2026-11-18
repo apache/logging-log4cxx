@@ -106,7 +106,7 @@ class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy
 
 		Activates all attached filters.
 		 */
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

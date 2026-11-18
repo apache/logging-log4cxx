@@ -121,7 +121,7 @@ struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPri
 	/**
 	Call open() and, if successful, set up any required monitoring
 	*/
-	void activate();
+	bool activate();
 
 	/**
 	Close any existing writer and establish a new writer

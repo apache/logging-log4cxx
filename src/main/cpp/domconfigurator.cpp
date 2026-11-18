@@ -65,7 +65,8 @@ public: // Types
 	struct AppenderStatus
 	{
 		AppenderPtr pAppender;
-		bool activated;
+		bool parsed { false };
+		bool activated { false };
 	};
 	using AppenderMap = std::map<LogString, AppenderStatus>;
 
@@ -73,7 +74,7 @@ public: // Attributes
 	Properties props = Configurator::properties();
 	LoggerRepositoryPtr repository;
 	LoggerFactoryPtr loggerFactory{ std::make_shared<LoggerFactory>() };
-	bool appenderAdded{ false };
+	AppenderList usedAppenders;
 	AppenderMap	appenders;
 	Pool p;
 	CharsetDecoderPtr utf8Decoder{ CharsetDecoder::getDecoder(LOG4CXX_STR("UTF-8")) };
@@ -225,7 +226,7 @@ AppenderPtr DOMConfiguratorContext::findAppenderByReference(apr_xml_elem* append
 
 	if (match != appenders.end())
 	{
-		if (!match->second.activated)
+		if (!match->second.parsed)
 		{
 			LogString msg(LOG4CXX_STR("Ignoring recursive reference to [") + appenderName + LOG4CXX_STR("]"));
 			LogLog::warn(msg);
@@ -371,8 +372,9 @@ AppenderPtr DOMConfiguratorContext::parseAppender(apr_xml_elem* appenderElement)
 			}
 		}
 
-		propSetter.activate();
-		appenders[appender->getName()].activated = true;
+		auto & appenderState = appenders[appender->getName()];
+		appenderState.parsed = true;
+		appenderState.activated = propSetter.activate();
 		return appender;
 	}
 	/* Yes, it's ugly.  But all of these exceptions point to the same
@@ -530,9 +532,10 @@ void DOMConfiguratorContext::parseLogger(apr_xml_elem* loggerElement)
 	// Setting up a logger needs to be an atomic operation, in order
 	// to protect potential log operations while logger
 	// configuration is in progress.
-	bool additivity = OptionConverter::toBoolean(
-			subst(getAttribute(loggerElement, ADDITIVITY_ATTR)),
-			true);
+	auto additivityLS = subst(getAttribute(loggerElement, ADDITIVITY_ATTR));
+	bool additivity = !additivityLS.empty()
+		? OptionConverter::toBoolean(additivityLS, true)
+		: true;
 
 	if (LogLog::isDebugEnabled())
 	{
@@ -667,15 +670,16 @@ void DOMConfiguratorContext::parseChildrenOfLoggerElement(apr_xml_elem* loggerEl
 			LogLog::debug(LOG4CXX_STR("Asynchronous logging for [")
 					+ logger->getName() + LOG4CXX_STR("] is on"));
 		}
+		this->appenders[async->getName()].activated = async->activateOptions();
 		logger->replaceAppenders({async});
-		this->appenderAdded = true;
+		this->usedAppenders.push_back(async);
 	}
 	else if (newappenders.empty())
 		logger->removeAllAppenders();
 	else
 	{
 		logger->replaceAppenders(newappenders);
-		this->appenderAdded = true;
+		this->usedAppenders.insert(this->usedAppenders.end(), newappenders.begin(), newappenders.end());
 	}
 	propSetter.activate();
 }
@@ -994,12 +998,16 @@ spi::ConfigurationStatus DOMConfigurator::doConfigure
 	}
 
 	auto result = spi::ConfigurationStatus::NotConfigured;
-	if (ctx.appenderAdded)
+	for (auto pAppender : ctx.usedAppenders)
 	{
-		result = spi::ConfigurationStatus::Configured;
-		ctx.repository->setConfigured(true);
+		if (ctx.appenders[pAppender->getName()].activated)
+		{
+			result = spi::ConfigurationStatus::Configured;
+			ctx.repository->setConfigured(true);
+			break;
+		}
 	}
-	else
+	if (ctx.usedAppenders.empty())
 	{
 		LogLog::warn(LOG4CXX_STR("[") + filename.getPath()
 			+ LOG4CXX_STR("] did not add an ") + Appender::getStaticClass().getName()

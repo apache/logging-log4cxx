@@ -44,10 +44,10 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout)
 
 AppenderSkeleton::~AppenderSkeleton() {}
 
-void AppenderSkeleton::activateOptions(  )
+bool AppenderSkeleton::activateOptions()
 {
+	return m_priv->checkConfiguration();
 }
-
 
 void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 {
