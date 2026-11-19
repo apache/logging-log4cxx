@@ -6,8 +6,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/asyncappender.h>
-#include <log4cxx/net/smtpappender.h>
-#include <log4cxx/net/xmlsocketappender.h>
+#include <log4cxx/net/jsonsocketappender.h>
 #include <log4cxx/fileappender.h>
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 #include <log4cxx/rolling/multiprocessrollingfileappender.h>
@@ -87,16 +86,18 @@ public:
 class BenchmarkMultiprocessFileAppender : public rolling::MultiprocessRollingFileAppender
 {
 public:
-	BenchmarkMultiprocessFileAppender(const LayoutPtr& layout)
+	BenchmarkMultiprocessFileAppender(const LayoutPtr& layout, bool buffered = true)
 	{
 		setLayout(layout);
 		auto tempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
-		auto policy = std::make_shared<rolling::FixedWindowRollingPolicy>();
-		policy->setFileNamePattern(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess-%i.log"));
-		setRollingPolicy(policy);
-		setTriggeringPolicy(std::make_shared<rolling::SizeBasedTriggeringPolicy>());
+		auto rp = std::make_shared<rolling::FixedWindowRollingPolicy>();
+		rp->setFileNamePattern(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess-%i.log"));
+		setRollingPolicy(rp);
+		auto tp = std::make_shared<rolling::SizeBasedTriggeringPolicy>();
+		tp->setMaxFileSize(50 * 1024 *1024);
+		setTriggeringPolicy(tp);
+		setBufferedIO(buffered);
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess.log"));
-		setBufferedIO(true);
 	}
 };
 #endif
@@ -187,8 +188,7 @@ public: // Class methods
 		if (!result)
 		{
 			setDefaultAppender();
-			auto writer = std::make_shared<net::SMTPAppender>();
-			writer->setLayout(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
+			auto writer = std::make_shared<NullWriterAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
 			auto asyncAppender = std::make_shared<AsyncAppender>();
 			asyncAppender->addAppender(writer);
 			result = r->getLogger(name);
