@@ -84,7 +84,7 @@ struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkele
 	*/
 	helpers::WriterPtr outputSink;
 
-	void connect();
+	bool connect();
 
 	void fireConnector();
 

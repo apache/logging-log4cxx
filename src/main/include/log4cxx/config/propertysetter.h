@@ -81,13 +81,13 @@ class LOG4CXX_EXPORT PropertySetter
 		@param properties A java.util.Properties containing keys and values.
 		@param prefix Only keys having the specified prefix will be set.
 		*/
-		static void setProperties(const helpers::ObjectPtr& obj, helpers::Properties& properties, const LogString& prefix);
+		static bool setProperties(const helpers::ObjectPtr& obj, helpers::Properties& properties, const LogString& prefix);
 
 		/**
 		Set the properites for the object that match the
 		<code>prefix</code> passed as parameter.
 		*/
-		void setProperties(helpers::Properties& properties, const LogString& prefix);
+		bool setProperties(helpers::Properties& properties, const LogString& prefix);
 
 		/**
 		Set a property on this PropertySetter's Object. If the underlying
@@ -99,7 +99,12 @@ class LOG4CXX_EXPORT PropertySetter
 		*/
 		void setProperty(const LogString& option, const LogString& value);
 
-		void activate();
+		/**
+		Call OptionHandler::activateOptions if the object being configured is an OptionHandler.
+
+		@returns true if the object being configured is an OptionHandler and OptionHandler::activateOptions returns true
+		*/
+		bool activate();
 
 }; // class PropertySetter
 }  // namespace config;

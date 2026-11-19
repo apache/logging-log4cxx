@@ -66,11 +66,11 @@ public:
 	}
 
 	using AppenderSkeleton::activateOptions;
-	void activateOptions(  ) override
+	bool activateOptions() override
 	{
 		helpers::LogLog::debug(LOG4CXX_STR("BaseAppender::activateOptions"));
-		AppenderSkeleton::activateOptions(  );
 		m_activated = true;
+		return AppenderSkeleton::activateOptions();
 	}
 
 	bool isActivated() const
@@ -105,11 +105,11 @@ private:
 class ABI_16_Appender : public BaseAppender
 {
 public:
-	void activateOptions() override
+	bool activateOptions() override
 	{
 		helpers::LogLog::debug(LOG4CXX_STR("ABI_16_Appender::activateOptions"));
-		BaseAppender::activateOptions();
 		m_activated = true;
+		return BaseAppender::activateOptions();
 	}
 
 	bool isActivated() const

@@ -55,6 +55,9 @@ using RegistryPtr = std::unique_ptr<RegistryType>;
 
 class ConfiguratorContext
 {
+public: // Types
+	using ObjectState = std::map<ObjectPtr, bool>;
+
 public: // Attributes
 	/**
 	The target of configuration directives
@@ -72,9 +75,14 @@ public: // Attributes
 	spi::LoggerFactoryPtr loggerFactory{ std::make_shared<LoggerFactory>() };
 
 	/**
-	True if an appender was added to a logger
+	The appenders added to a logger
 	*/
-	bool appenderAdded{ false };
+	AppenderList usedAppenders;
+
+	/**
+	The activation status
+	*/
+	ObjectState activationState;
 
 public: // ...structors
 	ConfiguratorContext(const LoggerRepositoryPtr& target)
@@ -286,10 +294,14 @@ spi::ConfigurationStatus PropertyConfigurator::doConfigure
 	ctx.configureLoggerFactory(properties);
 	ctx.parseCatsAndRenderers(properties);
 	LogLog::debug(LOG4CXX_STR("Finished configuring."));
-	if (ctx.appenderAdded)
+	for (auto& pAppender : ctx.usedAppenders)
 	{
-		hierarchy->setConfigured(true);
-		result = spi::ConfigurationStatus::Configured;
+		if (ctx.activationState[pAppender])
+		{
+			hierarchy->setConfigured(true);
+			result = spi::ConfigurationStatus::Configured;
+			break;
+		}
 	}
 	return result;
 }
@@ -471,8 +483,6 @@ void ConfiguratorContext::parseLogger
 				async->addAppender(appender);
 		}
 	}
-	if (!newappenders.empty())
-		this->appenderAdded = true;
 	if (async && !newappenders.empty())
 	{
 		if (LogLog::isDebugEnabled())
@@ -480,10 +490,15 @@ void ConfiguratorContext::parseLogger
 			LogLog::debug(LOG4CXX_STR("Asynchronous logging for [")
 					+ loggerName + LOG4CXX_STR("] is on"));
 		}
+		this->activationState[async] = async->activateOptions();
 		logger->reconfigure( {async}, additivity );
+		this->usedAppenders.push_back(async);
 	}
 	else
+	{
 		logger->reconfigure( newappenders, additivity );
+		this->usedAppenders.insert(this->usedAppenders.end(), newappenders.begin(), newappenders.end());
+	}
 }
 
 AppenderPtr ConfiguratorContext::parseAppender
@@ -607,7 +622,8 @@ AppenderPtr ConfiguratorContext::parseAppender
 			}
 		}
 
-		PropertySetter::setProperties(appender, props, prefix + LOG4CXX_STR("."));
+		if (PropertySetter::setProperties(appender, props, prefix + LOG4CXX_STR(".")))
+			activationState[appender] = true;
 		if (LogLog::isDebugEnabled())
 		{
 			LogLog::debug((LogString) LOG4CXX_STR("Parsed [")

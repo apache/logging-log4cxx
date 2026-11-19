@@ -48,8 +48,9 @@ void SizeBasedTriggeringPolicy::setMaxFileSize(size_t l)
 	maxFileSize = l;
 }
 
-void SizeBasedTriggeringPolicy::activateOptions(  )
+bool SizeBasedTriggeringPolicy::activateOptions()
 {
+	return true;
 }
 
 void SizeBasedTriggeringPolicy::setOption(const LogString& option, const LogString& value)

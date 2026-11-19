@@ -184,9 +184,10 @@ LogString ECSLayout::getContentType() const
 	return LOG4CXX_STR("application/json");
 }
 
-void ECSLayout::activateOptions()
+bool ECSLayout::activateOptions()
 {
 	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
+	return true;
 }
 
 void ECSLayout::setOption(const LogString& option, const LogString& value)

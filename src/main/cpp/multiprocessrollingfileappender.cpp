@@ -197,15 +197,17 @@ MultiprocessRollingFileAppender::MultiprocessRollingFileAppender()
 /**
  * Prepare instance of use.
  */
-void MultiprocessRollingFileAppender::activateOptions(  )
+bool MultiprocessRollingFileAppender::activateOptions()
 {
+	bool result = false;
 	if (_priv->activateOptions())
 	{
-		_priv->activate();
+		result = _priv->activate();
 	}
 
 	if (auto pTimeBased = LOG4CXX_NS::cast<TimeBasedRollingPolicy>(_priv->rollingPolicy))
 		pTimeBased->setMultiprocess(true);
+	return result;
 }
 
 /**

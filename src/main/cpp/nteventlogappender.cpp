@@ -167,14 +167,14 @@ void NTEventLogAppender::setOption(const LogString& option, const LogString& val
 	}
 }
 
-void NTEventLogAppender::activateOptions( )
+bool NTEventLogAppender::activateOptions()
 {
 	if (priv->source.empty())
 	{
 		LogLog::warn(
 			((LogString) LOG4CXX_STR("Source option not set for appender ["))
 			+ this->m_priv->name + LOG4CXX_STR("]."));
-		return;
+		return false;
 	}
 
 	if (priv->log.empty())
@@ -204,6 +204,7 @@ void NTEventLogAppender::activateOptions( )
 		LogLog::error(msg);
 		LogLog::error(getErrorString(LOG4CXX_STR("RegisterEventSource")));
 	}
+	return !!priv->hEventLog;
 }
 
 void NTEventLogAppender::append( const spi::LoggingEventPtr& event )

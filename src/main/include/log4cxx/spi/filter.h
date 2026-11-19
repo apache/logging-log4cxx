@@ -109,7 +109,7 @@ class LOG4CXX_EXPORT Filter
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

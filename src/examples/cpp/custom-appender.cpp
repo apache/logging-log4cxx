@@ -36,8 +36,9 @@ public:
 		// This gets called whenever there is a valid event for our appender.
 	}
 
-	void activateOptions() override {
+	bool activateOptions() override {
 		// Given all of our options, do something useful(e.g. open a file)
+		return true;
 	}
 
 	void setOption(const log4cxx::LogString& option, const log4cxx::LogString& value) override {

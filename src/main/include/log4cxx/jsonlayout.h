@@ -104,7 +104,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 
 		Calculates the length of the formtted output.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

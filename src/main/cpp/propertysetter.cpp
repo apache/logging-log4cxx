@@ -33,13 +33,13 @@ PropertySetter::PropertySetter(const helpers::ObjectPtr& obj1) : obj(obj1)
 {
 }
 
-void PropertySetter::setProperties(const helpers::ObjectPtr& obj, helpers::Properties& properties, const LogString& prefix)
+bool PropertySetter::setProperties(const helpers::ObjectPtr& obj, helpers::Properties& properties, const LogString& prefix)
 {
-	PropertySetter(obj).setProperties(properties, prefix);
+	return PropertySetter(obj).setProperties(properties, prefix);
 }
 
 
-void PropertySetter::setProperties(helpers::Properties& properties, const LogString& prefix)
+bool PropertySetter::setProperties(helpers::Properties& properties, const LogString& prefix)
 {
 	size_t len = prefix.length();
 
@@ -68,7 +68,7 @@ void PropertySetter::setProperties(helpers::Properties& properties, const LogStr
 		}
 	}
 
-	activate();
+	return activate();
 }
 
 void PropertySetter::setProperty(const LogString& option, const LogString& value)
@@ -101,12 +101,14 @@ void PropertySetter::setProperty(const LogString& option, const LogString& value
 	}
 }
 
-void PropertySetter::activate()
+bool PropertySetter::activate()
 {
+	bool result = false;
 	if (obj != 0 && obj->instanceof(OptionHandler::getStaticClass()))
 	{
 		OptionHandlerPtr handler = LOG4CXX_NS::cast<OptionHandler>(obj);
-		handler->activateOptions();
+		result = handler->activateOptions();
 	}
+	return result;
 }
 

@@ -180,17 +180,19 @@ void RollingFileAppender::setDatePattern(const LogString& newPattern)
 /**
  * Prepare instance of use.
  */
-void RollingFileAppender::activateOptions(  )
+bool RollingFileAppender::activateOptions()
 {
+	bool result = false;
 	if (_priv->activateOptions())
 	{
-		_priv->activate();
+		result = _priv->activate();
 	}
+	return result;
 }
 
 bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 {
-	bool result = false;
+	bool result = true;
 	if (!this->rollingPolicy)
 	{
 		LogLog::warn(LOG4CXX_STR("No rolling policy configured for the appender named [")
@@ -227,8 +229,10 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 	}
 
 	std::lock_guard<std::recursive_mutex> lock(this->mutex);
-	this->triggeringPolicy->activateOptions();
-	this->rollingPolicy->activateOptions();
+	if (!this->triggeringPolicy->activateOptions())
+		result = false;
+	if (!this->rollingPolicy->activateOptions())
+		result = false;
 
 	try
 	{
@@ -259,12 +263,11 @@ bool RollingFileAppender::RollingFileAppenderPriv::activateOptions()
 		{
 			this->fileLength = 0;
 		}
-
-		result = true;
 	}
 	catch (const std::exception& ex)
 	{
 		LogLog::warn(LOG4CXX_STR("Exception activating RollingFileAppender ") + this->targetFile.getPath(), ex);
+		result = false;
 	}
 	return result;
 }

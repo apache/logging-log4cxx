@@ -37,8 +37,9 @@ bool ManualTriggeringPolicy::isTriggeringEvent(Appender* /* appender */,
 	return false;
 }
 
-void ManualTriggeringPolicy::activateOptions(   )
+bool ManualTriggeringPolicy::activateOptions()
 {
+	return true;
 }
 
 void ManualTriggeringPolicy::setOption(const LogString& option, const LogString& value )

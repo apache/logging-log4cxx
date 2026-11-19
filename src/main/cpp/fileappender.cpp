@@ -132,13 +132,13 @@ void FileAppender::setOption(const LogString& option,
 	}
 }
 
-void FileAppender::activateOptions(  )
+bool FileAppender::activateOptions()
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	_priv->activate();
+	return _priv->activate();
 }
 
-void FileAppender::FileAppenderPriv::activate()
+bool FileAppender::FileAppenderPriv::activate()
 {
 	// It does not make sense to have immediate flush and bufferedIO.
 	if (this->bufferedIO)
@@ -170,34 +170,34 @@ void FileAppender::FileAppenderPriv::activate()
 		LogLog::warn(LOG4CXX_STR("Are you using FileAppender instead of ConsoleAppender?"));
 	}
 
-	if (errors == 0)
-	{
-		this->checkConfiguration();
-		if (auto p = this->taskManager.lock())
-			p->value().removePeriodicTask(this->flushTaskName);
+	if (0 < errors || !this->checkConfiguration())
+		return false;
 
-		if (!this->bufferedIO)
-			;
-		else if (0 < this->bufferedSeconds)
+	if (auto p = this->taskManager.lock())
+		p->value().removePeriodicTask(this->flushTaskName);
+
+	if (!this->bufferedIO)
+		;
+	else if (0 < this->bufferedSeconds)
+	{
+		auto taskManager = ThreadUtility::instancePtr();
+		if (!this->flushTask)
 		{
-			auto taskManager = ThreadUtility::instancePtr();
-			if (!this->flushTask)
-			{
-				this->flushTask = std::make_shared<FileAppenderPriv::FlushTask>();
-				this->flushTask->priv = this;
-			}
-			// Key the task by a unique name
-			this->flushTaskName = this->targetFile.getName();
-			this->flushTaskName.append(1, (logchar) 0x23 /* '#' */);
-			StringHelper::toString(reinterpret_cast<size_t>(this), this->flushTaskName);
-			auto flushTask = this->flushTask;
-			taskManager->value().addPeriodicTask(this->flushTaskName
-				, [flushTask]() { flushTask->run(); }
-				, std::chrono::seconds(this->bufferedSeconds)
-				);
-			this->taskManager = taskManager;
+			this->flushTask = std::make_shared<FileAppenderPriv::FlushTask>();
+			this->flushTask->priv = this;
 		}
+		// Key the task by a unique name
+		this->flushTaskName = this->targetFile.getName();
+		this->flushTaskName.append(1, (logchar) 0x23 /* '#' */);
+		StringHelper::toString(reinterpret_cast<size_t>(this), this->flushTaskName);
+		auto flushTask = this->flushTask;
+		taskManager->value().addPeriodicTask(this->flushTaskName
+			, [flushTask]() { flushTask->run(); }
+			, std::chrono::seconds(this->bufferedSeconds)
+			);
+		this->taskManager = taskManager;
 	}
+	return true;
 }
 
 

@@ -169,7 +169,7 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
 		Layout::setOption(option, value);
 }
 
-void PatternLayout::activateOptions(  )
+bool PatternLayout::activateOptions()
 {
 	LogString pat(m_priv->conversionPattern);
 
@@ -193,6 +193,7 @@ void PatternLayout::activateOptions(  )
 		}
 	}
 	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
+	return true;
 }
 
 #define RULES_PUT(spec, cls) \

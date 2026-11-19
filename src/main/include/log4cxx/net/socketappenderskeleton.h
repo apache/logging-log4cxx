@@ -110,7 +110,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		/**
 		Connects to the configured <b>RemoteHost</b> and <b>Port</b>.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		Sends the message that the configured Layout produces from \c event to the output sink.

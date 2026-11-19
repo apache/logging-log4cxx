@@ -109,8 +109,9 @@ void ConsoleAppender::targetWarn(const LogString& val)
 	LogLog::warn(LOG4CXX_STR("Using previously set target, System.out by default."));
 }
 
-void ConsoleAppender::activateOptions(  )
+bool ConsoleAppender::activateOptions()
 {
+	bool result = true;
 	if (StringHelper::equalsIgnoreCase(_priv->target,
 			LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))
 	{
@@ -121,8 +122,9 @@ void ConsoleAppender::activateOptions(  )
 	{
 		_priv->setWriter(std::make_shared<SystemErrWriter>());
 	}
-
-	_priv->checkConfiguration();
+	else
+		result = false;
+	return result;
 }
 
 void ConsoleAppender::setOption(const LogString& option, const LogString& value)

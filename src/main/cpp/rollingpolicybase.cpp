@@ -47,16 +47,18 @@ RollingPolicyBase::~RollingPolicyBase()
 {
 }
 
-void RollingPolicyBase::activateOptions(   )
+bool RollingPolicyBase::activateOptions()
 {
-	m_priv->activateOptions(getFormatSpecifiers());
+	return m_priv->activateOptions(getFormatSpecifiers());
 }
 
-void RollingPolicyBase::RollingPolicyBasePrivate::activateOptions(const pattern::PatternMap& map)
+bool RollingPolicyBase::RollingPolicyBasePrivate::activateOptions(const pattern::PatternMap& map)
 {
+	bool result = false;
 	if (this->fileNamePatternStr.length() > 0)
 	{
 		this->parseFileNamePattern(map);
+		result = true;
 	}
 	else
 	{
@@ -64,8 +66,9 @@ void RollingPolicyBase::RollingPolicyBasePrivate::activateOptions(const pattern:
 		LogString ref1(LOG4CXX_STR("See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set"));
 		LogLog::warn(msg);
 		LogLog::warn(ref1);
-		throw IllegalStateException();
+		result = false;
 	}
+	return result;
 }
 
 

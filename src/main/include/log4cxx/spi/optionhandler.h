@@ -50,8 +50,10 @@ class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		<p>For example, the FileAppender has
 		the <code>File</code> and <b>Append</b> options both of
 		which are ambiguous until the other is also set.
+
+		@returns true if options are consistent and valid
 		*/
-		virtual void activateOptions() = 0;
+		virtual bool activateOptions() = 0;
 		/**
 		@deprecated This function is deprecated and will be removed in a future version.
 		*/

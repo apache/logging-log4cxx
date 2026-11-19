@@ -73,7 +73,7 @@ class LOG4CXX_EXPORT ManualTriggeringPolicy : public TriggeringPolicy
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

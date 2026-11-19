@@ -94,7 +94,7 @@ class LOG4CXX_EXPORT ExpressionFilter: public LOG4CXX_NS::spi::Filter
 
 		ExpressionFilter();
 
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		void setExpression(const LogString& expression);
 
