@@ -94,6 +94,7 @@ target_sources(log4cxx
   asyncbuffer.cpp
   basicconfigurator.cpp
   bufferedwriter.cpp
+  burstfilter.cpp
   bytearrayinputstream.cpp
   bytearrayoutputstream.cpp
   bytebuffer.cpp
