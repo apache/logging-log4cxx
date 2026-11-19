@@ -226,13 +226,14 @@ bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::isRol
  */
 bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::isAlreadyRolled(const LogString& fileName, size_t* pSize)
 {
-	if( !this->fileOutputStream || !this->fileOutputStream->getFilePtr() )
+	apr_file_t* log_file;
+	if ( !this->fileOutputStream || !(log_file = this->fileOutputStream->getFilePtr()) )
 		return false;
 	apr_int32_t wantedInfo = APR_FINFO_IDENT;
 	if (pSize)
 		wantedInfo |= APR_FINFO_SIZE;
 	apr_finfo_t finfo1;
-	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, this->fileOutputStream->getFilePtr());
+	apr_status_t st1 = apr_file_info_get(&finfo1, wantedInfo, log_file);
 
 	if (st1 != APR_SUCCESS)
 		LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
