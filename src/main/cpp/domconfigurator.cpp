@@ -272,7 +272,7 @@ AppenderPtr DOMConfiguratorContext::parseAppender(apr_xml_elem* appenderElement)
 		PropertySetter propSetter(appender);
 
 		appender->setName(subst(getAttribute(appenderElement, NAME_ATTR)));
-		appenders.emplace(appender->getName(), AppenderStatus{appender, false, false});
+		auto& appenderState = appenders.emplace(appender->getName(), AppenderStatus{appender, false, false}).first->second;
 
 		for (apr_xml_elem* currentElement = appenderElement->first_child;
 			currentElement;
@@ -372,7 +372,6 @@ AppenderPtr DOMConfiguratorContext::parseAppender(apr_xml_elem* appenderElement)
 			}
 		}
 
-		auto & appenderState = appenders[appender->getName()];
 		appenderState.parsed = true;
 		appenderState.activated = propSetter.activate();
 		return appender;
@@ -670,9 +669,9 @@ void DOMConfiguratorContext::parseChildrenOfLoggerElement(apr_xml_elem* loggerEl
 			LogLog::debug(LOG4CXX_STR("Asynchronous logging for [")
 					+ logger->getName() + LOG4CXX_STR("] is on"));
 		}
-		this->appenders[async->getName()].activated = async->activateOptions();
 		logger->replaceAppenders({async});
 		this->usedAppenders.push_back(async);
+		this->appenders.emplace(async->getName(), AppenderStatus{async, false, async->activateOptions()});
 	}
 	else if (newappenders.empty())
 		logger->removeAllAppenders();
