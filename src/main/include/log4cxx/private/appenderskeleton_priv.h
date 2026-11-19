@@ -80,6 +80,11 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	bool setClosed();
 
 	/**
+	Concrete appenders may override and implement this to perform consistency checks
+	*/
+	virtual bool checkConfiguration() { return true; };
+
+	/**
 	Concrete appenders may override and implement this to release resources
 	*/
 	virtual void shutdown() {};

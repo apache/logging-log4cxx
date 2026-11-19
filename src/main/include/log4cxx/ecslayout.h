@@ -180,7 +180,7 @@ class LOG4CXX_EXPORT ECSLayout : public Layout
 
 		Calculates the length of the formatted output.
 		*/
-		void activateOptions() override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

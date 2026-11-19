@@ -142,7 +142,7 @@ class LOG4CXX_EXPORT ErrorHandler
 
 		No action is performed in this implementation.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 };
 
 LOG4CXX_PTR_DEF(ErrorHandler);

@@ -265,7 +265,7 @@ class LOG4CXX_EXPORT FMTLayout : public Layout
 
 		Calculates the length of the formtted output.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief spi::OptionHandler::setOption()

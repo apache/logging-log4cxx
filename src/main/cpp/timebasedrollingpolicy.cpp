@@ -314,8 +314,9 @@ TimeBasedRollingPolicy::TimeBasedRollingPolicy() :
 
 TimeBasedRollingPolicy::~TimeBasedRollingPolicy(){}
 
-void TimeBasedRollingPolicy::activateOptions(  )
+bool TimeBasedRollingPolicy::activateOptions()
 {
+	bool result = true;
 	// find out period from the filename pattern
 	if (getFileNamePattern().length() > 0)
 	{
@@ -323,16 +324,14 @@ void TimeBasedRollingPolicy::activateOptions(  )
 	}
 	else
 	{
-		LogLog::warn(
-			LOG4CXX_STR("The FileNamePattern option must be set before using TimeBasedRollingPolicy. "));
-		throw IllegalStateException();
+		LogLog::warn(LOG4CXX_STR("The FileNamePattern option must be provided"));
+		return false;;
 	}
 
-	PatternConverterPtr dtc(getDatePatternConverter());
-
-	if (dtc == NULL)
+	if (!getDatePatternConverter())
 	{
-		throw NullPointerException(LOG4CXX_STR("DatePatternConverter"));
+		LogLog::warn(LOG4CXX_STR("The FileNamePattern option must contain a date conversion specifier"));
+		return false;;
 	}
 
 	Pool pool;
@@ -354,6 +353,7 @@ void TimeBasedRollingPolicy::activateOptions(  )
 			m_priv->suffixLength = 4;
 		}
 	}
+	return true;
 }
 
 

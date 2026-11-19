@@ -109,7 +109,7 @@ struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSke
 	/**
 		Invoke the ErrorHandler if the layout or writer is null.
 	*/
-	void checkConfiguration();
+	bool checkConfiguration() override;
 
 	/**
 		Returns a WriterPtr when passed an OutputStream

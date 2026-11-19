@@ -45,8 +45,9 @@ void Filter::setNext(const FilterPtr& newNext)
 	m_priv->next = newNext;
 }
 
-void Filter::activateOptions(  )
+bool Filter::activateOptions()
 {
+	return true;
 }
 
 void Filter::setOption(const LogString& option, const LogString& value)

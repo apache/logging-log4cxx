@@ -110,7 +110,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		<code>BufferedSeconds</code> is greater than zero,
 		a background task is started that will periodically flush the buffer.
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief AppenderSkeleton::setOption()

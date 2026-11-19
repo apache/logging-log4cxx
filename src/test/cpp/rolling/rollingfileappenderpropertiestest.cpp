@@ -52,14 +52,15 @@ LOGUNIT_CLASS(RollingFileAppenderPropertiesTest)
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(testRollingFromProperties);
 	LOGUNIT_TEST(testMalformedMaxBackupIndex);
+	LOGUNIT_TEST(testInvalidFileProperty);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
-	void setUp()
+	void setUp() override
 	{
 	}
 
-	void tearDown()
+	void tearDown() override
 	{
 		LogManager::shutdown();
 	}
@@ -252,6 +253,11 @@ public:
 		LOGUNIT_ASSERT_EQUAL(3, rfa->getMaxBackupIndex());
 		rfa->setOption(LOG4CXX_STR("MaxBackupIndex"), LOG4CXX_STR("99999999999"));
 		LOGUNIT_ASSERT_EQUAL(3, rfa->getMaxBackupIndex());
+	}
+
+	void testInvalidFileProperty()
+	{
+		LOGUNIT_ASSERT_EQUAL(spi::ConfigurationStatus::NotConfigured, PropertyConfigurator::configure(LOG4CXX_STR("input/rolling/invalidFileProperty.properties")));
 	}
 
 private:

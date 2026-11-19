@@ -99,9 +99,9 @@ void FixedWindowRollingPolicy::setOption(const LogString& option,
 /**
  * {@inheritDoc}
  */
-void FixedWindowRollingPolicy::activateOptions(  )
+bool FixedWindowRollingPolicy::activateOptions()
 {
-	priv->activateOptions(getFormatSpecifiers());
+	bool result = priv->activateOptions(getFormatSpecifiers());
 
 	if (priv->maxIndex < priv->minIndex)
 	{
@@ -115,13 +115,12 @@ void FixedWindowRollingPolicy::activateOptions(  )
 		LogLog::warn(LOG4CXX_STR("Large window sizes are not allowed."));
 		priv->maxIndex = priv->minIndex + MAX_WINDOW_SIZE;
 	}
-
-	PatternConverterPtr itc = getIntegerPatternConverter();
-
-	if (itc == NULL)
+	if (!getIntegerPatternConverter())
 	{
-		throw IllegalStateException();
+		LogLog::warn(LOG4CXX_STR("The FileNamePattern option contain an integer pattern"));
+		result = false;;
 	}
+	return result;
 }
 
 /**

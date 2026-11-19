@@ -141,7 +141,7 @@ class LOG4CXX_EXPORT DBAppender : public AppenderSkeleton
                 /**
                 Activate the specified options.
                 */
-                void activateOptions(  ) override;
+                bool activateOptions() override;
 
                 /**
                 * Adds the event to the buffer.  When full the buffer is flushed.

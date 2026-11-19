@@ -155,7 +155,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		   Implements the configured roll over behaviour.

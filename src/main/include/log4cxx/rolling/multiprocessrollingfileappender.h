@@ -60,7 +60,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 
 		\sa FileAppender::activateOptions()
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 	protected:
 

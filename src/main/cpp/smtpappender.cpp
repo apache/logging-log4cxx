@@ -798,39 +798,50 @@ bool SMTPAppender::asciiCheck(const LogString& value, const LogString& field)
 /**
 Activate the specified options, such as the smtp host, the
 recipient, from, etc. */
-void SMTPAppender::activateOptions(  )
+bool SMTPAppender::activateOptions()
 {
+	bool result = true;
 	if (_priv->layout == 0)
 	{
 		_priv->errorHandler->error(LOG4CXX_STR("No layout set for appender named [") + _priv->name + LOG4CXX_STR("]."));
+		result = false;
 	}
 
 	if (_priv->evaluator == 0)
 	{
 		_priv->errorHandler->error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [") +
 			_priv->name + LOG4CXX_STR("]."));
+		result = false;
 	}
 
 	if (_priv->smtpHost.empty())
 	{
 		_priv->errorHandler->error(LOG4CXX_STR("No smtpHost is set for appender [") +
 			_priv->name + LOG4CXX_STR("]."));
+		result = false;
 	}
 
 	if (_priv->to.empty() && _priv->cc.empty() && _priv->bcc.empty())
 	{
 		_priv->errorHandler->error(LOG4CXX_STR("No recipient address is set for appender [") +
 			_priv->name + LOG4CXX_STR("]."));
+		result = false;
 	}
 
-	asciiCheck(_priv->to, LOG4CXX_STR("to"));
-	asciiCheck(_priv->cc, LOG4CXX_STR("cc"));
-	asciiCheck(_priv->bcc, LOG4CXX_STR("bcc"));
-	asciiCheck(_priv->from, LOG4CXX_STR("from"));
+	if (!asciiCheck(_priv->to, LOG4CXX_STR("to")))
+		result = false;
+	if (!asciiCheck(_priv->cc, LOG4CXX_STR("cc")))
+		result = false;
+	if (!asciiCheck(_priv->bcc, LOG4CXX_STR("bcc")))
+		result = false;
+	if (!asciiCheck(_priv->from, LOG4CXX_STR("from")))
+		result = false;
 
 #if !LOG4CXX_HAVE_LIBESMTP
 	_priv->errorHandler->error(LOG4CXX_STR("log4cxx built without SMTP support."));
+	result = false;
 #endif
+	return result;
 }
 
 /**

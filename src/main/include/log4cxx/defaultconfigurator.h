@@ -46,7 +46,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 
 		\usage
 		~~~
-		setenv LOG4CXX_CONFIGURATION="${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml"
+		export LOG4CXX_CONFIGURATION='${PROGRAM_FILE_PATH.PARENT_PATH}/${PROGRAM_FILE_PATH.STEM}.xml'
 		~~~
 
 		If the configuration file name is not specified,

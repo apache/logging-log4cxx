@@ -148,7 +148,7 @@ void DBAppender::setOption(const LogString& option, const LogString& value){
     }
 }
 
-void DBAppender::activateOptions(  )
+bool DBAppender::activateOptions()
 {
     apr_status_t stat = apr_dbd_get_driver(_priv->m_pool.getAPRPool(),
                                            _priv->driverName.c_str(),
@@ -160,7 +160,7 @@ void DBAppender::activateOptions(  )
         errMsg.append(driverName);
         LogLog::error(errMsg);
         _priv->errorHandler->error(errMsg, spi::ErrorCode::OPEN_FAILURE);
-        return;
+        return false;
     }
 
     stat = apr_dbd_open(_priv->m_driver,
@@ -169,7 +169,7 @@ void DBAppender::activateOptions(  )
                         &_priv->m_databaseHandle);
     if(stat != APR_SUCCESS){
         _priv->errorHandler->error(LOG4CXX_STR("Unable to open database"), spi::ErrorCode::OPEN_FAILURE);
-        return;
+        return false;
     }
 
     if(!_priv->databaseName.empty()){
@@ -192,7 +192,7 @@ void DBAppender::activateOptions(  )
         error.append(dbdErrLS);
         LogLog::error(error);
         _priv->errorHandler->error(error);
-        return;
+        return false;
     }
 
     auto specs = getFormatSpecifiers();
@@ -210,10 +210,11 @@ void DBAppender::activateOptions(  )
             _priv->converters.push_back(converter);
         }
     }
+    return true;
 }
 
 void DBAppender::append( const spi::LoggingEventPtr& event ){
-	std::vector<std::string> ls_args;
+    std::vector<std::string> ls_args;
     std::vector<const char*> args;
     int stat;
     int num_rows;

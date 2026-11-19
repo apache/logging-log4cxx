@@ -82,9 +82,10 @@ void FMTLayout::setOption(const LogString& option, const LogString& value)
 		Layout::setOption(option, value);
 }
 
-void FMTLayout::activateOptions(  )
+bool FMTLayout::activateOptions()
 {
 	m_priv->expectedPatternLength = priv::doubledLayoutSize(getFormattedEventCharacterCount());
+	return true;
 }
 
 void FMTLayout::format( LogString& output, const spi::LoggingEventPtr& event ) const

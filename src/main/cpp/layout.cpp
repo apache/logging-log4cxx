@@ -67,6 +67,7 @@ size_t Layout::getFormattedEventCharacterCount() const
 	return text.size();
 }
 
-void Layout::activateOptions(  )
+bool Layout::activateOptions()
 {
+	return true;
 }

@@ -42,7 +42,7 @@ struct RollingPolicyBase::RollingPolicyBasePrivate {
 
 	bool createIntermediateDirectories = true;
 
-	void activateOptions(const pattern::PatternMap& map);
+	bool activateOptions(const pattern::PatternMap& map);
 
 	void parseFileNamePattern(const pattern::PatternMap& map);
 };

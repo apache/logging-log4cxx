@@ -97,7 +97,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 
 		\sa RollingPolicyBase::activateOptions()
 		*/
-		void activateOptions(  ) override;
+		bool activateOptions() override;
 
 		/**
 		\copybrief RollingPolicyBase::setOption()

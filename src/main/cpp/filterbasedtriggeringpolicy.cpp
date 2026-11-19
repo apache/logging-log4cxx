@@ -111,12 +111,15 @@ LOG4CXX_NS::spi::FilterPtr& FilterBasedTriggeringPolicy::getFilter()
 /**
  *  Prepares the instance for use.
  */
-void FilterBasedTriggeringPolicy::activateOptions(  )
+bool FilterBasedTriggeringPolicy::activateOptions()
 {
+	bool result = true;
 	for (LOG4CXX_NS::spi::FilterPtr f = m_priv->headFilter; f != NULL; f = f->getNext())
 	{
-		f->activateOptions();
+		if (!f->activateOptions())
+			result = false;
 	}
+	return result;
 }
 
 void FilterBasedTriggeringPolicy::setOption(const LogString& option, const LogString& value )
