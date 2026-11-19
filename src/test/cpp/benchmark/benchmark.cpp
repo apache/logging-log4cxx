@@ -11,7 +11,8 @@
 #include <log4cxx/fileappender.h>
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 #include <log4cxx/rolling/multiprocessrollingfileappender.h>
-#include <log4cxx/rolling/timebasedrollingpolicy.h>
+#include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
+#include <log4cxx/rolling/fixedwindowrollingpolicy.h>
 #endif
 #include <log4cxx/private/appenderskeleton_priv.h>
 #if LOG4CXX_USING_STD_FORMAT
@@ -53,35 +54,31 @@ public:
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("benchmark.log"));
 		setAppend(false);
 		setBufferedIO(buffered);
-		activateOptions();
 	}
 };
 
 class BenchmarkJSONFileAppender : public FileAppender
 {
 public:
-	BenchmarkJSONFileAppender()
+	BenchmarkJSONFileAppender(bool buffered = true)
 	{
 		setLayout(std::make_shared<JSONLayout>());
 		auto tempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("benchmark.json"));
 		setAppend(false);
-		setBufferedIO(true);
-		activateOptions();
+		setBufferedIO(buffered);
 	}
 };
 
 #if LOCALHOST_HAS_FLUENT_BIT_RUNNING_ON_PORT_5170
-class BenchmarkFluentbitAppender : public net::XMLSocketAppender
+class BenchmarkFluentbitAppender : public net::JSONSocketAppender
 {
 public:
 	BenchmarkFluentbitAppender()
 	{
 		setName(LOG4CXX_STR("FluentbitAppender"));
-		setLayout(std::make_shared<JSONLayout>());
 		setRemoteHost(LOG4CXX_STR("localhost"));
 		setPort(5170);
-		activateOptions();
 	}
 };
 #endif
@@ -94,12 +91,12 @@ public:
 	{
 		setLayout(layout);
 		auto tempDir = helpers::OptionConverter::getSystemProperty(LOG4CXX_STR("TEMP"), LOG4CXX_STR("/tmp"));
-		auto policy = std::make_shared<rolling::TimeBasedRollingPolicy>();
-		policy->setFileNamePattern(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess-%d{yyyy-MM-dd-HH-mm-ss-SSS}.log"));
+		auto policy = std::make_shared<rolling::FixedWindowRollingPolicy>();
+		policy->setFileNamePattern(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess-%i.log"));
 		setRollingPolicy(policy);
+		setTriggeringPolicy(std::make_shared<rolling::SizeBasedTriggeringPolicy>());
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess.log"));
 		setBufferedIO(true);
-		activateOptions();
 	}
 };
 #endif
@@ -232,7 +229,6 @@ public: // Class methods
 			result->setLevel(Level::getInfo());
 			auto writer = std::make_shared<BenchmarkJSONFileAppender>();
 			writer->setName(LOG4CXX_STR("JSONFileAppender"));
-			writer->setBufferedIO(true);
 			writer->activateOptions();
 			result->addAppender(writer);
 		}
