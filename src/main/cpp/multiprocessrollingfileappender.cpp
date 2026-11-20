@@ -311,7 +311,10 @@ bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::synch
 		else if (this->isAlreadyRolled(fileName, &this->fileLength))
 			this->reopenFile(fileName);
 		else if (!trigger || trigger->isTriggeringEvent(appender, event, fileName, this->fileLength))
+		{
+			this->flush();
 			result = this->rollover(fileName, append);
+		}
 	}
 
 	return result;
