@@ -54,6 +54,8 @@ class LOG4CXX_EXPORT BufferedWriter : public Writer
 		void write( const LogString& str ) override;
 
 		WriterPtr getWriter() const;
+
+		size_t getBufferedByteCount() const;
 	private:
 		BufferedWriter(const BufferedWriter&);
 		BufferedWriter& operator=(const BufferedWriter&);

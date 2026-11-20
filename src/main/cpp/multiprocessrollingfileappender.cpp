@@ -256,7 +256,11 @@ bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::isAlr
 	if (st2 != APR_SUCCESS)
 		LogLog::warn(fileName + LOG4CXX_STR(": apr_stat failed."));
 	else if (pSize)
+	{
 		*pSize = finfo2.size;
+		if (auto pBuffer = LOG4CXX_NS::cast<helpers::BufferedWriter>(this->getWriter()))
+			*pSize += pBuffer->getBufferedByteCount();
+	}
 
 	return st2 != APR_SUCCESS ||
 		((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS) &&

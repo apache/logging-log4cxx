@@ -96,6 +96,7 @@ public:
 		auto tp = std::make_shared<rolling::SizeBasedTriggeringPolicy>();
 		tp->setMaxFileSize(50 * 1024 *1024);
 		setTriggeringPolicy(tp);
+		setAppend(false);
 		setBufferedIO(buffered);
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess.log"));
 	}
@@ -566,11 +567,12 @@ BENCHMARK_REGISTER_F(benchmarker, socketIntPlusFloatValueMessageBufferJSON)->Nam
 #if LOG4CXX_HAS_MULTIPROCESS_ROLLING_FILE_APPENDER
 BENCHMARK_DEFINE_F(benchmarker, multiprocessFileIntPlusFloatValueMessageBuffer)(benchmark::State& state)
 {
+	auto pAppender = dynamic_pointer_cast<rolling::RollingFileAppender>(m_multiprocessLogger->getAppender(LOG4CXX_STR("MultiprocessFileAppender")));
 	int x = 0;
 	for (auto _ : state)
 	{
 		auto f = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-		LOG4CXX_INFO( m_multiprocessLogger, "Hello: message number " << ++x
+		LOG4CXX_INFO( m_multiprocessLogger, "Hello: message number " << ++x << " fileLength " << pAppender->getFileLength()
 			<< " pseudo-random float " << std::setprecision(3) << std::fixed << f);
 	}
 }

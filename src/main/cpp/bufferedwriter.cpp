@@ -87,3 +87,8 @@ WriterPtr BufferedWriter::getWriter() const
 	return m_priv->out;
 }
 
+size_t BufferedWriter::getBufferedByteCount() const
+{
+	return m_priv->buf.length();
+}
+
