@@ -135,14 +135,14 @@ void FileAppender::setOption(const LogString& option,
 bool FileAppender::activateOptions()
 {
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	// It does not make sense to have immediate flush and bufferedIO.
-	if (_priv->bufferedIO)
-	   setImmediateFlush(false);
 	return _priv->activate();
 }
 
 bool FileAppender::FileAppenderPriv::activate()
 {
+	// It does not make sense to have immediate flush and bufferedIO.
+	if (this->bufferedIO)
+	   this->immediateFlush = false;
 	int errors = 0;
 
 	if (this->targetFile.hasPath())
