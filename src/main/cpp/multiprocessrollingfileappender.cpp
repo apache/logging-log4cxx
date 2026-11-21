@@ -256,11 +256,7 @@ bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::isAlr
 	if (st2 != APR_SUCCESS)
 		LogLog::warn(fileName + LOG4CXX_STR(": apr_stat failed."));
 	else if (pSize)
-	{
 		*pSize = finfo2.size;
-		if (auto pBuffer = LOG4CXX_NS::cast<helpers::BufferedWriter>(this->getWriter()))
-			*pSize += pBuffer->getBufferedByteCount();
-	}
 
 	return st2 != APR_SUCCESS ||
 		((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS) &&
@@ -310,7 +306,7 @@ bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::synch
 			LogLog::warn(LOG4CXX_STR("Failed to lock ") + fileName);
 		else if (this->isAlreadyRolled(fileName, &this->fileLength))
 			this->reopenFile(fileName);
-		else if (!trigger || trigger->isTriggeringEvent(appender, event, fileName, this->fileLength))
+		else if (!trigger || trigger->isTriggeringEvent(appender, event, fileName, this->fileLength + this->getBufferedByteCount()))
 		{
 			this->flush();
 			result = this->rollover(fileName, append);
@@ -340,7 +336,7 @@ void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& eve
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
 	auto fileName = getFile();
-	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, _priv->fileLength))
+	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, _priv->fileLength + _priv->getBufferedByteCount()))
 	{
 		//
 		//   wrap rollover request in try block since

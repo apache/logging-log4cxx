@@ -129,6 +129,11 @@ struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPri
 	void open();
 
 	/**
+	The amount of buffered data
+	*/
+	size_t getBufferedByteCount() const;
+
+	/**
 	Optionally wraps the base Writer with a BufferedWriter
 	*/
 	helpers::WriterPtr createWriter(const helpers::OutputStreamPtr& os) override;
