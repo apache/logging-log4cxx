@@ -60,6 +60,13 @@ struct BurstFilter::BurstFilterPrivate : public FilterPrivate
 	int maxBurst;
 
 	std::mutex mutex;
+	/**
+	The number of tokens currently in the bucket.
+	Fractional values hold a partial refill between logging events.
+	Access is guarded by \c mutex.
+	It is in the range [0, getCapacity()]
+	and is reduced by one for each logging event that is allowed.
+	*/
 	double tokens;
 	Clock::time_point lastRefill;
 
@@ -95,6 +102,7 @@ struct BurstFilter::BurstFilterPrivate : public FilterPrivate
 		}
 		if (this->tokens < 1)
 			return false;
+		// The event is allowed, so it uses up one token
 		this->tokens -= 1;
 		return true;
 	}
