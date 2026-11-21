@@ -17,6 +17,7 @@
 
 add_executable(filtertests
     andfiltertest.cpp
+    burstfiltertest.cpp
     denyallfiltertest.cpp
     levelmatchfiltertest.cpp
     levelrangefiltertest.cpp

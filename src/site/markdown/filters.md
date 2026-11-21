@@ -81,6 +81,7 @@ information, or view a [configuration sample](@ref configuration-samples).
 
 The following filters are available:
 * [AndFilter](@ref log4cxx.filter.AndFilter) - Takes in a list of filters that must all match
+* [BurstFilter](@ref log4cxx.filter.BurstFilter) - Limit the rate at which log messages of a given level and below are logged
 * [DenyAllFilter](@ref log4cxx.filter.DenyAllFilter) - Drops all log messages that reach it
 * [LevelMatchFilter](@ref log4cxx.filter.LevelMatchFilter) - Filter log messages based off of their level
 * [LevelRangeFilter](@ref log4cxx.filter.LevelRangeFilter) - Filter log messages based off of their level in a given range
@@ -289,6 +290,64 @@ number that this message is on in order to filter it out:
 
 Doing this allows us to still see the "About to do something!" message, but
 ignore each iteration of the loop.
+
+## Limiting the Rate of Log Output {#burst-filter}
+
+The [BurstFilter](@ref log4cxx.filter.BurstFilter) limits the rate at which log messages are logged,
+so that a burst of log messages (for example, an error that is reported in a tight loop)
+does not flood the log output and slow down the application.
+
+Log messages with a level that is less severe than or equal to the `Level` parameter
+are limited to an average of `Rate` log messages per second,
+after allowing a burst of up to `MaxBurst` log messages.
+Log messages that exceed the limit are dropped.
+More severe log messages are never dropped by this filter.
+
+| **Parameter Name** | **Type**  | **Description**                                                                                                                                                                                                    |
+|:-------------------|:----------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Level              | LogString | The most severe level that is subject to the rate limit. The default value is `WARN`. |
+| Rate               | int       | The average number of log messages per second that are logged once a burst is used up. The default value is `10`. |
+| MaxBurst           | int       | The maximum number of log messages that are logged in a burst. The default value is ten times the `Rate`. |
+
+In this configuration, a burst of up to 100 log messages at level `WARN` and below is logged,
+after which an average of 16 of these log messages per second are logged.
+All `ERROR` and `FATAL` log messages are logged:
+
+~~~{.xml}
+<?xml version="1.0" encoding="UTF-8"?>
+<log4j:configuration xmlns:log4j="http://logging.apache.org/">
+    <appender name="SIMPLE" class="ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%p - %m%n"/>
+        </layout>
+
+        <filter class="BurstFilter">
+            <param  name="Level" value="WARN" />
+            <param  name="Rate" value="16" />
+            <param  name="MaxBurst" value="100" />
+        </filter>
+    </appender>
+    <root>
+        <priority       value="all"     />
+        <appender-ref   ref="SIMPLE"    />
+    </root>
+</log4j:configuration>
+~~~
+
+The equivalent [properties file](@ref log4cxx.PropertyConfigurator) configuration is:
+
+```properties
+log4j.rootLogger=ALL, SIMPLE
+
+log4j.appender.SIMPLE=org.apache.log4j.ConsoleAppender
+log4j.appender.SIMPLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.SIMPLE.layout.ConversionPattern=%p - %m%n
+
+log4j.appender.SIMPLE.filter.1=org.apache.log4j.filter.BurstFilter
+log4j.appender.SIMPLE.filter.1.Level=WARN
+log4j.appender.SIMPLE.filter.1.Rate=16
+log4j.appender.SIMPLE.filter.1.MaxBurst=100
+```
 
 
 \example ndc-example.cpp
