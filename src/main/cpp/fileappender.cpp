@@ -359,7 +359,7 @@ WriterPtr FileAppender::FileAppenderPriv::createWriter(const OutputStreamPtr& os
 
 size_t FileAppender::FileAppenderPriv::getBufferedByteCount() const
 {
-	auto result = 0;
+	size_t result = 0;
 	if (auto pBuffer = LOG4CXX_NS::cast<helpers::BufferedWriter>(this->getWriter()))
 		result += pBuffer->getBufferedByteCount();
 	return result;
