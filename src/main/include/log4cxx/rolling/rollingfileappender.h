@@ -103,6 +103,9 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		 files are kept before the oldest is erased. This option takes
 		 a positive integer value. If set to zero, then there will be no
 		 backup files and the log file will be truncated when it reaches <code>MaxFileSize</code>.
+
+		If the rolling policy is not already a rolling::FixedWindowRollingPolicy,
+		the rolling policy is replaced with a rolling::FixedWindowRollingPolicy.
 		*/
 		void setMaxBackupIndex( int maxBackupIndex );
 
@@ -131,8 +134,8 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		Call #makeFileNamePattern with \c newValue
 		to set the file name pattern for the backup file.
 
-		If the triggering policy is not already a rolling::TimeBasedRollingPolicy,
-		the triggering policy is replaced with a rolling::TimeBasedRollingPolicy.
+		If the rolling policy is not already a rolling::TimeBasedRollingPolicy,
+		the rolling policy is replaced with a rolling::TimeBasedRollingPolicy.
 		 */
 		void setDatePattern(const LogString& newValue);
 
@@ -175,6 +178,12 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief FileAppender::activateOptions()
+
+		If the rolling policy is not already set,
+		the rolling policy is set to a rolling::FixedWindowRollingPolicy with default parameters.
+
+		If the triggering policy is not already set,
+		the triggering policy is set to a rolling::SizeBasedTriggeringPolicy with default parameters.
 
 		\sa FileAppender::activateOptions()
 		*/
