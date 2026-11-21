@@ -94,6 +94,9 @@ struct BurstFilter::BurstFilterPrivate : public FilterPrivate
 		std::chrono::duration<double> elapsed = now - this->lastRefill;
 		if (0 < elapsed.count())
 		{
+			// Add a credit for the inter-event duration.
+			// For example, an inter-event duration of 1/rate seconds
+			// will add the token that is subtracted below.
 			this->tokens = (std::min)
 				( static_cast<double>(getCapacity())
 				, this->tokens + elapsed.count() * this->rate
