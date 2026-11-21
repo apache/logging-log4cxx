@@ -342,17 +342,27 @@ void FileAppender::FileAppenderPriv::open()
 		outStream->write(buf);
 	}
 
-	WriterPtr newWriter(this->createWriter(outStream));
-
-	if (this->bufferedIO)
-	{
-		newWriter = std::make_shared<BufferedWriter>(newWriter, this->bufferSize);
-	}
-
-	this->setWriter(newWriter);
+	this->setWriter(this->createWriter(outStream));
 
 	this->writeHeader();
 
+}
+
+
+WriterPtr FileAppender::FileAppenderPriv::createWriter(const OutputStreamPtr& os)
+{
+	auto newWriter = WriterAppenderPriv::createWriter(os);
+	if (this->bufferedIO)
+		newWriter = std::make_shared<BufferedWriter>(newWriter, this->bufferSize);
+	return newWriter;
+}
+
+size_t FileAppender::FileAppenderPriv::getBufferedByteCount() const
+{
+	size_t result = 0;
+	if (auto pBuffer = LOG4CXX_NS::cast<helpers::BufferedWriter>(this->getWriter()))
+		result += pBuffer->getBufferedByteCount();
+	return result;
 }
 
 LogString FileAppender::getFile() const

@@ -211,8 +211,7 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 
 	public:
 		/**
-		 * Get byte length of current active log file.
-		 * @return byte length of current active log file.
+		 * The length (in bytes) of the current active log file.
 		 */
 		size_t getFileLength() const;
 };

@@ -306,8 +306,11 @@ bool MultiprocessRollingFileAppender::MultiprocessRollingFileAppenderPriv::synch
 			LogLog::warn(LOG4CXX_STR("Failed to lock ") + fileName);
 		else if (this->isAlreadyRolled(fileName, &this->fileLength))
 			this->reopenFile(fileName);
-		else if (!trigger || trigger->isTriggeringEvent(appender, event, fileName, this->fileLength))
+		else if (!trigger || trigger->isTriggeringEvent(appender, event, fileName, this->fileLength + this->getBufferedByteCount()))
+		{
+			this->flush();
 			result = this->rollover(fileName, append);
+		}
 	}
 
 	return result;
@@ -333,7 +336,7 @@ void MultiprocessRollingFileAppender::subAppend( const spi::LoggingEventPtr& eve
 	// The rollover check must precede actual writing. This is the
 	// only correct behavior for time driven triggers.
 	auto fileName = getFile();
-	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, _priv->fileLength))
+	if (_priv->triggeringPolicy->isTriggeringEvent(this, event, fileName, _priv->fileLength + _priv->getBufferedByteCount()))
 	{
 		//
 		//   wrap rollover request in try block since

@@ -407,8 +407,9 @@ void RollingFileAppender::subAppend( const spi::LoggingEventPtr& event )
 	// only correct behavior for time driven triggers.
 	if (
 		_priv->triggeringPolicy->isTriggeringEvent(
-			this, event, getFile(), getFileLength()))
+			this, event, getFile(), _priv->fileLength + _priv->getBufferedByteCount()))
 	{
+		_priv->flush();
 		//
 		//   wrap rollover request in try block since
 		//    rollover may fail in case read access to directory
@@ -541,12 +542,7 @@ WriterPtr RollingFileAppender::RollingFileAppenderPriv::createWriter(const Outpu
 	return FileAppenderPriv::createWriter(cos);
 }
 
-/**
- * Get byte length of current active log file.
- * @return byte length of current active log file.
- */
 size_t RollingFileAppender::getFileLength() const
 {
 	return _priv->fileLength;
 }
-

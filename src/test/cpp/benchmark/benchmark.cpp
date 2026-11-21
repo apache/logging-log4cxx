@@ -96,6 +96,7 @@ public:
 		auto tp = std::make_shared<rolling::SizeBasedTriggeringPolicy>();
 		tp->setMaxFileSize(50 * 1024 *1024);
 		setTriggeringPolicy(tp);
+		setAppend(false);
 		setBufferedIO(buffered);
 		setFile(tempDir + LOG4CXX_STR("/") + LOG4CXX_STR("multiprocess.log"));
 	}
