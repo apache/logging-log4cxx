@@ -303,13 +303,13 @@ size_t OptionConverter::toFileSize(const LogString& s, size_t dEfault)
 		}
 	}
 
-	if (multiplier != 0 && (std::numeric_limits<size_t>::max() / multiplier) < size_t(parsed))
+	if (multiplier != 0 && size_t(std::numeric_limits<long long>::max() / multiplier) < size_t(parsed))
 	{
 		LogLog::warn(s + LOG4CXX_STR(" is not a valid file size"));
 		return dEfault;
 	}
 
-	return parsed * multiplier;
+	return size_t(parsed) * multiplier;
 }
 
 LogString OptionConverter::findAndSubst(const LogString& key, const Properties& props)
