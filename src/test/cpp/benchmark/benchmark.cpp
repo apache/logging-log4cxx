@@ -31,15 +31,22 @@ using namespace log4cxx;
 class NullWriterAppender : public AppenderSkeleton
 {
 public:
-	NullWriterAppender(const LayoutPtr& layout)
+	NullWriterAppender(const LayoutPtr& layout = {})
 	{
-		setLayout(layout);
+		if (layout)
+		{
+			setName(LOG4CXX_STR("AppenderWithLayout"));
+			setLayout(layout);
+		}
+		else
+			setName(LOG4CXX_STR("NullAppender"));
 	}
 
 	void append( const spi::LoggingEventPtr& event ) override
 	{
 		LogString buf;
-		m_priv->layout->format(buf, event);
+		if (m_priv->layout)
+			m_priv->layout->format(buf, event);
 	}
 };
 
@@ -189,8 +196,9 @@ public: // Class methods
 		if (!result)
 		{
 			setDefaultAppender();
-			auto writer = std::make_shared<NullWriterAppender>(std::make_shared<PatternLayout>(LOG4CXX_STR("%m%n")));
+			auto writer = std::make_shared<NullWriterAppender>();
 			auto asyncAppender = std::make_shared<AsyncAppender>();
+			asyncAppender->setName(name);
 			asyncAppender->addAppender(writer);
 			result = r->getLogger(name);
 			result->setAdditivity(false);
