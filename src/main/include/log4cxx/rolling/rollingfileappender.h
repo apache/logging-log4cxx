@@ -103,6 +103,9 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		 files are kept before the oldest is erased. This option takes
 		 a positive integer value. If set to zero, then there will be no
 		 backup files and the log file will be truncated when it reaches <code>MaxFileSize</code>.
+
+		If the rolling policy is not already a rolling::FixedWindowRollingPolicy,
+		the rolling policy is replaced with a rolling::FixedWindowRollingPolicy.
 		*/
 		void setMaxBackupIndex( int maxBackupIndex );
 
@@ -113,18 +116,41 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		 integer in the range 0 - 2^63. You can specify the value with the suffixes "KB", "MB" or "GB" so that the integer is
 		 interpreted being expressed respectively in kilobytes, megabytes
 		 or gigabytes. For example, the value "10KB" will be interpreted as 10240.
+
+		If the triggering policy is not already a rolling::SizeBasedTriggeringPolicy,
+		the triggering policy is replaced with a rolling::SizeBasedTriggeringPolicy.
 		*/
 		void setMaxFileSize( const LogString& value );
 
-		void setMaximumFileSize( size_t value );
+		/**
+		Use \c newValue as the maximum size that the output file is allowed to reach before being rolled over to backup files.
+
+		If the triggering policy is not already a rolling::SizeBasedTriggeringPolicy,
+		the triggering policy is replaced with a rolling::SizeBasedTriggeringPolicy.
+		*/
+		void setMaximumFileSize( size_t newValue );
 
 		/**
-		   The <b>DatePattern</b> takes a string in the same format as
-		   expected by {@link log4cxx::helpers::SimpleDateFormat SimpleDateFormat}. This options determines the
-		   rollover schedule.
-		 */
-		void setDatePattern(const LogString& pattern);
+		Call #makeFileNamePattern with \c newValue
+		to set the file name pattern for the backup file.
 
+		If the rolling policy is not already a rolling::TimeBasedRollingPolicy,
+		the rolling policy is replaced with a rolling::TimeBasedRollingPolicy.
+		 */
+		void setDatePattern(const LogString& newValue);
+
+		/**
+		Make a file name by appending \c datePattern to the current file name
+		enclosed inside a '\%d{}' variable part marker.
+
+		Substrings of \c datePattern enclosed by single quote characters
+		are directly copied into the result and
+		are excluded from the <b>DatePattern</b> variable.
+
+		The <b>DatePattern</b> takes a string in the same format as
+		expected by {@link log4cxx::helpers::SimpleDateFormat SimpleDateFormat}.
+		The <b>DatePattern</b> determines the rollover schedule.
+		*/
 		LogString makeFileNamePattern(const LogString& datePattern);
 
 		/**
@@ -152,6 +178,12 @@ class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 		using spi::OptionHandler::activateOptions;
 		/**
 		\copybrief FileAppender::activateOptions()
+
+		If the rolling policy is not already set,
+		the rolling policy is set to a rolling::FixedWindowRollingPolicy with default parameters.
+
+		If the triggering policy is not already set,
+		the triggering policy is set to a rolling::SizeBasedTriggeringPolicy with default parameters.
 
 		\sa FileAppender::activateOptions()
 		*/

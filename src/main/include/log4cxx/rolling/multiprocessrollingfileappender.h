@@ -58,7 +58,7 @@ class LOG4CXX_EXPORT MultiprocessRollingFileAppender : public RollingFileAppende
 		/**
 		\copybrief FileAppender::activateOptions()
 
-		\sa FileAppender::activateOptions()
+		\sa RollingFileAppender::activateOptions()
 		*/
 		bool activateOptions() override;
 
