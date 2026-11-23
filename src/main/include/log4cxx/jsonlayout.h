@@ -27,6 +27,20 @@ namespace LOG4CXX_NS
 {
 /**
 This layout outputs events in a JSON dictionary.
+
+The dictionary contain the following fields:
+
+Field | Content | Included |
+----- | ------- | -------- |
+timestamp | The local time at the event request with millisecond precision, e.g. <code>2026-11-23 13:55:30,123</code> | always |
+thread | The name of the thread that made the logging request (or its identifier when the name is not available) | when the <b>ThreadInfo</b> option is true |
+level | The event level, e.g. <code>INFO</code> | always |
+logger | The logger name | always |
+message | The rendered message | always |
+context_map | A JSON dictionary containing the keys and values in the mapped diagnostic context (MDC) | when the MDC is not empty |
+context_stack | A JSON array containing the nested diagnostic context (NDC) | when the NDC is not empty |
+location_info | A JSON dictionary containing the keys "file", "line", "class" and "method" with values indicating the source location of the logging request | when the <b>LocationInfo</b> option is true |
+
 */
 class LOG4CXX_EXPORT JSONLayout : public Layout
 {
@@ -119,7 +133,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 
 		using Layout::format;
 		/**
-		Append the attributes of \c event as a JSON map onto \c output.
+		Append the attributes of \c event as a JSON dictionary onto \c output.
 		*/
 		void format( LogString& output, const spi::LoggingEventPtr& event ) const override;
 
