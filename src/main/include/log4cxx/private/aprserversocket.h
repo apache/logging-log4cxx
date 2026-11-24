@@ -32,6 +32,7 @@ class LOG4CXX_EXPORT APRServerSocket : public helpers::ServerSocket
 {
 public:
 	APRServerSocket();
+	~APRServerSocket();
 
 	/// Is this available for use?
 	bool is_open() override;

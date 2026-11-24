@@ -45,6 +45,12 @@ APRServerSocket::APRServerSocket()
 {
 }
 
+APRServerSocket::~APRServerSocket()
+{
+	if (_priv->socket)
+		close();
+}
+
 bool APRServerSocket::is_open()
 {
 	std::lock_guard<std::mutex> lock(_priv->mutex);
