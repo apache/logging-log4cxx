@@ -129,13 +129,7 @@ void APRServerSocket::close()
 		apr_pollset_wakeup(_priv->pSet);
 	if (_priv->socket != 0)
 	{
-		apr_status_t status = apr_socket_close(_priv->socket);
-
-		if (status != APR_SUCCESS)
-		{
-			throw SocketException(status);
-		}
-
+		apr_socket_close(_priv->socket);
 		_priv->socket = 0;
 	}
 	_priv->can_accept_incoming_network_connections = false;
