@@ -88,7 +88,10 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			helpers::ServerSocketUniquePtr serverSocket;
 			try
 			{
-				serverSocket = helpers::ServerSocket::create(tcpPort, true, {});
+				serverSocket = helpers::ServerSocket::create(tcpPort);
+				serverSocket->setReuseAddress(true);
+				serverSocket->open();
+				LOGUNIT_ASSERT(serverSocket->is_open())
 			}
 			catch (const std::exception& ex)
 			{

@@ -31,10 +31,6 @@ class APRDatagramSocket : public DatagramSocket {
     public:
 	APRDatagramSocket();
 
-	APRDatagramSocket(int port);
-
-	APRDatagramSocket(int port, const InetAddressPtr& laddr);
-
 	void bind(int lport, const InetAddressPtr& laddress) override;
 
 	void close() override;
@@ -48,9 +44,6 @@ class APRDatagramSocket : public DatagramSocket {
 	void send(const DatagramPacketPtr& p) override;
 
 	void connect(const InetAddressPtr& address, int port) override;
-
-    private:
-	void init();
 };
 
 }

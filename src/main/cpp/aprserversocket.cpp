@@ -20,6 +20,7 @@
 #include <log4cxx/private/aprsocket.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <mutex>
 #include "apr_network_io.h"
 #include "apr_pools.h"
 #include "apr_poll.h"
@@ -36,11 +37,22 @@ struct APRServerSocket::APRServerSocketPriv : public ServerSocketPrivate {
 	std::mutex mutex;
 	apr_socket_t* socket{ 0 };
 	apr_pollset_t* pSet{ 0 };
+	bool can_accept_incoming_network_connections{ false };
 };
 
+APRServerSocket::APRServerSocket()
+	: ServerSocket(std::make_unique<APRServerSocketPriv>())
+{
+}
 
-APRServerSocket::APRServerSocket(int port, bool reuseAddress, const LogString& hostname) :
-	ServerSocket(std::make_unique<APRServerSocketPriv>()){
+bool APRServerSocket::is_open()
+{
+	std::lock_guard<std::mutex> lock(_priv->mutex);
+	return _priv->can_accept_incoming_network_connections;
+}
+
+void APRServerSocket::open()
+{
 	apr_status_t status =
 		apr_socket_create(&_priv->socket, APR_INET, SOCK_STREAM,
 			APR_PROTO_TCP, _priv->pool.getAPRPool());
@@ -57,7 +69,7 @@ APRServerSocket::APRServerSocket(int port, bool reuseAddress, const LogString& h
 		throw SocketException(status);
 	}
 
-	if (reuseAddress) {
+	if (_priv->reuseAddress) {
 		apr_status_t status = apr_socket_opt_set(_priv->socket, APR_SO_REUSEADDR, 1);
 
 		if (status != APR_SUCCESS)
@@ -69,15 +81,15 @@ APRServerSocket::APRServerSocket(int port, bool reuseAddress, const LogString& h
 	// Create server socket address (including port number)
 	std::string hostname_str;
 	const char* hostname_ptr = NULL;
-	if (!hostname.empty()) {
-		Transcoder::encode(hostname, hostname_str);
+	if (!_priv->hostname.empty()) {
+		Transcoder::encode(_priv->hostname, hostname_str);
 		hostname_ptr = hostname_str.c_str();
 	}
 
 	apr_sockaddr_t* server_addr;
 	status =
 		apr_sockaddr_info_get(&server_addr, hostname_ptr, APR_INET,
-			port, 0, _priv->pool.getAPRPool());
+			_priv->port, 0, _priv->pool.getAPRPool());
 
 	if (status != APR_SUCCESS)
 	{
@@ -99,6 +111,8 @@ APRServerSocket::APRServerSocket(int port, bool reuseAddress, const LogString& h
 	{
 		throw SocketException(status);
 	}
+
+	_priv->can_accept_incoming_network_connections = true;
 }
 
 void APRServerSocket::close()
@@ -118,12 +132,9 @@ void APRServerSocket::close()
 
 		_priv->socket = 0;
 	}
+	_priv->can_accept_incoming_network_connections = false;
 }
 
-
-/** Listens for a connection to be made to this socket and
-accepts it
-*/
 SocketPtr APRServerSocket::accept()
 {
 	apr_socket_t* s;

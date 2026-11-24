@@ -28,45 +28,17 @@ namespace helpers
 
 #define _priv static_cast<APRDatagramSocketPriv*>(m_priv.get())
 
-struct APRDatagramSocket::APRDatagramSocketPriv : public DatagramSocketPriv {
-	APRDatagramSocketPriv() :
-		DatagramSocketPriv(),
-		socket(nullptr)
-	{}
-
-	APRDatagramSocketPriv(int port) :
-		DatagramSocketPriv(port),
-		socket(nullptr)
-	{}
-
-	APRDatagramSocketPriv(int port, const InetAddressPtr& localAddress) :
-		DatagramSocketPriv(port, localAddress),
-		socket(nullptr)
-	{}
-
+struct APRDatagramSocket::APRDatagramSocketPriv : public DatagramSocketPriv
+{
 	/** The APR socket */
-	apr_socket_t* socket;
+	apr_socket_t* socket{ nullptr };
 
 	/** The memory pool for the socket */
 	Pool socketPool;
 };
 
-APRDatagramSocket::APRDatagramSocket() :
-	DatagramSocket(std::make_unique<APRDatagramSocketPriv>()){
-	init();
-}
-
-APRDatagramSocket::APRDatagramSocket(int port) :
-	DatagramSocket(std::make_unique<APRDatagramSocketPriv>(port)){
-	init();
-}
-
-APRDatagramSocket::APRDatagramSocket(int port, const InetAddressPtr& laddr) :
-	DatagramSocket(std::make_unique<APRDatagramSocketPriv>(port, laddr)){
-	init();
-}
-
-void APRDatagramSocket::init()
+APRDatagramSocket::APRDatagramSocket()
+	: DatagramSocket(std::make_unique<APRDatagramSocketPriv>())
 {
 	apr_socket_t* newSocket;
 	apr_status_t status =

@@ -16,11 +16,15 @@
  */
 
 #include <log4cxx/helpers/serversocket.h>
+#include <log4cxx/helpers/loader.h>
+#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/private/serversocket_priv.h>
 #include <log4cxx/private/aprserversocket.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
+
+IMPLEMENT_LOG4CXX_OBJECT(ServerSocket)
 
 /**  Creates a server socket on a specified port.
 */
@@ -31,11 +35,12 @@ ServerSocket::ServerSocket(std::unique_ptr<ServerSocketPrivate> priv) :
 
 ServerSocket::~ServerSocket()
 {
-	close();
 }
 
-void ServerSocket::close()
+void ServerSocket::setAttributes(int localPort, const LogString& localAddress)
 {
+	m_priv->port = localPort;
+	m_priv->hostname = localAddress;
 }
 
 /** Retrive setting for SO_TIMEOUT.
@@ -52,7 +57,45 @@ void ServerSocket::setSoTimeout(int newVal)
 	m_priv->timeout = newVal;
 }
 
+void ServerSocket::setReuseAddress(bool newValue)
+{
+	m_priv->reuseAddress = newValue;
+}
 
-ServerSocketUniquePtr ServerSocket::create(int port, bool reuseAddress, const LogString& hostname){
-	return std::make_unique<APRServerSocket>(port, reuseAddress, hostname);
+bool ServerSocket::getReuseAddress()
+{
+	return m_priv->reuseAddress;
+}
+
+ServerSocketUniquePtr ServerSocket::create
+	( int              port
+	, const LogString& hostname
+	, const LogString& className
+	)
+{
+	if (!className.empty())
+	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Desired ") + ServerSocket::getStaticClass().getName()
+				+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
+		}
+		auto& classObj = Loader::loadClass(className);
+		auto newObject = classObj.newInstance();
+		auto pSocket = dynamic_cast<ServerSocket*>(newObject);
+		if (!pSocket)
+		{
+			LogLog::error(className + LOG4CXX_STR(" is not a ") + ServerSocket::getStaticClass().getName() + LOG4CXX_STR(" sub-class"));
+			delete newObject;
+		}
+		else
+		{
+			auto result = std::unique_ptr<ServerSocket>(pSocket);
+			result->setAttributes(port, hostname);
+			return result;
+		}
+	}
+	auto result = std::make_unique<APRServerSocket>();
+	result->setAttributes(port, hostname);
+	return result;
 }

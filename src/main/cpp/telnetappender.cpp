@@ -74,6 +74,7 @@ struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
 	ConnectionList connections;
 	LogString encoding;
 	LOG4CXX_NS::helpers::CharsetEncoderPtr encoder;
+	LogString socketSubclass;
 	std::unique_ptr<helpers::ServerSocket> serverSocket;
 	std::thread sh;
 	size_t activeConnections;
@@ -125,8 +126,10 @@ bool TelnetAppender::activateOptions()
 {
 	if (_priv->serverSocket == NULL)
 	{
-		_priv->serverSocket = ServerSocket::create(_priv->port, _priv->reuseAddress, _priv->hostname);
+		_priv->serverSocket = ServerSocket::create(_priv->port, _priv->hostname, _priv->socketSubclass);
+		_priv->serverSocket->setReuseAddress(_priv->reuseAddress);
 		_priv->serverSocket->setSoTimeout(1000);
+		_priv->serverSocket->open();
 	}
 
 	if (!_priv->sh.joinable())
@@ -164,6 +167,10 @@ void TelnetAppender::setOption(const LogString& option,
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("HOSTNAME"), LOG4CXX_STR("hostname")))
 	{
 		setHostname(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SOCKETSUBCLASS"), LOG4CXX_STR("socketsubclass")))
+	{
+		setSocketSubclass(value);
 	}
 	else
 	{
@@ -440,5 +447,15 @@ void TelnetAppender::setNonBlocking(bool newValue)
 void TelnetAppender::setReuseAddress(bool reuseAddress)
 {
 	_priv->reuseAddress = reuseAddress;
+}
+
+void TelnetAppender::setSocketSubclass(const LogString& newValue)
+{
+	_priv->socketSubclass = newValue;
+}
+
+const LogString& TelnetAppender::getSocketSubclass() const
+{
+	return _priv->socketSubclass;
 }
 
