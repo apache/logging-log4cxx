@@ -74,7 +74,7 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		int getPort() const;
 
 		/** Use \c newAddress and \c newPort as the destination. */
-		void setAttributes(const InetAddressPtr& newAddress, int newPort);
+		virtual void setAttributes(const InetAddressPtr& newAddress, int newPort);
 
 		/** Create a concrete instance of this class
 		*/

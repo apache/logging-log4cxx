@@ -46,7 +46,7 @@ class LOG4CXX_EXPORT ServerSocket : public Object
 
 		/**  Use \c localPort and the network at \c localAddress when accepting connections.
 		*/
-		void setAttributes(int localPort, const LogString& localAddress = {});
+		virtual void setAttributes(int localPort, const LogString& localAddress = {});
 
 		/** Listen for a connection to be made to this socket
 		*/
