@@ -24,18 +24,23 @@ namespace LOG4CXX_NS
 namespace helpers
 {
 
-class APRDatagramSocket : public DatagramSocket {
-    private:
-        struct APRDatagramSocketPriv;
+class APRDatagramSocket : public DatagramSocket
+{
+private:
+	struct APRDatagramSocketPriv;
 
-    public:
+public:
 	APRDatagramSocket();
+
+	/** Has #bind succeeded? **/
+	bool isBound() const override;
+
+	/** Has #connect succeeded? */
+	bool isConnected() const override;
 
 	void bind(int lport, const InetAddressPtr& laddress) override;
 
 	void close() override;
-
-	bool isClosed() const override;
 
 	/**  Receives a datagram packet from this socket. */
 	void receive(const DatagramPacketPtr& p) override;

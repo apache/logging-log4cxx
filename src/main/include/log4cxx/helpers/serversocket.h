@@ -56,11 +56,11 @@ class LOG4CXX_EXPORT ServerSocket : public Object
 		*/
 		virtual bool is_open() = 0;
 
-		/** Prepare the socket to accept incoming netwrok connections.
+		/** Prepare the socket to accept incoming network connections.
 		*/
 		virtual void open() = 0;
 
-		/** Stop accepting incoming netwrok connections.
+		/** Stop accepting incoming network connections.
 		*/
 		virtual void close() = 0;
 

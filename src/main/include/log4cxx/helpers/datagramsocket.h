@@ -70,14 +70,11 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		/** Returns the port for this socket */
 		int getPort() const;
 
-		/** Returns the binding state of the socket. **/
-		bool isBound() const;
+		/** Has #bind succeeded? **/
+		virtual bool isBound() const = 0;
 
-		/** Returns wether the socket is closed or not. */
-		virtual bool isClosed() const = 0;
-
-		/** Returns the connection state of the socket. */
-		bool isConnected() const;
+		/** Has #connect succeeded? */
+		virtual bool isConnected() const = 0;
 
 		/**  Receives a datagram packet from this socket. */
 		virtual void receive(const DatagramPacketPtr& p) = 0;

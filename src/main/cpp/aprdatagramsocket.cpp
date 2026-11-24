@@ -35,6 +35,10 @@ struct APRDatagramSocket::APRDatagramSocketPriv : public DatagramSocketPriv
 
 	/** The memory pool for the socket */
 	Pool socketPool;
+
+	bool connected{ false };
+
+	bool bound{ false };
 };
 
 APRDatagramSocket::APRDatagramSocket()
@@ -147,8 +151,14 @@ void APRDatagramSocket::bind(int localPort1, const InetAddressPtr& localAddress1
 
 	m_priv->localPort = localPort1;
 	m_priv->localAddress = localAddress1;
+
+	_priv->bound = true;
 }
 
+bool APRDatagramSocket::isBound() const
+{
+	return _priv->bound;
+}
 
 void APRDatagramSocket::connect(const InetAddressPtr& address1, int port1)
 {
@@ -176,12 +186,13 @@ void APRDatagramSocket::connect(const InetAddressPtr& address1, int port1)
 	{
 		throw ConnectException(status);
 	}
+
+	_priv->connected = true;
 }
 
-
-bool APRDatagramSocket::isClosed() const
+bool APRDatagramSocket::isConnected() const
 {
-	return _priv->socket != nullptr;
+	return _priv->connected;
 }
 
 } //namespace helpers

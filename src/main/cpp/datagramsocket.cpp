@@ -66,16 +66,6 @@ int DatagramSocket::getPort() const
 	return m_priv->port;
 }
 
-bool DatagramSocket::isBound() const
-{
-	return m_priv->localPort != 0;
-}
-
-bool DatagramSocket::isConnected() const
-{
-	return m_priv->port != 0;
-}
-
 DatagramSocketUniquePtr DatagramSocket::create
 	( int                   localPort
 	, const InetAddressPtr& localAddress
