@@ -56,6 +56,12 @@ APRDatagramSocket::APRDatagramSocket()
 	}
 }
 
+APRDatagramSocket::~APRDatagramSocket()
+{
+	if (_priv->socket)
+		close();
+}
+
 void APRDatagramSocket::receive(const DatagramPacketPtr& p)
 {
 	Pool addrPool;
@@ -110,7 +116,8 @@ void APRDatagramSocket::send(const DatagramPacketPtr& p)
 	}
 }
 
-void APRDatagramSocket::close(){
+void APRDatagramSocket::close()
+{
 	if (_priv->socket != 0)
 	{
 		apr_status_t status = apr_socket_close(_priv->socket);
@@ -123,6 +130,8 @@ void APRDatagramSocket::close(){
 		_priv->socket = 0;
 		_priv->localPort = 0;
 	}
+	_priv->bound = false;
+	_priv->connected = false;
 }
 
 void APRDatagramSocket::bind(int localPort1, const InetAddressPtr& localAddress1)

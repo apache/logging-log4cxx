@@ -31,6 +31,7 @@ private:
 
 public:
 	APRDatagramSocket();
+	~APRDatagramSocket();
 
 	/** Has #bind succeeded? **/
 	bool isBound() const override;
