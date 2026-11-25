@@ -181,6 +181,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 					apr_sleep(100000);    // 100 milliseconds
 					s->open();
 					LOGUNIT_ASSERT(s->is_open());
+					break;
 				}
 				catch (const SocketException& e)
 				{
