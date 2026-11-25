@@ -33,6 +33,7 @@
 #include <log4cxx/spi/configurator.h>
 #include <apr_thread_proc.h>
 #include <apr_time.h>
+#include <fstream>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -181,7 +182,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 					s->open();
 					LOGUNIT_ASSERT(s->is_open());
 				}
-				catch (SocketException& e)
+				catch (const SocketException& e)
 				{
 					LogString msg(LOG4CXX_STR("Could not open port "));
 					helpers::StringHelper::toString(TEST_PORT, msg);
