@@ -552,7 +552,7 @@ void SyslogAppender::append( const spi::LoggingEventPtr& event )
 	for (auto const& item : packets)
 	{
 		LOG4CXX_ENCODE_CHAR(msg, prefix + item);
-		ByteBuffer buf(msg.data(), msg.length());
+		ByteBuffer buf(const_cast<char*>(msg.data()), msg.length());
 		_priv->sw->write(buf);
 	}
 }
