@@ -68,10 +68,12 @@ void SyslogWriter::write(const LogString& source)
 	{
 		LOG4CXX_ENCODE_CHAR(data, source);
 
-		auto packet = std::make_shared<DatagramPacket>(
-				(void*) data.data(), (int)data.length(),
-				m_priv->address, m_priv->syslogHostPort);
-
+		DatagramPacket packet
+			( data.data()
+			, data.length()
+			, m_priv->address
+			, m_priv->syslogHostPort
+			);
 		m_priv->ds->send(packet);
 	}
 }

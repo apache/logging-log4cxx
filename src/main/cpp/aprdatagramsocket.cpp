@@ -62,16 +62,16 @@ APRDatagramSocket::~APRDatagramSocket()
 		close();
 }
 
-void APRDatagramSocket::receive(const DatagramPacketPtr& p)
+void APRDatagramSocket::receive(DatagramPacket& p)
 {
 	Pool addrPool;
 
 	// Create the address from which to receive the datagram packet
-	LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress()->getHostAddress());
+	LOG4CXX_ENCODE_CHAR(hostAddr, p.getAddress()->getHostAddress());
 	apr_sockaddr_t* addr;
 	apr_status_t status =
 		apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET,
-			p->getPort(), 0, addrPool.getAPRPool());
+			p.getPort(), 0, addrPool.getAPRPool());
 
 	if (status != APR_SUCCESS)
 	{
@@ -79,9 +79,9 @@ void APRDatagramSocket::receive(const DatagramPacketPtr& p)
 	}
 
 	// receive the datagram packet
-	apr_size_t len = p->getLength();
+	apr_size_t len = p.getLength();
 	status = apr_socket_recvfrom(addr, _priv->socket, 0,
-			(char*)p->getData(), &len);
+			(char*)p.getData(), &len);
 
 	if (status != APR_SUCCESS)
 	{
@@ -89,15 +89,15 @@ void APRDatagramSocket::receive(const DatagramPacketPtr& p)
 	}
 }
 
-void APRDatagramSocket::send(const DatagramPacketPtr& p)
+void APRDatagramSocket::send(const DatagramPacket& p)
 {
 	Pool addrPool;
 
 	// create the adress to which to send the datagram packet
-	LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress()->getHostAddress());
+	LOG4CXX_ENCODE_CHAR(hostAddr, p.getAddress()->getHostAddress());
 	apr_sockaddr_t* addr;
 	apr_status_t status =
-		apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET, p->getPort(),
+		apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET, p.getPort(),
 			0, addrPool.getAPRPool());
 
 	if (status != APR_SUCCESS)
@@ -106,9 +106,9 @@ void APRDatagramSocket::send(const DatagramPacketPtr& p)
 	}
 
 	// send the datagram packet
-	apr_size_t len = p->getLength();
+	apr_size_t len = p.getLength();
 	status = apr_socket_sendto(_priv->socket, addr, 0,
-			(char*)p->getData(), &len);
+			(char*)p.getData(), &len);
 
 	if (status != APR_SUCCESS)
 	{

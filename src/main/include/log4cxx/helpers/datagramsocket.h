@@ -75,11 +75,11 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		/// Has #connect succeeded?
 		virtual bool isConnected() const = 0;
 
-		///  Receives a datagram packet from this socket into \c p.
-		virtual void receive(const DatagramPacketPtr& p) = 0;
+		/// Receive the bytes of a datagram packet into the \c p.getLength() sized buffer at \c p.getData().
+		virtual void receive(DatagramPacket& p) = 0;
 
 		/// Send \c p from this socket.
-		virtual void  send(const DatagramPacketPtr& p) = 0;
+		virtual void send(const DatagramPacket& p) = 0;
 
 		/** Create a concrete datagram socket instance, optionally of the \c className registered type.
 
@@ -89,7 +89,7 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 
 		Call #bind on the newly created socket to listen for packets.
 
-		Call #connect on the newly created socket for a connection oriented stream.
+		Call #connect on the newly created socket to prepare this socket for a remote system.
 		*/
 		static DatagramSocketUniquePtr create(const LogString& className = {});
 
