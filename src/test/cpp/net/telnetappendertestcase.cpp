@@ -171,11 +171,23 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			setTestAttributes(&attr, output.getFilePtr(), p);
 			apr_proc_t pid;
 			startTestInstance(&pid, attr, args, p);
-			apr_sleep(100000);    // 100 milliseconds
 			auto addr = helpers::InetAddress::getByName(LOG4CXX_STR("127.0.0.1"));
 			auto s = helpers::Socket::create(addr, TEST_PORT);
-			s->open();
-			LOGUNIT_ASSERT(s->is_open());
+			for (auto i : {1, 2, 3})
+			{
+				try
+				{
+					apr_sleep(100000);    // 100 milliseconds
+					s->open();
+					LOGUNIT_ASSERT(s->is_open());
+				}
+				catch (SocketException& e)
+				{
+					LogString msg(LOG4CXX_STR("Could not open port "));
+					helpers::StringHelper::toString(TEST_PORT, msg);
+					helpers::LogLog::warn(msg, e);
+				}
+			}
 			int exitCode;
 			apr_exit_why_e reason;
 			apr_proc_wait(&pid, &exitCode, &reason, APR_WAIT);
@@ -184,6 +196,19 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 				helpers::LogLog::debug(helpers::SubProcessFailure::makeMessage(LOG4CXX_STR("child"), exitCode, reason));
 			}
 			LOGUNIT_ASSERT_EQUAL(exitCode, 0);
+
+			// Check some messages were written by the testActivateWriteClose TelnetAppender
+			bool connectionSeen = false;
+			std::ifstream in("output/testConnectNoRead.log");
+			for (std::string line; std::getline(in, line);)
+			{
+				if (line.npos != line.find("TelnetAppender new connection"))
+				{
+					connectionSeen = true;
+					break;
+				}
+			}
+			LOGUNIT_ASSERT(connectionSeen);
 		}
 
 private:

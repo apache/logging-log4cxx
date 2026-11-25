@@ -59,7 +59,7 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		*/
 		virtual void setNonBlocking(bool newValue) = 0;
 
-		/// Establish a connection to the remote system.
+		/// Establish a connection to the remote system or throw a ConnectException.
 		virtual void open() = 0;
 
 		/// Is this available for use?
