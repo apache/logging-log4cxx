@@ -66,11 +66,7 @@ int DatagramSocket::getPort() const
 	return m_priv->port;
 }
 
-DatagramSocketUniquePtr DatagramSocket::create
-	( int                   localPort
-	, const InetAddressPtr& localAddress
-	, const LogString&      className
-	)
+DatagramSocketUniquePtr DatagramSocket::create(const LogString& className)
 {
 	if (!className.empty())
 	{
@@ -89,14 +85,8 @@ DatagramSocketUniquePtr DatagramSocket::create
 		}
 		else
 		{
-			auto result = std::unique_ptr<DatagramSocket>(pSocket);
-			if (0 < localPort)
-				pSocket->bind(localPort, localAddress);
-			return result;
+			return std::unique_ptr<DatagramSocket>(pSocket);
 		}
 	}
-	auto sock = std::make_unique<APRDatagramSocket>();
-	if (0 < localPort)
-		sock->bind(localPort, localAddress);
-	return sock;
+	return std::make_unique<APRDatagramSocket>();
 }

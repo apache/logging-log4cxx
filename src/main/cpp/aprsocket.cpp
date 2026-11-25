@@ -58,7 +58,6 @@ APRSocket::APRSocket(const InetAddressPtr& address, int port)
 	{
 		throw SocketException(status);
 	}
-	open();
 }
 
 void APRSocket::open()

@@ -82,17 +82,17 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		/** Sends a datagram packet from this socket. */
 		virtual void  send(const DatagramPacketPtr& p) = 0;
 
-		/**  A \c className type datagram socket, optionally bound to \c localPort and the network at \c localAddress.
+		/** Create a concrete datagram socket instance, optionally of the \c className registered type.
 
-		If \c className is empty, a APRDatagramSocket is returned.
+		If \c className is empty, or not a registered DatagramSocket sub-class, an APRDatagramSocket is returned.
 
-		If \c localPort is greater than zero, #bind is called on the newly created socket.
+		Call #send to use the socket to send packets.
+
+		Call #bind on the newly created socket to listen for packets.
+
+		Call #connect on the newly created socket for a connection oriented stream.
 		*/
-		static DatagramSocketUniquePtr create
-			( int                   localPort = 0
-			, const InetAddressPtr& localAddress = {}
-			, const LogString&      className = {}
-			);
+		static DatagramSocketUniquePtr create(const LogString& className = {});
 
 	private:
 		DatagramSocket(const DatagramSocket&);

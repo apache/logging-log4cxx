@@ -75,7 +75,8 @@ void APRServerSocket::open()
 		throw SocketException(status);
 	}
 
-	if (_priv->reuseAddress) {
+	if (_priv->reuseAddress)
+	{
 		apr_status_t status = apr_socket_opt_set(_priv->socket, APR_SO_REUSEADDR, 1);
 
 		if (status != APR_SUCCESS)

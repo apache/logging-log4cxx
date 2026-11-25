@@ -77,6 +77,10 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		virtual void setAttributes(const InetAddressPtr& newAddress, int newPort);
 
 		/** Create a concrete instance of this class
+
+		If \c concreteClassName is empty, or not a registered Socket sub-class, an APRSocket is returned.
+
+		Call #open on the result to establish the network connections.
 		*/
 		static SocketUniquePtr create(const InetAddressPtr& address, int port, const LogString& concreteClassName = {});
 	private:

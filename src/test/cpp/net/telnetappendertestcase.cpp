@@ -167,7 +167,9 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			startTestInstance(&pid, attr, args, p);
 			apr_sleep(100000);    // 100 milliseconds
 			auto addr = helpers::InetAddress::getByName(LOG4CXX_STR("127.0.0.1"));
-			auto s = helpers::Socket::create(addr, TEST_PORT); // Opens a connection
+			auto s = helpers::Socket::create(addr, TEST_PORT);
+			s->open();
+			LOGUNIT_ASSERT(s->is_open());
 			int exitCode;
 			apr_exit_why_e reason;
 			apr_proc_wait(&pid, &exitCode, &reason, APR_WAIT);

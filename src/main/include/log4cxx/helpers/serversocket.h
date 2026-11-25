@@ -81,7 +81,10 @@ class LOG4CXX_EXPORT ServerSocket : public Object
 		void setReuseAddress(bool newValue);
 
 		/**  A \c className type socket, that will listen on \c localPort on the network at \c localAddress.
-		If \c className is empty, a APRServerSocket is returned.
+
+		If \c className is empty, or not a registered ServerSocket sub-class, an APRServerSocket is returned.
+
+		Call #open on the result to prepare the socket to accept incoming network connections.
 		*/
 		static ServerSocketUniquePtr create
 			( int              localPort
