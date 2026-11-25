@@ -18,6 +18,7 @@
 #include <log4cxx/net/telnetappender.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/file.h>
+#include <log4cxx/logmanager.h>
 #include <log4cxx/patternlayout.h>
 #include "../appenderskeletontestcase.h"
 #include <log4cxx/helpers/inetaddress.h>
@@ -67,6 +68,11 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		}
 
 	public:
+
+		void tearDown() override
+		{
+			LogManager::shutdown();
+		}
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{

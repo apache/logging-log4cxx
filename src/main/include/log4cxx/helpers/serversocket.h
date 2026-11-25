@@ -50,7 +50,7 @@ class LOG4CXX_EXPORT ServerSocket : public Object
 
 		/** Get an open connection to a remote system or throw an exception.
 		A SocketTimeoutException is thown to indicate the time expired while waiting.
-		Other failure reasons may cause a other exceptions (e.g. SocketException) to be thrown.
+		Other failure reasons may cause other exceptions (e.g. SocketException) to be thrown.
 		*/
 		virtual SocketPtr accept() = 0;
 
