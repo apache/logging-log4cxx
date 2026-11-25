@@ -45,41 +45,40 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		LOG4CXX_CAST_ENTRY(DatagramSocket)
 		END_LOG4CXX_CAST_MAP()
 
-		/** ensure the socket is closed. */
+		/// Release resources
 		virtual ~DatagramSocket();
 
-		/**  Binds a datagram socket to a local port and address.*/
+		/// Prepare to listen on a local port and network.
 		virtual void bind(int lport, const InetAddressPtr& laddress) = 0;
 
-		/** Closes this datagram socket */
-		virtual void close();
+		/// Make this socket unusable.
+		virtual void close() = 0;
 
-		/** Connects the socket to a remote address for this socket. */
+		/// Prepare this socket for messages to the remote system at \c address.
 		virtual void connect(const InetAddressPtr& address, int port) = 0;
 
-		/** Returns the address to which this socket is connected. */
+		/// The remote system address for which this socket is configured.
 		InetAddressPtr getInetAddress() const;
 
-		/** Gets the local address to which the socket is bound. */
+		/// The local address to which the socket is bound.
 		InetAddressPtr getLocalAddress() const;
 
-		/**  Returns the port number on the local host to which this
-		socket is bound. */
+		/// The local port number to which this socket is bound.
 		int getLocalPort() const;
 
-		/** Returns the port for this socket */
+		/// The remote system port for which this socket is configured.
 		int getPort() const;
 
-		/** Has #bind succeeded? **/
+		///Has #bind succeeded?
 		virtual bool isBound() const = 0;
 
-		/** Has #connect succeeded? */
+		/// Has #connect succeeded?
 		virtual bool isConnected() const = 0;
 
-		/**  Receives a datagram packet from this socket. */
+		///  Receives a datagram packet from this socket into \c p.
 		virtual void receive(const DatagramPacketPtr& p) = 0;
 
-		/** Sends a datagram packet from this socket. */
+		/// Send \c p from this socket.
 		virtual void  send(const DatagramPacketPtr& p) = 0;
 
 		/** Create a concrete datagram socket instance, optionally of the \c className registered type.

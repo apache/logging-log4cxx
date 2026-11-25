@@ -32,18 +32,6 @@ DatagramSocket::DatagramSocket(std::unique_ptr<DatagramSocketPriv> priv) :
 
 DatagramSocket::~DatagramSocket()
 {
-	try
-	{
-		close();
-	}
-	catch (const SocketException&)
-	{
-	}
-}
-
-/** Close the socket.*/
-void DatagramSocket::close()
-{
 }
 
 InetAddressPtr DatagramSocket::getInetAddress() const
