@@ -48,7 +48,7 @@ class LOG4CXX_EXPORT ServerSocket : public Object
 		*/
 		virtual void setAttributes(int localPort, const LogString& localAddress = {});
 
-		/** Listen for a connection to be made to this socket
+		/** Get an open connection to a remote system or throw a SocketException
 		*/
 		virtual SocketPtr accept() = 0;
 
@@ -60,7 +60,7 @@ class LOG4CXX_EXPORT ServerSocket : public Object
 		*/
 		virtual void open() = 0;
 
-		/** Stop accepting incoming network connections.
+		/** Make this unavailable for use.
 		*/
 		virtual void close() = 0;
 

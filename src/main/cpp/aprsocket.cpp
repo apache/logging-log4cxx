@@ -121,6 +121,7 @@ APRSocket::APRSocket(apr_socket_t* s, apr_pool_t* pool) :
 		}
 
 		_priv->address = std::make_shared<InetAddress>(remotename, remoteip);
+		_priv->connected = true;
 	}
 }
 

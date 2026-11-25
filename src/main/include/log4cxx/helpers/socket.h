@@ -65,7 +65,7 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		/// Is this available for use?
 		virtual bool is_open() = 0;
 
-		/// Close the connection.
+		/// Make the socket unavailable for use.
 		virtual void close() = 0;
 
 		/// The network address of the remote system.
