@@ -162,6 +162,16 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		*/
 		void setNonBlocking(bool newValue);
 
+		/**
+		* Use \c newSubclass as the helpers::ServerSocket interface instead of the default implementation.
+		* */
+		void setSocketSubclass(const LogString& newSubclass);
+
+		/**
+		The class name used for the helpers::ServerSocket interface implemention.
+		*/
+		const LogString& getSocketSubclass() const;
+
 	protected:
 		/** Send \c event to each connected client.
 		*/

@@ -17,6 +17,7 @@
 
 #include <log4cxx/net/syslogappender.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -550,7 +551,9 @@ void SyslogAppender::append( const spi::LoggingEventPtr& event )
 
 	for (auto const& item : packets)
 	{
-		_priv->sw->write(prefix + item);
+		LOG4CXX_ENCODE_CHAR(msg, prefix + item);
+		ByteBuffer buf(const_cast<char*>(msg.data()), msg.length());
+		_priv->sw->write(buf);
 	}
 }
 

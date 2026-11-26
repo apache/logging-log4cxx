@@ -24,33 +24,35 @@ namespace LOG4CXX_NS
 namespace helpers
 {
 
-class APRDatagramSocket : public DatagramSocket {
-    private:
-        struct APRDatagramSocketPriv;
+class APRDatagramSocket : public DatagramSocket
+{
+private:
+	struct APRDatagramSocketPriv;
 
-    public:
+public:
 	APRDatagramSocket();
+	~APRDatagramSocket();
 
-	APRDatagramSocket(int port);
+	/// Has #bind succeeded?
+	bool isBound() const override;
 
-	APRDatagramSocket(int port, const InetAddressPtr& laddr);
+	/// Has #connect succeeded?
+	bool isConnected() const override;
 
+	/// Prepare to listen on a local port and network.
 	void bind(int lport, const InetAddressPtr& laddress) override;
 
+	/// Make this socket unusable.
 	void close() override;
 
-	bool isClosed() const override;
+	/// Receive the bytes of a datagram packet into the \c p.getLength() sized buffer at \c p.getData().
+	void receive(DatagramPacket& p) override;
 
-	/**  Receives a datagram packet from this socket. */
-	void receive(const DatagramPacketPtr& p) override;
+	/// Send \c p from this socket.
+	void send(const DatagramPacket& p) override;
 
-	/** Sends a datagram packet from this socket. */
-	void send(const DatagramPacketPtr& p) override;
-
+	/// Prepare this socket for messages to the remote system at \c address.
 	void connect(const InetAddressPtr& address, int port) override;
-
-    private:
-	void init();
 };
 
 }

@@ -28,45 +28,21 @@ namespace helpers
 
 #define _priv static_cast<APRDatagramSocketPriv*>(m_priv.get())
 
-struct APRDatagramSocket::APRDatagramSocketPriv : public DatagramSocketPriv {
-	APRDatagramSocketPriv() :
-		DatagramSocketPriv(),
-		socket(nullptr)
-	{}
-
-	APRDatagramSocketPriv(int port) :
-		DatagramSocketPriv(port),
-		socket(nullptr)
-	{}
-
-	APRDatagramSocketPriv(int port, const InetAddressPtr& localAddress) :
-		DatagramSocketPriv(port, localAddress),
-		socket(nullptr)
-	{}
-
+struct APRDatagramSocket::APRDatagramSocketPriv : public DatagramSocketPriv
+{
 	/** The APR socket */
-	apr_socket_t* socket;
+	apr_socket_t* socket{ nullptr };
 
 	/** The memory pool for the socket */
 	Pool socketPool;
+
+	bool connected{ false };
+
+	bool bound{ false };
 };
 
-APRDatagramSocket::APRDatagramSocket() :
-	DatagramSocket(std::make_unique<APRDatagramSocketPriv>()){
-	init();
-}
-
-APRDatagramSocket::APRDatagramSocket(int port) :
-	DatagramSocket(std::make_unique<APRDatagramSocketPriv>(port)){
-	init();
-}
-
-APRDatagramSocket::APRDatagramSocket(int port, const InetAddressPtr& laddr) :
-	DatagramSocket(std::make_unique<APRDatagramSocketPriv>(port, laddr)){
-	init();
-}
-
-void APRDatagramSocket::init()
+APRDatagramSocket::APRDatagramSocket()
+	: DatagramSocket(std::make_unique<APRDatagramSocketPriv>())
 {
 	apr_socket_t* newSocket;
 	apr_status_t status =
@@ -80,16 +56,22 @@ void APRDatagramSocket::init()
 	}
 }
 
-void APRDatagramSocket::receive(const DatagramPacketPtr& p)
+APRDatagramSocket::~APRDatagramSocket()
+{
+	if (_priv->socket)
+		close();
+}
+
+void APRDatagramSocket::receive(DatagramPacket& p)
 {
 	Pool addrPool;
 
 	// Create the address from which to receive the datagram packet
-	LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress()->getHostAddress());
+	LOG4CXX_ENCODE_CHAR(hostAddr, p.getAddress()->getHostAddress());
 	apr_sockaddr_t* addr;
 	apr_status_t status =
 		apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET,
-			p->getPort(), 0, addrPool.getAPRPool());
+			p.getPort(), 0, addrPool.getAPRPool());
 
 	if (status != APR_SUCCESS)
 	{
@@ -97,9 +79,9 @@ void APRDatagramSocket::receive(const DatagramPacketPtr& p)
 	}
 
 	// receive the datagram packet
-	apr_size_t len = p->getLength();
+	apr_size_t len = p.getLength();
 	status = apr_socket_recvfrom(addr, _priv->socket, 0,
-			(char*)p->getData(), &len);
+			(char*)p.getData(), &len);
 
 	if (status != APR_SUCCESS)
 	{
@@ -107,15 +89,15 @@ void APRDatagramSocket::receive(const DatagramPacketPtr& p)
 	}
 }
 
-void APRDatagramSocket::send(const DatagramPacketPtr& p)
+void APRDatagramSocket::send(const DatagramPacket& p)
 {
 	Pool addrPool;
 
 	// create the adress to which to send the datagram packet
-	LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress()->getHostAddress());
+	LOG4CXX_ENCODE_CHAR(hostAddr, p.getAddress()->getHostAddress());
 	apr_sockaddr_t* addr;
 	apr_status_t status =
-		apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET, p->getPort(),
+		apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET, p.getPort(),
 			0, addrPool.getAPRPool());
 
 	if (status != APR_SUCCESS)
@@ -124,9 +106,9 @@ void APRDatagramSocket::send(const DatagramPacketPtr& p)
 	}
 
 	// send the datagram packet
-	apr_size_t len = p->getLength();
+	apr_size_t len = p.getLength();
 	status = apr_socket_sendto(_priv->socket, addr, 0,
-			(char*)p->getData(), &len);
+			(char*)p.getData(), &len);
 
 	if (status != APR_SUCCESS)
 	{
@@ -134,19 +116,16 @@ void APRDatagramSocket::send(const DatagramPacketPtr& p)
 	}
 }
 
-void APRDatagramSocket::close(){
+void APRDatagramSocket::close()
+{
 	if (_priv->socket != 0)
 	{
-		apr_status_t status = apr_socket_close(_priv->socket);
-
-		if (status != APR_SUCCESS)
-		{
-			throw SocketException(status);
-		}
-
+		apr_socket_close(_priv->socket);
 		_priv->socket = 0;
 		_priv->localPort = 0;
 	}
+	_priv->bound = false;
+	_priv->connected = false;
 }
 
 void APRDatagramSocket::bind(int localPort1, const InetAddressPtr& localAddress1)
@@ -175,8 +154,14 @@ void APRDatagramSocket::bind(int localPort1, const InetAddressPtr& localAddress1
 
 	m_priv->localPort = localPort1;
 	m_priv->localAddress = localAddress1;
+
+	_priv->bound = true;
 }
 
+bool APRDatagramSocket::isBound() const
+{
+	return _priv->bound;
+}
 
 void APRDatagramSocket::connect(const InetAddressPtr& address1, int port1)
 {
@@ -204,12 +189,13 @@ void APRDatagramSocket::connect(const InetAddressPtr& address1, int port1)
 	{
 		throw ConnectException(status);
 	}
+
+	_priv->connected = true;
 }
 
-
-bool APRDatagramSocket::isClosed() const
+bool APRDatagramSocket::isConnected() const
 {
-	return _priv->socket != nullptr;
+	return _priv->connected;
 }
 
 } //namespace helpers

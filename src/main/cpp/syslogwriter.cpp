@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/syslogwriter.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/helpers/datagrampacket.h>
-#include <log4cxx/helpers/transcoder.h>
 
 using namespace LOG4CXX_NS;
 using namespace LOG4CXX_NS::helpers;
@@ -62,16 +60,16 @@ SyslogWriter::SyslogWriter(const LogString& syslogHost1, int syslogHostPort1)
 
 SyslogWriter::~SyslogWriter(){}
 
-void SyslogWriter::write(const LogString& source)
+void SyslogWriter::write(ByteBuffer& data)
 {
 	if (m_priv->ds != 0 && m_priv->address != 0)
 	{
-		LOG4CXX_ENCODE_CHAR(data, source);
-
-		auto packet = std::make_shared<DatagramPacket>(
-				(void*) data.data(), (int)data.length(),
-				m_priv->address, m_priv->syslogHostPort);
-
+		DatagramPacket packet
+			( static_cast<void*>(data.data())
+			, data.remaining()
+			, m_priv->address
+			, m_priv->syslogHostPort
+			);
 		m_priv->ds->send(packet);
 	}
 }

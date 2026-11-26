@@ -17,8 +17,8 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/helpers/datagrampacket.h>
+#include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/datagramsocket_priv.h>
 #include <log4cxx/private/aprdatagramsocket.h>
 
@@ -31,18 +31,6 @@ DatagramSocket::DatagramSocket(std::unique_ptr<DatagramSocketPriv> priv) :
 {}
 
 DatagramSocket::~DatagramSocket()
-{
-	try
-	{
-		close();
-	}
-	catch (const SocketException&)
-	{
-	}
-}
-
-/** Close the socket.*/
-void DatagramSocket::close()
 {
 }
 
@@ -66,31 +54,27 @@ int DatagramSocket::getPort() const
 	return m_priv->port;
 }
 
-bool DatagramSocket::isBound() const
+DatagramSocketUniquePtr DatagramSocket::create(const LogString& className)
 {
-	return m_priv->localPort != 0;
-}
-
-bool DatagramSocket::isConnected() const
-{
-	return m_priv->port != 0;
-}
-
-DatagramSocketUniquePtr DatagramSocket::create(){
+	if (!className.empty())
+	{
+		if (LogLog::isDebugEnabled())
+		{
+			LogLog::debug(LOG4CXX_STR("Desired ") + DatagramSocket::getStaticClass().getName()
+				+ LOG4CXX_STR(" sub-class: [") + className + LOG4CXX_STR("]"));
+		}
+		auto& classObj = Loader::loadClass(className);
+		auto newObject = classObj.newInstance();
+		auto pSocket = dynamic_cast<DatagramSocket*>(newObject);
+		if (!pSocket)
+		{
+			LogLog::error(className + LOG4CXX_STR(" is not a ") + DatagramSocket::getStaticClass().getName() + LOG4CXX_STR(" sub-class"));
+			delete newObject;
+		}
+		else
+		{
+			return std::unique_ptr<DatagramSocket>(pSocket);
+		}
+	}
 	return std::make_unique<APRDatagramSocket>();
-}
-
-DatagramSocketUniquePtr DatagramSocket::create(int localPort1){
-	auto sock = std::make_unique<APRDatagramSocket>(localPort1);
-	InetAddressPtr bindAddr = InetAddress::anyAddress();
-
-	sock->bind(localPort1, bindAddr);
-	return sock;
-}
-
-DatagramSocketUniquePtr DatagramSocket::create(int localPort1, const InetAddressPtr& localAddress1){
-	auto sock = std::make_unique<APRDatagramSocket>(localPort1, localAddress1);
-
-	sock->bind(localPort1, localAddress1);
-	return sock;
 }

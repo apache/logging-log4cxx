@@ -35,7 +35,9 @@ public:
 	void testUnknownHost()
 	{
 		SyslogWriter writer(LOG4CXX_STR("unknown.invalid"));
-		writer.write(LOG4CXX_STR("Hello, Unknown World."));
+		char msg[] = "Hello, Unknown World.";
+		ByteBuffer buf(msg, 21);
+		writer.write(buf);
 	}
 
 };

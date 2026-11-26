@@ -72,7 +72,6 @@ SocketUniquePtr Socket::create(const InetAddressPtr& address, int port, const Lo
 		{
 			auto result = std::unique_ptr<Socket>(pSocket);
 			pSocket->setAttributes(address, port);
-			pSocket->open();
 			return result;
 		}
 	}

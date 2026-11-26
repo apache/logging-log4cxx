@@ -18,8 +18,8 @@
 #ifndef _LOG4CXX_HELPERS_SERVER_SOCKET_H
 #define _LOG4CXX_HELPERS_SERVER_SOCKET_H
 
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/socket.h>
-#include <mutex>
 
 namespace LOG4CXX_NS
 {
@@ -30,24 +30,41 @@ class ServerSocket;
 LOG4CXX_PTR_DEF(ServerSocket);
 LOG4CXX_UNIQUE_PTR_DEF(ServerSocket);
 
-class LOG4CXX_EXPORT ServerSocket
+class LOG4CXX_EXPORT ServerSocket : public Object
 {
 	protected:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ServerSocketPrivate, m_priv)
 		ServerSocket(LOG4CXX_PRIVATE_PTR(ServerSocketPrivate) priv);
 
 	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ServerSocket)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(ServerSocket)
+		END_LOG4CXX_CAST_MAP()
 
 		virtual ~ServerSocket();
 
-		/** Listens for a connection to be made to this socket and
-		accepts it
+		/**  Use \c localPort and the network at \c localAddress when accepting connections.
+		*/
+		virtual void setAttributes(int localPort, const LogString& localAddress = {});
+
+		/** Get an open connection to a remote system or throw an exception.
+		A SocketTimeoutException is thown to indicate the time expired while waiting.
+		Other failure reasons may cause other exceptions (e.g. SocketException) to be thrown.
 		*/
 		virtual SocketPtr accept() = 0;
 
-		/** Closes this socket.
+		/** Is this available for use?
 		*/
-		virtual void close();
+		virtual bool is_open() = 0;
+
+		/** Prepare the socket to accept incoming network connections.
+		*/
+		virtual void open() = 0;
+
+		/** Make this unavailable for use.
+		*/
+		virtual void close() = 0;
 
 		/** Retrive setting for SO_TIMEOUT.
 		*/
@@ -57,7 +74,25 @@ class LOG4CXX_EXPORT ServerSocket
 		*/
 		void setSoTimeout(int timeout);
 
-		static ServerSocketUniquePtr create(int port, bool reuseAddress = false, const LogString& hostname = {});
+		/** The value of the SO_REUSEADDR attribute.
+		*/
+		bool getReuseAddress();
+
+		/** Use \c newValue for the SO_REUSEADDR attribute.
+		*/
+		void setReuseAddress(bool newValue);
+
+		/**  A \c className type socket, that will listen on \c localPort on the network at \c localAddress.
+
+		If \c className is empty, or not a registered ServerSocket sub-class, an APRServerSocket is returned.
+
+		Call #open on the result to prepare the socket to accept incoming network connections.
+		*/
+		static ServerSocketUniquePtr create
+			( int              localPort
+			, const LogString& localAddress = {}
+			, const LogString& className = {}
+			);
 
 };
 }  // namespace helpers

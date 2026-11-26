@@ -45,57 +45,53 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		LOG4CXX_CAST_ENTRY(DatagramSocket)
 		END_LOG4CXX_CAST_MAP()
 
-		/** ensure the socket is closed. */
+		/// Release resources
 		virtual ~DatagramSocket();
 
-		/**  Binds a datagram socket to a local port and address.*/
+		/// Prepare to listen on a local port and network.
 		virtual void bind(int lport, const InetAddressPtr& laddress) = 0;
 
-		/** Closes this datagram socket */
-		virtual void close();
+		/// Make this socket unusable.
+		virtual void close() = 0;
 
-		/** Connects the socket to a remote address for this socket. */
+		/// Prepare this socket for messages to the remote system at \c address.
 		virtual void connect(const InetAddressPtr& address, int port) = 0;
 
-		/** Returns the address to which this socket is connected. */
+		/// The remote system address for which this socket is configured.
 		InetAddressPtr getInetAddress() const;
 
-		/** Gets the local address to which the socket is bound. */
+		/// The local address to which the socket is bound.
 		InetAddressPtr getLocalAddress() const;
 
-		/**  Returns the port number on the local host to which this
-		socket is bound. */
+		/// The local port number to which this socket is bound.
 		int getLocalPort() const;
 
-		/** Returns the port for this socket */
+		/// The remote system port for which this socket is configured.
 		int getPort() const;
 
-		/** Returns the binding state of the socket. **/
-		bool isBound() const;
+		///Has #bind succeeded?
+		virtual bool isBound() const = 0;
 
-		/** Returns wether the socket is closed or not. */
-		virtual bool isClosed() const = 0;
+		/// Has #connect succeeded?
+		virtual bool isConnected() const = 0;
 
-		/** Returns the connection state of the socket. */
-		bool isConnected() const;
+		/// Receive the bytes of a datagram packet into the \c p.getLength() sized buffer at \c p.getData().
+		virtual void receive(DatagramPacket& p) = 0;
 
-		/**  Receives a datagram packet from this socket. */
-		virtual void receive(const DatagramPacketPtr& p) = 0;
+		/// Send \c p from this socket.
+		virtual void send(const DatagramPacket& p) = 0;
 
-		/** Sends a datagram packet from this socket. */
-		virtual void  send(const DatagramPacketPtr& p) = 0;
+		/** Create a concrete datagram socket instance, optionally of the \c className registered type.
 
-		/** Constructs a datagram socket and binds it to any available port
-		on the local host machine.*/
-		static DatagramSocketUniquePtr create();
+		If \c className is empty, or not a registered DatagramSocket sub-class, an APRDatagramSocket is returned.
 
-		/** Constructs a datagram socket and binds it to the specified
-		port on the local host machine. */
-		static DatagramSocketUniquePtr create(int port);
+		Call #send to use the socket to send packets.
 
-		/**  Creates a datagram socket, bound to the specified local
-		address. */
-		static DatagramSocketUniquePtr create(int port, const InetAddressPtr& laddr);
+		Call #bind on the newly created socket to listen for packets.
+
+		Call #connect on the newly created socket to prepare this socket for a remote system.
+		*/
+		static DatagramSocketUniquePtr create(const LogString& className = {});
 
 	private:
 		DatagramSocket(const DatagramSocket&);

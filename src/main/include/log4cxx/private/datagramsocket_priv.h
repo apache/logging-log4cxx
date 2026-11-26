@@ -27,31 +27,23 @@ namespace helpers
 
 struct DatagramSocket::DatagramSocketPriv
 {
-	DatagramSocketPriv()
-		: port(0), localPort(0)
-	{
-	}
-
-	DatagramSocketPriv(int localPort1)
-		: port(0), localPort(localPort1)
-	{
-	}
-
-	DatagramSocketPriv(int localPort1, const InetAddressPtr& localAddress1)
-		: localAddress(localAddress1), port(0), localPort(localPort1)
-	{
-	}
-
 	virtual ~DatagramSocketPriv() = default;
 
-	InetAddressPtr address;
-
+	/** The network to use - set by bind()
+	*/
 	InetAddressPtr localAddress;
 
-	int port;
+	/** The local port number - set by bind()
+	*/
+	int localPort{ 0 };
 
-	/** The local port number to which this socket is connected. */
-	int localPort;
+	/** The remote address - set by connect()
+	*/
+	InetAddressPtr address;
+
+	/** The remote port - set by connect()
+	*/
+	int port{ 0 };
 };
 
 }

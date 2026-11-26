@@ -30,15 +30,21 @@ namespace helpers
  */
 class LOG4CXX_EXPORT APRServerSocket : public helpers::ServerSocket
 {
-        public:
-            APRServerSocket(int port, bool reuseAddress = false, const LogString& hostname = {});
+public:
+	APRServerSocket();
+	~APRServerSocket();
 
-	    void close() override;
+	/// Is this available for use?
+	bool is_open() override;
 
-	    SocketPtr accept() override;
+	void open() override;
 
-	private:
-		struct APRServerSocketPriv;
+	void close() override;
+
+	SocketPtr accept() override;
+
+private:
+	struct APRServerSocketPriv;
 };
 
 }

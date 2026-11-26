@@ -18,6 +18,7 @@
 #include <log4cxx/net/telnetappender.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/file.h>
+#include <log4cxx/logmanager.h>
 #include <log4cxx/patternlayout.h>
 #include "../appenderskeletontestcase.h"
 #include <log4cxx/helpers/inetaddress.h>
@@ -32,6 +33,7 @@
 #include <log4cxx/spi/configurator.h>
 #include <apr_thread_proc.h>
 #include <apr_time.h>
+#include <fstream>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -67,6 +69,11 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		}
 
 	public:
+
+		void tearDown() override
+		{
+			LogManager::shutdown();
+		}
 
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
@@ -165,9 +172,24 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			setTestAttributes(&attr, output.getFilePtr(), p);
 			apr_proc_t pid;
 			startTestInstance(&pid, attr, args, p);
-			apr_sleep(100000);    // 100 milliseconds
 			auto addr = helpers::InetAddress::getByName(LOG4CXX_STR("127.0.0.1"));
-			auto s = helpers::Socket::create(addr, TEST_PORT); // Opens a connection
+			auto s = helpers::Socket::create(addr, TEST_PORT);
+			for (auto i : {1, 2, 3})
+			{
+				try
+				{
+					apr_sleep(100000);    // 100 milliseconds
+					s->open();
+					LOGUNIT_ASSERT(s->is_open());
+					break;
+				}
+				catch (const SocketException& e)
+				{
+					LogString msg(LOG4CXX_STR("Could not open port "));
+					helpers::StringHelper::toString(TEST_PORT, msg);
+					helpers::LogLog::warn(msg, e);
+				}
+			}
 			int exitCode;
 			apr_exit_why_e reason;
 			apr_proc_wait(&pid, &exitCode, &reason, APR_WAIT);
@@ -176,6 +198,19 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 				helpers::LogLog::debug(helpers::SubProcessFailure::makeMessage(LOG4CXX_STR("child"), exitCode, reason));
 			}
 			LOGUNIT_ASSERT_EQUAL(exitCode, 0);
+
+			// Check some messages were written by the testActivateWriteClose TelnetAppender
+			bool connectionSeen = false;
+			std::ifstream in("output/testConnectNoRead.log");
+			for (std::string line; std::getline(in, line);)
+			{
+				if (line.npos != line.find("TelnetAppender new connection"))
+				{
+					connectionSeen = true;
+					break;
+				}
+			}
+			LOGUNIT_ASSERT(connectionSeen);
 		}
 
 private:

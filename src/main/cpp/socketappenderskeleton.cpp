@@ -116,7 +116,9 @@ bool SocketAppenderSkeleton::SocketAppenderSkeletonPriv::connect()
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}
-			this->setOutputSink(Socket::create(this->address, this->port, this->socketSubclass));
+			auto s = Socket::create(this->address, this->port, this->socketSubclass);
+			s->open();
+			this->setOutputSink(std::move(s));
 			result = true;
 		}
 		catch (const SocketException& e)
@@ -214,7 +216,9 @@ void SocketAppenderSkeleton::SocketAppenderSkeletonPriv::retryConnect()
 				msg += LOG4CXX_STR("].");
 				LogLog::debug(msg);
 			}
-			this->setOutputSink(Socket::create(this->address, this->port, this->socketSubclass));
+			auto s = Socket::create(this->address, this->port, this->socketSubclass);
+			s->open();
+			this->setOutputSink(std::move(s));
 			if (LogLog::isDebugEnabled())
 			{
 				LogString msg(LOG4CXX_STR("Connection established to [")

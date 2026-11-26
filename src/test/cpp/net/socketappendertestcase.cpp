@@ -88,14 +88,17 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 			helpers::ServerSocketUniquePtr serverSocket;
 			try
 			{
-				serverSocket = helpers::ServerSocket::create(tcpPort, true, {});
+				serverSocket = helpers::ServerSocket::create(tcpPort);
+				serverSocket->setSoTimeout(1000); // milliseconds
+				serverSocket->setReuseAddress(true);
+				serverSocket->open();
+				LOGUNIT_ASSERT(serverSocket->is_open())
 			}
 			catch (const std::exception& ex)
 			{
 				helpers::LogLog::error(LOG4CXX_STR("ServerSocket::create failed"), ex);
 				LOGUNIT_FAIL("ServerSocket::create");
 			}
-			serverSocket->setSoTimeout(1000); // milliseconds
 
 			auto logger = Logger::getLogger("test");
 			int logEventCount = 3000;

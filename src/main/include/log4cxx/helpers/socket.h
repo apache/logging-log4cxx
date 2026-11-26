@@ -49,34 +49,39 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 
 		virtual ~Socket();
 
-		virtual size_t write(ByteBuffer&) = 0;
+		/// Send the bytes of \c data to the remote system.
+		virtual size_t write(ByteBuffer& data) = 0;
 
 		/**
-		Use \c newValue for the behaviour when the network buffer (on an accepted socket connection) is full.
+		Use \c newValue for the behaviour when the network buffer (on an established socket connection) is full.
 
 		When true, an exception is thrown if the write would block.
 		*/
 		virtual void setNonBlocking(bool newValue) = 0;
 
-		/// Open this socket.
+		/// Establish a connection to the remote system or throw a ConnectException.
 		virtual void open() = 0;
 
 		/// Is this available for use?
 		virtual bool is_open() = 0;
 
-		/** Close this socket. */
+		/// Make the socket unavailable for use.
 		virtual void close() = 0;
 
-		/** Returns the value of this socket's address field. */
+		/// The network address of the remote system.
 		InetAddressPtr getInetAddress() const;
 
-		/** Returns the value of this socket's port field. */
+		/// The network port on the remote system.
 		int getPort() const;
 
-		/** Use \c newAddress and \c newPort as the destination. */
-		void setAttributes(const InetAddressPtr& newAddress, int newPort);
+		/// Use \c newAddress and \c newPort as the targeted remote system.
+		virtual void setAttributes(const InetAddressPtr& newAddress, int newPort);
 
-		/** Create a concrete instance of this class
+		/** Create an instance of this class.
+
+		If \c concreteClassName is empty, or not a registered Socket sub-class, an APRSocket is returned.
+
+		Call #open on the result to establish the network connection.
 		*/
 		static SocketUniquePtr create(const InetAddressPtr& address, int port, const LogString& concreteClassName = {});
 	private:

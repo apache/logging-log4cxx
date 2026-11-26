@@ -25,11 +25,14 @@ namespace LOG4CXX_NS
 namespace helpers
 {
 
-struct ServerSocket::ServerSocketPrivate{
-	ServerSocketPrivate() :
-		timeout(0){}
+struct ServerSocket::ServerSocketPrivate
+{
 	virtual ~ServerSocketPrivate() = default;
-	int timeout;
+
+	int timeout{ 0 };
+	int port{ 0 };
+	bool reuseAddress{ false };
+	LogString hostname;
 };
 
 }
