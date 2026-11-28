@@ -31,6 +31,8 @@
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/helpers/simpledateformat.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/date.h>
 
 
 #include <log4cxx/pattern/loggerpatternconverter.h>
@@ -80,6 +82,7 @@ LOGUNIT_CLASS(PatternParserTestCase)
 	LOGUNIT_TEST(testBasic1);
 	LOGUNIT_TEST(testBasic2);
 	LOGUNIT_TEST(testMultiOption);
+	LOGUNIT_TEST(testUnixTime);
 	LOGUNIT_TEST(testThreadUsername);
 	LOGUNIT_TEST(testInvalidPatterns);
 	LOGUNIT_TEST(testFormattingInfoUsesSizeTypeFieldStart);
@@ -269,6 +272,28 @@ public:
 			getFormatSpecifiers(),
 			expected);
 		assertFormattedEquals(LOG4CXX_STR("%d{HH:mm:ss}{GMT} %d{HH:mm:ss}{GMT-1:62222222} %c  - %m"),
+			getFormatSpecifiers(),
+			expected);
+	}
+
+	void testUnixTime()
+	{
+		auto converters = PatternParser::parse(LOG4CXX_STR("%d{UNIX} %d{unix_millis} %d{UNIX}{GMT+10}"), getFormatSpecifiers());
+
+		auto date = std::make_shared<Date>(1700000000123456); // 2023-11-14T22:13:20.123456Z
+		LogString actual;
+		for (auto item : converters)
+		{
+			item->format(date, actual);
+		}
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1700000000 1700000000123 1700000000"), actual);
+
+		auto timeStamp = event->getTimeStamp(); // microseconds since the epoch
+		LogString expected;
+		StringHelper::toString(static_cast<int64_t>(timeStamp / 1000000), expected);
+		expected.append(1, LOG4CXX_STR(' '));
+		StringHelper::toString(static_cast<int64_t>(timeStamp / 1000), expected);
+		assertFormattedEquals(LOG4CXX_STR("%d{unix} %d{UNIX_MILLIS}"),
 			getFormatSpecifiers(),
 			expected);
 	}

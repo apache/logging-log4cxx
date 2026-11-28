@@ -125,10 +125,14 @@ LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
  *      <td>
  *          Used to output the date of the logging event. The date conversion specifier may
  *          be followed by a set of braces containing a date and time pattern string
- *          compatible with java.text.SimpleDateFormat, <em>ABSOLUTE</em>, <em>DATE</em> or
- *          <em>ISO8601</em>. For example, <strong>%d{HH:mm:ss,SSS}</strong>,
- *          <strong>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</strong> or <strong>%d{DATE}</strong>. If no
+ *          compatible with java.text.SimpleDateFormat, <em>ABSOLUTE</em>, <em>DATE</em>,
+ *          <em>ISO8601</em>, <em>UNIX</em> or <em>UNIX_MILLIS</em>. For example, <strong>%%d{HH:mm:ss,SSS}</strong>,
+ *          <strong>%%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</strong> or <strong>%%d{DATE}</strong>. If no
  *          date format specifier is given then ISO8601 format is assumed.
+ *          <p>
+ *              <strong>%%d{UNIX}</strong> outputs the number of seconds and <strong>%%d{UNIX_MILLIS}</strong>
+ *              the number of milliseconds elapsed since 1970-01-01T00:00:00Z (the Unix epoch).
+ *          </p>
  *      </td>
  *  </tr>
  *  <tr>
