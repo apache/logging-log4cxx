@@ -65,9 +65,6 @@ LOGUNIT_CLASS(SizeBasedRollingTest)
 public:
 	void setUp()
 	{
-		BasicConfigurator::configure(std::make_shared<PatternLayout> (
-			LOG4CXX_STR("%d %level %c -%m%n")
-		));
 		root = Logger::getRootLogger();
 		logger = Logger::getLogger("org.apache.log4j.rolling.SizeBasedRollingTest");
 	}
@@ -109,6 +106,7 @@ public:
 		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
 		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
+		rfa->setBufferedIO(true);
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
@@ -128,6 +126,7 @@ public:
 
 
 		common(logger, 0);
+		rfa->close();
 
 		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test1.0").exists());
 		LOGUNIT_ASSERT_EQUAL(true, File("output/sizeBased-test1.1").exists());
