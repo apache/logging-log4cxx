@@ -45,7 +45,9 @@ class LOG4CXX_EXPORT LevelPatternConverter : public LoggingEventPatternConverter
 
 		/**
 		 * Obtains an instance of pattern converter.
-		 * @param options options, may be null.
+		 * @param options if not empty, options[0] is a comma separated list of
+		 * <code>length=</code><em>n</em>, <code>lowerCase=true</code>
+		 * and <em>LEVEL</em>=<em>label</em> items (see PatternLayout).
 		 * @return instance of pattern converter.
 		 */
 		static PatternConverterPtr newInstance(
