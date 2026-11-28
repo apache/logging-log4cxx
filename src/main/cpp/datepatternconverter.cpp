@@ -47,6 +47,27 @@ struct DatePatternConverter::DatePatternConverterPrivate : public PatternConvert
 
 #define priv static_cast<DatePatternConverterPrivate*>(m_priv.get())
 
+namespace
+{
+/**
+ * Formats the time elapsed since the Unix epoch (1970-01-01T00:00:00Z)
+ * as a whole number of seconds or milliseconds.
+ */
+class UnixTimeDateFormat : public DateFormat
+{
+	log4cxx_time_t m_unitDuration; // in microseconds
+	public:
+		UnixTimeDateFormat(log4cxx_time_t unitDuration)
+			: m_unitDuration(unitDuration)
+			{}
+
+		void format(LogString& toAppendTo, log4cxx_time_t tm) const override
+		{
+			StringHelper::toString(static_cast<int64_t>(tm / m_unitDuration), toAppendTo);
+		}
+};
+}
+
 IMPLEMENT_LOG4CXX_OBJECT(DatePatternConverter)
 
 DatePatternConverter::DatePatternConverter(
@@ -86,6 +107,18 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 				LOG4CXX_STR("DATE"), LOG4CXX_STR("date")))
 		{
 			df = std::make_shared<DateTimeDateFormat>();
+		}
+		else if (StringHelper::equalsIgnoreCase(dateFormatStr,
+				LOG4CXX_STR("UNIX"), LOG4CXX_STR("unix")))
+		{
+			df = std::make_shared<UnixTimeDateFormat>(1000000);
+			maximumCacheValidity = 0;
+		}
+		else if (StringHelper::equalsIgnoreCase(dateFormatStr,
+				LOG4CXX_STR("UNIX_MILLIS"), LOG4CXX_STR("unix_millis")))
+		{
+			df = std::make_shared<UnixTimeDateFormat>(1000);
+			maximumCacheValidity = 0;
 		}
 		else
 		{
