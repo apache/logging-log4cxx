@@ -25,10 +25,11 @@ using namespace LOG4CXX_NS::pattern;
 
 struct FormattingInfo::FormattingInfoPrivate
 {
-	FormattingInfoPrivate(const bool leftAlign1, const int minLength1, const int maxLength1):
+	FormattingInfoPrivate(const bool leftAlign1, const int minLength1, const int maxLength1, const bool leftTruncate1):
 		minLength(minLength1),
 		maxLength(maxLength1),
-		leftAlign(leftAlign1) {}
+		leftAlign(leftAlign1),
+		leftTruncate(leftTruncate1) {}
 
 	/**
 	 * Minimum length.
@@ -44,6 +45,11 @@ struct FormattingInfo::FormattingInfoPrivate
 	 * Alignment.
 	 */
 	const bool leftAlign;
+
+	/**
+	 * Remove characters from the beginning (true) or the end (false) of a value longer than maxLength.
+	 */
+	const bool leftTruncate;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(FormattingInfo)
@@ -56,7 +62,20 @@ IMPLEMENT_LOG4CXX_OBJECT(FormattingInfo)
  */
 FormattingInfo::FormattingInfo(
 	const bool leftAlign1, const int minLength1, const int maxLength1) :
-	m_priv(std::make_unique<FormattingInfoPrivate>(leftAlign1, minLength1, maxLength1))
+	FormattingInfo(leftAlign1, minLength1, maxLength1, true)
+{
+}
+
+/**
+ * Creates new instance.
+ * @param leftAlign left align if true.
+ * @param minLength minimum length.
+ * @param maxLength maximum length.
+ * @param leftTruncate truncate from the beginning if true, from the end otherwise.
+ */
+FormattingInfo::FormattingInfo(
+	const bool leftAlign1, const int minLength1, const int maxLength1, const bool leftTruncate1) :
+	m_priv(std::make_unique<FormattingInfoPrivate>(leftAlign1, minLength1, maxLength1, leftTruncate1))
 {
 }
 
@@ -91,8 +110,15 @@ void FormattingInfo::adjustField(const LogString::size_type fieldStart, LogStrin
 
 	if (rawLength > maxLength)
 	{
-		buffer.erase(buffer.begin() + fieldStart,
-			buffer.begin() + fieldStart + (rawLength - maxLength));
+		if (m_priv->leftTruncate)
+		{
+			buffer.erase(buffer.begin() + fieldStart,
+				buffer.begin() + fieldStart + (rawLength - maxLength));
+		}
+		else
+		{
+			buffer.erase(fieldStart + maxLength);
+		}
 	}
 	else if (rawLength < minLength)
 	{
@@ -120,4 +146,9 @@ int FormattingInfo::getMinLength() const
 int FormattingInfo::getMaxLength() const
 {
 	return m_priv->maxLength;
+}
+
+bool FormattingInfo::isLeftTruncated() const
+{
+	return m_priv->leftTruncate;
 }

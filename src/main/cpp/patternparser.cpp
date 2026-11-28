@@ -253,11 +253,18 @@ PatternConverterList PatternParser::parse
 			case DOT_STATE:
 				currentLiteral.append(1, c);
 
-				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
+				if (c == 0x2D /* '-' */ && formattingInfo->isLeftTruncated())
+				{
+					// A minus sign right after the period selects truncation from the end
+					formattingInfo = std::make_shared<FormattingInfo>(
+								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
+								formattingInfo->getMaxLength(), false);
+				}
+				else if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 				{
 					formattingInfo = std::make_shared<FormattingInfo>(
 								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
-								c - 0x30 /* '0' */);
+								c - 0x30 /* '0' */, formattingInfo->isLeftTruncated());
 					state = MAX_STATE;
 					maxDigitCount = 1;
 				}
@@ -277,7 +284,8 @@ PatternConverterList PatternParser::parse
 				{
 					formattingInfo = std::make_shared<FormattingInfo>(
 								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
-								(formattingInfo->getMaxLength() * 10) + (c - 0x30 /* '0' */));
+								(formattingInfo->getMaxLength() * 10) + (c - 0x30 /* '0' */),
+								formattingInfo->isLeftTruncated());
 					++maxDigitCount;
 				}
 				else

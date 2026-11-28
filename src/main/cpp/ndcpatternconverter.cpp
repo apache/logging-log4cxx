@@ -46,7 +46,12 @@ void NDCPatternConverter::format( const spi::LoggingEventPtr& event, LogString& 
 	{
 		auto& info = getFormattingInfo();
 		if (info.getMaxLength() < value.length())
-			toAppendTo.append(value.substr(value.length() - info.getMaxLength()));
+		{
+			if (info.isLeftTruncated())
+				toAppendTo.append(value.substr(value.length() - info.getMaxLength()));
+			else
+				toAppendTo.append(value, 0, info.getMaxLength());
+		}
 		else
 			toAppendTo.append(value);
 	}

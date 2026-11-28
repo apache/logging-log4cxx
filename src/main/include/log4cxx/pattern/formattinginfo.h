@@ -34,7 +34,7 @@ typedef std::shared_ptr<FormattingInfo> FormattingInfoPtr;
 
 /**
  * Modifies the output of a pattern converter for a specified minimum
- * and maximum width and alignment.
+ * and maximum width, alignment and truncation direction.
  *
  *
  *
@@ -59,6 +59,17 @@ class LOG4CXX_EXPORT FormattingInfo : public virtual LOG4CXX_NS::helpers::Object
 		 */
 		FormattingInfo(
 			const bool leftAlign, const int minLength, const int maxLength);
+
+		/**
+		 * Creates new instance.
+		 * @param leftAlign left align if true.
+		 * @param minLength minimum length.
+		 * @param maxLength maximum length.
+		 * @param leftTruncate if true, characters are removed from the beginning
+		 * of a value longer than \c maxLength, otherwise they are removed from the end.
+		 */
+		FormattingInfo(
+			const bool leftAlign, const int minLength, const int maxLength, const bool leftTruncate);
 		~FormattingInfo();
 
 		/**
@@ -84,6 +95,12 @@ class LOG4CXX_EXPORT FormattingInfo : public virtual LOG4CXX_NS::helpers::Object
 		 * @return maximum length.
 		 */
 		int getMaxLength() const;
+
+		/**
+		 * Determine if characters are removed from the beginning of a value longer than the maximum length.
+		 * @return true if truncated from the beginning, false if truncated from the end.
+		 */
+		bool isLeftTruncated() const;
 
 		/**
 		 * Adjust the content of the buffer based on the specified lengths and alignment.

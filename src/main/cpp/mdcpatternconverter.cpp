@@ -76,7 +76,12 @@ void MDCPatternConverter::format( const spi::LoggingEventPtr& event, LogString& 
 		LogString value;
 		event->getMDC(m_priv->name, value);
 		if (info.getMaxLength() < value.length())
-			toAppendTo.append(value.substr(value.length() - info.getMaxLength()));
+		{
+			if (info.isLeftTruncated())
+				toAppendTo.append(value.substr(value.length() - info.getMaxLength()));
+			else
+				toAppendTo.append(value, 0, info.getMaxLength());
+		}
 		else
 			toAppendTo.append(value);
 	}

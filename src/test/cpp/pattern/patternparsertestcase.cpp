@@ -82,7 +82,9 @@ LOGUNIT_CLASS(PatternParserTestCase)
 	LOGUNIT_TEST(testMultiOption);
 	LOGUNIT_TEST(testThreadUsername);
 	LOGUNIT_TEST(testInvalidPatterns);
+	LOGUNIT_TEST(testTruncateFromEnd);
 	LOGUNIT_TEST(testFormattingInfoUsesSizeTypeFieldStart);
+	LOGUNIT_TEST(testFormattingInfoTruncateFromEnd);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggingEventPtr event;
@@ -297,6 +299,34 @@ public:
 		assertFormattedEquals(LOG4CXX_STR("%6.6666c"),
 			getFormatSpecifiers(),
 			LOG4CXX_STR("%6.6666c"));
+		assertFormattedEquals(LOG4CXX_STR("%6.-6666c"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("%6.-6666c"));
+		assertFormattedEquals(LOG4CXX_STR("%.--3c"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("%.--3c"));
+		assertFormattedEquals(LOG4CXX_STR("%.-c"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("%.-c"));
+	}
+
+	void testTruncateFromEnd()
+	{
+		// By default, characters are removed from the beginning
+		assertFormattedEquals(LOG4CXX_STR("[%.6c] [%.1p] [%.3m]"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("[foobar] [O] [g 1]"));
+		// A minus sign after the period removes characters from the end
+		assertFormattedEquals(LOG4CXX_STR("[%.-6c] [%.-1p] [%.-3m]"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("[org.fo] [I] [msg]"));
+		// A value no longer than the maximum width is unchanged and still padded
+		assertFormattedEquals(LOG4CXX_STR("[%.-10c] [%-6.-10p] [%6.-10p] [%.-100m]"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("[org.foobar] [INFO  ] [  INFO] [msg 1]"));
+		assertFormattedEquals(LOG4CXX_STR("[%2.-3logger] [%-2.-3level]"),
+			getFormatSpecifiers(),
+			LOG4CXX_STR("[org] [INF]"));
 	}
 
 	void testFormattingInfoUsesSizeTypeFieldStart()
@@ -308,6 +338,22 @@ public:
 		FormattingInfo(false, 0, 3).adjustField(fieldStart, actual);
 
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("prefixdef"), actual);
+	}
+
+	void testFormattingInfoTruncateFromEnd()
+	{
+		LOGUNIT_ASSERT(FormattingInfo::getDefault()->isLeftTruncated());
+		LOGUNIT_ASSERT(FormattingInfo(false, 0, 3).isLeftTruncated());
+
+		LogString actual(LOG4CXX_STR("prefix"));
+		auto fieldStart = actual.length();
+		actual.append(LOG4CXX_STR("abcdef"));
+
+		FormattingInfo info(false, 0, 3, false);
+		LOGUNIT_ASSERT(!info.isLeftTruncated());
+		info.adjustField(fieldStart, actual);
+
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("prefixabc"), actual);
 	}
 
 };

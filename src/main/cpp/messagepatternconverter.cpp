@@ -78,7 +78,12 @@ void MessagePatternConverter::format( const spi::LoggingEventPtr& event, LogStri
 	auto& msg = event->getRenderedMessage();
 	auto& info = getFormattingInfo();
 	if (info.getMaxLength() < msg.length())
-		toAppendTo.append(&msg[msg.length() - info.getMaxLength()], info.getMaxLength());
+	{
+		if (info.isLeftTruncated())
+			toAppendTo.append(&msg[msg.length() - info.getMaxLength()], info.getMaxLength());
+		else
+			toAppendTo.append(msg, 0, info.getMaxLength());
+	}
 	else
 		toAppendTo.append(msg);
 }
