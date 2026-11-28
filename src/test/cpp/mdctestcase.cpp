@@ -38,6 +38,7 @@ LOGUNIT_CLASS(MDCTestCase)
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST(test4);
+	LOGUNIT_TEST(test5);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -102,6 +103,27 @@ public:
 		PatternLayout l{ LOG4CXX_STR("%J{'}") };
 		l.format(output, std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable()));
 		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("{\"key1\":\"it''s\"}"), output);
+	}
+
+	/// A single MDC value longer than the maximum field length is truncated from the requested end.
+	void test5()
+	{
+		pattern::MDCPatternConverter converter(LOG4CXX_STR("key1"));
+		bool leftAlign{false};
+		const int minLength{0}, maxLength{3};
+		MDC item1("key1", "value1");
+		auto e = std::make_shared<spi::LoggingEvent>(LOG4CXX_STR("MDC.LayoutTest"), Level::getInfo(), LOG4CXX_STR("Message"), spi::LocationInfo::getLocationUnavailable());
+
+		converter.setFormattingInfo(std::make_shared<pattern::FormattingInfo>(leftAlign, minLength, maxLength));
+		LogString output;
+		converter.format(e, output);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("ue1"), output);
+
+		bool leftTruncate{false};
+		converter.setFormattingInfo(std::make_shared<pattern::FormattingInfo>(leftAlign, minLength, maxLength, leftTruncate));
+		output.clear();
+		converter.format(e, output);
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("val"), output);
 	}
 };
 

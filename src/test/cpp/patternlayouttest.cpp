@@ -18,6 +18,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/mdc.h>
+#include <log4cxx/ndc.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/fileappender.h>
 
@@ -90,6 +91,7 @@ LOGUNIT_CLASS(PatternLayoutTest)
 	LOGUNIT_TEST(testMDC1);
 	LOGUNIT_TEST(testMDC2);
 	LOGUNIT_TEST(testProcessId);
+	LOGUNIT_TEST(testTruncateFromEnd);
 	LOGUNIT_TEST(testAbbreviateNoDots);
 	LOGUNIT_TEST(testAbbreviatePrecisionExceedsSegments);
 	LOGUNIT_TEST(testAbbreviateKeepLastTwoSegments);
@@ -623,6 +625,25 @@ public:
 		expected.append(12 - pid.size(), LOG4CXX_STR(' '));
 		expected.append(LOG4CXX_STR("]"));
 		LOGUNIT_ASSERT_EQUAL(expected, result);
+	}
+
+	/**
+	 * A minus sign after the period of a maximum field width removes characters from the end.
+	 */
+	void testTruncateFromEnd()
+	{
+		NDC ndc("first second");
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, Level::getWarn()
+			, LOG4CXX_STR("a long message")
+			, LOG4CXX_LOCATION
+			);
+
+		PatternLayout layout(LOG4CXX_STR("%.-1p [%.-5x] [%.6x] %.-6m|%.6m|%-16.-20m|"));
+		LogString result;
+		layout.format(result, event);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("W [first] [second] a long|essage|a long message  |")), result);
 	}
 
 	/*

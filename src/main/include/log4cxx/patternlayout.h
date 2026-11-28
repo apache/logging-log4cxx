@@ -280,8 +280,8 @@ LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
  *
  * <p>
  *  By default the relevant information is output as is. However, with the aid of format
- *  modifiers it is possible to change the minimum field width, the maximum field width
- *  and justification.
+ *  modifiers it is possible to change the minimum field width, the maximum field width,
+ *  justification and the end from which an oversized value is truncated.
  * </p>
  *
  * <p>
@@ -308,6 +308,14 @@ LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
  *  and the data item is ten characters long, then the first two characters of the data
  *  item are dropped. This behavior deviates from the printf function in C where truncation
  *  is done from the end.
+ * </p>
+ *
+ * <p>
+ *  Truncation from the end is possible by appending a minus character right after the period.
+ *  In that case, if the maximum field width is eight and the data item is ten characters long,
+ *  then the last two characters of the data item are dropped.
+ *  For example, <strong>%.-1p</strong> outputs only the first character of the level name
+ *  and <strong>%.-200m</strong> outputs at most the first 200 characters of the message.
  * </p>
  *
  * <p>Below are various format modifier examples for the logger conversion specifier.</p>
@@ -359,6 +367,23 @@ LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
  *      <td>
  *          Right pad with spaces if the logger name is shorter than 20 characters. However, if
  *          logger name is longer than 30 characters, then truncate from the beginning.
+ *      </td>
+ *  </tr>
+ *  <tr>
+ *      <td align="center">%.-30c</td>
+ *      <td align="center">NA</td>
+ *      <td align="center">none</td>
+ *      <td align="center">30</td>
+ *      <td>Truncate from the end if the logger name is longer than 30 characters.</td>
+ *  </tr>
+ *  <tr>
+ *      <td align="center">%-20.-30c</td>
+ *      <td align="center">true</td>
+ *      <td align="center">20</td>
+ *      <td align="center">30</td>
+ *      <td>
+ *          Right pad with spaces if the logger name is shorter than 20 characters. However, if
+ *          logger name is longer than 30 characters, then truncate from the end.
  *      </td>
  *  </tr>
  * </table>
