@@ -108,6 +108,10 @@ LOGUNIT_CLASS(PatternLayoutTest)
 	LOGUNIT_TEST(testAbbreviateManySegmentsDeepHierarchy);
 	LOGUNIT_TEST(testAbbreviateLongFinalSegmentPreserved);
 	LOGUNIT_TEST(testAbbreviateIdempotentOnAlreadyAbbreviated);
+	LOGUNIT_TEST(testLevelLength);
+	LOGUNIT_TEST(testLevelLowerCase);
+	LOGUNIT_TEST(testLevelLabels);
+	LOGUNIT_TEST(testLevelInvalidOptions);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
@@ -974,6 +978,79 @@ public:
 		LogString result;
 		layout.format(result, event);
 		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("o.a.l.PatternLayout")), result);
+	}
+
+	/**
+	 * The result of formatting an event at \c level using \c pattern.
+	 */
+	LogString formatLevel(const LogString& pattern, const LevelPtr& level)
+	{
+		PatternLayout layout(pattern);
+		auto event = std::make_shared<spi::LoggingEvent>
+			( LOG4CXX_STR("org.foobar")
+			, level
+			, LOG4CXX_STR("msg")
+			, spi::LocationInfo::getLocationUnavailable()
+			);
+		LogString result;
+		layout.format(result, event);
+		return result;
+	}
+
+	/**
+	 * The length option limits the number of characters of the level name.
+	 */
+	void testLevelLength()
+	{
+		LogString pattern(LOG4CXX_STR("%p{length=1}"));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("T")), formatLevel(pattern, Level::getTrace()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("D")), formatLevel(pattern, Level::getDebug()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("I")), formatLevel(pattern, Level::getInfo()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("W")), formatLevel(pattern, Level::getWarn()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("E")), formatLevel(pattern, Level::getError()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("F")), formatLevel(pattern, Level::getFatal()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("INF")), formatLevel(LOG4CXX_STR("%level{length=3}"), Level::getInfo()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("WARN")), formatLevel(LOG4CXX_STR("%p{length=10}"), Level::getWarn()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[I    ]")), formatLevel(LOG4CXX_STR("[%-5p{length=1}]"), Level::getInfo()));
+	}
+
+	/**
+	 * The lowerCase option outputs the level name in lower case.
+	 */
+	void testLevelLowerCase()
+	{
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("error")), formatLevel(LOG4CXX_STR("%p{lowerCase=true}"), Level::getError()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("ERROR")), formatLevel(LOG4CXX_STR("%p{lowerCase=false}"), Level::getError()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("de")), formatLevel(LOG4CXX_STR("%p{ LOWERCASE = TRUE , Length = 2 }"), Level::getDebug()));
+	}
+
+	/**
+	 * A level=label option replaces the name of that level.
+	 */
+	void testLevelLabels()
+	{
+		LogString pattern(LOG4CXX_STR("%p{WARN=Warning, fatal = Critical, ERROR=Error, length=2, lowerCase=true}"));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Warning")), formatLevel(pattern, Level::getWarn()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Critical")), formatLevel(pattern, Level::getFatal()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Error")), formatLevel(pattern, Level::getError()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("in")), formatLevel(pattern, Level::getInfo()));
+
+		// A level without a label is output using its (shortened) name
+		auto notice = std::make_shared<Level>(25000, LOG4CXX_STR("NOTICE"), 5);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("no")), formatLevel(pattern, notice));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("NOTICE")), formatLevel(LOG4CXX_STR("%p{INFO=Information}"), notice));
+	}
+
+	/**
+	 * Invalid level options are ignored.
+	 */
+	void testLevelInvalidOptions()
+	{
+		LogString pattern(LOG4CXX_STR("%p{bogus, VERBOSE=V, length=0, length=x, WARN=W}"));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("W")), formatLevel(pattern, Level::getWarn()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("INFO")), formatLevel(pattern, Level::getInfo()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("INFO")), formatLevel(LOG4CXX_STR("%p{}"), Level::getInfo()));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("INFO")), formatLevel(LOG4CXX_STR("%p{length=-1}"), Level::getInfo()));
 	}
 
 	std::string createMessage(Pool & pool, int i)

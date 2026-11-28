@@ -195,8 +195,23 @@ LOG4CXX_LIST_DEF(FormattingInfoList, LOG4CXX_NS::pattern::FormattingInfoPtr);
  *      </td>
  *  </tr>
  *  <tr>
- *      <td align="center"><strong>p</strong></td>
- *      <td>Used to output the level of the logging event.</td>
+ *      <td align="center"><strong>p</strong><p><strong>level</strong></p></td>
+ *      <td>
+ *          Used to output the level of the logging event.
+ *          The <strong>p</strong> conversion specifier can be optionally followed by a set of braces
+ *          containing a comma separated list of <em>name</em>=<em>value</em> options:
+ *          - <code>length=</code><em>n</em> outputs at most the first <em>n</em> characters of the level name.
+ *          - <code>lowerCase=true</code> outputs the level name in lower case.
+ *          - <em>LEVEL</em>=<em>label</em> outputs <em>label</em> instead of the name of the
+ *            <em>LEVEL</em> level (TRACE, DEBUG, INFO, WARN, ERROR or FATAL).
+ *            The <code>length</code> and <code>lowerCase</code> options do not change a label.
+ *
+ *          <p>
+ *              For example, <strong>%%p{WARN=Warning, length=1}</strong> outputs "Warning" for a WARN event,
+ *              "E" for an ERROR event and "I" for an INFO event,
+ *              while <strong>%%p{lowerCase=true}</strong> outputs "warn", "error" and "info".
+ *          </p>
+ *      </td>
  *  </tr>
  *  <tr>
  *      <td align="center"><strong>pid</strong><p><strong>processId</strong></p></td>
